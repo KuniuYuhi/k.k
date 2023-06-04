@@ -19,8 +19,11 @@ private:
 		enAnimClip_Num,		// 2 :アニメーションクリップの数。
 	};
 
+	ModelRender backGround;
+	PhysicsStaticObject BGPhysicsStaticObject;
 
 	ModelRender model;
+	CharacterController m_charaCon;
 	Animation m_animation;	// アニメーション
 	AnimationClip m_animationClipArray[enAnimClip_Num];	// アニメーションクリップ 
 
