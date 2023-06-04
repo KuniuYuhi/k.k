@@ -38,6 +38,15 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
+		/// モデルを取得する
+		/// </summary>
+		/// <returns>モデル</returns>
+		Model& GetModel()
+		{
+			return m_model;
+		}
+
+		/// <summary>
 		/// 座標、回転、拡大をすべて設定
 		/// </summary>
 		/// <param name="pos">座標の設定</param>
