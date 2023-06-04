@@ -23,6 +23,17 @@ bool Game::Start()
 		enAnimClip_Num, 
 		enModelUpAxisY);
 
+	m_charaCon.Init(40.0f, 100.0f, g_vec3Zero);
+
+	backGround.Init("Assets/modelData/BackGround/bg.tkm");
+	BGPhysicsStaticObject.CreateFromModel(
+		backGround.GetModel(),
+		backGround.GetModel().GetWorldMatrix()
+	);
+
+	//当たり判定の可視化
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+
 	return true;
 }
 
@@ -36,9 +47,14 @@ void Game::Update()
 
 void Game::Move()
 {
-	// 左スティック(キーボード：WASD)で平行移動。
-	m_position.x += g_pad[0]->GetLStickXF();
-	m_position.y += g_pad[0]->GetLStickYF();
+	Vector3 moveSpeed;
+	moveSpeed.x = g_pad[0]->GetLStickXF() * 120.0f;
+	moveSpeed.z = g_pad[0]->GetLStickYF() * 120.0f;
+	m_position = m_charaCon.Execute(moveSpeed, g_gameTime->GetFrameDeltaTime());
+
+	//// 左スティック(キーボード：WASD)で平行移動。
+	//m_position.x += g_pad[0]->GetLStickXF();
+	//m_position.y += g_pad[0]->GetLStickYF();
 
 	// 右スティック(キーボード：上下左右)で回転。
 	m_rotation.AddRotationY(g_pad[0]->GetRStickXF() * 0.05f);
@@ -80,4 +96,5 @@ void Game::PlayAnim()
 void Game::Render(RenderContext& rc)
 {
 	model.Draw(rc);
+	backGround.Draw(rc);
 }
