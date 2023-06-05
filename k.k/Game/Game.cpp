@@ -11,6 +11,12 @@ Game::~Game()
 
 bool Game::Start()
 {
+	fontTest.SetText(L"歯");
+	fontTest.SetPosition(Vector3(50.0f, 0.0f, 0.0f));
+	fontTest.SetColor(Vector4(1.0f, 0.0f, 1.0f, 1.0f));
+	fontTest.SetOffset(Vector2(20.0f, -20.0f));
+
+
 	spriteTest.Init("Assets/sprite/pointer_black.DDS",220.0f,220.0f);
 	spriteTest.SetPosition(Vector3(0.0f, 0.0f, 0.0f));
 	//spriteTest.SetGrayScale(true);
@@ -49,6 +55,12 @@ void Game::Update()
 	SpriteTransform();
 	Move();
 
+	if (g_pad[0]->IsPress(enButtonStart))
+	{
+		m_fontScale += g_gameTime->GetFrameDeltaTime()*2.0f;
+		fontTest.SetScale(m_fontScale);
+	}
+
 }
 
 void Game::Move()
@@ -58,9 +70,10 @@ void Game::Move()
 	moveSpeed.z = g_pad[0]->GetLStickYF() * 120.0f;
 	m_position = m_charaCon.Execute(moveSpeed, g_gameTime->GetFrameDeltaTime());
 
+
 	//// 左スティック(キーボード：WASD)で平行移動。
-	//m_position.x += g_pad[0]->GetLStickXF();
-	//m_position.y += g_pad[0]->GetLStickYF();
+	/*m_position.x += g_pad[0]->GetLStickXF();
+	m_position.y += g_pad[0]->GetLStickYF();*/
 
 	// 右スティック(キーボード：上下左右)で回転。
 	m_rotation.AddRotationY(g_pad[0]->GetRStickXF() * 0.05f);
@@ -134,4 +147,5 @@ void Game::Render(RenderContext& rc)
 	model.Draw(rc);
 	backGround.Draw(rc);
 	spriteTest.Draw(rc);
+	fontTest.Draw(rc);
 }

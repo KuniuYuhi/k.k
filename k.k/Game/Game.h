@@ -22,6 +22,9 @@ private:
 		enAnimClip_Num,		// 2 :アニメーションクリップの数。
 	};
 
+	FontRender fontTest;
+	float m_fontScale = 1.0f;
+
 	SpriteRender spriteTest;
 
 	ModelRender backGround;
