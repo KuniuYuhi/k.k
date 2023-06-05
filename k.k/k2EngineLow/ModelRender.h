@@ -29,7 +29,7 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
-		/// ƒ‚ƒfƒ‹‚ğ•`‰æ‚·‚é
+		/// ƒ‚ƒfƒ‹‚ğ•`‰æ‚·‚é(RenderingEngine‚Å•`‰æ‚·‚é‚Æ‚«‚ÉŒÄ‚Ño‚·)
 		/// </summary>
 		/// <param name="rc"></param>
 		void OnRenderModel(RenderContext& rc)
