@@ -11,6 +11,12 @@ Game::~Game()
 
 bool Game::Start()
 {
+	spriteTest.Init("Assets/sprite/pointer_black.DDS",220.0f,220.0f);
+	spriteTest.SetPosition(Vector3(0.0f, 0.0f, 0.0f));
+	//spriteTest.SetGrayScale(true);
+	spriteTest.Update();
+
+
 	//アニメーションクリップをロードする。
 	m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/idle.tka");
 	m_animationClipArray[enAnimClip_Idle].SetLoopFlag(true);
@@ -40,7 +46,7 @@ bool Game::Start()
 void Game::Update()
 {
 	PlayAnim();
-
+	SpriteTransform();
 	Move();
 
 }
@@ -80,6 +86,36 @@ void Game::Move()
 	model.Update();
 }
 
+void Game::SpriteTransform()
+{
+	//// 左スティック(キーボード：WASD)で平行移動。
+	m_position.x += g_pad[0]->GetLStickXF();
+	m_position.y += g_pad[0]->GetLStickYF();
+
+	// 右スティック(キーボード：上下左右)で回転。
+	/*m_rotation.AddRotationY(g_pad[0]->GetRStickXF() * 0.05f);
+	m_rotation.AddRotationX(g_pad[0]->GetRStickYF() * 0.05f);*/
+
+	// 上下左右キー(キーボード：2, 4, 6, 8)で拡大
+	if (g_pad[0]->IsPress(enButtonUp)) {
+		m_scale.y += 0.02f;
+	}
+	if (g_pad[0]->IsPress(enButtonDown)) {
+		m_scale.y -= 0.02f;
+	}
+	if (g_pad[0]->IsPress(enButtonRight)) {
+		m_scale.x += 0.02f;
+	}
+	if (g_pad[0]->IsPress(enButtonLeft)) {
+		m_scale.x -= 0.02f;
+	}
+
+	spriteTest.SetPosition(m_position);
+	//spriteTest.SetRotation(m_rotation);
+	spriteTest.SetScale(m_scale);
+	spriteTest.Update();
+}
+
 void Game::PlayAnim()
 {
 	// アニメーションの切り替え。
@@ -97,4 +133,5 @@ void Game::Render(RenderContext& rc)
 {
 	model.Draw(rc);
 	backGround.Draw(rc);
+	spriteTest.Draw(rc);
 }

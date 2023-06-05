@@ -7,8 +7,11 @@ public:
 
 	bool Start();
 	void Update();
+
 	void Move();
+	void SpriteTransform();
 	void PlayAnim();
+
 	void Render(RenderContext& rc);
 
 private:
@@ -18,6 +21,8 @@ private:
 		enAnimClip_Run,		// 1 : 走りアニメーション。
 		enAnimClip_Num,		// 2 :アニメーションクリップの数。
 	};
+
+	SpriteRender spriteTest;
 
 	ModelRender backGround;
 	PhysicsStaticObject BGPhysicsStaticObject;

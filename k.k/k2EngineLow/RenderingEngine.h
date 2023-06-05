@@ -2,12 +2,11 @@
 
 namespace nsK2EngineLow {
 	class ModelRender;
+	class SpriteRender;
 
 	class RenderingEngine
 	{
 	public:
-
-
 
 		/// <summary>
 		/// モデルレンダークラスをリストに追加する
@@ -16,6 +15,15 @@ namespace nsK2EngineLow {
 		void AddModelList(ModelRender* modelRender)
 		{
 			m_modelList.push_back(modelRender);
+		}
+
+		/// <summary>
+		/// スプライトレンダークラスをリストに追加する
+		/// </summary>
+		/// <param name="spriteRender"></param>
+		void AddSpriteList(SpriteRender* spriteRender)
+		{
+			m_spriteList.push_back(spriteRender);
 		}
 
 		/// <summary>
@@ -31,7 +39,14 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダーコンテキスト</param>
 		void ModelRendering(RenderContext& rc);
 
-		std::vector<ModelRender*> m_modelList;
+		/// <summary>
+		/// スプライトを描画する
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		void SpriteRendering(RenderContext& rc);
+
+		std::vector<ModelRender*>			m_modelList;		//モデルリスト
+		std::vector<SpriteRender*>			m_spriteList;		//スプライトリスト
 	};
 }
 
