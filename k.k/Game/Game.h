@@ -1,4 +1,7 @@
 #pragma once
+#include "Level3DRender.h"
+
+
 class Game:public IGameObject
 {
 public:
@@ -27,6 +30,7 @@ private:
 
 	SpriteRender spriteTest;
 
+	Level3DRender levelbg;
 	ModelRender backGround;
 	PhysicsStaticObject BGPhysicsStaticObject;
 

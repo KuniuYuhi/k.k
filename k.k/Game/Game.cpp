@@ -37,11 +37,25 @@ bool Game::Start()
 
 	m_charaCon.Init(40.0f, 100.0f, g_vec3Zero);
 
-	backGround.Init("Assets/modelData/BackGround/bg.tkm");
-	BGPhysicsStaticObject.CreateFromModel(
-		backGround.GetModel(),
-		backGround.GetModel().GetWorldMatrix()
-	);
+	//レベル
+	levelbg.Init(
+		"Assets/level3D/stadium05Level.tkl",
+		[&](LevelObjectData& objData)
+		{
+			if (objData.EqualObjectName(L"stadium05_ground")==true) {
+				backGround.Init("Assets/modelData/BackGround/bg.tkm");
+				BGPhysicsStaticObject.CreateFromModel(
+					backGround.GetModel(),
+					backGround.GetModel().GetWorldMatrix()
+				);
+				return true;
+			}
+
+			return false;
+		});
+
+
+	
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
@@ -103,7 +117,7 @@ void Game::SpriteTransform()
 {
 	//// 左スティック(キーボード：WASD)で平行移動。
 	m_position.x += g_pad[0]->GetLStickXF();
-	m_position.y += g_pad[0]->GetLStickYF();
+	//m_position.y += g_pad[0]->GetLStickYF();
 
 	// 右スティック(キーボード：上下左右)で回転。
 	/*m_rotation.AddRotationY(g_pad[0]->GetRStickXF() * 0.05f);
