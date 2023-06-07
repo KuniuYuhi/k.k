@@ -169,6 +169,11 @@ namespace nsK2EngineLow {
 			m_animationSpeed = animationSpeed;
 		}
 
+		/// <summary>
+		/// ディレクションライトの情報を作成
+		/// </summary>
+		void MakeDirectionData();
+
 	// メンバ変数
 	private:
 		/// <summary>

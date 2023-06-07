@@ -73,7 +73,7 @@ namespace nsK2EngineLow {
 		/// レベルを初期化
 		/// </summary>
 		/// <param name="filePath">tklファイルのファイルパス</param>
-		/// <param name="hookFunk"></param>
+		/// <param name="hookFunk">オブジェクトを作成する時の処理をフックするための関数オブジェクト</param>
 		void Init(
 			const char* filePath,
 			std::function<bool(LevelObjectData& objData)> hookFunc

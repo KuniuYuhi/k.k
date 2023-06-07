@@ -3,6 +3,11 @@
 
 namespace nsK2EngineLow {
 
+	void RenderingEngine::Init()
+	{
+		m_sceneLight.Init();
+	}
+
 	//モデルリストに格納されているモデルを描画する
 	void RenderingEngine::ModelRendering(RenderContext& rc)
 	{
@@ -30,8 +35,13 @@ namespace nsK2EngineLow {
 		}
 	}
 
+	
+
 	void RenderingEngine::Execute(RenderContext& rc)
 	{
+		//視点の位置を設定する
+		SetEyePos(g_camera3D->GetPosition());
+
 		//モデルを描画
 		ModelRendering(rc);
 		//スプライトを描画
