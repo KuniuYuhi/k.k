@@ -1,6 +1,8 @@
 #include "k2EngineLowPreCompile.h"
 #include "MapChip2D.h"
 #include "CaslFile.h"
+#include "Level2DRender.h"
+
 
 namespace nsK2EngineLow {
 	void MapChip2D::Init(CaslData* caslData)
