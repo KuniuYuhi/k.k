@@ -45,7 +45,7 @@ namespace nsK2EngineLow {
 
 		//レンダリングエンジンのインスタンスを作成する
 		g_renderingEngine = new RenderingEngine;
-		//g_renderingEngine->Init();
+		g_renderingEngine->Init();
 
 #ifdef K2_DEBUG
 		if (m_graphicsEngine) {

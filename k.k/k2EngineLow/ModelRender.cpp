@@ -12,7 +12,7 @@ namespace nsK2EngineLow {
 		//モデルの上方向を設定
 		m_modelInitData.m_modelUpAxis = enModelUpAxis;
 		//ノンスキンメッシュ用の頂点シェーダーのエントリーポイントを指定する。
-		m_modelInitData.m_vsEntryPointFunc = "VSMain";
+		//m_modelInitData.m_vsEntryPointFunc = "VSMain";
 		//スケルトンを初期化
 		InitSkeleton(tkmFilepath);
 		//アニメーションの初期化
@@ -27,6 +27,8 @@ namespace nsK2EngineLow {
 			m_modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
 		}
 
+		//ディレクションライトの情報を作成
+		MakeDirectionData();
 
 		//作成した初期化データを元にモデルを初期化する
 		m_model.Init(m_modelInitData);
@@ -74,7 +76,13 @@ namespace nsK2EngineLow {
 		}
 	}
 
-	
+	//ディレクションライトの情報をディスクリプタヒープに定数バッファーとして
+	//登録するためにモデルの初期化情報として渡す
+	void ModelRender::MakeDirectionData()
+	{
+		m_modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight();
+		m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight());
+	}
 
 
 }

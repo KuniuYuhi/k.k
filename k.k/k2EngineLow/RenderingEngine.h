@@ -1,13 +1,20 @@
 #pragma once
 
+#include "Light.h"
+
 namespace nsK2EngineLow {
 	class ModelRender;
 	class SpriteRender;
 	class FontRender;
+	class RenderContext;
 
 	class RenderingEngine
 	{
 	public:
+		/// <summary>
+		/// レンダーターゲットやライトの初期化
+		/// </summary>
+		void Init();
 
 		/// <summary>
 		/// モデルレンダークラスをリストに追加する
@@ -42,6 +49,77 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダーコンテキスト</param>
 		void Execute(RenderContext& rc);
 
+		/// <summary>
+		/// シーンライトを取得
+		/// </summary>
+		/// <returns>シーンライト</returns>
+		SceneLight& GetSceneLight()
+		{
+			return m_sceneLight;
+		}
+
+		/////////////////////////////////////////////////////
+		///ディレクションライトの関数
+		/////////////////////////////////////////////////////
+		
+		/// <summary>
+		/// ディレクションライトの設定
+		/// </summary>
+		/// <param name="lightNo">ライト番号</param>
+		/// <param name="direction">ライトの方向</param>
+		/// <param name="color">ライトの色</param>
+		void SetDerectionLight(int lightNo, Vector3 direction, Vector3 color)
+		{
+			m_sceneLight.SetDirectionLight(lightNo, direction, color);
+		}
+
+		/// <summary>
+		/// ディレクションライトの光の方向を設定する
+		/// </summary>
+		/// <param name="direction">方向</param>
+		void SetDirLightDirection(Vector3 direction)
+		{
+			m_sceneLight.SetDirLightDirection(direction);
+		}
+		/// <summary>
+		/// ディレクションライトの光の色を設定する
+		/// </summary>
+		/// <param name="color">色</param>
+		void SetDirLightColor(Vector3 color)
+		{
+			m_sceneLight.SetDirLightColor(color);
+		}
+
+		/// <summary>
+		/// ディレクションライトの光の方向を取得する
+		/// </summary>
+		/// <returns>光の方向</returns>
+		const Vector3& GetDirLigDirection() const
+		{
+			return m_sceneLight.GetDirLigDirection();
+		}
+		/// <summary>
+		/// ディレクションライトの光の色を取得する
+		/// </summary>
+		/// <returns>色</returns>
+		const Vector3& GetDirLigColor() const
+		{
+			return m_sceneLight.GetDirLigColor();
+		}
+
+		/////////////////////////////////////////////////////////////
+		///カメラの位置の関数
+		/////////////////////////////////////////////////////////////
+
+		/// <summary>
+		/// カメラの位置を設定する
+		/// </summary>
+		/// <param name="eyePos">カメラの座標</param>
+		void SetEyePos(Vector3 eyePos)
+		{
+			m_sceneLight.SetEyePos(eyePos);
+		}
+
 	private:
 		/// <summary>
 		/// モデルを描画する
@@ -61,9 +139,11 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダーコンテキスト</param>
 		void FontRendering(RenderContext& rc);
 
-		std::vector<ModelRender*>			m_modelList;		//モデルリスト
-		std::vector<SpriteRender*>			m_spriteList;		//スプライトリスト
-		std::vector<FontRender*>			m_fontList;		//スプライトリスト
+		std::vector<ModelRender*>		m_modelList;	//モデルリスト
+		std::vector<SpriteRender*>		m_spriteList;	//スプライトリスト
+		std::vector<FontRender*>		m_fontList;		//スプライトリスト
+
+		SceneLight						m_sceneLight;	//シーンライト
 	};
 }
 
