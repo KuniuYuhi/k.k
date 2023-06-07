@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "Game.h"
 
+namespace {
+	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(1.0f, 1.0f, 1.0f);
+}
+
 Game::Game()
 {
 }
@@ -11,15 +15,36 @@ Game::~Game()
 
 bool Game::Start()
 {
+	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,1.0f };
+	directionLightDir.Normalize();
+	Vector3 directionLightColor = DIRECTION_RIGHT_COLOR;
+	g_renderingEngine->SetDerectionLight(0, directionLightDir, directionLightColor);
+
 	fontTest.SetText(L"Ž•");
 	fontTest.SetPosition(Vector3(50.0f, 0.0f, 0.0f));
 	fontTest.SetColor(Vector4(1.0f, 0.0f, 1.0f, 1.0f));
 	fontTest.SetOffset(Vector2(20.0f, -20.0f));
 
+	//ƒŒƒxƒ‹2D
+	//level2DSp.Init(
+	//	"Assets/Level2D/testLevel2D.casl",
+	//	[&](Level2DObjectData& objData) {
+	//		if (objData.EqualObjectName("pointer_black") == true)
+	//		{
+	//			spriteTest.Init("Assets/sprite/pointer_black.DDS", 220.0f, 220.0f);
+	//			spriteTest.SetPosition(objData.position);
+	//			//spriteTest.SetGrayScale(true);
+	//			spriteTest.Update();
 
-	spriteTest.Init("Assets/sprite/pointer_black.DDS",220.0f,220.0f);
-	spriteTest.SetPosition(Vector3(0.0f, 0.0f, 0.0f));
-	//spriteTest.SetGrayScale(true);
+	//			return true;
+	//		}
+
+	//		return false;
+	//	});
+
+	spriteTest.Init("Assets/sprite/pointer_black.DDS", 220.0f, 220.0f);
+	spriteTest.SetPosition(m_position);
+	spriteTest.SetGrayScale(true);
 	spriteTest.Update();
 
 
@@ -38,12 +63,14 @@ bool Game::Start()
 	m_charaCon.Init(40.0f, 100.0f, g_vec3Zero);
 
 	//ƒŒƒxƒ‹
-	levelbg.Init(
+	/*levelbg.Init(
 		"Assets/level3D/stadium05Level.tkl",
 		[&](LevelObjectData& objData)
 		{
 			if (objData.EqualObjectName(L"stadium05_ground")==true) {
 				backGround.Init("Assets/modelData/BackGround/bg.tkm");
+				backGround.SetPosition(objData.position);
+				backGround.SetRotation(objData.rotation);
 				BGPhysicsStaticObject.CreateFromModel(
 					backGround.GetModel(),
 					backGround.GetModel().GetWorldMatrix()
@@ -52,7 +79,7 @@ bool Game::Start()
 			}
 
 			return false;
-		});
+		});*/
 
 
 	
@@ -159,7 +186,7 @@ void Game::PlayAnim()
 void Game::Render(RenderContext& rc)
 {
 	model.Draw(rc);
-	backGround.Draw(rc);
+	//backGround.Draw(rc);
 	spriteTest.Draw(rc);
 	fontTest.Draw(rc);
 }
