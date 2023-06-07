@@ -1,5 +1,6 @@
 #pragma once
 #include "Level3DRender.h"
+//#include "Level2DRender.h"
 
 
 class Game:public IGameObject
@@ -28,6 +29,7 @@ private:
 	FontRender fontTest;
 	float m_fontScale = 1.0f;
 
+	//Level2DRender level2DSp;
 	SpriteRender spriteTest;
 
 	Level3DRender levelbg;
