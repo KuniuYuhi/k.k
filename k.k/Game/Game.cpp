@@ -3,6 +3,8 @@
 
 namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(1.0f, 1.0f, 1.0f);
+
+	const Vector3 SPOT_LIGHT_COLOR = Vector3(10.0f, 10.0f, 10.0f);
 }
 
 Game::Game()
@@ -15,10 +17,33 @@ Game::~Game()
 
 bool Game::Start()
 {
+
 	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,1.0f };
 	directionLightDir.Normalize();
 	Vector3 directionLightColor = DIRECTION_RIGHT_COLOR;
+	//ディレクションライト
 	g_renderingEngine->SetDerectionLight(0, directionLightDir, directionLightColor);
+	//環境光
+	g_renderingEngine->SetAmbient(Vector3(0.2f, 0.2f, 0.2f));
+	//ポイントライト
+	/*g_renderingEngine->SetPointLight(
+		Vector3(0.0f, 4.0f, 200.0f),
+		Vector3(15.0f, 0.0f, 0.0f),
+		Vector3(200.0f, 3.0f, 0.0f)
+	);*/
+	//スポットライト
+	spPosition.y = 4.0f;
+	spPosition.z = 100.0f;
+	spDirection = Vector3(1.0f, -1.0f, 1.0f);
+	spDirection.Normalize();
+
+	g_renderingEngine->SetSpotLight(
+		spPosition,
+		SPOT_LIGHT_COLOR,
+		Vector3(200.0f, 3.0f, 0.0f),
+		spDirection,
+		Vector3(90.0f, 0.0f, 0.0f)
+	);
 
 	fontTest.SetText(L"歯");
 	fontTest.SetPosition(Vector3(50.0f, 0.0f, 0.0f));
@@ -59,11 +84,13 @@ bool Game::Start()
 		m_animationClipArray, 
 		enAnimClip_Num, 
 		enModelUpAxisY);
-
+	model.SetRotation(m_rotation);
+	model.Update();
+	
 	m_charaCon.Init(40.0f, 100.0f, g_vec3Zero);
 
 	//レベル
-	/*levelbg.Init(
+	levelbg.Init(
 		"Assets/level3D/stadium05Level.tkl",
 		[&](LevelObjectData& objData)
 		{
@@ -79,9 +106,10 @@ bool Game::Start()
 			}
 
 			return false;
-		});*/
+		});
 
-
+	//backGround.SetRotation(Quaternion(0.0f, 180.0f, 0.0f, 1.0f));
+	backGround.Update();
 	
 
 	//当たり判定の可視化
@@ -92,14 +120,20 @@ bool Game::Start()
 
 void Game::Update()
 {
-	PlayAnim();
-	SpriteTransform();
+	//PlayAnim();
+	//SpriteTransform();
 	Move();
 
-	if (g_pad[0]->IsPress(enButtonStart))
+	Spotmove();
+
+	if (g_pad[0]->IsTrigger(enButtonStart))
 	{
-		m_fontScale += g_gameTime->GetFrameDeltaTime()*2.0f;
-		fontTest.SetScale(m_fontScale);
+		if (g_renderingEngine->SpotLightIsUse() == false)
+		{
+			g_renderingEngine->UseSpotLight();
+		}
+		else
+		g_renderingEngine->UnUseSpotLight();
 	}
 
 }
@@ -183,10 +217,43 @@ void Game::PlayAnim()
 	
 }
 
+void Game::Spotmove()
+{
+	//左のアナログスティックで動かす
+	spPosition.x -= g_pad[0]->GetLStickXF();
+	if (g_pad[0]->IsPress(enButtonB))
+	{
+		//Bボタンが一緒に押されていたらY軸方向に動かす
+		spPosition.y += g_pad[0]->GetLStickYF();
+	}
+	else
+	{
+		//Z方向に動かす
+		spPosition.z -= g_pad[0]->GetLStickYF();
+	}
+
+	// step-4 コントローラー右スティックでスポットライトを回転させる
+	   //Y軸回りのクォータニオンを計算する
+	Quaternion qRotY;
+	qRotY.SetRotationY(g_pad[0]->GetRStickXF() * 0.01f);
+	//計算したクォータニオンでライトの方向を回す
+	qRotY.Apply(spDirection);
+
+	//X軸回りのクォータニオンを計算する
+	Vector3 rotAxis;
+	rotAxis.Cross(g_vec3AxisY, spDirection);
+	Quaternion qRotX;
+	qRotX.SetRotation(rotAxis, g_pad[0]->GetRStickYF() * 0.01f);
+	//計算したクォータニオンでライトの方向を回す
+	qRotX.Apply(spDirection);
+	g_renderingEngine->SetSpotLightPosition(spPosition);
+	g_renderingEngine->SetSpotLightDirection(spDirection);
+}
+
 void Game::Render(RenderContext& rc)
 {
 	model.Draw(rc);
-	//backGround.Draw(rc);
-	spriteTest.Draw(rc);
-	fontTest.Draw(rc);
+	backGround.Draw(rc);
+	//spriteTest.Draw(rc);
+	//fontTest.Draw(rc);
 }

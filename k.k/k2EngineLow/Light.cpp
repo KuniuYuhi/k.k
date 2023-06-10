@@ -12,4 +12,10 @@ void nsK2EngineLow::SceneLight::Init()
 	m_light.directionalLight.lightDirection.z = -1.0f;
 	m_light.directionalLight.lightDirection.Normalize();
 
+	m_light.ambientLight.x = 0.3f;
+	m_light.ambientLight.y = 0.3f;
+	m_light.ambientLight.z = 0.3f;
+
+
+	m_light.cameraEyePos = g_camera3D->GetPosition();
 }

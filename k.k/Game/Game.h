@@ -16,6 +16,8 @@ public:
 	void SpriteTransform();
 	void PlayAnim();
 
+	void Spotmove();
+
 	void Render(RenderContext& rc);
 
 private:
@@ -40,6 +42,10 @@ private:
 	CharacterController m_charaCon;
 	Animation m_animation;	// アニメーション
 	AnimationClip m_animationClipArray[enAnimClip_Num];	// アニメーションクリップ 
+
+	//spotLight
+	Vector3 spPosition = Vector3::Zero;
+	Vector3 spDirection = Vector3::Zero;
 
 	Vector3 m_position = Vector3::Zero;
 	Quaternion m_rotation = Quaternion::Identity;
