@@ -37,13 +37,13 @@ bool Game::Start()
 	spDirection = Vector3(1.0f, -1.0f, 1.0f);
 	spDirection.Normalize();
 
-	g_renderingEngine->SetSpotLight(
+	/*g_renderingEngine->SetSpotLight(
 		spPosition,
 		SPOT_LIGHT_COLOR,
 		Vector3(200.0f, 3.0f, 0.0f),
 		spDirection,
 		Vector3(90.0f, 0.0f, 0.0f)
-	);
+	);*/
 
 	fontTest.SetText(L"Ž•");
 	fontTest.SetPosition(Vector3(50.0f, 0.0f, 0.0f));
@@ -253,7 +253,7 @@ void Game::Spotmove()
 void Game::Render(RenderContext& rc)
 {
 	model.Draw(rc);
-	backGround.Draw(rc);
+	//backGround.Draw(rc);
 	//spriteTest.Draw(rc);
 	//fontTest.Draw(rc);
 }
