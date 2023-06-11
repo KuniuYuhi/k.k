@@ -21,7 +21,8 @@ struct SPSIn{
 	float4 pos 			: SV_POSITION;	//スクリーン空間でのピクセルの座標。
 	float3 normal        : NORMAL;			//法線
 	float2 uv 			: TEXCOORD0;	//uv座標。
-	float3 worldPos			:TEXCOORD1;		//ワールド座標
+	float3 worldPos		:TEXCOORD1;		//ワールド座標
+	float3 normalInView :TEXCOORD2;		//カメラ空間の法線
 };
 
 //ディレクションライト構造体
@@ -131,7 +132,8 @@ SPSIn VSMainCore(SVSIn vsIn, uniform bool hasSkin)
 	//頂点法線をピクセルシェーダーに渡す
 	psIn.normal=mul(m,vsIn.normal);
 
-
+	//カメラ空間の法線を求める
+	psIn.normalInView=mul(mView,psIn.normal);
 
 	psIn.uv = vsIn.uv;
 
@@ -251,8 +253,19 @@ float3 CalcLigFromDrectionLight(SPSIn psIn,float3 normal)
 	float3 specDirection=CalcPhongSpecular(
 		directionLight.direction,directionLight.color,psIn.worldPos,psIn.normal,psIn.uv);
 
+	//サーフェイスの法線と光の入射方向に依存するリムの強さを求める
+	float power1=1.0f-max(0.0f,dot(directionLight.direction,psIn.normal));
+	//サーフェイスの法線と視線の方向に依存するリムの強さを求める
+	float power2=1.0f-max(0.0f,psIn.normalInView.z*-1.0f);
+	//最終的なリムの強さを求める
+	float limPower=power1*power2;
+	//強さを指数関数的にする
+	limPower=pow(limPower,1.1f);
+	//リムライトのカラーを計算する
+	float3 limColor=limPower*directionLight.color;
+
 	//最終的な光
-	return diffDirection+specDirection;
+	return diffDirection+specDirection+limColor;
 }
 
 float3 CalcLigFromPointLight(SPSIn psIn,float3 normal)
