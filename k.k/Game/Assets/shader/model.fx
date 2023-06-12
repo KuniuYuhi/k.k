@@ -12,8 +12,11 @@ struct SSkinVSIn{
 //頂点シェーダーへの入力。
 struct SVSIn{
 	float4 pos 		: POSITION;		//モデルの頂点座標。
-	float3 normal    : NORMAL;
+	float3 normal    : NORMAL;		//法線マップ
 	float2 uv 		: TEXCOORD0;	//UV座標。
+	float3 tangent 	: TANGENT;		//接ベクトル	
+	float3 biNormal : BINORMAL;		//従ベクトル
+
 	SSkinVSIn skinVert;				//スキン用のデータ。
 };
 //ピクセルシェーダーへの入力。
@@ -21,6 +24,8 @@ struct SPSIn{
 	float4 pos 			: SV_POSITION;	//スクリーン空間でのピクセルの座標。
 	float3 normal        : NORMAL;			//法線
 	float2 uv 			: TEXCOORD0;	//uv座標。
+	float3 tangent 	: TANGENT;		//接ベクトル	
+	float3 biNormal : BINORMAL;		//従ベクトル
 	float3 worldPos		:TEXCOORD1;		//ワールド座標
 	float3 normalInView :TEXCOORD2;		//カメラ空間の法線
 };
@@ -100,6 +105,7 @@ float3 CalcLigFromDrectionLight(SPSIn psIn,float3 normal);
 float3 CalcLigFromPointLight(SPSIn psIn,float3 normal);
 float3 CalcLigFromSpotLight(SPSIn psIn,float3 normal);
 float3 CalcLigFromhemiSphereLight(SPSIn psIn);
+float3 CalcNormalMap(SPSIn psIn);
 
 /// <summary>
 //スキン行列を計算する。
@@ -146,6 +152,10 @@ SPSIn VSMainCore(SVSIn vsIn, uniform bool hasSkin)
 	//カメラ空間の法線を求める
 	psIn.normalInView=mul(mView,psIn.normal);
 
+	//接ベクトルと従ベクトルをワールド空間に変換する
+	psIn.tangent=normalize(mul(mWorld,vsIn.tangent));
+	psIn.biNormal=normalize(mul(mWorld,vsIn.biNormal));
+
 	psIn.uv = vsIn.uv;
 
 	return psIn;
@@ -170,8 +180,11 @@ SPSIn VSSkinMain( SVSIn vsIn )
 /// </summary>
 float4 PSMain( SPSIn psIn ) : SV_Target0
 {
+	//法線マップを計算
+	float3 normal=CalcNormalMap(psIn);
+
 	//ディレクションライトによるライティングの計算
-	float3 directionLig=CalcLigFromDrectionLight(psIn,psIn.normal);
+	float3 directionLig=CalcLigFromDrectionLight(psIn,normal);
 	
 	//ポイントライトによるライティングの計算
 	float3 pointLig={0.0f,0.0f,0.0f};
@@ -179,7 +192,7 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 	if(pointLight.isUse==true)
 	{
 		pointLig=CalcLigFromPointLight(
-			psIn,psIn.normal
+			psIn,normal
 		);
 	}
 
@@ -189,7 +202,7 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 	if(spotLight.isUse==true)
 	{
 		spotLig=CalcLigFromSpotLight(
-			psIn,psIn.normal
+			psIn,normal
 		);
 	}
 
@@ -200,6 +213,8 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 	{
 		hemiLig=CalcLigFromhemiSphereLight(psIn);
 	}
+
+
 
 	//ディレクションライトと環境光をたす				
 	float3 lig = directionLig + pointLig + spotLig + hemiLig + ambient;
@@ -415,4 +430,22 @@ float3 CalcLigFromhemiSphereLight(SPSIn psIn)
 	);
 
 	return hemiLight;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+///法線マップを計算
+/////////////////////////////////////////////////////////////////////////////////
+float3 CalcNormalMap(SPSIn psIn)
+{
+	float3 normal=psIn.normal;
+	//法線マップからタンジェントスペースの法線をサンプリングする
+	float3 localNormal=g_normalMap.Sample(g_sampler,psIn.uv).xyz;
+	//タンジェントスペースの法線を0~1の範囲から-1~1の範囲に復元する
+	localNormal=(localNormal-0.5f)*2.0f;
+	//タンジェントスペースの法線をワールドスペースに変換する
+	normal=psIn.tangent*localNormal.x
+		+psIn.biNormal*localNormal.y
+		+normal*localNormal.z;
+
+	return normal;
 }
