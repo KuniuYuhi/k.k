@@ -18,6 +18,11 @@ public:
 
 	void Spotmove();
 
+	const Vector3 GetPosition() const
+	{
+		return m_position;
+	}
+
 	void Render(RenderContext& rc);
 
 private:
