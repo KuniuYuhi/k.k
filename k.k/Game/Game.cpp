@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Game.h"
+#include "GameCamera.h"
 
 namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(1.0f, 1.0f, 1.0f);
@@ -27,9 +28,9 @@ bool Game::Start()
 	g_renderingEngine->SetAmbient(Vector3(0.2f, 0.2f, 0.2f));
 	//ポイントライト
 	/*g_renderingEngine->SetPointLight(
-		Vector3(0.0f, 4.0f, 200.0f),
-		Vector3(15.0f, 0.0f, 0.0f),
-		Vector3(200.0f, 3.0f, 0.0f)
+		Vector3(0.0f, 200.0f, 200.0f),
+		Vector3(15.0f, 10.0f, 12.0f),
+		Vector3(500.0f, 3.0f, 0.0f)
 	);*/
 	//スポットライト
 	spPosition.y = 4.0f;
@@ -111,6 +112,7 @@ bool Game::Start()
 	//backGround.SetRotation(Quaternion(0.0f, 180.0f, 0.0f, 1.0f));
 	backGround.Update();
 	
+	GameCamera* gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
@@ -124,7 +126,7 @@ void Game::Update()
 	//SpriteTransform();
 	Move();
 
-	Spotmove();
+	//Spotmove();
 
 	if (g_pad[0]->IsTrigger(enButtonStart))
 	{
@@ -144,8 +146,8 @@ void Game::Update()
 void Game::Move()
 {
 	Vector3 moveSpeed;
-	moveSpeed.x = g_pad[0]->GetLStickXF() * 120.0f;
-	moveSpeed.z = g_pad[0]->GetLStickYF() * 120.0f;
+	moveSpeed.x = g_pad[0]->GetLStickXF() * -120.0f;
+	moveSpeed.z = g_pad[0]->GetLStickYF() * -120.0f;
 	m_position = m_charaCon.Execute(moveSpeed, g_gameTime->GetFrameDeltaTime());
 
 
@@ -154,8 +156,8 @@ void Game::Move()
 	m_position.y += g_pad[0]->GetLStickYF();*/
 
 	// 右スティック(キーボード：上下左右)で回転。
-	m_rotation.AddRotationY(g_pad[0]->GetRStickXF() * 0.05f);
-	m_rotation.AddRotationX(g_pad[0]->GetRStickYF() * 0.05f);
+	/*m_rotation.AddRotationY(g_pad[0]->GetRStickXF() * 0.05f);
+	m_rotation.AddRotationX(g_pad[0]->GetRStickYF() * 0.05f);*/
 
 	// 上下左右キー(キーボード：2, 4, 6, 8)で拡大
 	if (g_pad[0]->IsPress(enButtonUp)) {
