@@ -47,17 +47,30 @@ namespace nsK2EngineLow {
 	};
 
 	/// <summary>
+	/// 半球ライト
+	/// </summary>
+	struct HemiSphereLight
+	{
+		Vector3 groundColor;		//地面色
+		float pad0;					//パティング0
+		Vector3 skyColor;			//天球色
+		int isUse = false;			//使用フラグ
+		Vector3 groundNormal;		//地面の法線
+		float pad1;
+	};
+
+	/// <summary>
 	/// ライト構造体
 	/// </summary>
 	struct Light
 	{
 		DirectionalLight	directionalLight;		//ディレクションライト
 		PointLight			pointLight;				//ポイントライト
-		SpotLight			spotLight;				//スポットライト
+		SpotLight			spotLight;				//スポットライト				
+		HemiSphereLight		hemiSphereLight;		//半球ライト
 		Vector3             ambientLight;			//環境光(アンビエントライト)
-		float				pad0;					//パティング０
 		float				pad1;					//パティング１
-		Matrix				mLVP;					//
+		//Matrix				mLVP;					//
 		Vector3				cameraEyePos;			//カメラの座標
 	};
 
@@ -75,10 +88,10 @@ namespace nsK2EngineLow {
 		/// ライトビュープロジェクション行列を設定する
 		/// </summary>
 		/// <param name="LVP">ライトビュープロジェクション行列</param>
-		void SetmLVP(Matrix LVP)
+		/*void SetmLVP(Matrix LVP)
 		{
 			m_light.mLVP = LVP;
-		}
+		}*/
 		//////////////////////////////////////////////////////////////////////
 		///ディレクションライトの関数
 		////////////////////////////////////////////////////////////////////// 
@@ -372,6 +385,103 @@ namespace nsK2EngineLow {
 		const int SpotLightIsUse() const
 		{
 			return m_light.spotLight.isUse;
+		}
+
+		////////////////////////////////////////////////////////
+		///半球ライトの関数
+		////////////////////////////////////////////////////////
+
+		/// <summary>
+		/// 半球ライトを設定する
+		/// </summary>
+		/// <param name="groundColor">地面色</param>
+		/// <param name="skyColor">天球色</param>
+		/// <param name="groundNormal">地面の法線</param>
+		void SetHemiLight(Vector3 groundColor, Vector3 skyColor, Vector3 groundNormal)
+		{
+			SetHemiLightGroundColor(groundColor);
+			SetHemiLightSkyColor(skyColor);
+			SetHemiLightGroundNormal(groundNormal);
+			UseHemiLight();
+		}
+
+		/// <summary>
+		/// 半球ライトの地面色を設定
+		/// </summary>
+		/// <param name="groundColor">地面色</param>
+		void SetHemiLightGroundColor(Vector3 groundColor)
+		{
+			m_light.hemiSphereLight.groundColor = groundColor;
+		}
+
+		/// <summary>
+		/// 半球ライトの天球色を設定
+		/// </summary>
+		/// <param name="skyColor">天球色</param>
+		void SetHemiLightSkyColor(Vector3 skyColor)
+		{
+			m_light.hemiSphereLight.skyColor = skyColor;
+		}
+
+		/// <summary>
+		/// 半球ライトの地面の法線
+		/// </summary>
+		/// <param name="normal">地面の法線</param>
+		void SetHemiLightGroundNormal(Vector3 normal)
+		{
+			m_light.hemiSphereLight.groundNormal = normal;
+		}
+
+		/// <summary>
+		/// 半球ライトを使用する
+		/// </summary>
+		void UseHemiLight()
+		{
+			m_light.hemiSphereLight.isUse = true;
+		}
+
+		/// <summary>
+		/// 半球ライトを使用しない
+		/// </summary>
+		void UnUseHemiLight()
+		{
+			m_light.hemiSphereLight.isUse = false;
+		}
+
+		/// <summary>
+		/// 半球ライトの地面色を取得する
+		/// </summary>
+		/// <returns>地面色</returns>
+		const Vector3& GetHemiLightGroundColor() const
+		{
+			return m_light.hemiSphereLight.groundColor;
+		}
+
+		/// <summary>
+		/// 半球ライトの天球色を取得する
+		/// </summary>
+		/// <returns></returns>
+		const Vector3& GetHemiLightSkyColor() const
+		{
+			return m_light.hemiSphereLight.skyColor;
+		}
+
+		/// <summary>
+		/// 半球ライトの地面の法線を取得する
+		/// </summary>
+		/// <returns></returns>
+		const Vector3& GetHemiLightGroundNormal() const
+		{
+			return m_light.hemiSphereLight.groundNormal;
+		}
+
+		/// <summary>
+		/// 半球ライトは使用中?
+		/// </summary>
+		/// <returns>使用中のときtrue</returns>
+		const int HemiLightIsUse() const
+		{
+			return m_light.hemiSphereLight.isUse;
 		}
 
 		////////////////////////////////////////////////////////
