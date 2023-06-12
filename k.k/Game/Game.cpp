@@ -26,24 +26,24 @@ bool Game::Start()
 	//環境光
 	g_renderingEngine->SetAmbient(Vector3(0.2f, 0.2f, 0.2f));
 	//ポイントライト
-	g_renderingEngine->SetPointLight(
+	/*g_renderingEngine->SetPointLight(
 		Vector3(0.0f, 4.0f, 200.0f),
 		Vector3(15.0f, 0.0f, 0.0f),
 		Vector3(200.0f, 3.0f, 0.0f)
-	);
+	);*/
 	//スポットライト
 	spPosition.y = 4.0f;
 	spPosition.z = 100.0f;
 	spDirection = Vector3(1.0f, -1.0f, 1.0f);
 	spDirection.Normalize();
 
-	g_renderingEngine->SetSpotLight(
+	/*g_renderingEngine->SetSpotLight(
 		spPosition,
 		SPOT_LIGHT_COLOR,
 		Vector3(200.0f, 3.0f, 0.0f),
 		spDirection,
 		Vector3(90.0f, 0.0f, 0.0f)
-	);
+	);*/
 
 	fontTest.SetText(L"歯");
 	fontTest.SetPosition(Vector3(50.0f, 0.0f, 0.0f));
