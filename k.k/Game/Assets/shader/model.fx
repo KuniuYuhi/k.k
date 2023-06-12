@@ -52,6 +52,15 @@ struct SpotLight
 	float3 direction;	//照射方向
 };
 
+//半球ライト構造体
+struct HemiSphereLight
+{
+	float3 groundColor;		//地面色
+	float3 skyColor;		//天球色
+	int isUse;				//使用フラグ
+	float3 groundNormal;	//地面の法線
+};
+
 ////////////////////////////////////////////////
 // 定数バッファ。
 ////////////////////////////////////////////////
@@ -67,6 +76,7 @@ cbuffer LightCB:register(b1){
 	DirectionLight directionLight;      //ディレクションライト
 	PointLight pointLight;				//ポイントライト
 	SpotLight spotLight;				//スポットライト
+	HemiSphereLight hemiSphereLight;	//半球ライト
 	float3 ambient;			//環境光
 	float3 eyepos;			//視点の位置
 }
@@ -89,6 +99,7 @@ float3 CalcPhongSpecular(float3 lightDirection,float3 lightColor,float3 worldPos
 float3 CalcLigFromDrectionLight(SPSIn psIn,float3 normal);
 float3 CalcLigFromPointLight(SPSIn psIn,float3 normal);
 float3 CalcLigFromSpotLight(SPSIn psIn,float3 normal);
+float3 CalcLigFromhemiSphereLight(SPSIn psIn);
 
 /// <summary>
 //スキン行列を計算する。
@@ -182,8 +193,16 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 		);
 	}
 
+	//半球ライトによるライティングの計算
+	float3 hemiLig={0.0f,0.0f,0.0f};
+	//フラグがtrueなら
+	if(hemiSphereLight.isUse==true)
+	{
+		hemiLig=CalcLigFromhemiSphereLight(psIn);
+	}
+
 	//ディレクションライトと環境光をたす				
-	float3 lig = directionLig + pointLig + spotLig + ambient;
+	float3 lig = directionLig + pointLig + spotLig + hemiLig + ambient;
 
 	float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
 
@@ -265,9 +284,12 @@ float3 CalcLigFromDrectionLight(SPSIn psIn,float3 normal)
 	float3 limColor=limPower*directionLight.color;
 
 	//最終的な光
-	return diffDirection+specDirection+limColor;
+	return diffDirection+specDirection;//+limColor;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////
+///ポイントライトを計算
+//////////////////////////////////////////////////////////////////////////////////////
 float3 CalcLigFromPointLight(SPSIn psIn,float3 normal)
 {
 	//サーフェイスに入射するポイントライトの光の向きを計算する
@@ -314,6 +336,9 @@ float3 CalcLigFromPointLight(SPSIn psIn,float3 normal)
 	return diffPoint+specPoint;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////
+///スポットライトを計算
+///////////////////////////////////////////////////////////////////////////////////////
 float3 CalcLigFromSpotLight(SPSIn psIn,float3 normal)
 {
 	//サーフェイスに入射するポイントライトの光の向きを計算する
@@ -371,4 +396,23 @@ float3 CalcLigFromSpotLight(SPSIn psIn,float3 normal)
 	specSpotLight*=affect;
 
 	return diffSpotLight+specSpotLight;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+///半球ライトを計算
+//////////////////////////////////////////////////////////////////////////////////////////
+float3 CalcLigFromhemiSphereLight(SPSIn psIn)
+{
+	//ピクセルの法線と地面の法線の内積を計算する
+	float t=dot(psIn.normal,hemiSphereLight.groundNormal);
+	//
+	t=(t+1.0f)/2.0f;
+	//線形補間
+	float3 hemiLight=lerp(
+		hemiSphereLight.groundColor,
+		hemiSphereLight.skyColor,
+		t
+	);
+
+	return hemiLight;
 }
