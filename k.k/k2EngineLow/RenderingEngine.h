@@ -347,6 +347,103 @@ namespace nsK2EngineLow {
 		}
 
 		/////////////////////////////////////////////////////////////
+		///半球ライトの関数
+		/////////////////////////////////////////////////////////////
+
+		/// <summary>
+		/// 半球ライトを設定する
+		/// </summary>
+		/// <param name="groundColor">地面色</param>
+		/// <param name="skyColor">天球色</param>
+		/// <param name="groundNormal">地面の法線</param>
+		void SetHemiLight(Vector3 groundColor, Vector3 skyColor, Vector3 groundNormal)
+		{
+			SetHemiLightGroundColor(groundColor);
+			SetHemiLightSkyColor(skyColor);
+			SetHemiLightGroundNormal(groundNormal);
+			UseHemiLight();
+		}
+
+		/// <summary>
+		/// 半球ライトの地面色を設定
+		/// </summary>
+		/// <param name="groundColor">地面色</param>
+		void SetHemiLightGroundColor(Vector3 groundColor)
+		{
+			m_sceneLight.SetHemiLightGroundColor(groundColor);
+		}
+
+		/// <summary>
+		/// 半球ライトの天球色を設定
+		/// </summary>
+		/// <param name="skyColor">天球色</param>
+		void SetHemiLightSkyColor(Vector3 skyColor)
+		{
+			m_sceneLight.SetHemiLightSkyColor(skyColor);
+		}
+
+		/// <summary>
+		/// 半球ライトの地面の法線
+		/// </summary>
+		/// <param name="normal">地面の法線</param>
+		void SetHemiLightGroundNormal(Vector3 normal)
+		{
+			m_sceneLight.SetHemiLightGroundNormal(normal);
+		}
+
+		/// <summary>
+		/// 半球ライトを使用する
+		/// </summary>
+		void UseHemiLight()
+		{
+			m_sceneLight.UseHemiLight();
+		}
+
+		/// <summary>
+		/// 半球ライトを使用しない
+		/// </summary>
+		void UnUseHemiLight()
+		{
+			m_sceneLight.UnUseHemiLight();
+		}
+
+		/// <summary>
+		/// 半球ライトの地面色を取得する
+		/// </summary>
+		/// <returns>地面色</returns>
+		const Vector3& GetHemiLightGroundColor() const
+		{
+			return m_sceneLight.GetHemiLightGroundColor();
+		}
+
+		/// <summary>
+		/// 半球ライトの天球色を取得する
+		/// </summary>
+		/// <returns></returns>
+		const Vector3& GetHemiLightSkyColor() const
+		{
+			return m_sceneLight.GetHemiLightSkyColor();
+		}
+
+		/// <summary>
+		/// 半球ライトの地面の法線を取得する
+		/// </summary>
+		/// <returns></returns>
+		const Vector3& GetHemiLightGroundNormal() const
+		{
+			return m_sceneLight.GetHemiLightGroundNormal();
+		}
+
+		/// <summary>
+		/// 半球ライトは使用中?
+		/// </summary>
+		/// <returns>使用中のときtrue</returns>
+		const int HemiLightIsUse() const
+		{
+			return m_sceneLight.HemiLightIsUse();
+		}
+
+		/////////////////////////////////////////////////////////////
 		///カメラの位置の関数
 		/////////////////////////////////////////////////////////////
 
