@@ -3,7 +3,7 @@
 #include "GameCamera.h"
 
 namespace {
-	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(1.0f, 1.0f, 1.0f);
+	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(2.0f, 2.0f, 2.0f);
 
 	const Vector3 SPOT_LIGHT_COLOR = Vector3(10.0f, 10.0f, 10.0f);
 }
@@ -96,7 +96,7 @@ bool Game::Start()
 		[&](LevelObjectData& objData)
 		{
 			if (objData.EqualObjectName(L"stadium05_ground")==true) {
-				backGround.Init("Assets/modelData/BackGround/bg.tkm");
+				backGround.Init("Assets/modelData/sample.tkm");
 				backGround.SetPosition(objData.position);
 				backGround.SetRotation(objData.rotation);
 				BGPhysicsStaticObject.CreateFromModel(
@@ -126,7 +126,7 @@ void Game::Update()
 	//SpriteTransform();
 	Move();
 
-	//Spotmove();
+	Spotmove();
 
 	if (g_pad[0]->IsTrigger(enButtonStart))
 	{
@@ -224,6 +224,11 @@ void Game::PlayAnim()
 
 void Game::Spotmove()
 {
+	spDirection.x -= g_pad[0]->GetLStickXF()*0.5f;
+	spDirection.Normalize();
+	g_renderingEngine->SetDirLightDirection(spDirection);
+
+
 	//左のアナログスティックで動かす
 	spPosition.x -= g_pad[0]->GetLStickXF();
 	if (g_pad[0]->IsPress(enButtonB))
@@ -251,8 +256,11 @@ void Game::Spotmove()
 	qRotX.SetRotation(rotAxis, g_pad[0]->GetRStickYF() * 0.01f);
 	//計算したクォータニオンでライトの方向を回す
 	qRotX.Apply(spDirection);
-	g_renderingEngine->SetSpotLightPosition(spPosition);
-	g_renderingEngine->SetSpotLightDirection(spDirection);
+
+	spDirection.Normalize();
+	/*g_renderingEngine->SetSpotLightPosition(spPosition);
+	g_renderingEngine->SetSpotLightDirection(spDirection);*/
+	
 }
 
 void Game::Render(RenderContext& rc)
