@@ -12,7 +12,7 @@ namespace nsK2EngineLow {
 		//モデルの上方向を設定
 		m_modelInitData.m_modelUpAxis = enModelUpAxis;
 		//ノンスキンメッシュ用の頂点シェーダーのエントリーポイントを指定する。
-		//m_modelInitData.m_vsEntryPointFunc = "VSMain";
+		m_modelInitData.m_vsEntryPointFunc = "VSMain";
 		//スケルトンを初期化
 		InitSkeleton(tkmFilepath);
 		//アニメーションの初期化
