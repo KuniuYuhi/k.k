@@ -139,15 +139,15 @@ SPSIn VSMainCore(SVSIn vsIn, uniform bool hasSkin)
 		m = mWorld;
 	}
 	psIn.pos = mul(m, vsIn.pos);
+	psIn.worldPos = psIn.pos;
 	psIn.pos = mul(mView, psIn.pos);
 	psIn.pos = mul(mProj, psIn.pos);
 	//法線
-	psIn.normal=mul(m,psIn.normal);
+	psIn.normal=mul(m,vsIn.normal);
 	psIn.normal=normalize(psIn.normal);
 
-	psIn.worldPos = psIn.pos;
 	//頂点法線をピクセルシェーダーに渡す
-	psIn.normal=mul(m,vsIn.normal);
+	//psIn.normal=mul(m,vsIn.normal);
 
 	//カメラ空間の法線を求める
 	psIn.normalInView=mul(mView,psIn.normal);
@@ -282,13 +282,13 @@ float3 CalcLigFromDrectionLight(SPSIn psIn,float3 normal)
 {
 	//拡散反射
 	float3 diffDirection=CalcLambertDiffuse(
-		directionLight.direction,directionLight.color,psIn.normal);
+		directionLight.direction,directionLight.color,normal);
 	//鏡面反射
 	float3 specDirection=CalcPhongSpecular(
-		directionLight.direction,directionLight.color,psIn.worldPos,psIn.normal,psIn.uv);
+		directionLight.direction,directionLight.color,psIn.worldPos,normal,psIn.uv);
 
 	//サーフェイスの法線と光の入射方向に依存するリムの強さを求める
-	float power1=1.0f-max(0.0f,dot(directionLight.direction,psIn.normal));
+	float power1=1.0f-max(0.0f,dot(directionLight.direction,normal));
 	//サーフェイスの法線と視線の方向に依存するリムの強さを求める
 	float power2=1.0f-max(0.0f,psIn.normalInView.z*-1.0f);
 	//最終的なリムの強さを求める
