@@ -3,7 +3,7 @@
 #include "Game.h"
 
 namespace {
-	const float TARGETPOS_YUP = 80.0f;
+	const float TARGETPOS_YUP = 40.0f;
 }
 
 GameCamera::GameCamera()
@@ -19,7 +19,7 @@ bool GameCamera::Start()
 	game = FindGO<Game>("game");
 
 	//注視点から視点までのベクトルを設定。80-160
-	m_toCameraPos.Set(0.0f, 60.0f, 400.0f);
+	m_toCameraPos.Set(0.0f, 60.0f, 200.0f);
 	//カメラをプレイヤーの後ろにするときに使う
 	m_position = m_toCameraPos;
 
