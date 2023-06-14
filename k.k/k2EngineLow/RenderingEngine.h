@@ -1,5 +1,6 @@
 #pragma once
 
+#include "PostEffect.h"
 #include "Light.h"
 
 namespace nsK2EngineLow {
@@ -15,6 +16,16 @@ namespace nsK2EngineLow {
 		/// レンダーターゲットやライトの初期化
 		/// </summary>
 		void Init();
+
+		/// <summary>
+		/// レンダリングターゲットの初期化
+		/// </summary>
+		void InitRenderTargets();
+
+		/// <summary>
+		/// テクスチャを貼り付けるためのスプライトの初期化
+		/// </summary>
+		void InitCopyToFrameBufferSprite();
 
 		/// <summary>
 		/// モデルレンダークラスをリストに追加する
@@ -479,7 +490,10 @@ namespace nsK2EngineLow {
 		std::vector<SpriteRender*>		m_spriteList;	//スプライトリスト
 		std::vector<FontRender*>		m_fontList;		//スプライトリスト
 
+		Sprite						m_copyToFrameBufferSprite;	//テクスチャを貼り付けるためのスプライトを初期化
 		SceneLight						m_sceneLight;	//シーンライト
+		RenderTarget					m_mainRenderTarget;	//レンダリングターゲット
+		PostEffect						m_postEffect;		//ポストエフェクト
 	};
 }
 

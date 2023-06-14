@@ -3,7 +3,7 @@
 #include "GameCamera.h"
 
 namespace {
-	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(2.0f, 2.0f, 2.0f);
+	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(5.0f, 5.0f, 5.0f);
 
 	const Vector3 SPOT_LIGHT_COLOR = Vector3(10.0f, 10.0f, 10.0f);
 }
@@ -19,13 +19,13 @@ Game::~Game()
 bool Game::Start()
 {
 
-	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,1.0f };
+	Vector3 directionLightDir = Vector3{ 0.0f,0.0f,-1.0f };
 	directionLightDir.Normalize();
 	Vector3 directionLightColor = DIRECTION_RIGHT_COLOR;
 	//ディレクションライト
 	g_renderingEngine->SetDerectionLight(0, directionLightDir, directionLightColor);
 	//環境光
-	g_renderingEngine->SetAmbient(Vector3(0.2f, 0.2f, 0.2f));
+	g_renderingEngine->SetAmbient(Vector3(0.5f, 0.5f, 0.5f));
 	//ポイントライト
 	/*g_renderingEngine->SetPointLight(
 		Vector3(0.0f, 200.0f, 200.0f),
@@ -96,7 +96,7 @@ bool Game::Start()
 		[&](LevelObjectData& objData)
 		{
 			if (objData.EqualObjectName(L"stadium05_ground")==true) {
-				backGround.Init("Assets/modelData/sample.tkm");
+				backGround.Init("Assets/modelData/BackGround/bg.tkm");
 				backGround.SetPosition(objData.position);
 				backGround.SetRotation(objData.rotation);
 				BGPhysicsStaticObject.CreateFromModel(
@@ -224,9 +224,9 @@ void Game::PlayAnim()
 
 void Game::Spotmove()
 {
-	spDirection.x -= g_pad[0]->GetLStickXF()*0.5f;
+	/*spDirection.x -= g_pad[0]->GetLStickXF()*0.5f;
 	spDirection.Normalize();
-	g_renderingEngine->SetDirLightDirection(spDirection);
+	g_renderingEngine->SetDirLightDirection(spDirection);*/
 
 
 	//左のアナログスティックで動かす
@@ -266,7 +266,7 @@ void Game::Spotmove()
 void Game::Render(RenderContext& rc)
 {
 	model.Draw(rc);
-	backGround.Draw(rc);
+	//backGround.Draw(rc);
 	//spriteTest.Draw(rc);
 	//fontTest.Draw(rc);
 }
