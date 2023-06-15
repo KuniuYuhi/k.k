@@ -16,7 +16,16 @@ namespace nsK2EngineLow {
 			const char* tkmFilepath, 
 			AnimationClip* animationClips = nullptr, 
 			int numAnimationClips=0,
-			EnModelUpAxis enModelUpAxis = enModelUpAxisZ
+			EnModelUpAxis enModelUpAxis = enModelUpAxisZ,
+			bool shadow=true
+		);
+
+		/// <summary>
+		/// 影を受けるモデルの初期化
+		/// </summary>
+		/// <param name="tkmFilepath">tkmファイルパス</param>
+		void InitShadow(
+			const char* tkmFilepath
 		);
 
 		/// <summary>
@@ -35,6 +44,16 @@ namespace nsK2EngineLow {
 		void OnRenderModel(RenderContext& rc)
 		{
 			m_model.Draw(rc);
+		}
+
+		/// <summary>
+		/// シャドウマップ描画用のモデル
+		/// </summary>
+		/// <param name="rc"></param>
+		/// <param name="lightCamera"></param>
+		void OnRenderShadowModel(RenderContext& rc, Camera& lightCamera)
+		{
+			m_shadowModel.Draw(rc, lightCamera);
 		}
 
 		/// <summary>
@@ -206,6 +225,7 @@ namespace nsK2EngineLow {
 		Quaternion					m_rotation = Quaternion::Identity;		//回転
 
 		Model						m_model;								//モデルクラス
+		Model						m_shadowModel;
 		ModelInitData				m_modelInitData;						//モデルを初期化するための情報を設定するクラス
 	};
 }

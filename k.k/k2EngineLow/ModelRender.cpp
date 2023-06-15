@@ -3,7 +3,7 @@
 
 namespace nsK2EngineLow {
 
-	void ModelRender::Init(const char* tkmFilepath,AnimationClip* animationClips, int numAnimationClips, EnModelUpAxis enModelUpAxis)
+	void ModelRender::Init(const char* tkmFilepath,AnimationClip* animationClips, int numAnimationClips, EnModelUpAxis enModelUpAxis, bool shadow)
 	{
 		//tkmファイルパスを設定
 		m_modelInitData.m_tkmFilePath = tkmFilepath;
@@ -32,6 +32,35 @@ namespace nsK2EngineLow {
 
 		//作成した初期化データを元にモデルを初期化する
 		m_model.Init(m_modelInitData);
+
+		//シャドウマップ描画用のモデルの初期化
+		if (shadow == true)
+		{
+			//シャドウマップ描画用の頂点シェーダーを設定する
+			m_modelInitData.m_psEntryPointFunc = "PSShadowMapMain";
+			m_modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32_FLOAT;
+			//シャドウモデルを初期化
+			m_shadowModel.Init(m_modelInitData);
+		}
+	}
+
+	//影を受けるモデルの初期化
+	void ModelRender::InitShadow(const char* tkmFilepath)
+	{
+		m_modelInitData.m_tkmFilePath = tkmFilepath;
+		m_modelInitData.m_fxFilePath = "Assets/shader/ShadowReciever.fx";
+
+		m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GatShadowMapTexture();
+
+		//ライトカメラのビュープロジェクション行列を設定する
+		g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
+
+		/*m_modelInitData.m_expandConstantBuffer = (void*)&g_renderingEngine->GetLightCamera().GetProjectionMatrix();
+		m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetLightCamera().GetProjectionMatrix());*/
+
+		MakeDirectionData();
+
+		m_model.Init(m_modelInitData);
 	}
 
 	//モデルの情報を更新
@@ -45,6 +74,13 @@ namespace nsK2EngineLow {
 		{
 			//スケルトンを更新する
 			m_skeleton.Update(m_model.GetWorldMatrix());
+		}
+
+		//シャドウモデルが初期化されていたら
+		if (m_shadowModel.IsInited())
+		{
+			m_shadowModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+			g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
 		}
 
 		//アニメーションを進める
