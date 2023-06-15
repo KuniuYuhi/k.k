@@ -70,8 +70,9 @@ namespace nsK2EngineLow {
 		HemiSphereLight		hemiSphereLight;		//半球ライト
 		Vector3             ambientLight;			//環境光(アンビエントライト)
 		float				pad1;					//パティング１
-		//Matrix				mLVP;					//
 		Vector3				cameraEyePos;			//カメラの座標
+		float				pad2;
+		Matrix				mLVP;					//ライトビュープロジェクション行列
 	};
 
 
@@ -88,10 +89,10 @@ namespace nsK2EngineLow {
 		/// ライトビュープロジェクション行列を設定する
 		/// </summary>
 		/// <param name="LVP">ライトビュープロジェクション行列</param>
-		/*void SetmLVP(Matrix LVP)
+		void SetmLVP(Matrix LVP)
 		{
 			m_light.mLVP = LVP;
-		}*/
+		}
 		//////////////////////////////////////////////////////////////////////
 		///ディレクションライトの関数
 		////////////////////////////////////////////////////////////////////// 
