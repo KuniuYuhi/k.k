@@ -2,6 +2,7 @@
 
 #include "PostEffect.h"
 #include "Light.h"
+#include "Shadow.h"
 
 namespace nsK2EngineLow {
 	class ModelRender;
@@ -55,6 +56,13 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
+		/// シャドウマップ描画用のモデルを描画する
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		/// <param name="camera">カメラ</param>
+		void ShadowModelRendering(RenderContext& rc, Camera& camera);
+
+		/// <summary>
 		/// 描画処理を実行
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
@@ -67,6 +75,37 @@ namespace nsK2EngineLow {
 		SceneLight& GetSceneLight()
 		{
 			return m_sceneLight;
+		}
+
+		/// <summary>
+		/// ライトビュープロジェクション行列を設定する
+		/// </summary>
+		/// <param name="LVP">ライトビュープロジェクション行列</param>
+		void SetmLVP(Matrix LVP)
+		{
+			m_sceneLight.SetmLVP(LVP);
+		}
+
+		/////////////////////////////////////////////////////
+		///シャドウマップの関数
+		/////////////////////////////////////////////////////
+
+		/// <summary>
+		/// シャドウマップのテクスチャを取得
+		/// </summary>
+		/// <returns>シャドウマップのテクスチャ</returns>
+		Texture& GatShadowMapTexture()
+		{
+			return m_shadow.GetShadowMapTextrue();
+		}
+
+		/// <summary>
+		/// ライトカメラを取得
+		/// </summary>
+		/// <returns>ライトカメラ</returns>
+		Camera& GetLightCamera()
+		{
+			return m_shadow.GetLightCamera();
 		}
 
 		/////////////////////////////////////////////////////
@@ -474,6 +513,8 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダーコンテキスト</param>
 		void ModelRendering(RenderContext& rc);
 
+		
+
 		/// <summary>
 		/// スプライトを描画する
 		/// </summary>
@@ -494,6 +535,7 @@ namespace nsK2EngineLow {
 		SceneLight						m_sceneLight;	//シーンライト
 		RenderTarget					m_mainRenderTarget;	//レンダリングターゲット
 		PostEffect						m_postEffect;		//ポストエフェクト
+		Shadow							m_shadow;
 	};
 }
 

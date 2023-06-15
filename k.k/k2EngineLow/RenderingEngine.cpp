@@ -6,7 +6,7 @@ namespace nsK2EngineLow {
 	void RenderingEngine::Init()
 	{
 		InitRenderTargets();
-
+		m_shadow.Init();
 		m_postEffect.Init(m_mainRenderTarget);
 		InitCopyToFrameBufferSprite();
 
@@ -51,6 +51,15 @@ namespace nsK2EngineLow {
 		}
 	}
 
+	//モデルリストの格納されているモデルのシャドウマップ描画用のモデルを描画する
+	void RenderingEngine::ShadowModelRendering(RenderContext& rc, Camera& camera)
+	{
+		for (auto& modelObj : m_modelList)
+		{
+			modelObj->OnRenderShadowModel(rc, camera);
+		}
+	}
+
 	//スプライトリストに格納されているスプライトを描画する
 	void RenderingEngine::SpriteRendering(RenderContext& rc)
 	{
@@ -75,6 +84,9 @@ namespace nsK2EngineLow {
 	{
 		//視点の位置を設定する
 		SetEyePos(g_camera3D->GetPosition());
+
+		//シャドウマップ描画用のモデルを描画
+		m_shadow.Render(rc);
 
 		//レンダリングターゲットをm_mainRenderTargetに変更する
 		rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);
@@ -103,6 +115,8 @@ namespace nsK2EngineLow {
 		SpriteRendering(rc);
 		//フォントを描画
 		FontRendering(rc);
+
+		//m_shadow.ShadowSpriteRender(rc);
 
 		m_modelList.clear();
 		m_spriteList.clear();
