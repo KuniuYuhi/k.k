@@ -188,33 +188,24 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 	
 	//ポイントライトによるライティングの計算
 	float3 pointLig={0.0f,0.0f,0.0f};
-	//フラグがtrueなら
 	if(pointLight.isUse==true)
 	{
-		pointLig=CalcLigFromPointLight(
-			psIn,normal
-		);
+		pointLig=CalcLigFromPointLight(psIn,normal);
 	}
 
 	//スポットライトによるライティングの計算
 	float3 spotLig={0.0f,0.0f,0.0f};
-	//フラグがtrueなら
 	if(spotLight.isUse==true)
 	{
-		spotLig=CalcLigFromSpotLight(
-			psIn,normal
-		);
+		spotLig=CalcLigFromSpotLight(psIn,normal);
 	}
 
 	//半球ライトによるライティングの計算
 	float3 hemiLig={0.0f,0.0f,0.0f};
-	//フラグがtrueなら
 	if(hemiSphereLight.isUse==true)
 	{
 		hemiLig=CalcLigFromhemiSphereLight(psIn);
 	}
-
-
 
 	//ディレクションライトと環境光をたす				
 	float3 lig = directionLig + pointLig + spotLig + hemiLig + ambient;
@@ -225,6 +216,15 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 
 
 	return albedoColor;
+}
+
+/// <summary>
+/// シャドウマップ描画用のピクセルシェーダー
+/// </summary>
+float4 PSShadowMapMain(SPSIn psIn) : SV_Target0
+{
+    //シャドウマップにZ値を書き込む
+    return float4(psIn.pos.z, psIn.pos.z, psIn.pos.z, 1.0f);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -263,14 +263,14 @@ float3 CalcPhongSpecular(float3 lightDirection,float3 lightColor,float3 worldPos
 	t=max(0.0f,t);
 
 	//鏡面反射の強さを絞る
-	t=pow(t,5.0f);
+	t=pow(t,10.0f);
 
 	//鏡面反射光
 	float specularLig= lightColor*t;
 
 	//スペキュラマップからスペキュラ反射の強さをサンプリング
 	float specPower=g_specularMap.Sample(g_sampler,uv).r;
-	specularLig*=specPower*1.2f;
+	specularLig*=specPower*0.1f;
 
 	return specularLig;
 }
