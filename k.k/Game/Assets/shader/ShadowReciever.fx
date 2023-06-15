@@ -220,7 +220,7 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
         if(zInLVP>zInShadowMap)
         {
             //遮蔽されている
-            albedoColor.xyz*=0.4f;
+            albedoColor.xyz*=0.5f;
         }
 
        

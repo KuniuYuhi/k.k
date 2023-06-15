@@ -5,7 +5,7 @@
 namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(1.0f, 1.0f, 1.0f);
 
-	const Vector3 SPOT_LIGHT_COLOR = Vector3(10.0f, 10.0f, 10.0f);
+	const Vector3 SPOT_LIGHT_COLOR = Vector3(40.0f, 10.0f, 10.0f);
 }
 
 Game::Game()
@@ -43,7 +43,7 @@ bool Game::Start()
 		SPOT_LIGHT_COLOR,
 		Vector3(200.0f, 3.0f, 0.0f),
 		spDirection,
-		Vector3(90.0f, 0.0f, 0.0f)
+		Vector3(90.0f, 40.0f, 0.0f)
 	);*/
 
 	fontTest.SetText(L"Ž•");
@@ -146,8 +146,8 @@ void Game::Update()
 void Game::Move()
 {
 	Vector3 moveSpeed;
-	moveSpeed.x = g_pad[0]->GetLStickXF() * -120.0f;
-	moveSpeed.z = g_pad[0]->GetLStickYF() * -120.0f;
+	moveSpeed.x = g_pad[0]->GetLStickXF() * -300.0f;
+	moveSpeed.z = g_pad[0]->GetLStickYF() * -300.0f;
 	m_position = m_charaCon.Execute(moveSpeed, g_gameTime->GetFrameDeltaTime());
 
 
