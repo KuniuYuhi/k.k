@@ -146,9 +146,6 @@ SPSIn VSMainCore(SVSIn vsIn, uniform bool hasSkin)
 	psIn.normal=mul(m,vsIn.normal);
 	psIn.normal=normalize(psIn.normal);
 
-	//頂点法線をピクセルシェーダーに渡す
-	//psIn.normal=mul(m,vsIn.normal);
-
 	//カメラ空間の法線を求める
 	psIn.normalInView=mul(mView,psIn.normal);
 

@@ -72,14 +72,14 @@ bool Game::Start()
 	spriteTest.SetPosition(m_position);
 	spriteTest.SetGrayScale(true);
 	spriteTest.Update();
-
-
+	//Assets/animData/character/Player/Idle_Normal.tka
+	//Assets/animData/character/Player/SprintFWD_Battle.tka
 	//アニメーションクリップをロードする。
 	m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/character/Player/Idle_Normal.tka");
 	m_animationClipArray[enAnimClip_Idle].SetLoopFlag(true);
 	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/character/Player/SprintFWD_Battle.tka");
 	m_animationClipArray[enAnimClip_Run].SetLoopFlag(true);
-
+	//"Assets/modelData/character/Player/Hero.tkm",
 	model.Init(
 		"Assets/modelData/character/Player/Hero.tkm", 
 		m_animationClipArray, 
