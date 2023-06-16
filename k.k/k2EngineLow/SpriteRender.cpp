@@ -15,6 +15,11 @@ void nsK2EngineLow::SpriteRender::Init(const char* filePath, const float width, 
 	//spriteのブレンドモードを設定
 	spriteInitData.m_alphaBlendMode = alphaBlendMode;
 
+	//定数バッファーとして送る
+	spriteInitData.m_expandConstantBuffer = &m_spriteCB;
+	spriteInitData.m_expandConstantBufferSize = sizeof(m_spriteCB);
+
+
 	//sprite初期化オブジェクトを使って、spriteを初期化する
 	m_sprite.Init(spriteInitData);
 
