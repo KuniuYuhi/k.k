@@ -442,9 +442,9 @@ float3 CalcNormalMap(SPSIn psIn)
 
 	
 	//タンジェントスペースの法線をワールドスペースに変換する
-	normal=psIn.tangent*localNormal.x
+	/*normal=psIn.tangent*localNormal.x
 		+psIn.biNormal*localNormal.y
-		+normal*localNormal.z;
+		+normal*localNormal.z;*/
 		
 	return normal;
 }
