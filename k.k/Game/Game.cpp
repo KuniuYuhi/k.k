@@ -80,11 +80,13 @@ bool Game::Start()
 	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/character/Player/SprintFWD_Battle.tka");
 	m_animationClipArray[enAnimClip_Run].SetLoopFlag(true);
 	//"Assets/modelData/character/Player/Hero.tkm",
+	//"Assets/modelData/character/BadPerson/BadPerson_Boy.tkm"
 	model.Init(
-		"Assets/modelData/character/Player/Hero.tkm", 
-		m_animationClipArray, 
-		enAnimClip_Num, 
-		enModelUpAxisZ);
+		"Assets/modelData/character/BadPerson/BadPerson_Boy.tkm"
+		//m_animationClipArray, 
+		//enAnimClip_Num, 
+		//enModelUpAxisZ
+		);
 	//model.SetRotation(m_rotation);
 	model.Update();
 	

@@ -439,10 +439,12 @@ float3 CalcNormalMap(SPSIn psIn)
 	float3 localNormal=g_normalMap.Sample(g_sampler,psIn.uv).xyz;
 	//タンジェントスペースの法線を0~1の範囲から-1~1の範囲に復元する
 	localNormal=(localNormal-0.5f)*2.0f;
+
+	
 	//タンジェントスペースの法線をワールドスペースに変換する
 	normal=psIn.tangent*localNormal.x
 		+psIn.biNormal*localNormal.y
 		+normal*localNormal.z;
-
+		
 	return normal;
 }
