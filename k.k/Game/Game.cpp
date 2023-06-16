@@ -68,10 +68,12 @@ bool Game::Start()
 	//		return false;
 	//	});
 
-	spriteTest.Init("Assets/sprite/pointer_black.DDS", 220.0f, 220.0f);
+	spriteTest.Init("Assets/sprite/titleBack.DDS", 1920.0f, 1080.0f);
 	spriteTest.SetPosition(m_position);
-	spriteTest.SetGrayScale(true);
+	//spriteTest.SetGrayScale(true);
+	spriteTest.SetWipeSize(wipSize);
 	spriteTest.Update();
+
 	//Assets/animData/character/Player/Idle_Normal.tka
 	//Assets/animData/character/Player/SprintFWD_Battle.tka
 	//アニメーションクリップをロードする。
@@ -130,19 +132,21 @@ void Game::Update()
 
 	Spotmove();
 
-	if (g_pad[0]->IsTrigger(enButtonStart))
+	if (g_pad[0]->IsPress(enButtonStart))
 	{
-		if (g_renderingEngine->HemiLightIsUse() == false)
-		{
-			//g_renderingEngine->UnUseHemiLight();
+		spriteTest.SetWipeSize(wipSize);
+		wipSize += 5.0f;
+		//if (g_renderingEngine->HemiLightIsUse() == false)
+		//{
+		//	//g_renderingEngine->UnUseHemiLight();
 
-			g_renderingEngine->UseHemiLight();
-		}
-		else
-		g_renderingEngine->UnUseHemiLight();
+		//	g_renderingEngine->UseHemiLight();
+		//}
+		//else
+		//g_renderingEngine->UnUseHemiLight();
+		
 		//g_renderingEngine->UseHemiLight();
 	}
-
 }
 
 void Game::Move()
