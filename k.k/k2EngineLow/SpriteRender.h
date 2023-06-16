@@ -4,7 +4,11 @@ namespace nsK2EngineLow {
 
 	struct SpriteCB
 	{
-		bool grayScale = false;	//グレースケールをするかどうか
+		Vector2 wipeDir=Vector2(0.0f,0.0f);		//ワイプする方向
+		float pad1;
+		bool grayScale = false;					//グレースケールをするかどうか
+		bool simpleWipe = false;				//単純なリニアワイプをするかどうか
+		float wipeSize = 0;						//ワイプサイズ
 	};
 
 	class SpriteRender
@@ -184,6 +188,60 @@ namespace nsK2EngineLow {
 		bool IsGrayScale()
 		{
 			return m_spriteCB.grayScale;
+		}
+
+		/// <summary>
+		/// 単純なリニアワイプを設定する
+		/// </summary>
+		/// <param name="flag"></param>
+		void SetSimpleWipe(bool flag)
+		{
+			m_spriteCB.simpleWipe = flag;
+		}
+
+		/// <summary>
+		/// 単純なリニアワイプしているか判定
+		/// </summary>
+		/// <returns></returns>
+		bool GetSimpleWipe()
+		{
+			return m_spriteCB.simpleWipe;
+		}
+		
+		/// <summary>
+		/// ワイプサイズを指定する
+		/// </summary>
+		/// <param name="wipesize"></param>
+		void SetWipeSize(float wipesize)
+		{
+			m_spriteCB.wipeSize = wipesize;
+		}
+
+		/// <summary>
+		/// ワイプサイズを取得する
+		/// </summary>
+		/// <returns></returns>
+		float GetWipeSize()
+		{
+			return m_spriteCB.wipeSize;
+		}
+
+		/// <summary>
+		/// ワイプ方向を指定する
+		/// </summary>
+		/// <param name="wipedir"></param>
+		void SetWipeDir(Vector2 wipedir)
+		{
+			m_spriteCB.wipeDir = wipedir;
+		}
+
+		/// <summary>
+		/// ワイプ方向を取得
+		/// </summary>
+		/// <returns></returns>
+		Vector2 GetWipeDir()
+		{
+			return m_spriteCB.wipeDir;
 		}
 
 	private:

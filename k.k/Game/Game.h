@@ -38,6 +38,7 @@ private:
 
 	//Level2DRender level2DSp;
 	SpriteRender spriteTest;
+	float wipSize = 5.0f;
 
 	Level3DRender levelbg;
 	ModelRender backGround;
@@ -52,7 +53,7 @@ private:
 	Vector3 spPosition = Vector3::Zero;
 	Vector3 spDirection = Vector3::Zero;
 
-	Vector3 m_position = Vector3(0.0f,30.0f,0.0f);
+	Vector3 m_position = Vector3(0.0f,0.0f,0.0f);
 	Quaternion m_rotation = Quaternion::Identity;
 	Vector3 m_scale = Vector3::One;
 };

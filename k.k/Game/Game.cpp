@@ -68,10 +68,12 @@ bool Game::Start()
 	//		return false;
 	//	});
 
-	spriteTest.Init("Assets/sprite/pointer_black.DDS", 220.0f, 220.0f);
+	spriteTest.Init("Assets/sprite/titleBack.DDS", 1920.0f, 1080.0f);
 	spriteTest.SetPosition(m_position);
-	spriteTest.SetGrayScale(true);
+	//spriteTest.SetGrayScale(true);
+	spriteTest.SetWipeSize(wipSize);
 	spriteTest.Update();
+
 	//Assets/animData/character/Player/Idle_Normal.tka
 	//Assets/animData/character/Player/SprintFWD_Battle.tka
 	//アニメーションクリップをロードする。
@@ -82,10 +84,10 @@ bool Game::Start()
 	//"Assets/modelData/character/Player/Hero.tkm",
 	//"Assets/modelData/character/BadPerson/BadPerson_Boy.tkm"
 	model.Init(
-		"Assets/modelData/character/BadPerson/BadPerson_Boy.tkm"
-		//m_animationClipArray, 
-		//enAnimClip_Num, 
-		//enModelUpAxisZ
+		"Assets/modelData/character/Player/Hero.tkm",
+		m_animationClipArray, 
+		enAnimClip_Num, 
+		enModelUpAxisZ
 		);
 	//model.SetRotation(m_rotation);
 	model.Update();
@@ -124,25 +126,27 @@ bool Game::Start()
 
 void Game::Update()
 {
-	//PlayAnim();
+	PlayAnim();
 	//SpriteTransform();
 	Move();
 
 	Spotmove();
 
-	if (g_pad[0]->IsTrigger(enButtonStart))
+	if (g_pad[0]->IsPress(enButtonStart))
 	{
-		if (g_renderingEngine->HemiLightIsUse() == false)
-		{
-			//g_renderingEngine->UnUseHemiLight();
+		spriteTest.SetWipeSize(wipSize);
+		wipSize += 5.0f;
+		//if (g_renderingEngine->HemiLightIsUse() == false)
+		//{
+		//	//g_renderingEngine->UnUseHemiLight();
 
-			g_renderingEngine->UseHemiLight();
-		}
-		else
-		g_renderingEngine->UnUseHemiLight();
+		//	g_renderingEngine->UseHemiLight();
+		//}
+		//else
+		//g_renderingEngine->UnUseHemiLight();
+		
 		//g_renderingEngine->UseHemiLight();
 	}
-
 }
 
 void Game::Move()
@@ -216,7 +220,7 @@ void Game::PlayAnim()
 {
 	// アニメーションの切り替え。
 	if (g_pad[0]->IsPress(enButtonA)) {
-		model.PlayAnimation(enAnimClip_Idle, 0.2f);
+		model.PlayAnimation(enAnimClip_Idle, 0.6f);
 	}
 	if (g_pad[0]->IsPress(enButtonB)) {
 		model.PlayAnimation(enAnimClip_Run, 0.2f);
