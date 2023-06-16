@@ -72,20 +72,20 @@ bool Game::Start()
 	spriteTest.SetPosition(m_position);
 	spriteTest.SetGrayScale(true);
 	spriteTest.Update();
-
-
+	//Assets/animData/character/Player/Idle_Normal.tka
+	//Assets/animData/character/Player/SprintFWD_Battle.tka
 	//アニメーションクリップをロードする。
-	m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/idle.tka");
+	m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/character/Player/Idle_Normal.tka");
 	m_animationClipArray[enAnimClip_Idle].SetLoopFlag(true);
-	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/walk.tka");
+	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/character/Player/SprintFWD_Battle.tka");
 	m_animationClipArray[enAnimClip_Run].SetLoopFlag(true);
-
+	//"Assets/modelData/character/Player/Hero.tkm",
 	model.Init(
-		"Assets/modelData/unityChan.tkm", 
+		"Assets/modelData/character/Player/Hero.tkm", 
 		m_animationClipArray, 
 		enAnimClip_Num, 
-		enModelUpAxisY);
-	model.SetRotation(m_rotation);
+		enModelUpAxisZ);
+	//model.SetRotation(m_rotation);
 	model.Update();
 	
 	m_charaCon.Init(40.0f, 100.0f, g_vec3Zero);
@@ -172,6 +172,7 @@ void Game::Move()
 	if (g_pad[0]->IsPress(enButtonLeft)) {
 		m_scale.x -= 0.02f;
 	}
+
 
 	model.SetPosition(m_position);
 	model.SetRotation(m_rotation);
