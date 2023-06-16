@@ -82,10 +82,10 @@ bool Game::Start()
 	//"Assets/modelData/character/Player/Hero.tkm",
 	//"Assets/modelData/character/BadPerson/BadPerson_Boy.tkm"
 	model.Init(
-		"Assets/modelData/character/BadPerson/BadPerson_Boy.tkm"
-		//m_animationClipArray, 
-		//enAnimClip_Num, 
-		//enModelUpAxisZ
+		"Assets/modelData/character/Player/Hero.tkm",
+		m_animationClipArray, 
+		enAnimClip_Num, 
+		enModelUpAxisZ
 		);
 	//model.SetRotation(m_rotation);
 	model.Update();
@@ -124,7 +124,7 @@ bool Game::Start()
 
 void Game::Update()
 {
-	//PlayAnim();
+	PlayAnim();
 	//SpriteTransform();
 	Move();
 
@@ -216,7 +216,7 @@ void Game::PlayAnim()
 {
 	// アニメーションの切り替え。
 	if (g_pad[0]->IsPress(enButtonA)) {
-		model.PlayAnimation(enAnimClip_Idle, 0.2f);
+		model.PlayAnimation(enAnimClip_Idle, 0.6f);
 	}
 	if (g_pad[0]->IsPress(enButtonB)) {
 		model.PlayAnimation(enAnimClip_Run, 0.2f);
