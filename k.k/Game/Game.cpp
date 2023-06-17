@@ -81,14 +81,14 @@ bool Game::Start()
 	// "Assets/animData/character/BadPerson/Idle_Battle1.tka"
 	// 
 	//アニメーションクリップをロードする。
-	m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/character/BadPerson/Idle_Normal00.tka");
+	m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/character/BadPerson/Idle_Normal1.tka");
 	m_animationClipArray[enAnimClip_Idle].SetLoopFlag(true);
-	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/character/BadPerson/Idle_Battle1.tka");
+	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/character/BadPerson/Idle_Normal00.tka");
 	m_animationClipArray[enAnimClip_Run].SetLoopFlag(true);
 	//"Assets/modelData/character/Player/Hero.tkm",
 	//"Assets/modelData/character/BadPerson/BadPerson_Boy.tkm"
 	model.Init(
-		"Assets/modelData/character/BadPerson/BadPerson_Boy.tkm",
+		"Assets/modelData/character/BadPerson/BadPerson_Boy1.tkm",
 		m_animationClipArray, 
 		enAnimClip_Num, 
 		enModelUpAxisZ
@@ -293,7 +293,7 @@ void Game::Render(RenderContext& rc)
 {
 	model.Draw(rc);
 	backGround.Draw(rc);
-	Castle.Draw(rc);
+	//Castle.Draw(rc);
 	//spriteTest.Draw(rc);
 	//fontTest.Draw(rc);
 }
