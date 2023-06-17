@@ -100,17 +100,32 @@ bool Game::Start()
 
 	//ƒŒƒxƒ‹
 	levelbg.Init(
-		"Assets/level3D/stadium05Level.tkl",
+		"Assets/level3D/FieldLevel.tkl",
 		[&](LevelObjectData& objData)
 		{
-			if (objData.EqualObjectName(L"stadium05_ground")==true) {
+			if (objData.EqualObjectName(L"grass")==true) {
 				backGround.InitShadow("Assets/modelData/BackGround/grass01.tkm");
 				backGround.SetPosition(objData.position);
 				backGround.SetRotation(objData.rotation);
+				backGround.SetScale(objData.scale);
+				backGround.Update();
 				BGPhysicsStaticObject.CreateFromModel(
 					backGround.GetModel(),
 					backGround.GetModel().GetWorldMatrix()
 				);
+				return true;
+			}
+
+			if (objData.EqualObjectName(L"castle") == true) {
+				Castle.InitShadow("Assets/modelData/BackGround/Castle.tkm");
+				Castle.SetPosition(objData.position);
+				Castle.SetRotation(objData.rotation);
+				Castle.SetScale(objData.scale);
+				Castle.Update();
+				/*BGPhysicsStaticObject.CreateFromModel(
+					Castle.GetModel(),
+					Castle.GetModel().GetWorldMatrix()
+				);*/
 				return true;
 			}
 
@@ -278,6 +293,7 @@ void Game::Render(RenderContext& rc)
 {
 	model.Draw(rc);
 	backGround.Draw(rc);
+	Castle.Draw(rc);
 	//spriteTest.Draw(rc);
 	//fontTest.Draw(rc);
 }

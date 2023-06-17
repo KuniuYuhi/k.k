@@ -42,6 +42,8 @@ private:
 
 	Level3DRender levelbg;
 	ModelRender backGround;
+	ModelRender Castle;
+
 	PhysicsStaticObject BGPhysicsStaticObject;
 
 	ModelRender model;
