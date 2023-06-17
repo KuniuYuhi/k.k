@@ -25,7 +25,7 @@ bool Game::Start()
 	//ディレクションライト
 	g_renderingEngine->SetDerectionLight(0, directionLightDir, directionLightColor);
 	//環境光
-	g_renderingEngine->SetAmbient(Vector3(0.1f, 0.1f, 0.1f));
+	g_renderingEngine->SetAmbient(Vector3(0.5f, 0.5f, 0.5f));
 	//ポイントライト
 	/*g_renderingEngine->SetPointLight(
 		Vector3(200.0f, 50.0f, 200.0f),
@@ -76,15 +76,19 @@ bool Game::Start()
 
 	//Assets/animData/character/Player/Idle_Normal.tka
 	//Assets/animData/character/Player/SprintFWD_Battle.tka
+	// 
+	// "Assets/animData/character/BadPerson/Idle_Normal1.tka"
+	// "Assets/animData/character/BadPerson/Idle_Battle1.tka"
+	// 
 	//アニメーションクリップをロードする。
-	m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/character/Player/Idle_Normal.tka");
+	m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/character/BadPerson/Idle_Normal00.tka");
 	m_animationClipArray[enAnimClip_Idle].SetLoopFlag(true);
-	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/character/Player/SprintFWD_Battle.tka");
+	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/character/BadPerson/Idle_Battle1.tka");
 	m_animationClipArray[enAnimClip_Run].SetLoopFlag(true);
 	//"Assets/modelData/character/Player/Hero.tkm",
 	//"Assets/modelData/character/BadPerson/BadPerson_Boy.tkm"
 	model.Init(
-		"Assets/modelData/character/Player/Hero.tkm",
+		"Assets/modelData/character/BadPerson/BadPerson_Boy.tkm",
 		m_animationClipArray, 
 		enAnimClip_Num, 
 		enModelUpAxisZ
@@ -100,7 +104,7 @@ bool Game::Start()
 		[&](LevelObjectData& objData)
 		{
 			if (objData.EqualObjectName(L"stadium05_ground")==true) {
-				backGround.InitShadow("Assets/modelData/BackGround/bg.tkm");
+				backGround.InitShadow("Assets/modelData/BackGround/grass01.tkm");
 				backGround.SetPosition(objData.position);
 				backGround.SetRotation(objData.rotation);
 				BGPhysicsStaticObject.CreateFromModel(
