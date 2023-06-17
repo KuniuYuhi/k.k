@@ -167,8 +167,18 @@ namespace nsK2EngineLow {
 		}
 		//法線、接ベクトル、従ベクトルを平均化する。
 		for (auto& vert : mesh.vertexBuffer) {
-			vert.tangent.Normalize();
-			vert.binormal.Normalize();
+			if (vert.tangent.LengthSq() > 0.0001f) {
+				vert.tangent.Normalize();
+			}
+			else {
+				vert.tangent = Vector3::AxisX;
+			}
+			if (vert.binormal.LengthSq() > 0.0001f) {
+				vert.binormal.Normalize();
+			}
+			else {
+				vert.binormal = Vector3::AxisZ;
+			}
 		}
 
 	}
