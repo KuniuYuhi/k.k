@@ -9,10 +9,13 @@ cbuffer cb : register(b0){
 
 //スプライトの定数バッファー
 cbuffer SpriteCB : register(b1){
-	float2 wipeDir;		//ワイプ方向
+	float2 wipeDirection;		//ワイプ方向
 	bool grayScale;		//グレースケールするかどうか
 	bool simpleWipe;	//単純なリニアワイプをするかどうか
 	float wipeSize;		//ワイプサイズ
+	bool WipeWithDirection;	//方向を指定するリニアワイプをするかどうか
+	float2 RoundWipeStartPosition;   //	円形ワイプを行う始点
+	bool RoundWipe;	//円形ワイプを使用するかどうか
 }
 
 struct VSInput{
@@ -32,7 +35,9 @@ sampler Sampler : register(s0);
 ///関数定義
 /////////////////////////////////////////////////////////////
 float4 CalcGrayScale(float4 color);
-void SimpleWipe(PSInput psin);
+void CalcSimpleWipe(PSInput psin);
+void CalcWipeWithDirection(PSInput psin);
+void CalcRoundWipe(PSInput psIn);
 
 /////////////////////////////////////////////////////////////
 ///変数定義
@@ -50,15 +55,26 @@ float4 PSMain( PSInput In ) : SV_Target0
 {
 	float4 color = colorTexture.Sample(Sampler, In.uv) * mulColor;
 
-	//PSInput psIn;
-
 	if(grayScale)
 	{
 		return CalcGrayScale(color);
 	}
+
 	//これにすると画像が元に戻る
-	//if(simpleWipe)
-	SimpleWipe(In);
+	if(simpleWipe)
+	{
+		CalcSimpleWipe(In);
+	}
+	
+	if(WipeWithDirection)
+	{
+		CalcWipeWithDirection(In);
+	}
+	
+	if(RoundWipe)
+	{
+		CalcRoundWipe(In);
+	}
 	
 
 	return color;
@@ -76,7 +92,23 @@ float4 CalcGrayScale(float4 color)
 }
 
 //単純なリニアワイプの計算
-void SimpleWipe(PSInput psin)
+void CalcSimpleWipe(PSInput psin)
 {
 	clip(psin.pos.x-wipeSize);
+}
+
+//方向を指定するリニアワイプの計算
+void CalcWipeWithDirection(PSInput psin)
+{
+	float t=dot(wipeDirection,psin.pos.xy);
+	clip(t-wipeSize);
+}
+
+//円形ワイプの計算
+void CalcRoundWipe(PSInput psIn)
+{
+	//始点からこのピクセルに向かって伸びるベクトルを計算する
+	float2 posFromCenter=psIn.pos.xy-RoundWipeStartPosition;
+	//ピクセルキル
+	clip(length(posFromCenter)-wipeSize);
 }
