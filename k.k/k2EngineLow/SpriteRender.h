@@ -4,11 +4,15 @@ namespace nsK2EngineLow {
 
 	struct SpriteCB
 	{
-		Vector2 wipeDir=Vector2(0.0f,0.0f);		//ワイプする方向
+		Vector2 wipeDirection=Vector2(0.0f,0.0f);		//ワイプする方向
 		float pad1;
 		bool grayScale = false;					//グレースケールをするかどうか
 		bool simpleWipe = false;				//単純なリニアワイプをするかどうか
 		float wipeSize = 0;						//ワイプサイズ
+		bool WipeWithDirection = false;			//方向を指定するリニアワイプをするかどうか
+		Vector2 RoundWipeStartPosition = Vector2(0.0f, 0.0f);		//円形ワイプを行う始点
+		bool RoundWipe = false;					//円形ワイプを使用するかどうか
+
 	};
 
 	class SpriteRender
@@ -227,12 +231,21 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
+		/// ワイプ方向を指定して正規化する
+		/// </summary>
+		void SetWipeDirection(Vector2 wipedir)
+		{
+			m_spriteCB.wipeDirection = wipedir;
+			m_spriteCB.wipeDirection.Normalize();
+
+		}
+
+		/// <summary>
 		/// ワイプ方向を指定する
 		/// </summary>
-		/// <param name="wipedir"></param>
-		void SetWipeDir(Vector2 wipedir)
+		void SetDirection(float x, float y)
 		{
-			m_spriteCB.wipeDir = wipedir;
+			SetWipeDirection(Vector2(x, y));
 		}
 
 		/// <summary>
@@ -241,7 +254,62 @@ namespace nsK2EngineLow {
 		/// <returns></returns>
 		Vector2 GetWipeDir()
 		{
-			return m_spriteCB.wipeDir;
+			return m_spriteCB.wipeDirection;
+		}
+
+		/// <summary>
+		/// 方向を指定するリニアワイプを設定する
+		/// </summary>
+		/// <param name="flag"></param>
+		void SetWipeWithDirection(bool flag)
+		{
+			m_spriteCB.WipeWithDirection = flag;
+		}
+
+		/// <summary>
+		/// 方向を指定するリニアワイプを取得する
+		/// </summary>
+		/// <returns></returns>
+		bool GetWipeWithDirection()
+		{
+			return m_spriteCB.WipeWithDirection;
+		}
+
+		/// <summary>
+		/// 円形ワイプを行う始点の座標を指定する
+		/// </summary>
+		/// <param name="startPosition"></param>
+		void SetRoundWipeStartPosition(Vector2 startPosition)
+		{
+			m_spriteCB.RoundWipeStartPosition = startPosition;
+		}
+
+		/// <summary>
+		/// 円形ワイプを行う始点の座標を指定する
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		void SetRoundWipeStartPosition(float x, float y)
+		{
+			SetRoundWipeStartPosition(Vector2(x, y));
+		}
+
+		/// <summary>
+		/// 円形ワイプを設定する
+		/// </summary>
+		/// <param name="flag"></param>
+		void SetRoundWipe(bool flag)
+		{
+			m_spriteCB.RoundWipe = flag;
+		}
+
+		/// <summary>
+		/// 円形ワイプを取得する
+		/// </summary>
+		/// <returns></returns>
+		bool GetRoundWipe()
+		{
+			return m_spriteCB.RoundWipe;
 		}
 
 	private:
