@@ -71,7 +71,7 @@ bool Game::Start()
 	spriteTest.Init("Assets/sprite/titleBack.DDS", 1920.0f, 1080.0f);
 	spriteTest.SetPosition(m_position);
 	//spriteTest.SetGrayScale(true);
-	spriteTest.SetWipeSize(wipSize);
+	//spriteTest.SetWipeSize(wipSize);
 	spriteTest.Update();
 
 	//Assets/animData/character/Player/Idle_Normal.tka
@@ -81,14 +81,15 @@ bool Game::Start()
 	// "Assets/animData/character/BadPerson/Idle_Battle1.tka"
 	// 
 	//アニメーションクリップをロードする。
-	m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/character/BadPerson/Idle_Normal1.tka");
+	m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/character/Player/Idle_Normal.tka");
 	m_animationClipArray[enAnimClip_Idle].SetLoopFlag(true);
-	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/character/BadPerson/Idle_Normal00.tka");
+	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/character/Player/SprintFWD_Battle.tka");
 	m_animationClipArray[enAnimClip_Run].SetLoopFlag(true);
 	//"Assets/modelData/character/Player/Hero.tkm",
 	//"Assets/modelData/character/BadPerson/BadPerson_Boy.tkm"
+	//"Assets/modelData/character/Slime/slime.tkm"
 	model.Init(
-		"Assets/modelData/character/BadPerson/BadPerson_Boy1.tkm",
+		"Assets/modelData/character/Player/Hero.tkm",
 		m_animationClipArray, 
 		enAnimClip_Num, 
 		enModelUpAxisZ
@@ -116,18 +117,18 @@ bool Game::Start()
 				return true;
 			}
 
-			if (objData.EqualObjectName(L"castle") == true) {
-				Castle.InitShadow("Assets/modelData/BackGround/Castle.tkm");
-				Castle.SetPosition(objData.position);
-				Castle.SetRotation(objData.rotation);
-				Castle.SetScale(objData.scale);
-				Castle.Update();
-				/*BGPhysicsStaticObject.CreateFromModel(
-					Castle.GetModel(),
-					Castle.GetModel().GetWorldMatrix()
-				);*/
-				return true;
-			}
+			//if (objData.EqualObjectName(L"castle") == true) {
+			//	Castle.InitShadow("Assets/modelData/BackGround/Castle.tkm");
+			//	Castle.SetPosition(objData.position);
+			//	Castle.SetRotation(objData.rotation);
+			//	Castle.SetScale(objData.scale);
+			//	Castle.Update();
+			//	/*BGPhysicsStaticObject.CreateFromModel(
+			//		Castle.GetModel(),
+			//		Castle.GetModel().GetWorldMatrix()
+			//	);*/
+			//	return true;
+			//}
 
 			return false;
 		});
@@ -294,6 +295,6 @@ void Game::Render(RenderContext& rc)
 	model.Draw(rc);
 	backGround.Draw(rc);
 	//Castle.Draw(rc);
-	//spriteTest.Draw(rc);
+	spriteTest.Draw(rc);
 	//fontTest.Draw(rc);
 }
