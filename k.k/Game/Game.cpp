@@ -70,8 +70,14 @@ bool Game::Start()
 
 	spriteTest.Init("Assets/sprite/titleBack.DDS", 1920.0f, 1080.0f);
 	spriteTest.SetPosition(m_position);
-	//spriteTest.SetGrayScale(true);
-	//spriteTest.SetWipeSize(wipSize);
+	//単純なリニアワイプ
+	//spriteTest.SetSimpleWipe(true);
+	// 方向を指定するリニアワイプ
+	/*spriteTest.SetWipeWithDirection(true);
+	spriteTest.SetDirection(5.0f, 5.0f);*/
+	//円形ワイプ
+	spriteTest.SetRoundWipe(true);
+	spriteTest.SetRoundWipeStartPosition(1920.0f / 2, 1080.0f / 2);
 	spriteTest.Update();
 
 	//Assets/animData/character/Player/Idle_Normal.tka
@@ -79,7 +85,6 @@ bool Game::Start()
 	// 
 	// "Assets/animData/character/BadPerson/Idle_Normal1.tka"
 	// "Assets/animData/character/BadPerson/Idle_Battle1.tka"
-	// 
 	//アニメーションクリップをロードする。
 	m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/character/Player/Idle_Normal.tka");
 	m_animationClipArray[enAnimClip_Idle].SetLoopFlag(true);
@@ -154,6 +159,7 @@ void Game::Update()
 
 	if (g_pad[0]->IsPress(enButtonStart))
 	{
+		//spriteTest.SetSimpleWipe(true);
 		spriteTest.SetWipeSize(wipSize);
 		wipSize += 5.0f;
 		//if (g_renderingEngine->HemiLightIsUse() == false)
@@ -295,6 +301,6 @@ void Game::Render(RenderContext& rc)
 	model.Draw(rc);
 	backGround.Draw(rc);
 	//Castle.Draw(rc);
-	spriteTest.Draw(rc);
+	//spriteTest.Draw(rc);
 	//fontTest.Draw(rc);
 }
