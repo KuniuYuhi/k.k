@@ -86,15 +86,15 @@ bool Game::Start()
 	// "Assets/animData/character/BadPerson/Idle_Normal1.tka"
 	// "Assets/animData/character/BadPerson/Idle_Battle1.tka"
 	//アニメーションクリップをロードする。
-	m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/character/Player/Idle_Normal.tka");
+	m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/character/Slime/Idle_Normal.tka");
 	m_animationClipArray[enAnimClip_Idle].SetLoopFlag(true);
-	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/character/Player/SprintFWD_Battle.tka");
+	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/character/Slime/Attack1.tka");
 	m_animationClipArray[enAnimClip_Run].SetLoopFlag(true);
 	//"Assets/modelData/character/Player/Hero.tkm",
 	//"Assets/modelData/character/BadPerson/BadPerson_Boy.tkm"
 	//"Assets/modelData/character/Slime/slime.tkm"
 	model.Init(
-		"Assets/modelData/character/Player/Hero.tkm",
+		"Assets/modelData/character/Slime/slime.tkm",
 		m_animationClipArray, 
 		enAnimClip_Num, 
 		enModelUpAxisZ
@@ -301,6 +301,6 @@ void Game::Render(RenderContext& rc)
 	model.Draw(rc);
 	backGround.Draw(rc);
 	//Castle.Draw(rc);
-	//spriteTest.Draw(rc);
+	spriteTest.Draw(rc);
 	//fontTest.Draw(rc);
 }
