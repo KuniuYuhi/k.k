@@ -104,9 +104,9 @@ namespace nsK2EngineLow {
 	   /// ZPrepassの描画パスにモデルを追加
 	   /// </summary>
 	   /// <param name="model"></param>
-		void Add3DModelToZPrepass(Model& model)
+		void Add3DModelToZPrepass(ModelRender& model)
 		{
-			m_zprepassModels.push_back(&model);
+			m_zprepassModelList.emplace_back(&model);
 		}
 
 		/// <summary>
@@ -564,7 +564,7 @@ namespace nsK2EngineLow {
 		std::vector<ModelRender*>		m_modelList;	//モデルリスト
 		std::vector<SpriteRender*>		m_spriteList;	//スプライトリスト
 		std::vector<FontRender*>		m_fontList;		//スプライトリスト
-		std::vector< Model* >			m_zprepassModels;         // ZPrepassの描画パスで描画されるモデルのリスト
+		std::vector< ModelRender* >			m_zprepassModelList;         // ZPrepassの描画パスで描画されるモデルのリスト
 
 		RenderTarget m_zprepassRenderTarget;			//ZPrepass描画用のレンダリングターゲット
 
