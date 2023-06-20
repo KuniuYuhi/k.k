@@ -27,13 +27,22 @@ namespace nsK2EngineLow {
 			m_modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
 		}
 
-		//
+		//トゥーンシェーダーを使用するなら
 		if (toon == true)
 		{
 			g_renderingEngine->SetToonTextureDDS();
 			m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GetToonTextrue();
 			m_modelInitData.m_psEntryPointFunc = "PSToonMain";
 		}
+
+		//輪郭線
+		//拡張SRVにZPrepassで作成された深度テクスチャを設定する
+		/*m_modelInitData.m_expandShaderResoruceView[2] =
+			&g_renderingEngine->GetZPrepassDepthTexture();*/
+
+
+
+
 
 		//ディレクションライトの情報を作成
 		MakeDirectionData();
@@ -50,6 +59,14 @@ namespace nsK2EngineLow {
 			//シャドウモデルを初期化
 			m_shadowModel.Init(m_modelInitData);
 		}
+	}
+
+	//引数のモデルをフォワードレンダリングの描画パスで描画
+	void ModelRender::InitForwardRendering(RenderingEngine& renderingEngine, ModelInitData& modelInitData)
+	{
+		m_frowardRenderModel.Init(modelInitData);
+
+		InitCommon(renderingEngine, modelInitData.m_fxFilePath);
 	}
 
 	//影を受けるモデルの初期化
@@ -117,6 +134,19 @@ namespace nsK2EngineLow {
 				m_animationClips,		//アニメーションクリップ。
 				numAnimationClips		//アニメーションクリップの数。
 			);
+		}
+	}
+
+	void ModelRender::InitCommon(RenderingEngine& renderingEngine, const char* tkmFilePath)
+	{
+		// ZPrepass描画用のモデルを初期化
+		{
+			ModelInitData modelInitData;
+			modelInitData.m_tkmFilePath = tkmFilePath;
+			modelInitData.m_fxFilePath = "Assets/shader/preset/ZPrepass.fx";
+			modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32G32_FLOAT;
+
+			m_zprepassModel.Init(modelInitData);
 		}
 	}
 

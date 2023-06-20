@@ -1,6 +1,22 @@
 #pragma once
 
 namespace nsK2EngineLow {
+
+	/// <summary>
+   /// フォワードレンダリング用のモデル初期化構造体。
+   /// </summary>
+   /// <remark>
+   /// ModelInitDataを継承しています。
+   /// フォワードレンダリングのために必要なデフォルト設定をコンストラクタで行ってくれます。
+   /// </remark>
+	struct ModelInitDataFR :public ModelInitData
+	{
+		ModelInitDataFR()
+		{
+			m_colorBufferFormat[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		}
+	};
+
 	class ModelRender
 	{
 	public:
@@ -20,6 +36,17 @@ namespace nsK2EngineLow {
 			bool shadow=true,
 			bool toon=true
 		);
+
+		/// <summary>
+	   /// 初期化
+	   /// </summary>
+	   /// <remark>
+	   /// 本関数を利用して初期化されたモデルは
+	   /// フォワードレンダリングの描画パスで描画されます
+	   /// </remark>
+	   /// <param name="renderingEngine">レンダリングエンジン</param>
+	   /// <param name="modelInitData"></param>
+		void InitForwardRendering(RenderingEngine& renderingEngine, ModelInitData& modelInitData);
 
 		/// <summary>
 		/// 影を受けるモデルの初期化
@@ -214,6 +241,13 @@ namespace nsK2EngineLow {
 			EnModelUpAxis enModelUpAxis
 		);
 
+		/// <summary>
+	   /// 共通の初期化処理(今はデファードレンダリングのみ)
+	   /// </summary>
+	   /// <param name="renderingEngine">レンダリングエンジン</param>
+	   /// <param name="tkmFilePath">tkmファイルパス</param>
+		void InitCommon(RenderingEngine& renderingEngine, const char* tkmFilePath);
+
 		Skeleton					m_skeleton;									//スケルトン
 		AnimationClip*				m_animationClips = nullptr;					//アニメーションクリップ。
 		int							m_numAnimationClips = 0;					//アニメーションクリップの数。
@@ -227,8 +261,10 @@ namespace nsK2EngineLow {
 
 		Model						m_model;								//モデルクラス
 		Model						m_shadowModel;
+		Model m_zprepassModel;                  // ZPrepassで描画されるモデル
+		Model						m_frowardRenderModel;					 // フォワードレンダリングの描画パスで描画されるモデル
 		ModelInitData				m_modelInitData;						//モデルを初期化するための情報を設定するクラス
-
+		ModelInitDataFR             m_modelInitDataFR;
 
 	};
 }
