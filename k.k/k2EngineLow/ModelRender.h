@@ -17,7 +17,8 @@ namespace nsK2EngineLow {
 			AnimationClip* animationClips = nullptr, 
 			int numAnimationClips=0,
 			EnModelUpAxis enModelUpAxis = enModelUpAxisZ,
-			bool shadow=true
+			bool shadow=true,
+			bool toon=true
 		);
 
 		/// <summary>
@@ -227,6 +228,8 @@ namespace nsK2EngineLow {
 		Model						m_model;								//モデルクラス
 		Model						m_shadowModel;
 		ModelInitData				m_modelInitData;						//モデルを初期化するための情報を設定するクラス
+
+
 	};
 }
 

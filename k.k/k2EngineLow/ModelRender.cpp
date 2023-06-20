@@ -3,7 +3,7 @@
 
 namespace nsK2EngineLow {
 
-	void ModelRender::Init(const char* tkmFilepath,AnimationClip* animationClips, int numAnimationClips, EnModelUpAxis enModelUpAxis, bool shadow)
+	void ModelRender::Init(const char* tkmFilepath,AnimationClip* animationClips, int numAnimationClips, EnModelUpAxis enModelUpAxis, bool shadow, bool toon)
 	{
 		//tkmファイルパスを設定
 		m_modelInitData.m_tkmFilePath = tkmFilepath;
@@ -25,6 +25,14 @@ namespace nsK2EngineLow {
 			m_modelInitData.m_skeleton = &m_skeleton;
 			//スキンがある用の頂点シェーダーを設定する。
 			m_modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
+		}
+
+		//
+		if (toon == true)
+		{
+			g_renderingEngine->SetToonTextureDDS();
+			m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GetToonTextrue();
+			m_modelInitData.m_psEntryPointFunc = "PSToonMain";
 		}
 
 		//ディレクションライトの情報を作成
