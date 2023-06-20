@@ -6,6 +6,7 @@
 
 namespace nsK2EngineLow {
 	class IShaderResource;
+	//class ComputeAnimationVertexBuffer;
 
 	//モデルの上方向
 	enum EnModelUpAxis {
@@ -32,6 +33,7 @@ namespace nsK2EngineLow {
 		bool m_isDepthWrite = true;										// 深度バッファに書き込む？
 		bool m_isDepthTest = true;										// 深度テストを行う？
 		D3D12_CULL_MODE m_cullMode = D3D12_CULL_MODE_BACK;				// カリングモード。
+		//ComputeAnimationVertexBuffer* m_computedAnimationVertexBuffer = nullptr;	// アニメーション済み頂点バッファを計算する処理。
 		std::array<DXGI_FORMAT, MAX_RENDERING_TARGET> m_colorBufferFormat = {
 			DXGI_FORMAT_R8G8B8A8_UNORM,
 			DXGI_FORMAT_UNKNOWN,
@@ -182,5 +184,6 @@ namespace nsK2EngineLow {
 		Skeleton m_skeleton;							//スケルトン。
 		MeshParts m_meshParts;							//メッシュパーツ。
 		EnModelUpAxis m_modelUpAxis = enModelUpAxisY;	//モデルの上方向。
+		//Model* m_computedAnimationVertexBuffer = nullptr;	// アニメーション後頂点バッファを計算済みのモデル。
 	};
 }
