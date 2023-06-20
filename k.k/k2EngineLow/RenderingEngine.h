@@ -104,9 +104,9 @@ namespace nsK2EngineLow {
 	   /// ZPrepassの描画パスにモデルを追加
 	   /// </summary>
 	   /// <param name="model"></param>
-		void Add3DModelToZPrepass(ModelRender& model)
+		void Add3DModelToZPrepass(ModelRender* model)
 		{
-			m_zprepassModelList.emplace_back(&model);
+			m_zprepassModelList.emplace_back(model);
 		}
 
 		/// <summary>
@@ -547,8 +547,6 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダーコンテキスト</param>
 		void ModelRendering(RenderContext& rc);
 
-		
-
 		/// <summary>
 		/// スプライトを描画する
 		/// </summary>
@@ -560,6 +558,17 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
 		void FontRendering(RenderContext& rc);
+
+		/// <summary>
+		/// ZPrepass
+		/// </summary>
+		/// <param name="rc">レンダリングコンテキスト</param>
+		void ZPrepass(RenderContext& rc);
+
+		/// <summary>
+	   /// ZPrepass用のレンダリングターゲットを初期化
+	   /// </summary>
+		void InitZPrepassRenderTarget();
 
 		std::vector<ModelRender*>		m_modelList;	//モデルリスト
 		std::vector<SpriteRender*>		m_spriteList;	//スプライトリスト
