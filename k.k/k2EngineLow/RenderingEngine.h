@@ -86,6 +86,38 @@ namespace nsK2EngineLow {
 			m_sceneLight.SetmLVP(LVP);
 		}
 
+		/// <summary>
+		/// トゥーンマップテクスチャを取得
+		/// </summary>
+		/// <returns></returns>
+		Texture& GetToonTextrue()
+		{
+			return m_toontexture;
+		}
+
+		/// <summary>
+		/// トゥーンマップのテクスチャを設定する
+		/// </summary>
+		void SetToonTextureDDS();
+
+		/// <summary>
+	   /// ZPrepassの描画パスにモデルを追加
+	   /// </summary>
+	   /// <param name="model"></param>
+		void Add3DModelToZPrepass(Model& model)
+		{
+			m_zprepassModels.push_back(&model);
+		}
+
+		/// <summary>
+		/// ZPrepassで作成された深度テクスチャを取得
+		/// </summary>
+		/// <returns></returns>
+		Texture& GetZPrepassDepthTexture()
+		{
+			return m_zprepassRenderTarget.GetRenderTargetTexture();
+		}
+
 		/////////////////////////////////////////////////////
 		///シャドウマップの関数
 		/////////////////////////////////////////////////////
@@ -506,19 +538,7 @@ namespace nsK2EngineLow {
 			m_sceneLight.SetEyePos(eyePos);
 		}
 
-		/// <summary>
-		/// トゥーンマップテクスチャを取得
-		/// </summary>
-		/// <returns></returns>
-		Texture& GetToonTextrue()
-		{
-			return m_toontexture;
-		}
-
-		/// <summary>
-		/// トゥーンマップのテクスチャを設定する
-		/// </summary>
-		void SetToonTextureDDS();
+		
 
 	private:
 		/// <summary>
@@ -544,6 +564,9 @@ namespace nsK2EngineLow {
 		std::vector<ModelRender*>		m_modelList;	//モデルリスト
 		std::vector<SpriteRender*>		m_spriteList;	//スプライトリスト
 		std::vector<FontRender*>		m_fontList;		//スプライトリスト
+		std::vector< Model* >			m_zprepassModels;         // ZPrepassの描画パスで描画されるモデルのリスト
+
+		RenderTarget m_zprepassRenderTarget;			//ZPrepass描画用のレンダリングターゲット
 
 		Sprite						m_copyToFrameBufferSprite;	//テクスチャを貼り付けるためのスプライトを初期化
 		SceneLight						m_sceneLight;	//シーンライト
