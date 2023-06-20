@@ -17,6 +17,8 @@ namespace nsK2EngineLow {
 		InitSkeleton(tkmFilepath);
 		//アニメーションの初期化
 		InitAnimation(animationClips, numAnimationClips, enModelUpAxis);
+		//ZPrepass描画用のモデルを初期化。
+		InitModelOnZprepass(tkmFilepath, enModelUpAxis);
 
 		//アニメーションが設定されているなら
 		if (animationClips != nullptr)
@@ -59,6 +61,35 @@ namespace nsK2EngineLow {
 			//シャドウモデルを初期化
 			m_shadowModel.Init(m_modelInitData);
 		}
+	}
+
+	//ZPrepassモデルの初期化
+	void ModelRender::InitModelOnZprepass(const char* tkmFilePath, EnModelUpAxis modelUpAxis)
+	{
+		ModelInitData modelInitData;
+		modelInitData.m_tkmFilePath = tkmFilePath;
+		modelInitData.m_fxFilePath = "Assets/shader/ZPrepass.fx";
+		modelInitData.m_modelUpAxis = modelUpAxis;
+
+		//スキンなし
+		modelInitData.m_vsEntryPointFunc = "VSMain";
+
+		if (m_animationClips != nullptr) {
+			// アニメーションあり。
+			modelInitData.m_vsSkinEntryPointFunc = "VSMainSkin";
+		}
+
+		// 頂点の事前計算処理を使う。
+		//modelInitData.m_computedAnimationVertexBuffer = &m_computeAnimationVertexBuffer;
+
+		if (m_animationClips != nullptr) {
+			//スケルトンを指定する。
+			modelInitData.m_skeleton = &m_skeleton;
+		}
+
+		modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+		m_zprepassModel.Init(modelInitData);
 	}
 
 	//引数のモデルをフォワードレンダリングの描画パスで描画
