@@ -6,7 +6,7 @@ namespace nsK2EngineLow {
 	void RenderingEngine::Init()
 	{
 		
-
+		InitZPrepassRenderTarget();
 		InitRenderTargets();
 		m_shadow.Init();
 		m_postEffect.Init(m_mainRenderTarget);
@@ -87,6 +87,38 @@ namespace nsK2EngineLow {
 		}
 	}
 
+	void RenderingEngine::ZPrepass(RenderContext& rc)
+	{
+		// まず、レンダリングターゲットとして設定できるようになるまで待つ
+		rc.WaitUntilToPossibleSetRenderTarget(m_zprepassRenderTarget);
+
+		// レンダリングターゲットを設定
+		rc.SetRenderTargetAndViewport(m_zprepassRenderTarget);
+
+		// レンダリングターゲットをクリア
+		rc.ClearRenderTargetView(m_zprepassRenderTarget);
+
+		for (auto& renderObj : m_zprepassModelList) {
+			renderObj->OnZPrepass(rc);
+		}
+
+		rc.WaitUntilFinishDrawingToRenderTarget(m_zprepassRenderTarget);
+	}
+
+	void RenderingEngine::InitZPrepassRenderTarget()
+	{
+		float clearColor[] = { 1.0f,1.0f,1.0f,1.0f };
+		m_zprepassRenderTarget.Create(
+			g_graphicsEngine->GetFrameBufferWidth(),
+			g_graphicsEngine->GetFrameBufferHeight(),
+			1,
+			1,
+			DXGI_FORMAT_R32G32B32A32_FLOAT,
+			DXGI_FORMAT_D32_FLOAT,
+			clearColor
+		);
+	}
+
 	
 
 	void RenderingEngine::Execute(RenderContext& rc)
@@ -96,6 +128,8 @@ namespace nsK2EngineLow {
 
 		//シャドウマップ描画用のモデルを描画
 		m_shadow.Render(rc);
+
+		ZPrepass(rc);
 
 		//レンダリングターゲットをm_mainRenderTargetに変更する
 		rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);
@@ -130,6 +164,7 @@ namespace nsK2EngineLow {
 		m_modelList.clear();
 		m_spriteList.clear();
 		m_fontList.clear();
+		m_zprepassModelList.clear();
 	}
 
 }

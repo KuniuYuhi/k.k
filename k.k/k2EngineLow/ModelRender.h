@@ -38,6 +38,17 @@ namespace nsK2EngineLow {
 		);
 
 		/// <summary>
+		/// ZPrepass描画用のモデルを初期化。
+		/// </summary>
+		/// <param name="renderingEngine"></param>
+		/// <param name="tkmFilePath"></param>
+		void InitModelOnZprepass(
+			/*RenderingEngine& renderingEngine,*/
+			const char* tkmFilePath,
+			EnModelUpAxis modelUpAxis
+		);
+
+		/// <summary>
 	   /// 初期化
 	   /// </summary>
 	   /// <remark>
@@ -63,6 +74,7 @@ namespace nsK2EngineLow {
 		void Draw(RenderContext& rc)
 		{
 			g_renderingEngine->AddModelList(this);
+			g_renderingEngine->Add3DModelToZPrepass(this);
 		}
 
 		/// <summary>
@@ -75,7 +87,16 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
-		/// シャドウマップ描画用のモデル
+		/// ZPrepassモデルを描画する
+		/// </summary>
+		/// <param name="rc"></param>
+		void OnZPrepass(RenderContext& rc)
+		{
+			m_zprepassModel.Draw(rc, 1);
+		}
+
+		/// <summary>
+		/// シャドウマップ描画用のモデルを描画する
 		/// </summary>
 		/// <param name="rc"></param>
 		/// <param name="lightCamera"></param>
@@ -253,7 +274,7 @@ namespace nsK2EngineLow {
 		int							m_numAnimationClips = 0;					//アニメーションクリップの数。
 		Animation					m_animation;								//アニメーション。
 		float						m_animationSpeed = 1.0f;					//アニメーションの速度。
-
+		//ComputeAnimationVertexBuffer m_computeAnimationVertexBuffer;	// アニメーション済み頂点バッファの計算処理。
 
 		Vector3						m_position = Vector3::Zero;				//座標
 		Vector3						m_scale = Vector3::One;					//大きさ
