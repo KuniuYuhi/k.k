@@ -94,6 +94,7 @@ Texture2D<float4> g_albedo : register(t0);				//アルベドマップ
 Texture2D<float4>g_normalMap : register(t1);			//法線マップ
 Texture2D<float4>g_specularMap : register(t2);			//スペキュラマップ
 StructuredBuffer<float4x4> g_boneMatrix : register(t3);	//ボーン行列。
+Texture2D<float4>g_toonMap : register(t10);				//トゥーンマップ
 sampler g_sampler : register(s0);	//サンプラステート。
 
 ////////////////////////////////////////////////
@@ -106,6 +107,7 @@ float3 CalcLigFromPointLight(SPSIn psIn,float3 normal);
 float3 CalcLigFromSpotLight(SPSIn psIn,float3 normal);
 float3 CalcLigFromhemiSphereLight(SPSIn psIn);
 float3 CalcNormalMap(SPSIn psIn);
+float4 CalcToonMap(SPSIn psIn,float3 lightDirection);
 
 /// <summary>
 //スキン行列を計算する。
@@ -210,6 +212,54 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 	float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
 
 	albedoColor.xyz*=lig;
+
+
+	return albedoColor;
+}
+
+//トゥーンマップのピクセルシェーダー
+float4 PSToonMain(SPSIn psIn) : SV_Target0
+{
+	//法線マップを計算
+	float3 normal=CalcNormalMap(psIn);
+
+	//ディレクションライトによるライティングの計算
+	float3 directionLig=CalcLigFromDrectionLight(psIn,normal);
+	
+	//ポイントライトによるライティングの計算
+	float3 pointLig={0.0f,0.0f,0.0f};
+	if(pointLight.isUse==true)
+	{
+		pointLig=CalcLigFromPointLight(psIn,normal);
+	}
+
+	//スポットライトによるライティングの計算
+	float3 spotLig={0.0f,0.0f,0.0f};
+	if(spotLight.isUse==true)
+	{
+		spotLig=CalcLigFromSpotLight(psIn,normal);
+	}
+
+	//半球ライトによるライティングの計算
+	float3 hemiLig={0.0f,0.0f,0.0f};
+	if(hemiSphereLight.isUse==true)
+	{
+		hemiLig=CalcLigFromhemiSphereLight(psIn);
+	}
+
+	//ディレクションライトと環境光をたす				
+	float3 lig = directionLig + pointLig + spotLig + hemiLig + ambient;
+
+	float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
+
+	albedoColor.xyz*=lig;
+
+	//トゥーンマップの計算
+	float4 Toon=CalcToonMap(psIn,directionLight.direction);
+
+	albedoColor*=Toon;
+
+	
 
 
 	return albedoColor;
@@ -447,4 +497,16 @@ float3 CalcNormalMap(SPSIn psIn)
 		+normal*localNormal.z;
 		
 	return normal;
+}
+
+float4 CalcToonMap(SPSIn psIn,float3 lightDirection)
+{
+	//ハーフランバート拡散照明による
+	float p=dot(psIn.normal*-1.0f,lightDirection.xyz);
+	p=p*0.5f+0.5f;
+	p*=p;
+
+	float4 Color=g_toonMap.Sample(g_sampler,float2(p,0.0f));
+
+	return Color;
 }
