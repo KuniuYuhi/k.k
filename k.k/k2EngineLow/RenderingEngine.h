@@ -506,6 +506,20 @@ namespace nsK2EngineLow {
 			m_sceneLight.SetEyePos(eyePos);
 		}
 
+		/// <summary>
+		/// トゥーンマップテクスチャを取得
+		/// </summary>
+		/// <returns></returns>
+		Texture& GetToonTextrue()
+		{
+			return m_toontexture;
+		}
+
+		/// <summary>
+		/// トゥーンマップのテクスチャを設定する
+		/// </summary>
+		void SetToonTextureDDS();
+
 	private:
 		/// <summary>
 		/// モデルを描画する
@@ -536,6 +550,7 @@ namespace nsK2EngineLow {
 		RenderTarget					m_mainRenderTarget;	//レンダリングターゲット
 		PostEffect						m_postEffect;		//ポストエフェクト
 		Shadow							m_shadow;
+		Texture							m_toontexture;
 	};
 }
 

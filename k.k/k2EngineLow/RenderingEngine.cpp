@@ -5,6 +5,8 @@ namespace nsK2EngineLow {
 
 	void RenderingEngine::Init()
 	{
+		
+
 		InitRenderTargets();
 		m_shadow.Init();
 		m_postEffect.Init(m_mainRenderTarget);
@@ -40,6 +42,13 @@ namespace nsK2EngineLow {
 
 		//スプライトを初期化
 		m_copyToFrameBufferSprite.Init(spriteInitData);
+	}
+
+	//トゥーンテクスチャを設定する
+	void RenderingEngine::SetToonTextureDDS()
+	{
+		const wchar_t* toontexture = L"Assets/shader/ToonTextrue/toontexture2.DDS";
+		m_toontexture.InitFromDDSFile(toontexture);
 	}
 
 	//モデルリストに格納されているモデルを描画する
