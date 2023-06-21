@@ -38,11 +38,10 @@ struct SPSIn
 ///////////////////////////////////////
 
 
-// ���f���p�̒��_�V�F�[�_�[�̃G���g���[�|�C���g
+// モデル用の頂点シェーダーのエントリーポイント
 SPSIn VSMainCore(SVSIn vsIn, float4x4 mWorldLocal, uniform bool isUsePreComputedVertexBuffer)
 {
     SPSIn psIn;
-    // ���_���W�����[���h���W�n�ɕϊ�����B
     psIn.pos = CalcVertexPositionInWorldSpace(vsIn.pos, mWorldLocal, isUsePreComputedVertexBuffer);
     psIn.pos = mul(mView, psIn.pos);        // ���[���h���W�n����J�������W�n�ɕϊ�
     psIn.depth.z = psIn.pos.z;
