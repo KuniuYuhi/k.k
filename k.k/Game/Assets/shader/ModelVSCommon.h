@@ -1,11 +1,11 @@
-//ƒ‚ƒfƒ‹‚Ì’¸“_ƒVƒF[ƒ_[ŠÖŒW‚Ì‹¤’Êƒwƒbƒ_[
+//ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ì’ï¿½ï¿½_ï¿½Vï¿½Fï¿½[ï¿½_ï¿½[ï¿½ÖŒWï¿½Ì‹ï¿½ï¿½Êƒwï¿½bï¿½_ï¿½[
 
 
 
 ///////////////////////////////////////
-// ’è”ƒoƒbƒtƒ@B
+// ï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½B
 ///////////////////////////////////////
-// ƒ‚ƒfƒ‹—p‚Ì’è”ƒoƒbƒtƒ@[
+// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½pï¿½Ì’è”ï¿½oï¿½bï¿½tï¿½@ï¿½[
 cbuffer ModelCb : register(b0)
 {
     float4x4 mWorld;
@@ -14,37 +14,37 @@ cbuffer ModelCb : register(b0)
 };
 
 ////////////////////////////////////////////////
-// \‘¢‘Ì
+// ï¿½\ï¿½ï¿½ï¿½ï¿½
 ////////////////////////////////////////////////
 
-// ’¸“_ƒVƒF[ƒ_[‚Ö‚Ì“ü—Í
+// ï¿½ï¿½ï¿½_ï¿½Vï¿½Fï¿½[ï¿½_ï¿½[ï¿½Ö‚Ì“ï¿½ï¿½ï¿½
 struct SVSIn
 {
-    float4 pos : POSITION;          //’¸“_À•WB
-    float3 normal : NORMAL;         //–@üB
-    float2 uv : TEXCOORD0;          //UVÀ•WB
-    float3 tangent : TANGENT;      //ÚƒxƒNƒgƒ‹B
-    float3 biNormal : BINORMAL;     //]ƒxƒNƒgƒ‹B
+    float4 pos : POSITION;          //ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Wï¿½B
+    float3 normal : NORMAL;         //ï¿½@ï¿½ï¿½ï¿½B
+    float2 uv : TEXCOORD0;          //UVï¿½ï¿½ï¿½Wï¿½B
+    float3 tangent : TANGENT;      //ï¿½Úƒxï¿½Nï¿½gï¿½ï¿½ï¿½B
+    float3 biNormal : BINORMAL;     //ï¿½]ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½B
     int4  Indices : BLENDINDICES0;
     float4 Weights : BLENDWEIGHT0;
 };
 
 ////////////////////////////////////////////////
-// ƒOƒ[ƒoƒ‹•Ï”B
+// ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½ï¿½B
 ////////////////////////////////////////////////
-StructuredBuffer<float4x4> g_boneMatrix         : register(t3);	    //ƒ{[ƒ“s—ñB
-StructuredBuffer<float4x4> g_worldMatrixArray   : register(t10);	//ƒ[ƒ‹ƒhs—ñ‚Ì”z—ñBƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO•`‰æ‚ÌÛ‚É—LŒøB
+StructuredBuffer<float4x4> g_boneMatrix         : register(t3);	    //ï¿½{ï¿½[ï¿½ï¿½ï¿½sï¿½ï¿½B
+StructuredBuffer<float4x4> g_worldMatrixArray   : register(t10);	//ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½sï¿½ï¿½Ì”zï¿½ï¿½Bï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½Oï¿½`ï¿½ï¿½ÌÛ‚É—Lï¿½ï¿½ï¿½B
 
 ///////////////////////////////////////
-// ŠÖ”éŒ¾
+// ï¿½Öï¿½ï¿½éŒ¾
 ///////////////////////////////////////
 SPSIn VSMainCore(SVSIn vsIn, float4x4 mWorldLocal, uniform bool isUsePreComputedVertexBuffer);
 
 ////////////////////////////////////////////////
-// ŠÖ”’è‹`B
+// ï¿½Öï¿½ï¿½ï¿½`ï¿½B
 ////////////////////////////////////////////////
 /// <summary>
-//ƒXƒLƒ“s—ñ‚ğŒvZ‚·‚éB
+//ï¿½Xï¿½Lï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½B
 /// </summary>
 float4x4 CalcSkinMatrix(SVSIn skinVert)
 {
@@ -62,11 +62,11 @@ float4x4 CalcSkinMatrix(SVSIn skinVert)
     return skinning;
 }
 /// <summary>
-/// ƒ[ƒ‹ƒh‹óŠÔ‚Ì’¸“_À•W‚ğŒvZ‚·‚éB
+/// ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½ï¿½Ô‚Ì’ï¿½ï¿½_ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½B
 /// </summary>
-/// <param name="vertexPos">’¸“_À•W</param>
-/// <param name="mWorld">ƒ[ƒ‹ƒhs—ñ</param>
-/// <param name="isUsePreComputedVertexBuffer">–‘OŒvZÏ‚İ‚Ì’¸“_ƒoƒbƒtƒ@‚ğ—˜—p‚µ‚Ä‚¢‚éH</param>
+/// <param name="vertexPos">ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½W</param>
+/// <param name="mWorld">ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½sï¿½ï¿½</param>
+/// <param name="isUsePreComputedVertexBuffer">ï¿½ï¿½ï¿½Oï¿½vï¿½Zï¿½Ï‚İ‚Ì’ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½ğ—˜—pï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½H</param>
 float4 CalcVertexPositionInWorldSpace(float4 vertexPos, float4x4 mWorld, uniform bool isUsePreComputedVertexBuffer)
 {
     float4 pos;
@@ -74,34 +74,34 @@ float4 CalcVertexPositionInWorldSpace(float4 vertexPos, float4x4 mWorld, uniform
         pos = vertexPos;
     }
     else {
-        pos = mul(mWorld, vertexPos);  // ƒ‚ƒfƒ‹‚Ì’¸“_‚ğƒ[ƒ‹ƒhÀ•WŒn‚É•ÏŠ·
+        pos = mul(mWorld, vertexPos);  // ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ì’ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½Wï¿½nï¿½É•ÏŠï¿½
     }
 
     return pos;
 }
 /// <summary>
-/// ƒXƒLƒ“‚È‚µƒƒbƒVƒ…—p‚Ì’¸“_ƒVƒF[ƒ_[‚ÌƒGƒ“ƒgƒŠ[ŠÖ”B
+/// ï¿½Xï¿½Lï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½bï¿½Vï¿½ï¿½ï¿½pï¿½Ì’ï¿½ï¿½_ï¿½Vï¿½Fï¿½[ï¿½_ï¿½[ï¿½ÌƒGï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½Öï¿½ï¿½B
 /// </summary>
 SPSIn VSMain(SVSIn vsIn)
 {
     return VSMainCore(vsIn, mWorld, false);
 }
 /// <summary>
-/// ƒXƒLƒ“‚È‚µƒƒbƒVƒ…—p‚Ì’¸“_ƒVƒF[ƒ_[‚ÌƒGƒ“ƒgƒŠ[ŠÖ”(ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO•`‰æ—p)B
+/// ï¿½Xï¿½Lï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½bï¿½Vï¿½ï¿½ï¿½pï¿½Ì’ï¿½ï¿½_ï¿½Vï¿½Fï¿½[ï¿½_ï¿½[ï¿½ÌƒGï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½Öï¿½(ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½Oï¿½`ï¿½ï¿½p)ï¿½B
 /// </summary>
 SPSIn VSMainInstancing(SVSIn vsIn, uint instanceID : SV_InstanceID)
 {
     return VSMainCore(vsIn, g_worldMatrixArray[instanceID], false);
 }
 /// <summary>
-/// ƒXƒLƒ“‚ ‚èƒƒbƒVƒ…‚Ì’¸“_ƒVƒF[ƒ_[‚ÌƒGƒ“ƒgƒŠ[ŠÖ”B
+/// ï¿½Xï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½èƒï¿½bï¿½Vï¿½ï¿½ï¿½Ì’ï¿½ï¿½_ï¿½Vï¿½Fï¿½[ï¿½_ï¿½[ï¿½ÌƒGï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½Öï¿½ï¿½B
 /// </summary>
 SPSIn VSMainSkin(SVSIn vsIn)
 {
     return VSMainCore(vsIn, CalcSkinMatrix(vsIn), false);
 }
 /// <summary>
-/// ƒXƒLƒ“‚ ‚èƒƒbƒVƒ…‚Ì’¸“_ƒVƒF[ƒ_[‚ÌƒGƒ“ƒgƒŠ[ŠÖ”(ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO•`‰æ—pB
+/// ï¿½Xï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½èƒï¿½bï¿½Vï¿½ï¿½ï¿½Ì’ï¿½ï¿½_ï¿½Vï¿½Fï¿½[ï¿½_ï¿½[ï¿½ÌƒGï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½Öï¿½(ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½Oï¿½`ï¿½ï¿½pï¿½B
 /// </summary>
 SPSIn VSMainSkinInstancing(SVSIn vsIn, uint instanceID : SV_InstanceID)
 {
@@ -110,32 +110,32 @@ SPSIn VSMainSkinInstancing(SVSIn vsIn, uint instanceID : SV_InstanceID)
     return VSMainCore(vsIn, mWorldLocal, false);
 }
 /// <summary>
-/// –‘OŒvZÏ‚İ‚Ì’¸“_ƒoƒbƒtƒ@‚ğg‚¤’¸“_ƒVƒF[ƒ_[‚ÌƒGƒ“ƒgƒŠ[ŠÖ”B
-/// ƒXƒLƒ“ƒƒbƒVƒ…—p
+/// ï¿½ï¿½ï¿½Oï¿½vï¿½Zï¿½Ï‚İ‚Ì’ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½Vï¿½Fï¿½[ï¿½_ï¿½[ï¿½ÌƒGï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½Öï¿½ï¿½B
+/// ï¿½Xï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½bï¿½Vï¿½ï¿½ï¿½p
 /// </summary>
 SPSIn VSMainSkinUsePreComputedVertexBuffer(SVSIn vsIn)
 {
     return VSMainCore(vsIn, (float4x4)0, true);
 }
 /// <summary>
-/// –‘OŒvZÏ‚İ‚Ì’¸“_ƒoƒbƒtƒ@‚ğg‚¤’¸“_ƒVƒF[ƒ_[‚ÌƒGƒ“ƒgƒŠ[ŠÖ”B
-/// ƒXƒLƒ“‚È‚µƒƒbƒVƒ…—p
+/// ï¿½ï¿½ï¿½Oï¿½vï¿½Zï¿½Ï‚İ‚Ì’ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½Vï¿½Fï¿½[ï¿½_ï¿½[ï¿½ÌƒGï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½Öï¿½ï¿½B
+/// ï¿½Xï¿½Lï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½bï¿½Vï¿½ï¿½ï¿½p
 /// </summary>
 SPSIn VSMainUsePreComputedVertexBuffer(SVSIn vsIn)
 {
     return VSMainCore(vsIn, (float4x4)0, true);
 }
 /// <summary>
-/// ƒ[ƒ‹ƒhƒXƒy[ƒX‚Ì–@üAÚƒxƒNƒgƒ‹A]ƒxƒNƒgƒ‹‚ğŒvZ‚·‚éB
+/// ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½Xï¿½yï¿½[ï¿½Xï¿½Ì–@ï¿½ï¿½ï¿½Aï¿½Úƒxï¿½Nï¿½gï¿½ï¿½ï¿½Aï¿½]ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½B
 /// </summary>
-/// <param name="oNormal">–@ü‚Ìo—Íæ</param>
-/// <param name="oTangent">ÚƒxƒNƒgƒ‹‚Ìo—Íæ</param>
-/// <param name="oBiNormal">]ƒxƒNƒgƒ‹‚Ìo—Íæ</param>
-/// <param name="mWorld">ƒ[ƒ‹ƒhs—ñ</param>
-/// <param name="iNormal">–@ü</param>
-/// <param name="iTanget">ÚƒxƒNƒgƒ‹</param>
-/// <param name="iBiNormal">]ƒxƒNƒgƒ‹</param>
-/// <param name="isUsePreComputedVertexBuffer">–‘OŒvZÏ‚İ’¸“_ƒoƒbƒtƒ@‚ğ—˜—p‚·‚éH/param>
+/// <param name="oNormal">ï¿½@ï¿½ï¿½ï¿½Ìoï¿½Íï¿½</param>
+/// <param name="oTangent">ï¿½Úƒxï¿½Nï¿½gï¿½ï¿½ï¿½Ìoï¿½Íï¿½</param>
+/// <param name="oBiNormal">ï¿½]ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½Ìoï¿½Íï¿½</param>
+/// <param name="mWorld">ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½sï¿½ï¿½</param>
+/// <param name="iNormal">ï¿½@ï¿½ï¿½</param>
+/// <param name="iTanget">ï¿½Úƒxï¿½Nï¿½gï¿½ï¿½</param>
+/// <param name="iBiNormal">ï¿½]ï¿½xï¿½Nï¿½gï¿½ï¿½</param>
+/// <param name="isUsePreComputedVertexBuffer">ï¿½ï¿½ï¿½Oï¿½vï¿½Zï¿½Ï‚İ’ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½ğ—˜—pï¿½ï¿½ï¿½ï¿½H/param>
 void CalcVertexNormalTangentBiNormalInWorldSpace(
     out float3 oNormal,
     out float3 oTangent,
@@ -148,7 +148,7 @@ void CalcVertexNormalTangentBiNormalInWorldSpace(
 )
 {
     if (isUsePreComputedVertexBuffer) {
-        // –‘OŒvZÏ‚İ’¸“_ƒoƒbƒtƒ@‚ğ—˜—p‚·‚éB
+        // ï¿½ï¿½ï¿½Oï¿½vï¿½Zï¿½Ï‚İ’ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½ğ—˜—pï¿½ï¿½ï¿½ï¿½B
         oNormal = iNormal;
         oTangent = iTangent;
         oBiNormal = iBiNormal;
