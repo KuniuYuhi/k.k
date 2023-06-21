@@ -92,7 +92,7 @@ namespace nsK2EngineLow {
 		/// <param name="rc"></param>
 		void OnZPrepass(RenderContext& rc)
 		{
-			m_zprepassModel.Draw(rc, 1);
+			m_zprepassModel.Draw(rc);
 		}
 
 		/// <summary>

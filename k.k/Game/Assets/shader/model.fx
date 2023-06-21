@@ -28,6 +28,7 @@ struct SPSIn{
 	float3 biNormal : BINORMAL;		//従ベクトル
 	float3 worldPos		:TEXCOORD1;		//ワールド座標
 	float3 normalInView :TEXCOORD2;		//カメラ空間の法線
+	float4 posInProj : TEXCOORD3;		//スクリーン座標
 };
 
 //ディレクションライト構造体
@@ -95,6 +96,7 @@ Texture2D<float4>g_normalMap : register(t1);			//法線マップ
 Texture2D<float4>g_specularMap : register(t2);			//スペキュラマップ
 StructuredBuffer<float4x4> g_boneMatrix : register(t3);	//ボーン行列。
 Texture2D<float4>g_toonMap : register(t10);				//トゥーンマップ
+Texture2D<float4>g_depthTexture : register(t12);		//深度テクスチャにアクセス
 sampler g_sampler : register(s0);	//サンプラステート。
 
 ////////////////////////////////////////////////
@@ -108,6 +110,7 @@ float3 CalcLigFromSpotLight(SPSIn psIn,float3 normal);
 float3 CalcLigFromhemiSphereLight(SPSIn psIn);
 float3 CalcNormalMap(SPSIn psIn);
 float4 CalcToonMap(SPSIn psIn,float3 lightDirection);
+float4 CalcOutLine(SPSIn psIn,float4 color);
 
 /// <summary>
 //スキン行列を計算する。
@@ -156,6 +159,10 @@ SPSIn VSMainCore(SVSIn vsIn, uniform bool hasSkin)
 	psIn.biNormal=normalize(mul(mWorld,vsIn.biNormal));
 
 	psIn.uv = vsIn.uv;
+
+	//頂点の正規化スクリーン座標系の座標をピクセルシェーダーに渡す
+	psIn.posInProj=psIn.pos;
+	psIn.posInProj/=psIn.posInProj.w;
 
 	return psIn;
 }
@@ -213,6 +220,9 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 
 	albedoColor.xyz*=lig;
 
+	//輪郭線の計算
+	albedoColor=CalcOutLine(psIn,albedoColor);
+
 
 	return albedoColor;
 }
@@ -259,7 +269,8 @@ float4 PSToonMain(SPSIn psIn) : SV_Target0
 
 	albedoColor*=Toon;
 
-	
+	//輪郭線の計算
+	albedoColor=CalcOutLine(psIn,albedoColor);
 
 
 	return albedoColor;
@@ -499,6 +510,9 @@ float3 CalcNormalMap(SPSIn psIn)
 	return normal;
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+///トゥーンマップを計算
+//////////////////////////////////////////////////////////////////////////////////
 float4 CalcToonMap(SPSIn psIn,float3 lightDirection)
 {
 	//ハーフランバート拡散照明による
@@ -509,4 +523,47 @@ float4 CalcToonMap(SPSIn psIn,float3 lightDirection)
 	float4 Color=g_toonMap.Sample(g_sampler,float2(p,0.0f));
 
 	return Color;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+///輪郭線を計算
+///////////////////////////////////////////////////////////////////////////////////
+float4 CalcOutLine(SPSIn psIn,float4 color)
+{
+	 // 正規化スクリーン座標系からUV座標系に変換する
+    float2 uv = psIn.posInProj.xy * float2( 0.5f, -0.5f) + 0.5f;
+
+	// 近傍8テクセルへのUVオフセット
+    float2 uvOffset[8] = {
+        float2(           0.0f,  1.0f / 720.0f), //上
+        float2(           0.0f, -1.0f / 720.0f), //下
+        float2( 1.0f / 1280.0f,           0.0f), //右
+        float2(-1.0f / 1280.0f,           0.0f), //左
+        float2( 1.0f / 1280.0f,  1.0f / 720.0f), //右上
+        float2(-1.0f / 1280.0f,  1.0f / 720.0f), //左上
+        float2( 1.0f / 1280.0f, -1.0f / 720.0f), //右下
+        float2(-1.0f / 1280.0f, -1.0f / 720.0f)  //左下
+    };
+
+	//このピクセルの深度値を取得
+	float depth = g_depthTexture.Sample(g_sampler,uv).x;
+	// 近傍8テクセルの深度値の平均値を計算する
+	float depth2=0.0f;
+	for(int i = 0;i < 8;i++)
+	{
+		depth2+=g_depthTexture.Sample(g_sampler,uv+uvOffset[i]).x;
+	}
+	depth2/=8.0f;
+
+	//自身の深度値と近傍8テクセルの深度値の差を調べる
+	if(abs(depth-depth2)>0.00005f)
+	{
+		// 深度値が結構違う場合はピクセルカラーを黒にする
+        // ->これがエッジカラーとなる
+		color=(0.0f,0.0f,0.0f,0.0f);
+		return color;
+	}
+
+
+	return color;
 }

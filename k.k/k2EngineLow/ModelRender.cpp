@@ -39,11 +39,8 @@ namespace nsK2EngineLow {
 
 		//輪郭線
 		//拡張SRVにZPrepassで作成された深度テクスチャを設定する
-		/*m_modelInitData.m_expandShaderResoruceView[2] =
-			&g_renderingEngine->GetZPrepassDepthTexture();*/
-
-
-
+		m_modelInitData.m_expandShaderResoruceView[2] =
+			&g_renderingEngine->GetZPrepassDepthTexture();
 
 
 		//ディレクションライトの情報を作成
@@ -86,12 +83,12 @@ namespace nsK2EngineLow {
 			//スケルトンを指定する。
 			modelInitData.m_skeleton = &m_skeleton;
 		}
-
 		modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 
 		m_zprepassModel.Init(modelInitData);
 	}
 
+	//使ってない
 	//引数のモデルをフォワードレンダリングの描画パスで描画
 	void ModelRender::InitForwardRendering(RenderingEngine& renderingEngine, ModelInitData& modelInitData)
 	{
