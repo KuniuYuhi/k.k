@@ -29,6 +29,7 @@ struct SPSIn{
 	float3 worldPos		:TEXCOORD1;		//ワールド座標
 	float3 normalInView :TEXCOORD2;		//カメラ空間の法線
 	float4 posInProj : TEXCOORD3;		//スクリーン座標
+	float3 depth : TEXCOORD4;
 };
 
 //ディレクションライト構造体
@@ -70,6 +71,9 @@ struct HemiSphereLight
 ////////////////////////////////////////////////
 // 定数バッファ。
 ////////////////////////////////////////////////
+
+
+
 //モデル用の定数バッファ
 cbuffer ModelCb : register(b0){
 	float4x4 mWorld;
@@ -560,7 +564,7 @@ float4 CalcOutLine(SPSIn psIn,float4 color)
 	{
 		// 深度値が結構違う場合はピクセルカラーを黒にする
         // ->これがエッジカラーとなる
-		color=(0.0f,0.0f,0.0f,0.0f);
+		color=float4(0.0f,0.0f,0.0f,1.0f);
 		return color;
 	}
 

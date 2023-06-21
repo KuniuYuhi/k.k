@@ -119,8 +119,10 @@ namespace nsK2EngineLow {
 	//モデルの情報を更新
 	void ModelRender::Update()
 	{
-		//ワールド行列の更新(座標、回転、大きさ)
+		//モデルのワールド行列の更新(座標、回転、大きさ)
 		m_model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+		//ZPrepassモデルのワールド行列の更新(座標、回転、大きさ)
+		m_zprepassModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 
 		//スケルトンが初期化されていたら
 		if (m_skeleton.IsInited())
