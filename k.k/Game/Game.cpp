@@ -86,9 +86,9 @@ bool Game::Start()
 	// "Assets/animData/character/BadPerson/Idle_Normal1.tka"
 	// "Assets/animData/character/BadPerson/Idle_Battle1.tka"
 	//アニメーションクリップをロードする。
-	m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/character/Footman/Victory.tka");
+	m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/character/Wizard/Idle.tka");
 	m_animationClipArray[enAnimClip_Idle].SetLoopFlag(true);
-	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/character/Footman/Walk.tka");
+	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/character/Wizard/Idle_Battle.tka");
 	m_animationClipArray[enAnimClip_Run].SetLoopFlag(true);
 	//"Assets/modelData/character/Player/Hero.tkm",
 	//"Assets/modelData/character/BadPerson/BadPerson_Boy.tkm"
@@ -96,7 +96,7 @@ bool Game::Start()
 	//Assets/modelData/character/Footman/Footman.tkm
 
 	model.Init(
-		"Assets/modelData/character/Footman/Footman.tkm",
+		"Assets/modelData/character/Wizard/Wizard.tkm",
 		m_animationClipArray, 
 		enAnimClip_Num, 
 		enModelUpAxisZ
