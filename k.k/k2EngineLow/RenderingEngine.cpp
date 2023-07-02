@@ -12,7 +12,10 @@ namespace nsK2EngineLow {
 		m_postEffect.Init(m_mainRenderTarget);
 		InitCopyToFrameBufferSprite();
 
+
+
 		m_sceneLight.Init();
+		SetToonTextureDDS();
 	}
 
 	void RenderingEngine::InitRenderTargets()
@@ -128,6 +131,8 @@ namespace nsK2EngineLow {
 
 		//シャドウマップ描画用のモデルを描画
 		m_shadow.Render(rc);
+
+		SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
 
 		ZPrepass(rc);
 
