@@ -12,7 +12,7 @@ public:
 	bool Start();
 	void Update();
 
-	void Move();
+	
 	void SpriteTransform();
 	void PlayAnim();
 
@@ -47,7 +47,7 @@ private:
 	PhysicsStaticObject BGPhysicsStaticObject;
 
 	ModelRender model;
-	CharacterController m_charaCon;
+	
 	Animation m_animation;	// アニメーション
 	AnimationClip m_animationClipArray[enAnimClip_Num];	// アニメーションクリップ 
 
