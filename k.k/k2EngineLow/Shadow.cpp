@@ -22,6 +22,7 @@ namespace nsK2EngineLow {
 
 	void Shadow::Render(RenderContext& rc)
 	{
+		//1
 		UpDateLightCamera();
 
 		rc.WaitUntilToPossibleSetRenderTarget(m_shadowMap);

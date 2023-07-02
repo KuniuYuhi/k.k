@@ -62,6 +62,8 @@ namespace nsK2EngineLow {
 		/// <param name="camera">ƒJƒƒ‰</param>
 		void ShadowModelRendering(RenderContext& rc, Camera& camera);
 
+
+
 		/// <summary>
 		/// •`‰æˆ—‚ğÀs
 		/// </summary>
