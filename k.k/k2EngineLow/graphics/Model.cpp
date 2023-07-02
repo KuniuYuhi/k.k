@@ -90,6 +90,11 @@ namespace nsK2EngineLow {
 		int numInstance
 	)
 	{
+		if (m_isInited == false)
+		{
+			return;
+		}
+
 		m_meshParts.Draw(
 			rc,
 			m_worldMatrix,
@@ -104,6 +109,11 @@ namespace nsK2EngineLow {
 		int numInstance
 	)
 	{
+		if (m_isInited == false)
+		{
+			return;
+		}
+
 		Draw(
 			rc,
 			camera.GetViewMatrix(),
@@ -119,6 +129,11 @@ namespace nsK2EngineLow {
 		int numInstance
 	)
 	{
+		if (m_isInited == false)
+		{
+			return;
+		}
+
 		if (numInstance == 0) {
 			// インスタンスの数が0なのでリターン。
 			return;

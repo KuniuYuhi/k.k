@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Game.h"
 #include "GameCamera.h"
+#include "Hero.h"
 
 namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(1.0f, 1.0f, 1.0f);
@@ -86,25 +87,25 @@ bool Game::Start()
 	// "Assets/animData/character/BadPerson/Idle_Normal1.tka"
 	// "Assets/animData/character/BadPerson/Idle_Battle1.tka"
 	//アニメーションクリップをロードする。
-	m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/character/Mushroom/Run.tka");
+	/*m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/character/Player/Idle_Normal.tka");
 	m_animationClipArray[enAnimClip_Idle].SetLoopFlag(true);
-	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/character/Mushroom/Walk.tka");
-	m_animationClipArray[enAnimClip_Run].SetLoopFlag(true);
+	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/character/Player/SprintFWD_Battle.tka");
+	m_animationClipArray[enAnimClip_Run].SetLoopFlag(true);*/
 	//"Assets/modelData/character/Player/Hero.tkm",
 	//"Assets/modelData/character/BadPerson/BadPerson_Boy.tkm"
 	//"Assets/modelData/character/Slime/slime.tkm"
 	//Assets/modelData/character/Footman/Footman.tkm
 
-	model.Init(
-		"Assets/modelData/character/Mushroom/Mushroom.tkm",
+	/*model.Init(
+		"Assets/modelData/character/Player/Hero.tkm",
 		m_animationClipArray, 
 		enAnimClip_Num, 
 		enModelUpAxisZ
 		);
-	//model.SetRotation(m_rotation);
 	model.Update();
 	
-	m_charaCon.Init(40.0f, 100.0f, g_vec3Zero);
+	m_charaCon.Init(40.0f, 100.0f, g_vec3Zero);*/
+
 
 	//レベル
 	levelbg.Init(
@@ -140,10 +141,11 @@ bool Game::Start()
 			return false;
 		});
 
-	//backGround.SetRotation(Quaternion(0.0f, 180.0f, 0.0f, 1.0f));
 	backGround.Update();
 	
 	GameCamera* gameCamera = NewGO<GameCamera>(0, "gameCamera");
+
+    Hero* hero = NewGO<Hero>(0, "hero");
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
@@ -154,9 +156,8 @@ bool Game::Start()
 
 void Game::Update()
 {
-	PlayAnim();
+	//PlayAnim();
 	//SpriteTransform();
-	Move();
 
 	Spotmove();
 
@@ -176,43 +177,6 @@ void Game::Update()
 		
 		//g_renderingEngine->UseHemiLight();
 	}
-}
-
-void Game::Move()
-{
-	Vector3 moveSpeed;
-	moveSpeed.x = g_pad[0]->GetLStickXF() * -300.0f;
-	moveSpeed.z = g_pad[0]->GetLStickYF() * -300.0f;
-	m_position = m_charaCon.Execute(moveSpeed, g_gameTime->GetFrameDeltaTime());
-
-
-	//// 左スティック(キーボード：WASD)で平行移動。
-	/*m_position.x += g_pad[0]->GetLStickXF();
-	m_position.y += g_pad[0]->GetLStickYF();*/
-
-	// 右スティック(キーボード：上下左右)で回転。
-	/*m_rotation.AddRotationY(g_pad[0]->GetRStickXF() * 0.05f);
-	m_rotation.AddRotationX(g_pad[0]->GetRStickYF() * 0.05f);*/
-
-	// 上下左右キー(キーボード：2, 4, 6, 8)で拡大
-	if (g_pad[0]->IsPress(enButtonUp)) {
-		m_scale.y += 0.02f;
-	}
-	if (g_pad[0]->IsPress(enButtonDown)) {
-		m_scale.y -= 0.02f;
-	}
-	if (g_pad[0]->IsPress(enButtonRight)) {
-		m_scale.x += 0.02f;
-	}
-	if (g_pad[0]->IsPress(enButtonLeft)) {
-		m_scale.x -= 0.02f;
-	}
-
-
-	model.SetPosition(m_position);
-	model.SetRotation(m_rotation);
-	model.SetScale(m_scale);
-	model.Update();
 }
 
 void Game::SpriteTransform()
@@ -301,8 +265,10 @@ void Game::Spotmove()
 
 void Game::Render(RenderContext& rc)
 {
-	model.Draw(rc);
+	//model.Draw(rc);
+	
 	backGround.Draw(rc);
+	
 	//Castle.Draw(rc);
 	//spriteTest.Draw(rc);
 	//fontTest.Draw(rc);

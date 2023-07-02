@@ -32,7 +32,6 @@ namespace nsK2EngineLow {
 		//トゥーンシェーダーを使用するなら
 		if (toon == true)
 		{
-			g_renderingEngine->SetToonTextureDDS();
 			m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GetToonTextrue();
 			m_modelInitData.m_psEntryPointFunc = "PSToonMain";
 		}
@@ -131,11 +130,12 @@ namespace nsK2EngineLow {
 			m_skeleton.Update(m_model.GetWorldMatrix());
 		}
 
+		
+
 		//シャドウモデルが初期化されていたら
 		if (m_shadowModel.IsInited())
 		{
 			m_shadowModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
-			g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
 		}
 
 		//アニメーションを進める
