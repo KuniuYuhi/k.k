@@ -54,7 +54,7 @@ void Status::LoadCSV(const std::string& name) {
 		statusData.atk = stoi(buf);
 		//Speed‚ğ“Ç‚İ‚ŞB
 		getline(i_stream, buf, ',');
-		statusData.speed = stoi(buf);
+		statusData.defaultSpeed = stoi(buf);
 
 		statusData.hp = statusData.maxHp;
 
