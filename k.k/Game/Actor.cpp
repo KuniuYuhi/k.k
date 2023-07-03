@@ -14,7 +14,7 @@ void Actor::SetTransFormModel(ModelRender& modelRender)
 	modelRender.SetTransform(m_position, m_rotation, m_scale);
 }
 
-Vector3 Actor::Move(Status status)
+Vector3 Actor::calcVelocity(Status status)
 {
 	Vector3 moveSpeed = Vector3::Zero;
 

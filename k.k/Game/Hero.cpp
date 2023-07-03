@@ -37,6 +37,8 @@ void Hero::InitModel()
 	//アニメーションクリップをロードする。
 	m_animationClip[enAnimClip_Idle].Load("Assets/animData/character/Player/Idle_Normal.tka");
 	m_animationClip[enAnimClip_Idle].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Walk].Load("Assets/animData/character/Player/MoveFWD_Battle.tka");
+	m_animationClip[enAnimClip_Walk].SetLoopFlag(true);
 	m_animationClip[enAnimClip_Run].Load("Assets/animData/character/Player/SprintFWD_Battle.tka");
 	m_animationClip[enAnimClip_Run].SetLoopFlag(true);
 
@@ -57,27 +59,99 @@ void Hero::InitModel()
 
 void Hero::Update()
 {
-	// アニメーションの切り替え。
-	if (g_pad[0]->IsPress(enButtonA)) {
-		m_modelRender.PlayAnimation(enAnimClip_Idle, 0.6f);
-		m_dashFlag = false;
-	}
-	if (g_pad[0]->IsPress(enButtonB)) {
-		m_modelRender.PlayAnimation(enAnimClip_Run, 0.2f);
-		m_dashFlag = true;
-	}
+	
 
-	m_position = m_charaCon.Execute(m_moveSpeed = Move(m_status), 1.0f / 60.0f);
-	Rotation();
+	Move();
+
+
+	ManageState();
+	PlayAnimation();
 
 	SetTransFormModel(m_modelRender);
-
-	//m_modelRender.SetPosition(m_position);
-	//m_modelRender.SetRotation(Rotation());
 	m_modelRender.Update();
+}
+
+void Hero::Move()
+{
+	if (g_pad[0]->IsPress(enButtonA))
+	{
+		m_dashFlag = true;
+	}
+	else
+	{
+		m_dashFlag = false;
+	}
+
+	m_position = m_charaCon.Execute(m_moveSpeed = calcVelocity(m_status), 1.0f / 60.0f);
+	Rotation();
+}
+
+void Hero::PlayAnimation()
+{
+	switch (m_enAnimationState)
+	{
+	case Hero::enIdle:
+		m_modelRender.PlayAnimation(enAnimClip_Idle, 0.3f);
+		break;
+	case Hero::enWalk:
+		m_modelRender.PlayAnimation(enAnimClip_Walk,0.2f);
+		break;
+	case Hero::enRun:
+		m_modelRender.PlayAnimation(enAnimClip_Run, 0.2f);
+		break;
+
+	default:
+		break;
+	}
+}
+
+void Hero::ManageState()
+{
+	switch (m_enAnimationState)
+	{
+	case Hero::enIdle:
+		OnProcessCommonStateTransition();
+		break;
+	case Hero::enWalk:
+		OnProcessCommonStateTransition();
+		break;
+	case Hero::enRun:
+		OnProcessCommonStateTransition();
+		break;
+		
+	default:
+		break;
+	}
+}
+
+void Hero::OnProcessCommonStateTransition()
+{
+	if (m_dashFlag == true)
+	{
+		m_enAnimationState = enRun;
+		return;
+	}
+
+	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+	{
+		m_enAnimationState = enWalk;
+	}
+	else
+	{
+		m_enAnimationState = enIdle;
+	}
+}
+
+void Hero::OnProcessRunStateTransition()
+{
+
 }
 
 void Hero::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
 }
+
+
+
+
