@@ -24,6 +24,9 @@ bool Player::Start()
 	//初期キャラクターをヒーローに設定
 	m_enCharacters = enHero;
 
+	//座標の設定
+	m_position = actor[m_enCharacters]->GetPosition();
+
 	return true;
 }
 
@@ -46,6 +49,8 @@ void Player::Update()
 		}
 	}
 
+
+	m_position = actor[m_enCharacters]->GetPosition();
 	
 }
 

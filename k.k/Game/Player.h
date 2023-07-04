@@ -32,6 +32,15 @@ public:
 	/// </summary>
 	void ChangeFromWizardToHero();
 
+	/// <summary>
+	/// 座標の取得
+	/// </summary>
+	/// <returns></returns>
+	Vector3 GetPosition() const
+	{
+		return m_position;
+	}
+
 private:
 	Hero* m_hero = nullptr;
 	Wizard* m_wizard = nullptr;
@@ -39,5 +48,7 @@ private:
 	Actor* actor[enCharacter_num];
 
 	EnCharacters m_enCharacters= enHero;
+
+	Vector3 m_position = Vector3::Zero;		//現在のキャラクターの座標
 };
 
