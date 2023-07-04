@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "GameCamera.h"
 #include "Hero.h"
+#include "Wizard.h"
 
 namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(1.0f, 1.0f, 1.0f);
@@ -81,31 +82,6 @@ bool Game::Start()
 	spriteTest.SetRoundWipeStartPosition(1920.0f / 2, 1080.0f / 2);
 	spriteTest.Update();
 
-	//Assets/animData/character/Player/Idle_Normal.tka
-	//Assets/animData/character/Player/SprintFWD_Battle.tka
-	// 
-	// "Assets/animData/character/BadPerson/Idle_Normal1.tka"
-	// "Assets/animData/character/BadPerson/Idle_Battle1.tka"
-	//アニメーションクリップをロードする。
-	/*m_animationClipArray[enAnimClip_Idle].Load("Assets/animData/character/Player/Idle_Normal.tka");
-	m_animationClipArray[enAnimClip_Idle].SetLoopFlag(true);
-	m_animationClipArray[enAnimClip_Run].Load("Assets/animData/character/Player/SprintFWD_Battle.tka");
-	m_animationClipArray[enAnimClip_Run].SetLoopFlag(true);*/
-	//"Assets/modelData/character/Player/Hero.tkm",
-	//"Assets/modelData/character/BadPerson/BadPerson_Boy.tkm"
-	//"Assets/modelData/character/Slime/slime.tkm"
-	//Assets/modelData/character/Footman/Footman.tkm
-
-	/*model.Init(
-		"Assets/modelData/character/Player/Hero.tkm",
-		m_animationClipArray, 
-		enAnimClip_Num, 
-		enModelUpAxisZ
-		);
-	model.Update();
-	
-	m_charaCon.Init(40.0f, 100.0f, g_vec3Zero);*/
-
 
 	//レベル
 	levelbg.Init(
@@ -145,7 +121,10 @@ bool Game::Start()
 	
 	GameCamera* gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
+
+
     Hero* hero = NewGO<Hero>(0, "hero");
+	//Wizard* wizard = NewGO<Wizard>(0, "wizard");
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
@@ -156,9 +135,6 @@ bool Game::Start()
 
 void Game::Update()
 {
-	//PlayAnim();
-	//SpriteTransform();
-
 	Spotmove();
 
 	if (g_pad[0]->IsPress(enButtonStart))
@@ -207,19 +183,6 @@ void Game::SpriteTransform()
 	//spriteTest.SetRotation(m_rotation);
 	spriteTest.SetScale(m_scale);
 	spriteTest.Update();
-}
-
-void Game::PlayAnim()
-{
-	// アニメーションの切り替え。
-	if (g_pad[0]->IsPress(enButtonA)) {
-		model.PlayAnimation(enAnimClip_Idle, 0.6f);
-	}
-	if (g_pad[0]->IsPress(enButtonB)) {
-		model.PlayAnimation(enAnimClip_Run, 0.2f);
-	}
-
-	
 }
 
 void Game::Spotmove()

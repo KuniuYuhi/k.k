@@ -14,7 +14,6 @@ public:
 
 	
 	void SpriteTransform();
-	void PlayAnim();
 
 	void Spotmove();
 
