@@ -20,7 +20,7 @@ Game::~Game()
 bool Game::Start()
 {
 
-	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
+	Vector3 directionLightDir = Vector3{ 0.5f,-1.0f,-1.0f };
 	directionLightDir.Normalize();
 	Vector3 directionLightColor = DIRECTION_RIGHT_COLOR;
 	//ディレクションライト
@@ -118,11 +118,11 @@ bool Game::Start()
 
 	backGround.Update();
 	
-	GameCamera* gameCamera = NewGO<GameCamera>(0, "gameCamera");
+	
 
 	Player* player = NewGO<Player>(0, "player");
 
-    
+	GameCamera* gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();

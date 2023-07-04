@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GameCamera.h"
 #include "Game.h"
+#include "Player.h"
 
 namespace {
 	const float TARGETPOS_YUP = 40.0f;
@@ -16,7 +17,10 @@ GameCamera::~GameCamera()
 
 bool GameCamera::Start()
 {
-	game = FindGO<Game>("game");
+	//game = FindGO<Game>("game");
+
+	m_player = FindGO<Player>("player");
+
 
 	//注視点から視点までのベクトルを設定。80-160
 	m_toCameraPos.Set(0.0f, 60.0f, 200.0f);
@@ -31,8 +35,13 @@ bool GameCamera::Start()
 
 void GameCamera::Update()
 {
+	ChaseCamera();
+}
+
+void GameCamera::ChaseCamera()
+{
 	//注視点の計算
-	m_target = game->GetPosition();
+	m_target = m_player->GetPosition();
 
 	m_target.y += TARGETPOS_YUP;
 
@@ -66,7 +75,7 @@ void GameCamera::Update()
 	//	m_toCameraPos = toCameraPosOld;
 	//}
 
-	Vector3 finalCameraPos= m_toCameraPos + m_target;
+	Vector3 finalCameraPos = m_toCameraPos + m_target;
 
 	//視点と注視点を設定
 	g_camera3D->SetTarget(m_target);
