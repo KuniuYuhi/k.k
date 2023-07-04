@@ -1,6 +1,7 @@
 #pragma once
 
 class Game;
+class Player;
 
 class GameCamera:public IGameObject
 {
@@ -11,9 +12,12 @@ public:
 	bool Start();
 	void Update();
 
+	void ChaseCamera();
+
 
 private:
 	Game* game = nullptr;
+	Player* m_player = nullptr;
 
 	Vector3				m_toCameraPos = Vector3::Zero;		//カメラ位置から注視点に向かうベクトル
 	Vector3				m_position = Vector3::Zero;		//カメラ座標
