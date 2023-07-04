@@ -14,6 +14,13 @@ void Actor::SetTransFormModel(ModelRender& modelRender)
 	modelRender.SetTransform(m_position, m_rotation, m_scale);
 }
 
+void Actor::SetTransForm(Vector3 position, Quaternion rotation,Vector3 scale)
+{
+	m_position = position;
+	m_rotation = rotation;
+	m_scale = scale;
+}
+
 Vector3 Actor::calcVelocity(Status status)
 {
 	Vector3 moveSpeed = Vector3::Zero;
