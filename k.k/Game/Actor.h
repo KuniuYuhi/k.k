@@ -9,12 +9,53 @@ public:
 	virtual ~Actor();
 
 	/// <summary>
+	/// モデルの座標、回転、サイズの設定
+	/// </summary>
+	/// <param name="modelRender"></param>
+	void SetTransFormModel(ModelRender& modelRender);
+
+	/// <summary>
+	/// 座標、回転、サイズの設定
+	/// </summary>
+	/// <param name="position"></param>
+	/// <param name="scale"></param>
+	/// <param name="rotation"></param>
+	void SetTransForm(Vector3 position, Quaternion rotation,Vector3 scale);
+
+	/// <summary>
+	/// キャラコンの座標設定
+	/// </summary>
+	/// <param name="position"></param>
+	void SetCharaConPosition(Vector3 position)
+	{
+		m_charaCon.SetPosition(position);
+	}
+
+	/// <summary>
 	/// 座標の取得
 	/// </summary>
 	/// <returns></returns>
 	const Vector3 GetPosition()
 	{
 		return m_position;
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	const Vector3 GetScale()
+	{
+		return m_scale;
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	const Quaternion GetRotation()
+	{
+		return m_rotation;
 	}
 
 protected:
@@ -35,12 +76,6 @@ protected:
 	virtual void ManageState() = 0;
 
 	/// <summary>
-	/// 座標、回転、サイズの設定
-	/// </summary>
-	/// <param name="modelRender"></param>
-	void SetTransFormModel(ModelRender& modelRender);
-
-	/// <summary>
 	/// 移動処理
 	/// </summary>
 	/// <param name="status">ステータス</param>
@@ -57,6 +92,8 @@ protected:
 
 protected:
 	Status m_status;
+
+	CharacterController m_charaCon;
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;

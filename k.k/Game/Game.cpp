@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "Game.h"
 #include "GameCamera.h"
-#include "Hero.h"
-#include "Wizard.h"
+#include "Player.h"
 
 namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(1.0f, 1.0f, 1.0f);
@@ -121,10 +120,9 @@ bool Game::Start()
 	
 	GameCamera* gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
+	Player* player = NewGO<Player>(0, "player");
 
-
-    Hero* hero = NewGO<Hero>(0, "hero");
-	//Wizard* wizard = NewGO<Wizard>(0, "wizard");
+    
 
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();

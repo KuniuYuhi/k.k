@@ -62,7 +62,7 @@ private:
 
 	EnAnimationState m_enAnimationState = enIdle;	//アニメーションステート
 	
-	CharacterController m_charaCon;
+	
 	
 
 };

@@ -17,6 +17,7 @@
     <ClCompile Include="Status.cpp" />
     <ClCompile Include="Hero.cpp" />
     <ClCompile Include="Wizard.cpp" />
+    <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -29,5 +30,6 @@
     <ClInclude Include="Status.h" />
     <ClInclude Include="Hero.h" />
     <ClInclude Include="Wizard.h" />
+    <ClInclude Include="Player.h" />
   </ItemGroup>
 </Project>
