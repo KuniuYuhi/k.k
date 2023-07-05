@@ -25,12 +25,6 @@ public:
 	void Render(RenderContext& rc);
 
 private:
-	// アニメーションクリップの番号を表す列挙型。
-	enum EnAnimationClip {
-		enAnimClip_Idle,	// 0 : 待機アニメーション、
-		enAnimClip_Run,		// 1 : 走りアニメーション。
-		enAnimClip_Num,		// 2 :アニメーションクリップの数。
-	};
 
 	FontRender fontTest;
 	float m_fontScale = 1.0f;
@@ -38,17 +32,6 @@ private:
 	//Level2DRender level2DSp;
 	SpriteRender spriteTest;
 	float wipSize = 5.0f;
-
-	Level3DRender levelbg;
-	ModelRender backGround;
-	ModelRender Castle;
-
-	PhysicsStaticObject BGPhysicsStaticObject;
-
-	ModelRender model;
-	
-	Animation m_animation;	// アニメーション
-	AnimationClip m_animationClipArray[enAnimClip_Num];	// アニメーションクリップ 
 
 	//spotLight
 	Vector3 spPosition = Vector3::Zero;
