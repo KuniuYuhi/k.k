@@ -3,7 +3,7 @@
 
 namespace nsK2EngineLow {
 
-	void ModelRender::Init(const char* tkmFilepath,AnimationClip* animationClips, int numAnimationClips, EnModelUpAxis enModelUpAxis, bool shadow, bool toon)
+	void ModelRender::Init(const char* tkmFilepath,AnimationClip* animationClips, int numAnimationClips, EnModelUpAxis enModelUpAxis, bool shadow, bool toon,bool outline)
 	{
 		//tkmファイルパスを設定
 		m_modelInitData.m_tkmFilePath = tkmFilepath;
@@ -35,11 +35,15 @@ namespace nsK2EngineLow {
 			m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GetToonTextrue();
 			m_modelInitData.m_psEntryPointFunc = "PSToonMain";
 		}
-
-		//輪郭線
+		//輪郭線を描画するなら
+		if (outline == true)
+		{
+			//輪郭線
 		//拡張SRVにZPrepassで作成された深度テクスチャを設定する
-		m_modelInitData.m_expandShaderResoruceView[2] =
-			&g_renderingEngine->GetZPrepassDepthTexture();
+			m_modelInitData.m_expandShaderResoruceView[2] =
+				&g_renderingEngine->GetZPrepassDepthTexture();
+		}
+		
 
 
 		//ディレクションライトの情報を作成
