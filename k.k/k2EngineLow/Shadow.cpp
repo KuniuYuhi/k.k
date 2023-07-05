@@ -62,7 +62,7 @@ namespace nsK2EngineLow {
 	{
 		//影描写用のライトカメラの初期化
 		m_lightCamera.SetPosition(m_lightCameraPosition);
-		//ライトを照らす場所
+		//ライトを照らす場所(影が落とされる場所)
 		m_lightCamera.SetTarget(0, 0, 0);
 		//X方向を上にする
 		m_lightCamera.SetUp(1, 0, 0);

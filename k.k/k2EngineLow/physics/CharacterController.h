@@ -81,6 +81,14 @@ namespace nsK2EngineLow {
 		{
 			return &m_rigidBody;
 		}
+
+		void SetRadius(float radius)
+		{
+			m_radius = radius;
+			//m_collider.Init(m_radius, m_height);
+			//m_collider.SetHight(m_radius);
+		}
+
 		/*!
 		* @brief	剛体を物理エンジンから削除。。
 		*/

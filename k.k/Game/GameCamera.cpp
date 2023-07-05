@@ -17,7 +17,7 @@ GameCamera::~GameCamera()
 
 bool GameCamera::Start()
 {
-	//game = FindGO<Game>("game");
+	game = FindGO<Game>("game");
 
 	m_player = FindGO<Player>("player");
 

@@ -38,6 +38,14 @@ namespace nsK2EngineLow {
 			return m_radius;
 		}
 		/// <summary>
+		/// ‚‚³‚ğİ’è
+		/// </summary>
+		/// <param name="hight"></param>
+		void SetHight(float hight)
+		{
+			m_height = hight;
+		}
+		/// <summary>
 		/// ‚‚³‚ğæ“¾B
 		/// </summary>
 		/// <returns></returns>

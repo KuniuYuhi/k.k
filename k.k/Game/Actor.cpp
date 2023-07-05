@@ -3,6 +3,8 @@
 
 Actor::Actor()
 {
+	m_player = FindGO<Player>("player");
+	//m_charaCon;
 }
 
 Actor::~Actor()

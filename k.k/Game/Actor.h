@@ -1,5 +1,6 @@
 #pragma once
 #include "Status.h"
+#include "Player.h"
 
 class Actor:public IGameObject
 {
@@ -20,7 +21,12 @@ public:
 	/// <param name="position"></param>
 	/// <param name="scale"></param>
 	/// <param name="rotation"></param>
-	void SetTransForm(Vector3 position, Quaternion rotation,Vector3 scale);
+	void SetTransForm(Vector3 position, Quaternion rotation,Vector3 scale=Vector3::One);
+
+	void DeleteCharaCon()
+	{
+		//delete m_charaCon
+	}
 
 	/// <summary>
 	/// キャラコンの座標設定
@@ -28,8 +34,15 @@ public:
 	/// <param name="position"></param>
 	void SetCharaConPosition(Vector3 position)
 	{
-		m_charaCon.SetPosition(position);
+		//m_charaCon.SetPosition(position);
 	}
+
+	/// <summary>
+	/// 移動処理
+	/// </summary>
+	/// <param name="status">ステータス</param>
+	/// <returns>moveSpeed</returns>
+	Vector3 calcVelocity(Status status);
 
 	/// <summary>
 	/// 座標の取得
@@ -58,6 +71,11 @@ public:
 		return m_rotation;
 	}
 
+	const Status GetStatus()
+	{
+		return m_status;
+	}
+
 protected:
 
 	/// <summary>
@@ -75,12 +93,7 @@ protected:
 	/// </summary>
 	virtual void ManageState() = 0;
 
-	/// <summary>
-	/// 移動処理
-	/// </summary>
-	/// <param name="status">ステータス</param>
-	/// <returns>moveSpeed</returns>
-	Vector3 calcVelocity(Status status);
+	
 
 	/// <summary>
 	/// 移動時の回転
@@ -92,8 +105,9 @@ protected:
 
 protected:
 	Status m_status;
+	Player* m_player = nullptr;
 
-	CharacterController m_charaCon;
+	//CharacterController m_charaCon;
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
