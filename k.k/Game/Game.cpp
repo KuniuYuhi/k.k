@@ -2,6 +2,8 @@
 #include "Game.h"
 #include "GameCamera.h"
 #include "Player.h"
+#include "BossStage1.h"
+
 
 namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(1.0f, 1.0f, 1.0f);
@@ -82,43 +84,7 @@ bool Game::Start()
 	spriteTest.Update();
 
 
-	//ƒŒƒxƒ‹
-	levelbg.Init(
-		"Assets/level3D/FieldLevel.tkl",
-		[&](LevelObjectData& objData)
-		{
-			if (objData.EqualObjectName(L"grass")==true) {
-				backGround.InitShadow("Assets/modelData/BackGround/grass01.tkm");
-				backGround.SetPosition(objData.position);
-				backGround.SetRotation(objData.rotation);
-				backGround.SetScale(objData.scale);
-				backGround.Update();
-				BGPhysicsStaticObject.CreateFromModel(
-					backGround.GetModel(),
-					backGround.GetModel().GetWorldMatrix()
-				);
-				return true;
-			}
-
-			//if (objData.EqualObjectName(L"castle") == true) {
-			//	Castle.InitShadow("Assets/modelData/BackGround/Castle.tkm");
-			//	Castle.SetPosition(objData.position);
-			//	Castle.SetRotation(objData.rotation);
-			//	Castle.SetScale(objData.scale);
-			//	Castle.Update();
-			//	/*BGPhysicsStaticObject.CreateFromModel(
-			//		Castle.GetModel(),
-			//		Castle.GetModel().GetWorldMatrix()
-			//	);*/
-			//	return true;
-			//}
-
-			return false;
-		});
-
-	backGround.Update();
-	
-	
+	BossStage1* bossStage1 = NewGO<BossStage1>(0, "bossstage1");
 
 	Player* player = NewGO<Player>(0, "player");
 
@@ -226,11 +192,10 @@ void Game::Spotmove()
 
 void Game::Render(RenderContext& rc)
 {
-	//model.Draw(rc);
+	//Tree.Draw(rc);
 	
-	backGround.Draw(rc);
+	//backGround.Draw(rc);
 	
-	//Castle.Draw(rc);
 	//spriteTest.Draw(rc);
 	//fontTest.Draw(rc);
 }

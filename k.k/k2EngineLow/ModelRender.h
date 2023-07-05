@@ -34,7 +34,8 @@ namespace nsK2EngineLow {
 			int numAnimationClips=0,
 			EnModelUpAxis enModelUpAxis = enModelUpAxisZ,
 			bool shadow=true,
-			bool toon=true
+			bool toon=true,
+			bool outline=true
 		);
 
 		/// <summary>
