@@ -41,14 +41,24 @@ public:
 		return m_position;
 	}
 
+	Vector3 GetMoveSpeed() const
+	{
+		return m_moveSpeed;
+	}
+
 private:
 	Hero* m_hero = nullptr;
 	Wizard* m_wizard = nullptr;
 
+	//キャラコンこれ使う
+	CharacterController m_charaCon;
+
 	Actor* actor[enCharacter_num];
 
-	EnCharacters m_enCharacters= enHero;
+	EnCharacters m_enActiveCharacter= enHero;
 
 	Vector3 m_position = Vector3::Zero;		//現在のキャラクターの座標
+
+	Vector3 m_moveSpeed = Vector3::Zero;
 };
 

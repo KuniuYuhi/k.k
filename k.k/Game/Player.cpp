@@ -22,10 +22,15 @@ bool Player::Start()
 	actor[enWizard] = m_wizard;
 
 	//初期キャラクターをヒーローに設定
-	m_enCharacters = enHero;
+	m_enActiveCharacter = enHero;
 
 	//座標の設定
-	m_position = actor[m_enCharacters]->GetPosition();
+	m_position = actor[m_enActiveCharacter]->GetPosition();
+
+	//キャラコンの設定
+	m_charaCon.Init(12.0f, 33.0f, m_position);
+
+	
 
 	return true;
 }
@@ -35,7 +40,7 @@ void Player::Update()
 	//キャラクターの切り替え
 	if (g_pad[0]->IsTrigger(enButtonB))
 	{
-		switch (m_enCharacters)
+		switch (m_enActiveCharacter)
 		{
 		case enHero:
 			ChangeFromHeroToWizard();
@@ -49,8 +54,13 @@ void Player::Update()
 		}
 	}
 
+	//キャラコン
 
-	m_position = actor[m_enCharacters]->GetPosition();
+	//m_position = actor[m_enActiveCharacter]->GetPosition();
+
+	m_moveSpeed = actor[m_enActiveCharacter]->calcVelocity(actor[m_enActiveCharacter]->GetStatus());
+
+	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	
 }
 
@@ -60,18 +70,19 @@ void Player::ChangeFromHeroToWizard()
 	actor[enWizard]->Activate();
 	//座標、回転、サイズをヒーローと同じにする
 	actor[enWizard]->SetTransForm(
-		actor[m_enCharacters]->GetPosition(),
-		actor[m_enCharacters]->GetRotation(),
-		actor[m_enCharacters]->GetScale()
+		actor[m_enActiveCharacter]->GetPosition(),
+		actor[m_enActiveCharacter]->GetRotation()
 	);
+	//m_charaCon.SetRadius(50.0f);
 	//キャラコンの座標
 	actor[enWizard]->SetCharaConPosition(actor[enWizard]->GetPosition());
 
 	//ヒーローを非アクティブにする
-	actor[m_enCharacters]->Deactivate();
+	actor[m_enActiveCharacter]->Deactivate();
+
 
 	//現在のキャラクターを魔法使いに変更する
-	m_enCharacters = enWizard;
+	m_enActiveCharacter = enWizard;
 }
 
 void Player::ChangeFromWizardToHero()
@@ -80,16 +91,17 @@ void Player::ChangeFromWizardToHero()
 	actor[enHero]->Activate();
 	//座標、回転、サイズを魔法使いと同じにする
 	actor[enHero]->SetTransForm(
-		actor[m_enCharacters]->GetPosition(),
-		actor[m_enCharacters]->GetRotation(),
-		actor[m_enCharacters]->GetScale()
+		actor[m_enActiveCharacter]->GetPosition(),
+		actor[m_enActiveCharacter]->GetRotation(),
+		actor[enHero]->GetScale()
 	);
+	//m_charaCon.SetRadius(33.0f);
 	//キャラコンの座標
 	actor[enHero]->SetCharaConPosition(actor[enHero]->GetPosition());
 
 	//魔法使いを非アクティブにする
-	actor[m_enCharacters]->Deactivate();
+	actor[m_enActiveCharacter]->Deactivate();
 
 	//現在のキャラクターをヒーローに変更する
-	m_enCharacters = enHero;
+	m_enActiveCharacter = enHero;
 }
