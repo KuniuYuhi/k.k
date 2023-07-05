@@ -50,11 +50,12 @@ void Hero::InitModel()
 	);
 
 	//m_modelRender.SetPosition(50.0f, 0.0f, 50.0f);
-
+	m_scale = { 1.2f,1.2f,1.2f };
+	m_modelRender.SetScale(m_scale);
 	m_modelRender.Update();
 
 
-	m_charaCon.Init(12.0f, 33.0f, g_vec3Zero);
+	//m_charaCon.Init(12.0f, 33.0f, g_vec3Zero);
 }
 
 void Hero::Update()
@@ -82,7 +83,9 @@ void Hero::Move()
 		m_dashFlag = false;
 	}
 
-	m_position = m_charaCon.Execute(m_moveSpeed = calcVelocity(m_status), 1.0f / 60.0f);
+	m_moveSpeed = m_player->GetMoveSpeed();
+	m_position = m_player->GetPosition();
+	//m_position = m_charaCon.Execute(m_moveSpeed = calcVelocity(m_status), 1.0f / 60.0f);
 	Rotation();
 }
 

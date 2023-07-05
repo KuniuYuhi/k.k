@@ -54,7 +54,7 @@ void Wizard::InitModel()
 	//m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 
-	m_charaCon.Init(12.0f, 33.0f, m_position);
+	//m_charaCon.Init(12.0f, 33.0f, m_position);
 }
 
 void Wizard::Update()
@@ -79,7 +79,9 @@ void Wizard::Move()
 		m_dashFlag = false;
 	}
 	
-	m_position = m_charaCon.Execute(m_moveSpeed = calcVelocity(m_status), 1.0f / 60.0f);
+	m_moveSpeed = m_player->GetMoveSpeed();
+	m_position = m_player->GetPosition();
+	//m_position = m_charaCon.Execute(m_moveSpeed = calcVelocity(m_status), 1.0f / 60.0f);
 	Rotation();
 }
 
