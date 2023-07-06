@@ -30,6 +30,16 @@ bool GameCamera::Start()
 	g_camera3D->SetNear(1.0f);
 	g_camera3D->SetFar(10000.0f);
 
+	m_cameraCollisionSolver.Init(1.0f);
+
+	//ばねカメラの初期化。
+	m_springCamera.Init(
+		*g_camera3D,		//ばねカメラの処理を行うカメラを指定する。
+		1000.0f,			//カメラの移動速度の最大値。
+		false,				//カメラと地形とのあたり判定を取るかどうかのフラグ。trueだとあたり判定を行う。
+		1.0f				//カメラに設定される球体コリジョンの半径。第３引数がtrueの時に有効になる。
+	);
+
 	return true;
 }
 
@@ -76,11 +86,11 @@ void GameCamera::ChaseCamera()
 	//}
 
 	Vector3 finalCameraPos = m_toCameraPos + m_target;
-
+	
 	//視点と注視点を設定
-	g_camera3D->SetTarget(m_target);
-	g_camera3D->SetPosition(finalCameraPos);
+	m_springCamera.SetTarget(m_target);
+	m_springCamera.SetPosition(finalCameraPos);
 
 	//カメラの更新。
-	g_camera3D->Update();
+	m_springCamera.Update();
 }
