@@ -255,6 +255,8 @@
     <ClCompile Include="AI\PathFinding\Path.cpp" />
     <ClCompile Include="AI\PathFinding\PathFinding.cpp" />
     <ClCompile Include="Bloom.cpp" />
+    <ClCompile Include="CameraCollisionSolver.cpp" />
+    <ClCompile Include="CollisionObject.cpp" />
     <ClCompile Include="FontRender.cpp" />
     <ClCompile Include="gameObject\Gameobjectmanager.cpp" />
     <ClCompile Include="gameObject\IGameObject.cpp" />
@@ -334,6 +336,7 @@
     <ClCompile Include="sound\SoundSource.cpp" />
     <ClCompile Include="sound\WaveFile.cpp" />
     <ClCompile Include="sound\WaveFileBank.cpp" />
+    <ClCompile Include="SpringCamera.cpp" />
     <ClCompile Include="SpriteRender.cpp" />
     <ClCompile Include="tkFile\TkaFile.cpp" />
     <ClCompile Include="tkFile\TkmFile.cpp" />
@@ -347,6 +350,8 @@
     <ClInclude Include="AI\PathFinding\Path.h" />
     <ClInclude Include="AI\PathFinding\PathFinding.h" />
     <ClInclude Include="Bloom.h" />
+    <ClInclude Include="CameraCollisionSolver.h" />
+    <ClInclude Include="CollisionObject.h" />
     <ClInclude Include="dbg\MyAssert.h" />
     <ClInclude Include="dbg\MyLog.h" />
     <ClInclude Include="FontRender.h" />
@@ -434,6 +439,7 @@
     <ClInclude Include="sound\SoundSource.h" />
     <ClInclude Include="sound\WaveFile.h" />
     <ClInclude Include="sound\WaveFileBank.h" />
+    <ClInclude Include="SpringCamera.h" />
     <ClInclude Include="SpriteRender.h" />
     <ClInclude Include="time\FPSLimitter.h" />
     <ClInclude Include="time\GameTime.h" />
