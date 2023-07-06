@@ -1,5 +1,8 @@
 #pragma once
 
+#include "CameraCollisionSolver.h"
+#include "SpringCamera.h"
+
 class Game;
 class Player;
 
@@ -18,6 +21,9 @@ public:
 private:
 	Game* game = nullptr;
 	Player* m_player = nullptr;
+
+	CameraCollisionSolver	m_cameraCollisionSolver;
+	SpringCamera			m_springCamera;
 
 	Vector3				m_toCameraPos = Vector3::Zero;		//カメラ位置から注視点に向かうベクトル
 	Vector3				m_position = Vector3::Zero;		//カメラ座標
