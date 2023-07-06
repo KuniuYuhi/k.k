@@ -46,6 +46,11 @@ public:
 		return m_moveSpeed;
 	}
 
+	CharacterController& GetCharacterController()
+	{
+		return m_charaCon;
+	}
+
 private:
 	Hero* m_hero = nullptr;
 	Wizard* m_wizard = nullptr;
