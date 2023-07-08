@@ -21,7 +21,7 @@ bool BossStage1::Start()
 		[&](LevelObjectData& objData)
 		{
 			if (objData.EqualObjectName(L"grass") == true) {
-				backGround.InitShadow("Assets/modelData/BackGround/grass01.tkm");
+				backGround.InitShadow("Assets/modelData/BackGround/grass02.tkm");
 				backGround.SetPosition(objData.position);
 				backGround.SetRotation(objData.rotation);
 				backGround.SetScale(objData.scale);

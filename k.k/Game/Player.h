@@ -20,17 +20,11 @@ public:
 	bool Start();
 	void Update();
 
-
-	//一つにしたい
 	/// <summary>
-	/// ヒーローから魔法使いに切り替える
+	/// キャラクターを切り替える
 	/// </summary>
-	void ChangeFromHeroToWizard();
-
-	/// <summary>
-	/// 魔法使いからヒーローに切り替える
-	/// </summary>
-	void ChangeFromWizardToHero();
+	/// <param name="nextCharacter">次のキャラクター</param>
+	void ChangeCharacter(EnCharacters nextCharacter);
 
 	/// <summary>
 	/// 座標の取得
@@ -59,7 +53,7 @@ private:
 	CharacterController m_charaCon;
 
 	Actor* actor[enCharacter_num];
-
+	Actor* m_nowActor = nullptr;	// 現在のアクター
 	EnCharacters m_enActiveCharacter= enHero;
 
 	Vector3 m_position = Vector3::Zero;		//現在のキャラクターの座標

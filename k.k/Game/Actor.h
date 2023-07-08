@@ -23,10 +23,10 @@ public:
 	/// <param name="rotation"></param>
 	void SetTransForm(Vector3 position, Quaternion rotation,Vector3 scale=Vector3::One);
 
-	void DeleteCharaCon()
-	{
-		//delete m_charaCon
-	}
+	/// <summary>
+	/// アニメーションステートを設定する
+	/// </summary>
+	virtual void SetAnimationState() = 0;
 
 	/// <summary>
 	/// キャラコンの座標設定
@@ -75,6 +75,8 @@ public:
 	{
 		return m_status;
 	}
+
+
 
 protected:
 

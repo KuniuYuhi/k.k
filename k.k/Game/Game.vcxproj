@@ -228,6 +228,9 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="Hero.cpp" />
+    <ClCompile Include="HeroStateIdle.cpp" />
+    <ClCompile Include="HeroStateRun.cpp" />
+    <ClCompile Include="HeroStateWalk.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Status.cpp" />
@@ -238,6 +241,9 @@
     </ClCompile>
     <ClCompile Include="system\system.cpp" />
     <ClCompile Include="Wizard.cpp" />
+    <ClCompile Include="WizardStateIdle.cpp" />
+    <ClCompile Include="WizardStateRun.cpp" />
+    <ClCompile Include="WizardStateWalk.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
@@ -245,11 +251,19 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="Hero.h" />
+    <ClInclude Include="HeroStateIdle.h" />
+    <ClInclude Include="HeroStateRun.h" />
+    <ClInclude Include="HeroStateWalk.h" />
+    <ClInclude Include="IHeroState.h" />
+    <ClInclude Include="IWizardState.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Status.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />
     <ClInclude Include="Wizard.h" />
+    <ClInclude Include="WizardStateIdle.h" />
+    <ClInclude Include="WizardStateRun.h" />
+    <ClInclude Include="WizardStateWalk.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

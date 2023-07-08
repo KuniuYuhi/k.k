@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "Wizard.h"
+#include "WizardStateIdle.h"
+#include "WizardStateWalk.h"
+#include "WizardStateRun.h"
 
 namespace {
 	int MAXHP = 150;
@@ -18,6 +21,9 @@ Wizard::~Wizard()
 
 bool Wizard::Start()
 {
+	// 初期のアニメーションステートを待機状態にする。
+	SetNextAnimationState(enAninationState_Idle);
+
 	//ステータスの初期化
 	m_status.InitStatus(
 		MAXHP,
@@ -87,57 +93,61 @@ void Wizard::Move()
 
 void Wizard::PlayAnimation()
 {
-	switch (m_enAnimationState)
-	{
-	case Wizard::enIdle:
-		m_modelRender.PlayAnimation(enAnimClip_Idle, 0.3f);
-		break;
-	case Wizard::enWalk:
-		m_modelRender.PlayAnimation(enAnimClip_Walk, 0.2f);
-		break;
-	case Wizard::enRun:
-		m_modelRender.PlayAnimation(enAnimClip_Run, 0.2f);
-		break;
-
-	default:
-		break;
-	}
+	m_animationState->PlayAnimation();
 }
 
 void Wizard::ManageState()
 {
+	m_animationState->ManageState();
+}
+
+void Wizard::SetNextAnimationState(EnAnimationState nextState)
+{
+	if (m_animationState != nullptr) {
+		// 古いステートを削除する。
+		delete m_animationState;
+		m_animationState = nullptr;
+	}
+
 	switch (m_enAnimationState)
 	{
-	case Wizard::enIdle:
-		OnProcessCommonStateTransition();
+	case Wizard::enAninationState_Idle:
+		//待機ステートを作成する。
+		m_animationState = new WizardStateIdle(this);
 		break;
-	case Wizard::enWalk:
-		OnProcessCommonStateTransition();
+	case Wizard::enAninationState_Walk:
+		//歩きステートを作成する。
+		m_animationState = new WizardStateWalk(this);
 		break;
-	case Wizard::enRun:
-		OnProcessCommonStateTransition();
+	case Wizard::enAninationState_Run:
+		//走るステートを作成する。
+		m_animationState = new WizardStateRun(this);
 		break;
 
 	default:
+		// ここに来たらステートのインスタンス作成処理の追加忘れ。
+		std::abort();
 		break;
 	}
+
+	m_enAnimationState = nextState;
 }
 
-void Wizard::OnProcessCommonStateTransition()
+void Wizard::ProcessCommonStateTransition()
 {
 	if (m_dashFlag == true)
 	{
-		m_enAnimationState = enRun;
+		SetNextAnimationState(enAninationState_Run);
 		return;
 	}
 
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		m_enAnimationState = enWalk;
+		SetNextAnimationState(enAninationState_Walk);
 	}
 	else
 	{
-		m_enAnimationState = enIdle;
+		SetNextAnimationState(enAninationState_Idle);
 	}
 }
 

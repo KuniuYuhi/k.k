@@ -4,6 +4,12 @@
     <Filter Include="system">
       <UniqueIdentifier>{22dd8095-74f9-46df-81a1-36675a040b1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Hero">
+      <UniqueIdentifier>{06a66712-32b5-41ac-bc45-a830f38ae8d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Wizard">
+      <UniqueIdentifier>{2887295a-a2b1-4b11-b171-11ad071fe549}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -17,8 +23,26 @@
     <ClCompile Include="Status.cpp" />
     <ClCompile Include="Hero.cpp" />
     <ClCompile Include="Wizard.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="BossStage1.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="HeroStateIdle.cpp">
+      <Filter>Hero</Filter>
+    </ClCompile>
+    <ClCompile Include="HeroStateWalk.cpp">
+      <Filter>Hero</Filter>
+    </ClCompile>
+    <ClCompile Include="HeroStateRun.cpp">
+      <Filter>Hero</Filter>
+    </ClCompile>
+    <ClCompile Include="WizardStateIdle.cpp">
+      <Filter>Wizard</Filter>
+    </ClCompile>
+    <ClCompile Include="WizardStateWalk.cpp">
+      <Filter>Wizard</Filter>
+    </ClCompile>
+    <ClCompile Include="WizardStateRun.cpp">
+      <Filter>Wizard</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -31,7 +55,31 @@
     <ClInclude Include="Status.h" />
     <ClInclude Include="Hero.h" />
     <ClInclude Include="Wizard.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="BossStage1.h" />
+    <ClInclude Include="IHeroState.h">
+      <Filter>Hero</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="HeroStateIdle.h">
+      <Filter>Hero</Filter>
+    </ClInclude>
+    <ClInclude Include="HeroStateWalk.h">
+      <Filter>Hero</Filter>
+    </ClInclude>
+    <ClInclude Include="HeroStateRun.h">
+      <Filter>Hero</Filter>
+    </ClInclude>
+    <ClInclude Include="IWizardState.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
+    <ClInclude Include="WizardStateIdle.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
+    <ClInclude Include="WizardStateWalk.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
+    <ClInclude Include="WizardStateRun.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
