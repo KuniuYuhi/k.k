@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "Hero.h"
+#include "HeroStateIdle.h"
+#include "HeroStateWalk.h"
+#include "HeroStateRun.h"
 
 namespace {
 	int MAXHP = 200;
@@ -18,6 +21,9 @@ Hero::~Hero()
 
 bool Hero::Start()
 {
+	// 初期のアニメーションステートを待機状態にする。
+	SetNextAnimationState(enAninationState_Idle);
+
 	//ステータスの初期化
 	m_status.InitStatus(
 	MAXHP,
@@ -60,11 +66,7 @@ void Hero::InitModel()
 
 void Hero::Update()
 {
-	
-
 	Move();
-
-
 	ManageState();
 	PlayAnimation();
 
@@ -91,57 +93,59 @@ void Hero::Move()
 
 void Hero::PlayAnimation()
 {
-	switch (m_enAnimationState)
-	{
-	case Hero::enIdle:
-		m_modelRender.PlayAnimation(enAnimClip_Idle, 0.3f);
-		break;
-	case Hero::enWalk:
-		m_modelRender.PlayAnimation(enAnimClip_Walk,0.2f);
-		break;
-	case Hero::enRun:
-		m_modelRender.PlayAnimation(enAnimClip_Run, 0.2f);
-		break;
-
-	default:
-		break;
-	}
+	m_state->PlayAnimation();
 }
 
+void Hero::SetNextAnimationState(EnAnimationState nextState)
+{
+	if (m_state != nullptr) {
+		// 古いステートを削除する。
+		delete m_state;
+		m_state = nullptr;
+	}
+	switch (m_enAnimationState)
+	{
+	case Hero::enAninationState_Idle:
+		// 待機ステートを作成する。
+		m_state = new HeroStateIdle(this);
+		break;
+	case Hero::enAninationState_Walk:
+		// 歩きステートを作成する。
+		m_state = new HeroStateWalk(this);
+		break;
+	case Hero::enAninationState_Run:
+		// 走るステートを作成する。
+		m_state = new HeroStateRun(this);
+		break;
+	default:
+		// ここに来たらステートのインスタンス作成処理の追加忘れ。
+		std::abort();
+		break;
+	}
+	m_enAnimationState = nextState;
+}
+//状態遷移管理
 void Hero::ManageState()
 {
-	switch (m_enAnimationState)
-	{
-	case Hero::enIdle:
-		OnProcessCommonStateTransition();
-		break;
-	case Hero::enWalk:
-		OnProcessCommonStateTransition();
-		break;
-	case Hero::enRun:
-		OnProcessCommonStateTransition();
-		break;
-		
-	default:
-		break;
-	}
+	m_state->ManageState();
 }
 
-void Hero::OnProcessCommonStateTransition()
+//共通の状態遷移処理
+void Hero::ProcessCommonStateTransition()
 {
 	if (m_dashFlag == true)
 	{
-		m_enAnimationState = enRun;
+		SetNextAnimationState( enAninationState_Run );
 		return;
 	}
 
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		m_enAnimationState = enWalk;
+		SetNextAnimationState(enAninationState_Walk);
 	}
 	else
 	{
-		m_enAnimationState = enIdle;
+		SetNextAnimationState(enAninationState_Idle);
 	}
 }
 
