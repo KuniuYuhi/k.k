@@ -23,7 +23,7 @@ bool GameCamera::Start()
 
 
 	//注視点から視点までのベクトルを設定。80-160
-	m_toCameraPos.Set(0.0f, 60.0f, 200.0f);
+	m_toCameraPos.Set(0.0f, 300.0f, 400.0f);
 	//カメラをプレイヤーの後ろにするときに使う
 	m_position = m_toCameraPos;
 
