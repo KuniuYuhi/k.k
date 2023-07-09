@@ -9,5 +9,5 @@ void WizardStateRun::ManageState()
 
 void WizardStateRun::PlayAnimation()
 {
-	m_wizard->GetModelRender().PlayAnimation(Wizard::enAnimClip_Run);
+	m_wizard->GetModelRender().PlayAnimation(Wizard::enAnimClip_Run,0.2f);
 }

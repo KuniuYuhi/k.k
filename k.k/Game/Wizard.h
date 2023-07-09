@@ -35,6 +35,18 @@ public:
 			m_enAnimationState == enAninationState_Run;
 	}
 
+	/// <summary>
+	/// 特定のアニメーションが再生中なら移動できない
+	/// </summary>
+	/// <returns></returns>
+	bool isAnimationEntable() const
+	{
+		return m_enAnimationState != enAnimationState_Attack_1 &&
+			m_enAnimationState != enAnimationState_Attack_2 &&
+			m_enAnimationState != enAnimationState_Attack_3 &&
+			m_enAnimationState != enAnimationState_Attack_4;
+	}
+
 	ModelRender& GetModelRender()
 	{
 		return m_modelRender;
@@ -60,14 +72,18 @@ private:
 	enum EnAnimationState {
 		enAninationState_Idle,
 		enAninationState_Walk,
-		enAninationState_Run
+		enAninationState_Run,
+		enAnimationState_Attack_1,
+		enAnimationState_Attack_2,
+		enAnimationState_Attack_3,
+		enAnimationState_Attack_4
 	};
 
 public:
 	//アニメーションステートを設定する
 	void SetAnimationState()
 	{
-		m_enAnimationState= enAninationState_Idle;
+		//m_enAnimationState= enAninationState_Idle;
 	}
 
 private:
