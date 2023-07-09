@@ -43,6 +43,18 @@
     <ClCompile Include="WizardStateRun.cpp">
       <Filter>Wizard</Filter>
     </ClCompile>
+    <ClCompile Include="HeroStateAttack_1.cpp">
+      <Filter>Hero</Filter>
+    </ClCompile>
+    <ClCompile Include="HeroStateAttack_2.cpp">
+      <Filter>Hero</Filter>
+    </ClCompile>
+    <ClCompile Include="HeroStateAttack_3.cpp">
+      <Filter>Hero</Filter>
+    </ClCompile>
+    <ClCompile Include="HeroStateAttack_4.cpp">
+      <Filter>Hero</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -80,6 +92,18 @@
     </ClInclude>
     <ClInclude Include="WizardStateRun.h">
       <Filter>Wizard</Filter>
+    </ClInclude>
+    <ClInclude Include="HeroStateAttack_1.h">
+      <Filter>Hero</Filter>
+    </ClInclude>
+    <ClInclude Include="HeroStateAttack_2.h">
+      <Filter>Hero</Filter>
+    </ClInclude>
+    <ClInclude Include="HeroStateAttack_3.h">
+      <Filter>Hero</Filter>
+    </ClInclude>
+    <ClInclude Include="HeroStateAttack_4.h">
+      <Filter>Hero</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
