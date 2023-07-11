@@ -4,10 +4,10 @@
 //アタック４ステート
 void HeroStateAttack_4::ManageState()
 {
-	m_hero->OnProcessAttack_4StateTransition();
+	m_hero->OnProcessAttack_Skill_ChargeStateTransition();
 }
 
 void HeroStateAttack_4::PlayAnimation()
 {
-	m_hero->GetModelRender().PlayAnimation(Hero::enAnimClip_Attack_4);
+	m_hero->GetModelRender().PlayAnimation(Hero::enAnimClip_Attack_Skill_Charge);
 }
