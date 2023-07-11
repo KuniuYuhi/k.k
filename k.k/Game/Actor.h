@@ -45,6 +45,18 @@ public:
 	Vector3 calcVelocity(Status status);
 
 	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	virtual bool isAnimationSwappable() const = 0;
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	virtual bool isAnimationEntable() const = 0;
+
+	/// <summary>
 	/// À•W‚Ìæ“¾
 	/// </summary>
 	/// <returns></returns>

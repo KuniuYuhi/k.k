@@ -11,5 +11,5 @@ void HeroStateWalk::ManageState()
 void HeroStateWalk::PlayAnimation()
 {
 	//歩きアニメーションの再生
-	m_hero->GetModelRender().PlayAnimation(Hero::enAnimClip_Walk);
+	m_hero->GetModelRender().PlayAnimation(Hero::enAnimClip_Walk,0.3f);
 }

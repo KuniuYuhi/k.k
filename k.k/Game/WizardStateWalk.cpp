@@ -10,5 +10,5 @@ void WizardStateWalk::ManageState()
 void WizardStateWalk::PlayAnimation()
 {
 	//歩きアニメーションの再生
-	m_wizard->GetModelRender().PlayAnimation(Wizard::enAnimClip_Walk);
+	m_wizard->GetModelRender().PlayAnimation(Wizard::enAnimClip_Walk,0.3f);
 }

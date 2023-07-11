@@ -228,6 +228,11 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="Hero.cpp" />
+    <ClCompile Include="HeroStateAttack_1.cpp" />
+    <ClCompile Include="HeroStateAttack_2.cpp" />
+    <ClCompile Include="HeroStateAttack_3.cpp" />
+    <ClCompile Include="HeroStateAttack_4.cpp" />
+    <ClCompile Include="HeroStateAttack_Skill_Main.cpp" />
     <ClCompile Include="HeroStateIdle.cpp" />
     <ClCompile Include="HeroStateRun.cpp" />
     <ClCompile Include="HeroStateWalk.cpp" />
@@ -241,6 +246,11 @@
     </ClCompile>
     <ClCompile Include="system\system.cpp" />
     <ClCompile Include="Wizard.cpp" />
+    <ClCompile Include="WizardStateAttack_1.cpp" />
+    <ClCompile Include="WizardStateAttack_2_main.cpp" />
+    <ClCompile Include="WizardStateAttack_2_Start.cpp" />
+    <ClCompile Include="WizardStateAttack_3_Main.cpp" />
+    <ClCompile Include="WizardStateAttack_3_Start.cpp" />
     <ClCompile Include="WizardStateIdle.cpp" />
     <ClCompile Include="WizardStateRun.cpp" />
     <ClCompile Include="WizardStateWalk.cpp" />
@@ -251,6 +261,11 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="Hero.h" />
+    <ClInclude Include="HeroStateAttack_1.h" />
+    <ClInclude Include="HeroStateAttack_2.h" />
+    <ClInclude Include="HeroStateAttack_3.h" />
+    <ClInclude Include="HeroStateAttack_4.h" />
+    <ClInclude Include="HeroStateAttack_Skill_Main.h" />
     <ClInclude Include="HeroStateIdle.h" />
     <ClInclude Include="HeroStateRun.h" />
     <ClInclude Include="HeroStateWalk.h" />
@@ -261,6 +276,11 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />
     <ClInclude Include="Wizard.h" />
+    <ClInclude Include="WizardStateAttack_1.h" />
+    <ClInclude Include="WizardStateAttack_2_main.h" />
+    <ClInclude Include="WizardStateAttack_2_Start.h" />
+    <ClInclude Include="WizardStateAttack_3_Main.h" />
+    <ClInclude Include="WizardStateAttack_3_Start.h" />
     <ClInclude Include="WizardStateIdle.h" />
     <ClInclude Include="WizardStateRun.h" />
     <ClInclude Include="WizardStateWalk.h" />

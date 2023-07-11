@@ -27,6 +27,12 @@ Vector3 Actor::calcVelocity(Status status)
 {
 	Vector3 moveSpeed = Vector3::Zero;
 
+	//特定のアニメーションが再生中なら抜け出す
+	if (isAnimationEntable() != true)
+	{
+		return moveSpeed;
+	}
+
 	//カメラの前方向と右方向のベクトルを持ってくる。
 	Vector3 forward = g_camera3D->GetForward();
 	Vector3 right = g_camera3D->GetRight();

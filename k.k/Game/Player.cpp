@@ -38,22 +38,28 @@ bool Player::Start()
 
 void Player::Update()
 {
-	//キャラクターの切り替え
-	if (g_pad[0]->IsTrigger(enButtonB))
+	//特定のアニメーションが再生中の時は入れ替え可能
+	if (m_nowActor->isAnimationSwappable() != true)
 	{
-		switch (m_enActiveCharacter)
+		//キャラクターの切り替え
+		if (g_pad[0]->IsTrigger(enButtonB))
 		{
-		case enHero:
-			ChangeCharacter(enWizard);
-			break;
-		case enWizard:
-			ChangeCharacter(enHero);
-			break;
+			switch (m_enActiveCharacter)
+			{
+			case enHero:
+				ChangeCharacter(enWizard);
+				break;
+			case enWizard:
+				ChangeCharacter(enHero);
+				break;
 
-		default:
-			break;
+			default:
+				break;
+			}
 		}
 	}
+
+	
 
 	//キャラコン
 
@@ -74,7 +80,7 @@ void Player::ChangeCharacter(EnCharacters nextCharacter)
 	m_nowActor = actor[nextCharacter];
 
 	//アクターのアニメーションを待機ステートにする
-	m_nowActor->SetAnimationState();
+	//m_nowActor->SetAnimationState();
 
 	m_nowActor->Activate();
 	//座標、回転、サイズをヒーローと同じにする
