@@ -10,5 +10,5 @@ void WizardStateIdle::ManageState()
 void WizardStateIdle::PlayAnimation()
 {
 	//待機アニメーションの再生
-	m_wizard->GetModelRender().PlayAnimation(Wizard::enAnimClip_Idle);
+	m_wizard->GetModelRender().PlayAnimation(Wizard::enAnimClip_Idle,0.3f);
 }
