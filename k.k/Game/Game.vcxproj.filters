@@ -55,6 +55,20 @@
     <ClCompile Include="HeroStateAttack_4.cpp">
       <Filter>Hero</Filter>
     </ClCompile>
+    <ClCompile Include="WizardStateAttack_1.cpp">
+      <Filter>Wizard</Filter>
+    </ClCompile>
+    <ClCompile Include="WizardStateAttack_2_Start.cpp">
+      <Filter>Wizard</Filter>
+    </ClCompile>
+    <ClCompile Include="WizardStateAttack_2_main.cpp">
+      <Filter>Wizard</Filter>
+    </ClCompile>
+    <ClCompile Include="WizardStateAttack_3_Start.cpp" />
+    <ClCompile Include="WizardStateAttack_3_Main.cpp" />
+    <ClCompile Include="HeroStateAttack_Skill_Main.cpp">
+      <Filter>Hero</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -103,6 +117,20 @@
       <Filter>Hero</Filter>
     </ClInclude>
     <ClInclude Include="HeroStateAttack_4.h">
+      <Filter>Hero</Filter>
+    </ClInclude>
+    <ClInclude Include="WizardStateAttack_1.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
+    <ClInclude Include="WizardStateAttack_2_Start.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
+    <ClInclude Include="WizardStateAttack_2_main.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
+    <ClInclude Include="WizardStateAttack_3_Start.h" />
+    <ClInclude Include="WizardStateAttack_3_Main.h" />
+    <ClInclude Include="HeroStateAttack_Skill_Main.h">
       <Filter>Hero</Filter>
     </ClInclude>
   </ItemGroup>
