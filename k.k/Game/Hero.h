@@ -40,6 +40,11 @@ public:
 	/// </summary>
 	void CreateCollision();
 
+	/// <summary>
+	/// スキル使用時の当たり判定の作成
+	/// </summary>
+	void CreateSkillCollision();
+
 
 	bool GetAtkCollsionCreateFlag() const
 	{
@@ -65,8 +70,8 @@ public:
 	{
 		return m_enAnimationState != enAnimationState_Attack_1 &&
 			m_enAnimationState != enAnimationState_Attack_2 &&
-			m_enAnimationState != enAnimationState_Attack_3 /*&&
-			m_enAnimationState != enAnimationState_Attack_4*/;
+			m_enAnimationState != enAnimationState_Attack_3 &&
+			m_enAnimationState != enAnimationState_Attack_Skill_Charge;
 	}
 
 	/// <summary>
@@ -95,9 +100,13 @@ public:
 	/// </summary>
 	void OnProcessAttack_3StateTransition();
 	/// <summary>
-	/// アタック4のステート遷移処理を実行
+	/// アタックスキルチャージのステート遷移処理を実行
 	/// </summary>
-	void OnProcessAttack_4StateTransition();
+	void OnProcessAttack_Skill_ChargeStateTransition();
+	/// <summary>
+	/// アタックスキルメインのステート遷移処理を実行
+	/// </summary>
+	void OnProcessAttack_Skill_MainStateTransition();
 
 public:
 	// アニメーションクリップの番号を表す列挙型。
@@ -108,7 +117,8 @@ public:
 		enAnimClip_Attack_1,// 3 : 
 		enAnimClip_Attack_2,// 4 : 
 		enAnimClip_Attack_3,// 5 : 
-		enAnimClip_Attack_4,// 6 : 
+		enAnimClip_Attack_Skill_Charge,
+		enAnimClip_Attack_Skill_Main,// 6 : 
 		enAnimClip_Num,		// 7 :アニメーションクリップの数
 	};
 
@@ -121,16 +131,20 @@ private:
 		enAnimationState_Attack_1,
 		enAnimationState_Attack_2,
 		enAnimationState_Attack_3,
-		enAnimationState_Attack_4
+		enAnimationState_Attack_Skill_Charge,
+		enAnimationState_Attack_Skill_Main
 	};
 
 	//攻撃パターンステート
 	enum EnAttackPattern {
 		enAttackPattern_None,
 		enAttackPattern_1,
+		enAttackPattern_1to2,
 		enAttackPattern_2,
+		enAttackPattern_2to3,
 		enAttackPattern_3,
-		enAttackPattern_4,
+		enAttackPattern_Skill_Charge,
+		enAttackPattern_Skill_Main,
 		enAttackPattern_End
 	};
 
@@ -165,7 +179,15 @@ private:
 
 
 	int m_swordBoonId = -1;		//剣のボーンID取得用変数
+	int m_skillBoonId = -1;		//スキル使用時のボーン取得用変数
+
 	bool m_createAttackCollisionFlag = false;		//攻撃時に当たり判定を生成するかのフラグ
+	bool m_createSkillCollisionFlag = false;		//スキル使用時に当たり判定を生成するかのフラグ
+
+
+
+	float m_ChargeTimer = 0.0f;
+	const float m_MaxChargeTime = 3.0f;
 
 };
 
