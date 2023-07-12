@@ -12,6 +12,7 @@
 
 namespace {
 	int MAXHP = 200;
+	int MAXMP = 100;
 	int ATK = 50;
 	float SPEED = 100.0f;
 	const char* NAME = "Hero";
@@ -33,6 +34,7 @@ bool Hero::Start()
 	//ステータスの初期化
 	m_status.InitStatus(
 	MAXHP,
+	MAXMP,
 	ATK,
 	SPEED,
 	NAME
@@ -95,7 +97,17 @@ void Hero::InitModel()
 
 void Hero::Update()
 {
-	
+	if (m_status.mp < m_status.maxMp)
+	{
+		m_status.mp += g_gameTime->GetFrameDeltaTime();
+
+		if (m_status.mp > m_status.maxMp)
+		{
+			m_status.mp = m_status.maxMp;
+		}
+	}
+
+
 	Move();
 	Attack();
 	ManageState();
@@ -183,12 +195,15 @@ void Hero::Attack()
 	// スキル
 	/////////////////////////////////////////////////////////////////////////////////////////
 
+
 	//まずはチャージ
 	if (m_enAttackPatternState == enAttackPattern_None ||
 		m_enAttackPatternState == enAnimationState_Attack_Skill_Charge)
 	{
-		if (g_pad[0]->IsPress(enButtonX))
+		//MPがスキルのMPより多かったら
+		if (g_pad[0]->IsPress(enButtonX)&&m_status.mp>=m_skillMp)
 		{
+			
 			m_enAttackPatternState = enAttackPattern_Skill_Charge;
 			SetNextAnimationState(enAnimationState_Attack_Skill_Charge);
 		}
@@ -388,6 +403,9 @@ void Hero::OnProcessAttack_Skill_ChargeStateTransition()
 		if (m_ChargeTimer < 1.0f) {
 			m_ChargeTimer = 1.0f;
 		}
+
+		//MPを減らす
+		m_status.mp -= m_skillMp;
 
 		//スキルだがダッシュしたことにする
 		m_dashFlag = true;
