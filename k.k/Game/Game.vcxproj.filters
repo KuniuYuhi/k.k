@@ -64,10 +64,20 @@
     <ClCompile Include="WizardStateAttack_2_main.cpp">
       <Filter>Wizard</Filter>
     </ClCompile>
-    <ClCompile Include="WizardStateAttack_3_Start.cpp" />
-    <ClCompile Include="WizardStateAttack_3_Main.cpp" />
     <ClCompile Include="HeroStateAttack_Skill_Main.cpp">
       <Filter>Hero</Filter>
+    </ClCompile>
+    <ClCompile Include="WizardStateAttack_3_Main.cpp">
+      <Filter>Wizard</Filter>
+    </ClCompile>
+    <ClCompile Include="WizardStateAttack_3_Start.cpp">
+      <Filter>Wizard</Filter>
+    </ClCompile>
+    <ClCompile Include="WizardState_Attack_4.cpp">
+      <Filter>Wizard</Filter>
+    </ClCompile>
+    <ClCompile Include="FlamePillar.cpp">
+      <Filter>Wizard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -128,10 +138,20 @@
     <ClInclude Include="WizardStateAttack_2_main.h">
       <Filter>Wizard</Filter>
     </ClInclude>
-    <ClInclude Include="WizardStateAttack_3_Start.h" />
-    <ClInclude Include="WizardStateAttack_3_Main.h" />
     <ClInclude Include="HeroStateAttack_Skill_Main.h">
       <Filter>Hero</Filter>
+    </ClInclude>
+    <ClInclude Include="WizardStateAttack_3_Main.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
+    <ClInclude Include="WizardStateAttack_3_Start.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
+    <ClInclude Include="WizardState_Attack_4.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
+    <ClInclude Include="FlamePillar.h">
+      <Filter>Wizard</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

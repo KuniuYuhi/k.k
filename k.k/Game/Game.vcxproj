@@ -225,6 +225,7 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="BossStage1.cpp" />
+    <ClCompile Include="FlamePillar.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="Hero.cpp" />
@@ -254,10 +255,12 @@
     <ClCompile Include="WizardStateIdle.cpp" />
     <ClCompile Include="WizardStateRun.cpp" />
     <ClCompile Include="WizardStateWalk.cpp" />
+    <ClCompile Include="WizardState_Attack_4.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
     <ClInclude Include="BossStage1.h" />
+    <ClInclude Include="FlamePillar.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="Hero.h" />
@@ -284,6 +287,7 @@
     <ClInclude Include="WizardStateIdle.h" />
     <ClInclude Include="WizardStateRun.h" />
     <ClInclude Include="WizardStateWalk.h" />
+    <ClInclude Include="WizardState_Attack_4.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
