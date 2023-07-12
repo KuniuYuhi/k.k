@@ -14,6 +14,11 @@ Player::~Player()
 
 bool Player::Start()
 {
+	m_MpFont.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+	m_MpFont.SetPosition(-800.0f, -300.0f);
+	m_MpFont.SetScale(2.0f);
+
+
 	m_hero = NewGO<Hero>(0, "hero");
 	m_wizard = NewGO<Wizard>(0, "wizard");
 
@@ -38,6 +43,13 @@ bool Player::Start()
 
 void Player::Update()
 {
+	//MPの表示
+	int NowActorMP = m_nowActor->GetStatus().mp;
+	int NowActorMaxMP = m_nowActor->GetStatus().maxMp;
+	wchar_t MP[255];
+	swprintf_s(MP, 255, L"MP %3d/%d", NowActorMP, NowActorMaxMP);
+	m_MpFont.SetText(MP);
+
 	//特定のアニメーションが再生中の時は入れ替え可能
 	if (m_nowActor->isAnimationSwappable() != true)
 	{
@@ -96,4 +108,9 @@ void Player::ChangeCharacter(EnCharacters nextCharacter)
 	//現在のキャラクターを魔法使いに変更する
 	m_enActiveCharacter = nextCharacter;
 
+}
+
+void Player::Render(RenderContext& rc)
+{
+	m_MpFont.Draw(rc);
 }
