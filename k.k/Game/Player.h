@@ -20,6 +20,8 @@ public:
 	bool Start();
 	void Update();
 
+	void Render(RenderContext& rc);
+
 	/// <summary>
 	/// キャラクターを切り替える
 	/// </summary>
@@ -48,6 +50,8 @@ public:
 private:
 	Hero* m_hero = nullptr;
 	Wizard* m_wizard = nullptr;
+
+	FontRender m_MpFont;
 
 	//キャラコンこれ使う
 	CharacterController m_charaCon;

@@ -3,6 +3,8 @@ struct Status
 {
 	int maxHp = 0;
 	int hp = 0;
+	int maxMp = 0;
+	float mp = 0;
 	int defaultAtk = 0;
 	int atk = 0;
 	float dashSpeed = 0.0f;
@@ -10,10 +12,12 @@ struct Status
 	const char* characterName = nullptr;
 
 
-	void InitStatus(int MaxHp,int Atk, float Speed,const char* name)
+	void InitStatus(int MaxHp,int MaxMp,int Atk, float Speed,const char* name)
 	{
 		maxHp = MaxHp;
 		hp = maxHp;
+		maxMp = MaxMp;
+		mp = maxMp;
 		defaultAtk = Atk;
 		atk = defaultAtk;
 		defaultSpeed = Speed;

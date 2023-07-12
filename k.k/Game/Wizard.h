@@ -24,6 +24,10 @@ public:
 
 	void Attack();
 
+	void CreateCollision();
+
+	void CreateFlamePillar();
+
 	void PlayAnimation();
 
 	void ManageState();
@@ -108,10 +112,17 @@ private:
 		enAttackPattern_1,
 		enAttackPattern_2_start,
 		enAttackPattern_2_main,
+		enAttackPattern_1to4,
 		enAttackPattern_3_start,
 		enAttackPattern_3_main,
 		enAttackPattern_4,
 		enAttackPattern_End
+	};
+
+	//スキルパターンステート
+	enum EnSkillPattern {
+		enSkillPattern_FlamePillar,
+		enSkillPattern_FireBall
 	};
 
 public:
@@ -138,6 +149,19 @@ private:
 
 	EnAttackPattern m_enAttackPatternState = enAttackPattern_None;
 
+	EnSkillPattern m_enSkillPatternState = enSkillPattern_FlamePillar;
+
 	IWizardState* m_animationState = nullptr;
+
+
+	Quaternion m_wandRotation = Quaternion::Identity;
+
+
+	bool m_createAttackCollisionFlag = false;		//攻撃時に当たり判定を生成するかのフラグ
+
+	int m_magicWandBoonId = -1;
+
+
+	const int m_skillMp = 50;
 };
 

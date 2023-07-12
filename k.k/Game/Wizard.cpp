@@ -4,16 +4,25 @@
 #include "WizardStateWalk.h"
 #include "WizardStateRun.h"
 #include "WizardStateAttack_1.h"
+//スキル入れ替えて使える
+//連続攻撃ファイヤーボール
 #include "WizardStateAttack_2_Start.h"
 #include "WizardStateAttack_2_main.h"
+//フレイムーピラー
 #include "WizardStateAttack_3_Start.h"
 #include "WizardStateAttack_3_main.h"
+#include "WizardState_Attack_4.h"
+
+#include "FlamePillar.h"
 
 namespace {
 	int MAXHP = 150;
+	int MAXMP = 200;
 	int ATK = 70;
 	float SPEED = 80.0f;
 	const char* NAME = "Wizard";
+
+	
 }
 
 Wizard::Wizard()
@@ -32,6 +41,7 @@ bool Wizard::Start()
 	//ステータスの初期化
 	m_status.InitStatus(
 		MAXHP,
+		MAXMP,
 		ATK,
 		SPEED,
 		NAME
@@ -41,6 +51,9 @@ bool Wizard::Start()
 
 	//非アクティブ化
 	Deactivate();
+
+	m_wandRotation.AddRotationDegX(50.0f);
+
 
 	return true;
 }
@@ -79,6 +92,10 @@ void Wizard::InitModel()
 	//m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 
+	//ボーンIDの取得
+	m_magicWandBoonId = m_modelRender.FindBoneID(L"Weapon");
+
+
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
@@ -89,10 +106,22 @@ void Wizard::InitModel()
 
 void Wizard::Update()
 {
+	if (m_status.mp < m_status.maxMp)
+	{
+		m_status.mp += g_gameTime->GetFrameDeltaTime();
+
+		if (m_status.mp > m_status.maxMp)
+		{
+			m_status.mp = m_status.maxMp;
+		}
+	}
+
 	Move();
 	Attack();
 	ManageState();
 	PlayAnimation();
+
+	CreateCollision();
 
 	SetTransFormModel(m_modelRender);
 	m_modelRender.Update();
@@ -117,18 +146,105 @@ void Wizard::Move()
 
 void Wizard::Attack()
 {
-	if (g_pad[0]->IsTrigger(enButtonY))
+	//スキルの切り替え
+	if (g_pad[0]->IsTrigger(enButtonRB3))
+	{
+		switch (m_enSkillPatternState)
+		{
+			//フレイムピラーからファイヤーボールに切り替え
+		case Wizard::enSkillPattern_FlamePillar:
+			m_enSkillPatternState = enSkillPattern_FireBall;
+			break;
+			//ファイヤーボールからフレイムピラーに切り替え
+		case Wizard::enSkillPattern_FireBall:
+			m_enSkillPatternState = enSkillPattern_FlamePillar;
+			break;
+		default:
+			break;
+		}
+	}
+
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 通常攻撃
+	////////////////////////////////////////////////////////////////////////////////////////
+	//1コンボ
+	if (g_pad[0]->IsTrigger(enButtonY)&& m_enAttackPatternState==enAttackPattern_None)
 	{
 		m_enAttackPatternState = enAttackPattern_1;
 		SetNextAnimationState(enAnimationState_Attack_1);
+		return;
 	}
-
-	if (g_pad[0]->IsTrigger(enButtonX))
+	//2コンボ受付タイム
+	if (g_pad[0]->IsTrigger(enButtonY) && m_enAttackPatternState == enAttackPattern_1)
 	{
-		m_enAttackPatternState = enAttackPattern_3_start;
-		SetNextAnimationState(enAnimationState_Attack_3_start);
+		m_enAttackPatternState = enAttackPattern_1to4;
+		return;
 	}
 
+
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// スキル
+	////////////////////////////////////////////////////////////////////////////////////////
+
+	//スキルのMPが足りないなら
+	if (m_status.mp < m_skillMp) {
+		return;
+	}
+	
+	if (g_pad[0]->IsTrigger(enButtonX) && m_enAttackPatternState == enAttackPattern_None)
+	{
+		//フレイムピラー
+		if (m_enSkillPatternState == enSkillPattern_FlamePillar)
+		{
+			m_enAttackPatternState = enAttackPattern_3_start;
+			SetNextAnimationState(enAnimationState_Attack_3_start);
+
+			return;
+		}
+		//ファイヤーボール
+		else
+		{
+			m_enAttackPatternState = enAttackPattern_2_start;
+			SetNextAnimationState(enAnimationState_Attack_2_start);
+
+			return;
+		}
+
+
+
+		
+	}
+	
+
+}
+
+void Wizard::CreateCollision()
+{
+	auto AtkCollision = NewGO<CollisionObject>(0, "Attack");
+
+	//ボックスの当たり判定作成
+	AtkCollision->CreateBox(
+		m_position,
+		m_wandRotation,
+		Vector3(10.0f, 100.0f, 10.0f)
+	);
+
+	//杖のボーンのワールド座標を取得
+	Matrix WandBoonMatrix = m_modelRender.GetBone(m_magicWandBoonId)->GetWorldMatrix();
+	/*Matrix WandRotMatrix;
+	WandRotMatrix.MakeRotationFromQuaternion(m_wandRotation);
+
+	Matrix finalWandBoonMatrix = WandBoonMatrix * WandRotMatrix;*/
+
+	AtkCollision->SetWorldMatrix(WandBoonMatrix);
+}
+
+void Wizard::CreateFlamePillar()
+{
+	FlamePillar* flamePillar = NewGO<FlamePillar>(0, "flamepillar");
+	flamePillar->SetWizard(this);
 }
 
 void Wizard::PlayAnimation()
@@ -185,13 +301,17 @@ void Wizard::SetNextAnimationState(EnAnimationState nextState)
 		//アタック３メインステートを作成する。
 		m_animationState = new WizardStateAttack_3_Main(this);
 		break;
+	case Wizard::enAnimationState_Attack_4:
+		//アタック４ステートを作成する。
+		m_animationState = new WizardState_Attack_4(this);
+		break;
 
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
 		std::abort();
 		break;
 	}
-
+	
 	
 }
 
@@ -258,6 +378,11 @@ void Wizard::OnProcessAttack_3StateTransition()
 			m_enAttackPatternState = enAttackPattern_3_main;
 			//メインアニメーションを再生
 			SetNextAnimationState(enAnimationState_Attack_3_main);
+
+			//フレイムピラー生成
+			CreateFlamePillar();
+			//MPを減らす
+			m_status.mp -= m_skillMp;
 			return;
 		}
 
@@ -281,10 +406,25 @@ void Wizard::OnProcessAttack_4StateTransition()
 
 void Wizard::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
-	//一段目のアタックのアニメーションが始まったら
+	if (wcscmp(eventName, L"Attack1_ComboStart") == 0)
+	{
+		
+	}
 	if (wcscmp(eventName, L"Attack1_Collision_Start") == 0)
 	{
 		int a = 0;
+	}
+	if (wcscmp(eventName, L"Attack1_Collision_End") == 0)
+	{
+		int a = 0;
+	}
+	if (wcscmp(eventName, L"Attack1_ComboEnd") == 0)
+	{
+		if (m_enAttackPatternState == enAttackPattern_1to4)
+		{
+			m_enAttackPatternState = enAttackPattern_4;
+			SetNextAnimationState(enAnimationState_Attack_4);
+		}
 	}
 }
 

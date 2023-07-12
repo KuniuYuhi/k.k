@@ -178,6 +178,8 @@ private:
 	IHeroState* m_state = nullptr;					//ステートクラス
 
 
+	const int m_skillMp = 30;	//スキル発動に必要なMP
+
 	int m_swordBoonId = -1;		//剣のボーンID取得用変数
 	int m_skillBoonId = -1;		//スキル使用時のボーン取得用変数
 
