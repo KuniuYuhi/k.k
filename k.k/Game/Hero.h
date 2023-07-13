@@ -165,6 +165,8 @@ private:
 	/// <param name="nextState"></param>
 	void SetNextAnimationState(EnAnimationState nextState);
 
+	bool RotationOnly();
+
 
 	ModelRender m_modelRender;
 
