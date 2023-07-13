@@ -8,11 +8,11 @@
 //連続攻撃ファイヤーボール
 #include "WizardStateAttack_2_Start.h"
 #include "WizardStateAttack_2_main.h"
+#include "FireBall.h"
 //フレイムーピラー
 #include "WizardStateAttack_3_Start.h"
 #include "WizardStateAttack_3_main.h"
 #include "WizardState_Attack_4.h"
-
 #include "FlamePillar.h"
 
 namespace {
@@ -52,6 +52,9 @@ bool Wizard::Start()
 	//非アクティブ化
 	Deactivate();
 
+
+	m_fireBallTimer = m_createFireBallTime;
+
 	m_wandRotation.AddRotationDegX(50.0f);
 
 
@@ -73,7 +76,7 @@ void Wizard::InitModel()
 	m_animationClip[enAnimClip_Attack_2_start].Load("Assets/animData/character/Wizard/Attack2_start.tka");
 	m_animationClip[enAnimClip_Attack_2_start].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Attack_2_main].Load("Assets/animData/character/Wizard/Attack2_maintain.tka");
-	m_animationClip[enAnimClip_Attack_2_main].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Attack_2_main].SetLoopFlag(true);
 	m_animationClip[enAnimClip_Attack_3_start].Load("Assets/animData/character/Wizard/Attack3_start.tka");
 	m_animationClip[enAnimClip_Attack_3_start].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Attack_3_main].Load("Assets/animData/character/Wizard/Attack3_maintain.tka");
@@ -106,7 +109,10 @@ void Wizard::InitModel()
 
 void Wizard::Update()
 {
-	if (m_status.mp < m_status.maxMp)
+
+	RecoveryMP();
+
+	/*if (m_status.mp < m_status.maxMp)
 	{
 		m_status.mp += g_gameTime->GetFrameDeltaTime();
 
@@ -114,7 +120,7 @@ void Wizard::Update()
 		{
 			m_status.mp = m_status.maxMp;
 		}
-	}
+	}*/
 
 	Move();
 	Attack();
@@ -140,8 +146,24 @@ void Wizard::Move()
 	
 	m_moveSpeed = m_player->GetMoveSpeed();
 	m_position = m_player->GetPosition();
-	//m_position = m_charaCon.Execute(m_moveSpeed = calcVelocity(m_status), 1.0f / 60.0f);
+	
 	Rotation();
+}
+
+bool Wizard::RotationOnly()
+{
+	//ファイヤーボールを打っているとき
+	if (m_enAttackPatternState == enAttackPattern_2_main)
+	{
+		//xかzの移動速度があったら(スティックの入力があったら)。
+		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
+		{
+			m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
+		}
+		return true;
+	}
+
+	return false;
 }
 
 void Wizard::Attack()
@@ -188,33 +210,38 @@ void Wizard::Attack()
 	// スキル
 	////////////////////////////////////////////////////////////////////////////////////////
 
-	//スキルのMPが足りないなら
-	if (m_status.mp < m_skillMp) {
-		return;
-	}
+	
+
+	
 	
 	if (g_pad[0]->IsTrigger(enButtonX) && m_enAttackPatternState == enAttackPattern_None)
 	{
 		//フレイムピラー
 		if (m_enSkillPatternState == enSkillPattern_FlamePillar)
 		{
+			//スキルのMPが足りないなら抜け出す
+			if (m_status.mp < m_flamePillar_skillMp) {
+				return;
+			}
 			m_enAttackPatternState = enAttackPattern_3_start;
 			SetNextAnimationState(enAnimationState_Attack_3_start);
-
+			//MP回復状態を止める
+			SetRecoveryMpFlag(false);
 			return;
 		}
 		//ファイヤーボール
 		else
 		{
+			//スキルのMPが足りないなら抜け出す
+			if (m_status.mp < m_fireBall_SkillMp) {
+				return;
+			}
 			m_enAttackPatternState = enAttackPattern_2_start;
 			SetNextAnimationState(enAnimationState_Attack_2_start);
-
+			//MP回復状態を止める
+			SetRecoveryMpFlag(false);
 			return;
 		}
-
-
-
-		
 	}
 	
 
@@ -243,8 +270,37 @@ void Wizard::CreateCollision()
 
 void Wizard::CreateFlamePillar()
 {
+	//フレイムピラー生成
 	FlamePillar* flamePillar = NewGO<FlamePillar>(0, "flamepillar");
 	flamePillar->SetWizard(this);
+	//MPを減らす
+	m_status.mp -= m_flamePillar_skillMp;
+}
+
+bool Wizard::CreateFireBall()
+{
+	//スキルのMPが足りないなら抜け出す
+	if (m_status.mp < m_fireBall_SkillMp) {
+		return false;
+	}
+
+
+	if (m_createFireBallTime < m_fireBallTimer)
+	{
+		//ファイヤーボール生成
+		FireBall* fireBall = NewGO<FireBall>(0, "fireball");
+		fireBall->SetWizard(this);
+		//MPを減らす
+		m_status.mp -= m_fireBall_SkillMp;
+
+		m_fireBallTimer = 0.0f;
+	}
+	else
+	{
+		m_fireBallTimer += g_gameTime->GetFrameDeltaTime();
+	}
+
+	return true;
 }
 
 void Wizard::PlayAnimation()
@@ -352,21 +408,48 @@ void Wizard::OnProcessAttack_2StateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//スタートだったら
-		if (m_enAttackPatternState == enAttackPattern_2_start)
+		m_enAttackPatternState = enAttackPattern_2_main;
+		//メインアニメーションを再生
+		SetNextAnimationState(enAnimationState_Attack_2_main);
+		//ファイヤーボールタイマーをセット
+		m_fireBallTimer = m_createFireBallTime;
+	}
+}
+
+void Wizard::OnProcessAttack_2MainStateTransition()
+{
+	//Xボタンを押している間
+	if (g_pad[0]->IsPress(enButtonX))
+	{
+		//MPが足りなくなったら強制的にスキルを終わる
+		if (!CreateFireBall())
 		{
-			m_enAttackPatternState = enAttackPattern_2_main;
-			//メインアニメーションを再生
-			SetNextAnimationState(enAnimationState_Attack_2_main);
-			return;
+			//攻撃パターンをなし状態にする
+			m_enAttackPatternState = enAttackPattern_None;
+			//共通の状態遷移処理に移行
+			ProcessCommonStateTransition();
+			//スキルを打ち終わったのでMP回復フラグをtrueにする
+			SetRecoveryMpFlag(true);
 		}
+	}
+	else
+	{
 
 		//攻撃パターンをなし状態にする
 		m_enAttackPatternState = enAttackPattern_None;
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
+		//スキルを打ち終わったのでMP回復フラグをtrueにする
+		SetRecoveryMpFlag(true);
 	}
+
+	
+
+
+
+	
 }
+
 void Wizard::OnProcessAttack_3StateTransition()
 {
 	//アニメーションの再生が終わったら
@@ -381,8 +464,7 @@ void Wizard::OnProcessAttack_3StateTransition()
 
 			//フレイムピラー生成
 			CreateFlamePillar();
-			//MPを減らす
-			m_status.mp -= m_skillMp;
+			
 			return;
 		}
 
@@ -390,6 +472,8 @@ void Wizard::OnProcessAttack_3StateTransition()
 		m_enAttackPatternState = enAttackPattern_None;
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
+		//スキルを打ち終わったのでMP回復フラグをtrueにする
+		SetRecoveryMpFlag(true);
 	}
 }
 void Wizard::OnProcessAttack_4StateTransition()
