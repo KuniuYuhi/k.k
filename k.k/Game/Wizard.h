@@ -28,6 +28,8 @@ public:
 
 	void CreateFlamePillar();
 
+	bool CreateFireBall();
+
 	void PlayAnimation();
 
 	void ManageState();
@@ -70,6 +72,8 @@ public:
 	void OnProcessAttack_1StateTransition();
 
 	void OnProcessAttack_2StateTransition();
+
+	void OnProcessAttack_2MainStateTransition();
 
 	void OnProcessAttack_3StateTransition();
 
@@ -134,10 +138,13 @@ public:
 
 private:
 	
-	
+	/// <summary>
+	/// 次のアニメーションステートを決める
+	/// </summary>
+	/// <param name="nextState">次のアニメーションステート</param>
 	void SetNextAnimationState(EnAnimationState nextState);
 
-
+	bool RotationOnly();
 	
 
 	ModelRender m_modelRender;
@@ -153,7 +160,6 @@ private:
 
 	IWizardState* m_animationState = nullptr;
 
-
 	Quaternion m_wandRotation = Quaternion::Identity;
 
 
@@ -162,6 +168,14 @@ private:
 	int m_magicWandBoonId = -1;
 
 
-	const int m_skillMp = 50;
+	const int m_flamePillar_skillMp = 50;
+	const int m_fireBall_SkillMp = 10;
+
+
+	bool m_createFireBallFlag = false;
+	
+	const float m_createFireBallTime = 0.7f;
+	float m_fireBallTimer = 0.0f;
+
 };
 

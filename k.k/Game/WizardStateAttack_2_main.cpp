@@ -4,7 +4,7 @@
 
 void WizardStateAttack_2_main::ManageState()
 {
-	m_wizard->OnProcessAttack_2StateTransition();
+	m_wizard->OnProcessAttack_2MainStateTransition();
 }
 
 void WizardStateAttack_2_main::PlayAnimation()

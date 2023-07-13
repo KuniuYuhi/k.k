@@ -76,7 +76,7 @@ void Player::Update()
 	//ƒLƒƒƒ‰ƒRƒ“
 
 	//m_position = actor[m_enActiveCharacter]->GetPosition();
-
+	//ˆÚ“®ˆ—
 	m_moveSpeed = m_nowActor->calcVelocity(m_nowActor->GetStatus());
 
 	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);

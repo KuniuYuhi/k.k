@@ -97,15 +97,7 @@ void Hero::InitModel()
 
 void Hero::Update()
 {
-	if (m_status.mp < m_status.maxMp)
-	{
-		m_status.mp += g_gameTime->GetFrameDeltaTime();
-
-		if (m_status.mp > m_status.maxMp)
-		{
-			m_status.mp = m_status.maxMp;
-		}
-	}
+	RecoveryMP();
 
 
 	Move();
@@ -146,12 +138,26 @@ void Hero::Move()
 		}
 	}
 
-	
-	
 	m_moveSpeed = m_player->GetMoveSpeed();
 	m_position = m_player->GetPosition();
 	
 	Rotation();
+}
+
+bool Hero::RotationOnly()
+{
+	//スキルのチャージ時間の間
+	if (m_enAttackPatternState == enAnimationState_Attack_Skill_Charge)
+	{
+		//xかzの移動速度があったら(スティックの入力があったら)。
+		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
+		{
+			m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
+		}
+		return true;
+	}
+
+	return false;
 }
 
 void Hero::Attack()
@@ -206,6 +212,8 @@ void Hero::Attack()
 			
 			m_enAttackPatternState = enAttackPattern_Skill_Charge;
 			SetNextAnimationState(enAnimationState_Attack_Skill_Charge);
+			//MP回復状態を止める
+			SetRecoveryMpFlag(false);
 		}
 		return;
 	}
@@ -430,6 +438,9 @@ void Hero::OnProcessAttack_Skill_MainStateTransition()
 
 		//チャージ時間をリセット
 		m_ChargeTimer = 0.0f;
+
+		//スキルを打ち終わったのでMP回復フラグをtrueにする
+		SetRecoveryMpFlag(true);
 
 		//攻撃パターンをなし状態にする
 		m_enAttackPatternState = enAttackPattern_None;

@@ -45,16 +45,18 @@ public:
 	Vector3 calcVelocity(Status status);
 
 	/// <summary>
-	/// 
+	/// キャラクターがチェンジ可能か
 	/// </summary>
 	/// <returns></returns>
 	virtual bool isAnimationSwappable() const = 0;
 
 	/// <summary>
-	/// 
+	/// 特定のアニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
 	virtual bool isAnimationEntable() const = 0;
+
+
 
 	/// <summary>
 	/// 座標の取得
@@ -107,7 +109,25 @@ protected:
 	/// </summary>
 	virtual void ManageState() = 0;
 
-	
+	/// <summary>
+	/// スキルの使用時などの移動はしないが回転はしたいときに使う
+	/// </summary>
+	virtual bool RotationOnly() = 0;
+
+	/// <summary>
+	/// MPの回復
+	/// m_recoveryMpFlagがtrueの時に処理を実行
+	/// </summary>
+	void RecoveryMP();
+
+	/// <summary>
+	/// MPを回復するかのフラグを設定する
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetRecoveryMpFlag(bool flag)
+	{
+		m_recoveryMpFlag = flag;
+	}
 
 	/// <summary>
 	/// 移動時の回転
@@ -118,6 +138,7 @@ protected:
 	
 
 protected:
+
 	Status m_status;
 	Player* m_player = nullptr;
 
@@ -125,10 +146,15 @@ protected:
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
+
+	Vector3 m_SaveMoveSpeed = Vector3::Zero;		//回転のみ使用する時に使う
+
 	Quaternion m_rotation = Quaternion::Identity;
 	Vector3 m_scale = Vector3::One;
 
 	bool m_dashFlag = false;		//ダッシュするかのフラグ
+
+	bool m_recoveryMpFlag = false;	//スキルを打ち終わったあとにtrueにする。打つ前はfalse
 
 };
 
