@@ -224,6 +224,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="AIActor.cpp" />
     <ClCompile Include="BossStage1.cpp" />
     <ClCompile Include="FireBall.cpp" />
     <ClCompile Include="FlamePillar.cpp" />
@@ -238,6 +239,11 @@
     <ClCompile Include="HeroStateIdle.cpp" />
     <ClCompile Include="HeroStateRun.cpp" />
     <ClCompile Include="HeroStateWalk.cpp" />
+    <ClCompile Include="Lich.cpp" />
+    <ClCompile Include="LichStateAttack_1.cpp" />
+    <ClCompile Include="LichStateAttack_2.cpp" />
+    <ClCompile Include="LichStateIdle.cpp" />
+    <ClCompile Include="LichStateWalk.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Status.cpp" />
@@ -260,6 +266,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="AIActor.h" />
     <ClInclude Include="BossStage1.h" />
     <ClInclude Include="FireBall.h" />
     <ClInclude Include="FlamePillar.h" />
@@ -275,7 +282,13 @@
     <ClInclude Include="HeroStateRun.h" />
     <ClInclude Include="HeroStateWalk.h" />
     <ClInclude Include="IHeroState.h" />
+    <ClInclude Include="ILichState.h" />
     <ClInclude Include="IWizardState.h" />
+    <ClInclude Include="Lich.h" />
+    <ClInclude Include="LichStateAttack_1.h" />
+    <ClInclude Include="LichStateAttack_2.h" />
+    <ClInclude Include="LichStateIdle.h" />
+    <ClInclude Include="LichStateWalk.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Status.h" />
     <ClInclude Include="stdafx.h" />
