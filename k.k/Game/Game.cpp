@@ -3,6 +3,7 @@
 #include "GameCamera.h"
 #include "Player.h"
 #include "BossStage1.h"
+#include "Lich.h"
 
 
 namespace {
@@ -89,6 +90,9 @@ bool Game::Start()
 	Player* player = NewGO<Player>(0, "player");
 
 	GameCamera* gameCamera = NewGO<GameCamera>(0, "gameCamera");
+
+	Lich* lich = NewGO<Lich>(0, "lich");
+
 
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
