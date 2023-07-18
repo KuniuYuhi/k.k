@@ -47,6 +47,13 @@ public:
 		return m_charaCon;
 	}
 
+	/// <summary>
+	/// 現在のキャラクターの攻撃力を返す
+	/// </summary>
+	/// <returns></returns>
+	int GetAtk();
+	
+
 private:
 	Hero* m_hero = nullptr;
 	Wizard* m_wizard = nullptr;

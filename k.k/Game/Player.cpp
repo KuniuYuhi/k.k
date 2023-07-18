@@ -110,6 +110,11 @@ void Player::ChangeCharacter(EnCharacters nextCharacter)
 
 }
 
+int Player::GetAtk()
+{
+	return m_nowActor->GetStatus().atk;
+}
+
 void Player::Render(RenderContext& rc)
 {
 	m_MpFont.Draw(rc);
