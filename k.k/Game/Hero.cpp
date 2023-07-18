@@ -56,7 +56,7 @@ void Hero::InitModel()
 	m_animationClip[enAnimClip_Walk].SetLoopFlag(true);
 	m_animationClip[enAnimClip_Run].Load("Assets/animData/character/Player/SprintFWD_Battle.tka");
 	m_animationClip[enAnimClip_Run].SetLoopFlag(true);
-	m_animationClip[enAnimClip_Attack_1].Load("Assets/animData/character/Player/Attack1.tka");
+	m_animationClip[enAnimClip_Attack_1].Load("Assets/animData/character/Player/Attack1_1.tka");
 	m_animationClip[enAnimClip_Attack_1].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Attack_2].Load("Assets/animData/character/Player/Attack2.tka");
 	m_animationClip[enAnimClip_Attack_2].SetLoopFlag(false);
@@ -171,7 +171,7 @@ void Hero::Attack()
 	//1コンボ
 	if (g_pad[0]->IsTrigger(enButtonY)&& m_enAttackPatternState==enAttackPattern_None)
 	{
-		m_createAttackCollisionFlag = true;
+		//m_createAttackCollisionFlag = true;
 		//攻撃パターン１
 		m_enAttackPatternState = enAttackPattern_1;
 
@@ -455,6 +455,12 @@ void Hero::OnProcessAttack_Skill_MainStateTransition()
 
 void Hero::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
+	//アタック1のコンボ受付タイムが始まったら
+	if (wcscmp(eventName, L"Attack1_ComboStart") == 0)
+	{
+		m_createAttackCollisionFlag = true;
+	}
+
 	//アタック1のコンボ受付タイムが終わったら
 	if (wcscmp(eventName, L"Attack1_ComboEnd") == 0)
 	{
