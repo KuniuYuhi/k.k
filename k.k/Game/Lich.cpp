@@ -80,7 +80,7 @@ void Lich::InitModel()
 
 	//キャラコンの設定
 	m_charaCon.Init(
-		100.0f,
+		70.0f,
 		50.0f,
 		m_position
 	);
@@ -94,12 +94,12 @@ void Lich::Update()
 	DecideNextAction();
 
 	
-	//Move();
-
-	//Attack();
+	
 
 	ManageState();
 	PlayAnimation();
+
+	DamageCollision();
 
 	SetTransFormModel(m_modelRender);
 	m_modelRender.Update();
@@ -345,6 +345,36 @@ void Lich::OnProcessAttack_2StateTransition()
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}
+}
+
+void Lich::DamageCollision()
+{
+	//敵の攻撃用のコリジョンを取得する名前一緒にする
+	const auto& Attack_1Collisions = g_collisionObjectManager->FindCollisionObjects("Attack");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : Attack_1Collisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(m_charaCon) == true)
+		{
+			m_status.hp -= m_player->GetAtk();
+		}
+
+		
+	}
+
+	//敵の攻撃用のコリジョンを取得する名前一緒にする
+	const auto& SkillCollisions = g_collisionObjectManager->FindCollisionObjects("SkillAttack");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : SkillCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(m_charaCon) == true)
+		{
+			m_status.hp -= m_player->GetAtk();
+		}
+	}
+
 }
 
 void Lich::Render(RenderContext& rc)

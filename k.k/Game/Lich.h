@@ -33,10 +33,18 @@ public:
 	void Move();
 
 	/// <summary>
-	/// 攻撃処理
+	/// 
+	/// </summary>
+	void DamageCollision();
+
+	/// <summary>
+	/// アタック１の攻撃処理
 	/// </summary>
 	bool Attack();
-
+	/// <summary>
+	/// アタック２の攻撃処理
+	/// </summary>
+	/// <returns></returns>
 	bool Attack2();
 
 	/// <summary>
