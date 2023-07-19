@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Actor.h"
 class Hero;
 class Wizard;
 class Actor;
@@ -53,6 +53,24 @@ public:
 	/// <returns></returns>
 	int GetAtk();
 	
+	/// <summary>
+	/// 現在のコンボステートとダメージを受けた時のコンボステートが違うか
+	/// </summary>
+	/// <returns>違うならtrue,同じならfalse</returns>
+	bool IsComboStateSame();
+	
+
+	/// <summary>
+	/// ダメージを受けた時のコンボステートを設定
+	/// </summary>
+	/// <param name="damagedcombostate"></param>
+	void SetDamagedComboState(Actor::EnComboState damagedcombostate);
+	
+	/// <summary>
+	/// 現在のキャラクターのコンボステートを取得
+	/// </summary>
+	/// <returns></returns>
+	Actor::EnComboState GetNowComboState() const;
 
 private:
 	Hero* m_hero = nullptr;
