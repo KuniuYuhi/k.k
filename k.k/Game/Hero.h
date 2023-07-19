@@ -1,6 +1,8 @@
 #pragma once
 #include "Actor.h"
 class IHeroState;
+class Player;
+
 class Hero :public Actor
 {
 public:
@@ -148,6 +150,8 @@ private:
 		enAttackPattern_End
 	};
 
+	
+
 public:
 	//アニメーションステートを設定する
 	void SetAnimationState()
@@ -156,8 +160,6 @@ public:
 	}
 
 private:
-
-	
 	
 	/// <summary>
 	/// 次のアニメーションステートを作成する。
@@ -175,7 +177,9 @@ private:
 
 	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
 
-	EnAttackPattern m_enAttackPatternState = enAttackPattern_None;
+	EnAttackPattern m_enAttackPatternState = enAttackPattern_None;	//現在の攻撃タイミングを知るためのステート
+
+	Player* m_player = nullptr;
 
 	IHeroState* m_state = nullptr;					//ステートクラス
 

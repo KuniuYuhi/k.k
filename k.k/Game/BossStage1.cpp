@@ -38,7 +38,7 @@ bool BossStage1::Start()
 	backGround.Update();
 
 
-	Tree.Init("Assets/modelData/BGobject/tree0.tkm", nullptr, 0, enModelUpAxisZ, true, true, false);
+	/*Tree.Init("Assets/modelData/BGobject/tree0.tkm", nullptr, 0, enModelUpAxisZ, true, true, false);
 	Tree.SetPosition(100.0f, 0.0f, 0.0f);
 	Tree.Update();
 
@@ -53,7 +53,7 @@ bool BossStage1::Start()
 	m_tree_Collision->SetIsEnableAutoDelete(false);
 	m_tree_Collision->SetName("tree");
 	m_tree_Collision->SetPosition(Vector3(100.0f, 0.0f, 0.0f));
-	m_tree_Collision->Update();
+	m_tree_Collision->Update();*/
 
 	
 
@@ -72,5 +72,5 @@ void BossStage1::Update()
 void BossStage1::Render(RenderContext& rc)
 {
 	backGround.Draw(rc);
-	Tree.Draw(rc);
+	//Tree.Draw(rc);
 }

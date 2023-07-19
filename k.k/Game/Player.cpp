@@ -110,7 +110,28 @@ void Player::ChangeCharacter(EnCharacters nextCharacter)
 
 }
 
+int Player::GetAtk()
+{
+	return m_nowActor->GetStatus().atk;
+}
+
+bool Player::IsComboStateSame()
+{
+	return m_nowActor->IsComboStateSame();
+}
+
+void Player::SetDamagedComboState(Actor::EnComboState damagedcombostate)
+{
+	m_nowActor->SetDamagedComboState(damagedcombostate);
+}
+
+Actor::EnComboState Player::GetNowComboState() const
+{
+	return m_nowActor->GetNowComboState();
+}
+
 void Player::Render(RenderContext& rc)
 {
 	m_MpFont.Draw(rc);
 }
+

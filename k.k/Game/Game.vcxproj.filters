@@ -10,6 +10,9 @@
     <Filter Include="Wizard">
       <UniqueIdentifier>{2887295a-a2b1-4b11-b171-11ad071fe549}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lich">
+      <UniqueIdentifier>{21da61a7-d81b-459b-b221-5b31fa8ed969}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -80,6 +83,24 @@
       <Filter>Wizard</Filter>
     </ClCompile>
     <ClCompile Include="FireBall.cpp" />
+    <ClCompile Include="AIActor.cpp" />
+    <ClCompile Include="Lich.cpp" />
+    <ClCompile Include="LichStateIdle.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="LichStateWalk.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="LichStateAttack_1.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="LichStateAttack_2.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="WizardStateDie.cpp">
+      <Filter>Wizard</Filter>
+    </ClCompile>
+    <ClCompile Include="LichStateDie.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -155,5 +176,26 @@
       <Filter>Wizard</Filter>
     </ClInclude>
     <ClInclude Include="FireBall.h" />
+    <ClInclude Include="AIActor.h" />
+    <ClInclude Include="Lich.h" />
+    <ClInclude Include="ILichState.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="LichStateIdle.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="LichStateWalk.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="LichStateAttack_1.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="LichStateAttack_2.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="WizardStateDie.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
+    <ClInclude Include="LichStateDie.h" />
   </ItemGroup>
 </Project>

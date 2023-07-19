@@ -1,7 +1,9 @@
 #pragma once
 #include "Actor.h"
 
+class Player;
 class IWizardState;
+
 class Wizard :public Actor
 {
 public:
@@ -138,6 +140,8 @@ public:
 
 private:
 	
+	bool IsComboStateSame();
+
 	/// <summary>
 	/// 次のアニメーションステートを決める
 	/// </summary>
@@ -146,6 +150,7 @@ private:
 
 	bool RotationOnly();
 	
+	Player* m_player = nullptr;
 
 	ModelRender m_modelRender;
 

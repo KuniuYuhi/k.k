@@ -1,8 +1,9 @@
 #pragma once
 #include "Status.h"
-#include "Player.h"
 
-class Actor:public IGameObject
+//class Player;
+
+class Actor:public IGameObject,public Noncopyable
 {
 public:
 
@@ -57,6 +58,54 @@ public:
 	virtual bool isAnimationEntable() const = 0;
 
 
+	//敵のダメージ判定用コンボステート
+	enum EnComboState
+	{
+		enNowCombo_None,
+		enNowCombo_1,
+		enNowCombo_2,
+		enNowCombo_3
+	};
+
+	/// <summary>
+	/// 現在のコンボステートとダメージを受けた時のコンボステートが違うか
+	/// </summary>
+	/// <returns></returns>
+	bool IsComboStateSame();
+
+	/// <summary>
+	/// 現在のコンボ状態を設定
+	/// </summary>
+	/// <param name="nowcombostate"></param>
+	void SetNowComboState(EnComboState nowcombostate)
+	{
+		m_enNowComboState = nowcombostate;
+	}
+	/// <summary>
+	/// ダメージを受けた時のコンボ状態を設定。ダメージを受けたキャラが設定する
+	/// </summary>
+	/// <param name="oldcombostate"></param>
+	void SetDamagedComboState(EnComboState damagedcombostate)
+	{
+		m_enDamagedComboState = damagedcombostate;
+	}
+
+	/// <summary>
+	///	現在のコンボ状態を取得
+	/// </summary>
+	/// <returns></returns>
+	EnComboState GetNowComboState() const
+	{
+		return m_enNowComboState;
+	}
+	/// <summary>
+	/// ダメージを受けた時のコンボ状態を取得
+	/// </summary>
+	/// <returns></returns>
+	EnComboState GetDamagedComboState() const
+	{
+		return m_enDamagedComboState;
+	}
 
 	/// <summary>
 	/// 座標の取得
@@ -140,9 +189,11 @@ protected:
 protected:
 
 	Status m_status;
-	Player* m_player = nullptr;
+	//Player* m_player = nullptr;
 
-	//CharacterController m_charaCon;
+	
+	EnComboState m_enNowComboState = enNowCombo_None;		//現在のコンボ
+	EnComboState m_enDamagedComboState = enNowCombo_1;		//ダメージを受けた時のコンボ
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;

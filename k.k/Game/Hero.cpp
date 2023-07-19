@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Hero.h"
+#include "Player.h"
 #include "HeroStateIdle.h"
 #include "HeroStateWalk.h"
 #include "HeroStateRun.h"
@@ -28,6 +29,8 @@ Hero::~Hero()
 
 bool Hero::Start()
 {
+	m_player = FindGO<Player>("player");
+
 	// 初期のアニメーションステートを待機状態にする。
 	SetNextAnimationState(enAninationState_Idle);
 
@@ -56,7 +59,7 @@ void Hero::InitModel()
 	m_animationClip[enAnimClip_Walk].SetLoopFlag(true);
 	m_animationClip[enAnimClip_Run].Load("Assets/animData/character/Player/SprintFWD_Battle.tka");
 	m_animationClip[enAnimClip_Run].SetLoopFlag(true);
-	m_animationClip[enAnimClip_Attack_1].Load("Assets/animData/character/Player/Attack1.tka");
+	m_animationClip[enAnimClip_Attack_1].Load("Assets/animData/character/Player/Attack1_1.tka");
 	m_animationClip[enAnimClip_Attack_1].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Attack_2].Load("Assets/animData/character/Player/Attack2.tka");
 	m_animationClip[enAnimClip_Attack_2].SetLoopFlag(false);
@@ -167,14 +170,11 @@ void Hero::Attack()
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 通常攻撃
 	///////////////////////////////////////////////////////////////////////////////////////////
-	//アタックパターンがなしの時
 	//1コンボ
 	if (g_pad[0]->IsTrigger(enButtonY)&& m_enAttackPatternState==enAttackPattern_None)
 	{
-		m_createAttackCollisionFlag = true;
-		//攻撃パターン１
 		m_enAttackPatternState = enAttackPattern_1;
-
+		SetNowComboState(enNowCombo_1);
 		SetNextAnimationState(enAnimationState_Attack_1);
 		return;
 	}
@@ -253,14 +253,6 @@ void Hero::CreateSkillCollision()
 		Quaternion::Identity,
 		70.0f
 	);
-
-	//カプセルの当たり判定作成
-	/*SkillCollision->CreateBox(
-		m_position,
-		Quaternion::Identity,
-		Vector3(60.0f,40.0f,30.0f)
-	);*/
-
 	//剣のボーンのワールド座標を取得
 	Matrix SkillBoonMatrix = m_modelRender.GetBone(m_skillBoonId)->GetWorldMatrix();
 
@@ -318,9 +310,6 @@ void Hero::SetNextAnimationState(EnAnimationState nextState)
 		std::abort();
 		break;
 	}
-
-	
-	
 }
 
 //状態遷移管理
@@ -361,6 +350,8 @@ void Hero::OnProcessAttack_1StateTransition()
 	{
 		//攻撃パターンをなし状態にする
 		m_enAttackPatternState = enAttackPattern_None;
+		//コンボが終わったら
+		SetNowComboState(enNowCombo_None);
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}
@@ -374,6 +365,8 @@ void Hero::OnProcessAttack_2StateTransition()
 	{
 		//攻撃パターンをなし状態にする
 		m_enAttackPatternState = enAttackPattern_None;
+		//コンボが終わったら
+		SetNowComboState(enNowCombo_None);
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}
@@ -384,6 +377,8 @@ void Hero::OnProcessAttack_3StateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		//コンボが終わりなのでコンボ状態を1に戻す
+		SetNowComboState(enNowCombo_None);
 		//攻撃パターンをなし状態にする
 		m_enAttackPatternState = enAttackPattern_None;
 		//共通の状態遷移処理に移行
@@ -455,6 +450,12 @@ void Hero::OnProcessAttack_Skill_MainStateTransition()
 
 void Hero::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
+	//アタック1のコンボ受付タイムが始まったら
+	if (wcscmp(eventName, L"Attack1_ComboStart") == 0)
+	{
+		m_createAttackCollisionFlag = true;
+	}
+
 	//アタック1のコンボ受付タイムが終わったら
 	if (wcscmp(eventName, L"Attack1_ComboEnd") == 0)
 	{
@@ -464,8 +465,11 @@ void Hero::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		if (m_enAttackPatternState == enAttackPattern_1to2)
 		{
 			m_enAttackPatternState = enAttackPattern_2;
+			SetNowComboState(enNowCombo_2);
 			SetNextAnimationState(enAnimationState_Attack_2);
 		}
+		
+		
 	}
 
 	//アタック２のコンボ受付タイムが始まったら
@@ -486,8 +490,10 @@ void Hero::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		if (m_enAttackPatternState == enAttackPattern_2to3)
 		{
 			m_enAttackPatternState = enAttackPattern_3;
+			SetNowComboState(enNowCombo_3);
 			SetNextAnimationState(enAnimationState_Attack_3);
 		}
+		
 	}
 
 	//アタック３のコンボ受付タイムが始まったら
