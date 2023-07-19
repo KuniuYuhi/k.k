@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "Actor.h"
 
+
 Actor::Actor()
 {
-	m_player = FindGO<Player>("player");
+	//m_player = FindGO<Player>("player");
 	//m_charaCon;
 }
 
@@ -91,6 +92,17 @@ Vector3 Actor::calcVelocity(Status status)
 	}
 	
 	
+}
+
+bool Actor::IsComboStateSame()
+{
+	//現在のコンボステートとダメージを受けた時のコンボステートが違うなら
+	if (GetNowComboState() != GetDamagedComboState())
+	{
+		return true;
+	}
+	else
+		return false;
 }
 
 Quaternion Actor::Rotation()
