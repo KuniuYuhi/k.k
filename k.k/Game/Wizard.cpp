@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Wizard.h"
+#include "Player.h"
 #include "WizardStateIdle.h"
 #include "WizardStateWalk.h"
 #include "WizardStateRun.h"
@@ -35,6 +36,8 @@ Wizard::~Wizard()
 
 bool Wizard::Start()
 {
+	m_player = FindGO<Player>("player");
+
 	// 初期のアニメーションステートを待機状態にする。
 	SetNextAnimationState(enAninationState_Idle);
 
@@ -311,6 +314,11 @@ void Wizard::PlayAnimation()
 void Wizard::ManageState()
 {
 	m_animationState->ManageState();
+}
+
+bool Wizard::IsComboStateSame()
+{
+	return false;
 }
 
 void Wizard::SetNextAnimationState(EnAnimationState nextState)
