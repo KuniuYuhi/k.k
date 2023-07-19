@@ -32,8 +32,10 @@ public:
 	/// </summary>
 	void Move();
 
+	void Damage();
+
 	/// <summary>
-	/// 
+	/// 被ダメージ用当たり判定
 	/// </summary>
 	void DamageCollision();
 
@@ -98,6 +100,8 @@ public:
 		enAnimClip_Attack_3_start,		// 5 : 
 		enAnimClip_Attack_3_main,
 		enAnimClip_Attack_4,		// 6 : 
+		enAnimClip_Damage,
+		enAnimClip_Die,
 		enAnimClip_Num,				// 7 :アニメーションクリップの数
 	};
 
@@ -113,6 +117,10 @@ public:
 	/// アタック2ステート遷移処理を実行
 	/// </summary>
 	void OnProcessAttack_2StateTransition();
+	/// <summary>
+	/// Dieステート遷移処理を実行
+	/// </summary>
+	void OnProcessDieStateTransition();
 
 private:
 
@@ -127,7 +135,9 @@ private:
 		enAnimationState_Attack_2,
 		enAnimationState_Attack_3_start,
 		enAnimationState_Attack_3_main,
-		enAnimationState_Attack_4
+		enAnimationState_Attack_4,
+		enAnimationState_Damage,
+		enAnimationState_Die
 	};
 
 	/// <summary>
@@ -156,6 +166,8 @@ private:
 	const float m_Attack_1Distance = 600.0f;
 
 	const float m_Attack_2Distance = 200.0f;
+
+	bool m_dieFlag = false;
 
 };
 

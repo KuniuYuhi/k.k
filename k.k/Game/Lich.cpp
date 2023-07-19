@@ -4,6 +4,7 @@
 #include "LichStateWalk.h"
 #include "LichStateAttack_1.h"
 #include "LichStateAttack_2.h"
+#include "LichStateDie.h"
 
 namespace {
 	const float SCALE_UP = 3.0f;									//キャラクターのサイズ
@@ -12,7 +13,7 @@ namespace {
 
 
 	//ステータス
-	int MAXHP = 1000;
+	int MAXHP = 500;
 	int MAXMP = 500;
 	int ATK = 20;
 	float SPEED = 50.0f;
@@ -63,6 +64,8 @@ void Lich::InitModel()
 	m_animationClip[enAnimClip_Attack_1].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Attack_2].Load("Assets/animData/character/Lich/Attack2.tka");
 	m_animationClip[enAnimClip_Attack_2].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Die].Load("Assets/animData/character/Lich/Die.tka");
+	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
 
 	m_modelRender.Init("Assets/modelData/character/Lich/Lich.tkm",
 		m_animationClip,
@@ -89,6 +92,15 @@ void Lich::InitModel()
 
 void Lich::Update()
 {
+	//倒されたら他の処理を実行しないようにする
+	if (m_dieFlag==true)
+	{
+		ManageState();
+		PlayAnimation();
+		m_modelRender.Update();
+		return;
+	}
+
 	AttackInterval();
 
 	DecideNextAction();
@@ -132,6 +144,22 @@ void Lich::Move()
 
 	
 	Rotation();
+
+}
+
+void Lich::Damage()
+{
+	if (m_status.hp > 0)
+	{
+		m_status.hp -= m_player->GetAtk();
+	}
+	else if(m_status.hp <= 0)
+	{
+		//Dieフラグをtrueにする
+		m_dieFlag = true;
+		m_status.hp = 0;
+		SetNextAnimationState(enAnimationState_Die);
+	}
 
 }
 
@@ -219,14 +247,6 @@ void Lich::DecideNextAction()
 			return;
 		}
 	}
-	
-	
-	
-
-	//これでは回転してくれない
-	//攻撃範囲にいたら移動しない
-	
-	
 }
 
 bool Lich::AttackInterval()
@@ -234,19 +254,23 @@ bool Lich::AttackInterval()
 	//攻撃したら
 	if (m_attackFlag == true)
 	{
+		//タイマーがインターバルを超えたら
 		if (m_attackIntervalTime < m_attackIntervalTimer)
 		{
+			//攻撃可能にする
 			m_attackFlag = false;
+			//タイマーをリセット
 			m_attackIntervalTimer = 0.0f;
 		}
 		else
 		{
 			m_attackIntervalTimer += g_gameTime->GetFrameDeltaTime();
+			//攻撃不可能
 			return false;
 
 		}
 	}
-
+	//攻撃可能
 	return true;
 }
 
@@ -298,6 +322,10 @@ void Lich::SetNextAnimationState(EnAnimationState nextState)
 		break;
 	case Lich::enAnimationState_Attack_4:
 		break;
+	case Lich::enAnimationState_Die:
+		//Dieステートを作成する
+		m_state = new LichStateDie(this);
+		break;
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
 		std::abort();
@@ -347,6 +375,11 @@ void Lich::OnProcessAttack_2StateTransition()
 	}
 }
 
+void Lich::OnProcessDieStateTransition()
+{
+
+}
+
 void Lich::DamageCollision()
 {
 	//敵の攻撃用のコリジョンを取得する名前一緒にする
@@ -357,7 +390,22 @@ void Lich::DamageCollision()
 		//自身のキャラコンと衝突したら
 		if (collision->IsHit(m_charaCon) == true)
 		{
-			m_status.hp -= m_player->GetAtk();
+			//１コンボの間に1回だけ判定
+			//ダメージを受けた時のコンボステートと現在のコンボステートが違うなら
+			if (m_player->IsComboStateSame()==true)
+			{
+				Damage();
+
+				//ダメージを受けた時のコンボステートに現在のコンボステートを代入する
+				m_player->SetDamagedComboState(m_player->GetNowComboState());
+			}
+			else
+			{
+
+			}
+
+			
+			
 		}
 
 		
@@ -371,7 +419,8 @@ void Lich::DamageCollision()
 		//自身のキャラコンと衝突したら
 		if (collision->IsHit(m_charaCon) == true)
 		{
-			m_status.hp -= m_player->GetAtk();
+			
+			Damage();
 		}
 	}
 
