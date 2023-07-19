@@ -50,6 +50,11 @@ public:
 	/// <returns></returns>
 	virtual bool isRotationEntable() const = 0;
 
+	/// <summary>
+	/// ”íƒ_ƒ[ƒWˆ—
+	/// </summary>
+	virtual void Damage() = 0;
+
 protected:
 
 	/// <summary>
