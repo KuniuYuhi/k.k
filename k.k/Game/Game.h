@@ -2,6 +2,12 @@
 #include "Level3DRender.h"
 //#include "Level2DRender.h"
 
+class Player;
+class Lich;
+class BossStage1;
+class GameCamera;
+class ResultSeen;
+
 
 class Game:public IGameObject
 {
@@ -12,6 +18,7 @@ public:
 	bool Start();
 	void Update();
 
+	void GoResult();
 	
 	void SpriteTransform();
 
@@ -22,9 +29,24 @@ public:
 		return m_position;
 	}
 
+	/// <summary>
+	/// ボスがやられたかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetDeathBossFlag(bool flag)
+	{
+		m_DeathBossFlag = flag;
+	}
+
 	void Render(RenderContext& rc);
 
 private:
+
+	Player* m_player = nullptr;
+	Lich* m_lich = nullptr;
+	BossStage1* m_bossStage1 = nullptr;
+	GameCamera* m_gameCamera = nullptr;
+	ResultSeen* m_result = nullptr;
 
 	FontRender fontTest;
 	float m_fontScale = 1.0f;
@@ -40,5 +62,8 @@ private:
 	Vector3 m_position = Vector3(0.0f,0.0f,0.0f);
 	Quaternion m_rotation = Quaternion::Identity;
 	Vector3 m_scale = Vector3::One;
+
+	bool m_DeathBossFlag = false;
+	bool m_createResultFlag = false;
 };
 

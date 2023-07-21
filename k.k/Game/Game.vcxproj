@@ -247,6 +247,7 @@
     <ClCompile Include="LichStateWalk.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Result.cpp" />
     <ClCompile Include="Status.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -254,6 +255,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="system\system.cpp" />
+    <ClCompile Include="Title.cpp" />
     <ClCompile Include="Wizard.cpp" />
     <ClCompile Include="WizardStateAttack_1.cpp" />
     <ClCompile Include="WizardStateAttack_2_main.cpp" />
@@ -293,9 +295,11 @@
     <ClInclude Include="LichStateIdle.h" />
     <ClInclude Include="LichStateWalk.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Result.h" />
     <ClInclude Include="Status.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />
+    <ClInclude Include="Title.h" />
     <ClInclude Include="Wizard.h" />
     <ClInclude Include="WizardStateAttack_1.h" />
     <ClInclude Include="WizardStateAttack_2_main.h" />
