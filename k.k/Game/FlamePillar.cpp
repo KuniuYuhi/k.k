@@ -8,6 +8,7 @@ FlamePillar::FlamePillar()
 
 FlamePillar::~FlamePillar()
 {
+    DeleteGO(m_pillarCollision);
 }
 
 bool FlamePillar::Start()
@@ -31,7 +32,22 @@ bool FlamePillar::Start()
     
     m_model.Update();
 
-    //m_rotation.AddRotationDegY(360.0f);
+    Vector3 pillarPos = m_position;
+    pillarPos.y += 30.0f;
+
+    //ìñÇΩÇËîªíËçÏê¨
+    m_pillarCollision = NewGO<CollisionObject>(0, "flamepillar");
+    m_pillarCollision->CreateCapsule(
+        pillarPos,
+        Quaternion::Identity,
+        15.0f,
+        40.0f
+    );
+    //ìñÇΩÇËîªíËÇÕÇ»Çµ
+    //m_pillarCollision->SetIsEnable(false);
+    m_pillarCollision->SetIsEnableAutoDelete(false);
+    m_pillarCollision->SetPosition(pillarPos);
+    m_pillarCollision->Update();
 
     return true;
 }
