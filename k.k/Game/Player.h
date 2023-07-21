@@ -59,7 +59,6 @@ public:
 	/// <returns>違うならtrue,同じならfalse</returns>
 	bool IsComboStateSame();
 	
-
 	/// <summary>
 	/// ダメージを受けた時のコンボステートを設定
 	/// </summary>
@@ -71,6 +70,8 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	Actor::EnComboState GetNowComboState() const;
+
+	
 
 private:
 	Hero* m_hero = nullptr;
