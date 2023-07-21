@@ -10,6 +10,8 @@ Player::Player()
 
 Player::~Player()
 {
+	DeleteGO(m_hero);
+	DeleteGO(m_wizard);
 }
 
 bool Player::Start()

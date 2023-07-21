@@ -5,6 +5,7 @@
 #include "LichStateAttack_1.h"
 #include "LichStateAttack_2.h"
 #include "LichStateDie.h"
+#include "Game.h"
 
 namespace {
 	const float SCALE_UP = 3.0f;									//キャラクターのサイズ
@@ -88,10 +89,22 @@ void Lich::InitModel()
 		m_position
 	);
 
+	m_hpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_hpFont.SetScale(2.0f);
+	m_hpFont.SetPosition(-800.0f, 500.0f);
+
 }
 
 void Lich::Update()
 {
+	//MPの表示
+	int NowActorMP = m_status.hp;
+	int NowActorMaxMP = m_status.maxHp;
+	wchar_t MP[255];
+	swprintf_s(MP, 255, L"HP %3d/%d", NowActorMP, NowActorMaxMP);
+	m_hpFont.SetText(MP);
+
+
 	//倒されたら他の処理を実行しないようにする
 	if (m_dieFlag==true)
 	{
@@ -101,7 +114,9 @@ void Lich::Update()
 		return;
 	}
 
-	AttackInterval();
+	//インターバルの計算
+	AttackInterval(m_attackIntervalTime);
+	DamageInterval(m_damageIntervalTime);
 
 	DecideNextAction();
 
@@ -151,9 +166,12 @@ void Lich::Damage()
 {
 	if (m_status.hp > 0)
 	{
+		//スキルなら受けるダメージ量を変える
+		//m_player->
 		m_status.hp -= m_player->GetAtk();
 	}
-	else if(m_status.hp <= 0)
+	
+	if(m_status.hp <= 0)
 	{
 		//Dieフラグをtrueにする
 		m_dieFlag = true;
@@ -248,32 +266,6 @@ void Lich::DecideNextAction()
 		}
 	}
 }
-
-bool Lich::AttackInterval()
-{
-	//攻撃したら
-	if (m_attackFlag == true)
-	{
-		//タイマーがインターバルを超えたら
-		if (m_attackIntervalTime < m_attackIntervalTimer)
-		{
-			//攻撃可能にする
-			m_attackFlag = false;
-			//タイマーをリセット
-			m_attackIntervalTimer = 0.0f;
-		}
-		else
-		{
-			m_attackIntervalTimer += g_gameTime->GetFrameDeltaTime();
-			//攻撃不可能
-			return false;
-
-		}
-	}
-	//攻撃可能
-	return true;
-}
-
 
 void Lich::PlayAnimation()
 {
@@ -377,12 +369,19 @@ void Lich::OnProcessAttack_2StateTransition()
 
 void Lich::OnProcessDieStateTransition()
 {
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//自身が倒されたらことをゲームに伝える
+		Game* game = FindGO<Game>("game");
+		game->SetDeathBossFlag(true);
 
+	}
 }
 
 void Lich::DamageCollision()
 {
-	//敵の攻撃用のコリジョンを取得する名前一緒にする
+	//通常攻撃の当たり判定
 	const auto& Attack_1Collisions = g_collisionObjectManager->FindCollisionObjects("Attack");
 	//コリジョンの配列をfor文で回す
 	for (auto collision : Attack_1Collisions)
@@ -399,19 +398,11 @@ void Lich::DamageCollision()
 				//ダメージを受けた時のコンボステートに現在のコンボステートを代入する
 				m_player->SetDamagedComboState(m_player->GetNowComboState());
 			}
-			else
-			{
-
-			}
-
-			
-			
 		}
-
-		
 	}
 
-	//敵の攻撃用のコリジョンを取得する名前一緒にする
+	
+	//ヒーローのスキルの当たり判定
 	const auto& SkillCollisions = g_collisionObjectManager->FindCollisionObjects("SkillAttack");
 	//コリジョンの配列をfor文で回す
 	for (auto collision : SkillCollisions)
@@ -419,8 +410,36 @@ void Lich::DamageCollision()
 		//自身のキャラコンと衝突したら
 		if (collision->IsHit(m_charaCon) == true)
 		{
-			
-			Damage();
+			//一定間隔でダメージを受ける
+			if (m_damageFlag == false)
+			{
+				m_damageFlag = true;
+				Damage();
+			}
+		}
+	}
+
+	//ウィザードのファイヤーボールの当たり判定
+	const auto& FireBallCollisions = g_collisionObjectManager->FindCollisionObjects("fireball");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : FireBallCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(m_charaCon) == true)
+		{
+			int a = 1;
+		}
+	}
+
+	//ウィザードのファイヤーボールの当たり判定
+	const auto& FlamePillarCollisions = g_collisionObjectManager->FindCollisionObjects("flamepillar");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : FlamePillarCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(m_charaCon) == true)
+		{
+			int a = 1;
 		}
 	}
 
@@ -429,4 +448,5 @@ void Lich::DamageCollision()
 void Lich::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
+	m_hpFont.Draw(rc);
 }

@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "BossStage1.h"
 #include "Lich.h"
+#include "Result.h"
 
 
 namespace {
@@ -18,6 +19,12 @@ Game::Game()
 
 Game::~Game()
 {
+	DeleteGO(m_bossStage1);
+	
+	DeleteGO(m_player);
+	DeleteGO(m_lich);
+
+	DeleteGO(m_gameCamera);
 }
 
 bool Game::Start()
@@ -85,17 +92,17 @@ bool Game::Start()
 	spriteTest.Update();
 
 
-	BossStage1* bossStage1 = NewGO<BossStage1>(0, "bossstage1");
+	//m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
 
-	Player* player = NewGO<Player>(0, "player");
+	m_player = NewGO<Player>(0, "player");
 
-	GameCamera* gameCamera = NewGO<GameCamera>(0, "gameCamera");
+	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
-	Lich* lich = NewGO<Lich>(0, "lich");
+	m_lich = NewGO<Lich>(0, "lich");
 
 
 	//当たり判定の可視化
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 
 	return true;
@@ -103,6 +110,15 @@ bool Game::Start()
 
 void Game::Update()
 {
+	//ボスがやられたら
+	if (m_DeathBossFlag == true)
+	{
+		//リザルト画面に遷移するまでの処理
+		GoResult();
+		return;
+	}
+	
+
 	Spotmove();
 
 	if (g_pad[0]->IsPress(enButtonStart))
@@ -120,6 +136,21 @@ void Game::Update()
 		//g_renderingEngine->UnUseHemiLight();
 		
 		//g_renderingEngine->UseHemiLight();
+	}
+}
+
+void Game::GoResult()
+{
+	if (m_createResultFlag==false)
+	{
+		m_result = NewGO<ResultSeen>(0, "result");
+		m_createResultFlag = true;
+		
+	}
+
+	if (m_result->GetRoundWipeEndFlag() == true)
+	{
+		DeleteGO(this);
 	}
 }
 

@@ -8,6 +8,10 @@ FireBall::FireBall()
 
 FireBall::~FireBall()
 {
+    if (m_fireBallCollision != nullptr)
+    {
+        DeleteGO(m_fireBallCollision);
+    }
 }
 
 bool FireBall::Start()
@@ -33,11 +37,35 @@ bool FireBall::Start()
 
     m_model.Update();
 
+    //“–‚½‚è”»’è‚ÌÀ•W‚Ìİ’è
+    m_collisionPosition = m_position;
+
+    //“–‚½‚è”»’èì¬
+    m_fireBallCollision = NewGO<CollisionObject>(0, "fireball");
+    m_fireBallCollision->CreateSphere(
+        m_collisionPosition,
+        Quaternion::Identity,
+        15.0f
+    );
+    //‚·‚è”²‚¯‚é‚æ‚¤‚É‚·‚é
+    //m_fireBallCollision->SetIsEnable(false);
+    m_fireBallCollision->SetIsEnableAutoDelete(false);
+
+    m_collisionPosition.y += 20.0f;
+    m_fireBallCollision->SetPosition(m_collisionPosition);
+    m_fireBallCollision->Update();
+
 	return true;
 }
 
 void FireBall::Update()
 {
+    //“G‚É‚Ô‚Â‚©‚Á‚½‚ç©g‚ğÁ‚·
+    if (m_hitEnemeyFlag == true)
+    {
+        DeleteGO(this);
+    }
+
     Timer();
 
     Move();
@@ -59,11 +87,13 @@ void FireBall::Timer()
 void FireBall::Move()
 {
     m_position += m_moveSpeed * g_gameTime->GetFrameDeltaTime();
-
+    m_collisionPosition = m_position;
+    m_collisionPosition.y += 20.0f;
 
     m_model.SetPosition(m_position);
-
     m_model.Update();
+    m_fireBallCollision->SetPosition(m_collisionPosition);
+    m_fireBallCollision->Update();
 }
 
 void FireBall::Render(RenderContext& rc)

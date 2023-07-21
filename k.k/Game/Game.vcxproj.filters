@@ -82,7 +82,6 @@
     <ClCompile Include="FlamePillar.cpp">
       <Filter>Wizard</Filter>
     </ClCompile>
-    <ClCompile Include="FireBall.cpp" />
     <ClCompile Include="AIActor.cpp" />
     <ClCompile Include="Lich.cpp" />
     <ClCompile Include="LichStateIdle.cpp">
@@ -101,6 +100,11 @@
       <Filter>Wizard</Filter>
     </ClCompile>
     <ClCompile Include="LichStateDie.cpp" />
+    <ClCompile Include="Title.cpp" />
+    <ClCompile Include="Result.cpp" />
+    <ClCompile Include="FireBall.cpp">
+      <Filter>Wizard</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -175,7 +179,6 @@
     <ClInclude Include="FlamePillar.h">
       <Filter>Wizard</Filter>
     </ClInclude>
-    <ClInclude Include="FireBall.h" />
     <ClInclude Include="AIActor.h" />
     <ClInclude Include="Lich.h" />
     <ClInclude Include="ILichState.h">
@@ -197,5 +200,10 @@
       <Filter>Wizard</Filter>
     </ClInclude>
     <ClInclude Include="LichStateDie.h" />
+    <ClInclude Include="Title.h" />
+    <ClInclude Include="Result.h" />
+    <ClInclude Include="FireBall.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -57,6 +57,55 @@ void AIActor::SetTargetPosition()
 	m_targetPosition = m_player->GetPosition();
 }
 
+bool AIActor::AttackInterval(const float attackintarvaltime)
+{
+	//攻撃したら
+	if (m_attackFlag == true)
+	{
+		//タイマーがインターバルを超えたら
+		if (attackintarvaltime < m_attackIntervalTimer)
+		{
+			//攻撃可能にする
+			m_attackFlag = false;
+			//タイマーをリセット
+			m_attackIntervalTimer = 0.0f;
+		}
+		else
+		{
+			m_attackIntervalTimer += g_gameTime->GetFrameDeltaTime();
+			//攻撃不可能
+			return false;
+
+		}
+	}
+	//攻撃可能
+	return true;
+}
+
+bool AIActor::DamageInterval(const float damageintarvaltime)
+{
+	//ダメージを受けたら
+	if (m_damageFlag == true)
+	{
+		//タイマーがインターバルを超えたら
+		if (damageintarvaltime < m_damageIntervalTimer)
+		{
+			//ダメージを受けられるようにする
+			m_damageFlag = false;
+			//タイマーをリセット
+			m_damageIntervalTimer = 0.0f;
+		}
+		else
+		{
+			m_damageIntervalTimer += g_gameTime->GetFrameDeltaTime();
+			//ダメージを受けない
+			return false;
+		}
+	}
+	//ダメージを受けられるようにする
+	return true;
+}
+
 bool AIActor::IsFindPlayer(float distance)
 {
 	//ターゲット(プレイヤー)の座標を取得

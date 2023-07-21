@@ -352,6 +352,7 @@ void Hero::OnProcessAttack_1StateTransition()
 		m_enAttackPatternState = enAttackPattern_None;
 		//コンボが終わったら
 		SetNowComboState(enNowCombo_None);
+		SetDamagedComboState(enDamageCombo_None);
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}
@@ -367,6 +368,7 @@ void Hero::OnProcessAttack_2StateTransition()
 		m_enAttackPatternState = enAttackPattern_None;
 		//コンボが終わったら
 		SetNowComboState(enNowCombo_None);
+		SetDamagedComboState(enDamageCombo_None);
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}
@@ -377,8 +379,9 @@ void Hero::OnProcessAttack_3StateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//コンボが終わりなのでコンボ状態を1に戻す
+		//コンボが終わりなのでコンボ状態をなしに戻す
 		SetNowComboState(enNowCombo_None);
+		SetDamagedComboState(enDamageCombo_None);
 		//攻撃パターンをなし状態にする
 		m_enAttackPatternState = enAttackPattern_None;
 		//共通の状態遷移処理に移行
@@ -455,12 +458,15 @@ void Hero::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	{
 		m_createAttackCollisionFlag = true;
 	}
+	
+	if (wcscmp(eventName, L"Attack1_ClollisionEnd") == 0)
+	{
+		m_createAttackCollisionFlag = false;
+	}
 
 	//アタック1のコンボ受付タイムが終わったら
 	if (wcscmp(eventName, L"Attack1_ComboEnd") == 0)
 	{
-		m_createAttackCollisionFlag = false;
-
 		//2コンボ
 		if (m_enAttackPatternState == enAttackPattern_1to2)
 		{
@@ -468,8 +474,6 @@ void Hero::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 			SetNowComboState(enNowCombo_2);
 			SetNextAnimationState(enAnimationState_Attack_2);
 		}
-		
-		
 	}
 
 	//アタック２のコンボ受付タイムが始まったら

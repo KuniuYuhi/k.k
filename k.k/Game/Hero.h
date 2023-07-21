@@ -189,7 +189,6 @@ private:
 	int m_swordBoonId = -1;		//剣のボーンID取得用変数
 	int m_skillBoonId = -1;		//スキル使用時のボーン取得用変数
 
-	bool m_createAttackCollisionFlag = false;		//攻撃時に当たり判定を生成するかのフラグ
 	bool m_createSkillCollisionFlag = false;		//スキル使用時に当たり判定を生成するかのフラグ
 
 

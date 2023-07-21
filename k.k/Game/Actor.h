@@ -62,6 +62,7 @@ public:
 	enum EnComboState
 	{
 		enNowCombo_None,
+		enDamageCombo_None,
 		enNowCombo_1,
 		enNowCombo_2,
 		enNowCombo_3
@@ -82,7 +83,9 @@ public:
 		m_enNowComboState = nowcombostate;
 	}
 	/// <summary>
-	/// ダメージを受けた時のコンボ状態を設定。ダメージを受けたキャラが設定する
+	/// ダメージを受けた時のコンボ状態を設定。
+	/// ダメージを受けたキャラが設定する。
+	/// またはアニメーションが終わったら設定する。
 	/// </summary>
 	/// <param name="oldcombostate"></param>
 	void SetDamagedComboState(EnComboState damagedcombostate)
@@ -193,7 +196,7 @@ protected:
 
 	
 	EnComboState m_enNowComboState = enNowCombo_None;		//現在のコンボ
-	EnComboState m_enDamagedComboState = enNowCombo_1;		//ダメージを受けた時のコンボ
+	EnComboState m_enDamagedComboState = enDamageCombo_None;		//ダメージを受けた時のコンボ
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
@@ -207,5 +210,6 @@ protected:
 
 	bool m_recoveryMpFlag = false;	//スキルを打ち終わったあとにtrueにする。打つ前はfalse
 
+	bool m_createAttackCollisionFlag = false;		//攻撃時に当たり判定を生成するかのフラグ
 };
 
