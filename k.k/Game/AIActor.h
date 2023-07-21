@@ -32,6 +32,18 @@ public:
 	void SetTargetPosition();
 
 	/// <summary>
+	/// 攻撃してから次の攻撃を行うまでのインターバル
+	/// </summary>
+	/// <returns></returns>
+	bool AttackInterval(const float attackintarvaltime);
+
+	/// <summary>
+	/// ダメージを受けた後のダメージを受けるまでのインターバル
+	/// </summary>
+	/// <returns></returns>
+	bool DamageInterval(const float damageintarvaltime);
+
+	/// <summary>
 	/// プレイヤーを見つける
 	/// </summary>
 	/// <param name="distance">プレイヤーを見つけることができる上限の距離</param>
@@ -100,6 +112,11 @@ protected:
 	Vector3 m_scale = Vector3::One;
 
 	bool m_dashFlag = false;		//ダッシュするかのフラグ
+	bool m_attackFlag = false;		//攻撃していいかのフラグ。falseで攻撃可能
+	bool m_damageFlag = false;		//ダメージを受けられるかのフラグ。falseで被ダメージ可能
+
+	float m_attackIntervalTimer = 0.0f;		//アタックのインターバルタイマー
+	float m_damageIntervalTimer = 0.0f;		//ダメージのインターバルタイマー
 
 	float m_distance = 0.0f;	//プレイヤーを発見できる距離
 
