@@ -55,12 +55,6 @@ public:
 	void DecideNextAction();
 
 	/// <summary>
-	/// 攻撃してから次の攻撃を行うまでのインターバル
-	/// </summary>
-	/// <returns></returns>
-	bool AttackInterval();
-
-	/// <summary>
 	/// 
 	/// </summary>
 	/// <returns></returns>
@@ -158,10 +152,12 @@ private:
 
 	CharacterController m_charaCon;
 
+	FontRender m_hpFont;
+
 	bool m_attackRangeFlag = false;				//攻撃範囲にいるかのフラグ
-	bool m_attackFlag = false;					//攻撃していいかのフラグ
+
 	const float m_attackIntervalTime = 3.0f;
-	float m_attackIntervalTimer = 0.0f;
+	const float m_damageIntervalTime = 0.5f;
 
 	const float m_Attack_1Distance = 600.0f;
 
