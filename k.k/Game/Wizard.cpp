@@ -19,7 +19,7 @@
 namespace {
 	int MAXHP = 150;
 	int MAXMP = 200;
-	int ATK = 70;
+	int ATK = 30;
 	float SPEED = 80.0f;
 	const char* NAME = "Wizard";
 
@@ -115,22 +115,16 @@ void Wizard::Update()
 
 	RecoveryMP();
 
-	/*if (m_status.mp < m_status.maxMp)
-	{
-		m_status.mp += g_gameTime->GetFrameDeltaTime();
-
-		if (m_status.mp > m_status.maxMp)
-		{
-			m_status.mp = m_status.maxMp;
-		}
-	}*/
-
 	Move();
 	Attack();
 	ManageState();
 	PlayAnimation();
 
-	CreateCollision();
+	if (m_createAttackCollisionFlag == true)
+	{
+		CreateCollision();
+	}
+	
 
 	SetTransFormModel(m_modelRender);
 	m_modelRender.Update();
@@ -197,6 +191,7 @@ void Wizard::Attack()
 	if (g_pad[0]->IsTrigger(enButtonY)&& m_enAttackPatternState==enAttackPattern_None)
 	{
 		m_enAttackPatternState = enAttackPattern_1;
+		SetNowComboState(enNowCombo_1);
 		SetNextAnimationState(enAnimationState_Attack_1);
 		return;
 	}
@@ -405,6 +400,9 @@ void Wizard::OnProcessAttack_1StateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		//コンボが終わったら
+		SetNowComboState(enNowCombo_None);
+		SetDamagedComboState(enDamageCombo_None);
 		//攻撃パターンをなし状態にする
 		m_enAttackPatternState = enAttackPattern_None;
 		//共通の状態遷移処理に移行
@@ -417,6 +415,9 @@ void Wizard::OnProcessAttack_2StateTransition()
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		m_enAttackPatternState = enAttackPattern_2_main;
+
+
+
 		//メインアニメーションを再生
 		SetNextAnimationState(enAnimationState_Attack_2_main);
 		//ファイヤーボールタイマーをセット
@@ -442,7 +443,6 @@ void Wizard::OnProcessAttack_2MainStateTransition()
 	}
 	else
 	{
-
 		//攻撃パターンをなし状態にする
 		m_enAttackPatternState = enAttackPattern_None;
 		//共通の状態遷移処理に移行
@@ -450,12 +450,6 @@ void Wizard::OnProcessAttack_2MainStateTransition()
 		//スキルを打ち終わったのでMP回復フラグをtrueにする
 		SetRecoveryMpFlag(true);
 	}
-
-	
-
-
-
-	
 }
 
 void Wizard::OnProcessAttack_3StateTransition()
@@ -489,6 +483,9 @@ void Wizard::OnProcessAttack_4StateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		//コンボが終わったら
+		SetNowComboState(enNowCombo_None);
+		SetDamagedComboState(enDamageCombo_None);
 		//攻撃パターンをなし状態にする
 		m_enAttackPatternState = enAttackPattern_None;
 		//共通の状態遷移処理に移行
@@ -498,25 +495,37 @@ void Wizard::OnProcessAttack_4StateTransition()
 
 void Wizard::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
-	if (wcscmp(eventName, L"Attack1_ComboStart") == 0)
-	{
-		
-	}
 	if (wcscmp(eventName, L"Attack1_Collision_Start") == 0)
 	{
-		int a = 0;
+		m_createAttackCollisionFlag = true;
 	}
 	if (wcscmp(eventName, L"Attack1_Collision_End") == 0)
 	{
-		int a = 0;
+		m_createAttackCollisionFlag = false;
 	}
+	//アタック１のコンボ受付タイムが終わったら
 	if (wcscmp(eventName, L"Attack1_ComboEnd") == 0)
 	{
 		if (m_enAttackPatternState == enAttackPattern_1to4)
 		{
 			m_enAttackPatternState = enAttackPattern_4;
+			SetNowComboState(enNowCombo_2);
 			SetNextAnimationState(enAnimationState_Attack_4);
 		}
+	}
+
+	//これより後はダメージを受けない
+	if (wcscmp(eventName, L"Damageless") == 0)
+	{
+
+	}
+	if (wcscmp(eventName, L"Attack4_CollisionStart") == 0)
+	{
+		m_createAttackCollisionFlag = true;
+	}
+	if (wcscmp(eventName, L"Attack4_CollisionEnd") == 0)
+	{
+		m_createAttackCollisionFlag = false;
 	}
 }
 
