@@ -9,6 +9,7 @@
 #include "HeroStateAttack_3.h"
 #include "HeroStateAttack_4.h"
 #include "HeroStateAttack_Skill_Main.h"
+#include "HeroStateDie.h"
 
 
 namespace {
@@ -72,6 +73,8 @@ void Hero::InitModel()
 	m_animationClip[enAnimClip_Attack_Skill_Charge].SetLoopFlag(true);
 	m_animationClip[enAnimClip_Attack_Skill_Main].Load("Assets/animData/character/Player/Attack_Skill_Main.tka");
 	m_animationClip[enAnimClip_Attack_Skill_Main].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Die].Load("Assets/animData/character/Player/Dead.tka");
+	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
 
 
 	m_modelRender.Init(
@@ -97,15 +100,18 @@ void Hero::InitModel()
 
 }
 
-/// <summary>
-/// 毎フレームSetNextAnimationState()を実行
-/// </summary>
-
 void Hero::Update()
 {
+	//やられたなら他の処理を実行しない
+	if (GetDieFlag() == true)
+	{
+		ManageState();
+		PlayAnimation();
+		m_modelRender.Update();
+		return;
+	}
+
 	RecoveryMP();
-
-
 	Move();
 	Attack();
 	ManageState();
@@ -120,6 +126,9 @@ void Hero::Update()
 	{
 		CreateSkillCollision();
 	}
+
+
+	Damage(10);
 
 	SetTransFormModel(m_modelRender);
 	m_modelRender.Update();
@@ -168,7 +177,10 @@ bool Hero::RotationOnly()
 
 void Hero::Attack()
 {
-	
+	if (m_enAnimationState == enAnimationState_Die)
+	{
+		return;
+	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 通常攻撃
@@ -176,6 +188,8 @@ void Hero::Attack()
 	//1コンボ
 	if (g_pad[0]->IsTrigger(enButtonY)&& m_enAttackPatternState==enAttackPattern_None)
 	{
+		
+		
 		m_enAttackPatternState = enAttackPattern_1;
 		SetNowComboState(enNowCombo_1);
 		SetNextAnimationState(enAnimationState_Attack_1);
@@ -262,6 +276,26 @@ void Hero::CreateSkillCollision()
 	SkillCollision->SetWorldMatrix(SkillBoonMatrix);
 }
 
+void Hero::Damage(int attack)
+{
+	if (m_status.hp > 0)
+	{
+		m_status.hp -= attack;
+	}
+
+	if (m_status.hp <= 0)
+	{
+		//やられたのでdieFlagをtrueにする
+		SetDieFlag(true);
+		m_status.hp = 0;
+
+		//フレームレートを落とす
+		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 30);
+
+		SetNextAnimationState(enAnimationState_Die);
+	}
+}
+
 void Hero::SetNextAnimationState(EnAnimationState nextState)
 {
 	if (m_state != nullptr) {
@@ -307,9 +341,14 @@ void Hero::SetNextAnimationState(EnAnimationState nextState)
 		//アタックスキルメインステートを作成する。
 		m_state = new HeroStateAttack_Skill_Main(this);
 		break;
+	case Hero::enAnimationState_Die:
+		//アタックスキルメインステートを作成する。
+		m_state = new HeroStateDie(this);
+		break;
 
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
+		// クラッシュする
 		std::abort();
 		break;
 	}
@@ -324,8 +363,6 @@ void Hero::ManageState()
 //共通の状態遷移処理
 void Hero::ProcessCommonStateTransition()
 {
-	
-
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
 		if (m_dashFlag == true)
@@ -341,9 +378,6 @@ void Hero::ProcessCommonStateTransition()
 		m_dashFlag = false;
 		SetNextAnimationState(enAninationState_Idle);
 	}
-
-	
-	
 }
 //アタック１の状態遷移処理
 void Hero::OnProcessAttack_1StateTransition()
@@ -451,6 +485,18 @@ void Hero::OnProcessAttack_Skill_MainStateTransition()
 	else
 	{
 		m_ChargeTimer -= g_gameTime->GetFrameDeltaTime();
+	}
+}
+
+void Hero::OnProcessDieStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//フレームレートを戻す
+		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Fix, 60);
+		//アニメーションが終わったのでキャラクターを切り替えるフラグをtrueにする
+		SetDieToChangeFlag(true);
 	}
 }
 

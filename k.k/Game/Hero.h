@@ -47,6 +47,8 @@ public:
 	/// </summary>
 	void CreateSkillCollision();
 
+	void Damage(int attack);
+
 
 	bool GetAtkCollsionCreateFlag() const
 	{
@@ -109,6 +111,10 @@ public:
 	/// アタックスキルメインのステート遷移処理を実行
 	/// </summary>
 	void OnProcessAttack_Skill_MainStateTransition();
+	/// <summary>
+	/// 倒されたときのステート遷移処理を実行
+	/// </summary>
+	void OnProcessDieStateTransition();
 
 public:
 	// アニメーションクリップの番号を表す列挙型。
@@ -121,6 +127,7 @@ public:
 		enAnimClip_Attack_3,// 5 : 
 		enAnimClip_Attack_Skill_Charge,
 		enAnimClip_Attack_Skill_Main,// 6 : 
+		enAnimClip_Die,
 		enAnimClip_Num,		// 7 :アニメーションクリップの数
 	};
 
@@ -134,7 +141,8 @@ private:
 		enAnimationState_Attack_2,
 		enAnimationState_Attack_3,
 		enAnimationState_Attack_Skill_Charge,
-		enAnimationState_Attack_Skill_Main
+		enAnimationState_Attack_Skill_Main,
+		enAnimationState_Die
 	};
 
 	//攻撃パターンステート
