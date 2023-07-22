@@ -15,6 +15,7 @@
 #include "WizardStateAttack_3_main.h"
 #include "WizardState_Attack_4.h"
 #include "FlamePillar.h"
+#include "WizardStateDie.h"
 
 namespace {
 	int MAXHP = 150;
@@ -86,6 +87,8 @@ void Wizard::InitModel()
 	m_animationClip[enAnimClip_Attack_3_main].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Attack_4].Load("Assets/animData/character/Wizard/Attack4.tka");
 	m_animationClip[enAnimClip_Attack_4].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Die].Load("Assets/animData/character/Wizard/Die.tka");
+	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
 
 
 	m_modelRender.Init(
@@ -112,6 +115,15 @@ void Wizard::InitModel()
 
 void Wizard::Update()
 {
+	//やられたなら他の処理を実行しない
+	if (GetDieFlag() == true)
+	{
+		ManageState();
+		PlayAnimation();
+		m_modelRender.Update();
+		return;
+	}
+
 
 	RecoveryMP();
 
@@ -125,6 +137,7 @@ void Wizard::Update()
 		CreateCollision();
 	}
 	
+	Damage(10);
 
 	SetTransFormModel(m_modelRender);
 	m_modelRender.Update();
@@ -266,6 +279,25 @@ void Wizard::CreateCollision()
 	AtkCollision->SetWorldMatrix(WandBoonMatrix);
 }
 
+void Wizard::Damage(int attack)
+{
+	if (m_status.hp > 0)
+	{
+		m_status.hp -= attack;
+	}
+
+	if (m_status.hp <= 0)
+	{
+		//Dieフラグをtrueにする
+		SetDieFlag(true);
+		m_status.hp = 0;
+		//フレームレートを落とす
+		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 30);
+
+		SetNextAnimationState(enAnimationState_Die);
+	}
+}
+
 void Wizard::CreateFlamePillar()
 {
 	//フレイムピラー生成
@@ -363,6 +395,10 @@ void Wizard::SetNextAnimationState(EnAnimationState nextState)
 	case Wizard::enAnimationState_Attack_4:
 		//アタック４ステートを作成する。
 		m_animationState = new WizardState_Attack_4(this);
+		break;
+	case Wizard::enAnimationState_Die:
+		//アタック４ステートを作成する。
+		m_animationState = new WizardStateDie(this);
 		break;
 
 	default:
@@ -490,6 +526,18 @@ void Wizard::OnProcessAttack_4StateTransition()
 		m_enAttackPatternState = enAttackPattern_None;
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
+	}
+}
+
+void Wizard::OnProcessDieStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//フレームレートを戻す
+		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Fix, 60);
+		//アニメーションが終わったのでキャラクターを切り替えるフラグをtrueにする
+		SetDieToChangeFlag(true);
 	}
 }
 
