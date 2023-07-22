@@ -99,9 +99,11 @@ bool Actor::IsComboStateSame()
 	//現在のコンボステートとダメージを受けた時のコンボステートが違うなら
 	if (GetNowComboState() != GetDamagedComboState())
 	{
+		//違う
 		return true;
 	}
 	else
+		//同じ
 		return false;
 }
 

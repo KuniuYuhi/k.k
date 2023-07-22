@@ -111,7 +111,7 @@ bool Game::Start()
 void Game::Update()
 {
 	//ボスがやられたら
-	if (m_DeathBossFlag == true)
+	if (m_DeathBossFlag == true||m_playerAnnihilationFlag==true)
 	{
 		//リザルト画面に遷移するまでの処理
 		GoResult();

@@ -46,6 +46,12 @@ public:
 	Vector3 calcVelocity(Status status);
 
 	/// <summary>
+	/// 被ダメージ処理
+	/// </summary>
+	/// <param name="attack">相手の攻撃力</param>
+	virtual void Damage(int attack) = 0;
+
+	/// <summary>
 	/// キャラクターがチェンジ可能か
 	/// </summary>
 	/// <returns></returns>
@@ -150,12 +156,44 @@ public:
 	/// スキルの攻撃力の取得
 	/// </summary>
 	/// <returns></returns>
-	const int GetSkillAttackPower()
+	const int GetSkillAttackPower() const
 	{
 		return m_skillAttackPower;
 	}
 
+	/// <summary>
+	/// 自身がやられたかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetDieFlag(bool flag)
+	{
+		m_dieFlag = flag;
+	}
+	/// <summary>
+	/// 自身がやられたかのフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool GetDieFlag() const
+	{
+		return m_dieFlag;
+	}
 
+	/// <summary>
+	/// 自身がやられてキャラクターを切り替えるかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetDieToChangeFlag(bool flag)
+	{
+		m_dieToChangeFlag = flag;
+	}
+	/// <summary>
+	/// 自身がやられてキャラクターを切り替えるかのフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool GetDieToChangeFlag() const
+	{
+		return m_dieToChangeFlag;
+	}
 
 protected:
 
@@ -222,6 +260,10 @@ protected:
 	int m_skillAttackPower = 0;
 
 	bool m_dashFlag = false;		//ダッシュするかのフラグ
+
+	//enumにするかも
+	bool m_dieFlag = false;			//やられたらtrueにする
+	bool m_dieToChangeFlag = false;		//やられてからキャラクター切り替えに移るためのフラグ
 
 	bool m_recoveryMpFlag = false;	//スキルを打ち終わったあとにtrueにする。打つ前はfalse
 

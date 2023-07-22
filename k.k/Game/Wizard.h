@@ -28,6 +28,8 @@ public:
 
 	void CreateCollision();
 
+	void Damage(int attack);
+
 	void CreateFlamePillar();
 
 	bool CreateFireBall();
@@ -81,6 +83,8 @@ public:
 
 	void OnProcessAttack_4StateTransition();
 
+	void OnProcessDieStateTransition();
+
 
 	// アニメーションクリップの番号を表す列挙型。
 	enum EnAnimationClip {
@@ -92,7 +96,8 @@ public:
 		enAnimClip_Attack_2_main,
 		enAnimClip_Attack_3_start,		// 5 : 
 		enAnimClip_Attack_3_main,
-		enAnimClip_Attack_4,		// 6 : 
+		enAnimClip_Attack_4,		// 6 :
+		enAnimClip_Die,
 		enAnimClip_Num,				// 7 :アニメーションクリップの数
 	};
 
@@ -109,7 +114,8 @@ private:
 		enAnimationState_Attack_2_main,
 		enAnimationState_Attack_3_start,
 		enAnimationState_Attack_3_main,
-		enAnimationState_Attack_4
+		enAnimationState_Attack_4,
+		enAnimationState_Die
 	};
 
 	//攻撃パターンステート

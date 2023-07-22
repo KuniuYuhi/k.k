@@ -83,7 +83,14 @@ public:
 	//ウィザードのフレイムピラーに当たった時の処理
 	virtual void HitFlamePillar();
 
-
+	/// <summary>
+	/// ステータスの取得
+	/// </summary>
+	/// <returns></returns>
+	const Status GetStatus()
+	{
+		return m_status;
+	}
 
 protected:
 

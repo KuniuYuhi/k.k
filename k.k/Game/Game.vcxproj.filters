@@ -24,8 +24,6 @@
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Status.cpp" />
-    <ClCompile Include="Hero.cpp" />
-    <ClCompile Include="Wizard.cpp" />
     <ClCompile Include="BossStage1.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="HeroStateIdle.cpp">
@@ -83,7 +81,6 @@
       <Filter>Wizard</Filter>
     </ClCompile>
     <ClCompile Include="AIActor.cpp" />
-    <ClCompile Include="Lich.cpp" />
     <ClCompile Include="LichStateIdle.cpp">
       <Filter>Lich</Filter>
     </ClCompile>
@@ -99,11 +96,25 @@
     <ClCompile Include="WizardStateDie.cpp">
       <Filter>Wizard</Filter>
     </ClCompile>
-    <ClCompile Include="LichStateDie.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="FireBall.cpp">
       <Filter>Wizard</Filter>
+    </ClCompile>
+    <ClCompile Include="Hero.cpp">
+      <Filter>Hero</Filter>
+    </ClCompile>
+    <ClCompile Include="Wizard.cpp">
+      <Filter>Wizard</Filter>
+    </ClCompile>
+    <ClCompile Include="Lich.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="LichStateDie.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="HeroStateDie.cpp">
+      <Filter>Hero</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -115,8 +126,6 @@
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Status.h" />
-    <ClInclude Include="Hero.h" />
-    <ClInclude Include="Wizard.h" />
     <ClInclude Include="BossStage1.h" />
     <ClInclude Include="IHeroState.h">
       <Filter>Hero</Filter>
@@ -180,7 +189,6 @@
       <Filter>Wizard</Filter>
     </ClInclude>
     <ClInclude Include="AIActor.h" />
-    <ClInclude Include="Lich.h" />
     <ClInclude Include="ILichState.h">
       <Filter>Lich</Filter>
     </ClInclude>
@@ -199,11 +207,25 @@
     <ClInclude Include="WizardStateDie.h">
       <Filter>Wizard</Filter>
     </ClInclude>
-    <ClInclude Include="LichStateDie.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="FireBall.h">
       <Filter>Wizard</Filter>
+    </ClInclude>
+    <ClInclude Include="Hero.h">
+      <Filter>Hero</Filter>
+    </ClInclude>
+    <ClInclude Include="Wizard.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
+    <ClInclude Include="Lich.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="LichStateDie.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="HeroStateDie.h">
+      <Filter>Hero</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
