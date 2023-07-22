@@ -38,6 +38,15 @@ public:
 		m_DeathBossFlag = flag;
 	}
 
+	/// <summary>
+	/// プレイヤーが全滅したかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetPlayerAnnihilationFlag(bool flag)
+	{
+		m_playerAnnihilationFlag = flag;
+	}
+
 	void Render(RenderContext& rc);
 
 private:
@@ -65,5 +74,7 @@ private:
 
 	bool m_DeathBossFlag = false;
 	bool m_createResultFlag = false;
+
+	bool m_playerAnnihilationFlag = false;
 };
 
