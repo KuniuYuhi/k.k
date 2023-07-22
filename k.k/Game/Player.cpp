@@ -3,6 +3,7 @@
 #include "Hero.h"
 #include "Wizard.h"
 #include "Actor.h"
+#include "Game.h"
 
 Player::Player()
 {
@@ -16,9 +17,13 @@ Player::~Player()
 
 bool Player::Start()
 {
-	m_MpFont.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
-	m_MpFont.SetPosition(-800.0f, -300.0f);
-	m_MpFont.SetScale(2.0f);
+	m_mpFont.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+	m_mpFont.SetPosition(-800.0f, -300.0f);
+	m_mpFont.SetScale(2.0f);
+
+	m_hpFont.SetColor(0.0f, 1.0f, 0.0f, 1.0f);
+	m_hpFont.SetPosition(-800.0f, -200.0f);
+	m_hpFont.SetScale(1.5f);
 
 
 	m_hero = NewGO<Hero>(0, "hero");
@@ -31,6 +36,9 @@ bool Player::Start()
 	
 	//初期キャラクターをヒーローに設定
 	m_enActiveCharacter = enHero;
+	//サブのキャラクターをウィザードに設定
+	m_subActor = actor[enWizard];
+
 	//現在のキャラクターをヒーローに設定する
 	m_nowActor = actor[m_enActiveCharacter];
 
@@ -50,7 +58,51 @@ void Player::Update()
 	int NowActorMaxMP = m_nowActor->GetStatus().maxMp;
 	wchar_t MP[255];
 	swprintf_s(MP, 255, L"MP %3d/%d", NowActorMP, NowActorMaxMP);
-	m_MpFont.SetText(MP);
+	m_mpFont.SetText(MP);
+
+	int NowActorHP = m_nowActor->GetStatus().hp;
+	int NowActorMaxHP = m_nowActor->GetStatus().maxHp;
+	wchar_t HP[255];
+	swprintf_s(HP, 255, L"HP %3d/%d", NowActorHP, NowActorMaxHP);
+	m_hpFont.SetText(HP);
+
+	//キャラクターが全滅していたら処理しない
+	if (IsAnnihilation() == true)
+	{
+		//ゲームに全滅したことを一度だけ伝える
+		if (m_informGameFlag != true)
+		{
+			Game* game = FindGO<Game>("game");
+			game->SetPlayerAnnihilationFlag(true);
+			m_informGameFlag = true;
+		}
+		
+		return;
+	}
+
+	//現在のキャラクターがやられたら強制的に切り替え
+	if (ForcedChange() == false)
+	{
+		Change();
+	}
+
+	//現在のキャラクターがやられていないなら先の処理しない
+	if (m_nowActor->GetDieFlag() != true)
+	{
+		//移動処理
+		m_moveSpeed = m_nowActor->calcVelocity(m_nowActor->GetStatus());
+		//キャラコンの移動処理
+		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	}
+}
+
+void Player::Change()
+{
+	//サブのアクターがやられていたら先処理をしない
+	if (m_subActor->GetDieFlag() == true)
+	{
+		return;
+	}
 
 	//特定のアニメーションが再生中の時は入れ替え可能
 	if (m_nowActor->isAnimationSwappable() != true)
@@ -61,6 +113,7 @@ void Player::Update()
 			switch (m_enActiveCharacter)
 			{
 			case enHero:
+				//切り替え先がやられていたら交代しない
 				ChangeCharacter(enWizard);
 				break;
 			case enWizard:
@@ -72,22 +125,14 @@ void Player::Update()
 			}
 		}
 	}
-
-	
-
-	//キャラコン
-
-	//m_position = actor[m_enActiveCharacter]->GetPosition();
-	//移動処理
-	m_moveSpeed = m_nowActor->calcVelocity(m_nowActor->GetStatus());
-
-	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-	
 }
 
 void Player::ChangeCharacter(EnCharacters nextCharacter)
 {
-	// まずは現在のアクターを非アクティブにする。
+	//サブのアクターを入れ替える
+	m_subActor = m_nowActor;
+
+	// 現在のアクターを非アクティブにする。
 	m_nowActor->Deactivate();
 
 	// アクターを切り替える
@@ -110,6 +155,60 @@ void Player::ChangeCharacter(EnCharacters nextCharacter)
 	//現在のキャラクターを魔法使いに変更する
 	m_enActiveCharacter = nextCharacter;
 
+}
+
+bool Player::ForcedChange()
+{
+	//現在のキャラクターがやられていないなら先の処理しない
+	if (m_nowActor->GetDieFlag() != true)
+	{
+		return false;
+	}
+
+	//現在のキャラクターのDieアニメーションが終わり切り替え可能になったら
+	if (m_nowActor->GetDieToChangeFlag() == true)
+	{
+		//数秒経ってから切り替え
+		if (m_dieToChangeTime < m_dieToChangeTimer)
+		{
+			//タイマーリセット
+			m_dieToChangeTimer = 0.0f;
+
+			switch (m_enActiveCharacter)
+			{
+			case enHero:
+				ChangeCharacter(enWizard);
+				break;
+			case enWizard:
+				ChangeCharacter(enHero);
+				break;
+
+			default:
+				break;
+			}
+		}
+		else
+		{
+			//タイマー加算
+			m_dieToChangeTimer += g_gameTime->GetFrameDeltaTime();
+		}
+
+		
+	}
+
+	return true;
+}
+
+bool Player::IsAnnihilation()
+{
+	//現在のキャラクターとサブのキャラクターがやられていたら
+	if (m_nowActor->GetDieToChangeFlag() == true && m_subActor->GetDieToChangeFlag() == true)
+	{
+		//全滅している
+		return true;
+	}
+	//生存しているキャラクターがいる
+	return false;
 }
 
 int Player::GetAtk()
@@ -139,6 +238,9 @@ Actor::EnComboState Player::GetNowComboState() const
 
 void Player::Render(RenderContext& rc)
 {
-	m_MpFont.Draw(rc);
+	m_mpFont.Draw(rc);
+	m_hpFont.Draw(rc);
 }
+
+
 

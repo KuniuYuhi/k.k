@@ -23,10 +23,25 @@ public:
 	void Render(RenderContext& rc);
 
 	/// <summary>
+	/// キャラクター切り替え処理
+	/// </summary>
+	void Change();
+
+	/// <summary>
 	/// キャラクターを切り替える
 	/// </summary>
 	/// <param name="nextCharacter">次のキャラクター</param>
 	void ChangeCharacter(EnCharacters nextCharacter);
+
+	/// <summary>
+	/// キャラクターを強制的に切り替える
+	/// </summary>
+	bool ForcedChange();
+
+	/// <summary>
+	/// 全滅したか
+	/// </summary>
+	bool IsAnnihilation();
 
 	/// <summary>
 	/// 座標の取得
@@ -83,17 +98,28 @@ private:
 	Hero* m_hero = nullptr;
 	Wizard* m_wizard = nullptr;
 
-	FontRender m_MpFont;
+	FontRender m_mpFont;
+	FontRender m_hpFont;
 
 	//キャラコンこれ使う
 	CharacterController m_charaCon;
 
-	Actor* actor[enCharacter_num];
+	Actor* actor[enCharacter_num];	//キャラクターの数分のアクター
 	Actor* m_nowActor = nullptr;	// 現在のアクター
+	Actor* m_subActor = nullptr;    // サブのアクター
+
+
 	EnCharacters m_enActiveCharacter= enHero;
 
 	Vector3 m_position = Vector3::Zero;		//現在のキャラクターの座標
 
 	Vector3 m_moveSpeed = Vector3::Zero;
+
+	const float m_dieToChangeTime = 1.0f;
+
+	float m_dieToChangeTimer = 0.0f;
+
+	bool m_informGameFlag = false;
+
 };
 
