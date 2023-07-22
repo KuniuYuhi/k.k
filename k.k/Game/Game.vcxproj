@@ -236,6 +236,7 @@
     <ClCompile Include="HeroStateAttack_3.cpp" />
     <ClCompile Include="HeroStateAttack_4.cpp" />
     <ClCompile Include="HeroStateAttack_Skill_Main.cpp" />
+    <ClCompile Include="HeroStateDie.cpp" />
     <ClCompile Include="HeroStateIdle.cpp" />
     <ClCompile Include="HeroStateRun.cpp" />
     <ClCompile Include="HeroStateWalk.cpp" />
@@ -282,6 +283,7 @@
     <ClInclude Include="HeroStateAttack_3.h" />
     <ClInclude Include="HeroStateAttack_4.h" />
     <ClInclude Include="HeroStateAttack_Skill_Main.h" />
+    <ClInclude Include="HeroStateDie.h" />
     <ClInclude Include="HeroStateIdle.h" />
     <ClInclude Include="HeroStateRun.h" />
     <ClInclude Include="HeroStateWalk.h" />
