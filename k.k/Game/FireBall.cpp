@@ -54,7 +54,7 @@ bool FireBall::Start()
     m_collisionPosition.y += 20.0f;
     m_fireBallCollision->SetPosition(m_collisionPosition);
     m_fireBallCollision->Update();
-
+    
 	return true;
 }
 

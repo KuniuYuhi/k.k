@@ -29,6 +29,9 @@ public:
 	/// <returns>moveSpeed</returns>
 	Vector3 calcVelocity(Status status);
 
+	/// <summary>
+	/// 
+	/// </summary>
 	void SetTargetPosition();
 
 	/// <summary>
@@ -65,7 +68,22 @@ public:
 	/// <summary>
 	/// 被ダメージ時処理
 	/// </summary>
-	virtual void Damage() = 0;
+	virtual void Damage(int attack) = 0;
+
+	/// <summary>
+	/// 被ダメージ用当たり判定
+	/// </summary>
+	virtual void DamageCollision(CharacterController& characon);
+	//通常攻撃に当たった時の処理
+	virtual void HitNormalAttack();
+	//ヒーローのスキルに当たった時の処理
+	virtual void HitHeroSkillAttack();
+	//ウィザードのファイヤーボールに当たった時の処理
+	virtual void HitFireBall();
+	//ウィザードのフレイムピラーに当たった時の処理
+	virtual void HitFlamePillar();
+
+
 
 protected:
 

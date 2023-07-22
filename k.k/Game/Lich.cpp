@@ -6,6 +6,9 @@
 #include "LichStateAttack_2.h"
 #include "LichStateDie.h"
 #include "Game.h"
+#include "FireBall.h"
+#include "FlamePillar.h"
+
 
 namespace {
 	const float SCALE_UP = 3.0f;									//キャラクターのサイズ
@@ -126,7 +129,8 @@ void Lich::Update()
 	ManageState();
 	PlayAnimation();
 
-	DamageCollision();
+	//被ダメージの当たり判定
+	DamageCollision(m_charaCon);
 
 	SetTransFormModel(m_modelRender);
 	m_modelRender.Update();
@@ -162,13 +166,13 @@ void Lich::Move()
 
 }
 
-void Lich::Damage()
+void Lich::Damage(int attack)
 {
 	if (m_status.hp > 0)
 	{
 		//スキルなら受けるダメージ量を変える
 		//m_player->
-		m_status.hp -= m_player->GetAtk();
+		m_status.hp -= attack;
 	}
 	
 	if(m_status.hp <= 0)
@@ -322,12 +326,7 @@ void Lich::SetNextAnimationState(EnAnimationState nextState)
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
 		std::abort();
 		break;
-		break;
 	}
-
-
-		
-	
 }
 
 void Lich::ProcessCommonStateTransition()
@@ -379,28 +378,29 @@ void Lich::OnProcessDieStateTransition()
 	}
 }
 
-void Lich::DamageCollision()
+void Lich::DamageCollision(CharacterController& characon)
 {
+	//抜け出す処理
+
 	//通常攻撃の当たり判定
 	const auto& Attack_1Collisions = g_collisionObjectManager->FindCollisionObjects("Attack");
 	//コリジョンの配列をfor文で回す
 	for (auto collision : Attack_1Collisions)
 	{
 		//自身のキャラコンと衝突したら
-		if (collision->IsHit(m_charaCon) == true)
+		if (collision->IsHit(characon) == true)
 		{
 			//１コンボの間に1回だけ判定
 			//ダメージを受けた時のコンボステートと現在のコンボステートが違うなら
 			if (m_player->IsComboStateSame()==true)
 			{
-				Damage();
+				Damage(m_player->GetAtk());
 
 				//ダメージを受けた時のコンボステートに現在のコンボステートを代入する
 				m_player->SetDamagedComboState(m_player->GetNowComboState());
 			}
 		}
 	}
-
 	
 	//ヒーローのスキルの当たり判定
 	const auto& SkillCollisions = g_collisionObjectManager->FindCollisionObjects("SkillAttack");
@@ -408,13 +408,13 @@ void Lich::DamageCollision()
 	for (auto collision : SkillCollisions)
 	{
 		//自身のキャラコンと衝突したら
-		if (collision->IsHit(m_charaCon) == true)
+		if (collision->IsHit(characon) == true)
 		{
 			//一定間隔でダメージを受ける
 			if (m_damageFlag == false)
 			{
 				m_damageFlag = true;
-				Damage();
+				Damage(m_player->GetSkillAtk());
 			}
 		}
 	}
@@ -425,21 +425,31 @@ void Lich::DamageCollision()
 	for (auto collision : FireBallCollisions)
 	{
 		//自身のキャラコンと衝突したら
-		if (collision->IsHit(m_charaCon) == true)
+		if (collision->IsHit(characon) == true)
 		{
-			int a = 1;
+			auto fireball = FindGO<FireBall>(collision->GetName());
+			Damage(fireball->GetAtk());
+			//ぶつかったのでファイヤーボールを消すフラグを立てる
+			fireball->SetHitEnemeyFlag(true);
 		}
 	}
 
-	//ウィザードのファイヤーボールの当たり判定
+	//ウィザードのフレイムピラーの当たり判定
 	const auto& FlamePillarCollisions = g_collisionObjectManager->FindCollisionObjects("flamepillar");
 	//コリジョンの配列をfor文で回す
 	for (auto collision : FlamePillarCollisions)
 	{
 		//自身のキャラコンと衝突したら
-		if (collision->IsHit(m_charaCon) == true)
+		if (collision->IsHit(characon) == true)
 		{
-			int a = 1;
+			//一定間隔でダメージを受ける
+			if (m_damageFlag == false)
+			{
+				auto flamepillar = FindGO<FlamePillar>(collision->GetName());
+
+				m_damageFlag = true;
+				Damage(flamepillar->GetAtk());
+			}
 		}
 	}
 

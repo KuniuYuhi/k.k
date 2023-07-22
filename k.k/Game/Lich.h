@@ -32,12 +32,16 @@ public:
 	/// </summary>
 	void Move();
 
-	void Damage();
+	/// <summary>
+	/// 被ダメージ時処理
+	/// </summary>
+	/// <param name="attack">くらう攻撃力</param>
+	void Damage(int attack);
 
 	/// <summary>
 	/// 被ダメージ用当たり判定
 	/// </summary>
-	void DamageCollision();
+	void DamageCollision(CharacterController& characon)override;
 
 	/// <summary>
 	/// アタック１の攻撃処理

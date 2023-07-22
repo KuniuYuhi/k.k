@@ -117,6 +117,11 @@ int Player::GetAtk()
 	return m_nowActor->GetStatus().atk;
 }
 
+int Player::GetSkillAtk()
+{
+	return m_nowActor->GetSkillAttackPower();
+}
+
 bool Player::IsComboStateSame()
 {
 	return m_nowActor->IsComboStateSame();
