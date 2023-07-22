@@ -4,8 +4,10 @@
 
 void WizardStateDie::ManageState()
 {
+	m_wizard->OnProcessDieStateTransition();
 }
 
 void WizardStateDie::PlayAnimation()
 {
+	m_wizard->GetModelRender().PlayAnimation(Wizard::enAnimClip_Die);
 }
