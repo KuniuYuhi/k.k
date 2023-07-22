@@ -57,6 +57,75 @@ void AIActor::SetTargetPosition()
 	m_targetPosition = m_player->GetPosition();
 }
 
+void AIActor::DamageCollision(CharacterController& characon)
+{
+	//抜け出す処理
+
+	//通常攻撃の当たり判定
+	const auto& Attack_1Collisions = g_collisionObjectManager->FindCollisionObjects("Attack");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : Attack_1Collisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(characon) == true)
+		{
+			HitNormalAttack();
+		}
+	}
+
+	//ヒーローのスキルの当たり判定
+	const auto& SkillCollisions = g_collisionObjectManager->FindCollisionObjects("SkillAttack");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : SkillCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(characon) == true)
+		{
+			HitHeroSkillAttack();
+		}
+	}
+
+	//ウィザードのファイヤーボールの当たり判定
+	const auto& FireBallCollisions = g_collisionObjectManager->FindCollisionObjects("fireball");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : FireBallCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(characon) == true)
+		{
+			HitFireBall();
+		}
+	}
+
+	//ウィザードのフレイムピラーの当たり判定
+	const auto& FlamePillarCollisions = g_collisionObjectManager->FindCollisionObjects("flamepillar");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : FlamePillarCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(characon) == true)
+		{
+			HitFlamePillar();
+		}
+	}
+}
+
+void AIActor::HitNormalAttack()
+{
+}
+
+void AIActor::HitHeroSkillAttack()
+{
+}
+
+void AIActor::HitFireBall()
+{
+}
+
+void AIActor::HitFlamePillar()
+{
+}
+
 bool AIActor::AttackInterval(const float attackintarvaltime)
 {
 	//攻撃したら
