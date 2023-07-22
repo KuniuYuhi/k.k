@@ -120,7 +120,7 @@ public:
 	}
 
 	/// <summary>
-	/// 
+	/// 拡大率の取得
 	/// </summary>
 	/// <returns></returns>
 	const Vector3 GetScale()
@@ -129,7 +129,7 @@ public:
 	}
 
 	/// <summary>
-	/// 
+	/// 回転の取得
 	/// </summary>
 	/// <returns></returns>
 	const Quaternion GetRotation()
@@ -137,9 +137,22 @@ public:
 		return m_rotation;
 	}
 
+	/// <summary>
+	/// ステータスの取得
+	/// </summary>
+	/// <returns></returns>
 	const Status GetStatus()
 	{
 		return m_status;
+	}
+
+	/// <summary>
+	/// スキルの攻撃力の取得
+	/// </summary>
+	/// <returns></returns>
+	const int GetSkillAttackPower()
+	{
+		return m_skillAttackPower;
 	}
 
 
@@ -205,6 +218,8 @@ protected:
 
 	Quaternion m_rotation = Quaternion::Identity;
 	Vector3 m_scale = Vector3::One;
+
+	int m_skillAttackPower = 0;
 
 	bool m_dashFlag = false;		//ダッシュするかのフラグ
 
