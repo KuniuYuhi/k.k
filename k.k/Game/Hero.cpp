@@ -17,10 +17,13 @@ namespace {
 	int ATK = 50;
 	float SPEED = 100.0f;
 	const char* NAME = "Hero";
+
+	const int SKILL_ATTACK_POWER = 30;
 }
 
 Hero::Hero()
 {
+	m_skillAttackPower = SKILL_ATTACK_POWER;
 }
 
 Hero::~Hero()
