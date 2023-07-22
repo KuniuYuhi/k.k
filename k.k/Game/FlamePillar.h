@@ -31,6 +31,15 @@ public:
 		m_wizard = wizard;
 	}
 
+	/// <summary>
+	/// UŒ‚—Í‚Ìæ“¾
+	/// </summary>
+	/// <returns></returns>
+	const int GetAtk()
+	{
+		return m_AttackPower;
+	}
+
 private:
 	Wizard* m_wizard = nullptr;
 
@@ -43,7 +52,7 @@ private:
 
 	const float m_limitDistance=0;
 
-	const int m_AttackPower = 50;
+	const int m_AttackPower = 40;
 
 	const float m_pillarLimitTime = 5.0f;
 	float m_pillarTimer = 0;
