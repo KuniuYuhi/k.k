@@ -226,6 +226,7 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="AIActor.cpp" />
     <ClCompile Include="BossStage1.cpp" />
+    <ClCompile Include="DarkWall.cpp" />
     <ClCompile Include="FireBall.cpp" />
     <ClCompile Include="FlamePillar.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -273,6 +274,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="AIActor.h" />
     <ClInclude Include="BossStage1.h" />
+    <ClInclude Include="DarkWall.h" />
     <ClInclude Include="FireBall.h" />
     <ClInclude Include="FlamePillar.h" />
     <ClInclude Include="Game.h" />
