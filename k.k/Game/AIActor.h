@@ -92,6 +92,33 @@ public:
 		return m_status;
 	}
 
+	/// <summary>
+	/// À•W‚Ìæ“¾
+	/// </summary>
+	/// <returns></returns>
+	const Vector3 GetPosition()
+	{
+		return m_position;
+	}
+
+	/// <summary>
+	/// Šg‘å—¦‚Ìæ“¾
+	/// </summary>
+	/// <returns></returns>
+	const Vector3 GetScale()
+	{
+		return m_scale;
+	}
+
+	/// <summary>
+	/// ‰ñ“]‚Ìæ“¾
+	/// </summary>
+	/// <returns></returns>
+	const Quaternion GetRotation()
+	{
+		return m_rotation;
+	}
+
 protected:
 
 	/// <summary>
