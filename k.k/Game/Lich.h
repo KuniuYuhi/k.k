@@ -10,6 +10,7 @@ public:
 	bool Start();
 	void Update();
 
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 	void Render(RenderContext& rc);
 
 	/// <summary>
@@ -54,6 +55,11 @@ public:
 	bool Attack2();
 
 	/// <summary>
+	/// ダークウォールの生成
+	/// </summary>
+	void CreateDarkWall();
+
+	/// <summary>
 	/// 次の行動を決定
 	/// </summary>
 	void DecideNextAction();
@@ -85,6 +91,15 @@ public:
 	ModelRender& GetModelRender()
 	{
 		return m_modelRender;
+	}
+
+	/// <summary>
+	/// ダークウォールのボーンIdを取得
+	/// </summary>
+	/// <returns></returns>
+	const int GetDarkWallBoonId() const
+	{
+		return m_darkWallBoonId;
 	}
 
 
@@ -158,14 +173,18 @@ private:
 
 	FontRender m_hpFont;
 
+	int m_darkWallBoonId = -1;					//ダークウォールで使うボーンID
+
 	bool m_attackRangeFlag = false;				//攻撃範囲にいるかのフラグ
+
+	bool m_CreateDarkWallFlag = false;			//ダークウォール生成フラグ
 
 	const float m_attackIntervalTime = 3.0f;
 	const float m_damageIntervalTime = 0.5f;
+	
+	const float m_Attack_1Distance = 600.0f;	//遠距離攻撃
 
-	const float m_Attack_1Distance = 600.0f;
-
-	const float m_Attack_2Distance = 200.0f;
+	const float m_Attack_2Distance = 200.0f;	//近距離攻撃
 
 	bool m_dieFlag = false;
 
