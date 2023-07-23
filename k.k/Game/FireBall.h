@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Wizard.h"
+#include "Lich.h"
 
 class FireBall:public IGameObject
 {
@@ -18,11 +19,33 @@ public:
 
 	void Render(RenderContext& rc);
 
+	
+	void SetForWizard(const char* collisionname,
+		float speed,
+		float distance,
+		float y_up,
+		float collisionradius,
+		Vector3 scale
+	);
+
+	void SetForLich(
+		const char* collisionname, 
+		float speed, 
+		float distance, 
+		float y_up, 
+		float collisionradius, 
+		Vector3 scale
+	);
 
 
 	void SetWizard(Wizard* wizard)
 	{
 		m_wizard = wizard;
+	}
+
+	void SetLich(Lich* lich)
+	{
+		m_lich = lich;
 	}
 
 	/// <summary>
@@ -46,21 +69,38 @@ public:
 private:
 	Wizard* m_wizard = nullptr;
 
+	Lich* m_lich = nullptr;
+
 	ModelRender m_model;
-	CollisionObject* m_fireBallCollision;
+	CollisionObject* m_BallCollision;
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_collisionPosition= Vector3::Zero;
+	Vector3 m_forWizardBallScale = Vector3::One;
+	Vector3 m_forLichBallScale = { 3.0f,3.0f,3.0f };
 	Vector3 m_moveSpeed = Vector3::Zero;
 	Quaternion m_rotation = Quaternion::Identity;
 
+	const char* m_fireBall = "fireball";
+	const char* m_darkBall = "darkball";
+
 	//攻撃力
-	const int m_atk = 30;
+	int m_atk = 0;
+
+	const int m_wizardAttack = 30;		//ウィザード用の攻撃力
+	const int m_lichAttack = 20;		//リッチ用の攻撃力
 
 	//ファイヤーボールのスピード
 	const float m_speed = 150.0f;
+
+
+
 	//ボールの生存時間
-	const int m_limitTimer = 3;
+	int m_limitTimer = 0;
+
+	const int m_forWizardLimitTimer = 3;
+	const int m_forLichLimitTimer = 5;
+
 	//タイマー
 	float m_moveTime = 0.0f;
 	//プレイヤーからボールの距離
