@@ -137,7 +137,7 @@ void Wizard::Update()
 		CreateCollision();
 	}
 	
-	Damage(10);
+	//Damage(10);
 
 	SetTransFormModel(m_modelRender);
 	m_modelRender.Update();
@@ -221,10 +221,6 @@ void Wizard::Attack()
 	// スキル
 	////////////////////////////////////////////////////////////////////////////////////////
 
-	
-
-	
-	
 	if (g_pad[0]->IsTrigger(enButtonX) && m_enAttackPatternState == enAttackPattern_None)
 	{
 		//フレイムピラー

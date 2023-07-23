@@ -8,9 +8,9 @@ FireBall::FireBall()
 
 FireBall::~FireBall()
 {
-    if (m_fireBallCollision != nullptr)
+    if (m_BallCollision != nullptr)
     {
-        DeleteGO(m_fireBallCollision);
+        DeleteGO(m_BallCollision);
     }
 }
 
@@ -18,43 +18,44 @@ bool FireBall::Start()
 {
     m_model.Init("Assets/modelData/character/Slime/slime.tkm");
 
+    //ウィザード用の設定
+    if (m_wizard != nullptr)
+    {
+        SetForWizard(
+            m_fireBall,
+            m_speed,
+            m_distance,
+            20,
+            15,
+            m_forWizardBallScale
+        );
+        //攻撃力の設定
+        m_atk = m_wizardAttack;
+        //タイマーの設定
+        m_limitTimer = m_forWizardLimitTimer;
+    }
+    //リッチ用の設定
+    else if (m_lich != nullptr)
+    {
+        SetForLich(
+            m_darkBall,
+            80,
+            100,
+            60,
+            70,
+            m_forLichBallScale
+        );
+        //攻撃力の設定
+        m_atk = m_lichAttack;
+        //タイマーの設定
+        m_limitTimer = m_forLichLimitTimer;
+    }
+    else
+    {
+        //打ったキャラクターが誰か分からなかったらクラッシュさせる
+        std::abort();
+    }
 
-    m_position = m_wizard->GetPosition();
-    m_rotation = m_wizard->GetRotation();
-
-    m_moveSpeed = Vector3::AxisZ;
-    m_rotation.Apply(m_moveSpeed);
-    //生成する座標の決定
-    m_position += m_moveSpeed * m_distance;
-    //速度を決める
-    m_moveSpeed *= m_speed;
-
-    m_model.SetTransform(
-        m_position,
-        m_rotation,
-        g_vec3One
-    );
-
-    m_model.Update();
-
-    //当たり判定の座標の設定
-    m_collisionPosition = m_position;
-
-    //当たり判定作成
-    m_fireBallCollision = NewGO<CollisionObject>(0, "fireball");
-    m_fireBallCollision->CreateSphere(
-        m_collisionPosition,
-        Quaternion::Identity,
-        15.0f
-    );
-    //すり抜けるようにする
-    //m_fireBallCollision->SetIsEnable(false);
-    m_fireBallCollision->SetIsEnableAutoDelete(false);
-
-    m_collisionPosition.y += 20.0f;
-    m_fireBallCollision->SetPosition(m_collisionPosition);
-    m_fireBallCollision->Update();
-    
 	return true;
 }
 
@@ -92,11 +93,89 @@ void FireBall::Move()
 
     m_model.SetPosition(m_position);
     m_model.Update();
-    m_fireBallCollision->SetPosition(m_collisionPosition);
-    m_fireBallCollision->Update();
+    m_BallCollision->SetPosition(m_collisionPosition);
+    m_BallCollision->Update();
 }
 
 void FireBall::Render(RenderContext& rc)
 {
     m_model.Draw(rc);
+}
+
+void FireBall::SetForWizard(const char* collisionname, float speed, 
+    float distance, float y_up, float collisionradius, Vector3 scale)
+{
+    m_position = m_wizard->GetPosition();
+    m_rotation = m_wizard->GetRotation();
+
+    m_moveSpeed = Vector3::AxisZ;
+    m_rotation.Apply(m_moveSpeed);
+    //生成する座標の決定
+    m_position += m_moveSpeed * distance;
+    //速度を決める
+    m_moveSpeed *= speed;
+
+    m_model.SetTransform(
+        m_position,
+        m_rotation,
+        scale
+    );
+
+    m_model.Update();
+
+    //当たり判定の座標の設定
+    m_collisionPosition = m_position;
+
+    //当たり判定作成
+    m_BallCollision = NewGO<CollisionObject>(0, collisionname);
+    m_BallCollision->CreateSphere(
+        m_collisionPosition,
+        Quaternion::Identity,
+        collisionradius
+    );
+    //すり抜けるようにする
+    m_BallCollision->SetIsEnableAutoDelete(false);
+
+    m_collisionPosition.y += y_up;
+    m_BallCollision->SetPosition(m_collisionPosition);
+    m_BallCollision->Update();
+}
+
+void FireBall::SetForLich(const char* collisionname, float speed, 
+    float distance, float y_up, float collisionradius, Vector3 scale)
+{
+    m_position = m_lich->GetPosition();
+    m_rotation = m_lich->GetRotation();
+
+    m_moveSpeed = Vector3::AxisZ;
+    m_rotation.Apply(m_moveSpeed);
+    //生成する座標の決定
+    m_position += m_moveSpeed * distance;
+    //速度を決める
+    m_moveSpeed *= speed;
+
+    m_model.SetTransform(
+        m_position,
+        m_rotation,
+        scale
+    );
+
+    m_model.Update();
+
+    //当たり判定の座標の設定
+    m_collisionPosition = m_position;
+
+    //当たり判定作成
+    m_BallCollision = NewGO<CollisionObject>(0, collisionname);
+    m_BallCollision->CreateSphere(
+        m_collisionPosition,
+        Quaternion::Identity,
+        collisionradius
+    );
+    //すり抜けるようにする
+    m_BallCollision->SetIsEnableAutoDelete(false);
+
+    m_collisionPosition.y += y_up;
+    m_BallCollision->SetPosition(m_collisionPosition);
+    m_BallCollision->Update();
 }

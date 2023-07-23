@@ -8,6 +8,7 @@
 #include "Game.h"
 #include "FireBall.h"
 #include "FlamePillar.h"
+#include "DarkWall.h"
 
 
 namespace {
@@ -96,6 +97,14 @@ void Lich::InitModel()
 	m_hpFont.SetScale(2.0f);
 	m_hpFont.SetPosition(-800.0f, 500.0f);
 
+	//アニメーションイベント用の関数を設定する。
+	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+		});
+
+	//ダークウォールに使うボーンID取得
+	m_darkWallBoonId = m_modelRender.FindBoneID(L"Index_Proximal_L");
+
 }
 
 void Lich::Update()
@@ -106,6 +115,11 @@ void Lich::Update()
 	wchar_t MP[255];
 	swprintf_s(MP, 255, L"HP %3d/%d", NowActorMP, NowActorMaxMP);
 	m_hpFont.SetText(MP);
+
+	if (m_CreateDarkWallFlag == true)
+	{
+		CreateDarkWall();
+	}
 
 
 	//倒されたら他の処理を実行しないようにする
@@ -122,9 +136,6 @@ void Lich::Update()
 	DamageInterval(m_damageIntervalTime);
 
 	DecideNextAction();
-
-	
-	
 
 	ManageState();
 	PlayAnimation();
@@ -378,6 +389,13 @@ void Lich::OnProcessDieStateTransition()
 	}
 }
 
+void Lich::CreateDarkWall()
+{
+	//ボーン取得
+	DarkWall* darkball = NewGO<DarkWall>(0, "darkwall");
+	darkball->SetLich(this);
+}
+
 void Lich::DamageCollision(CharacterController& characon)
 {
 	//抜け出す処理
@@ -453,6 +471,29 @@ void Lich::DamageCollision(CharacterController& characon)
 		}
 	}
 
+}
+
+void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+	//ボール生成タイミング
+	if (wcscmp(eventName, L"Create_Ball") == 0)
+	{
+		//ボール生成
+		FireBall* fireball = NewGO<FireBall>(0, "fireball");
+		fireball->SetLich(this);
+	}
+
+	//ダークウォール生成タイミング
+	if (wcscmp(eventName, L"Create_DarkWall") == 0)
+	{
+		m_CreateDarkWallFlag = true;
+	}
+
+	//ダークウォール生成終わり
+	if (wcscmp(eventName, L"CreateEnd_DarkWall") == 0)
+	{
+		m_CreateDarkWallFlag = false;
+	}
 }
 
 void Lich::Render(RenderContext& rc)

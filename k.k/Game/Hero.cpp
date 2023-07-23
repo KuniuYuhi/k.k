@@ -128,7 +128,7 @@ void Hero::Update()
 	}
 
 
-	Damage(10);
+	//Damage(10);
 
 	SetTransFormModel(m_modelRender);
 	m_modelRender.Update();
