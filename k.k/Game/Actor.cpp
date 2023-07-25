@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Actor.h"
+#include "FireBall.h"
+#include "DarkWall.h"
 
 
 Actor::Actor()
@@ -94,6 +96,67 @@ Vector3 Actor::calcVelocity(Status status)
 	
 }
 
+bool Actor::CalcInvincibleTime()
+{
+	//無敵時間フラグが立ったら
+	if (m_invincibleTimeFlag == true)
+	{
+		if (m_invincbleTime < m_invincbleTimer)
+		{
+			m_invincbleTimer = 0.0f;
+			//フラグを
+			m_invincibleTimeFlag = false;
+
+			//return false;
+		}
+		else
+		{
+			m_invincbleTimer += g_gameTime->GetFrameDeltaTime();
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+void Actor::DamageCollision(CharacterController& characon)
+{
+	//抜け出す処理
+	if (isCollisionEntable() != true)
+	{
+		return;
+	}
+
+	//ダークボールの当たり判定
+	const auto& DarkBallCollisions = g_collisionObjectManager->FindCollisionObjects("darkball");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : DarkBallCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(characon) == true)
+		{
+			FireBall* fireball = FindGO<FireBall>("darkball");
+			Damage(fireball->GetAtk());
+			return;
+		}
+	}
+
+	//ダークウォールの当たり判定
+	const auto& DarkWallCollisions = g_collisionObjectManager->FindCollisionObjects("DarkWall");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : DarkWallCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(characon) == true)
+		{
+			DarkWall* darkwall = FindGO<DarkWall>("darkwall");
+			Damage(darkwall->GetAtk());
+			return;
+		}
+	}
+}
+
 bool Actor::IsComboStateSame()
 {
 	//現在のコンボステートとダメージを受けた時のコンボステートが違うなら
@@ -109,6 +172,7 @@ bool Actor::IsComboStateSame()
 
 Quaternion Actor::Rotation()
 {
+	//回転だけさせたいなら
 	if (RotationOnly() == true)
 	{
 		return m_rotation;
@@ -121,4 +185,25 @@ Quaternion Actor::Rotation()
 	}
 
 	return m_rotation;
+}
+
+bool Actor::CalcInvicibleDash()
+{
+	if (m_enDashInvicibleState == enDashInvicibleState_On)
+	{
+		if (m_invincbleDashTime < m_invincbledDashTimer)
+		{
+			m_invincbledDashTimer = 0.0f;
+			SetInvicibleDashState(enDashInvicibleState_Off);
+		}
+		else
+		{
+			m_invincbledDashTimer += g_gameTime->GetFrameDeltaTime();
+		}
+
+		return true;
+	}
+
+	
+	return false;
 }

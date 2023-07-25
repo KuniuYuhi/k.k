@@ -46,6 +46,17 @@ public:
 	Vector3 calcVelocity(Status status);
 
 	/// <summary>
+	/// 無敵時間の計算
+	/// </summary>
+	bool CalcInvincibleTime();
+
+	/// <summary>
+	/// コリジョンオブジェクトに当たった時の処理
+	/// </summary>
+	/// <param name="characon"></param>
+	virtual void DamageCollision(CharacterController& characon);
+
+	/// <summary>
 	/// 被ダメージ処理
 	/// </summary>
 	/// <param name="attack">相手の攻撃力</param>
@@ -62,6 +73,12 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	virtual bool isAnimationEntable() const = 0;
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	virtual bool isCollisionEntable() const = 0;
 
 
 	//敵のダメージ判定用コンボステート
@@ -147,7 +164,7 @@ public:
 	/// ステータスの取得
 	/// </summary>
 	/// <returns></returns>
-	const Status GetStatus()
+	const Status& GetStatus()
 	{
 		return m_status;
 	}
@@ -232,11 +249,45 @@ protected:
 		m_recoveryMpFlag = flag;
 	}
 
+	void SetInvicibleTimeFlag(bool flag)
+	{
+		m_invincibleTimeFlag = flag;
+	}
+
+	const bool GetInvincibleTimeFlag()
+	{
+		return m_invincibleTimeFlag;
+	}
+
 	/// <summary>
 	/// 移動時の回転
 	/// </summary>
 	/// <returns></returns>
 	Quaternion Rotation();
+
+	enum EnDashInvicibleState
+	{
+		enDashInvicibleState_None,
+		enDashInvicibleState_On,
+		enDashInvicibleState_Off
+	};
+
+	/// <summary>
+	/// ダッシュした瞬間のステートの設定
+	/// </summary>
+	/// <param name="enDashInvicibleState"></param>
+	void SetInvicibleDashState(EnDashInvicibleState enDashInvicibleState)
+	{
+		m_enDashInvicibleState = enDashInvicibleState;
+	}
+
+	const EnDashInvicibleState GetInvicibleDashState() const
+	{
+		return m_enDashInvicibleState;
+	}
+
+	bool CalcInvicibleDash();
+	
 
 	
 
@@ -248,6 +299,7 @@ protected:
 	
 	EnComboState m_enNowComboState = enNowCombo_None;		//現在のコンボ
 	EnComboState m_enDamagedComboState = enDamageCombo_None;		//ダメージを受けた時のコンボ
+	EnDashInvicibleState m_enDashInvicibleState = enDashInvicibleState_None;	//ダッシュしたときの無敵時間のためのステート
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
@@ -268,5 +320,15 @@ protected:
 	bool m_recoveryMpFlag = false;	//スキルを打ち終わったあとにtrueにする。打つ前はfalse
 
 	bool m_createAttackCollisionFlag = false;		//攻撃時に当たり判定を生成するかのフラグ
+
+	bool m_invincibleTimeFlag = false;			//無敵時間であるかのフラグ
+	const float m_invincbleTime = 2.0f;
+	float m_invincbleTimer = 0.0f;
+
+	const float m_invincbleDashTime = 0.5f;
+	float m_invincbledDashTimer = 0.0f;
+
+	bool m_modelDrawFlag = false;
+
 };
 
