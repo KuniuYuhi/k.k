@@ -87,7 +87,7 @@ public:
 	/// ステータスの取得
 	/// </summary>
 	/// <returns></returns>
-	const Status GetStatus()
+	const Status& GetStatus()
 	{
 		return m_status;
 	}
