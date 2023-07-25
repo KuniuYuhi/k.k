@@ -237,6 +237,7 @@
     <ClCompile Include="HeroStateAttack_3.cpp" />
     <ClCompile Include="HeroStateAttack_4.cpp" />
     <ClCompile Include="HeroStateAttack_Skill_Main.cpp" />
+    <ClCompile Include="HeroStateDamage.cpp" />
     <ClCompile Include="HeroStateDie.cpp" />
     <ClCompile Include="HeroStateIdle.cpp" />
     <ClCompile Include="HeroStateRun.cpp" />
@@ -264,6 +265,7 @@
     <ClCompile Include="WizardStateAttack_2_Start.cpp" />
     <ClCompile Include="WizardStateAttack_3_Main.cpp" />
     <ClCompile Include="WizardStateAttack_3_Start.cpp" />
+    <ClCompile Include="WizardStateDamage.cpp" />
     <ClCompile Include="WizardStateDie.cpp" />
     <ClCompile Include="WizardStateIdle.cpp" />
     <ClCompile Include="WizardStateRun.cpp" />
@@ -285,6 +287,7 @@
     <ClInclude Include="HeroStateAttack_3.h" />
     <ClInclude Include="HeroStateAttack_4.h" />
     <ClInclude Include="HeroStateAttack_Skill_Main.h" />
+    <ClInclude Include="HeroStateDamage.h" />
     <ClInclude Include="HeroStateDie.h" />
     <ClInclude Include="HeroStateIdle.h" />
     <ClInclude Include="HeroStateRun.h" />
@@ -310,6 +313,7 @@
     <ClInclude Include="WizardStateAttack_2_Start.h" />
     <ClInclude Include="WizardStateAttack_3_Main.h" />
     <ClInclude Include="WizardStateAttack_3_Start.h" />
+    <ClInclude Include="WizardStateDamage.h" />
     <ClInclude Include="WizardStateDie.h" />
     <ClInclude Include="WizardStateIdle.h" />
     <ClInclude Include="WizardStateRun.h" />

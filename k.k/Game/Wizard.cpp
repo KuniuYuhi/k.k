@@ -16,6 +16,7 @@
 #include "WizardState_Attack_4.h"
 #include "FlamePillar.h"
 #include "WizardStateDie.h"
+#include "WizardStateDamage.h"
 
 namespace {
 	int MAXHP = 150;
@@ -89,6 +90,8 @@ void Wizard::InitModel()
 	m_animationClip[enAnimClip_Attack_4].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Die].Load("Assets/animData/character/Wizard/Die.tka");
 	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Damage].Load("Assets/animData/character/Wizard/Damage.tka");
+	m_animationClip[enAnimClip_Damage].SetLoopFlag(false);
 
 
 	m_modelRender.Init(
@@ -137,7 +140,11 @@ void Wizard::Update()
 		CreateCollision();
 	}
 	
-	//Damage(10);
+	//無敵時間でないなら当たり判定の処理を行う
+	if (CalcInvincibleTime() == false && CalcInvicibleDash() == false)
+	{
+		DamageCollision(m_player->GetCharacterController());
+	}
 
 	SetTransFormModel(m_modelRender);
 	m_modelRender.Update();
@@ -147,10 +154,17 @@ void Wizard::Move()
 {
 	if (g_pad[0]->IsPress(enButtonA))
 	{
+		//ダッシュした瞬間だけ無敵時間にする
+		if (GetInvicibleDashState() == enDashInvicibleState_None)
+		{
+			SetInvicibleDashState(enDashInvicibleState_On);
+			m_invincbledDashTimer = 0.0f;
+		}
 		m_dashFlag = true;
 	}
 	else
 	{
+		SetInvicibleDashState(enDashInvicibleState_None);
 		m_dashFlag = false;
 	}
 	
@@ -280,6 +294,8 @@ void Wizard::Damage(int attack)
 	if (m_status.hp > 0)
 	{
 		m_status.hp -= attack;
+		SetInvicibleTimeFlag(true);
+		SetNextAnimationState(enAnimationState_Damage);
 	}
 
 	if (m_status.hp <= 0)
@@ -393,8 +409,12 @@ void Wizard::SetNextAnimationState(EnAnimationState nextState)
 		m_animationState = new WizardState_Attack_4(this);
 		break;
 	case Wizard::enAnimationState_Die:
-		//アタック４ステートを作成する。
+		//Dieステートを作成する。
 		m_animationState = new WizardStateDie(this);
+		break;
+	case Wizard::enAnimationState_Damage:
+		//被ダメージステートを作成する。
+		m_animationState = new WizardStateDamage(this);
 		break;
 
 	default:
@@ -531,9 +551,25 @@ void Wizard::OnProcessDieStateTransition()
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		//フレームレートを戻す
-		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Fix, 60);
+		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 60);
 		//アニメーションが終わったのでキャラクターを切り替えるフラグをtrueにする
 		SetDieToChangeFlag(true);
+	}
+}
+
+void Wizard::OnProcessDamageStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//攻撃中の可能性があるので
+		m_createAttackCollisionFlag = false;
+		SetNowComboState(enNowCombo_None);
+		SetDamagedComboState(enDamageCombo_None);
+		//攻撃パターンをなし状態にする
+		m_enAttackPatternState = enAttackPattern_None;
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
 	}
 }
 

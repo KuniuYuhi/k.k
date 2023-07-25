@@ -117,6 +117,8 @@
       <Filter>Hero</Filter>
     </ClCompile>
     <ClCompile Include="DarkWall.cpp" />
+    <ClCompile Include="HeroStateDamage.cpp" />
+    <ClCompile Include="WizardStateDamage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -229,5 +231,7 @@
       <Filter>Hero</Filter>
     </ClInclude>
     <ClInclude Include="DarkWall.h" />
+    <ClInclude Include="HeroStateDamage.h" />
+    <ClInclude Include="WizardStateDamage.h" />
   </ItemGroup>
 </Project>

@@ -75,7 +75,19 @@ public:
 		return m_enAnimationState != enAnimationState_Attack_1 &&
 			m_enAnimationState != enAnimationState_Attack_2 &&
 			m_enAnimationState != enAnimationState_Attack_3 &&
-			m_enAnimationState != enAnimationState_Attack_Skill_Charge;
+			m_enAnimationState != enAnimationState_Attack_Skill_Charge&&
+			m_enAnimationState != enAnimationState_Damage&&
+			m_enAnimationState != enAnimationState_Die;
+	}
+
+	/// <summary>
+	/// 特定のアニメーションが再生中のとき当たり判定を取らない
+	/// </summary>
+	/// <returns></returns>
+	bool isCollisionEntable() const
+	{
+		return m_enAnimationState != enAnimationState_Damage &&
+			m_enAnimationState != enAnimationState_Die;
 	}
 
 	/// <summary>
@@ -115,6 +127,10 @@ public:
 	/// 倒されたときのステート遷移処理を実行
 	/// </summary>
 	void OnProcessDieStateTransition();
+	/// <summary>
+	/// ダメージを受けた時のステート遷移処理を実行
+	/// </summary>
+	void OnProcessDamageStateTransition();
 
 public:
 	// アニメーションクリップの番号を表す列挙型。
@@ -128,6 +144,7 @@ public:
 		enAnimClip_Attack_Skill_Charge,
 		enAnimClip_Attack_Skill_Main,// 6 : 
 		enAnimClip_Die,
+		enAnimClip_Damage,
 		enAnimClip_Num,		// 7 :アニメーションクリップの数
 	};
 
@@ -142,7 +159,8 @@ private:
 		enAnimationState_Attack_3,
 		enAnimationState_Attack_Skill_Charge,
 		enAnimationState_Attack_Skill_Main,
-		enAnimationState_Die
+		enAnimationState_Die,
+		enAnimationState_Damage
 	};
 
 	//攻撃パターンステート
@@ -176,6 +194,7 @@ private:
 	void SetNextAnimationState(EnAnimationState nextState);
 
 	bool RotationOnly();
+
 
 
 	ModelRender m_modelRender;
