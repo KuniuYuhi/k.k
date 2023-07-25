@@ -17,6 +17,10 @@ public:
 		m_lich = lich;
 	}
 
+	const int GetAtk() const
+	{
+		return m_attak;
+	}
 
 private:
 	Lich* m_lich = nullptr;
@@ -27,6 +31,7 @@ private:
 
 	CollisionObject* m_collision;
 
+	const int m_attak = 20;
 
 	const float m_speed = 50.0f;
 

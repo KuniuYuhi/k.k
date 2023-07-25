@@ -10,7 +10,8 @@
 #include "HeroStateAttack_4.h"
 #include "HeroStateAttack_Skill_Main.h"
 #include "HeroStateDie.h"
-
+#include "HeroStateDamage.h"
+//ダメージ受けた時チカチカさせる
 
 namespace {
 	int MAXHP = 200;
@@ -49,8 +50,6 @@ bool Hero::Start()
 
 	InitModel();
 
-	
-
 	return true;
 }
 
@@ -75,6 +74,8 @@ void Hero::InitModel()
 	m_animationClip[enAnimClip_Attack_Skill_Main].SetLoopFlag(true);
 	m_animationClip[enAnimClip_Die].Load("Assets/animData/character/Player/Dead.tka");
 	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Damage].Load("Assets/animData/character/Player/Damage.tka");
+	m_animationClip[enAnimClip_Damage].SetLoopFlag(false);
 
 
 	m_modelRender.Init(
@@ -111,6 +112,9 @@ void Hero::Update()
 		return;
 	}
 
+
+	
+
 	RecoveryMP();
 	Move();
 	Attack();
@@ -127,9 +131,12 @@ void Hero::Update()
 		CreateSkillCollision();
 	}
 
-
-	//Damage(10);
-
+	//無敵時間でないなら当たり判定の処理を行う
+	if (CalcInvincibleTime() == false&& CalcInvicibleDash()==false)
+	{
+		DamageCollision(m_player->GetCharacterController());
+	}
+	
 	SetTransFormModel(m_modelRender);
 	m_modelRender.Update();
 }
@@ -144,10 +151,18 @@ void Hero::Move()
 		{
 			if (g_pad[0]->IsPress(enButtonA))
 			{
+				//ダッシュした瞬間だけ無敵時間にする
+				if (GetInvicibleDashState() == enDashInvicibleState_None)
+				{
+					SetInvicibleDashState(enDashInvicibleState_On);
+					m_invincbledDashTimer = 0.0f;
+				}
+				
 				m_dashFlag = true;
 			}
 			else
 			{
+				SetInvicibleDashState(enDashInvicibleState_None);
 				m_dashFlag = false;
 			}
 		}
@@ -281,6 +296,8 @@ void Hero::Damage(int attack)
 	if (m_status.hp > 0)
 	{
 		m_status.hp -= attack;
+		SetInvicibleTimeFlag(true);
+		SetNextAnimationState(enAnimationState_Damage);
 	}
 
 	if (m_status.hp <= 0)
@@ -342,8 +359,12 @@ void Hero::SetNextAnimationState(EnAnimationState nextState)
 		m_state = new HeroStateAttack_Skill_Main(this);
 		break;
 	case Hero::enAnimationState_Die:
-		//アタックスキルメインステートを作成する。
+		//Dieメインステートを作成する。
 		m_state = new HeroStateDie(this);
+		break;
+	case Hero::enAnimationState_Damage:
+		//被ダメージメインステートを作成する。
+		m_state = new HeroStateDamage(this);
 		break;
 
 	default:
@@ -494,9 +515,28 @@ void Hero::OnProcessDieStateTransition()
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		//フレームレートを戻す
-		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Fix, 60);
+		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 60);
 		//アニメーションが終わったのでキャラクターを切り替えるフラグをtrueにする
 		SetDieToChangeFlag(true);
+	}
+}
+
+void Hero::OnProcessDamageStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//行動の途中かもしれないのでステートやフラグを初期に戻す
+		SetInvicibleDashState(enDashInvicibleState_None);
+		//攻撃パターンをなし状態にする
+		m_enAttackPatternState = enAttackPattern_None;
+		m_createAttackCollisionFlag = false;
+		//コンボが終わりなのでコンボ状態をなしに戻す
+		SetNowComboState(enNowCombo_None);
+		SetDamagedComboState(enDamageCombo_None);
+
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
 	}
 }
 
@@ -566,8 +606,25 @@ void Hero::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 
 void Hero::Render(RenderContext& rc)
 {
+	//無敵時間の間は
+	if (m_invincibleTimeFlag == true)
+	{
+		if (m_modelDrawFlag == true)
+		{
+			m_modelRender.Draw(rc);
+			m_modelDrawFlag = false;
+		}
+		else
+		{
+			m_modelDrawFlag =! m_modelDrawFlag;
+		}
+	}
+	else
 	m_modelRender.Draw(rc);
+
+	
 }
+	
 
 
 

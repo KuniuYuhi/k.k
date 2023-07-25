@@ -60,7 +60,19 @@ public:
 			m_enAnimationState != enAnimationState_Attack_2_main &&
 			m_enAnimationState != enAnimationState_Attack_3_start &&
 			m_enAnimationState != enAnimationState_Attack_3_main &&
-			m_enAnimationState != enAnimationState_Attack_4;
+			m_enAnimationState != enAnimationState_Attack_4&&
+			m_enAnimationState != enAnimationState_Damage &&
+			m_enAnimationState != enAnimationState_Die;
+	}
+
+	/// <summary>
+	/// 特定のアニメーションが再生中のとき当たり判定を取らない
+	/// </summary>
+	/// <returns></returns>
+	bool isCollisionEntable() const
+	{
+		return m_enAnimationState != enAnimationState_Damage &&
+			m_enAnimationState != enAnimationState_Die;
 	}
 
 	ModelRender& GetModelRender()
@@ -85,6 +97,8 @@ public:
 
 	void OnProcessDieStateTransition();
 
+	void OnProcessDamageStateTransition();
+
 
 	// アニメーションクリップの番号を表す列挙型。
 	enum EnAnimationClip {
@@ -98,6 +112,7 @@ public:
 		enAnimClip_Attack_3_main,
 		enAnimClip_Attack_4,		// 6 :
 		enAnimClip_Die,
+		enAnimClip_Damage,
 		enAnimClip_Num,				// 7 :アニメーションクリップの数
 	};
 
@@ -115,7 +130,8 @@ private:
 		enAnimationState_Attack_3_start,
 		enAnimationState_Attack_3_main,
 		enAnimationState_Attack_4,
-		enAnimationState_Die
+		enAnimationState_Die,
+		enAnimationState_Damage
 	};
 
 	//攻撃パターンステート

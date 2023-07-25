@@ -191,6 +191,8 @@ void Lich::Damage(int attack)
 		//Dieフラグをtrueにする
 		m_dieFlag = true;
 		m_status.hp = 0;
+		//技の途中でやられたかもしれない
+		m_CreateDarkWallFlag = false;
 		SetNextAnimationState(enAnimationState_Die);
 	}
 
@@ -479,7 +481,7 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	if (wcscmp(eventName, L"Create_Ball") == 0)
 	{
 		//ボール生成
-		FireBall* fireball = NewGO<FireBall>(0, "fireball");
+		FireBall* fireball = NewGO<FireBall>(0, "darkball");
 		fireball->SetLich(this);
 	}
 
