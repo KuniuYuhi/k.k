@@ -9,6 +9,10 @@
 #include "FireBall.h"
 #include "FlamePillar.h"
 #include "DarkWall.h"
+#include "LichStateDamage.h"
+
+#include "LichAction.h"
+
 
 
 namespace {
@@ -18,10 +22,10 @@ namespace {
 
 
 	//ステータス
-	int MAXHP = 500;
+	int MAXHP = 2000;
 	int MAXMP = 500;
 	int ATK = 20;
-	float SPEED = 50.0f;
+	float SPEED = 80.0f;
 	const char* NAME = "Lich";
 }
 
@@ -37,6 +41,7 @@ Lich::Lich()
 
 Lich::~Lich()
 {
+	delete m_lichAction;
 }
 
 bool Lich::Start()
@@ -56,6 +61,9 @@ bool Lich::Start()
 
 	InitModel();
 
+	
+	m_lichAction = new LichAction(this);
+
 	return true;
 }
 
@@ -71,6 +79,9 @@ void Lich::InitModel()
 	m_animationClip[enAnimClip_Attack_2].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Die].Load("Assets/animData/character/Lich/Die.tka");
 	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Damage].Load("Assets/animData/character/Lich/Damage.tka");
+	m_animationClip[enAnimClip_Damage].SetLoopFlag(false);
+
 
 	m_modelRender.Init("Assets/modelData/character/Lich/Lich.tkm",
 		m_animationClip,
@@ -121,6 +132,8 @@ void Lich::Update()
 		CreateDarkWall();
 	}
 
+	//被ダメージの当たり判定
+	DamageCollision(m_charaCon);
 
 	//倒されたら他の処理を実行しないようにする
 	if (m_dieFlag==true)
@@ -140,8 +153,7 @@ void Lich::Update()
 	ManageState();
 	PlayAnimation();
 
-	//被ダメージの当たり判定
-	DamageCollision(m_charaCon);
+	
 
 	SetTransFormModel(m_modelRender);
 	m_modelRender.Update();
@@ -151,19 +163,28 @@ void Lich::Update()
 
 void Lich::Move()
 {
+	//プレイヤーの座標を取得
 	SetTargetPosition();
 
-	if (m_attackRangeFlag == true)
+	//移動処理
+	m_moveSpeed = calcVelocity(m_status);
+
+	//一定の距離になったらそれ以上動かない
+	if (IsDistanceToPlayer() == true)
 	{
 		//移動しないようにする
-		m_moveSpeed = calcVelocity(m_status);
+		m_moveSpeed = Vector3::Zero;
+	}
+	//攻撃中なら移動しない
+	else if (IsAttackEntable() != true)
+	{
+		//移動しないようにする
 		m_moveSpeed = Vector3::Zero;
 	}
 	//プレイヤーを見つけたら
 	else if (IsFindPlayer(m_distance) == true)
 	{
-		//移動
-		m_moveSpeed = calcVelocity(m_status);
+		//移動する
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	}
 	else
@@ -181,8 +202,15 @@ void Lich::Damage(int attack)
 {
 	if (m_status.hp > 0)
 	{
-		//スキルなら受けるダメージ量を変える
-		//m_player->
+		//一定確率で怯む
+		if (Isflinch() == true)
+		{
+			//技の途中かもしれない
+			m_CreateDarkWallFlag = false;
+			SetNextAnimationState(enAnimationState_Damage);
+		}
+
+		
 		m_status.hp -= attack;
 	}
 	
@@ -196,6 +224,43 @@ void Lich::Damage(int attack)
 		SetNextAnimationState(enAnimationState_Die);
 	}
 
+}
+
+bool Lich::Isflinch()
+{
+	//乱数を初期化。
+	srand((unsigned)time(NULL));
+
+	int value = rand() % 10;
+
+	if (value > 7)
+	{
+		//怯む
+		return true;
+	}
+	else
+	{
+		//怯まない
+		return false;
+	}
+	
+}
+
+bool Lich::IsDistanceToPlayer()
+{
+	Vector3 diff = m_targetPosition - m_position;
+	//プレイヤーとの距離
+	if (diff.Length() < m_distanceToPlayer)
+	{
+		//距離内にいる
+		return true;
+	}
+	else
+	{
+		//距離内にいない
+		return false;
+	}
+	
 }
 
 bool Lich::RotationOnly()
@@ -218,7 +283,7 @@ bool Lich::RotationOnly()
 bool Lich::Attack()
 {
 	//アタック１の攻撃範囲にターゲットがいたら
-	if (IsFindPlayer(m_Attack_1Distance) == true)
+	if (IsFindPlayer(m_InfoAboutAttack.m_Attack_1Distance) == true)
 	{
 		//インターバルがないなら攻撃可能
 		if (m_attackFlag == false)
@@ -243,7 +308,7 @@ bool Lich::Attack()
 bool Lich::Attack2()
 {
 	//アタック１の攻撃範囲にターゲットがいたら
-	if (IsFindPlayer(m_Attack_2Distance) == true)
+	if (IsFindPlayer(m_InfoAboutAttack.m_Attack_2Distance) == true)
 	{
 		//インターバルがないなら攻撃可能
 		if (m_attackFlag == false)
@@ -267,20 +332,36 @@ bool Lich::Attack2()
 
 void Lich::DecideNextAction()
 {
+	//被ダメージ時は処理をしない
+	if (isAnimationEntable() != true)
+	{
+		return;
+	}
+
+	
 	Move();
 
+	
+
+	
 	if (m_attackFlag == false)
 	{
-		//範囲が狭い順
-		if (Attack2() == true)
-		{
-			return;
-		}
+		//アクションを決める
+		m_lichAction->NextAction();
+		
+		
+		m_attackFlag = true;
 
-		if (Attack() == true)
-		{
-			return;
-		}
+		////範囲が狭い順
+		//if (Attack2() == true)
+		//{
+		//	return;
+		//}
+
+		//if (Attack() == true)
+		//{
+		//	return;
+		//}
 	}
 }
 
@@ -329,7 +410,9 @@ void Lich::SetNextAnimationState(EnAnimationState nextState)
 		break;
 	case Lich::enAnimationState_Attack_3_main:
 		break;
-	case Lich::enAnimationState_Attack_4:
+	case Lich::enAnimationState_Damage:
+		//被ダメージステートを作成する
+		m_state = new LichStateDamage(this);
 		break;
 	case Lich::enAnimationState_Die:
 		//Dieステートを作成する
@@ -391,6 +474,17 @@ void Lich::OnProcessDieStateTransition()
 	}
 }
 
+void Lich::OnProcessDamageStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
+
 void Lich::CreateDarkWall()
 {
 	//ボーン取得
@@ -401,6 +495,7 @@ void Lich::CreateDarkWall()
 void Lich::DamageCollision(CharacterController& characon)
 {
 	//抜け出す処理
+	//死んだら処理をしないtodo
 
 	//通常攻撃の当たり判定
 	const auto& Attack_1Collisions = g_collisionObjectManager->FindCollisionObjects("Attack");
