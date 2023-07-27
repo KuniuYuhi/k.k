@@ -92,7 +92,7 @@ bool Game::Start()
 	spriteTest.Update();
 
 
-	//m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
+	m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
 
 	m_player = NewGO<Player>(0, "player");
 
@@ -102,7 +102,7 @@ bool Game::Start()
 
 
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
-	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 
 	return true;
