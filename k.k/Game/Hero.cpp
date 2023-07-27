@@ -50,6 +50,9 @@ bool Hero::Start()
 
 	InitModel();
 
+
+
+
 	return true;
 }
 
