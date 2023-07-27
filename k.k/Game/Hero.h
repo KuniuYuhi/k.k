@@ -90,6 +90,13 @@ public:
 			m_enAnimationState != enAnimationState_Die;
 	}
 
+	bool isRotationEntable() const
+	{
+		return m_enAnimationState != enAnimationState_Attack_1 &&
+			m_enAnimationState != enAnimationState_Attack_2 &&
+			m_enAnimationState != enAnimationState_Attack_Skill_Charge;
+	}
+
 	/// <summary>
 	/// ƒ‚ƒfƒ‹ƒŒƒ“ƒ_[‚Ìæ“¾
 	/// </summary>

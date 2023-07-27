@@ -119,6 +119,8 @@
     <ClCompile Include="DarkWall.cpp" />
     <ClCompile Include="HeroStateDamage.cpp" />
     <ClCompile Include="WizardStateDamage.cpp" />
+    <ClCompile Include="LichAction.cpp" />
+    <ClCompile Include="LichStateDamage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -233,5 +235,7 @@
     <ClInclude Include="DarkWall.h" />
     <ClInclude Include="HeroStateDamage.h" />
     <ClInclude Include="WizardStateDamage.h" />
+    <ClInclude Include="LichAction.h" />
+    <ClInclude Include="LichStateDamage.h" />
   </ItemGroup>
 </Project>

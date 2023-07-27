@@ -3,7 +3,7 @@
 
 //class Player;
 
-class Actor:public IGameObject,public Noncopyable
+class Actor:public IGameObject
 {
 public:
 
@@ -79,6 +79,12 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	virtual bool isCollisionEntable() const = 0;
+
+	/// <summary>
+	/// 回転可能なアニメーションが再生中か
+	/// </summary>
+	/// <returns></returns>
+	virtual bool isRotationEntable() const = 0;
 
 
 	//敵のダメージ判定用コンボステート

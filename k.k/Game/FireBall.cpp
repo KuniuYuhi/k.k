@@ -39,7 +39,7 @@ bool FireBall::Start()
     {
         SetForLich(
             m_darkBall,
-            80,
+            200,
             100,
             60,
             70,

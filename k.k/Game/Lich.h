@@ -1,11 +1,21 @@
 #pragma once
 #include "AIActor.h"
 class ILichState;
+class LichAction;
 class Lich:public AIActor
 {
 public:
 	Lich();
 	~Lich();
+
+	/// <summary>
+	/// 攻撃に関する情報
+	/// </summary>
+	struct InfoAboutAttack
+	{
+		const float m_Attack_1Distance = 600.0f;	//遠距離攻撃
+		const float m_Attack_2Distance = 200.0f;	//近距離攻撃
+	};
 
 	bool Start();
 	void Update();
@@ -65,12 +75,30 @@ public:
 	void DecideNextAction();
 
 	/// <summary>
-	/// 
+	/// 怯むかどうか
+	/// </summary>
+	/// <returns></returns>
+	bool Isflinch();
+
+	bool IsDistanceToPlayer();
+
+	/// <summary>
+	/// 特定のアニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
 	bool isAnimationEntable() const
 	{
-		return m_enAnimationState != enAnimationState_Attack_1&&
+		return m_enAnimationState != enAnimationState_Damage&&
+			m_enAnimationState != enAnimationState_Die;
+	}
+
+	/// <summary>
+	/// 攻撃アニメーションが再生中か
+	/// </summary>
+	/// <returns></returns>
+	bool IsAttackEntable() const
+	{
+		return m_enAnimationState != enAnimationState_Attack_1 &&
 			m_enAnimationState != enAnimationState_Attack_2;
 	}
 
@@ -80,7 +108,7 @@ public:
 	/// <returns></returns>
 	bool isRotationEntable() const
 	{
-		return /*m_enAnimationState != enAnimationState_Attack_1 &&*/
+		return m_enAnimationState != enAnimationState_Attack_1 &&
 			m_enAnimationState != enAninationState_Idle;
 	}
 
@@ -97,9 +125,14 @@ public:
 	/// ダークウォールのボーンIdを取得
 	/// </summary>
 	/// <returns></returns>
-	const int GetDarkWallBoonId() const
+	const int& GetDarkWallBoonId() const
 	{
 		return m_darkWallBoonId;
+	}
+
+	const InfoAboutAttack& GetInfoAboutAttack()
+	{
+		return m_InfoAboutAttack;
 	}
 
 
@@ -134,10 +167,10 @@ public:
 	/// Dieステート遷移処理を実行
 	/// </summary>
 	void OnProcessDieStateTransition();
-
-private:
-
-	bool RotationOnly();
+	/// <summary>
+	/// 被ダメージ遷移処理を実行
+	/// </summary>
+	void OnProcessDamageStateTransition();
 
 	//アニメーションステート
 	enum EnAnimationState {
@@ -159,6 +192,12 @@ private:
 	/// <param name="nextState"></param>
 	void SetNextAnimationState(EnAnimationState nextState);
 
+private:
+
+	bool RotationOnly();
+
+	
+	LichAction* m_lichAction = nullptr;
 
 	ILichState* m_state = nullptr;
 
@@ -173,18 +212,20 @@ private:
 
 	FontRender m_hpFont;
 
+	const float m_distanceToPlayer = 300.0f;
+
 	int m_darkWallBoonId = -1;					//ダークウォールで使うボーンID
 
 	bool m_attackRangeFlag = false;				//攻撃範囲にいるかのフラグ
 
 	bool m_CreateDarkWallFlag = false;			//ダークウォール生成フラグ
 
-	const float m_attackIntervalTime = 3.0f;
+	const float m_attackIntervalTime = 4.0f;
 	const float m_damageIntervalTime = 0.5f;
 	
-	const float m_Attack_1Distance = 600.0f;	//遠距離攻撃
+	InfoAboutAttack m_InfoAboutAttack;
 
-	const float m_Attack_2Distance = 200.0f;	//近距離攻撃
+
 
 	bool m_dieFlag = false;
 
