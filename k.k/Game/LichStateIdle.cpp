@@ -9,5 +9,5 @@ void LichStateIdle::ManageState()
 
 void LichStateIdle::PlayAnimation()
 {
-	m_lich->GetModelRender().PlayAnimation(Lich::enAnimClip_Idle,0.2f);
+	m_lich->GetModelRender().PlayAnimation(Lich::enAnimClip_Idle,0.4f);
 }
