@@ -611,6 +611,20 @@ void Wizard::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 
 void Wizard::Render(RenderContext& rc)
 {
+	//–³“GŽžŠÔ‚ÌŠÔ‚Í
+	if (m_invincibleTimeFlag == true)
+	{
+		if (m_modelDrawFlag == true)
+		{
+			m_modelRender.Draw(rc);
+			m_modelDrawFlag = false;
+		}
+		else
+		{
+			m_modelDrawFlag = !m_modelDrawFlag;
+		}
+	}
+	else
 	m_modelRender.Draw(rc);
 }
 

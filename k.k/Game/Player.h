@@ -104,6 +104,8 @@ private:
 	//キャラコンこれ使う
 	CharacterController m_charaCon;
 
+	RigidBody rigitBody;
+
 	Actor* actor[enCharacter_num];	//キャラクターの数分のアクター
 	Actor* m_nowActor = nullptr;	// 現在のアクター
 	Actor* m_subActor = nullptr;    // サブのアクター

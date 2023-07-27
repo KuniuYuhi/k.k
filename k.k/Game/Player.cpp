@@ -48,6 +48,19 @@ bool Player::Start()
 	//キャラコンの設定
 	m_charaCon.Init(12.0f, 33.0f, m_position);
 
+
+	/*RigidBodyInitData rbid;
+	rbid.collider = m_charaCon.GetCollider();
+	rbid.mass = 20.0f;
+	rbid.pos = m_position;
+	rbid.restitution = 200.0f;
+	rbid.rot = m_nowActor->GetRotation();
+
+	rigitBody.Init(rbid);
+	rigitBody.SetLinearFactor(1.0f, 0.0f, 1.0f);
+	rigitBody.SetAngularFactor(0.0f, 1.0f, 0.0f);*/
+
+
 	return true;
 }
 
@@ -89,10 +102,23 @@ void Player::Update()
 	//現在のキャラクターがやられていないなら先の処理しない
 	if (m_nowActor->GetDieFlag() != true)
 	{
+		/*if (g_pad[0]->IsTrigger(enButtonStart))
+		{
+			Vector3 a = { 50.0f,0.0f,20.0f };
+			rigitBody.AddForce(a, m_position);
+		}*/
+
+
+
 		//移動処理
 		m_moveSpeed = m_nowActor->calcVelocity(m_nowActor->GetStatus());
 		//キャラコンの移動処理
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+
+		/*rigitBody.SetPositionAndRotation(
+			m_position,
+			m_nowActor->GetRotation()
+		);*/
 	}
 }
 
