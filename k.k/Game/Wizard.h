@@ -75,6 +75,11 @@ public:
 			m_enAnimationState != enAnimationState_Die;
 	}
 
+	bool isRotationEntable() const
+	{
+		return true;
+	}
+
 	ModelRender& GetModelRender()
 	{
 		return m_modelRender;
