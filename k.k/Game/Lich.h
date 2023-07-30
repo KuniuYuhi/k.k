@@ -1,5 +1,7 @@
 #pragma once
 #include "AIActor.h"
+#include "Level3DRender.h"
+
 class ILichState;
 class LichAction;
 class Lich:public AIActor
@@ -22,6 +24,8 @@ public:
 
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 	void Render(RenderContext& rc);
+
+	void SetStageLevelPosition();
 
 	/// <summary>
 	/// モデルの初期化
@@ -192,10 +196,37 @@ public:
 	/// <param name="nextState"></param>
 	void SetNextAnimationState(EnAnimationState nextState);
 
+	/// <summary>
+	/// ターゲットから一番遠いところに座標を移動させる
+	/// </summary>
+	void Warp();
+
+	//
+	enum EnSpecialActionState
+	{
+		enSpecialActionState_Normal,
+		enSpecialActionState_Warp,
+		SpecialActionState
+	};
+
+	void SetSpecialActionState(EnSpecialActionState SpecialActionState)
+	{
+		m_enSpecialActionState = SpecialActionState;
+	}
+
+	const EnSpecialActionState& GetSpecialActionState() const
+	{
+		return m_enSpecialActionState;
+	}
+
+
 private:
 
 	bool RotationOnly();
 
+
+	Level3DRender m_stageLevel;
+	std::vector<Vector3> m_WarpPosition;
 	
 	LichAction* m_lichAction = nullptr;
 
@@ -205,6 +236,8 @@ private:
 	AnimationClip m_animationClip[enAnimClip_Num];	// アニメーションクリップ 
 
 	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
+
+	EnSpecialActionState m_enSpecialActionState = enSpecialActionState_Normal;
 
 	ModelRender m_modelRender;
 
@@ -225,7 +258,7 @@ private:
 	
 	InfoAboutAttack m_InfoAboutAttack;
 
-
+	bool m_halfHpFlag = false;
 
 	bool m_dieFlag = false;
 
