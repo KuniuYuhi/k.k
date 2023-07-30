@@ -22,7 +22,7 @@ namespace {
 
 
 	//ステータス
-	int MAXHP = 2000;
+	int MAXHP = 200;
 	int MAXMP = 500;
 	int ATK = 20;
 	float SPEED = 80.0f;
@@ -60,7 +60,10 @@ bool Lich::Start()
 	);
 
 	InitModel();
-
+	//
+	SetStageLevelPosition();
+	//
+	SetSpecialActionState(enSpecialActionState_Normal);
 	
 	m_lichAction = new LichAction(this);
 
@@ -148,6 +151,8 @@ void Lich::Update()
 	AttackInterval(m_attackIntervalTime);
 	DamageInterval(m_damageIntervalTime);
 
+	Move();
+
 	DecideNextAction();
 
 	ManageState();
@@ -165,6 +170,13 @@ void Lich::Move()
 {
 	//プレイヤーの座標を取得
 	SetTargetPosition();
+
+	//被ダメージ時は処理をしない
+	if (isAnimationEntable() != true)
+	{
+		return;
+	}
+
 
 	//移動処理
 	m_moveSpeed = calcVelocity(m_status);
@@ -212,6 +224,13 @@ void Lich::Damage(int attack)
 
 		
 		m_status.hp -= attack;
+
+		//HPが半分になったらワープする
+		if (m_status.hp <= m_status.maxHp / 2 && m_halfHpFlag == false)
+		{
+			SetSpecialActionState(enSpecialActionState_Warp);
+			m_halfHpFlag = true;
+		}
 	}
 	
 	if(m_status.hp <= 0)
@@ -338,30 +357,40 @@ void Lich::DecideNextAction()
 		return;
 	}
 
-	
-	Move();
-
-	
-
-	
-	if (m_attackFlag == false)
+	//攻撃中は処理をしない
+	if (IsAttackEntable() != true)
 	{
-		//アクションを決める
-		m_lichAction->NextAction();
-		
-		
-		m_attackFlag = true;
+		return;
+	}
+	
+	switch (m_enSpecialActionState)
+	{
+		case Lich::enSpecialActionState_Normal:
+			//攻撃可能なら
+			if (m_attackFlag == false)
+			{
+				//次の行動を選ぶ
+				m_lichAction->NextAction();
 
-		////範囲が狭い順
-		//if (Attack2() == true)
-		//{
-		//	return;
-		//}
+				m_attackFlag = true;
+			}
+			break;
 
-		//if (Attack() == true)
-		//{
-		//	return;
-		//}
+		case Lich::enSpecialActionState_Warp:
+			//ターゲットから一番遠いところに移動する
+			Warp();
+			//
+			m_lichAction->NextAction();
+			//状態を元に戻す
+			SetSpecialActionState(enSpecialActionState_Normal);
+			break;
+
+		case Lich::SpecialActionState:
+			break;
+
+
+		default:
+			break;
 	}
 }
 
@@ -423,6 +452,43 @@ void Lich::SetNextAnimationState(EnAnimationState nextState)
 		std::abort();
 		break;
 	}
+}
+
+void Lich::SetStageLevelPosition()
+{
+	m_stageLevel.Init(
+		"Assets/level3D/BossStage1.tkl",
+		[&](LevelObjectData& objData)
+		{
+			if (objData.ForwardMatchName(L"Pos") == true) {
+				//ワープする座標を配列に格納する
+				Vector3 warpPos = objData.position;
+				m_WarpPosition.emplace_back(warpPos);
+				return true;
+			}
+			return false;
+		});
+}
+
+void Lich::Warp()
+{
+	float MaxLength = 0.0f;
+	//ターゲットから一番遠いところ座標を調べる
+	for (int amount = 0; amount < m_WarpPosition.size(); amount++)
+	{
+		//
+		Vector3 diff = m_WarpPosition[amount] - m_targetPosition;
+		//
+		if (MaxLength < diff.Length())
+		{
+			MaxLength = diff.Length();
+			m_position = m_WarpPosition[amount];
+		}
+	}
+	Vector3 o = Vector3::Zero;
+	//ワープする
+	m_charaCon.SetPosition(m_position);
+	m_charaCon.Execute(o, 1.0f / 60.0f);
 }
 
 void Lich::ProcessCommonStateTransition()
@@ -598,3 +664,5 @@ void Lich::Render(RenderContext& rc)
 	m_modelRender.Draw(rc);
 	m_hpFont.Draw(rc);
 }
+
+
