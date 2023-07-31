@@ -59,19 +59,11 @@ public:
 	void DamageCollision(CharacterController& characon)override;
 
 	/// <summary>
-	/// アタック１の攻撃処理
-	/// </summary>
-	bool Attack();
-	/// <summary>
-	/// アタック２の攻撃処理
-	/// </summary>
-	/// <returns></returns>
-	bool Attack2();
-
-	/// <summary>
 	/// ダークウォールの生成
 	/// </summary>
 	void CreateDarkWall();
+
+	bool IsRisingDarkMeteorite();
 
 	/// <summary>
 	/// 次の行動を決定
@@ -92,7 +84,7 @@ public:
 	/// <returns></returns>
 	bool isAnimationEntable() const
 	{
-		return m_enAnimationState != enAnimationState_Damage&&
+		return m_enAnimationState != enAnimationState_Damage &&
 			m_enAnimationState != enAnimationState_Die;
 	}
 
@@ -103,7 +95,9 @@ public:
 	bool IsAttackEntable() const
 	{
 		return m_enAnimationState != enAnimationState_Attack_1 &&
-			m_enAnimationState != enAnimationState_Attack_2;
+			m_enAnimationState != enAnimationState_Attack_2&&
+			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_start &&
+			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_main;
 	}
 
 	/// <summary>
@@ -113,7 +107,9 @@ public:
 	bool isRotationEntable() const
 	{
 		return m_enAnimationState != enAnimationState_Attack_1 &&
-			m_enAnimationState != enAninationState_Idle;
+			m_enAnimationState != enAninationState_Idle&&
+			m_enAnimationState!=enAnimationState_Attack_DarkMeteorite_start&&
+			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_main;
 	}
 
 	/// <summary>
@@ -150,6 +146,8 @@ public:
 		enAnimClip_Attack_3_start,		// 5 : 
 		enAnimClip_Attack_3_main,
 		enAnimClip_Attack_4,		// 6 : 
+		enAnimClip_Attack_DarkMeteorite_start,
+		enAnimClip_Attack_DarkMeteorite_main,
 		enAnimClip_Damage,
 		enAnimClip_Die,
 		enAnimClip_Num,				// 7 :アニメーションクリップの数
@@ -175,6 +173,14 @@ public:
 	/// 被ダメージ遷移処理を実行
 	/// </summary>
 	void OnProcessDamageStateTransition();
+	/// <summary>
+	/// 
+	/// </summary>
+	void OnProcessDarkMeteorite_StartStateTransition();
+	/// <summary>
+	/// 
+	/// </summary>
+	void OnProcessDarkMeteorite_MainStateTransition();
 
 	//アニメーションステート
 	enum EnAnimationState {
@@ -186,6 +192,8 @@ public:
 		enAnimationState_Attack_3_start,
 		enAnimationState_Attack_3_main,
 		enAnimationState_Attack_4,
+		enAnimationState_Attack_DarkMeteorite_start,
+		enAnimationState_Attack_DarkMeteorite_main,
 		enAnimationState_Damage,
 		enAnimationState_Die
 	};
@@ -261,6 +269,9 @@ private:
 	bool m_halfHpFlag = false;
 
 	bool m_dieFlag = false;
+
+
+	const float m_RisingLimit = 200.0f;
 
 };
 
