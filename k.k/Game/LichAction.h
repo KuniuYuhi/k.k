@@ -16,15 +16,25 @@ public:
 		enAttack_None,
 		enAttack_1,
 		enAttack_2,
-
+		enAttack_DarkMeteorite
 	};
 
-	enum enNextAction
+	EnActionNumber m_enActionNumber;
+
+	//次の行動
+	/*enum enNextAction
 	{
 		enNextAction_None,
 		enNextAction_1,
 		enNextAction_2,
+		enNextAction_3
 	};
+
+	struct Action
+	{
+		int m_eval = 0;
+		enNextAction m_enNextAction;
+	};*/
 
 	int NextAction();
 
@@ -46,36 +56,35 @@ public:
 		m_lich = lich;
 	}
 	
-	struct Action
-	{
-		int m_eval = 0;
-		enNextAction m_enNextAction = enNextAction_None;
-	};
+	
 
 
 private:
 	
-	void CalcEvalIdle(Action& action);
+	
+	void CalcEvalIdle(EnActionNumber m_enActionNumber/*Action& action*/);
 
-	void CalcEvalAttack1(Action& action);
+	void CalcEvalAttack1(EnActionNumber m_enActionNumber/*Action& action*/);
 
-	void CalcEvalAttack2(Action& action);
+	void CalcEvalAttack2(EnActionNumber m_enActionNumber/*Action& action*/);
 
-	void CalcEvalSummon(Action& action);
+	void CalcEvalSummon(EnActionNumber m_enActionNumber/*Action& action*/);
+
+	void CalcEvalDarkMeteorite(EnActionNumber m_enActionNumber/*Action& action*/);
 
 
-
-
-
+	
 
 	Player* m_player = nullptr;
 	Lich* m_lich = nullptr;
 
-	const int m_actionAmount = 3;
+	const int m_actionAmount = 4;
 
+	//構造体にしたい
+	//行動の数分の評価値
+	int m_eval[4];
 
-
-	Action m_action[];
+	//Action m_action[];
 
 
 	
