@@ -120,7 +120,13 @@
     <ClCompile Include="HeroStateDamage.cpp" />
     <ClCompile Include="WizardStateDamage.cpp" />
     <ClCompile Include="LichAction.cpp" />
-    <ClCompile Include="LichStateDamage.cpp" />
+    <ClCompile Include="LichStateDamage.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="LichStateDarkMeteorite_Start.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="LichStateDarkMeteorite_Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -236,6 +242,12 @@
     <ClInclude Include="HeroStateDamage.h" />
     <ClInclude Include="WizardStateDamage.h" />
     <ClInclude Include="LichAction.h" />
-    <ClInclude Include="LichStateDamage.h" />
+    <ClInclude Include="LichStateDamage.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="LichStateDarkMeteorite_Start.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="LichStateDarkMeteorite_Main.h" />
   </ItemGroup>
 </Project>

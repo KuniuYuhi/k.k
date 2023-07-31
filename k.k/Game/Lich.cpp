@@ -10,6 +10,8 @@
 #include "FlamePillar.h"
 #include "DarkWall.h"
 #include "LichStateDamage.h"
+#include "LichStateDarkMeteorite_Start.h"
+#include "LichStateDarkMeteorite_Main.h"
 
 #include "LichAction.h"
 
@@ -84,6 +86,10 @@ void Lich::InitModel()
 	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Damage].Load("Assets/animData/character/Lich/Damage.tka");
 	m_animationClip[enAnimClip_Damage].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Attack_DarkMeteorite_start].Load("Assets/animData/character/Lich/DarkMeteorite_Start.tka");
+	m_animationClip[enAnimClip_Attack_DarkMeteorite_start].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Attack_DarkMeteorite_main].Load("Assets/animData/character/Lich/DarkMeteorite_Main.tka");
+	m_animationClip[enAnimClip_Attack_DarkMeteorite_main].SetLoopFlag(false);
 
 
 	m_modelRender.Init("Assets/modelData/character/Lich/Lich.tkm",
@@ -152,6 +158,7 @@ void Lich::Update()
 	DamageInterval(m_damageIntervalTime);
 
 	Move();
+	Rotation();
 
 	DecideNextAction();
 
@@ -171,15 +178,14 @@ void Lich::Move()
 	//プレイヤーの座標を取得
 	SetTargetPosition();
 
+	//移動処理
+	m_moveSpeed = calcVelocity(m_status);
+
 	//被ダメージ時は処理をしない
 	if (isAnimationEntable() != true)
 	{
 		return;
 	}
-
-
-	//移動処理
-	m_moveSpeed = calcVelocity(m_status);
 
 	//一定の距離になったらそれ以上動かない
 	if (IsDistanceToPlayer() == true)
@@ -204,10 +210,6 @@ void Lich::Move()
 		//移動しないようにする
 		m_moveSpeed = Vector3::Zero;
 	}
-
-	
-	Rotation();
-
 }
 
 void Lich::Damage(int attack)
@@ -298,57 +300,6 @@ bool Lich::RotationOnly()
 	return false;
 }
 
-
-bool Lich::Attack()
-{
-	//アタック１の攻撃範囲にターゲットがいたら
-	if (IsFindPlayer(m_InfoAboutAttack.m_Attack_1Distance) == true)
-	{
-		//インターバルがないなら攻撃可能
-		if (m_attackFlag == false)
-		{
-			SetNextAnimationState(enAnimationState_Attack_1);
-			m_attackFlag = true;
-			//攻撃範囲にターゲットがいる
-			m_attackRangeFlag = true;
-
-			return true;
-		}
-	}
-	else
-	{
-		//攻撃範囲にターゲットがいない
-		m_attackRangeFlag = false;
-	}
-
-	return false;
-}
-
-bool Lich::Attack2()
-{
-	//アタック１の攻撃範囲にターゲットがいたら
-	if (IsFindPlayer(m_InfoAboutAttack.m_Attack_2Distance) == true)
-	{
-		//インターバルがないなら攻撃可能
-		if (m_attackFlag == false)
-		{
-			SetNextAnimationState(enAnimationState_Attack_2);
-			m_attackFlag = true;
-			//攻撃範囲にターゲットがいる
-			m_attackRangeFlag = true;
-
-			return true;
-		}
-	}
-	else
-	{
-		//攻撃範囲にターゲットがいない
-		m_attackRangeFlag = false;
-	}
-
-	return false;
-}
-
 void Lich::DecideNextAction()
 {
 	//被ダメージ時は処理をしない
@@ -369,8 +320,10 @@ void Lich::DecideNextAction()
 			//攻撃可能なら
 			if (m_attackFlag == false)
 			{
+				//m_lichAction = new LichAction(this);
 				//次の行動を選ぶ
 				m_lichAction->NextAction();
+				//delete m_lichAction;
 
 				m_attackFlag = true;
 			}
@@ -380,7 +333,9 @@ void Lich::DecideNextAction()
 			//ターゲットから一番遠いところに移動する
 			Warp();
 			//
+			//m_lichAction = new LichAction(this);
 			m_lichAction->NextAction();
+			//delete m_lichAction;
 			//状態を元に戻す
 			SetSpecialActionState(enSpecialActionState_Normal);
 			break;
@@ -435,10 +390,6 @@ void Lich::SetNextAnimationState(EnAnimationState nextState)
 		// アタック２ステートを作成する。
 		m_state = new LichStateAttack_2(this);
 		break;
-	case Lich::enAnimationState_Attack_3_start:
-		break;
-	case Lich::enAnimationState_Attack_3_main:
-		break;
 	case Lich::enAnimationState_Damage:
 		//被ダメージステートを作成する
 		m_state = new LichStateDamage(this);
@@ -447,6 +398,15 @@ void Lich::SetNextAnimationState(EnAnimationState nextState)
 		//Dieステートを作成する
 		m_state = new LichStateDie(this);
 		break;
+	case Lich::enAnimationState_Attack_DarkMeteorite_start:
+		//ダークメテオスタートステートを作成する
+		m_state = new LichStateDarkMeteorite_Start(this);
+		break;
+	case Lich::enAnimationState_Attack_DarkMeteorite_main:
+		//ダークメテオメインステートを作成する
+		m_state = new LichStateDarkMeteorite_Main(this);
+		break;
+
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
 		std::abort();
@@ -551,11 +511,56 @@ void Lich::OnProcessDamageStateTransition()
 	}
 }
 
+void Lich::OnProcessDarkMeteorite_StartStateTransition()
+{
+	//空中に移動する
+	if (IsRisingDarkMeteorite() == true)
+	{
+		//玉を大きくする
+
+
+
+		//メインに移る
+		SetNextAnimationState(enAnimationState_Attack_DarkMeteorite_main);
+	}
+}
+
+void Lich::OnProcessDarkMeteorite_MainStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
+
 void Lich::CreateDarkWall()
 {
 	//ボーン取得
 	DarkWall* darkball = NewGO<DarkWall>(0, "darkwall");
 	darkball->SetLich(this);
+}
+
+bool Lich::IsRisingDarkMeteorite()
+{
+	Vector3 moveSpeed = Vector3::Zero;
+	moveSpeed.y += g_gameTime->GetFrameDeltaTime() * 250.0f;
+	m_moveSpeed = moveSpeed;
+
+	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 10.0f);
+
+	//Y座標が上限に到達したら
+	if (m_RisingLimit <= m_position.y)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
 }
 
 void Lich::DamageCollision(CharacterController& characon)
