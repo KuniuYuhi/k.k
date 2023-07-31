@@ -247,6 +247,8 @@
     <ClCompile Include="LichStateAttack_1.cpp" />
     <ClCompile Include="LichStateAttack_2.cpp" />
     <ClCompile Include="LichStateDamage.cpp" />
+    <ClCompile Include="LichStateDarkMeteorite_Main.cpp" />
+    <ClCompile Include="LichStateDarkMeteorite_Start.cpp" />
     <ClCompile Include="LichStateDie.cpp" />
     <ClCompile Include="LichStateIdle.cpp" />
     <ClCompile Include="LichStateWalk.cpp" />
@@ -302,6 +304,8 @@
     <ClInclude Include="LichStateAttack_1.h" />
     <ClInclude Include="LichStateAttack_2.h" />
     <ClInclude Include="LichStateDamage.h" />
+    <ClInclude Include="LichStateDarkMeteorite_Main.h" />
+    <ClInclude Include="LichStateDarkMeteorite_Start.h" />
     <ClInclude Include="LichStateDie.h" />
     <ClInclude Include="LichStateIdle.h" />
     <ClInclude Include="LichStateWalk.h" />
