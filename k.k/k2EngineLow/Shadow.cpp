@@ -70,9 +70,9 @@ namespace nsK2EngineLow {
 		m_lightCamera.SetViewAngle(Math::DegToRad(ShadowConst::LIGHT_CAMERA_ANGLE));
 
 		//影が動かないようにするためにカメラを平行投影にする
-		/*m_lightCamera.SetUpdateProjMatrixFunc(Camera::enUpdateProjMatrixFunc_Ortho);
+		m_lightCamera.SetUpdateProjMatrixFunc(Camera::enUpdateProjMatrixFunc_Ortho);
 		m_lightCamera.SetWidth(ShadowConst::LIGHT_CAMERA_WIDTH);
-		m_lightCamera.SetHeight(ShadowConst::LIGHT_CAMERA_HEIGHT);*/
+		m_lightCamera.SetHeight(ShadowConst::LIGHT_CAMERA_HEIGHT);
 
 		//ライトビュープロジェクション行列を計算している
 		m_lightCamera.Update();

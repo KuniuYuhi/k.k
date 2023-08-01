@@ -49,7 +49,7 @@ namespace nsK2EngineLow {
 		RenderTarget m_shadowMap;
 		Camera m_lightCamera;
 
-		Vector3 m_lightCameraPosition = Vector3(100.0f, 700.0f, 300.0f);	//カメラの座標(座標からターゲットに向かって影が落とされる)
+		Vector3 m_lightCameraPosition = Vector3(0.0f, 1200.0f, 0.0f);	//カメラの座標(座標からターゲットに向かって影が落とされる)
 
 		Sprite shadowSprite;
 
