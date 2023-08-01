@@ -119,6 +119,14 @@ namespace nsK2EngineLow {
 		m_model.Init(m_modelInitData);
 	}
 
+	void ModelRender::InitSkyCube(ModelInitData& initData)
+	{
+		initData.m_colorBufferFormat[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		m_model.Init(initData);
+
+		m_model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+	}
+
 	//ƒ‚ƒfƒ‹‚Ìî•ñ‚ğXV
 	void ModelRender::Update()
 	{
