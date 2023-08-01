@@ -89,6 +89,7 @@ void GameCamera::ChaseCamera()
 	
 	//視点と注視点を設定
 	m_springCamera.SetTarget(m_target);
+	//g_camera3D->SetTarget(m_target);
 	m_springCamera.SetPosition(finalCameraPos);
 
 	//カメラの更新。

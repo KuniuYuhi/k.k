@@ -30,7 +30,7 @@ Game::~Game()
 bool Game::Start()
 {
 
-	Vector3 directionLightDir = Vector3{ 0.5f,-1.0f,-1.0f };
+	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
 	directionLightDir.Normalize();
 	Vector3 directionLightColor = DIRECTION_RIGHT_COLOR;
 	//ディレクションライト
@@ -98,7 +98,7 @@ bool Game::Start()
 
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
-	m_lich = NewGO<Lich>(0, "lich");
+	//m_lich = NewGO<Lich>(0, "lich");
 
 
 	//当たり判定の可視化
