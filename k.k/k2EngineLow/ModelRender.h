@@ -69,6 +69,12 @@ namespace nsK2EngineLow {
 		);
 
 		/// <summary>
+		/// スカイキューブを初期化する
+		/// </summary>
+		/// <param name="initData"></param>
+		void InitSkyCube(ModelInitData& initData);
+
+		/// <summary>
 		/// モデルレンダークラスをリストに追加
 		/// </summary>
 		/// <param name="rc"></param>
