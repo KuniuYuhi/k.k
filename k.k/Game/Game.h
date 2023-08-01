@@ -18,6 +18,8 @@ public:
 	bool Start();
 	void Update();
 
+	void InitSkyCube();
+
 	void GoResult();
 	
 	void SpriteTransform();
@@ -56,6 +58,8 @@ private:
 	BossStage1* m_bossStage1 = nullptr;
 	GameCamera* m_gameCamera = nullptr;
 	ResultSeen* m_result = nullptr;
+	SkyCube* m_skyCube = nullptr;
+	const Vector3 m_skyPos = { 0.0f,-700.0f,0.0f };
 
 	FontRender fontTest;
 	float m_fontScale = 1.0f;

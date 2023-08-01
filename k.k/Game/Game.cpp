@@ -6,6 +6,7 @@
 #include "Lich.h"
 #include "Result.h"
 
+#include "SkyCube.h"
 
 namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(1.0f, 1.0f, 1.0f);
@@ -91,6 +92,9 @@ bool Game::Start()
 	spriteTest.SetRoundWipeStartPosition(1920.0f / 2, 1080.0f / 2);
 	spriteTest.Update();
 
+	//スカイキューブの初期化
+	InitSkyCube();
+
 
 	m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
 
@@ -110,6 +114,12 @@ bool Game::Start()
 
 void Game::Update()
 {
+	/*Quaternion roty = Quaternion::Identity;
+	roty.AddRotationDegY(g_gameTime->GetFrameDeltaTime() * 2000.0f);
+
+	m_skyCube->SetRotation(roty);
+	m_skyCube->Update();*/
+
 	//ボスがやられたら
 	if (m_DeathBossFlag == true||m_playerAnnihilationFlag==true)
 	{
@@ -137,6 +147,17 @@ void Game::Update()
 		
 		//g_renderingEngine->UseHemiLight();
 	}
+}
+
+void Game::InitSkyCube()
+{
+	m_skyCube = NewGO<SkyCube>(0, "skycube");
+	m_skyCube->SetScale(800.0f);
+	m_skyCube->SetPosition(m_skyPos);
+	m_skyCube->SetLuminance(0.9f);
+	m_skyCube->SetType(enSkyCubeType_DayToon_3);
+
+	m_skyCube->Update();
 }
 
 void Game::GoResult()
