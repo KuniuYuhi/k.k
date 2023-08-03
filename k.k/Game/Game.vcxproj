@@ -226,6 +226,7 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="AIActor.cpp" />
     <ClCompile Include="BossStage1.cpp" />
+    <ClCompile Include="DarkMeteorite.cpp" />
     <ClCompile Include="DarkWall.cpp" />
     <ClCompile Include="FireBall.cpp" />
     <ClCompile Include="FlamePillar.cpp" />
@@ -253,6 +254,7 @@
     <ClCompile Include="LichStateIdle.cpp" />
     <ClCompile Include="LichStateWalk.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Meteo.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="Status.cpp" />
@@ -280,6 +282,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="AIActor.h" />
     <ClInclude Include="BossStage1.h" />
+    <ClInclude Include="DarkMeteorite.h" />
     <ClInclude Include="DarkWall.h" />
     <ClInclude Include="FireBall.h" />
     <ClInclude Include="FlamePillar.h" />
@@ -309,6 +312,7 @@
     <ClInclude Include="LichStateDie.h" />
     <ClInclude Include="LichStateIdle.h" />
     <ClInclude Include="LichStateWalk.h" />
+    <ClInclude Include="Meteo.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="Status.h" />

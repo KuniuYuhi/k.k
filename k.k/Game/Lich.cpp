@@ -12,6 +12,7 @@
 #include "LichStateDamage.h"
 #include "LichStateDarkMeteorite_Start.h"
 #include "LichStateDarkMeteorite_Main.h"
+#include "DarkMeteorite.h"
 
 #include "LichAction.h"
 
@@ -88,7 +89,7 @@ void Lich::InitModel()
 	m_animationClip[enAnimClip_Damage].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Attack_DarkMeteorite_start].Load("Assets/animData/character/Lich/DarkMeteorite_Start.tka");
 	m_animationClip[enAnimClip_Attack_DarkMeteorite_start].SetLoopFlag(false);
-	m_animationClip[enAnimClip_Attack_DarkMeteorite_main].Load("Assets/animData/character/Lich/DarkMeteorite_Main.tka");
+	m_animationClip[enAnimClip_Attack_DarkMeteorite_main].Load("Assets/animData/character/Lich/DarkMeteorite.tka");
 	m_animationClip[enAnimClip_Attack_DarkMeteorite_main].SetLoopFlag(false);
 
 
@@ -513,44 +514,67 @@ void Lich::OnProcessDamageStateTransition()
 
 void Lich::OnProcessDarkMeteorite_StartStateTransition()
 {
-	//空中に移動する
-	if (IsRisingDarkMeteorite() == true)
+	
+
+	//上昇していないなら処理をしない
+	if (IsRisingDarkMeteorite() != true)
 	{
-		//玉を大きくする
+		return;
+	}
+	//一度だけダークメテオを生成
+	if (m_createDarkMeteoriteFlag == false)
+	{
+		CreateDarkMeteorite();
+		m_createDarkMeteoriteFlag = true;
+	}
 
-
-
+	//サイズが最大まで大きくなったら
+	//自分の変数にしてもいいかも
+	if (m_darkMeteorite->GetSizeUpFlag() == true)
+	{
 		//メインに移る
 		SetNextAnimationState(enAnimationState_Attack_DarkMeteorite_main);
+		return;
 	}
 }
 
 void Lich::OnProcessDarkMeteorite_MainStateTransition()
 {
-	//アニメーションの再生が終わったら
-	if (m_modelRender.IsPlayingAnimation() == false)
+	//メテオを全て生成したら
+	if (m_darkMeteorite->GetShotEndFlag() == true)
 	{
+		DeleteGO(m_darkMeteorite);
 
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}
+	 
+	
+	//アニメーションの再生が終わったら
+	/*if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		
+	}*/
 }
 
 void Lich::CreateDarkWall()
 {
-	//ボーン取得
 	DarkWall* darkball = NewGO<DarkWall>(0, "darkwall");
 	darkball->SetLich(this);
 }
 
+void Lich::CreateDarkMeteorite()
+{
+	//玉を生成
+	m_darkMeteorite = NewGO<DarkMeteorite>(0, "darkmeteorite");
+	Vector3 pos = m_position;
+	pos.y += 460.0f;
+	m_darkMeteorite->SetPosition(pos);
+	m_darkMeteorite->SetRotation(m_rotation);
+}
+
 bool Lich::IsRisingDarkMeteorite()
 {
-	Vector3 moveSpeed = Vector3::Zero;
-	moveSpeed.y += g_gameTime->GetFrameDeltaTime() * 250.0f;
-	m_moveSpeed = moveSpeed;
-
-	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 10.0f);
-
 	//Y座標が上限に到達したら
 	if (m_RisingLimit <= m_position.y)
 	{
@@ -558,6 +582,12 @@ bool Lich::IsRisingDarkMeteorite()
 	}
 	else
 	{
+		Vector3 moveSpeed = Vector3::Zero;
+		moveSpeed.y += g_gameTime->GetFrameDeltaTime() * 250.0f;
+		m_moveSpeed = moveSpeed;
+
+		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 2.0f);
+
 		return false;
 	}
 
@@ -656,11 +686,18 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	{
 		m_CreateDarkWallFlag = true;
 	}
-
 	//ダークウォール生成終わり
 	if (wcscmp(eventName, L"CreateEnd_DarkWall") == 0)
 	{
 		m_CreateDarkWallFlag = false;
+	}
+
+	//メテオ生成タイミング
+	if (wcscmp(eventName, L"createMeteo") == 0)
+	{
+		m_darkMeteorite->SetShotStartFlag(true);
+		SetTargetPosition();
+		m_darkMeteorite->SetTargetPosition(m_targetPosition);
 	}
 }
 

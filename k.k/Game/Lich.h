@@ -4,6 +4,8 @@
 
 class ILichState;
 class LichAction;
+class DarkMeteorite;
+
 class Lich:public AIActor
 {
 public:
@@ -62,6 +64,11 @@ public:
 	/// ダークウォールの生成
 	/// </summary>
 	void CreateDarkWall();
+
+	/// <summary>
+	/// ダークメテオの生成
+	/// </summary>
+	void CreateDarkMeteorite();
 
 	bool IsRisingDarkMeteorite();
 
@@ -237,8 +244,10 @@ private:
 	std::vector<Vector3> m_WarpPosition;
 	
 	LichAction* m_lichAction = nullptr;
-
 	ILichState* m_state = nullptr;
+	DarkMeteorite* m_darkMeteorite = nullptr;
+
+
 
 	Animation m_animation;	// アニメーション
 	AnimationClip m_animationClip[enAnimClip_Num];	// アニメーションクリップ 
@@ -272,6 +281,8 @@ private:
 
 
 	const float m_RisingLimit = 200.0f;
+
+	bool m_createDarkMeteoriteFlag = false;
 
 };
 

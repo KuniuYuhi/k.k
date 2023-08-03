@@ -102,7 +102,7 @@ bool Game::Start()
 
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
-	//m_lich = NewGO<Lich>(0, "lich");
+	m_lich = NewGO<Lich>(0, "lich");
 
 
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»

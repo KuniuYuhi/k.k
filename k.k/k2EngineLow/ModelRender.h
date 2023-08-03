@@ -184,6 +184,15 @@ namespace nsK2EngineLow {
 		};
 
 		/// <summary>
+		/// ‘å‚«‚³‚Ìİ’è(‘S‚Ä‚Ì²“¯‚¶)
+		/// </summary>
+		/// <param name="scale"></param>
+		void SetScale(float scale)
+		{
+			SetScale({ scale,scale,scale });
+		}
+
+		/// <summary>
 		/// XVˆ—
 		/// </summary>
 		void Update();
