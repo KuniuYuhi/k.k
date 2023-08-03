@@ -21,7 +21,8 @@ bool BossStage1::Start()
 		[&](LevelObjectData& objData)
 		{
 			if (objData.EqualObjectName(L"grass") == true) {
-				backGround.InitShadow("Assets/modelData/BackGround/grass02.tkm");
+				//地面
+				backGround.InitShadow("Assets/modelData/BackGround/ground.tkm");
 				backGround.SetPosition(objData.position);
 				backGround.SetRotation(objData.rotation);
 				backGround.SetScale(objData.scale);
@@ -30,12 +31,33 @@ bool BossStage1::Start()
 					backGround.GetModel(),
 					backGround.GetModel().GetWorldMatrix()
 				);
+				//コリジョン属性をgroundにする
+				BGPhysicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Ground);
+
+				//森
+				m_forest.InitShadow("Assets/modelData/BackGround/forest.tkm");
+				m_forest.SetPosition(objData.position);
+				m_forest.SetRotation(objData.rotation);
+				m_forest.SetScale(objData.scale);
+				m_forest.Update();
+				m_forestPhysicsStaticObject.CreateFromModel(
+					m_forest.GetModel(),
+					m_forest.GetModel().GetWorldMatrix()
+				);
+				//コリジョン属性をforestにする
+				BGPhysicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_forest);
+
 				return true;
+
+
 			}
 			return false;
 		});
 
 	backGround.Update();
+
+
+	
 
 
 	/*Tree.Init("Assets/modelData/BGobject/tree0.tkm", nullptr, 0, enModelUpAxisZ, true, true, false);
@@ -72,5 +94,5 @@ void BossStage1::Update()
 void BossStage1::Render(RenderContext& rc)
 {
 	backGround.Draw(rc);
-	//Tree.Draw(rc);
+	m_forest.Draw(rc);
 }
