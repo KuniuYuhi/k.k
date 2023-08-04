@@ -2,6 +2,7 @@
 #include "Actor.h"
 #include "FireBall.h"
 #include "DarkWall.h"
+#include "Meteo.h"
 
 
 Actor::Actor()
@@ -155,6 +156,34 @@ void Actor::DamageCollision(CharacterController& characon)
 			return;
 		}
 	}
+
+	//メテオの当たり判定
+	const auto& MeteoCollisions = g_collisionObjectManager->FindCollisionObjects("meteo");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : MeteoCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(characon) == true)
+		{
+			Meteo* meteo = FindGO<Meteo>("meteo");
+			Damage(meteo->GetAtk());
+			return;
+		}
+	}
+	//メテオの爆発の当たり判定
+	const auto& MeteoExplosionCollisions = g_collisionObjectManager->FindCollisionObjects("explosion");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : MeteoExplosionCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(characon) == true)
+		{
+			Meteo* meteo = FindGO<Meteo>("meteo");
+			Damage(meteo->GetExplosionAttack());
+			return;
+		}
+	}
+
 }
 
 bool Actor::IsComboStateSame()

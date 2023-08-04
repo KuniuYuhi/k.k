@@ -48,6 +48,7 @@ int LichAction::NextAction()
 		break;
 	case enAttack_DarkMeteorite:
 		//ステートセット
+		m_lich->SetInvincibleFlag(true);
 		m_lich->SetNextAnimationState(Lich::enAnimationState_Attack_DarkMeteorite_start);
 		return 0;
 		break;

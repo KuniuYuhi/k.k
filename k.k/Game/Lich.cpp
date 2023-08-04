@@ -12,11 +12,12 @@
 #include "LichStateDamage.h"
 #include "LichStateDarkMeteorite_Start.h"
 #include "LichStateDarkMeteorite_Main.h"
+#include "LichStateDarkMeteorite_End.h"
 #include "DarkMeteorite.h"
 
 #include "LichAction.h"
 
-
+//ターゲットがしばらく近くにいたら逃げる
 
 namespace {
 	const float SCALE_UP = 3.0f;									//キャラクターのサイズ
@@ -91,6 +92,8 @@ void Lich::InitModel()
 	m_animationClip[enAnimClip_Attack_DarkMeteorite_start].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Attack_DarkMeteorite_main].Load("Assets/animData/character/Lich/DarkMeteorite.tka");
 	m_animationClip[enAnimClip_Attack_DarkMeteorite_main].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Attack_DarkMeteorite_end].Load("Assets/animData/character/Lich/DarkMeteorite_End.tka");
+	m_animationClip[enAnimClip_Attack_DarkMeteorite_end].SetLoopFlag(false);
 
 
 	m_modelRender.Init("Assets/modelData/character/Lich/Lich.tkm",
@@ -407,6 +410,10 @@ void Lich::SetNextAnimationState(EnAnimationState nextState)
 		//ダークメテオメインステートを作成する
 		m_state = new LichStateDarkMeteorite_Main(this);
 		break;
+	case Lich::enAnimationState_Attack_DarkMeteorite_end:
+		//ダークメテオエンドステートを作成する
+		m_state = new LichStateDarkMeteorite_End(this);
+		break;
 
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
@@ -454,6 +461,8 @@ void Lich::Warp()
 
 void Lich::ProcessCommonStateTransition()
 {
+	//無敵時間ではない
+	SetInvincibleFlag(false);
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
 		SetNextAnimationState(enAninationState_Walk);
@@ -544,17 +553,27 @@ void Lich::OnProcessDarkMeteorite_MainStateTransition()
 	if (m_darkMeteorite->GetShotEndFlag() == true)
 	{
 		DeleteGO(m_darkMeteorite);
+		//エンドに移る
+		SetNextAnimationState(enAnimationState_Attack_DarkMeteorite_end);
+	}
+}
 
+void Lich::OnProcessDarkMeteorite_EndStateTransition()
+{
+	//地面に降りる
+	m_moveSpeed = Vector3::AxisY;
+	m_moveSpeed.y *= -m_status.defaultSpeed;
+
+	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	
+	//地面に着いたら
+	if (m_charaCon.IsOnGround() == true)
+	{
+		m_moveSpeed = Vector3::Zero;
+		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}
-	 
-	
-	//アニメーションの再生が終わったら
-	/*if (m_modelRender.IsPlayingAnimation() == false)
-	{
-		
-	}*/
 }
 
 void Lich::CreateDarkWall()
@@ -568,7 +587,7 @@ void Lich::CreateDarkMeteorite()
 	//玉を生成
 	m_darkMeteorite = NewGO<DarkMeteorite>(0, "darkmeteorite");
 	Vector3 pos = m_position;
-	pos.y += 460.0f;
+	pos.y += 400.0f;
 	m_darkMeteorite->SetPosition(pos);
 	m_darkMeteorite->SetRotation(m_rotation);
 }
@@ -597,6 +616,11 @@ void Lich::DamageCollision(CharacterController& characon)
 {
 	//抜け出す処理
 	//死んだら処理をしないtodo
+	//無敵時間の間は処理をしない
+	if (GetInvincibleFlag() == true)
+	{
+		return;
+	}
 
 	//通常攻撃の当たり判定
 	const auto& Attack_1Collisions = g_collisionObjectManager->FindCollisionObjects("Attack");
