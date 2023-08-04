@@ -133,6 +133,7 @@
     </ClCompile>
     <ClCompile Include="DarkMeteorite.cpp" />
     <ClCompile Include="Meteo.cpp" />
+    <ClCompile Include="LichStateDarkMeteorite_End.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -261,5 +262,6 @@
     </ClInclude>
     <ClInclude Include="DarkMeteorite.h" />
     <ClInclude Include="Meteo.h" />
+    <ClInclude Include="LichStateDarkMeteorite_End.h" />
   </ItemGroup>
 </Project>
