@@ -11,6 +11,7 @@ public:
 	void Update();
 	void Render(RenderContext& rc);
 
+	void Explosion();
 
 	void Move();
 
@@ -31,11 +32,32 @@ public:
 		m_targetPosition = targetpos;
 	}
 
+	void SetExplosionFlag(bool flag)
+	{
+		m_explosionFlag = flag;
+	}
+
+	const bool GetExplosionFlag() const
+	{
+		return m_explosionFlag;
+	}
+
+	const int& GetAtk() const
+	{
+		return m_attack;
+	}
+
+	const int& GetExplosionAttack() const
+	{
+		return m_explosionAttack;
+	}
+
 private:
 
 	ModelRender m_model;
 
 	CollisionObject* m_collision;
+	CollisionObject* m_explosionCollision;
 
 	Vector3 m_scale = g_vec3One;
 	Vector3 m_moveSpeed = g_vec3Zero;
@@ -50,12 +72,21 @@ private:
 	Vector3 StartToCenter = g_vec3Zero;
 	Vector3 CenterToEnd = g_vec3Zero;
 
+	bool m_explosionFlag = false;
+
 	const float m_speed = 200.0f;
 
 	const float m_yUp = 800.0f;
 
 
 	float m_timer = 0.0f;
+
+	const float m_explosionEndTime = 1.0f;
+	float m_explosionEndTimer = 0.0f;
+
+	const int m_attack = 50;
+	const int m_explosionAttack = 40;
+
 
 };
 
