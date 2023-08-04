@@ -1,6 +1,7 @@
 #pragma once
 
 class Meteo;
+class Player;
 
 class DarkMeteorite : public IGameObject
 {
@@ -16,9 +17,13 @@ public:
 
 	void Shot();
 
+	Vector3 SetMeteoTargetPosition();
+
 	void CreateMeteo(Vector3 targetposition);
 
 	bool CreateTimer();
+
+	bool IsHitGround(Vector3 targetposition);
 
 	void SetTargetPosition(Vector3 targetposition)
 	{
@@ -52,6 +57,7 @@ public:
 
 private:
 	Meteo* m_meteo = nullptr;
+	Player* m_player = nullptr;
 	ModelRender m_model;
 
 	CollisionObject* m_collision = nullptr;
@@ -60,6 +66,9 @@ private:
 	Vector3 m_position = g_vec3Zero;
 	Quaternion m_rotation = g_quatIdentity;
 	Vector3 m_scale = g_vec3One;
+
+	RigidBody m_rigidBody;		//çÑëÃÅB
+	BoxCollider	m_boxCollider;
 
 	const Vector3 m_maxScale = { 15.0f,15.0f,15.0f };
 
