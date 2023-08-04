@@ -102,9 +102,10 @@ public:
 	bool IsAttackEntable() const
 	{
 		return m_enAnimationState != enAnimationState_Attack_1 &&
-			m_enAnimationState != enAnimationState_Attack_2&&
+			m_enAnimationState != enAnimationState_Attack_2 &&
 			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_start &&
-			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_main;
+			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_main &&
+			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_end;
 	}
 
 	/// <summary>
@@ -155,6 +156,7 @@ public:
 		enAnimClip_Attack_4,		// 6 : 
 		enAnimClip_Attack_DarkMeteorite_start,
 		enAnimClip_Attack_DarkMeteorite_main,
+		enAnimClip_Attack_DarkMeteorite_end,
 		enAnimClip_Damage,
 		enAnimClip_Die,
 		enAnimClip_Num,				// 7 :アニメーションクリップの数
@@ -188,6 +190,10 @@ public:
 	/// 
 	/// </summary>
 	void OnProcessDarkMeteorite_MainStateTransition();
+	/// <summary>
+	/// 
+	/// </summary>
+	void OnProcessDarkMeteorite_EndStateTransition();
 
 	//アニメーションステート
 	enum EnAnimationState {
@@ -201,6 +207,7 @@ public:
 		enAnimationState_Attack_4,
 		enAnimationState_Attack_DarkMeteorite_start,
 		enAnimationState_Attack_DarkMeteorite_main,
+		enAnimationState_Attack_DarkMeteorite_end,
 		enAnimationState_Damage,
 		enAnimationState_Die
 	};
@@ -232,6 +239,16 @@ public:
 	const EnSpecialActionState& GetSpecialActionState() const
 	{
 		return m_enSpecialActionState;
+	}
+
+	void SetInvincibleFlag(bool flag)
+	{
+		m_invincibleFlag = flag;
+	}
+
+	bool GetInvincibleFlag()
+	{
+		return m_invincibleFlag;
 	}
 
 
@@ -278,6 +295,8 @@ private:
 	bool m_halfHpFlag = false;
 
 	bool m_dieFlag = false;
+
+	bool m_invincibleFlag = false;
 
 
 	const float m_RisingLimit = 200.0f;
