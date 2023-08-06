@@ -226,6 +226,7 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="AIActor.cpp" />
     <ClCompile Include="BossStage1.cpp" />
+    <ClCompile Include="Cactus.cpp" />
     <ClCompile Include="DarkMeteorite.cpp" />
     <ClCompile Include="DarkWall.cpp" />
     <ClCompile Include="FireBall.cpp" />
@@ -256,6 +257,7 @@
     <ClCompile Include="LichStateWalk.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Meteo.cpp" />
+    <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="Slime.cpp" />
@@ -267,6 +269,7 @@
     </ClCompile>
     <ClCompile Include="system\system.cpp" />
     <ClCompile Include="Title.cpp" />
+    <ClCompile Include="TurtleShell.cpp" />
     <ClCompile Include="Wizard.cpp" />
     <ClCompile Include="WizardStateAttack_1.cpp" />
     <ClCompile Include="WizardStateAttack_2_main.cpp" />
@@ -284,6 +287,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="AIActor.h" />
     <ClInclude Include="BossStage1.h" />
+    <ClInclude Include="Cactus.h" />
     <ClInclude Include="DarkMeteorite.h" />
     <ClInclude Include="DarkWall.h" />
     <ClInclude Include="FireBall.h" />
@@ -316,6 +320,7 @@
     <ClInclude Include="LichStateIdle.h" />
     <ClInclude Include="LichStateWalk.h" />
     <ClInclude Include="Meteo.h" />
+    <ClInclude Include="Mushroom.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="Slime.h" />
@@ -323,6 +328,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />
     <ClInclude Include="Title.h" />
+    <ClInclude Include="TurtleShell.h" />
     <ClInclude Include="Wizard.h" />
     <ClInclude Include="WizardStateAttack_1.h" />
     <ClInclude Include="WizardStateAttack_2_main.h" />

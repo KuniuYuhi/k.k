@@ -16,6 +16,15 @@
     <Filter Include="Slime">
       <UniqueIdentifier>{2e495790-ee8d-4c1e-b20d-3dd2252b068a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Cactus">
+      <UniqueIdentifier>{28bbc3b2-cb0f-4038-92f3-4593b9b6d9f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TurtleShell">
+      <UniqueIdentifier>{eaba4644-52df-49e7-ab11-46b649af7b1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mushroom">
+      <UniqueIdentifier>{171f71e6-9381-4839-b187-14e7805cd952}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -152,6 +161,13 @@
     <ClCompile Include="WizardStateDamage.cpp">
       <Filter>Wizard</Filter>
     </ClCompile>
+    <ClCompile Include="TurtleShell.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="Cactus.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="Mushroom.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -296,5 +312,12 @@
     <ClInclude Include="WizardStateDamage.h">
       <Filter>Wizard</Filter>
     </ClInclude>
+    <ClInclude Include="TurtleShell.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="Cactus.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="Mushroom.h" />
   </ItemGroup>
 </Project>
