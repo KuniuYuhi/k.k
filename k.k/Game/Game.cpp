@@ -6,6 +6,9 @@
 #include "Lich.h"
 #include "Result.h"
 
+#include "Slime.h"
+
+
 #include "SkyCube.h"
 
 namespace {
@@ -97,12 +100,13 @@ bool Game::Start()
 
 
 	m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
-
 	m_player = NewGO<Player>(0, "player");
-
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
-	m_lich = NewGO<Lich>(0, "lich");
+	//m_lich = NewGO<Lich>(0, "lich");
+	Slime* slime = NewGO<Slime>(0, "slime");
+
+
 
 
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
