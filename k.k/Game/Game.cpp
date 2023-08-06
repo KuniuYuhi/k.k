@@ -7,6 +7,9 @@
 #include "Result.h"
 
 #include "Slime.h"
+#include "TurtleShell.h"
+#include "Cactus.h"
+#include "Mushroom.h"
 
 
 #include "SkyCube.h"
@@ -103,14 +106,15 @@ bool Game::Start()
 	m_player = NewGO<Player>(0, "player");
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
-	//m_lich = NewGO<Lich>(0, "lich");
-	Slime* slime = NewGO<Slime>(0, "slime");
+	m_lich = NewGO<Lich>(0, "lich");
 
-
-
+	/*Slime* slime = NewGO<Slime>(0, "slime");
+	TurtleShell* turtleshell = NewGO<TurtleShell>(0, "turtleshell");
+	Cactus* cactus = NewGO<Cactus>(0, "cactus");
+	Mushroom* mushroom = NewGO<Mushroom>(0, "mushroom");*/
 
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
-	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 
 	return true;
