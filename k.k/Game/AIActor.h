@@ -30,7 +30,7 @@ public:
 	Vector3 calcVelocity(Status status);
 
 	/// <summary>
-	/// 
+	/// ターゲットの座標をm_targetPsitionに代入する
 	/// </summary>
 	void SetTargetPosition();
 
