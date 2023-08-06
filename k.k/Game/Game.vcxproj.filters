@@ -13,6 +13,9 @@
     <Filter Include="Lich">
       <UniqueIdentifier>{21da61a7-d81b-459b-b221-5b31fa8ed969}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Slime">
+      <UniqueIdentifier>{2e495790-ee8d-4c1e-b20d-3dd2252b068a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -116,9 +119,6 @@
     <ClCompile Include="HeroStateDie.cpp">
       <Filter>Hero</Filter>
     </ClCompile>
-    <ClCompile Include="DarkWall.cpp" />
-    <ClCompile Include="HeroStateDamage.cpp" />
-    <ClCompile Include="WizardStateDamage.cpp" />
     <ClCompile Include="LichStateDamage.cpp">
       <Filter>Lich</Filter>
     </ClCompile>
@@ -131,9 +131,27 @@
     <ClCompile Include="LichStateDarkMeteorite_Main.cpp">
       <Filter>Lich</Filter>
     </ClCompile>
-    <ClCompile Include="DarkMeteorite.cpp" />
-    <ClCompile Include="Meteo.cpp" />
-    <ClCompile Include="LichStateDarkMeteorite_End.cpp" />
+    <ClCompile Include="Slime.cpp">
+      <Filter>Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="HeroStateDamage.cpp">
+      <Filter>Hero</Filter>
+    </ClCompile>
+    <ClCompile Include="LichStateDarkMeteorite_End.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="DarkMeteorite.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="DarkWall.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="Meteo.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="WizardStateDamage.cpp">
+      <Filter>Wizard</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -245,9 +263,6 @@
     <ClInclude Include="HeroStateDie.h">
       <Filter>Hero</Filter>
     </ClInclude>
-    <ClInclude Include="DarkWall.h" />
-    <ClInclude Include="HeroStateDamage.h" />
-    <ClInclude Include="WizardStateDamage.h" />
     <ClInclude Include="LichStateDamage.h">
       <Filter>Lich</Filter>
     </ClInclude>
@@ -260,8 +275,26 @@
     <ClInclude Include="LichAction.h">
       <Filter>Lich</Filter>
     </ClInclude>
-    <ClInclude Include="DarkMeteorite.h" />
-    <ClInclude Include="Meteo.h" />
-    <ClInclude Include="LichStateDarkMeteorite_End.h" />
+    <ClInclude Include="Slime.h">
+      <Filter>Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="HeroStateDamage.h">
+      <Filter>Hero</Filter>
+    </ClInclude>
+    <ClInclude Include="LichStateDarkMeteorite_End.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="DarkMeteorite.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="DarkWall.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="Meteo.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="WizardStateDamage.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
