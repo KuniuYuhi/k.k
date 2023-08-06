@@ -1,24 +1,24 @@
 #include "stdafx.h"
-#include "Slime.h"
+#include "TurtleShell.h"
 
 namespace {
 	//ステータス
-	int MAXHP = 150;
+	int MAXHP = 100;
 	int MAXMP = 500;
-	int ATK = 10;
-	float SPEED = 80.0f;
-	const char* NAME = "Slime";
+	int ATK = 15;
+	float SPEED = 70.0f;
+	const char* NAME = "TurtleShell";
 }
 
-Slime::Slime()
+TurtleShell::TurtleShell()
 {
 }
 
-Slime::~Slime()
+TurtleShell::~TurtleShell()
 {
 }
 
-bool Slime::Start()
+bool TurtleShell::Start()
 {
 	m_status.InitStatus(
 		MAXHP,
@@ -33,15 +33,15 @@ bool Slime::Start()
 	return true;
 }
 
-void Slime::InitModel()
+void TurtleShell::InitModel()
 {
-	m_modelRender.Init("Assets/modelData/character/Slime/slime.tkm");
+	m_modelRender.Init("Assets/modelData/character/TurtleShell/TurtleShell.tkm");
 
-	m_position = { 0.0f, 0.0f, -200.0f };
+	m_position = { 100.0f, 0.0f, -200.0f };
 
 
 	m_charaCon.Init(
-		16.0f,
+		22.0f,
 		4.0f,
 		m_position
 	);
@@ -51,9 +51,8 @@ void Slime::InitModel()
 	m_modelRender.Update();
 }
 
-void Slime::Update()
+void TurtleShell::Update()
 {
-
 	Move();
 	Rotation();
 
@@ -62,7 +61,7 @@ void Slime::Update()
 	m_modelRender.Update();
 }
 
-void Slime::Move()
+void TurtleShell::Move()
 {
 	SetTargetPosition();
 
@@ -72,25 +71,24 @@ void Slime::Move()
 	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 }
 
-void Slime::Damage(int attack)
+void TurtleShell::Damage(int attack)
 {
 }
 
-bool Slime::RotationOnly()
+bool TurtleShell::RotationOnly()
 {
 	return false;
 }
 
-void Slime::ManageState()
+void TurtleShell::PlayAnimation()
 {
 }
 
-void Slime::PlayAnimation()
+void TurtleShell::ManageState()
 {
-	
 }
 
-void Slime::Render(RenderContext& rc)
+void TurtleShell::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
 }
