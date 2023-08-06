@@ -41,7 +41,7 @@ void Slime::InitModel()
 
 
 	m_charaCon.Init(
-		18.0f,
+		16.0f,
 		4.0f,
 		m_position
 	);
@@ -89,8 +89,6 @@ void Slime::PlayAnimation()
 {
 	
 }
-
-
 
 void Slime::Render(RenderContext& rc)
 {
