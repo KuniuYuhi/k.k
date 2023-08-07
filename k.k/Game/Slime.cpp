@@ -37,8 +37,6 @@ void Slime::InitModel()
 {
 	m_modelRender.Init("Assets/modelData/character/Slime/slime.tkm");
 
-	m_position = { 0.0f, 0.0f, -200.0f };
-
 
 	m_charaCon.Init(
 		16.0f,

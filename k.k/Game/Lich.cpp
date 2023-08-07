@@ -14,19 +14,22 @@
 #include "LichStateDarkMeteorite_Main.h"
 #include "LichStateDarkMeteorite_End.h"
 #include "DarkMeteorite.h"
+#include "LichStateSummon.h"
 
 #include "LichAction.h"
+#include "Summon.h"
 
-//ターゲットがしばらく近くにいたら逃げる
+//todo ターゲットがしばらく近くにいたら逃げる
 
 namespace {
 	const float SCALE_UP = 3.0f;									//キャラクターのサイズ
 	const Vector3 FIRST_POSITION = Vector3(0.0f, 0.0f, -250.0f);	//最初の座標
 	const float DISTANCE = 1500.0f;									//プレイヤーを発見できる距離
+	const float NON_WARP_DISTANCE = 400.0f;							//ワープ不要な距離
 
 
 	//ステータス
-	int MAXHP = 200;
+	int MAXHP = 1000;
 	int MAXMP = 500;
 	int ATK = 20;
 	float SPEED = 80.0f;
@@ -94,6 +97,8 @@ void Lich::InitModel()
 	m_animationClip[enAnimClip_Attack_DarkMeteorite_main].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Attack_DarkMeteorite_end].Load("Assets/animData/character/Lich/DarkMeteorite_End.tka");
 	m_animationClip[enAnimClip_Attack_DarkMeteorite_end].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Summon].Load("Assets/animData/character/Lich/Summon.tka");
+	m_animationClip[enAnimClip_Summon].SetLoopFlag(false);
 
 
 	m_modelRender.Init("Assets/modelData/character/Lich/Lich.tkm",
@@ -218,6 +223,9 @@ void Lich::Move()
 
 void Lich::Damage(int attack)
 {
+	//ヒットカウントを増やす、蓄積ダメージを増やす
+	SetHitCountAndDamage(1, attack);
+
 	if (m_status.hp > 0)
 	{
 		//一定確率で怯む
@@ -228,7 +236,7 @@ void Lich::Damage(int attack)
 			SetNextAnimationState(enAnimationState_Damage);
 		}
 
-		
+		//HPを減らす
 		m_status.hp -= attack;
 
 		//HPが半分になったらワープする
@@ -317,40 +325,60 @@ void Lich::DecideNextAction()
 	{
 		return;
 	}
-	
-	switch (m_enSpecialActionState)
+
+	//HPが半分ならすぐに行動
+	if (m_enSpecialActionState == enSpecialActionState_Warp)
 	{
-		case Lich::enSpecialActionState_Normal:
-			//攻撃可能なら
-			if (m_attackFlag == false)
-			{
-				//m_lichAction = new LichAction(this);
-				//次の行動を選ぶ
-				m_lichAction->NextAction();
-				//delete m_lichAction;
-
-				m_attackFlag = true;
-			}
-			break;
-
-		case Lich::enSpecialActionState_Warp:
-			//ターゲットから一番遠いところに移動する
-			Warp();
-			//
-			//m_lichAction = new LichAction(this);
-			m_lichAction->NextAction();
-			//delete m_lichAction;
-			//状態を元に戻す
-			SetSpecialActionState(enSpecialActionState_Normal);
-			break;
-
-		case Lich::SpecialActionState:
-			break;
-
-
-		default:
-			break;
+		//ダークメテオ確定
+		m_lichAction->NextAction();
+		return;
 	}
+	
+	//攻撃可能なら
+	if (m_attackFlag == false)
+	{
+		//m_lichAction = new LichAction(this);
+		//次の行動を選ぶ
+		m_lichAction->NextAction();
+		//delete m_lichAction;
+
+		m_attackFlag = true;
+	}
+
+	//switch (m_enSpecialActionState)
+	//{
+	//	case Lich::enSpecialActionState_Normal:
+	//		//攻撃可能なら
+	//		if (m_attackFlag == false)
+	//		{
+	//			//m_lichAction = new LichAction(this);
+	//			//次の行動を選ぶ
+	//			m_lichAction->NextAction();
+	//			//delete m_lichAction;
+
+	//			m_attackFlag = true;
+	//		}
+	//		break;
+
+	//	case Lich::enSpecialActionState_Warp:
+	//		//ターゲットから一番遠いところに移動する
+	//		Warp(enSpecialActionState_Warp);
+	//		//
+	//		//m_lichAction = new LichAction(this);
+	//		m_lichAction->NextAction();
+	//		//delete m_lichAction;
+	//		//状態を元に戻す
+	//		SetSpecialActionState(enSpecialActionState_Normal);
+	//		break;
+
+	//	/*case Lich::enSpecialActionState_CenterWarp:
+
+	//		break;*/
+
+
+	//	default:
+	//		break;
+	//}
 }
 
 void Lich::PlayAnimation()
@@ -414,7 +442,10 @@ void Lich::SetNextAnimationState(EnAnimationState nextState)
 		//ダークメテオエンドステートを作成する
 		m_state = new LichStateDarkMeteorite_End(this);
 		break;
-
+	case Lich::enAninationState_Summon:
+		//ダークメテオエンドステートを作成する
+		m_state = new LichStateSummon(this);
+		break;
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
 		std::abort();
@@ -428,6 +459,8 @@ void Lich::SetStageLevelPosition()
 		"Assets/level3D/BossStage1.tkl",
 		[&](LevelObjectData& objData)
 		{
+
+
 			if (objData.ForwardMatchName(L"Pos") == true) {
 				//ワープする座標を配列に格納する
 				Vector3 warpPos = objData.position;
@@ -438,21 +471,83 @@ void Lich::SetStageLevelPosition()
 		});
 }
 
-void Lich::Warp()
+void Lich::Warp(EnSpecialActionState SpecialActionState)
 {
-	float MaxLength = 0.0f;
-	//ターゲットから一番遠いところ座標を調べる
-	for (int amount = 0; amount < m_WarpPosition.size(); amount++)
+	if (SpecialActionState == enSpecialActionState_Warp)
 	{
-		//
-		Vector3 diff = m_WarpPosition[amount] - m_targetPosition;
-		//
-		if (MaxLength < diff.Length())
+		float MaxLength = 0.0f;
+		//ターゲットから一番遠いところ座標を調べる
+		for (int amount = 0; amount < m_WarpPosition.size(); amount++)
 		{
-			MaxLength = diff.Length();
-			m_position = m_WarpPosition[amount];
+			//
+			Vector3 diff = m_WarpPosition[amount] - m_targetPosition;
+			//
+			if (MaxLength < diff.Length())
+			{
+				MaxLength = diff.Length();
+				m_position = m_WarpPosition[amount];
+			}
 		}
 	}
+	else if (SpecialActionState == enSpecialActionState_CenterWarp)
+	{
+		Vector3 CenterPos = Vector3::Zero;
+		Vector3 diff = CenterPos - m_position;
+
+		if (diff.Length() > NON_WARP_DISTANCE)
+		{
+			m_position = CenterPos;
+		}
+	}
+
+
+	//switch (m_enSpecialActionState)
+	//{
+	//	//一番遠いところにワープする
+	//case Lich::enSpecialActionState_Warp:
+	//	float MaxLength = 0.0f;
+	//	//ターゲットから一番遠いところ座標を調べる
+	//	for (int amount = 0; amount < m_WarpPosition.size(); amount++)
+	//	{
+	//		//
+	//		Vector3 diff = m_WarpPosition[amount] - m_targetPosition;
+	//		//
+	//		if (MaxLength < diff.Length())
+	//		{
+	//			MaxLength = diff.Length();
+	//			m_position = m_WarpPosition[amount];
+	//		}
+	//	}
+	//	break;
+	//	//真ん中か真ん中近くにワープする
+	//case Lich::enSpecialActionState_CenterWarp:
+	//	Vector3 CenterPos = Vector3::Zero;
+	//	Vector3 diff = CenterPos - m_position;
+
+	//	if (diff.Length() > NON_WARP_DISTANCE)
+	//	{
+	//		m_position = CenterPos;
+	//	}
+
+	//	break;
+
+	//default:
+	//	break;
+	//}
+	//float MaxLength = 0.0f;
+	////ターゲットから一番遠いところ座標を調べる
+	//for (int amount = 0; amount < m_WarpPosition.size(); amount++)
+	//{
+	//	//
+	//	Vector3 diff = m_WarpPosition[amount] - m_targetPosition;
+	//	//
+	//	if (MaxLength < diff.Length())
+	//	{
+	//		MaxLength = diff.Length();
+	//		m_position = m_WarpPosition[amount];
+	//	}
+	//}
+
 	Vector3 o = Vector3::Zero;
 	//ワープする
 	m_charaCon.SetPosition(m_position);
@@ -576,6 +671,20 @@ void Lich::OnProcessDarkMeteorite_EndStateTransition()
 	}
 }
 
+void Lich::OnProcessSummonStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//ヒットカウントをリセット
+		m_hitCount = 0;
+		//蓄積ダメージをリセット
+		m_accumulationDamage = 0;
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
+
 void Lich::CreateDarkWall()
 {
 	DarkWall* darkball = NewGO<DarkWall>(0, "darkwall");
@@ -615,12 +724,22 @@ bool Lich::IsRisingDarkMeteorite()
 void Lich::DamageCollision(CharacterController& characon)
 {
 	//抜け出す処理
-	//死んだら処理をしないtodo
+	//死んだら処理をしない todo
 	//無敵時間の間は処理をしない
 	if (GetInvincibleFlag() == true)
 	{
 		return;
 	}
+	////被ダメージ時、デス時は処理をしない
+	//if (isAnimationEntable() != true)
+	//{
+	//	return;
+	//}
+	////攻撃中は処理をしない
+	//if (IsAttackEntable() != true)
+	//{
+	//	return;
+	//}
 
 	//通常攻撃の当たり判定
 	const auto& Attack_1Collisions = g_collisionObjectManager->FindCollisionObjects("Attack");
@@ -723,6 +842,20 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		SetTargetPosition();
 		m_darkMeteorite->SetTargetPosition(m_targetPosition);
 	}
+
+	//
+	//if (wcscmp(eventName, L"Stop") == 0)
+	//{
+	//	m_modelRender.
+	//}
+	//
+	if (wcscmp(eventName, L"Summon") == 0)
+	{
+		//モンスターを召喚する
+		Summon* summon = NewGO<Summon>(0, "summon");
+		summon->SetLich(this);
+	}
+
 }
 
 void Lich::Render(RenderContext& rc)

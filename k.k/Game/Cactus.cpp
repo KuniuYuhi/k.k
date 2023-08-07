@@ -37,8 +37,6 @@ void Cactus::InitModel()
 {
 	m_modelRender.Init("Assets/modelData/character/Cactus/Cactus.tkm");
 
-	m_position = { -100.0f, 0.0f, -200.0f };
-
 
 	m_charaCon.Init(
 		20.0f,

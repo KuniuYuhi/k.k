@@ -124,6 +124,9 @@ void DarkMeteorite::Shot()
 
 Vector3 DarkMeteorite::SetMeteoTargetPosition()
 {
+	//　乱数を初期化。
+	srand((unsigned)time(NULL));
+
 	//ターゲットを決めてメテオを生成
 	//現在のフレームのターゲットの座標を取得
 	m_targetPosition = m_player->GetPosition();

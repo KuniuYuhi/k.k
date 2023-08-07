@@ -37,8 +37,6 @@ void Mushroom::InitModel()
 {
 	m_modelRender.Init("Assets/modelData/character/Mushroom/Mushroom.tkm");
 
-	m_position = { 0.0f, 0.0f, -300.0f };
-
 
 	m_charaCon.Init(
 		20.0f,
