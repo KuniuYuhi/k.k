@@ -92,6 +92,11 @@ public:
 		return m_status;
 	}
 
+	void SetPosition(Vector3 position)
+	{
+		m_position = position;
+	}
+
 	/// <summary>
 	/// À•W‚Ìæ“¾
 	/// </summary>
