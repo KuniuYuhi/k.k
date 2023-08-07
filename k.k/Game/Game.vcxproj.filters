@@ -167,7 +167,11 @@
     <ClCompile Include="Cactus.cpp">
       <Filter>Cactus</Filter>
     </ClCompile>
-    <ClCompile Include="Mushroom.cpp" />
+    <ClCompile Include="Summon.cpp" />
+    <ClCompile Include="LichStateSummon.cpp" />
+    <ClCompile Include="Mushroom.cpp">
+      <Filter>Mushroom</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -318,6 +322,10 @@
     <ClInclude Include="Cactus.h">
       <Filter>Cactus</Filter>
     </ClInclude>
-    <ClInclude Include="Mushroom.h" />
+    <ClInclude Include="Summon.h" />
+    <ClInclude Include="LichStateSummon.h" />
+    <ClInclude Include="Mushroom.h">
+      <Filter>Mushroom</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

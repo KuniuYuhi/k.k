@@ -254,6 +254,7 @@
     <ClCompile Include="LichStateDarkMeteorite_Start.cpp" />
     <ClCompile Include="LichStateDie.cpp" />
     <ClCompile Include="LichStateIdle.cpp" />
+    <ClCompile Include="LichStateSummon.cpp" />
     <ClCompile Include="LichStateWalk.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Meteo.cpp" />
@@ -267,6 +268,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Summon.cpp" />
     <ClCompile Include="system\system.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="TurtleShell.cpp" />
@@ -318,6 +320,7 @@
     <ClInclude Include="LichStateDarkMeteorite_Start.h" />
     <ClInclude Include="LichStateDie.h" />
     <ClInclude Include="LichStateIdle.h" />
+    <ClInclude Include="LichStateSummon.h" />
     <ClInclude Include="LichStateWalk.h" />
     <ClInclude Include="Meteo.h" />
     <ClInclude Include="Mushroom.h" />
@@ -326,6 +329,7 @@
     <ClInclude Include="Slime.h" />
     <ClInclude Include="Status.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Summon.h" />
     <ClInclude Include="system\system.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="TurtleShell.h" />
