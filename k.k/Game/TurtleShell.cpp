@@ -37,8 +37,6 @@ void TurtleShell::InitModel()
 {
 	m_modelRender.Init("Assets/modelData/character/TurtleShell/TurtleShell.tkm");
 
-	m_position = { 100.0f, 0.0f, -200.0f };
-
 
 	m_charaCon.Init(
 		22.0f,
