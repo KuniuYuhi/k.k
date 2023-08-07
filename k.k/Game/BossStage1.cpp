@@ -35,17 +35,17 @@ bool BossStage1::Start()
 				BGPhysicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Ground);
 
 				//森
-				//m_forest.InitShadow("Assets/modelData/BackGround/forest.tkm");
-				//m_forest.SetPosition(objData.position);
-				//m_forest.SetRotation(objData.rotation);
-				//m_forest.SetScale(objData.scale);
-				//m_forest.Update();
-				//m_forestPhysicsStaticObject.CreateFromModel(
-				//	m_forest.GetModel(),
-				//	m_forest.GetModel().GetWorldMatrix()
-				//);
-				////コリジョン属性をforestにする
-				//m_forestPhysicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_forest);
+				m_forest.InitShadow("Assets/modelData/BackGround/forest.tkm");
+				m_forest.SetPosition(objData.position);
+				m_forest.SetRotation(objData.rotation);
+				m_forest.SetScale(objData.scale);
+				m_forest.Update();
+				m_forestPhysicsStaticObject.CreateFromModel(
+					m_forest.GetModel(),
+					m_forest.GetModel().GetWorldMatrix()
+				);
+				//コリジョン属性をforestにする
+				m_forestPhysicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_forest);
 
 				return true;
 
@@ -69,5 +69,5 @@ void BossStage1::Update()
 void BossStage1::Render(RenderContext& rc)
 {
 	backGround.Draw(rc);
-	//m_forest.Draw(rc);
+	m_forest.Draw(rc);
 }
