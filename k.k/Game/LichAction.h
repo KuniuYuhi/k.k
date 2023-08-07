@@ -16,7 +16,8 @@ public:
 		enAttack_None,
 		enAttack_1,
 		enAttack_2,
-		enAttack_DarkMeteorite
+		enAttack_DarkMeteorite,
+		enAttack_Summon
 	};
 
 	EnActionNumber m_enActionNumber;
@@ -78,11 +79,13 @@ private:
 	Player* m_player = nullptr;
 	Lich* m_lich = nullptr;
 
-	const int m_actionAmount = 4;
+	const int m_actionAmount = 5;
+
+	EnActionNumber m_oldActionNumber = enAttack_None;
 
 	//\‘¢‘Ì‚É‚µ‚½‚¢
 	//s“®‚Ì”•ª‚Ì•]‰¿’l
-	int m_eval[4];
+	int m_eval[5];
 
 	//Action m_action[];
 
