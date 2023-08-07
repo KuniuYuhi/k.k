@@ -105,7 +105,8 @@ public:
 			m_enAnimationState != enAnimationState_Attack_2 &&
 			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_start &&
 			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_main &&
-			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_end;
+			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_end &&
+			m_enAnimationState != enAninationState_Summon;
 	}
 
 	/// <summary>
@@ -157,6 +158,7 @@ public:
 		enAnimClip_Attack_DarkMeteorite_start,
 		enAnimClip_Attack_DarkMeteorite_main,
 		enAnimClip_Attack_DarkMeteorite_end,
+		enAnimClip_Summon,
 		enAnimClip_Damage,
 		enAnimClip_Die,
 		enAnimClip_Num,				// 7 :アニメーションクリップの数
@@ -194,6 +196,10 @@ public:
 	/// 
 	/// </summary>
 	void OnProcessDarkMeteorite_EndStateTransition();
+	/// <summary>
+	/// 
+	/// </summary>
+	void OnProcessSummonStateTransition();
 
 	//アニメーションステート
 	enum EnAnimationState {
@@ -208,6 +214,7 @@ public:
 		enAnimationState_Attack_DarkMeteorite_start,
 		enAnimationState_Attack_DarkMeteorite_main,
 		enAnimationState_Attack_DarkMeteorite_end,
+		enAninationState_Summon,
 		enAnimationState_Damage,
 		enAnimationState_Die
 	};
@@ -218,16 +225,14 @@ public:
 	/// <param name="nextState"></param>
 	void SetNextAnimationState(EnAnimationState nextState);
 
-	/// <summary>
-	/// ターゲットから一番遠いところに座標を移動させる
-	/// </summary>
-	void Warp();
+	
 
 	//
 	enum EnSpecialActionState
 	{
 		enSpecialActionState_Normal,
 		enSpecialActionState_Warp,
+		enSpecialActionState_CenterWarp,
 		SpecialActionState
 	};
 
@@ -241,6 +246,11 @@ public:
 		return m_enSpecialActionState;
 	}
 
+	/// <summary>
+	/// ターゲットから一番遠いところに座標を移動させる
+	/// </summary>
+	void Warp(EnSpecialActionState SpecialActionState);
+
 	void SetInvincibleFlag(bool flag)
 	{
 		m_invincibleFlag = flag;
@@ -249,6 +259,53 @@ public:
 	bool GetInvincibleFlag()
 	{
 		return m_invincibleFlag;
+	}
+
+	/// <summary>
+	/// ヒットカウントと蓄積ダメージを設定
+	/// </summary>
+	/// <param name="count">カウント</param>
+	/// <param name="damage">受けたダメージ</param>
+	void SetHitCountAndDamage(int count, int damage)
+	{
+		AddHitCount(count);
+		AddAccumulationDamage(damage);
+	}
+
+	/// <summary>
+	/// ヒットカウントを設定
+	/// </summary>
+	/// <param name="count"></param>
+	void AddHitCount(int count)
+	{
+		m_hitCount += count;
+	}
+
+	/// <summary>
+	/// ヒットカウントを取得
+	/// </summary>
+	/// <returns></returns>
+	const int& GetHitCount() const
+	{
+		return m_hitCount;
+	}
+
+	/// <summary>
+	/// 蓄積ダメージを設定
+	/// </summary>
+	/// <param name="count"></param>
+	void AddAccumulationDamage(int damage)
+	{
+		m_accumulationDamage += damage;
+	}
+
+	/// <summary>
+	/// 蓄積ダメージを取得
+	/// </summary>
+	/// <returns></returns>
+	const int& GetAccumulationDamage() const
+	{
+		return m_accumulationDamage;
 	}
 
 
@@ -278,6 +335,11 @@ private:
 	CharacterController m_charaCon;
 
 	FontRender m_hpFont;
+
+	//被ダメージ時にカウントを増やす
+	int m_hitCount = 0;
+	//被ダメージ時に受けたダメージ分増やす
+	int m_accumulationDamage = 0;
 
 	const float m_distanceToPlayer = 300.0f;
 
