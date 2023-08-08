@@ -30,6 +30,7 @@ Vector3 AIActor::calcVelocity(Status status)
 	Vector3 diff = m_targetPosition - m_position;
 	//正規化
 	diff.Normalize();
+	
 	diff.y = 0.0f;
 	//速度を設定
 	moveSpeed = diff * status.defaultSpeed;
@@ -175,6 +176,30 @@ bool AIActor::DamageInterval(const float damageintarvaltime)
 	return true;
 }
 
+bool AIActor::AngleChangeTimeIntarval(float LimitTime)
+{
+	//ベクトルを計算したら
+	if (m_angleChangeTimeFlag == true)
+	{
+		//タイマーがインターバルを超えたら
+		if (LimitTime < m_angleChangeTimer)
+		{
+			//ベクトルを計算できるようにする
+			m_angleChangeTimeFlag = false;
+			//タイマーをリセット
+			m_angleChangeTimer = 0.0f;
+			//ベクトルを計算不可能
+			return false;
+		}
+		else
+		{
+			m_angleChangeTimer += g_gameTime->GetFrameDeltaTime();
+		}
+	}
+	//ベクトルを計算可能
+	return true;
+}
+
 bool AIActor::IsFindPlayer(float distance)
 {
 	//ターゲット(プレイヤー)の座標を取得
@@ -190,6 +215,9 @@ bool AIActor::IsFindPlayer(float distance)
 	}
 	else
 	{
+		diff.Normalize();
+		//前方向を保存
+		m_forward = diff;
 		//見つからなかった
 		m_targetPosition = Vector3::Zero;
 		return false;

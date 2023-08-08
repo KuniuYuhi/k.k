@@ -13,7 +13,9 @@ public:
 
 	void Move();
 
+	Vector3 SetDirection();
 
+	bool IsBumpedForest();
 
 
 	/// <summary>
@@ -75,6 +77,12 @@ private:
 	ModelRender m_modelRender;
 
 	CharacterController m_charaCon;
+
+	const float m_angleChangeTime = 6.0f;		//ベクトルを計算するタイマー
+
+	Vector3 m_direction = Vector3::Zero;
+
+	const float m_distanceToPlayer = 70.0f;
 
 };
 

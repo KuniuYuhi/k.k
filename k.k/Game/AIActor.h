@@ -47,6 +47,12 @@ public:
 	bool DamageInterval(const float damageintarvaltime);
 
 	/// <summary>
+	/// 向かうベクトルを変えるインターバルの計算
+	/// </summary>
+	/// <returns></returns> 
+	bool AngleChangeTimeIntarval(float LimitTime);
+
+	/// <summary>
 	/// プレイヤーを見つける
 	/// </summary>
 	/// <param name="distance">プレイヤーを見つけることができる上限の距離</param>
@@ -95,6 +101,11 @@ public:
 	void SetPosition(Vector3 position)
 	{
 		m_position = position;
+	}
+
+	void SetRotation(Quaternion rotation)
+	{
+		m_rotation = rotation;
 	}
 
 	/// <summary>
@@ -163,6 +174,8 @@ protected:
 	Vector3 m_oldMoveSpeed = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
 
+	Vector3 m_forward = Vector3::Zero;				//前方向
+
 	Vector3 m_SaveMoveSpeed = Vector3::Zero;		//回転のみ使用する時に使う
 
 	Quaternion m_rotation = Quaternion::Identity;
@@ -176,6 +189,12 @@ protected:
 	float m_damageIntervalTimer = 0.0f;		//ダメージのインターバルタイマー
 
 	float m_distance = 0.0f;	//プレイヤーを発見できる距離
+
+	float m_angle = 0.0f;			//視野角
+
+	
+	float m_angleChangeTimer = 0.0f;
+	bool m_angleChangeTimeFlag = false;
 
 };
 

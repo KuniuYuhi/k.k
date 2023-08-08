@@ -63,7 +63,7 @@ private:
 	Vector3 m_lichPosition = g_vec3Zero;
 
 	//¶¬‚·‚éƒ‚ƒ“ƒXƒ^[‚Ì”
-	int m_createMonsters = 2;
+	int m_createMonsters = 6;
 
 	std::vector<Vector3> m_summonPositions;
 

@@ -86,8 +86,6 @@ void Summon::SetSummonMonsterPos()
 
 void Summon::SummonMonster(Vector3 summonPosition)
 {
-	
-
 	//ƒ‰ƒ“ƒ_ƒ€‚É‘I‚Ô
 	int number = rand() % 4;
 
@@ -96,18 +94,22 @@ void Summon::SummonMonster(Vector3 summonPosition)
 	case enMonster_Slime:
 		m_slime = NewGO<Slime>(0, "slime");
 		m_slime->SetPosition(summonPosition);
+		m_slime->SetRotation(m_lich->GetRotation());
 		break;
 	case enMonster_TurtleShell:
 		m_turtleShell = NewGO<TurtleShell>(0, "turtleshell");
 		m_turtleShell->SetPosition(summonPosition);
+		m_turtleShell->SetRotation(m_lich->GetRotation());
 		break;
 	case enMonster_Mushroom:
 		m_mushroom = NewGO<Mushroom>(0, "mushroom");
 		m_mushroom->SetPosition(summonPosition);
+		m_mushroom->SetRotation(m_lich->GetRotation());
 		break;
 	case enMonster_Cactus:
 		m_cactus = NewGO<Cactus>(0, "cactus");
 		m_cactus->SetPosition(summonPosition);
+		m_cactus->SetRotation(m_lich->GetRotation());
 		break;
 
 	default:
