@@ -262,6 +262,12 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="Slime.cpp" />
+    <ClCompile Include="SlimeStateAttack.cpp" />
+    <ClCompile Include="SlimeStateDamage.cpp" />
+    <ClCompile Include="SlimeStateDie.cpp" />
+    <ClCompile Include="SlimeStateIdle.cpp" />
+    <ClCompile Include="SlimeStateVictory.cpp" />
+    <ClCompile Include="SlimeStateWalk.cpp" />
     <ClCompile Include="Status.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -309,6 +315,7 @@
     <ClInclude Include="HeroStateWalk.h" />
     <ClInclude Include="IHeroState.h" />
     <ClInclude Include="ILichState.h" />
+    <ClInclude Include="ISlimeState.h" />
     <ClInclude Include="IWizardState.h" />
     <ClInclude Include="Lich.h" />
     <ClInclude Include="LichAction.h" />
@@ -327,6 +334,12 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="Slime.h" />
+    <ClInclude Include="SlimeStateAttack.h" />
+    <ClInclude Include="SlimeStateDamage.h" />
+    <ClInclude Include="SlimeStateDie.h" />
+    <ClInclude Include="SlimeStateIdle.h" />
+    <ClInclude Include="SlimeStateVictory.h" />
+    <ClInclude Include="SlimeStateWalk.h" />
     <ClInclude Include="Status.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Summon.h" />

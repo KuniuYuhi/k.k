@@ -167,10 +167,32 @@
     <ClCompile Include="Cactus.cpp">
       <Filter>Cactus</Filter>
     </ClCompile>
-    <ClCompile Include="Summon.cpp" />
-    <ClCompile Include="LichStateSummon.cpp" />
     <ClCompile Include="Mushroom.cpp">
       <Filter>Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="LichStateSummon.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="Summon.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStateAttack.cpp">
+      <Filter>Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStateDamage.cpp">
+      <Filter>Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStateDie.cpp">
+      <Filter>Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStateIdle.cpp">
+      <Filter>Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStateVictory.cpp">
+      <Filter>Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStateWalk.cpp">
+      <Filter>Slime</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -322,10 +344,35 @@
     <ClInclude Include="Cactus.h">
       <Filter>Cactus</Filter>
     </ClInclude>
-    <ClInclude Include="Summon.h" />
-    <ClInclude Include="LichStateSummon.h" />
     <ClInclude Include="Mushroom.h">
       <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="ISlimeState.h">
+      <Filter>Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="LichStateSummon.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="Summon.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStateAttack.h">
+      <Filter>Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStateDamage.h">
+      <Filter>Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStateDie.h">
+      <Filter>Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStateIdle.h">
+      <Filter>Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStateVictory.h">
+      <Filter>Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStateWalk.h">
+      <Filter>Slime</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
