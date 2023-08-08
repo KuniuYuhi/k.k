@@ -58,6 +58,14 @@ bool TurtleShell::Start()
 
 	//まず召喚アニメーション。その後行動
 
+
+
+	//　乱数を初期化。
+	srand((unsigned)time(NULL));
+
+	//6から8の範囲のインターバル
+	m_angleChangeTime = rand() % 3 + 6;
+
 	return true;
 }
 
@@ -140,8 +148,8 @@ Vector3 TurtleShell::SetDirection()
 {
 	Vector3 randomPos = g_vec3Zero;
 	randomPos.y = 0.0f;
-	float X = rand() % 21 - 10;
-	float Z = rand() % 21 - 10;
+	float X = rand() % (21 - 10) + 1;
+	float Z = rand() % (21 - 10) + 1;
 	randomPos.x += X;
 	randomPos.z += Z;
 	randomPos.Normalize();

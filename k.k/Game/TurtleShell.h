@@ -72,7 +72,7 @@ private:
 	/// </summary>
 	void ManageState();
 
-	const float m_angleChangeTime = 8.0f;		//ベクトルを計算するタイマー
+	float m_angleChangeTime = 8.0f;		//ベクトルを計算するタイマー
 
 	ModelRender m_modelRender;
 
