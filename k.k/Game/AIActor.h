@@ -84,9 +84,13 @@ public:
 	virtual void HitNormalAttack();
 	//ヒーローのスキルに当たった時の処理
 	virtual void HitHeroSkillAttack();
-	//ウィザードのファイヤーボールに当たった時の処理
+	/// <summary>
+	/// ウィザードのファイヤーボールに当たった時の処理。派生クラスで実装
+	/// </summary>
 	virtual void HitFireBall();
-	//ウィザードのフレイムピラーに当たった時の処理
+	/// <summary>
+	/// ウィザードのフレイムピラーに当たった時の処理。派生クラスで実装
+	/// </summary>
 	virtual void HitFlamePillar();
 
 	/// <summary>

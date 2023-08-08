@@ -61,6 +61,10 @@ void AIActor::SetTargetPosition()
 void AIActor::DamageCollision(CharacterController& characon)
 {
 	//抜け出す処理
+	if (isAnimationEntable() != true)
+	{
+		return;
+	}
 
 	//通常攻撃の当たり判定
 	const auto& Attack_1Collisions = g_collisionObjectManager->FindCollisionObjects("Attack");
@@ -71,6 +75,7 @@ void AIActor::DamageCollision(CharacterController& characon)
 		if (collision->IsHit(characon) == true)
 		{
 			HitNormalAttack();
+			return;
 		}
 	}
 
@@ -83,6 +88,7 @@ void AIActor::DamageCollision(CharacterController& characon)
 		if (collision->IsHit(characon) == true)
 		{
 			HitHeroSkillAttack();
+			return;
 		}
 	}
 
@@ -95,6 +101,7 @@ void AIActor::DamageCollision(CharacterController& characon)
 		if (collision->IsHit(characon) == true)
 		{
 			HitFireBall();
+			return;
 		}
 	}
 
@@ -107,16 +114,21 @@ void AIActor::DamageCollision(CharacterController& characon)
 		if (collision->IsHit(characon) == true)
 		{
 			HitFlamePillar();
+			return;
 		}
 	}
 }
 
 void AIActor::HitNormalAttack()
 {
+	//ダメージを受ける
+	Damage(m_player->GetAtk());
 }
 
 void AIActor::HitHeroSkillAttack()
 {
+	//ダメージを受ける
+	Damage(m_player->GetSkillAtk());
 }
 
 void AIActor::HitFireBall()
