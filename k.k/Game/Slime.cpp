@@ -1,5 +1,12 @@
 #include "stdafx.h"
 #include "Slime.h"
+#include "ISlimeState.h"
+#include "SlimeStateIdle.h"
+#include "SlimeStateWalk.h"
+#include "SlimeStateAttack.h"
+#include "SlimeStateDamage.h"
+#include "SlimeStateDie.h"
+#include "SlimeStateVictory.h"
 
 namespace {
 	const float ANGLE = 120.0f;				//視野角
@@ -15,6 +22,7 @@ namespace {
 Slime::Slime()
 {
 	m_angle = ANGLE;
+	
 }
 
 Slime::~Slime()
@@ -46,6 +54,9 @@ struct IsForestResult :public btCollisionWorld::ConvexResultCallback
 
 bool Slime::Start()
 {
+	//初期のアニメーションステートを待機状態にする。
+	SetNextAnimationState(enAninationState_Idle);
+
 	m_status.InitStatus(
 		MAXHP,
 		MAXMP,
@@ -58,12 +69,40 @@ bool Slime::Start()
 
 	//まず召喚アニメーション。その後行動
 
+
+	//　乱数を初期化。
+	srand((unsigned)time(NULL));
+
+
+	//4から６の範囲のインターバル
+	m_angleChangeTime = rand() % 3 + 4;
+
 	return true;
 }
 
 void Slime::InitModel()
 {
-	m_modelRender.Init("Assets/modelData/character/Slime/slime.tkm");
+	m_animationClip[enAnimClip_Idle].Load("Assets/animData/character/Slime/Idle_Normal.tka");
+	m_animationClip[enAnimClip_Idle].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Walk].Load("Assets/animData/character/Slime/Walk.tka");
+	m_animationClip[enAnimClip_Walk].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Walk].Load("Assets/animData/character/Slime/Run.tka");
+	m_animationClip[enAnimClip_Walk].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Attack_1].Load("Assets/animData/character/Slime/Attack1.tka");
+	m_animationClip[enAnimClip_Attack_1].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Damage].Load("Assets/animData/character/Slime/Damege.tka");
+	m_animationClip[enAnimClip_Damage].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Die].Load("Assets/animData/character/Slime/Die.tka");
+	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/Slime/Victory.tka");
+	m_animationClip[enAnimClip_Victory].SetLoopFlag(false);
+
+	m_modelRender.Init(
+		"Assets/modelData/character/Slime/slime.tkm",
+		m_animationClip, 
+		enAnimClip_Num,
+		enModelUpAxisZ
+	);
 
 
 	m_charaCon.Init(
@@ -81,11 +120,16 @@ void Slime::Update()
 {
 	//プレイヤーかボスがやられたら消える
 
+
+	DamageCollision(m_charaCon);
+
 	AngleChangeTimeIntarval(m_angleChangeTime);
 
 	Move();
 	Rotation();
 
+	ManageState();
+	PlayAnimation();
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
@@ -93,6 +137,11 @@ void Slime::Update()
 
 void Slime::Move()
 {
+	if (isAnimationEntable() != true)
+	{
+		return;
+	}
+
 	//範囲内にプレイヤーがいなかったら
 	if (IsFindPlayer(m_distanceToPlayer) != true)
 	{
@@ -140,8 +189,8 @@ Vector3 Slime::SetDirection()
 {
 	Vector3 randomPos = g_vec3Zero;
 	randomPos.y = 0.0f;
-	float X = rand() % 21 - 10;
-	float Z = rand() % 21 - 10;
+	float X = rand() % (21 - 10)+1;
+	float Z = rand() % (21 - 10)+1;
 	randomPos.x += X;
 	randomPos.z += Z;
 	randomPos.Normalize();
@@ -189,6 +238,27 @@ bool Slime::IsBumpedForest()
 
 void Slime::Damage(int attack)
 {
+	if (m_status.hp > 0)
+	{
+		//ダメージを受ける
+		m_status.hp -= attack;
+		SetNextAnimationState(enAnimationState_Damage);
+	}
+	else
+	{
+		//やられた
+		m_status.hp = 0;
+		SetNextAnimationState(enAnimationState_Die);
+	}
+	
+}
+
+void Slime::HitFireBall()
+{
+}
+
+void Slime::HitFlamePillar()
+{
 }
 
 bool Slime::RotationOnly()
@@ -198,11 +268,108 @@ bool Slime::RotationOnly()
 
 void Slime::ManageState()
 {
+	m_state->ManageState();
 }
 
 void Slime::PlayAnimation()
 {
-	
+	m_state->PlayAnimation();
+}
+
+void Slime::SetNextAnimationState(EnAnimationState nextState)
+{
+	if (m_state != nullptr) {
+		// 古いステートを削除する。
+		delete m_state;
+		m_state = nullptr;
+	}
+
+	//アニメーションステートを次のステートに変える
+	m_enAnimationState = nextState;
+
+	switch (m_enAnimationState)
+	{
+	case Slime::enAninationState_Idle:
+		m_state = new SlimeStateIdle(this);
+		break;
+	case Slime::enAninationState_Walk:
+		m_state = new SlimeStateWalk(this);
+		break;
+	case Slime::enAninationState_Run:
+		m_state = new SlimeStateWalk(this);
+		break;
+	case Slime::enAnimationState_Attack_1:
+		m_state = new SlimeStateAttack(this);
+		break;
+	case Slime::enAnimationState_Damage:
+		m_state = new SlimeStateDamage(this);
+		break;
+	case Slime::enAnimationState_Die:
+		m_state = new SlimeStateDie(this);
+		break;
+	case Slime::enAnimationState_Victory:
+		m_state = new SlimeStateVictory(this);
+		break;
+	default:
+		// ここに来たらステートのインスタンス作成処理の追加忘れ。
+		std::abort();
+		break;
+	}
+}
+
+void Slime::ProcessCommonStateTransition()
+{
+	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+	{
+		SetNextAnimationState(enAninationState_Walk);
+	}
+	else
+	{
+		SetNextAnimationState(enAninationState_Idle);
+	}
+}
+
+void Slime::OnProcessAttack_1StateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
+
+void Slime::OnProcessDamageStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
+
+void Slime::OnProcessDieStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//自身を削除する
+		DeleteGO(this);
+	}
+}
+
+void Slime::OnProcessVictoryStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
 }
 
 void Slime::Render(RenderContext& rc)
