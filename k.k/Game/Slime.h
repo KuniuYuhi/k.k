@@ -13,8 +13,9 @@ public:
 
 	void Move();
 
+	Vector3 SetDirection();
 
-
+	bool IsBumpedForest();
 
 	/// <summary>
 	/// 特定のアニメーションが再生中か
@@ -71,10 +72,18 @@ private:
 	void ManageState();
 
 
+	RigidBody m_rigidBody;		//剛体。
 
 	ModelRender m_modelRender;
-
 	CharacterController m_charaCon;
+
+	Vector3 m_direction= Vector3::Zero;
+
+	const float m_angleChangeTime = 5.0f;		//ベクトルを計算するタイマー
+
+	const float m_distanceToPlayer = 60.0f;
+
+	float m_ramdomAngle = 0.0f;
 
 };
 
