@@ -35,6 +35,14 @@ bool Cactus::Start()
 
 	//まず召喚アニメーション。その後行動
 
+
+
+	//　乱数を初期化。
+	srand((unsigned)time(NULL));
+
+	//4から5の範囲のインターバル
+	m_angleChangeTime = rand() % 2 + 4;
+
 	return true;
 }
 
@@ -140,8 +148,8 @@ Vector3 Cactus::SetDirection()
 {
 	Vector3 randomPos = g_vec3Zero;
 	randomPos.y = 0.0f;
-	float X = rand() % 21 - 10;
-	float Z = rand() % 21 - 10;
+	float X = rand() % (21 - 10) + 1;
+	float Z = rand() % (21 - 10) + 1;
 	randomPos.x += X;
 	randomPos.z += Z;
 	randomPos.Normalize();

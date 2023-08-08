@@ -78,7 +78,7 @@ private:
 
 	CharacterController m_charaCon;
 
-	const float m_angleChangeTime = 6.0f;		//ベクトルを計算するタイマー
+	float m_angleChangeTime = 6.0f;		//ベクトルを計算するタイマー
 
 	Vector3 m_direction = Vector3::Zero;
 
