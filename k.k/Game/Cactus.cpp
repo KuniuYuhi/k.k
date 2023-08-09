@@ -101,8 +101,32 @@ void Cactus::Update()
 
 void Cactus::Move()
 {
-	//範囲内にプレイヤーがいなかったら
-	if (IsFindPlayer(m_distanceToPlayer) != true)
+	//視界にターゲットを見つけたら
+	if (IsFindPlayer(m_distanceToPlayer) == true)
+	{
+		Vector3 toPlayerDir = m_toTarget;
+		toPlayerDir.Normalize();
+		Vector3 a = m_position;
+		a.Normalize();
+		//ターゲットに向かうベクトルと前方向の内積を計算する
+		float t = toPlayerDir.Dot(m_forward);
+		//内積の結果をacos関数に渡して、m_enemyFowradとtoPlayerDirのなす角度を求める。
+		float angle = acos(t);
+
+		//視野角判定
+		if (fabsf(angle) < Math::DegToRad(m_angle))
+		{
+			//追いかける
+			m_direction = toPlayerDir;
+			m_moveSpeed = m_direction * m_status.defaultSpeed;
+			//m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+
+			//次の座標が決まったので抜け出す
+		}
+
+		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	}
+	else
 	{
 		//数秒間隔で向かうベクトルを変える
 		if (m_angleChangeTimeFlag == false)
@@ -110,27 +134,9 @@ void Cactus::Move()
 			m_direction = SetDirection();
 			m_angleChangeTimeFlag = true;
 		}
-
+		//ランダムな方向に移動
 		m_moveSpeed = m_direction * m_status.defaultSpeed;
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-
-	}
-	//いたら
-	else
-	{
-		Vector3 toPlayerDir = m_targetPosition;
-		toPlayerDir.Normalize();
-		//ターゲットに向かうベクトルと前方向の内積を計算する
-		float t = toPlayerDir.Dot(m_forward);
-		//内積の結果をacos関数に渡して、m_enemyFowradとtoPlayerDirのなす角度を求める。
-		float angle = acos(t);
-		//視野角判定
-		if (fabsf(angle) < Math::DegToRad(m_angle))
-		{
-			//追いかける
-			m_moveSpeed = calcVelocity(m_status);
-			m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-		}
 	}
 
 	//壁にぶつかったら反転
@@ -141,15 +147,14 @@ void Cactus::Move()
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 		return;
 	}
-
 }
 
 Vector3 Cactus::SetDirection()
 {
 	Vector3 randomPos = g_vec3Zero;
 	randomPos.y = 0.0f;
-	float X = rand() % (21 - 10) + 1;
-	float Z = rand() % (21 - 10) + 1;
+	float X = (rand() % (2 - (-2) + 1)) + (-2);
+	float Z = (rand() % (2 - (-2) + 1)) + (-2);
 	randomPos.x += X;
 	randomPos.z += Z;
 	randomPos.Normalize();
