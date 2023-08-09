@@ -60,7 +60,7 @@ void Summon::CalcCirclePoints(Vector3 center, float radius, int numPoints)
 	for (int i = 1; i <= numPoints; i++)
 	{
 		//Šp“x‚ðƒ‰ƒWƒAƒ“‚É•ÏŠ·
-		float theta = PI / 180 * en * i;
+		float theta = Math::PI / 180 * en * i;
 
 		Vector3 pos = g_vec3Zero;
 		pos.x = center.x + radius * cos(theta);
