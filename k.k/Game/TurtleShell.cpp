@@ -1,5 +1,15 @@
 #include "stdafx.h"
 #include "TurtleShell.h"
+#include "ITurtleShellState.h"
+#include "TurtleShellStateIdle.h"
+#include "TurtleShellStateWalk.h"
+#include "TurtleShellStateAttack_1.h"
+#include "TurtleShellStateAttack_2.h"
+#include "TurtleShellStateDifence.h"
+#include "TurtleShellStateDifenceDamage.h"
+#include "TurtleShellStateDamage.h"
+#include "TurtleShellStateDie.h"
+#include "TurtleShellStateVictory.h"
 
 namespace {
 	const float ANGLE = 100.0f;				//視野角
@@ -46,6 +56,8 @@ struct IsForestResult :public btCollisionWorld::ConvexResultCallback
 
 bool TurtleShell::Start()
 {
+	SetNextAnimationState(enAninationState_Idle);
+
 	m_status.InitStatus(
 		MAXHP,
 		MAXMP,
@@ -71,7 +83,33 @@ bool TurtleShell::Start()
 
 void TurtleShell::InitModel()
 {
-	m_modelRender.Init("Assets/modelData/character/TurtleShell/TurtleShell.tkm");
+	m_animationClip[enAnimClip_Idle].Load("Assets/animData/character/TurtleShell/Idle_Normal.tka");
+	m_animationClip[enAnimClip_Idle].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Walk].Load("Assets/animData/character/TurtleShell/Walk.tka");
+	m_animationClip[enAnimClip_Walk].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Walk].Load("Assets/animData/character/TurtleShell/Run.tka");
+	m_animationClip[enAnimClip_Walk].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Attack_1].Load("Assets/animData/character/TurtleShell/Attack1.tka");
+	m_animationClip[enAnimClip_Attack_1].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Attack_2].Load("Assets/animData/character/TurtleShell/Attack2.tka");
+	m_animationClip[enAnimClip_Attack_2].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Difence].Load("Assets/animData/character/TurtleShell/Defence.tka");
+	m_animationClip[enAnimClip_Difence].SetLoopFlag(false);
+	m_animationClip[enAnimClip_DefenceDamage].Load("Assets/animData/character/TurtleShell/DefenceDamage.tka");
+	m_animationClip[enAnimClip_DefenceDamage].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Damage].Load("Assets/animData/character/TurtleShell/Damage.tka");
+	m_animationClip[enAnimClip_Damage].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Die].Load("Assets/animData/character/TurtleShell/Die.tka");
+	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/TurtleShell/Victory.tka");
+	m_animationClip[enAnimClip_Victory].SetLoopFlag(false);
+
+	m_modelRender.Init(
+		"Assets/modelData/character/TurtleShell/TurtleShell.tkm",
+		m_animationClip,
+		enAnimClip_Num,
+		enModelUpAxisZ
+	);
 
 
 	m_charaCon.Init(
@@ -89,11 +127,16 @@ void TurtleShell::Update()
 {
 	//プレイヤーかボスがやられたら消える
 
+
+	DamageCollision(m_charaCon);
+
 	AngleChangeTimeIntarval(m_angleChangeTime);
 
 	Move();
 	Rotation();
 
+	ManageState();
+	PlayAnimation();
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
@@ -101,6 +144,12 @@ void TurtleShell::Update()
 
 void TurtleShell::Move()
 {
+	//特定のアニメーションが再生中なら抜け出す
+	if (isAnimationEntable() != true)
+	{
+		return;
+	}
+
 	//範囲内にプレイヤーがいなかったら
 	if (IsFindPlayer(m_distanceToPlayer) != true)
 	{
@@ -142,6 +191,10 @@ void TurtleShell::Move()
 		return;
 	}
 
+}
+
+void TurtleShell::DecideNextAction()
+{
 }
 
 Vector3 TurtleShell::SetDirection()
@@ -197,6 +250,26 @@ bool TurtleShell::IsBumpedForest()
 
 void TurtleShell::Damage(int attack)
 {
+	if (m_status.hp > 0)
+	{
+		m_status.hp -= attack;
+		//もし防御中なら
+
+		SetNextAnimationState(enAnimationState_Damage);
+	}
+	else
+	{
+		m_status.hp = 0;
+		SetNextAnimationState(enAnimationState_Die);
+	}
+}
+
+void TurtleShell::HitFireBall()
+{
+}
+
+void TurtleShell::HitFlamePillar()
+{
 }
 
 bool TurtleShell::RotationOnly()
@@ -206,11 +279,143 @@ bool TurtleShell::RotationOnly()
 
 void TurtleShell::ManageState()
 {
+	m_state->ManageState();
 }
 
 void TurtleShell::PlayAnimation()
 {
+	m_state->PlayAnimation();
+}
 
+void TurtleShell::SetNextAnimationState(EnAnimationState nextState)
+{
+	if (m_state != nullptr) {
+		// 古いステートを削除する。
+		delete m_state;
+		m_state = nullptr;
+	}
+
+	//アニメーションステートを次のステートに変える
+	m_enAnimationState = nextState;
+
+	switch (m_enAnimationState)
+	{
+	case TurtleShell::enAninationState_Idle:
+		m_state = new TurtleShellStateIdle(this);
+		break;
+	case TurtleShell::enAninationState_Walk:
+		m_state = new TurtleShellStateWalk(this);
+		break;
+	case TurtleShell::enAninationState_Run:
+		m_state = new TurtleShellStateWalk(this);
+		break;
+	case TurtleShell::enAnimationState_Attack_1:
+		m_state = new TurtleShellStateAttack_1(this);
+		break;
+	case TurtleShell::enAnimationState_Attack_2:
+		m_state = new TurtleShellStateAttack_2(this);
+		break;
+	case TurtleShell::enAnimationState_Difence:
+		m_state = new TurtleShellStateDifence(this);
+		break;
+	case TurtleShell::enAnimationState_DifencDamage:
+		m_state = new TurtleShellStateDifenceDamage(this);
+		break;
+	case TurtleShell::enAnimationState_Damage:
+		m_state = new TurtleShellStateDamage(this);
+		break;
+	case TurtleShell::enAnimationState_Die:
+		m_state = new TurtleShellStateDie(this);
+		break;
+	case TurtleShell::enAnimationState_Victory:
+		m_state = new TurtleShellStateVictory(this);
+		break;
+	default:
+		// ここに来たらステートのインスタンス作成処理の追加忘れ。
+		std::abort();
+		break;
+	}
+}
+
+void TurtleShell::ProcessCommonStateTransition()
+{
+	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+	{
+		SetNextAnimationState(enAninationState_Walk);
+	}
+	else
+	{
+		SetNextAnimationState(enAninationState_Idle);
+	}
+}
+
+void TurtleShell::OnProcessAttack_1StateTransition()
+{
+	//アニメーションが終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//共通のステート遷移処理実行
+		ProcessCommonStateTransition();
+	}
+}
+
+void TurtleShell::OnProcessAttack_2StateTransition()
+{
+	//アニメーションが終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//共通のステート遷移処理実行
+		ProcessCommonStateTransition();
+	}
+}
+
+void TurtleShell::OnProcessDifenceStateTransition()
+{
+	//アニメーションが終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//共通のステート遷移処理実行
+		ProcessCommonStateTransition();
+	}
+}
+
+void TurtleShell::OnProcessDifenceDamageStateTransition()
+{
+	//アニメーションが終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//共通のステート遷移処理実行
+		ProcessCommonStateTransition();
+	}
+}
+
+void TurtleShell::OnProcessDamageStateTransition()
+{
+	//アニメーションが終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//共通のステート遷移処理実行
+		ProcessCommonStateTransition();
+	}
+}
+
+void TurtleShell::OnProcessDieStateTransition()
+{
+	//アニメーションが終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		DeleteGO(this);
+	}
+}
+
+void TurtleShell::OnProcessVictoryStateTransition()
+{
+	//アニメーションが終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//共通のステート遷移処理実行
+		ProcessCommonStateTransition();
+	}
 }
 
 void TurtleShell::Render(RenderContext& rc)
