@@ -259,6 +259,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Meteo.cpp" />
     <ClCompile Include="Mushroom.cpp" />
+    <ClCompile Include="MushroomStateAttack_1.cpp" />
+    <ClCompile Include="MushroomStateAttack_2.cpp" />
+    <ClCompile Include="MushroomStateDamage.cpp" />
+    <ClCompile Include="MushroomStateDie.cpp" />
+    <ClCompile Include="MushroomStateIdle.cpp" />
+    <ClCompile Include="MushroomStateVictory.cpp" />
+    <ClCompile Include="MushroomStateWalk.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="Slime.cpp" />
@@ -324,6 +331,7 @@
     <ClInclude Include="HeroStateWalk.h" />
     <ClInclude Include="IHeroState.h" />
     <ClInclude Include="ILichState.h" />
+    <ClInclude Include="IMushroomState.h" />
     <ClInclude Include="ISlimeState.h" />
     <ClInclude Include="ITurtleShellState.h" />
     <ClInclude Include="IWizardState.h" />
@@ -341,6 +349,13 @@
     <ClInclude Include="LichStateWalk.h" />
     <ClInclude Include="Meteo.h" />
     <ClInclude Include="Mushroom.h" />
+    <ClInclude Include="MushroomStateAttack_1.h" />
+    <ClInclude Include="MushroomStateAttack_2.h" />
+    <ClInclude Include="MushroomStateDamage.h" />
+    <ClInclude Include="MushroomStateDie.h" />
+    <ClInclude Include="MushroomStateIdle.h" />
+    <ClInclude Include="MushroomStateVictory.h" />
+    <ClInclude Include="MushroomStateWalk.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="Slime.h" />

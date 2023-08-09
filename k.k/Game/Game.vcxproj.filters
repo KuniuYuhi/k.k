@@ -221,6 +221,27 @@
     <ClCompile Include="TurtleShellStateWalk.cpp">
       <Filter>TurtleShell</Filter>
     </ClCompile>
+    <ClCompile Include="MushroomStateAttack_1.cpp">
+      <Filter>Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateAttack_2.cpp">
+      <Filter>Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateDamage.cpp">
+      <Filter>Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateDie.cpp">
+      <Filter>Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateIdle.cpp">
+      <Filter>Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateVictory.cpp">
+      <Filter>Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateWalk.cpp">
+      <Filter>Mushroom</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -430,6 +451,30 @@
     </ClInclude>
     <ClInclude Include="ITurtleShellState.h">
       <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateAttack_1.h">
+      <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateAttack_2.h">
+      <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateDamage.h">
+      <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateDie.h">
+      <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateIdle.h">
+      <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateVictory.h">
+      <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateWalk.h">
+      <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="IMushroomState.h">
+      <Filter>Mushroom</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
