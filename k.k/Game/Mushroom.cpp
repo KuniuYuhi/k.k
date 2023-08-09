@@ -1,14 +1,22 @@
 #include "stdafx.h"
 #include "Mushroom.h"
+#include "IMushroomState.h"
+#include "MushroomStateIdle.h"
+#include "MushroomStateWalk.h"
+#include "MushroomStateAttack_1.h"
+#include "MushroomStateAttack_2.h"
+#include "MushroomStateDamage.h"
+#include "MushroomStateDie.h"
+#include "MushroomStateVictory.h"
 
 namespace {
-	const float ANGLE = 120.0f;				//視野角
+	const float ANGLE = 50.0f;				//視野角
 
 	//ステータス
 	int MAXHP = 100;
 	int MAXMP = 500;
 	int ATK = 7;
-	float SPEED = 120.0f;
+	float SPEED = 110.0f;
 	const char* NAME = "Mushroom";
 }
 
@@ -46,6 +54,8 @@ struct IsForestResult :public btCollisionWorld::ConvexResultCallback
 
 bool Mushroom::Start()
 {
+	SetNextAnimationState(enAninationState_Idle);
+
 	m_status.InitStatus(
 		MAXHP,
 		MAXMP,
@@ -71,7 +81,29 @@ bool Mushroom::Start()
 
 void Mushroom::InitModel()
 {
-	m_modelRender.Init("Assets/modelData/character/Mushroom/Mushroom.tkm");
+	m_animationClip[enAnimClip_Idle].Load("Assets/animData/character/Mushroom/Idle_normal.tka");
+	m_animationClip[enAnimClip_Idle].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Walk].Load("Assets/animData/character/Mushroom/Walk.tka");
+	m_animationClip[enAnimClip_Walk].SetLoopFlag(true);
+	/*m_animationClip[enAnimClip_Walk].Load("Assets/animData/character/Mushroom/Run.tka");
+	m_animationClip[enAnimClip_Walk].SetLoopFlag(true);*/
+	m_animationClip[enAnimClip_Attack_1].Load("Assets/animData/character/Mushroom/Attack1.tka");
+	m_animationClip[enAnimClip_Attack_1].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Attack_2].Load("Assets/animData/character/Mushroom/Attack2.tka");
+	m_animationClip[enAnimClip_Attack_2].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Damage].Load("Assets/animData/character/Mushroom/Damage.tka");
+	m_animationClip[enAnimClip_Damage].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Die].Load("Assets/animData/character/Mushroom/Die.tka");
+	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/Mushroom/Victory.tka");
+	m_animationClip[enAnimClip_Victory].SetLoopFlag(false);
+
+	m_modelRender.Init(
+		"Assets/modelData/character/Mushroom/Mushroom.tkm",
+		m_animationClip,
+		enAnimClip_Num,
+		enModelUpAxisZ
+	);
 
 
 	m_charaCon.Init(
@@ -89,11 +121,16 @@ void Mushroom::Update()
 {
 	//プレイヤーかボスがやられたら消える
 
+	DamageCollision(m_charaCon);
+
+
 	AngleChangeTimeIntarval(m_angleChangeTime);
 
 	Move();
 	Rotation();
 
+	ManageState();
+	PlayAnimation();
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
@@ -101,8 +138,38 @@ void Mushroom::Update()
 
 void Mushroom::Move()
 {
-	//範囲内にプレイヤーがいなかったら
-	if (IsFindPlayer(m_distanceToPlayer) != true)
+	//特定のアニメーションが再生中なら抜け出す
+	if (isAnimationEntable() != true)
+	{
+		return;
+	}
+
+	//視界にターゲットを見つけたら
+	if (IsFindPlayer(m_distanceToPlayer) == true)
+	{
+		Vector3 toPlayerDir = m_toTarget;
+		toPlayerDir.Normalize();
+		Vector3 a = m_position;
+		a.Normalize();
+		//ターゲットに向かうベクトルと前方向の内積を計算する
+		float t = toPlayerDir.Dot(m_forward);
+		//内積の結果をacos関数に渡して、m_enemyFowradとtoPlayerDirのなす角度を求める。
+		float angle = acos(t);
+
+		//視野角判定
+		if (fabsf(angle) < Math::DegToRad(m_angle))
+		{
+			//追いかける
+			m_direction = toPlayerDir;
+			m_moveSpeed = m_direction * m_status.defaultSpeed;
+			//m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+
+			//次の座標が決まったので抜け出す
+		}
+
+		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	}
+	else
 	{
 		//数秒間隔で向かうベクトルを変える
 		if (m_angleChangeTimeFlag == false)
@@ -110,27 +177,9 @@ void Mushroom::Move()
 			m_direction = SetDirection();
 			m_angleChangeTimeFlag = true;
 		}
-
+		//ランダムな方向に移動
 		m_moveSpeed = m_direction * m_status.defaultSpeed;
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-
-	}
-	//いたら
-	else
-	{
-		Vector3 toPlayerDir = m_targetPosition;
-		toPlayerDir.Normalize();
-		//ターゲットに向かうベクトルと前方向の内積を計算する
-		float t = toPlayerDir.Dot(m_forward);
-		//内積の結果をacos関数に渡して、m_enemyFowradとtoPlayerDirのなす角度を求める。
-		float angle = acos(t);
-		//視野角判定
-		if (fabsf(angle) < Math::DegToRad(m_angle))
-		{
-			//追いかける
-			m_moveSpeed = calcVelocity(m_status);
-			m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-		}
 	}
 
 	//壁にぶつかったら反転
@@ -148,8 +197,8 @@ Vector3 Mushroom::SetDirection()
 {
 	Vector3 randomPos = g_vec3Zero;
 	randomPos.y = 0.0f;
-	float X = rand() % (21 - 10) + 1;
-	float Z = rand() % (21 - 10) + 1;
+	float X = (rand() % (2 - (-2) + 1)) + (-2);
+	float Z = (rand() % (2 - (-2) + 1)) + (-2);
 	randomPos.x += X;
 	randomPos.z += Z;
 	randomPos.Normalize();
@@ -162,7 +211,7 @@ bool Mushroom::IsBumpedForest()
 	Vector3 pos1 = m_position;
 	Vector3 pos2 = m_position;
 	pos1.Normalize();
-	pos2 += pos1 * 20.0f;
+	pos2 += pos1 * 30.0f;
 
 	SphereCollider m_sphereCollider;
 	m_sphereCollider.Create(1.0f);
@@ -197,6 +246,28 @@ bool Mushroom::IsBumpedForest()
 
 void Mushroom::Damage(int attack)
 {
+	//HPを減らす
+	m_status.hp -= attack;
+
+	//HPが0以下なら
+	if (m_status.hp <= 0)
+	{
+		m_status.hp = 0;
+		SetNextAnimationState(enAnimationState_Die);
+		return;
+	}
+
+	//もし防御中なら
+
+	SetNextAnimationState(enAnimationState_Damage);
+}
+
+void Mushroom::HitFireBall()
+{
+}
+
+void Mushroom::HitFlamePillar()
+{
 }
 
 bool Mushroom::RotationOnly()
@@ -206,11 +277,121 @@ bool Mushroom::RotationOnly()
 
 void Mushroom::ManageState()
 {
+	m_state->ManageState();
 }
 
 void Mushroom::PlayAnimation()
 {
+	m_state->PlayAnimation();
+}
 
+void Mushroom::SetNextAnimationState(EnAnimationState nextState)
+{
+	if (m_state != nullptr) {
+		// 古いステートを削除する。
+		delete m_state;
+		m_state = nullptr;
+	}
+
+	//アニメーションステートを次のステートに変える
+	m_enAnimationState = nextState;
+
+	switch (m_enAnimationState)
+	{
+	case Mushroom::enAninationState_Idle:
+		m_state = new MushroomStateIdle(this);
+		break;
+	case Mushroom::enAninationState_Walk:
+		m_state = new MushroomStateWalk(this);
+		break;
+	case Mushroom::enAninationState_Run:
+		m_state = new MushroomStateWalk(this);
+		break;
+	case Mushroom::enAnimationState_Attack_1:
+		m_state = new MushroomStateAttack_1(this);
+		break;
+	case Mushroom::enAnimationState_Attack_2:
+		m_state = new MushroomStateAttack_2(this);
+		break;
+	case Mushroom::enAnimationState_Damage:
+		m_state = new MushroomStateDamage(this);
+		break;
+	case Mushroom::enAnimationState_Die:
+		m_state = new MushroomStateDie(this);
+		break;
+	case Mushroom::enAnimationState_Victory:
+		m_state = new MushroomStateVictory(this);
+		break;
+	default:
+		// ここに来たらステートのインスタンス作成処理の追加忘れ。
+		std::abort();
+		break;
+	}
+}
+
+void Mushroom::ProcessCommonStateTransition()
+{
+	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+	{
+		SetNextAnimationState(enAninationState_Walk);
+	}
+	else
+	{
+		SetNextAnimationState(enAninationState_Idle);
+	}
+}
+
+void Mushroom::OnProcessAttack_1StateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
+
+void Mushroom::OnProcessAttack_2StateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
+
+void Mushroom::OnProcessDamageStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
+
+void Mushroom::OnProcessDieStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		DeleteGO(this);
+	}
+}
+
+void Mushroom::OnProcessVictoryStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
 }
 
 void Mushroom::Render(RenderContext& rc)
