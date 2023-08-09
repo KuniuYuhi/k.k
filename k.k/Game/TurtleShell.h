@@ -172,7 +172,7 @@ private:
 
 	Vector3 m_direction = Vector3::Zero;
 
-	const float m_distanceToPlayer = 50.0f;
+	const float m_distanceToPlayer = 400.0f;
 
 };
 
