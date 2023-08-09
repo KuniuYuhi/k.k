@@ -26,8 +26,9 @@ public:
 	/// 移動処理
 	/// </summary>
 	/// <param name="status">ステータス</param>
+	/// <param name="targetposition">向かいたいターゲットの座標</param>
 	/// <returns>moveSpeed</returns>
-	Vector3 calcVelocity(Status status);
+	Vector3 calcVelocity(Status status,Vector3 targetposition);
 
 	/// <summary>
 	/// ターゲットの座標をm_targetPsitionに代入する
@@ -174,7 +175,10 @@ protected:
 
 	Vector3 m_targetPosition = Vector3::Zero;		//ターゲットの座標を格納
 
+	Vector3 m_toTarget= Vector3::Zero;				//ターゲットに向かうベクトル
+
 	Vector3 m_position = Vector3::Zero;
+	Vector3 m_oldPosition= Vector3::Zero;
 	Vector3 m_oldMoveSpeed = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
 
