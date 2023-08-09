@@ -194,6 +194,33 @@
     <ClCompile Include="SlimeStateWalk.cpp">
       <Filter>Slime</Filter>
     </ClCompile>
+    <ClCompile Include="TurtleShellStateAttack_1.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateAttack_2.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateDamage.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateDie.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateDifence.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateDifenceDamage.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateIdle.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateVictory.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateWalk.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -373,6 +400,36 @@
     </ClInclude>
     <ClInclude Include="SlimeStateWalk.h">
       <Filter>Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateAttack_1.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateAttack_2.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateDamage.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateDie.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateDifence.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateDifenceDamage.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateIdle.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateVictory.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateWalk.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="ITurtleShellState.h">
+      <Filter>TurtleShell</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
