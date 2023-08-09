@@ -188,7 +188,7 @@ void Lich::Move()
 	SetTargetPosition();
 
 	//ˆÚ“®ˆ—
-	m_moveSpeed = calcVelocity(m_status);
+	m_moveSpeed = calcVelocity(m_status, m_targetPosition);
 
 	//”íƒ_ƒ[ƒW‚Íˆ—‚ğ‚µ‚È‚¢
 	if (isAnimationEntable() != true)
