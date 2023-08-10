@@ -10,6 +10,7 @@
 #include "TurtleShellStateDamage.h"
 #include "TurtleShellStateDie.h"
 #include "TurtleShellStateVictory.h"
+#include "Lich.h"
 
 namespace {
 	const float ANGLE = 45.0f;				//視野角
@@ -29,6 +30,11 @@ TurtleShell::TurtleShell()
 
 TurtleShell::~TurtleShell()
 {
+	//if (m_lich != nullptr)
+	//{
+	//	//リストから自身を消す
+	//	m_lich->RemoveAIActorFromList(this);
+	//}
 }
 
 //衝突したときに呼ばれる関数オブジェクト(壁用)
@@ -102,7 +108,7 @@ void TurtleShell::InitModel()
 	m_animationClip[enAnimClip_Die].Load("Assets/animData/character/TurtleShell/Die.tka");
 	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/TurtleShell/Victory.tka");
-	m_animationClip[enAnimClip_Victory].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Victory].SetLoopFlag(true);
 
 	m_modelRender.Init(
 		"Assets/modelData/character/TurtleShell/TurtleShell.tkm",
@@ -126,7 +132,20 @@ void TurtleShell::InitModel()
 void TurtleShell::Update()
 {
 	//プレイヤーかボスがやられたら消える
+	if (m_lich->GetWinFlag() == true)
+	{
+		SetWinFlag(true);
+		//攻撃中でなければ
+		SetNextAnimationState(enAnimationState_Victory);
+	}
 
+	if (GetWinFlag() == true)
+	{
+		ManageState();
+		PlayAnimation();
+		m_modelRender.Update();
+		return;
+	}
 
 	DamageCollision(m_charaCon);
 
@@ -416,6 +435,8 @@ void TurtleShell::OnProcessDieStateTransition()
 	//アニメーションが終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		//リストから自身を消す
+		m_lich->RemoveAIActorFromList(this);
 		DeleteGO(this);
 	}
 }

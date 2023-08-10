@@ -1,6 +1,7 @@
 #pragma once
 #include "AIActor.h"
 
+class Lich;
 class ITurtleShellState;
 
 class TurtleShell:public AIActor
@@ -25,6 +26,11 @@ public:
 	Vector3 SetDirection();
 
 	bool IsBumpedForest();
+
+	void SetLich(Lich* lich)
+	{
+		m_lich = lich;
+	}
 
 	/// <summary>
 	/// モデルレンダーの取得
@@ -157,6 +163,7 @@ private:
 	void ManageState();
 
 
+	Lich* m_lich = nullptr;
 	ITurtleShellState* m_state = nullptr;
 
 	Animation m_animation;	// アニメーション
