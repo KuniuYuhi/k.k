@@ -2,6 +2,10 @@
 
 class Player;
 class Lich;
+
+
+
+
 ///リッチの行動を決めるクラス。評価値で決まる
 class LichAction:public Noncopyable
 {
@@ -10,6 +14,8 @@ public:
 	{
 		m_lich = lich;
 	}
+
+	~LichAction(){}
 
 	enum EnActionNumber
 	{
@@ -21,6 +27,12 @@ public:
 	};
 
 	EnActionNumber m_enActionNumber;
+
+	struct Action
+	{
+		int m_eval = 0;
+		EnActionNumber m_enAction;
+	};
 
 	//次の行動
 	/*enum enNextAction
@@ -87,7 +99,7 @@ private:
 	//行動の数分の評価値
 	int m_eval[5];
 
-	//Action m_action[];
+	Action m_action[5] = { 0 };
 
 
 	
