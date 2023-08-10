@@ -7,6 +7,7 @@
 #include "SlimeStateDamage.h"
 #include "SlimeStateDie.h"
 #include "SlimeStateVictory.h"
+#include "Lich.h"
 
 namespace {
 	const float ANGLE = 45.0f;				//視野角
@@ -27,6 +28,11 @@ Slime::Slime()
 
 Slime::~Slime()
 {
+	//if (m_lich != nullptr)
+	//{
+	//	//リストから自身を消す
+	//	m_lich->RemoveAIActorFromList(this);
+	//}
 }
 
 //衝突したときに呼ばれる関数オブジェクト(壁用)
@@ -95,7 +101,7 @@ void Slime::InitModel()
 	m_animationClip[enAnimClip_Die].Load("Assets/animData/character/Slime/Die.tka");
 	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/Slime/Victory.tka");
-	m_animationClip[enAnimClip_Victory].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Victory].SetLoopFlag(true);
 
 	m_modelRender.Init(
 		"Assets/modelData/character/Slime/slime.tkm",
@@ -118,7 +124,25 @@ void Slime::InitModel()
 
 void Slime::Update()
 {
-	//プレイヤーかボスがやられたら消える
+	if (m_lich != nullptr)
+	{
+		//プレイヤーかボスがやられたら消える
+		if (m_lich->GetWinFlag() == true)
+		{
+			SetWinFlag(true);
+			//攻撃中でなければ
+			SetNextAnimationState(enAnimationState_Victory);
+		}
+	}
+	
+
+	if (GetWinFlag() == true)
+	{
+		ManageState();
+		PlayAnimation();
+		m_modelRender.Update();
+		return;
+	}
 
 
 	DamageCollision(m_charaCon);
@@ -406,6 +430,8 @@ void Slime::OnProcessDieStateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		//リストから自身を消す
+		m_lich->RemoveAIActorFromList(this);
 		//自身を削除する
 		DeleteGO(this);
 	}

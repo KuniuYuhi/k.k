@@ -1,6 +1,7 @@
 #pragma once
 #include "AIActor.h"
 
+class Lich;
 class ISlimeState;
 
 class Slime :public AIActor
@@ -26,6 +27,11 @@ public:
 	ModelRender& GetModelRender()
 	{
 		return m_modelRender;
+	}
+
+	void SetLich(Lich* lich)
+	{
+		m_lich = lich;
 	}
 
 	/// <summary>
@@ -130,7 +136,7 @@ private:
 	/// </summary>
 	void ManageState();
 
-
+	Lich* m_lich = nullptr;
 	ISlimeState* m_state = nullptr;
 
 	Animation m_animation;	// アニメーション
