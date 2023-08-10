@@ -32,7 +32,7 @@ void ResultSeen::Update()
 		m_resultSprite.SetWipeSize(m_wipeSize);
 		m_wipeSize -= 10.0f;
 
-		if (m_wipeSize <= 0.0)
+		if (m_wipeSize < 0.0)
 		{
 			m_roundWipeEndFlag = true;
 		}

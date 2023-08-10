@@ -179,6 +179,7 @@ void Game::GoResult()
 		
 	}
 
+	//‰æ–Ê‚ªƒŠƒUƒ‹ƒg‚Ì‰æ‘œ‚É‚È‚Á‚½
 	if (m_result->GetRoundWipeEndFlag() == true)
 	{
 		DeleteGO(this);
