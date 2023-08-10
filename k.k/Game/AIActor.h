@@ -140,6 +140,16 @@ public:
 		return m_rotation;
 	}
 
+	void SetWinFlag(bool flag)
+	{
+		m_winFlag = flag;
+	}
+
+	const bool& GetWinFlag() const
+	{
+		return m_winFlag;
+	}
+
 protected:
 
 	/// <summary>
@@ -200,7 +210,8 @@ protected:
 
 	float m_angle = 0.0f;			//Ž‹–ìŠp
 
-	
+	bool m_winFlag = false;
+
 	float m_angleChangeTimer = 0.0f;
 	bool m_angleChangeTimeFlag = false;
 
