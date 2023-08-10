@@ -8,6 +8,7 @@
 #include "MushroomStateDamage.h"
 #include "MushroomStateDie.h"
 #include "MushroomStateVictory.h"
+#include "Lich.h"
 
 namespace {
 	const float ANGLE = 50.0f;				//視野角
@@ -27,6 +28,11 @@ Mushroom::Mushroom()
 
 Mushroom::~Mushroom()
 {
+	//if (m_lich != nullptr)
+	//{
+	//	//リストから自身を消す
+	//	m_lich->RemoveAIActorFromList(this);
+	//}
 }
 
 //衝突したときに呼ばれる関数オブジェクト(壁用)
@@ -96,7 +102,7 @@ void Mushroom::InitModel()
 	m_animationClip[enAnimClip_Die].Load("Assets/animData/character/Mushroom/Die.tka");
 	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/Mushroom/Victory.tka");
-	m_animationClip[enAnimClip_Victory].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Victory].SetLoopFlag(true);
 
 	m_modelRender.Init(
 		"Assets/modelData/character/Mushroom/Mushroom.tkm",
@@ -120,6 +126,20 @@ void Mushroom::InitModel()
 void Mushroom::Update()
 {
 	//プレイヤーかボスがやられたら消える
+	if (m_lich->GetWinFlag() == true)
+	{
+		SetWinFlag(true);
+		//攻撃中でなければ
+		SetNextAnimationState(enAnimationState_Victory);
+	}
+
+	if (GetWinFlag() == true)
+	{
+		ManageState();
+		PlayAnimation();
+		m_modelRender.Update();
+		return;
+	}
 
 	DamageCollision(m_charaCon);
 
@@ -379,6 +399,8 @@ void Mushroom::OnProcessDieStateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		//リストから自身を消す
+		m_lich->RemoveAIActorFromList(this);
 		DeleteGO(this);
 	}
 }
