@@ -1,6 +1,7 @@
 #pragma once
 #include "AIActor.h"
 
+class Lich;
 class ICactusState;
 
 class Cactus :public AIActor
@@ -18,6 +19,11 @@ public:
 	Vector3 SetDirection();
 
 	bool IsBumpedForest();
+
+	void SetLich(Lich* lich)
+	{
+		m_lich = lich;
+	}
 
 	/// <summary>
 	/// モデルレンダーの取得
@@ -147,6 +153,7 @@ private:
 	void ManageState();
 
 
+	Lich* m_lich = nullptr;
 	ICactusState* m_state = nullptr;
 
 	Animation m_animation;	// アニメーション

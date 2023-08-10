@@ -10,6 +10,7 @@
 #include "CactusStateDamage.h"
 #include "CactusStateDie.h"
 #include "CactusStateVictory.h"
+#include "Lich.h"
 
 namespace {
 	const float ANGLE = 140.0f;				//視野角
@@ -29,6 +30,12 @@ Cactus::Cactus()
 
 Cactus::~Cactus()
 {
+	//if (m_lich != nullptr)
+	//{
+	//	//リストから自身を消す
+	//	m_lich->RemoveAIActorFromList(this);
+	//}
+	
 }
 
 bool Cactus::Start()
@@ -100,7 +107,7 @@ void Cactus::InitModel()
 	m_animationClip[enAnimClip_Die].Load("Assets/animData/character/Cactus/Die.tka");
 	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/Cactus/Victory.tka");
-	m_animationClip[enAnimClip_Victory].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Victory].SetLoopFlag(true);
 
 	m_modelRender.Init(
 		"Assets/modelData/character/Cactus/Cactus.tkm",
@@ -124,6 +131,20 @@ void Cactus::InitModel()
 void Cactus::Update()
 {
 	//プレイヤーかボスがやられたら消える
+	if (m_lich->GetWinFlag() == true)
+	{
+		SetWinFlag(true);
+		//攻撃中でなければ
+		SetNextAnimationState(enAnimationState_Victory);
+	}
+
+	if (GetWinFlag() == true)
+	{
+		ManageState();
+		PlayAnimation();
+		m_modelRender.Update();
+		return;
+	}
 
 	AngleChangeTimeIntarval(m_angleChangeTime);
 
@@ -404,6 +425,8 @@ void Cactus::OnProcessDieStateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		//リストから自身を消す
+		m_lich->RemoveAIActorFromList(this);
 		DeleteGO(this);
 	}
 }
