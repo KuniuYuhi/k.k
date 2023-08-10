@@ -13,7 +13,7 @@ FlamePillar::~FlamePillar()
 
 bool FlamePillar::Start()
 {
-    m_model.Init("Assets/modelData/character/Slime/slime.tkm");
+    m_model.Init("Assets/modelData/character/Wizard/Effect/FireBall.tkm");
 
 
     m_position = m_wizard->GetPosition();
