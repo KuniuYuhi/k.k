@@ -242,6 +242,7 @@
     <ClCompile Include="FlamePillar.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Hero.cpp" />
     <ClCompile Include="HeroStateAttack_1.cpp" />
     <ClCompile Include="HeroStateAttack_2.cpp" />
@@ -264,6 +265,7 @@
     <ClCompile Include="LichStateDie.cpp" />
     <ClCompile Include="LichStateIdle.cpp" />
     <ClCompile Include="LichStateSummon.cpp" />
+    <ClCompile Include="LichStateVictory.cpp" />
     <ClCompile Include="LichStateWalk.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Meteo.cpp" />
@@ -336,6 +338,7 @@
     <ClInclude Include="FlamePillar.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="Hero.h" />
     <ClInclude Include="HeroStateAttack_1.h" />
     <ClInclude Include="HeroStateAttack_2.h" />
@@ -365,6 +368,7 @@
     <ClInclude Include="LichStateDie.h" />
     <ClInclude Include="LichStateIdle.h" />
     <ClInclude Include="LichStateSummon.h" />
+    <ClInclude Include="LichStateVictory.h" />
     <ClInclude Include="LichStateWalk.h" />
     <ClInclude Include="Meteo.h" />
     <ClInclude Include="Mushroom.h" />

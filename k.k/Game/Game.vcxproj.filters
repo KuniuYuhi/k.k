@@ -269,6 +269,8 @@
     <ClCompile Include="CactusStateVictory.cpp">
       <Filter>Cactus</Filter>
     </ClCompile>
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="LichStateVictory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -533,5 +535,7 @@
     <ClInclude Include="ICactusState.h">
       <Filter>Cactus</Filter>
     </ClInclude>
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="LichStateVictory.h" />
   </ItemGroup>
 </Project>
