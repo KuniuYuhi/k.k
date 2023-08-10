@@ -14,7 +14,7 @@ Meteo::~Meteo()
 
 bool Meteo::Start()
 {
-	m_model.Init("Assets/modelData/character/Slime/slime.tkm");
+	m_model.Init("Assets/modelData/character/Lich/Effect/DarkBall.tkm");
 
 	m_movePos = m_position;
 	//Žn“_‚ðŒˆ‚ß‚é
