@@ -109,9 +109,11 @@ bool Game::Start()
 	m_lich = NewGO<Lich>(0, "lich");
 
 	/*Slime* slime = NewGO<Slime>(0, "slime");
-	TurtleShell* turtleshell = NewGO<TurtleShell>(0, "turtleshell");
-	Cactus* cactus = NewGO<Cactus>(0, "cactus");
-	Mushroom* mushroom = NewGO<Mushroom>(0, "mushroom");*/
+	slime->SetPosition({ 0.0f, 0.0f, -500.0f });*/
+	/*TurtleShell* turtleshell = NewGO<TurtleShell>(0, "turtleshell");
+	turtleshell->SetPosition({ 0.0f, 0.0f, -500.0f });*/
+	//Cactus* cactus = NewGO<Cactus>(0, "cactus");
+	//Mushroom* mushroom = NewGO<Mushroom>(0, "mushroom");
 
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
@@ -177,6 +179,7 @@ void Game::GoResult()
 		
 	}
 
+	//‰æ–Ê‚ªƒŠƒUƒ‹ƒg‚Ì‰æ‘œ‚É‚È‚Á‚½
 	if (m_result->GetRoundWipeEndFlag() == true)
 	{
 		DeleteGO(this);

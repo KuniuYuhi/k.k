@@ -30,9 +30,9 @@ void ResultSeen::Update()
 	if (m_roundWipeEndFlag != true)
 	{
 		m_resultSprite.SetWipeSize(m_wipeSize);
-		m_wipeSize -= 10.0f;
+		m_wipeSize -= 7.0f;
 
-		if (m_wipeSize <= 0.0)
+		if (m_wipeSize < 0.0)
 		{
 			m_roundWipeEndFlag = true;
 		}
@@ -55,5 +55,5 @@ void ResultSeen::Update()
 
 void ResultSeen::Render(RenderContext& rc)
 {
-	m_resultSprite.Draw(rc);
+	//m_resultSprite.Draw(rc);
 }

@@ -25,12 +25,6 @@ bool Summon::Start()
 {
 	m_lichPosition = m_lich->GetPosition();
 
-	m_monsters.emplace_back(m_slime);
-	m_monsters.emplace_back(m_turtleShell);
-	m_monsters.emplace_back(m_mushroom);
-	m_monsters.emplace_back(m_cactus);
-
-
 	return true;
 }
 
@@ -60,7 +54,7 @@ void Summon::CalcCirclePoints(Vector3 center, float radius, int numPoints)
 	for (int i = 1; i <= numPoints; i++)
 	{
 		//Šp“x‚ðƒ‰ƒWƒAƒ“‚É•ÏŠ·
-		float theta = PI / 180 * en * i;
+		float theta = Math::PI / 180 * en * i;
 
 		Vector3 pos = g_vec3Zero;
 		pos.x = center.x + radius * cos(theta);
@@ -95,21 +89,29 @@ void Summon::SummonMonster(Vector3 summonPosition)
 		m_slime = NewGO<Slime>(0, "slime");
 		m_slime->SetPosition(summonPosition);
 		m_slime->SetRotation(m_lich->GetRotation());
+		m_slime->SetLich(m_lich);
+		m_lich->AddAIActorFromList(m_slime);
 		break;
 	case enMonster_TurtleShell:
 		m_turtleShell = NewGO<TurtleShell>(0, "turtleshell");
 		m_turtleShell->SetPosition(summonPosition);
 		m_turtleShell->SetRotation(m_lich->GetRotation());
+		m_turtleShell->SetLich(m_lich);
+		m_lich->AddAIActorFromList(m_turtleShell);
 		break;
 	case enMonster_Mushroom:
 		m_mushroom = NewGO<Mushroom>(0, "mushroom");
 		m_mushroom->SetPosition(summonPosition);
 		m_mushroom->SetRotation(m_lich->GetRotation());
+		m_mushroom->SetLich(m_lich);
+		m_lich->AddAIActorFromList(m_mushroom);
 		break;
 	case enMonster_Cactus:
 		m_cactus = NewGO<Cactus>(0, "cactus");
 		m_cactus->SetPosition(summonPosition);
 		m_cactus->SetRotation(m_lich->GetRotation());
+		m_cactus->SetLich(m_lich);
+		m_lich->AddAIActorFromList(m_cactus);
 		break;
 
 	default:

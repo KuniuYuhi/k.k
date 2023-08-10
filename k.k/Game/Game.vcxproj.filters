@@ -167,11 +167,110 @@
     <ClCompile Include="Cactus.cpp">
       <Filter>Cactus</Filter>
     </ClCompile>
-    <ClCompile Include="Summon.cpp" />
-    <ClCompile Include="LichStateSummon.cpp" />
     <ClCompile Include="Mushroom.cpp">
       <Filter>Mushroom</Filter>
     </ClCompile>
+    <ClCompile Include="LichStateSummon.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="Summon.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStateAttack.cpp">
+      <Filter>Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStateDamage.cpp">
+      <Filter>Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStateDie.cpp">
+      <Filter>Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStateIdle.cpp">
+      <Filter>Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStateVictory.cpp">
+      <Filter>Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStateWalk.cpp">
+      <Filter>Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateAttack_1.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateAttack_2.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateDamage.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateDie.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateDifence.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateDifenceDamage.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateIdle.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateVictory.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateWalk.cpp">
+      <Filter>TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateAttack_1.cpp">
+      <Filter>Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateAttack_2.cpp">
+      <Filter>Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateDamage.cpp">
+      <Filter>Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateDie.cpp">
+      <Filter>Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateIdle.cpp">
+      <Filter>Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateVictory.cpp">
+      <Filter>Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateWalk.cpp">
+      <Filter>Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateAttack_1.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateAttack_2.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateDamage.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateDie.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateIdle.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStatePlant.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStatePlantToBattle.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateRun.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateVictory.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="LichStateVictory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -322,10 +421,121 @@
     <ClInclude Include="Cactus.h">
       <Filter>Cactus</Filter>
     </ClInclude>
-    <ClInclude Include="Summon.h" />
-    <ClInclude Include="LichStateSummon.h" />
     <ClInclude Include="Mushroom.h">
       <Filter>Mushroom</Filter>
     </ClInclude>
+    <ClInclude Include="ISlimeState.h">
+      <Filter>Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="LichStateSummon.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="Summon.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStateAttack.h">
+      <Filter>Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStateDamage.h">
+      <Filter>Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStateDie.h">
+      <Filter>Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStateIdle.h">
+      <Filter>Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStateVictory.h">
+      <Filter>Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStateWalk.h">
+      <Filter>Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateAttack_1.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateAttack_2.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateDamage.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateDie.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateDifence.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateDifenceDamage.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateIdle.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateVictory.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateWalk.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="ITurtleShellState.h">
+      <Filter>TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateAttack_1.h">
+      <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateAttack_2.h">
+      <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateDamage.h">
+      <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateDie.h">
+      <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateIdle.h">
+      <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateVictory.h">
+      <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateWalk.h">
+      <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="IMushroomState.h">
+      <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateAttack_1.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateAttack_2.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateDamage.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateDie.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateIdle.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStatePlant.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStatePlantToBattle.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateRun.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateVictory.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="ICactusState.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="LichStateVictory.h" />
   </ItemGroup>
 </Project>

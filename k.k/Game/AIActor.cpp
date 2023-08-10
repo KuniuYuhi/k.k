@@ -22,19 +22,21 @@ void AIActor::SetTransForm(Vector3 position, Quaternion rotation, Vector3 scale)
 	m_scale = scale;
 }
 
-Vector3 AIActor::calcVelocity(Status status)
+Vector3 AIActor::calcVelocity(Status status,Vector3 targetposition)
 {
 	Vector3 moveSpeed = Vector3::Zero;
 
 	//自身からターゲットに向かうベクトルを計算する
-	Vector3 diff = m_targetPosition - m_position;
+	Vector3 diff = targetposition - m_position;
+	
 	//正規化
 	diff.Normalize();
 	
 	diff.y = 0.0f;
 	//速度を設定
 	moveSpeed = diff * status.defaultSpeed;
-
+	//前方向
+	m_forward = diff;
 	//値をセーブしておく
 	m_SaveMoveSpeed = moveSpeed;
 
@@ -61,6 +63,10 @@ void AIActor::SetTargetPosition()
 void AIActor::DamageCollision(CharacterController& characon)
 {
 	//抜け出す処理
+	if (isAnimationEntable() != true)
+	{
+		return;
+	}
 
 	//通常攻撃の当たり判定
 	const auto& Attack_1Collisions = g_collisionObjectManager->FindCollisionObjects("Attack");
@@ -71,6 +77,7 @@ void AIActor::DamageCollision(CharacterController& characon)
 		if (collision->IsHit(characon) == true)
 		{
 			HitNormalAttack();
+			return;
 		}
 	}
 
@@ -83,6 +90,7 @@ void AIActor::DamageCollision(CharacterController& characon)
 		if (collision->IsHit(characon) == true)
 		{
 			HitHeroSkillAttack();
+			return;
 		}
 	}
 
@@ -95,6 +103,7 @@ void AIActor::DamageCollision(CharacterController& characon)
 		if (collision->IsHit(characon) == true)
 		{
 			HitFireBall();
+			return;
 		}
 	}
 
@@ -107,16 +116,21 @@ void AIActor::DamageCollision(CharacterController& characon)
 		if (collision->IsHit(characon) == true)
 		{
 			HitFlamePillar();
+			return;
 		}
 	}
 }
 
 void AIActor::HitNormalAttack()
 {
+	//ダメージを受ける
+	Damage(m_player->GetAtk());
 }
 
 void AIActor::HitHeroSkillAttack()
 {
+	//ダメージを受ける
+	Damage(m_player->GetSkillAtk());
 }
 
 void AIActor::HitFireBall()
@@ -206,7 +220,14 @@ bool AIActor::IsFindPlayer(float distance)
 	m_targetPosition = m_player->GetPosition();
 	//自身からターゲットに向かうベクトルを計算する
 	Vector3 diff = m_targetPosition - m_position;
+	
 	diff.y = 0.0f;
+	//ベクトルをセーブ
+	m_toTarget = diff;
+	//前方向を保存
+	/*m_forward = diff;
+	m_forward.Normalize();*/
+
 	//計算したベクトルが上限の距離より小さかったら
 	if (diff.Length() < distance)
 	{
@@ -215,9 +236,9 @@ bool AIActor::IsFindPlayer(float distance)
 	}
 	else
 	{
-		diff.Normalize();
-		//前方向を保存
-		m_forward = diff;
+		//diff.Normalize();
+		////前方向を保存
+		//m_forward = diff;
 		//見つからなかった
 		m_targetPosition = Vector3::Zero;
 		return false;
@@ -233,6 +254,8 @@ Quaternion AIActor::Rotation()
 
 	if (RotationOnly() == true)
 	{
+		m_forward = Vector3::AxisZ;
+		m_rotation.Apply(m_forward);
 		return m_rotation;
 	}
 
@@ -241,6 +264,7 @@ Quaternion AIActor::Rotation()
 	{
 		m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
 	}
-
+	m_forward = Vector3::AxisZ;
+	m_rotation.Apply(m_forward);
 	return m_rotation;
 }

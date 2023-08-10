@@ -3,6 +3,11 @@
 #include "Meteo.h"
 #include "Player.h"
 
+namespace {
+	const int MAX_LENGTH = 200;
+	const int MIN_LENGTH = -200;
+}
+
 DarkMeteorite::DarkMeteorite()
 {
 }
@@ -36,7 +41,7 @@ struct IsGroundResult :public btCollisionWorld::ConvexResultCallback
 
 bool DarkMeteorite::Start()
 {
-	m_model.Init("Assets/modelData/character/Slime/slime.tkm");
+	m_model.Init("Assets/modelData/character/Lich/Effect/DarkBall.tkm");
 
 
 	m_model.SetTransform(m_position, m_rotation, g_vec3One);
@@ -134,6 +139,8 @@ Vector3 DarkMeteorite::SetMeteoTargetPosition()
 	Vector3 createPositon = m_targetPosition;
 	float X = rand() % 601 - 300;
 	float Z = rand() % 601 - 300;
+	/*float X = (rand() % (MAX_LENGTH - (MIN_LENGTH) + 1)) + (MIN_LENGTH);
+	float Z = (rand() % (MAX_LENGTH - (MIN_LENGTH) + 1)) + (MIN_LENGTH);*/
 	createPositon.x += X;
 	createPositon.z += Z;
 

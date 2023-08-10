@@ -26,8 +26,9 @@ public:
 	/// 移動処理
 	/// </summary>
 	/// <param name="status">ステータス</param>
+	/// <param name="targetposition">向かいたいターゲットの座標</param>
 	/// <returns>moveSpeed</returns>
-	Vector3 calcVelocity(Status status);
+	Vector3 calcVelocity(Status status,Vector3 targetposition);
 
 	/// <summary>
 	/// ターゲットの座標をm_targetPsitionに代入する
@@ -84,9 +85,13 @@ public:
 	virtual void HitNormalAttack();
 	//ヒーローのスキルに当たった時の処理
 	virtual void HitHeroSkillAttack();
-	//ウィザードのファイヤーボールに当たった時の処理
+	/// <summary>
+	/// ウィザードのファイヤーボールに当たった時の処理。派生クラスで実装
+	/// </summary>
 	virtual void HitFireBall();
-	//ウィザードのフレイムピラーに当たった時の処理
+	/// <summary>
+	/// ウィザードのフレイムピラーに当たった時の処理。派生クラスで実装
+	/// </summary>
 	virtual void HitFlamePillar();
 
 	/// <summary>
@@ -135,6 +140,16 @@ public:
 		return m_rotation;
 	}
 
+	void SetWinFlag(bool flag)
+	{
+		m_winFlag = flag;
+	}
+
+	const bool& GetWinFlag() const
+	{
+		return m_winFlag;
+	}
+
 protected:
 
 	/// <summary>
@@ -170,7 +185,10 @@ protected:
 
 	Vector3 m_targetPosition = Vector3::Zero;		//ターゲットの座標を格納
 
+	Vector3 m_toTarget= Vector3::Zero;				//ターゲットに向かうベクトル
+
 	Vector3 m_position = Vector3::Zero;
+	Vector3 m_oldPosition= Vector3::Zero;
 	Vector3 m_oldMoveSpeed = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
 
@@ -192,7 +210,8 @@ protected:
 
 	float m_angle = 0.0f;			//視野角
 
-	
+	bool m_winFlag = false;
+
 	float m_angleChangeTimer = 0.0f;
 	bool m_angleChangeTimeFlag = false;
 

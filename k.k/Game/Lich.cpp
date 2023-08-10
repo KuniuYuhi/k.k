@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "Lich.h"
 #include "LichStateIdle.h"
 #include "LichStateWalk.h"
@@ -15,6 +16,7 @@
 #include "LichStateDarkMeteorite_End.h"
 #include "DarkMeteorite.h"
 #include "LichStateSummon.h"
+#include "LichStateVictory.h"
 
 #include "LichAction.h"
 #include "Summon.h"
@@ -24,7 +26,7 @@
 namespace {
 	const float SCALE_UP = 3.0f;									//キャラクターのサイズ
 	const Vector3 FIRST_POSITION = Vector3(0.0f, 0.0f, -250.0f);	//最初の座標
-	const float DISTANCE = 1500.0f;									//プレイヤーを発見できる距離
+	const float DISTANCE = 4000.0f;									//プレイヤーを発見できる距離
 	const float NON_WARP_DISTANCE = 400.0f;							//ワープ不要な距離
 
 
@@ -48,6 +50,12 @@ Lich::Lich()
 
 Lich::~Lich()
 {
+	//生き残っているモンスターを死亡させる
+	for (auto monster : m_monsters)
+	{
+		monster->Dead();
+	}
+
 	delete m_lichAction;
 }
 
@@ -99,6 +107,8 @@ void Lich::InitModel()
 	m_animationClip[enAnimClip_Attack_DarkMeteorite_end].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Summon].Load("Assets/animData/character/Lich/Summon.tka");
 	m_animationClip[enAnimClip_Summon].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/Lich/Victory.tka");
+	m_animationClip[enAnimClip_Victory].SetLoopFlag(true);
 
 
 	m_modelRender.Init("Assets/modelData/character/Lich/Lich.tkm",
@@ -145,22 +155,39 @@ void Lich::Update()
 	swprintf_s(MP, 255, L"HP %3d/%d", NowActorMP, NowActorMaxMP);
 	m_hpFont.SetText(MP);
 
-	if (m_CreateDarkWallFlag == true)
-	{
-		CreateDarkWall();
-	}
-
 	//被ダメージの当たり判定
 	DamageCollision(m_charaCon);
 
+	//攻撃中じゃないなら
+	/*if (IsAttackEntable() != true)
+	{*/
+		//プレイヤーが全滅したら勝利アニメーション設定
+		if (m_player->IsAnnihilation() == true && m_enAnimationState!= enAnimationState_Victory)
+		{
+			SetWinFlag(true);
+			//攻撃中じゃないなら
+			if (IsAttackEntable() == true)
+			{
+				SetNextAnimationState(enAnimationState_Victory);
+			}
+		}
+	//}
+	
+
 	//倒されたら他の処理を実行しないようにする
-	if (m_dieFlag==true)
+	if (m_dieFlag==true|| GetWinFlag() == true)
 	{
 		ManageState();
 		PlayAnimation();
 		m_modelRender.Update();
 		return;
 	}
+
+	//ダークウォールの生成
+	/*if (m_CreateDarkWallFlag == true)
+	{
+		CreateDarkWall();
+	}*/
 
 	//インターバルの計算
 	AttackInterval(m_attackIntervalTime);
@@ -174,8 +201,6 @@ void Lich::Update()
 	ManageState();
 	PlayAnimation();
 
-	
-
 	SetTransFormModel(m_modelRender);
 	m_modelRender.Update();
 
@@ -188,7 +213,7 @@ void Lich::Move()
 	SetTargetPosition();
 
 	//移動処理
-	m_moveSpeed = calcVelocity(m_status);
+	m_moveSpeed = calcVelocity(m_status, m_targetPosition);
 
 	//被ダメージ時は処理をしない
 	if (isAnimationEntable() != true)
@@ -196,14 +221,8 @@ void Lich::Move()
 		return;
 	}
 
-	//一定の距離になったらそれ以上動かない
-	if (IsDistanceToPlayer() == true)
-	{
-		//移動しないようにする
-		m_moveSpeed = Vector3::Zero;
-	}
 	//攻撃中なら移動しない
-	else if (IsAttackEntable() != true)
+	if (IsAttackEntable() != true)
 	{
 		//移動しないようにする
 		m_moveSpeed = Vector3::Zero;
@@ -211,6 +230,13 @@ void Lich::Move()
 	//プレイヤーを見つけたら
 	else if (IsFindPlayer(m_distance) == true)
 	{
+		//一定の距離になったらそれ以上動かない(ターゲットに近づかないようにする)
+		if (IsDistanceToPlayer() == true)
+		{
+			//移動しないようにする
+			m_moveSpeed = Vector3::Zero;
+		}
+
 		//移動する
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	}
@@ -242,8 +268,11 @@ void Lich::Damage(int attack)
 		//HPが半分になったらワープする
 		if (m_status.hp <= m_status.maxHp / 2 && m_halfHpFlag == false)
 		{
+			//ワープするステートにする
 			SetSpecialActionState(enSpecialActionState_Warp);
 			m_halfHpFlag = true;
+			//ダークメテオを使い終わるまでダメージを受けないようにする
+			SetInvincibleFlag(true);
 		}
 	}
 	
@@ -446,6 +475,10 @@ void Lich::SetNextAnimationState(EnAnimationState nextState)
 		//ダークメテオエンドステートを作成する
 		m_state = new LichStateSummon(this);
 		break;
+	case Lich::enAnimationState_Victory:
+		//勝利ステートを作成する
+		m_state = new LichStateVictory(this);
+		break;
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
 		std::abort();
@@ -583,6 +616,12 @@ void Lich::OnProcessAttack_1StateTransition()
 
 void Lich::OnProcessAttack_2StateTransition()
 {
+	//ダークウォールの生成
+	if (m_CreateDarkWallFlag == true)
+	{
+		CreateDarkWall();
+	}
+
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
@@ -683,6 +722,10 @@ void Lich::OnProcessSummonStateTransition()
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}
+}
+
+void Lich::OnProcessVictoryStateTransition()
+{
 }
 
 void Lich::CreateDarkWall()

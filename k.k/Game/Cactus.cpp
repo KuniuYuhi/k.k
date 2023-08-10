@@ -1,5 +1,16 @@
 #include "stdafx.h"
 #include "Cactus.h"
+#include "ICactusState.h"
+#include "CactusStateIdle.h"
+#include "CactusStateRun.h"
+#include "CactusStateAttack_1.h"
+#include "CactusStateAttack_2.h"
+#include "CactusStatePlant.h"
+#include "CactusStatePlantToBattle.h"
+#include "CactusStateDamage.h"
+#include "CactusStateDie.h"
+#include "CactusStateVictory.h"
+#include "Lich.h"
 
 namespace {
 	const float ANGLE = 140.0f;				//視野角
@@ -19,10 +30,18 @@ Cactus::Cactus()
 
 Cactus::~Cactus()
 {
+	//if (m_lich != nullptr)
+	//{
+	//	//リストから自身を消す
+	//	m_lich->RemoveAIActorFromList(this);
+	//}
+	
 }
 
 bool Cactus::Start()
 {
+	SetNextAnimationState(enAninationState_Idle);
+
 	m_status.InitStatus(
 		MAXHP,
 		MAXMP,
@@ -34,6 +53,14 @@ bool Cactus::Start()
 	InitModel();
 
 	//まず召喚アニメーション。その後行動
+
+
+
+	//　乱数を初期化。
+	srand((unsigned)time(NULL));
+
+	//4から5の範囲のインターバル
+	m_angleChangeTime = rand() % 2 + 4;
 
 	return true;
 }
@@ -63,7 +90,31 @@ struct IsForestResult :public btCollisionWorld::ConvexResultCallback
 
 void Cactus::InitModel()
 {
-	m_modelRender.Init("Assets/modelData/character/Cactus/Cactus.tkm");
+	m_animationClip[enAnimClip_Idle].Load("Assets/animData/character/Cactus/Idle.tka");
+	m_animationClip[enAnimClip_Idle].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Run].Load("Assets/animData/character/Cactus/Run.tka");
+	m_animationClip[enAnimClip_Run].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Attack_1].Load("Assets/animData/character/Cactus/Attack1.tka");
+	m_animationClip[enAnimClip_Attack_1].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Attack_2].Load("Assets/animData/character/Cactus/Attack2.tka");
+	m_animationClip[enAnimClip_Attack_2].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Plant].Load("Assets/animData/character/Cactus/Plant.tka");
+	m_animationClip[enAnimClip_Plant].SetLoopFlag(false);
+	m_animationClip[enAnimClip_PlantToBattle].Load("Assets/animData/character/Cactus/PlantToBattle.tka");
+	m_animationClip[enAnimClip_PlantToBattle].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Damage].Load("Assets/animData/character/Cactus/Damage.tka");
+	m_animationClip[enAnimClip_Damage].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Die].Load("Assets/animData/character/Cactus/Die.tka");
+	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/Cactus/Victory.tka");
+	m_animationClip[enAnimClip_Victory].SetLoopFlag(true);
+
+	m_modelRender.Init(
+		"Assets/modelData/character/Cactus/Cactus.tkm",
+		m_animationClip,
+		enAnimClip_Num,
+		enModelUpAxisZ
+	);
 
 
 	m_charaCon.Init(
@@ -80,11 +131,28 @@ void Cactus::InitModel()
 void Cactus::Update()
 {
 	//プレイヤーかボスがやられたら消える
+	if (m_lich->GetWinFlag() == true)
+	{
+		SetWinFlag(true);
+		//攻撃中でなければ
+		SetNextAnimationState(enAnimationState_Victory);
+	}
+
+	if (GetWinFlag() == true)
+	{
+		ManageState();
+		PlayAnimation();
+		m_modelRender.Update();
+		return;
+	}
 
 	AngleChangeTimeIntarval(m_angleChangeTime);
 
 	Move();
 	Rotation();
+
+	ManageState();
+	PlayAnimation();
 
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
@@ -93,8 +161,32 @@ void Cactus::Update()
 
 void Cactus::Move()
 {
-	//範囲内にプレイヤーがいなかったら
-	if (IsFindPlayer(m_distanceToPlayer) != true)
+	//視界にターゲットを見つけたら
+	if (IsFindPlayer(m_distanceToPlayer) == true)
+	{
+		Vector3 toPlayerDir = m_toTarget;
+		toPlayerDir.Normalize();
+		Vector3 a = m_position;
+		a.Normalize();
+		//ターゲットに向かうベクトルと前方向の内積を計算する
+		float t = toPlayerDir.Dot(m_forward);
+		//内積の結果をacos関数に渡して、m_enemyFowradとtoPlayerDirのなす角度を求める。
+		float angle = acos(t);
+
+		//視野角判定
+		if (fabsf(angle) < Math::DegToRad(m_angle))
+		{
+			//追いかける
+			m_direction = toPlayerDir;
+			m_moveSpeed = m_direction * m_status.defaultSpeed;
+			//m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+
+			//次の座標が決まったので抜け出す
+		}
+
+		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	}
+	else
 	{
 		//数秒間隔で向かうベクトルを変える
 		if (m_angleChangeTimeFlag == false)
@@ -102,27 +194,9 @@ void Cactus::Move()
 			m_direction = SetDirection();
 			m_angleChangeTimeFlag = true;
 		}
-
+		//ランダムな方向に移動
 		m_moveSpeed = m_direction * m_status.defaultSpeed;
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-
-	}
-	//いたら
-	else
-	{
-		Vector3 toPlayerDir = m_targetPosition;
-		toPlayerDir.Normalize();
-		//ターゲットに向かうベクトルと前方向の内積を計算する
-		float t = toPlayerDir.Dot(m_forward);
-		//内積の結果をacos関数に渡して、m_enemyFowradとtoPlayerDirのなす角度を求める。
-		float angle = acos(t);
-		//視野角判定
-		if (fabsf(angle) < Math::DegToRad(m_angle))
-		{
-			//追いかける
-			m_moveSpeed = calcVelocity(m_status);
-			m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-		}
 	}
 
 	//壁にぶつかったら反転
@@ -133,15 +207,14 @@ void Cactus::Move()
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 		return;
 	}
-
 }
 
 Vector3 Cactus::SetDirection()
 {
 	Vector3 randomPos = g_vec3Zero;
 	randomPos.y = 0.0f;
-	float X = rand() % 21 - 10;
-	float Z = rand() % 21 - 10;
+	float X = (rand() % (2 - (-2) + 1)) + (-2);
+	float Z = (rand() % (2 - (-2) + 1)) + (-2);
 	randomPos.x += X;
 	randomPos.z += Z;
 	randomPos.Normalize();
@@ -189,6 +262,28 @@ bool Cactus::IsBumpedForest()
 
 void Cactus::Damage(int attack)
 {
+	//HPを減らす
+	m_status.hp -= attack;
+
+	//HPが0以下なら
+	if (m_status.hp <= 0)
+	{
+		m_status.hp = 0;
+		SetNextAnimationState(enAnimationState_Die);
+		return;
+	}
+
+	//もし防御中なら
+
+	SetNextAnimationState(enAnimationState_Damage);
+}
+
+void Cactus::HitFireBall()
+{
+}
+
+void Cactus::HitFlamePillar()
+{
 }
 
 bool Cactus::RotationOnly()
@@ -198,11 +293,153 @@ bool Cactus::RotationOnly()
 
 void Cactus::ManageState()
 {
+	m_state->ManageState();
 }
 
 void Cactus::PlayAnimation()
 {
+	m_state->PlayAnimation();
+}
 
+void Cactus::SetNextAnimationState(EnAnimationState nextState)
+{
+	if (m_state != nullptr) {
+		// 古いステートを削除する。
+		delete m_state;
+		m_state = nullptr;
+	}
+
+	//アニメーションステートを次のステートに変える
+	m_enAnimationState = nextState;
+
+	switch (m_enAnimationState)
+	{
+	case Cactus::enAninationState_Idle:
+		m_state = new CactusStateIdle(this);
+		break;
+	case Cactus::enAninationState_Walk:
+		m_state = new CactusStateRun(this);
+		break;
+	case Cactus::enAninationState_Run:
+		m_state = new CactusStateRun(this);
+		break;
+	case Cactus::enAnimationState_Attack_1:
+		m_state = new CactusStateAttack_1(this);
+		break;
+	case Cactus::enAnimationState_Attack_2:
+		m_state = new CactusStateAttack_2(this);
+		break;
+	case Cactus::enAnimationState_Plant:
+		m_state = new CactusStatePlant(this);
+		break;
+	case Cactus::enAnimationState_PlantToBattle:
+		m_state = new CactusStatePlantToBattle(this);
+		break;
+	case Cactus::enAnimationState_Damage:
+		m_state = new CactusStateDamage(this);
+		break;
+	case Cactus::enAnimationState_Die:
+		m_state = new CactusStateDie(this);
+		break;
+	case Cactus::enAnimationState_Victory:
+		m_state = new CactusStateVictory(this);
+		break;
+	default:
+		//強制的にクラッシュさせる
+		std::abort();
+		break;
+	}
+}
+
+
+void Cactus::ProcessCommonStateTransition()
+{
+	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+	{
+		SetNextAnimationState(enAninationState_Run);
+	}
+	else
+	{
+		SetNextAnimationState(enAninationState_Idle);
+	}
+}
+
+void Cactus::OnProcessAttack_1StateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
+
+void Cactus::OnProcessAttack_2StateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
+
+void Cactus::OnProcessPlantStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
+
+void Cactus::OnProcessPlantToBattleStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
+
+void Cactus::OnProcessDamageStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
+
+
+void Cactus::OnProcessDieStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//リストから自身を消す
+		m_lich->RemoveAIActorFromList(this);
+		DeleteGO(this);
+	}
+}
+
+void Cactus::OnProcessVictoryStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
 }
 
 void Cactus::Render(RenderContext& rc)

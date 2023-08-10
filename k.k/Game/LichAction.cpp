@@ -6,10 +6,10 @@
 int LichAction::NextAction()
 {
 	//評価値初期化
-	/*for (int i=0;i< m_actionAmount;i++)
+	for (int i=0;i< m_actionAmount;i++)
 	{
 		m_action[i].m_eval = 0;
-	}*/
+	}
 
 	//m_eval[m_actionAmount];
 
@@ -95,11 +95,17 @@ int LichAction::CalcMaxEvalNumber()
 	//一番高い評価値を探す
 	for (int i = 0; i < m_actionAmount; i++)
 	{
-		if (MaxEval < m_eval[i])
+		if (MaxEval < m_action[i].m_eval)
+		{
+			MaxEval = m_action[i].m_eval;
+			NextActionNomber = i;
+		}
+
+		/*if (MaxEval < m_eval[i])
 		{
 			MaxEval = m_eval[i];
 			NextActionNomber = i;
-		}
+		}*/
 	}
 	return NextActionNomber;
 }
@@ -109,7 +115,7 @@ void LichAction::CalcEvalAttack1(EnActionNumber m_enActionNumber/*Action& action
 	//攻撃範囲内にプレイヤーがいたら
 	if(m_lich->IsFindPlayer(m_lich->GetInfoAboutAttack().m_Attack_1Distance)==true)
 	{
-		//action.m_eval += 100;
+		m_action[m_enActionNumber].m_eval += 100;
 		m_eval[m_enActionNumber] += 100;
 	}
 	else
@@ -124,12 +130,12 @@ void LichAction::CalcEvalAttack2(EnActionNumber m_enActionNumber/*Action& action
 	//攻撃範囲内にプレイヤーがいたら
 	if (m_lich->IsFindPlayer(m_lich->GetInfoAboutAttack().m_Attack_2Distance) == true)
 	{
-		//action.m_eval += 120;
+		m_action[m_enActionNumber].m_eval += 120;
 		m_eval[m_enActionNumber] += 120;
 	}
 	else
 	{
-		//action.m_eval = INT_MIN;
+		m_action[m_enActionNumber].m_eval = INT_MIN;
 		m_eval[m_enActionNumber] += INT_MIN;
 	}
 }
@@ -143,13 +149,15 @@ void LichAction::CalcEvalSummon(EnActionNumber m_enActionNumber/*Action& action*
 	//被ダメージした回数評価値をたす
 	for (int i = 0; i < m_lich->GetHitCount(); i++)
 	{
+		m_action[m_enActionNumber].m_eval += 10;
 		m_eval[m_enActionNumber] += 10;
 	}
 
 	//最大HPの1/5のダメージが蓄積したら評価値を増やす
 	if (m_lich->GetAccumulationDamage()>m_lich->GetStatus().maxHp/5)
 	{
-		m_eval[m_enActionNumber] += 50;
+		m_action[m_enActionNumber].m_eval += 40;
+		m_eval[m_enActionNumber] += 40;
 	}
 	//他の条件
 
@@ -160,12 +168,12 @@ void LichAction::CalcEvalDarkMeteorite(EnActionNumber m_enActionNumber/*Action& 
 	//ワープしたなら
 	if (m_lich->GetSpecialActionState() == Lich::enSpecialActionState_Warp)
 	{
-		//action.m_eval = INT_MAX;
+		m_action[m_enActionNumber].m_eval = INT_MAX;
 		m_eval[m_enActionNumber] += INT_MAX;
 	}
 	else
 	{
-		//action.m_eval = INT_MIN;
+		m_action[m_enActionNumber].m_eval = INT_MIN;
 		m_eval[m_enActionNumber] += INT_MIN;
 	}
 }
