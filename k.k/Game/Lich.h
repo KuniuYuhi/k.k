@@ -161,6 +161,7 @@ public:
 		enAnimClip_Summon,
 		enAnimClip_Damage,
 		enAnimClip_Die,
+		enAnimClip_Victory,
 		enAnimClip_Num,				// 7 :アニメーションクリップの数
 	};
 
@@ -200,6 +201,10 @@ public:
 	/// 
 	/// </summary>
 	void OnProcessSummonStateTransition();
+	/// <summary>
+	/// 勝利遷移処理を実行
+	/// </summary>
+	void OnProcessVictoryStateTransition();
 
 	//アニメーションステート
 	enum EnAnimationState {
@@ -216,7 +221,8 @@ public:
 		enAnimationState_Attack_DarkMeteorite_end,
 		enAninationState_Summon,
 		enAnimationState_Damage,
-		enAnimationState_Die
+		enAnimationState_Die,
+		enAnimationState_Victory
 	};
 
 	/// <summary>
@@ -224,8 +230,6 @@ public:
 	/// </summary>
 	/// <param name="nextState"></param>
 	void SetNextAnimationState(EnAnimationState nextState);
-
-	
 
 	//
 	enum EnSpecialActionState
@@ -251,11 +255,19 @@ public:
 	/// </summary>
 	void Warp(EnSpecialActionState SpecialActionState);
 
+
+	/// <summary>
+	/// 無敵状態フラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
 	void SetInvincibleFlag(bool flag)
 	{
 		m_invincibleFlag = flag;
 	}
-
+	/// <summary>
+	/// 無敵状態フラグを取得
+	/// </summary>
+	/// <returns></returns>
 	bool GetInvincibleFlag()
 	{
 		return m_invincibleFlag;
@@ -309,6 +321,31 @@ public:
 	}
 
 
+	/// <summary>
+	/// AIActor(モンスター)の情報をリストに追加
+	/// </summary>
+	/// <param name="monster"></param>
+	void AddAIActorFromList(AIActor* monster)
+	{
+		m_monsters.emplace_back(monster);
+	}
+	/// <summary>
+	/// AIActor(モンスター)の情報をリストから削除する
+	/// </summary>
+	/// <param name="monster"></param>
+	void RemoveAIActorFromList(AIActor* monster)
+	{
+		std::vector<AIActor*>::iterator it = std::find(
+			m_monsters.begin(), // アクターのリストの最初
+			m_monsters.end(),   // アクターのリストの最後
+			monster                     // 消したいアクター
+		);
+		if (it != m_monsters.end()) {
+			m_monsters.erase(it);
+		}
+	}
+
+
 private:
 
 	bool RotationOnly();
@@ -321,7 +358,7 @@ private:
 	ILichState* m_state = nullptr;
 	DarkMeteorite* m_darkMeteorite = nullptr;
 
-
+	std::vector<AIActor*> m_monsters;
 
 	Animation m_animation;	// アニメーション
 	AnimationClip m_animationClip[enAnimClip_Num];	// アニメーションクリップ 
@@ -354,9 +391,11 @@ private:
 	
 	InfoAboutAttack m_InfoAboutAttack;
 
+
 	bool m_halfHpFlag = false;
 
 	bool m_dieFlag = false;
+	bool m_winFlag = false;
 
 	bool m_invincibleFlag = false;
 
