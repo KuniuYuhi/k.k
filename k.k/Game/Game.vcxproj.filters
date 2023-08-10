@@ -242,6 +242,33 @@
     <ClCompile Include="MushroomStateWalk.cpp">
       <Filter>Mushroom</Filter>
     </ClCompile>
+    <ClCompile Include="CactusStateAttack_1.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateAttack_2.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateDamage.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateDie.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateIdle.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStatePlant.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStatePlantToBattle.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateRun.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateVictory.cpp">
+      <Filter>Cactus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -475,6 +502,36 @@
     </ClInclude>
     <ClInclude Include="IMushroomState.h">
       <Filter>Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateAttack_1.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateAttack_2.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateDamage.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateDie.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateIdle.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStatePlant.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStatePlantToBattle.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateRun.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateVictory.h">
+      <Filter>Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="ICactusState.h">
+      <Filter>Cactus</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
