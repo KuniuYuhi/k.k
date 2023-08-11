@@ -16,7 +16,7 @@ ResultSeen::~ResultSeen()
 
 bool ResultSeen::Start()
 {
-	m_resultSprite.Init("Assets/sprite/titleBack.DDS", 1920, 1080);
+	m_resultSprite.Init("Assets/sprite/result.DDS", 1920, 1080);
 	m_resultSprite.SetRoundWipe(true);
 	m_resultSprite.SetRoundWipeStartPosition(1920.0f / 2, 1080.0f / 2);
 	m_resultSprite.SetWipeSize(m_wipeSize);
@@ -30,7 +30,7 @@ void ResultSeen::Update()
 	if (m_roundWipeEndFlag != true)
 	{
 		m_resultSprite.SetWipeSize(m_wipeSize);
-		m_wipeSize -= 7.0f;
+		m_wipeSize -= 6.0f;
 
 		if (m_wipeSize < 0.0)
 		{
@@ -55,5 +55,5 @@ void ResultSeen::Update()
 
 void ResultSeen::Render(RenderContext& rc)
 {
-	//m_resultSprite.Draw(rc);
+	m_resultSprite.Draw(rc);
 }
