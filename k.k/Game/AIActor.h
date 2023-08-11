@@ -200,7 +200,7 @@ protected:
 	Vector3 m_scale = Vector3::One;
 
 	bool m_dashFlag = false;		//ダッシュするかのフラグ
-	bool m_attackFlag = false;		//攻撃していいかのフラグ。falseで攻撃可能
+	bool m_attackFlag = true;		//攻撃していいかのフラグ。falseで攻撃可能
 	bool m_damageFlag = false;		//ダメージを受けられるかのフラグ。falseで被ダメージ可能
 
 	float m_attackIntervalTimer = 0.0f;		//アタックのインターバルタイマー
