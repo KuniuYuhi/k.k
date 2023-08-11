@@ -70,7 +70,8 @@ int LichAction::NextAction()
 		m_lich->Warp(Lich::enSpecialActionState_CenterWarp);
 		//ステートセット
 		m_lich->SetNextAnimationState(Lich::enAninationState_Summon);
-		
+		//蓄積した値を0にする
+		m_lich->SetHitCountAndDamage(0, 0);
 		
 		//どんな行動をしたか保存する
 		m_oldActionNumber = enAttack_Summon;
@@ -142,6 +143,13 @@ void LichAction::CalcEvalAttack2(EnActionNumber m_enActionNumber/*Action& action
 
 void LichAction::CalcEvalSummon(EnActionNumber m_enActionNumber/*Action& action*/)
 {
+	//既に6体以上モンスターがいたらこの行動をさせない
+	if (m_lich->GetAIActors() >= 6)
+	{
+		m_action[m_enActionNumber].m_eval = INT_MIN;
+		return;
+	}
+
 	//自身の状況がよくないときに召喚
 	//座標
 	//5回攻撃されたら
@@ -156,7 +164,7 @@ void LichAction::CalcEvalSummon(EnActionNumber m_enActionNumber/*Action& action*
 	//最大HPの1/5のダメージが蓄積したら評価値を増やす
 	if (m_lich->GetAccumulationDamage()>m_lich->GetStatus().maxHp/5)
 	{
-		m_action[m_enActionNumber].m_eval += 40;
+		m_action[m_enActionNumber].m_eval += 50;
 		m_eval[m_enActionNumber] += 40;
 	}
 	//他の条件
