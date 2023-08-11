@@ -19,7 +19,7 @@ bool Player::Start()
 {
 	m_mpFont.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
 	m_mpFont.SetPosition(-800.0f, -300.0f);
-	m_mpFont.SetScale(2.0f);
+	m_mpFont.SetScale(1.5f);
 
 	m_hpFont.SetColor(0.0f, 1.0f, 0.0f, 1.0f);
 	m_hpFont.SetPosition(-800.0f, -200.0f);

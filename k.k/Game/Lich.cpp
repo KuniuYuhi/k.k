@@ -133,7 +133,7 @@ void Lich::InitModel()
 	);
 
 	m_hpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_hpFont.SetScale(2.0f);
+	m_hpFont.SetScale(1.5f);
 	m_hpFont.SetPosition(-800.0f, 500.0f);
 
 	//アニメーションイベント用の関数を設定する。
@@ -152,7 +152,7 @@ void Lich::Update()
 	int NowActorMP = m_status.hp;
 	int NowActorMaxMP = m_status.maxHp;
 	wchar_t MP[255];
-	swprintf_s(MP, 255, L"HP %3d/%d", NowActorMP, NowActorMaxMP);
+	swprintf_s(MP, 255, L"ボス HP %3d/%d", NowActorMP, NowActorMaxMP);
 	m_hpFont.SetText(MP);
 
 	//被ダメージの当たり判定
@@ -739,7 +739,7 @@ void Lich::CreateDarkMeteorite()
 	//玉を生成
 	m_darkMeteorite = NewGO<DarkMeteorite>(0, "darkmeteorite");
 	Vector3 pos = m_position;
-	pos.y += 400.0f;
+	pos.y += 370.0f;
 	m_darkMeteorite->SetPosition(pos);
 	m_darkMeteorite->SetRotation(m_rotation);
 }
