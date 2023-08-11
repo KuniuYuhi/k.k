@@ -16,7 +16,7 @@ namespace {
 	const float ANGLE = 140.0f;				//視野角
 
 	//ステータス
-	int MAXHP = 170;
+	int MAXHP = 120;
 	int MAXMP = 500;
 	int ATK = 10;
 	float SPEED = 100.0f;
@@ -145,6 +145,8 @@ void Cactus::Update()
 		m_modelRender.Update();
 		return;
 	}
+
+	DamageCollision(m_charaCon);
 
 	AngleChangeTimeIntarval(m_angleChangeTime);
 

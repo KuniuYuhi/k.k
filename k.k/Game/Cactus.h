@@ -40,7 +40,8 @@ public:
 	/// <returns></returns>
 	bool isAnimationEntable() const
 	{
-		return true;
+		return m_enAnimationState != enAnimationState_Damage &&
+			m_enAnimationState != enAnimationState_Die;
 	}
 
 	/// <summary>
@@ -169,7 +170,7 @@ private:
 
 	Vector3 m_direction = Vector3::Zero;
 
-	const float m_distanceToPlayer = 65.0f;
+	const float m_distanceToPlayer = 300.0f;
 
 };
 
