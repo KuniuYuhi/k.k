@@ -14,7 +14,7 @@ Meteo::~Meteo()
 
 bool Meteo::Start()
 {
-	m_model.Init("Assets/modelData/character/Lich/Effect/DarkBall.tkm");
+	m_model.Init("Assets/modelData/character/Lich/Effect/Meteo.tkm");
 
 	m_movePos = m_position;
 	//Žn“_‚ðŒˆ‚ß‚é
@@ -73,7 +73,7 @@ void Meteo::Update()
 		m_explosionCollision->SetPosition(m_movePos);
 		m_explosionCollision->Update();
 
-		m_scale *= 10.0f;
+		m_scale *= 12.0f;
 
 		SetExplosionFlag(true);
 	}
