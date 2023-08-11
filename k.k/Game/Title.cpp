@@ -12,7 +12,7 @@ Title::~Title()
 
 bool Title::Start()
 {
-    m_titleSprite.Init("Assets/sprite/titleBack.DDS", 1920, 1080);
+    m_titleSprite.Init("Assets/sprite/title.DDS", 1920, 1080);
    /* m_titleSprite.SetRoundWipe(true);
     m_titleSprite.SetRoundWipeStartPosition(1920.0f / 2, 1080.0f / 2);
     m_titleSprite.SetWipeSize(m_wipeSize);
