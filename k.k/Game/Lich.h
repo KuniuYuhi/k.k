@@ -345,6 +345,14 @@ public:
 		}
 	}
 
+	/// <summary>
+	/// ¢Š«‚³‚ê‚Ä‚¢‚éƒ‚ƒ“ƒXƒ^[‚Ì”‚ğæ“¾
+	/// </summary>
+	/// <returns></returns>
+	const int& GetAIActors() const
+	{
+		return m_monsters.size();
+	}
 
 private:
 
