@@ -25,6 +25,8 @@ public:
 private:
 	Lich* m_lich = nullptr;
 
+	ModelRender m_model;
+
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
 	Quaternion m_rotation = Quaternion::Identity;

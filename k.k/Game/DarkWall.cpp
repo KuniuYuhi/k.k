@@ -13,6 +13,8 @@ DarkWall::~DarkWall()
 
 bool DarkWall::Start()
 {
+    m_model.Init("Assets/modelData/character/Lich/Effect/Meteo.tkm");
+
     //m_position.y -= 50.0f;
 
     //ƒ{[ƒ“‚ÌÀ•W‚ÌŽæ“¾
@@ -45,7 +47,8 @@ bool DarkWall::Start()
     m_collision->SetPosition(m_position);
     m_collision->Update();
     
-
+    m_model.SetTransform(m_position, m_rotation, g_vec3One);
+    m_model.Update();
 
     return true;
 }
@@ -65,8 +68,11 @@ void DarkWall::Update()
 
     m_collision->SetPosition(m_position);
     m_collision->Update();
+    m_model.SetPosition(m_position);
+    m_model.Update();
 }
 
 void DarkWall::Render(RenderContext& rc)
 {
+    m_model.Draw(rc);
 }
