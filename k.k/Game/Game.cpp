@@ -106,8 +106,8 @@ bool Game::Start()
 	m_player = NewGO<Player>(0, "player");
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
-	m_lich = NewGO<Lich>(0, "lich");
-
+	/*m_lich = NewGO<Lich>(0, "lich");
+	m_lich->SetPosition({ 0.0f, 0.0f, -500.0f });*/
 	/*Slime* slime = NewGO<Slime>(0, "slime");
 	slime->SetPosition({ 0.0f, 0.0f, -500.0f });*/
 	/*TurtleShell* turtleshell = NewGO<TurtleShell>(0, "turtleshell");
