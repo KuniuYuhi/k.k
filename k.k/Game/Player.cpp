@@ -17,13 +17,13 @@ Player::~Player()
 
 bool Player::Start()
 {
-	m_mpFont.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+	/*m_mpFont.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
 	m_mpFont.SetPosition(-800.0f, -300.0f);
 	m_mpFont.SetScale(1.5f);
 
 	m_hpFont.SetColor(0.0f, 1.0f, 0.0f, 1.0f);
 	m_hpFont.SetPosition(-800.0f, -200.0f);
-	m_hpFont.SetScale(1.5f);
+	m_hpFont.SetScale(1.5f);*/
 
 
 	m_hero = NewGO<Hero>(0, "hero");
@@ -66,18 +66,18 @@ bool Player::Start()
 
 void Player::Update()
 {
-	//MPの表示
-	int NowActorMP = m_nowActor->GetStatus().mp;
-	int NowActorMaxMP = m_nowActor->GetStatus().maxMp;
-	wchar_t MP[255];
-	swprintf_s(MP, 255, L"MP %3d/%d", NowActorMP, NowActorMaxMP);
-	m_mpFont.SetText(MP);
+	////MPの表示
+	//int NowActorMP = m_nowActor->GetStatus().mp;
+	//int NowActorMaxMP = m_nowActor->GetStatus().maxMp;
+	//wchar_t MP[255];
+	//swprintf_s(MP, 255, L"MP %3d/%d", NowActorMP, NowActorMaxMP);
+	//m_mpFont.SetText(MP);
 
-	int NowActorHP = m_nowActor->GetStatus().hp;
-	int NowActorMaxHP = m_nowActor->GetStatus().maxHp;
-	wchar_t HP[255];
-	swprintf_s(HP, 255, L"HP %3d/%d", NowActorHP, NowActorMaxHP);
-	m_hpFont.SetText(HP);
+	//int NowActorHP = m_nowActor->GetStatus().hp;
+	//int NowActorMaxHP = m_nowActor->GetStatus().maxHp;
+	//wchar_t HP[255];
+	//swprintf_s(HP, 255, L"HP %3d/%d", NowActorHP, NowActorMaxHP);
+	//m_hpFont.SetText(HP);
 
 	//キャラクターが全滅していたら処理しない
 	if (IsAnnihilation() == true)

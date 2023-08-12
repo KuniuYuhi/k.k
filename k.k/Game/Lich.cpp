@@ -132,9 +132,9 @@ void Lich::InitModel()
 		m_position
 	);
 
-	m_hpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+	/*m_hpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_hpFont.SetScale(1.5f);
-	m_hpFont.SetPosition(-800.0f, 500.0f);
+	m_hpFont.SetPosition(-800.0f, 500.0f);*/
 
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
@@ -149,11 +149,11 @@ void Lich::InitModel()
 void Lich::Update()
 {
 	//MPの表示
-	int NowActorMP = m_status.hp;
+	/*int NowActorMP = m_status.hp;
 	int NowActorMaxMP = m_status.maxHp;
 	wchar_t MP[255];
 	swprintf_s(MP, 255, L"ボス HP %3d/%d", NowActorMP, NowActorMaxMP);
-	m_hpFont.SetText(MP);
+	m_hpFont.SetText(MP);*/
 
 	//被ダメージの当たり判定
 	DamageCollision(m_charaCon);
@@ -904,7 +904,7 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 void Lich::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
-	m_hpFont.Draw(rc);
+	//m_hpFont.Draw(rc);
 }
 
 
