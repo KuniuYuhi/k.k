@@ -5,7 +5,7 @@
 #include "BossStage1.h"
 #include "Lich.h"
 #include "Result.h"
-
+#include "GameUI.h"
 #include "Slime.h"
 #include "TurtleShell.h"
 #include "Cactus.h"
@@ -32,6 +32,8 @@ Game::~Game()
 	DeleteGO(m_lich);
 
 	DeleteGO(m_gameCamera);
+
+	DeleteGO(m_gameUI);
 }
 
 bool Game::Start()
@@ -117,6 +119,12 @@ bool Game::Start()
 	turtleshell->SetPosition({ 0.0f, 0.0f, -500.0f });*/
 	//Cactus* cactus = NewGO<Cactus>(0, "cactus");
 	//Mushroom* mushroom = NewGO<Mushroom>(0, "mushroom");
+
+
+	m_gameUI = NewGO<GameUI>(0, "gameUI");
+	m_gameUI->GetGame(this);
+	m_gameUI->GetPlayer(m_player);
+	m_gameUI->GetLich(m_lich);
 
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
