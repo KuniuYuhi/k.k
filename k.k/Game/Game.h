@@ -61,6 +61,8 @@ private:
 	SkyCube* m_skyCube = nullptr;
 	const Vector3 m_skyPos = { 0.0f,-700.0f,0.0f };
 
+	ModelRender model;
+
 	FontRender fontTest;
 	float m_fontScale = 1.0f;
 
