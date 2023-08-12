@@ -264,8 +264,8 @@ Actor::EnComboState Player::GetNowComboState() const
 
 void Player::Render(RenderContext& rc)
 {
-	m_mpFont.Draw(rc);
-	m_hpFont.Draw(rc);
+	//m_mpFont.Draw(rc);
+	//m_hpFont.Draw(rc);
 }
 
 

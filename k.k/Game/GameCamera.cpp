@@ -23,7 +23,7 @@ bool GameCamera::Start()
 
 
 	//注視点から視点までのベクトルを設定。300,400
-	m_toCameraPos.Set(0.0f, 300.0f, 100.0f);
+	m_toCameraPos.Set(0.0f, 300.0f, 400.0f);
 	//カメラをプレイヤーの後ろにするときに使う
 	m_position = m_toCameraPos;
 
@@ -54,6 +54,7 @@ void GameCamera::ChaseCamera()
 	m_target = m_player->GetPosition();
 
 	m_target.y += TARGETPOS_YUP;
+	//m_target.x -= 35.0f;
 
 	Vector3 toCameraPosOld = m_toCameraPos;
 
