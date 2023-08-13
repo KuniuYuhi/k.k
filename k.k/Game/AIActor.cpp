@@ -60,6 +60,16 @@ void AIActor::SetTargetPosition()
 	m_targetPosition = m_player->GetPosition();
 }
 
+void AIActor::CreateDamageFont(int damage)
+{
+	DamageFont* damagefont = NewGO<DamageFont>(0, "damagefont");
+	damagefont->Setting(
+		DamageFont::enDamageActor_Monster, 
+		damage,
+		m_position
+	);
+}
+
 void AIActor::DamageCollision(CharacterController& characon)
 {
 	//抜け出す処理
@@ -125,12 +135,14 @@ void AIActor::HitNormalAttack()
 {
 	//ダメージを受ける
 	Damage(m_player->GetAtk());
+	CreateDamageFont(m_player->GetAtk());
 }
 
 void AIActor::HitHeroSkillAttack()
 {
 	//ダメージを受ける
 	Damage(m_player->GetSkillAtk());
+	CreateDamageFont(m_player->GetSkillAtk());
 }
 
 void AIActor::HitFireBall()

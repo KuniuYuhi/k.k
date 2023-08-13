@@ -236,6 +236,7 @@
     <ClCompile Include="CactusStatePlantToBattle.cpp" />
     <ClCompile Include="CactusStateRun.cpp" />
     <ClCompile Include="CactusStateVictory.cpp" />
+    <ClCompile Include="DamageFont.cpp" />
     <ClCompile Include="DarkMeteorite.cpp" />
     <ClCompile Include="DarkWall.cpp" />
     <ClCompile Include="FireBall.cpp" />
@@ -243,6 +244,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GameUI.cpp" />
     <ClCompile Include="Hero.cpp" />
     <ClCompile Include="HeroStateAttack_1.cpp" />
     <ClCompile Include="HeroStateAttack_2.cpp" />
@@ -332,6 +334,7 @@
     <ClInclude Include="CactusStatePlantToBattle.h" />
     <ClInclude Include="CactusStateRun.h" />
     <ClInclude Include="CactusStateVictory.h" />
+    <ClInclude Include="DamageFont.h" />
     <ClInclude Include="DarkMeteorite.h" />
     <ClInclude Include="DarkWall.h" />
     <ClInclude Include="FireBall.h" />
@@ -339,6 +342,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameUI.h" />
     <ClInclude Include="Hero.h" />
     <ClInclude Include="HeroStateAttack_1.h" />
     <ClInclude Include="HeroStateAttack_2.h" />

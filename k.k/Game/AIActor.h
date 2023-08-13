@@ -1,6 +1,7 @@
 #pragma once
 #include "Status.h"
 #include "Player.h"
+#include "DamageFont.h"
 
 class AIActor:public IGameObject
 {
@@ -76,6 +77,11 @@ public:
 	/// 被ダメージ時処理
 	/// </summary>
 	virtual void Damage(int attack) = 0;
+
+	/// <summary>
+	/// ダメージフォント生成
+	/// </summary>
+	virtual void CreateDamageFont(int damage);
 
 	/// <summary>
 	/// 被ダメージ用当たり判定

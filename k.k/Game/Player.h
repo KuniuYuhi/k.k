@@ -63,6 +63,15 @@ public:
 	}
 
 	/// <summary>
+	/// 現在のアクターのステータスを返す
+	/// </summary>
+	/// <returns></returns>
+	Status GetNowActorStatus()
+	{
+		return m_nowActor->GetStatus();
+	}
+
+	/// <summary>
 	/// 現在のキャラクターの攻撃力を返す
 	/// </summary>
 	/// <returns></returns>

@@ -21,6 +21,8 @@
 #include "LichAction.h"
 #include "Summon.h"
 
+//#include "DamageFont.h"
+
 //todo ターゲットがしばらく近くにいたら逃げる
 
 namespace {
@@ -132,9 +134,9 @@ void Lich::InitModel()
 		m_position
 	);
 
-	m_hpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+	/*m_hpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_hpFont.SetScale(1.5f);
-	m_hpFont.SetPosition(-800.0f, 500.0f);
+	m_hpFont.SetPosition(-800.0f, 500.0f);*/
 
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
@@ -149,11 +151,11 @@ void Lich::InitModel()
 void Lich::Update()
 {
 	//MPの表示
-	int NowActorMP = m_status.hp;
+	/*int NowActorMP = m_status.hp;
 	int NowActorMaxMP = m_status.maxHp;
 	wchar_t MP[255];
 	swprintf_s(MP, 255, L"ボス HP %3d/%d", NowActorMP, NowActorMaxMP);
-	m_hpFont.SetText(MP);
+	m_hpFont.SetText(MP);*/
 
 	//被ダメージの当たり判定
 	DamageCollision(m_charaCon);
@@ -285,7 +287,16 @@ void Lich::Damage(int attack)
 		m_CreateDarkWallFlag = false;
 		SetNextAnimationState(enAnimationState_Die);
 	}
+}
 
+void Lich::CreateDamageFont(int damage)
+{
+	DamageFont* damagefont = NewGO<DamageFont>(0, "damagefont");
+	damagefont->Setting(
+		DamageFont::enDamageActor_Boss,
+		damage,
+		m_position
+	);
 }
 
 bool Lich::Isflinch()
@@ -797,7 +808,7 @@ void Lich::DamageCollision(CharacterController& characon)
 			if (m_player->IsComboStateSame()==true)
 			{
 				Damage(m_player->GetAtk());
-
+				CreateDamageFont(m_player->GetAtk());
 				//ダメージを受けた時のコンボステートに現在のコンボステートを代入する
 				m_player->SetDamagedComboState(m_player->GetNowComboState());
 			}
@@ -817,6 +828,7 @@ void Lich::DamageCollision(CharacterController& characon)
 			{
 				m_damageFlag = true;
 				Damage(m_player->GetSkillAtk());
+				CreateDamageFont(m_player->GetSkillAtk());
 			}
 		}
 	}
@@ -831,6 +843,7 @@ void Lich::DamageCollision(CharacterController& characon)
 		{
 			auto fireball = FindGO<FireBall>(collision->GetName());
 			Damage(fireball->GetAtk());
+			CreateDamageFont(fireball->GetAtk());
 			//ぶつかったのでファイヤーボールを消すフラグを立てる
 			fireball->SetHitEnemeyFlag(true);
 		}
@@ -851,6 +864,7 @@ void Lich::DamageCollision(CharacterController& characon)
 
 				m_damageFlag = true;
 				Damage(flamepillar->GetAtk());
+				CreateDamageFont(flamepillar->GetAtk());
 			}
 		}
 	}
@@ -904,7 +918,7 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 void Lich::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
-	m_hpFont.Draw(rc);
+	//m_hpFont.Draw(rc);
 }
 
 

@@ -7,7 +7,7 @@ class Lich;
 class BossStage1;
 class GameCamera;
 class ResultSeen;
-
+class GameUI;
 
 class Game:public IGameObject
 {
@@ -60,6 +60,9 @@ private:
 	ResultSeen* m_result = nullptr;
 	SkyCube* m_skyCube = nullptr;
 	const Vector3 m_skyPos = { 0.0f,-700.0f,0.0f };
+
+	GameUI* m_gameUI = nullptr;
+
 
 	ModelRender model;
 
