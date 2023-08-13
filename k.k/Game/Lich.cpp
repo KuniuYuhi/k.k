@@ -21,6 +21,8 @@
 #include "LichAction.h"
 #include "Summon.h"
 
+//#include "DamageFont.h"
+
 //todo ターゲットがしばらく近くにいたら逃げる
 
 namespace {
@@ -285,7 +287,16 @@ void Lich::Damage(int attack)
 		m_CreateDarkWallFlag = false;
 		SetNextAnimationState(enAnimationState_Die);
 	}
+}
 
+void Lich::CreateDamageFont(int damage)
+{
+	DamageFont* damagefont = NewGO<DamageFont>(0, "damagefont");
+	damagefont->Setting(
+		DamageFont::enDamageActor_Boss,
+		damage,
+		m_position
+	);
 }
 
 bool Lich::Isflinch()
@@ -797,7 +808,7 @@ void Lich::DamageCollision(CharacterController& characon)
 			if (m_player->IsComboStateSame()==true)
 			{
 				Damage(m_player->GetAtk());
-
+				CreateDamageFont(m_player->GetAtk());
 				//ダメージを受けた時のコンボステートに現在のコンボステートを代入する
 				m_player->SetDamagedComboState(m_player->GetNowComboState());
 			}
@@ -817,6 +828,7 @@ void Lich::DamageCollision(CharacterController& characon)
 			{
 				m_damageFlag = true;
 				Damage(m_player->GetSkillAtk());
+				CreateDamageFont(m_player->GetSkillAtk());
 			}
 		}
 	}
@@ -831,6 +843,7 @@ void Lich::DamageCollision(CharacterController& characon)
 		{
 			auto fireball = FindGO<FireBall>(collision->GetName());
 			Damage(fireball->GetAtk());
+			CreateDamageFont(fireball->GetAtk());
 			//ぶつかったのでファイヤーボールを消すフラグを立てる
 			fireball->SetHitEnemeyFlag(true);
 		}
@@ -851,6 +864,7 @@ void Lich::DamageCollision(CharacterController& characon)
 
 				m_damageFlag = true;
 				Damage(flamepillar->GetAtk());
+				CreateDamageFont(flamepillar->GetAtk());
 			}
 		}
 	}

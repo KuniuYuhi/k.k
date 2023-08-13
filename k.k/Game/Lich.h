@@ -85,6 +85,8 @@ public:
 
 	bool IsDistanceToPlayer();
 
+	void CreateDamageFont(int damage);
+
 	/// <summary>
 	/// 特定のアニメーションが再生中か
 	/// </summary>
