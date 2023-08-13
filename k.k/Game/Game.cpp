@@ -113,8 +113,8 @@ bool Game::Start()
 
 	/*m_lich = NewGO<Lich>(0, "lich");
 	m_lich->SetPosition({ 0.0f, 0.0f, -500.0f });*/
-	Slime* slime = NewGO<Slime>(0, "slime");
-	slime->SetPosition({ 0.0f, 0.0f, -500.0f });
+	/*Slime* slime = NewGO<Slime>(0, "slime");
+	slime->SetPosition({ 0.0f, 0.0f, -300.0f });*/
 	/*TurtleShell* turtleshell = NewGO<TurtleShell>(0, "turtleshell");
 	turtleshell->SetPosition({ 0.0f, 0.0f, -500.0f });*/
 	//Cactus* cactus = NewGO<Cactus>(0, "cactus");
