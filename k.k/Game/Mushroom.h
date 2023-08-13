@@ -54,6 +54,15 @@ public:
 	}
 
 	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	bool IsAttackEntable() const
+	{
+		return true;
+	}
+
+	/// <summary>
 	/// ”íƒ_ƒ[ƒWˆ—
 	/// </summary>
 	void Damage(int attack);
