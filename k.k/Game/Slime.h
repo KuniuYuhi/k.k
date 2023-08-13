@@ -26,7 +26,7 @@ public:
 	/// <summary>
 	/// 当たり判定生成
 	/// </summary>
-	void CreateCollison();
+	void CreateCollision();
 
 	/// <summary>
 	/// モデルレンダーの取得
@@ -176,11 +176,11 @@ private:
 	float m_angleChangeTime = 5.0f;		//ベクトルを計算するタイマー
 
 	const float m_distanceToPlayer = 500.0f;
-	const float m_attackRange = 80.0f;
+	const float m_attackRange = 60.0f;
 
 	float m_ramdomAngle = 0.0f;
 
-
+	const float m_attackIntervalTime = 2.0f;	//攻撃した後のインターバル
 
 };
 

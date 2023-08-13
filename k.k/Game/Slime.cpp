@@ -148,6 +148,7 @@ void Slime::Update()
 		return;
 	}
 
+	AttackInterval(m_attackIntervalTime);
 
 	DamageCollision(m_charaCon);
 
@@ -164,7 +165,7 @@ void Slime::Update()
 
 	if (m_createAttackCollisionFlag == true)
 	{
-		CreateCollison();
+		CreateCollision();
 	}
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
@@ -174,6 +175,11 @@ void Slime::Update()
 void Slime::Move()
 {
 	if (isAnimationEntable() != true)
+	{
+		return;
+	}
+	//攻撃中は処理しない
+	if (IsAttackEntable() != true)
 	{
 		return;
 	}
@@ -274,6 +280,12 @@ void Slime::Attack()
 		return;
 	}
 
+	//攻撃した後のインターバルなら抜け出す
+	if (m_attackFlag == true)
+	{
+		return;
+	}
+
 	//一定の距離にターゲットがいたら
 	if (IsFindPlayer(m_attackRange) == true)
 	{
@@ -283,6 +295,8 @@ void Slime::Attack()
 		{
 			//攻撃
 			SetNextAnimationState(enAnimationState_Attack_1);
+			//攻撃したのでフラグをtrueにしてインターバルに入る
+			m_attackFlag = true;
 		}
 	}
 
@@ -340,9 +354,9 @@ bool Slime::IsBumpedForest()
 	}
 }
 
-void Slime::CreateCollison()
+void Slime::CreateCollision()
 {
-	auto HeadCollision = NewGO<CollisionObject>(0, "monsterAttack");
+	auto HeadCollision = NewGO<CollisionObject>(0, "monsterattack");
 	HeadCollision->CreateSphere(
 		m_position,
 		m_rotation,
