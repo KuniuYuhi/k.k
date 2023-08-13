@@ -54,6 +54,30 @@ Vector3 AIActor::calcVelocity(Status status,Vector3 targetposition)
 	
 }
 
+bool AIActor::IsInFieldOfView(Vector3 toPlayerDir, Vector3 forward, float angle)
+{
+	//ベクトル正規化
+	toPlayerDir.Normalize();
+	//ターゲットに向かうベクトルと前方向の内積を計算する
+	float t = toPlayerDir.Dot(forward);
+	//内積の結果をacos関数に渡して、m_enemyFowradとtoPlayerDirのなす角度を求める。
+	float calcangle = acos(t);
+	//視野角判定
+	if (fabsf(calcangle) < Math::DegToRad(angle))
+	{
+		//範囲内なら
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void AIActor::Attack()
+{
+}
+
 void AIActor::SetTargetPosition()
 {
 	//ターゲット(プレイヤー)の座標を取得

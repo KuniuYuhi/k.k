@@ -31,6 +31,22 @@ public:
 	/// <returns>moveSpeed</returns>
 	Vector3 calcVelocity(Status status,Vector3 targetposition);
 
+	//ターゲットに向かうベクトル
+
+	/// <summary>
+	/// 視野角判定
+	/// </summary>
+	/// <param name="toPlayerDir">自身からターゲットに向かうベクトル</param>
+	/// <param name="forward">前方向</param>
+	/// <param name="angle">視野角</param>
+	/// <returns>視野角の中ならtrue,いなかったらfalse</returns>
+	bool IsInFieldOfView(Vector3 toPlayerDir,Vector3 forward, float angle);
+
+	/// <summary>
+	/// 攻撃処理
+	/// </summary>
+	virtual void Attack();
+
 	/// <summary>
 	/// ターゲットの座標をm_targetPsitionに代入する
 	/// </summary>
@@ -72,6 +88,12 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	virtual bool isRotationEntable() const = 0;
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	virtual bool IsAttackEntable() const = 0;
 
 	/// <summary>
 	/// 被ダメージ時処理
