@@ -13,12 +13,20 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	void Move();
+
+	void Attack();
 
 	Vector3 SetDirection();
 
 	bool IsBumpedForest();
+
+	/// <summary>
+	/// 当たり判定生成
+	/// </summary>
+	void CreateCollison();
 
 	/// <summary>
 	/// モデルレンダーの取得
@@ -52,6 +60,16 @@ public:
 	{
 		return true;
 	}
+
+	/// <summary>
+	/// 攻撃中なら
+	/// </summary>
+	/// <returns></returns>
+	bool IsAttackEntable() const
+	{
+		return m_enAnimationState != enAnimationState_Attack_1;
+	}
+
 
 	/// <summary>
 	/// 被ダメージ時処理
@@ -151,11 +169,18 @@ private:
 
 	Vector3 m_direction= Vector3::Zero;
 
+	int m_attackBoonId = -1;					//攻撃で使うボーンID
+
+	bool m_createAttackCollisionFlag = false;
+
 	float m_angleChangeTime = 5.0f;		//ベクトルを計算するタイマー
 
 	const float m_distanceToPlayer = 500.0f;
+	const float m_attackRange = 80.0f;
 
 	float m_ramdomAngle = 0.0f;
+
+
 
 };
 

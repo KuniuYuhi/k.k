@@ -23,16 +23,11 @@ namespace {
 Slime::Slime()
 {
 	m_angle = ANGLE;
-	
 }
 
 Slime::~Slime()
 {
-	//if (m_lich != nullptr)
-	//{
-	//	//リストから自身を消す
-	//	m_lich->RemoveAIActorFromList(this);
-	//}
+
 }
 
 //衝突したときに呼ばれる関数オブジェクト(壁用)
@@ -120,6 +115,15 @@ void Slime::InitModel()
 	//座標の設定
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
+
+	//アニメーションイベント用の関数を設定する。
+	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+		});
+
+	//攻撃用ボーンの取得
+	m_attackBoonId = m_modelRender.FindBoneID(L"Head");
+
 }
 
 void Slime::Update()
@@ -135,7 +139,7 @@ void Slime::Update()
 		}
 	}
 	
-
+	//勝ったら
 	if (GetWinFlag() == true)
 	{
 		ManageState();
@@ -152,8 +156,16 @@ void Slime::Update()
 	Move();
 	Rotation();
 
+	//攻撃
+	Attack();
+
 	ManageState();
 	PlayAnimation();
+
+	if (m_createAttackCollisionFlag == true)
+	{
+		CreateCollison();
+	}
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
@@ -170,25 +182,16 @@ void Slime::Move()
 	if (IsFindPlayer(m_distanceToPlayer) == true)
 	{
 		Vector3 toPlayerDir = m_toTarget;
-		toPlayerDir.Normalize();
-		Vector3 a = m_position;
-		a.Normalize();
-		//ターゲットに向かうベクトルと前方向の内積を計算する
-		float t = toPlayerDir.Dot(m_forward);
-		//内積の結果をacos関数に渡して、m_enemyFowradとtoPlayerDirのなす角度を求める。
-		float angle = acos(t);
-
-		//視野角判定
-		if (fabsf(angle) < Math::DegToRad(m_angle))
+		//視野角内にターゲットがいたら
+		if (IsInFieldOfView(toPlayerDir,m_forward,m_angle) == true)
 		{
+			toPlayerDir.Normalize();
 			//追いかける
 			m_direction = toPlayerDir;
 			m_moveSpeed = m_direction * m_status.defaultSpeed;
-			//m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 
-			//次の座標が決まったので抜け出す
 		}
-
+		
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	}
 	else
@@ -257,6 +260,35 @@ void Slime::Move()
 
 }
 
+void Slime::Attack()
+{
+	//被ダメージ、デス時は処理しない
+	if (isAnimationEntable() != true)
+	{
+		return;
+	}
+
+	//攻撃中は処理しない
+	if (IsAttackEntable() != true)
+	{
+		return;
+	}
+
+	//一定の距離にターゲットがいたら
+	if (IsFindPlayer(m_attackRange) == true)
+	{
+		Vector3 toPlayerDir = m_toTarget;
+		//視野角内にターゲットがいたら
+		if (IsInFieldOfView(toPlayerDir, m_forward, m_angle) == true)
+		{
+			//攻撃
+			SetNextAnimationState(enAnimationState_Attack_1);
+		}
+	}
+
+
+}
+
 Vector3 Slime::SetDirection()
 {
 	Vector3 randomPos = g_vec3Zero;
@@ -308,8 +340,24 @@ bool Slime::IsBumpedForest()
 	}
 }
 
+void Slime::CreateCollison()
+{
+	auto HeadCollision = NewGO<CollisionObject>(0, "monsterAttack");
+	HeadCollision->CreateSphere(
+		m_position,
+		m_rotation,
+		17.0f
+	);
+	//ワールド座標取得
+	Matrix HeadMatrix = m_modelRender.GetBone(m_attackBoonId)->GetWorldMatrix();
+	HeadCollision->SetWorldMatrix(HeadMatrix);
+}
+
 void Slime::Damage(int attack)
 {
+	//攻撃中かもしれないので当たり判定を生成しないようにする
+	m_createAttackCollisionFlag = false;
+
 	//HPを減らす
 	m_status.hp -= attack;
 
@@ -430,8 +478,11 @@ void Slime::OnProcessDieStateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//リストから自身を消す
-		m_lich->RemoveAIActorFromList(this);
+		if (m_lich != nullptr)
+		{
+			//リストから自身を消す
+			m_lich->RemoveAIActorFromList(this);
+		}
 		//自身を削除する
 		DeleteGO(this);
 	}
@@ -448,7 +499,23 @@ void Slime::OnProcessVictoryStateTransition()
 	}
 }
 
+void Slime::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+	//当たり判定生成タイミング
+	if (wcscmp(eventName, L"Collision_Start") == 0)
+	{
+		m_createAttackCollisionFlag = true;
+	}
+	//当たり判定生成終わり
+	if (wcscmp(eventName, L"Collision_End") == 0)
+	{
+		m_createAttackCollisionFlag = false;
+	}
+}
+
 void Slime::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
 }
+
+
