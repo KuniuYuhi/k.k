@@ -53,7 +53,12 @@ void GameUI::PlayerUIUpdate()
 
 void GameUI::MonsterUIUpdate()
 {
-	//MPの表示
+	if (m_lich == nullptr)
+	{
+		return;
+	}
+
+	//ボスのHPの表示
 	int NowActorMP = m_lich->GetStatus().hp;
 	int NowActorMaxMP = m_lich->GetStatus().maxHp;
 	wchar_t MP[255];
@@ -70,6 +75,11 @@ void GameUI::DrawPlayerUI(RenderContext& rc)
 
 void GameUI::DrawMonsterUI(RenderContext& rc)
 {
+	if (m_lich == nullptr)
+	{
+		return;
+	}
+
 	m_monsterUI.m_hpFont.Draw(rc);
 }
 
