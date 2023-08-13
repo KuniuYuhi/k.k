@@ -139,6 +139,7 @@ void Actor::DamageCollision(CharacterController& characon)
 		{
 			FireBall* fireball = FindGO<FireBall>("darkball");
 			Damage(fireball->GetAtk());
+			CreateDamageFont(fireball->GetAtk());
 			return;
 		}
 	}
@@ -153,6 +154,7 @@ void Actor::DamageCollision(CharacterController& characon)
 		{
 			DarkWall* darkwall = FindGO<DarkWall>("darkwall");
 			Damage(darkwall->GetAtk());
+			CreateDamageFont(darkwall->GetAtk());
 			return;
 		}
 	}
@@ -167,6 +169,7 @@ void Actor::DamageCollision(CharacterController& characon)
 		{
 			Meteo* meteo = FindGO<Meteo>("meteo");
 			Damage(meteo->GetAtk());
+			CreateDamageFont(meteo->GetAtk());
 			return;
 		}
 	}
@@ -180,6 +183,7 @@ void Actor::DamageCollision(CharacterController& characon)
 		{
 			Meteo* meteo = FindGO<Meteo>("meteo");
 			Damage(meteo->GetExplosionAttack());
+			CreateDamageFont(meteo->GetExplosionAttack());
 			return;
 		}
 	}
@@ -235,4 +239,14 @@ bool Actor::CalcInvicibleDash()
 
 	
 	return false;
+}
+
+void Actor::CreateDamageFont(int damage)
+{
+	DamageFont* damagefont = NewGO<DamageFont>(0, "damagefont");
+	damagefont->Setting(
+		DamageFont::enDamageActor_Player,
+		damage,
+		m_position
+	);
 }

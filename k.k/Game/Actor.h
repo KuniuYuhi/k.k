@@ -1,5 +1,6 @@
 #pragma once
 #include "Status.h"
+#include "DamageFont.h"
 
 //class Player;
 
@@ -294,7 +295,11 @@ protected:
 
 	bool CalcInvicibleDash();
 	
-
+	/// <summary>
+	/// ダメージフォント生成
+	/// </summary>
+	/// <param name="damage"></param>
+	void CreateDamageFont(int damage);
 	
 
 protected:
