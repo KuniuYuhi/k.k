@@ -236,6 +236,7 @@
     <ClCompile Include="CactusStatePlantToBattle.cpp" />
     <ClCompile Include="CactusStateRun.cpp" />
     <ClCompile Include="CactusStateVictory.cpp" />
+    <ClCompile Include="DamageFont.cpp" />
     <ClCompile Include="DarkMeteorite.cpp" />
     <ClCompile Include="DarkWall.cpp" />
     <ClCompile Include="FireBall.cpp" />
@@ -333,6 +334,7 @@
     <ClInclude Include="CactusStatePlantToBattle.h" />
     <ClInclude Include="CactusStateRun.h" />
     <ClInclude Include="CactusStateVictory.h" />
+    <ClInclude Include="DamageFont.h" />
     <ClInclude Include="DarkMeteorite.h" />
     <ClInclude Include="DarkWall.h" />
     <ClInclude Include="FireBall.h" />

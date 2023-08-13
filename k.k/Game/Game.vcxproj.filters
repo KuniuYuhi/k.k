@@ -274,6 +274,7 @@
       <Filter>Lich</Filter>
     </ClCompile>
     <ClCompile Include="GameUI.cpp" />
+    <ClCompile Include="DamageFont.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -543,5 +544,6 @@
       <Filter>Lich</Filter>
     </ClInclude>
     <ClInclude Include="GameUI.h" />
+    <ClInclude Include="DamageFont.h" />
   </ItemGroup>
 </Project>
