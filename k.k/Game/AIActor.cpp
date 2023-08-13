@@ -157,16 +157,18 @@ void AIActor::DamageCollision(CharacterController& characon)
 
 void AIActor::HitNormalAttack()
 {
+	m_damage = m_player->GetAtk();
 	//ダメージを受ける
-	Damage(m_player->GetAtk());
-	CreateDamageFont(m_player->GetAtk());
+	Damage(m_damage);
+	CreateDamageFont(m_damage);
 }
 
 void AIActor::HitHeroSkillAttack()
 {
+	m_damage = m_player->GetSkillAtk();
 	//ダメージを受ける
-	Damage(m_player->GetSkillAtk());
-	CreateDamageFont(m_player->GetSkillAtk());
+	Damage(m_damage);
+	CreateDamageFont(m_damage);
 }
 
 void AIActor::HitFireBall()

@@ -227,6 +227,8 @@ protected:
 	Quaternion m_rotation = Quaternion::Identity;
 	Vector3 m_scale = Vector3::One;
 
+	int m_damage = 0;				//受けたダメージを代入する
+
 	bool m_dashFlag = false;		//ダッシュするかのフラグ
 	bool m_attackFlag = true;		//攻撃していいかのフラグ。falseで攻撃可能
 	bool m_damageFlag = false;		//ダメージを受けられるかのフラグ。falseで被ダメージ可能
