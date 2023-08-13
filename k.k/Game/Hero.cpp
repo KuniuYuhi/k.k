@@ -11,7 +11,6 @@
 #include "HeroStateAttack_Skill_Main.h"
 #include "HeroStateDie.h"
 #include "HeroStateDamage.h"
-//ダメージ受けた時チカチカさせる
 
 namespace {
 	int MAXHP = 200;
