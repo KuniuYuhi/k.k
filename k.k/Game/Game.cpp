@@ -111,10 +111,10 @@ bool Game::Start()
 	//model.Init("Assets/modelData/character/Wizard/Effect/FireBall.tkm");
 
 
-	m_lich = NewGO<Lich>(0, "lich");
-	m_lich->SetPosition({ 0.0f, 0.0f, -500.0f });
-	/*Slime* slime = NewGO<Slime>(0, "slime");
-	slime->SetPosition({ 0.0f, 0.0f, -500.0f });*/
+	/*m_lich = NewGO<Lich>(0, "lich");
+	m_lich->SetPosition({ 0.0f, 0.0f, -500.0f });*/
+	Slime* slime = NewGO<Slime>(0, "slime");
+	slime->SetPosition({ 0.0f, 0.0f, -500.0f });
 	/*TurtleShell* turtleshell = NewGO<TurtleShell>(0, "turtleshell");
 	turtleshell->SetPosition({ 0.0f, 0.0f, -500.0f });*/
 	//Cactus* cactus = NewGO<Cactus>(0, "cactus");
@@ -127,7 +127,7 @@ bool Game::Start()
 	m_gameUI->GetLich(m_lich);
 
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 
 	return true;
