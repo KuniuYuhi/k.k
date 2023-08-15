@@ -194,6 +194,12 @@ void TurtleShell::Move()
 	{
 		return;
 	}
+
+	if (m_enAnimationState==enAnimationState_Difence)
+	{
+		return;
+	}
+
 	//éãäEÇ…É^Å[ÉQÉbÉgÇå©Ç¬ÇØÇΩÇÁ
 	if (IsFindPlayer(m_distanceToPlayer) == true)
 	{
@@ -289,7 +295,7 @@ void TurtleShell::DecideNextAction()
 				}
 			}
 			//ñhå‰ÇµÇƒÇ¢Ç»Ç¢Ç»ÇÁ
-			if (m_difenceFlag == false)
+			if (m_defenceState != enDefenceState_Defence)
 			{
 				if (m_attackFlag == false)
 				{
@@ -462,14 +468,6 @@ void TurtleShell::Damage(int attack)
 	}*/
 	
 	
-}
-
-void TurtleShell::HitFireBall()
-{
-}
-
-void TurtleShell::HitFlamePillar()
-{
 }
 
 bool TurtleShell::RotationOnly()

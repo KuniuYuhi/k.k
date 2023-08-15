@@ -72,7 +72,8 @@ public:
 	/// <returns></returns>
 	bool isRotationEntable() const
 	{
-		return m_enAnimationState != enAnimationState_Difence;
+		return m_enAnimationState != enAnimationState_Difence &&
+			m_enAnimationState != enAninationState_Idle;
 	}
 
 	/// <summary>
@@ -90,14 +91,6 @@ public:
 	/// 被ダメージ時処理
 	/// </summary>
 	void Damage(int attack);
-
-	///// <summary>
-	///// 被ダメージ用当たり判定
-	///// </summary>
-	//ウィザードのファイヤーボールに当たった時の処理
-	virtual void HitFireBall();
-	//ウィザードのフレイムピラーに当たった時の処理
-	virtual void HitFlamePillar();
 
 	bool RotationOnly();
 
