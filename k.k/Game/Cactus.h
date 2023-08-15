@@ -16,6 +16,8 @@ public:
 
 	void Move();
 
+	void Attack();
+
 	Vector3 SetDirection();
 
 	bool IsBumpedForest();
@@ -50,7 +52,7 @@ public:
 	/// <returns></returns>
 	bool isRotationEntable() const
 	{
-		return true;
+		return m_enAnimationState != enAninationState_Idle;
 	}
 
 	/// <summary>
@@ -59,7 +61,8 @@ public:
 	/// <returns></returns>
 	bool IsAttackEntable() const
 	{
-		return true;
+		return m_enAnimationState != enAnimationState_Attack_1 &&
+			m_enAnimationState != enAnimationState_Attack_2;
 	}
 
 	/// <summary>
@@ -145,6 +148,7 @@ public:
 	/// <param name="nextState"></param>
 	void SetNextAnimationState(EnAnimationState nextState);
 
+	
 
 private:
 	/// <summary>
@@ -162,6 +166,11 @@ private:
 	/// </summary>
 	void ManageState();
 
+	enum EnAttackName
+	{
+		enAttackName_1,
+		enAttackName_2
+	};
 
 	Lich* m_lich = nullptr;
 	ICactusState* m_state = nullptr;
@@ -180,6 +189,16 @@ private:
 	Vector3 m_direction = Vector3::Zero;
 
 	const float m_distanceToPlayer = 300.0f;
+	const float m_attackRange = 60.0f;
+	const float m_stayDistance = 50.0f;
+
+	int m_attackBoonId = -1;					//攻撃で使うボーンID
+
+	bool m_createAttackCollisionFlag = false;
+
+	const float m_attackIntervalTime = 2.0f;	//攻撃した後のインターバル
+
+
 
 };
 
