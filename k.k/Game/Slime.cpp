@@ -405,14 +405,6 @@ void Slime::Damage(int attack)
 	
 }
 
-void Slime::HitFireBall()
-{
-}
-
-void Slime::HitFlamePillar()
-{
-}
-
 bool Slime::RotationOnly()
 {
 	if (isRotationEntable() != true)

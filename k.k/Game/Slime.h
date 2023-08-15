@@ -76,14 +76,6 @@ public:
 	/// </summary>
 	void Damage(int attack);
 
-	/// <summary>
-	/// 被ダメージ用当たり判定
-	/// </summary>
-	//ウィザードのファイヤーボールに当たった時の処理
-	virtual void HitFireBall();
-	//ウィザードのフレイムピラーに当たった時の処理
-	virtual void HitFlamePillar();
-
 	bool RotationOnly();
 
 
