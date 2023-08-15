@@ -1,6 +1,8 @@
 #pragma once
 #include "Status.h"
 #include "Player.h"
+#include "FireBall.h"
+#include "FlamePillar.h"
 #include "DamageFont.h"
 
 class AIActor:public IGameObject
@@ -29,7 +31,23 @@ public:
 	/// <param name="status">ステータス</param>
 	/// <param name="targetposition">向かいたいターゲットの座標</param>
 	/// <returns>moveSpeed</returns>
-	Vector3 calcVelocity(Status status,Vector3 targetposition);
+	Vector3 CalcVelocity(Status status,Vector3 targetposition);
+
+	//ターゲットに向かうベクトル
+
+	/// <summary>
+	/// 視野角判定
+	/// </summary>
+	/// <param name="toPlayerDir">自身からターゲットに向かうベクトル</param>
+	/// <param name="forward">前方向</param>
+	/// <param name="angle">視野角</param>
+	/// <returns>視野角の中ならtrue,いなかったらfalse</returns>
+	bool IsInFieldOfView(Vector3 toPlayerDir,Vector3 forward, float angle);
+
+	/// <summary>
+	/// 攻撃処理
+	/// </summary>
+	virtual void Attack();
 
 	/// <summary>
 	/// ターゲットの座標をm_targetPsitionに代入する
@@ -72,6 +90,12 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	virtual bool isRotationEntable() const = 0;
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	virtual bool IsAttackEntable() const = 0;
 
 	/// <summary>
 	/// 被ダメージ時処理
@@ -204,6 +228,8 @@ protected:
 
 	Quaternion m_rotation = Quaternion::Identity;
 	Vector3 m_scale = Vector3::One;
+
+	int m_damage = 0;				//受けたダメージを代入する
 
 	bool m_dashFlag = false;		//ダッシュするかのフラグ
 	bool m_attackFlag = true;		//攻撃していいかのフラグ。falseで攻撃可能

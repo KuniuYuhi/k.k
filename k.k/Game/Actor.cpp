@@ -3,6 +3,7 @@
 #include "FireBall.h"
 #include "DarkWall.h"
 #include "Meteo.h"
+#include "AIActor.h"
 
 
 Actor::Actor()
@@ -184,6 +185,21 @@ void Actor::DamageCollision(CharacterController& characon)
 			Meteo* meteo = FindGO<Meteo>("meteo");
 			Damage(meteo->GetExplosionAttack());
 			CreateDamageFont(meteo->GetExplosionAttack());
+			return;
+		}
+	}
+
+	//モンスターの攻撃の当たり判定
+	const auto& MonsterCollisions = g_collisionObjectManager->FindCollisionObjects("monsterattack");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : MonsterCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(characon) == true)
+		{
+			m_atttackAIActor = FindGO<AIActor>(collision->GetCreatorName());
+			Damage(m_atttackAIActor->GetStatus().atk);
+			CreateDamageFont(m_atttackAIActor->GetStatus().atk);
 			return;
 		}
 	}

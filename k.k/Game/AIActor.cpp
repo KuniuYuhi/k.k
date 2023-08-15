@@ -22,7 +22,7 @@ void AIActor::SetTransForm(Vector3 position, Quaternion rotation, Vector3 scale)
 	m_scale = scale;
 }
 
-Vector3 AIActor::calcVelocity(Status status,Vector3 targetposition)
+Vector3 AIActor::CalcVelocity(Status status,Vector3 targetposition)
 {
 	Vector3 moveSpeed = Vector3::Zero;
 
@@ -36,7 +36,7 @@ Vector3 AIActor::calcVelocity(Status status,Vector3 targetposition)
 	//速度を設定
 	moveSpeed = diff * status.defaultSpeed;
 	//前方向
-	m_forward = diff;
+	//m_forward = diff;
 	//値をセーブしておく
 	m_SaveMoveSpeed = moveSpeed;
 
@@ -52,6 +52,30 @@ Vector3 AIActor::calcVelocity(Status status,Vector3 targetposition)
 
 	
 	
+}
+
+bool AIActor::IsInFieldOfView(Vector3 toPlayerDir, Vector3 forward, float angle)
+{
+	//ベクトル正規化
+	toPlayerDir.Normalize();
+	//ターゲットに向かうベクトルと前方向の内積を計算する
+	float t = toPlayerDir.Dot(forward);
+	//内積の結果をacos関数に渡して、m_enemyFowradとtoPlayerDirのなす角度を求める。
+	float calcangle = acos(t);
+	//視野角判定
+	if (fabsf(calcangle) < Math::DegToRad(angle))
+	{
+		//範囲内なら
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void AIActor::Attack()
+{
 }
 
 void AIActor::SetTargetPosition()
@@ -112,6 +136,8 @@ void AIActor::DamageCollision(CharacterController& characon)
 		//自身のキャラコンと衝突したら
 		if (collision->IsHit(characon) == true)
 		{
+			FireBall* fireball = FindGO<FireBall>("fireball");
+			m_damage = fireball->GetAtk();
 			HitFireBall();
 			return;
 		}
@@ -125,6 +151,8 @@ void AIActor::DamageCollision(CharacterController& characon)
 		//自身のキャラコンと衝突したら
 		if (collision->IsHit(characon) == true)
 		{
+			FlamePillar* flamepillar = FindGO<FlamePillar>("flamepillar");
+			m_damage = flamepillar->GetAtk();
 			HitFlamePillar();
 			return;
 		}
@@ -133,24 +161,32 @@ void AIActor::DamageCollision(CharacterController& characon)
 
 void AIActor::HitNormalAttack()
 {
+	m_damage = m_player->GetAtk();
 	//ダメージを受ける
-	Damage(m_player->GetAtk());
-	CreateDamageFont(m_player->GetAtk());
+	Damage(m_damage);
+	CreateDamageFont(m_damage);
 }
 
 void AIActor::HitHeroSkillAttack()
 {
+	m_damage = m_player->GetSkillAtk();
 	//ダメージを受ける
-	Damage(m_player->GetSkillAtk());
-	CreateDamageFont(m_player->GetSkillAtk());
+	Damage(m_damage);
+	CreateDamageFont(m_damage);
 }
 
 void AIActor::HitFireBall()
 {
+	//ダメージを受ける
+	Damage(m_damage);
+	CreateDamageFont(m_damage);
 }
 
 void AIActor::HitFlamePillar()
 {
+	//ダメージを受ける
+	Damage(m_damage);
+	CreateDamageFont(m_damage);
 }
 
 bool AIActor::AttackInterval(const float attackintarvaltime)

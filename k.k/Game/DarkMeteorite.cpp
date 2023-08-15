@@ -137,10 +137,10 @@ Vector3 DarkMeteorite::SetMeteoTargetPosition()
 	m_targetPosition = m_player->GetPosition();
 
 	Vector3 createPositon = m_targetPosition;
-	float X = rand() % 601 - 300;
-	float Z = rand() % 601 - 300;
-	/*float X = (rand() % (MAX_LENGTH - (MIN_LENGTH) + 1)) + (MIN_LENGTH);
-	float Z = (rand() % (MAX_LENGTH - (MIN_LENGTH) + 1)) + (MIN_LENGTH);*/
+	/*float X = rand() % 601 - 300;
+	float Z = rand() % 601 - 300;*/
+	float X = (rand() % (MAX_LENGTH - (MIN_LENGTH) + 1)) + (MIN_LENGTH);
+	float Z = (rand() % (MAX_LENGTH - (MIN_LENGTH) + 1)) + (MIN_LENGTH);
 	createPositon.x += X;
 	createPositon.z += Z;
 

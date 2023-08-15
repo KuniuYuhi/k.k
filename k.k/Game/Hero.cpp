@@ -11,7 +11,6 @@
 #include "HeroStateAttack_Skill_Main.h"
 #include "HeroStateDie.h"
 #include "HeroStateDamage.h"
-//ダメージ受けた時チカチカさせる
 
 namespace {
 	int MAXHP = 200;
@@ -195,7 +194,7 @@ bool Hero::RotationOnly()
 
 void Hero::Attack()
 {
-	if (m_enAnimationState == enAnimationState_Die)
+	if (isAnimationEntable() != true)
 	{
 		return;
 	}

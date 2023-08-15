@@ -13,11 +13,16 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
-
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 	/// <summary>
 	/// 移動処理
 	/// </summary>
 	void Move();
+
+	void Attack();
+
+	bool Difence();
+
 	/// <summary>
 	/// 次の行動を決める
 	/// </summary>
@@ -27,10 +32,17 @@ public:
 
 	bool IsBumpedForest();
 
+	void CreateCollision();
+
 	void SetLich(Lich* lich)
 	{
 		m_lich = lich;
 	}
+
+	/// <summary>
+	/// 防御タイマーの処理
+	/// </summary>
+	bool IsDifenceTime();
 
 	/// <summary>
 	/// モデルレンダーの取得
@@ -47,8 +59,9 @@ public:
 	/// <returns></returns>
 	bool isAnimationEntable() const
 	{
-		return m_enAnimationState != enAnimationState_Difence &&
-			m_enAnimationState != enAnimationState_DifencDamage &&
+
+		return //m_enAnimationState != enAnimationState_Difence &&
+			m_enAnimationState != enAnimationState_DifenceDamage &&
 			m_enAnimationState != enAnimationState_Damage &&
 			m_enAnimationState != enAnimationState_Die;
 	}
@@ -59,21 +72,25 @@ public:
 	/// <returns></returns>
 	bool isRotationEntable() const
 	{
-		return true;
+		return m_enAnimationState != enAnimationState_Difence &&
+			m_enAnimationState != enAninationState_Idle;
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	bool IsAttackEntable() const
+	{
+		return /*m_enAnimationState != enAnimationState_Difence &&*/
+			m_enAnimationState != enAnimationState_Attack_1 &&
+			m_enAnimationState != enAnimationState_Attack_2;
 	}
 
 	/// <summary>
 	/// 被ダメージ時処理
 	/// </summary>
 	void Damage(int attack);
-
-	///// <summary>
-	///// 被ダメージ用当たり判定
-	///// </summary>
-	//ウィザードのファイヤーボールに当たった時の処理
-	virtual void HitFireBall();
-	//ウィザードのフレイムピラーに当たった時の処理
-	virtual void HitFlamePillar();
 
 	bool RotationOnly();
 
@@ -133,7 +150,7 @@ public:
 		enAnimationState_Attack_1,
 		enAnimationState_Attack_2,
 		enAnimationState_Difence,
-		enAnimationState_DifencDamage,
+		enAnimationState_DifenceDamage,
 		enAnimationState_Damage,
 		enAnimationState_Die,
 		enAnimationState_Victory
@@ -145,6 +162,13 @@ public:
 	/// <param name="nextState"></param>
 	void SetNextAnimationState(EnAnimationState nextState);
 
+	enum EnDefenceState
+	{
+		enDefenceState_None,
+		enDefenceState_damaged,
+		enDefenceState_Defence,
+		enDefenceState_DefenceDamaged
+	};
 
 private:
 	/// <summary>
@@ -171,7 +195,7 @@ private:
 
 	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
 
-	float m_angleChangeTime = 8.0f;		//ベクトルを計算するタイマー
+	float m_angleChangeTime = 0.0f;		//ベクトルを計算するタイマー。生成時に決める
 
 	ModelRender m_modelRender;
 
@@ -179,7 +203,23 @@ private:
 
 	Vector3 m_direction = Vector3::Zero;
 
+	const float m_attackIntervalTime = 2.0f;	//攻撃した後のインターバル
+
 	const float m_distanceToPlayer = 400.0f;
+	const float m_attackRange = 60.0f;
+	const float m_stayDistance = 50.0f;
+
+	int m_attackBoonId = -1;					//攻撃で使うボーンID
+
+	bool m_createAttackCollisionFlag = false;
+
+
+	bool m_damagedFlag = false;			//自身が攻撃を受けたかのフラグ
+	bool m_difenceFlag = false;			//防御しているかのフラグ
+	const float m_difenceTime = 3.0f;
+	float m_difenceTimer = 0.0f;
+
+	EnDefenceState m_defenceState = enDefenceState_None;
 
 };
 

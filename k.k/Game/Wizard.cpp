@@ -192,6 +192,11 @@ bool Wizard::RotationOnly()
 
 void Wizard::Attack()
 {
+	if (isAnimationEntable() != true)
+	{
+		return;
+	}
+
 	//スキルの切り替え
 	if (g_pad[0]->IsTrigger(enButtonRB3))
 	{
@@ -332,6 +337,7 @@ bool Wizard::CreateFireBall()
 		//ファイヤーボール生成
 		FireBall* fireBall = NewGO<FireBall>(0, "fireball");
 		fireBall->SetWizard(this);
+		fireBall->Setting(m_position, m_rotation);
 		//MPを減らす
 		m_status.mp -= m_fireBall_SkillMp;
 

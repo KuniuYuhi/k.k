@@ -13,8 +13,13 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	void Move();
+
+	void Attack();
+
+	void CreateCollision();
 
 	Vector3 SetDirection();
 
@@ -50,21 +55,23 @@ public:
 	/// <returns></returns>
 	bool isRotationEntable() const
 	{
-		return true;
+		return true;//m_enAnimationState != enAninationState_Idle;
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	bool IsAttackEntable() const
+	{
+		return m_enAnimationState != enAnimationState_Attack_1 &&
+			m_enAnimationState != enAnimationState_Attack_2;
 	}
 
 	/// <summary>
 	/// 被ダメージ時処理
 	/// </summary>
 	void Damage(int attack);
-
-	///// <summary>
-	///// 被ダメージ用当たり判定
-	///// </summary>
-	////ウィザードのファイヤーボールに当たった時の処理
-	void HitFireBall();
-	////ウィザードのフレイムピラーに当たった時の処理
-	void HitFlamePillar();
 
 	bool RotationOnly();
 
@@ -136,6 +143,7 @@ public:
 	/// <param name="nextState"></param>
 	void SetNextAnimationState(EnAnimationState nextState);
 
+	
 
 private:
 	/// <summary>
@@ -153,6 +161,11 @@ private:
 	/// </summary>
 	void ManageState();
 
+	enum EnAttackName
+	{
+		enAttackName_1,
+		enAttackName_2
+	};
 
 	Lich* m_lich = nullptr;
 	ICactusState* m_state = nullptr;
@@ -171,6 +184,16 @@ private:
 	Vector3 m_direction = Vector3::Zero;
 
 	const float m_distanceToPlayer = 300.0f;
+	const float m_attackRange = 60.0f;
+	const float m_stayDistance = 50.0f;
+
+	int m_attackBoonId = -1;					//攻撃で使うボーンID
+
+	bool m_createAttackCollisionFlag = false;
+
+	const float m_attackIntervalTime = 2.0f;	//攻撃した後のインターバル
+
+
 
 };
 

@@ -127,16 +127,26 @@ void TurtleShell::InitModel()
 	//座標の設定
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
+
+	//アニメーションイベント用の関数を設定する。
+	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+		});
+
+	m_attackBoonId = m_modelRender.FindBoneID(L"Head");
 }
 
 void TurtleShell::Update()
 {
-	//プレイヤーかボスがやられたら消える
-	if (m_lich->GetWinFlag() == true)
+	if (m_lich != nullptr)
 	{
-		SetWinFlag(true);
-		//攻撃中でなければ
-		SetNextAnimationState(enAnimationState_Victory);
+		//プレイヤーかボスがやられたら消える
+		if (m_lich->GetWinFlag() == true)
+		{
+			SetWinFlag(true);
+			//攻撃中でなければ
+			SetNextAnimationState(enAnimationState_Victory);
+		}
 	}
 
 	if (GetWinFlag() == true)
@@ -147,6 +157,8 @@ void TurtleShell::Update()
 		return;
 	}
 
+	AttackInterval(m_attackIntervalTime);
+
 	DamageCollision(m_charaCon);
 
 	AngleChangeTimeIntarval(m_angleChangeTime);
@@ -156,6 +168,13 @@ void TurtleShell::Update()
 
 	ManageState();
 	PlayAnimation();
+
+	DecideNextAction();
+
+	if (m_createAttackCollisionFlag == true)
+	{
+		CreateCollision();
+	}
 
 	m_oldPosition = m_position;
 
@@ -170,31 +189,40 @@ void TurtleShell::Move()
 	{
 		return;
 	}
+	//攻撃中は処理しない
+	if (IsAttackEntable() != true)
+	{
+		return;
+	}
+
+	if (m_enAnimationState==enAnimationState_Difence)
+	{
+		return;
+	}
 
 	//視界にターゲットを見つけたら
 	if (IsFindPlayer(m_distanceToPlayer) == true)
 	{
 		Vector3 toPlayerDir = m_toTarget;
-		toPlayerDir.Normalize();
-		Vector3 a = m_position;
-		a.Normalize();
-		//ターゲットに向かうベクトルと前方向の内積を計算する
-		float t = toPlayerDir.Dot(m_forward);
-		//内積の結果をacos関数に渡して、m_enemyFowradとtoPlayerDirのなす角度を求める。
-		float angle = acos(t);
-
-		//視野角判定
-		if (fabsf(angle) < Math::DegToRad(m_angle))
+		//視野角内にターゲットがいたら
+		if (IsInFieldOfView(toPlayerDir, m_forward, m_angle) == true)
 		{
+			toPlayerDir.Normalize();
 			//追いかける
 			m_direction = toPlayerDir;
+			//m_moveSpeed = CalcVelocity(m_status, m_direction);
 			m_moveSpeed = m_direction * m_status.defaultSpeed;
-			//m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-
-			//次の座標が決まったので抜け出す
+			m_SaveMoveSpeed = m_moveSpeed;
 		}
-
-		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+		else
+		{
+			//視野角内にはいないが攻撃可能距離にいるなら
+			if (IsFindPlayer(100.0f) == true)
+			{
+				m_moveSpeed = CalcVelocity(m_status, m_targetPosition);
+				m_SaveMoveSpeed = m_moveSpeed;
+			}
+		}
 	}
 	else
 	{
@@ -206,22 +234,113 @@ void TurtleShell::Move()
 		}
 		//ランダムな方向に移動
 		m_moveSpeed = m_direction * m_status.defaultSpeed;
-		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+		m_SaveMoveSpeed = m_moveSpeed;
 	}
-	
+
 	//壁にぶつかったら反転
 	if (IsBumpedForest() == true)
 	{
 		m_direction *= -1.0f;
 		m_moveSpeed = m_direction * m_status.defaultSpeed;
+		m_SaveMoveSpeed = m_moveSpeed;
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 		return;
 	}
 
+
+	//プレイヤーとの距離が近くないなら移動する
+	if (IsFindPlayer(m_stayDistance) != true)
+	{
+		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	}
+	else
+	{
+		//範囲内にいるので移動しない
+		m_moveSpeed = Vector3::Zero;
+	}
 }
 
 void TurtleShell::DecideNextAction()
 {
+	//被ダメージ、デス時は処理しない
+	if (isAnimationEntable() != true)
+	{
+		return;
+	}
+	//攻撃中は処理しない
+	if (IsAttackEntable() != true)
+	{
+		return;
+	}
+	if (m_enAnimationState == enAnimationState_Difence)
+	{
+		return;
+	}
+
+	//一定の距離にターゲットがいたら
+	if (IsFindPlayer(m_distanceToPlayer) == true)
+	{
+		Vector3 toPlayerDir = m_toTarget;
+		//視野角内にターゲットがいたら
+		if (IsInFieldOfView(toPlayerDir, m_forward, m_angle) == true)
+		{
+			//攻撃するかガードするか決める
+			//ダメージを受けたら
+			if (m_defenceState == enDefenceState_damaged)
+			{
+				if (Difence() == true)
+				{
+					//防御するので攻撃処理をしない
+					return;
+				}
+			}
+			//防御していないなら
+			if (m_defenceState != enDefenceState_Defence)
+			{
+				if (m_attackFlag == false)
+				{
+					Attack();
+				}
+				
+			}
+		}
+	}
+}
+
+void TurtleShell::Attack()
+{
+	//一定の距離にターゲットがいたら
+	if (IsFindPlayer(m_attackRange) == true)
+	{
+		Vector3 toPlayerDir = m_toTarget;
+		//視野角内にターゲットがいたら
+		if (IsInFieldOfView(toPlayerDir, m_forward, m_angle) == true)
+		{
+			//攻撃
+			SetNextAnimationState(enAnimationState_Attack_1);
+			//攻撃したのでフラグをtrueにしてインターバルに入る
+			m_attackFlag = true;
+		}
+	}
+}
+
+bool TurtleShell::Difence()
+{
+	//攻撃可能距離にターゲットがいたら
+	if (IsFindPlayer(m_distanceToPlayer) == true)
+	{
+		//確率で防御
+		int i = rand() % 4;
+		if (i >= 2)
+		{
+			//防御する
+			m_defenceState = enDefenceState_Defence;
+			SetNextAnimationState(enAnimationState_Difence);
+
+			return true;
+		}
+	}
+	return false;
 }
 
 Vector3 TurtleShell::SetDirection()
@@ -276,10 +395,57 @@ bool TurtleShell::IsBumpedForest()
 	}
 }
 
+void TurtleShell::CreateCollision()
+{
+	auto HeadCollision = NewGO<CollisionObject>(0, "monsterattack");
+	HeadCollision->SetCreatorName(GetName());
+	HeadCollision->CreateSphere(
+		m_position,
+		m_rotation,
+		17.0f
+	);
+	//ワールド座標取得
+	Matrix HeadMatrix = m_modelRender.GetBone(m_attackBoonId)->GetWorldMatrix();
+	HeadCollision->SetWorldMatrix(HeadMatrix);
+}
+
+bool TurtleShell::IsDifenceTime()
+{
+	if (m_difenceTime < m_difenceTimer)
+	{
+		//防御状態をやめる
+		m_difenceFlag = false;
+		m_difenceTimer = 0.0f;
+		return false;
+	}
+	else
+	{
+		//防御中
+		m_difenceTimer += g_gameTime->GetFrameDeltaTime();
+		return true;
+	}
+}
+
 void TurtleShell::Damage(int attack)
 {
+	//攻撃中かもしれないので当たり判定を消す
+	m_createAttackCollisionFlag = false;
+
+	//防御状態ならダメージを減らす
+	if (m_defenceState == enDefenceState_Defence)
+	{
+		m_damage = 0;
+		return;
+	}
+	//防御状態ではないなら
+	else 
+	{
+		//攻撃を受けた
+		m_defenceState = enDefenceState_damaged;
+	}
+	
 	//HPを減らす
-	m_status.hp -= attack;
+	m_status.hp -= m_damage;
 
 	//HPが0以下なら
 	if (m_status.hp <= 0)
@@ -289,22 +455,35 @@ void TurtleShell::Damage(int attack)
 		return;
 	}
 
-	//もし防御中なら
-
 	SetNextAnimationState(enAnimationState_Damage);
+
+	//もし防御中なら
+	/*if (m_defenceState == enDefenceState_Defence)
+	{
+		m_defenceState = enDefenceState_DefenceDamaged;
+		SetNextAnimationState(enAnimationState_DifenceDamage);
+	}
+	else
+	{
+		SetNextAnimationState(enAnimationState_Damage);
+	}*/
 	
-}
-
-void TurtleShell::HitFireBall()
-{
-}
-
-void TurtleShell::HitFlamePillar()
-{
+	
 }
 
 bool TurtleShell::RotationOnly()
 {
+	if (m_enAnimationState == enAnimationState_Difence)
+	{
+		//xかzの移動速度があったら(スティックの入力があったら)。
+		if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+		{
+			m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
+		}
+		return true;
+	}
+
+
 	return false;
 }
 
@@ -349,7 +528,7 @@ void TurtleShell::SetNextAnimationState(EnAnimationState nextState)
 	case TurtleShell::enAnimationState_Difence:
 		m_state = new TurtleShellStateDifence(this);
 		break;
-	case TurtleShell::enAnimationState_DifencDamage:
+	case TurtleShell::enAnimationState_DifenceDamage:
 		m_state = new TurtleShellStateDifenceDamage(this);
 		break;
 	case TurtleShell::enAnimationState_Damage:
@@ -402,9 +581,11 @@ void TurtleShell::OnProcessAttack_2StateTransition()
 
 void TurtleShell::OnProcessDifenceStateTransition()
 {
-	//アニメーションが終わったら
-	if (m_modelRender.IsPlayingAnimation() == false)
+	//タイマーがfalseになったら抜け出す
+	if (IsDifenceTime() == false)
 	{
+		//ダメージを受けたフラグをfalseにする
+		m_defenceState = enDefenceState_None;
 		//共通のステート遷移処理実行
 		ProcessCommonStateTransition();
 	}
@@ -415,6 +596,21 @@ void TurtleShell::OnProcessDifenceDamageStateTransition()
 	//アニメーションが終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		////まだ防御中なら
+		//if (m_difenceFlag == true)
+		//{
+		//	//ダメージを受けたフラグをfalseにする
+		//	m_damagedFlag = false;
+		//	//防御ステートにする
+		//	SetNextAnimationState(enAnimationState_Difence);
+		//	return;
+		//}
+		//防御状態を解く
+		m_defenceState = enDefenceState_None;
+		//タイマーリセット
+		m_difenceTimer = 0.0f;
+		////ダメージを受けたフラグをfalseにする
+		//m_damagedFlag = false;
 		//共通のステート遷移処理実行
 		ProcessCommonStateTransition();
 	}
@@ -425,6 +621,8 @@ void TurtleShell::OnProcessDamageStateTransition()
 	//アニメーションが終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		//ダメージを受けたフラグをfalseにする
+		//m_damagedFlag = false;
 		//共通のステート遷移処理実行
 		ProcessCommonStateTransition();
 	}
@@ -435,8 +633,12 @@ void TurtleShell::OnProcessDieStateTransition()
 	//アニメーションが終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//リストから自身を消す
-		m_lich->RemoveAIActorFromList(this);
+		if (m_lich != nullptr)
+		{
+			//リストから自身を消す
+			m_lich->RemoveAIActorFromList(this);
+		}
+		//自身を削除する
 		DeleteGO(this);
 	}
 }
@@ -448,6 +650,20 @@ void TurtleShell::OnProcessVictoryStateTransition()
 	{
 		//共通のステート遷移処理実行
 		ProcessCommonStateTransition();
+	}
+}
+
+void TurtleShell::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+	//当たり判定生成タイミング
+	if (wcscmp(eventName, L"Collision_Start") == 0)
+	{
+		m_createAttackCollisionFlag = true;
+	}
+	//当たり判定生成終わり
+	if (wcscmp(eventName, L"Collision_End") == 0)
+	{
+		m_createAttackCollisionFlag = false;
 	}
 }
 

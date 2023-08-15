@@ -13,12 +13,20 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	void Move();
+
+	void Attack();
 
 	Vector3 SetDirection();
 
 	bool IsBumpedForest();
+
+	/// <summary>
+	/// 当たり判定生成
+	/// </summary>
+	void CreateCollision();
 
 	/// <summary>
 	/// モデルレンダーの取得
@@ -50,21 +58,23 @@ public:
 	/// <returns></returns>
 	bool isRotationEntable() const
 	{
-		return true;
+		return m_enAnimationState != enAninationState_Idle;
 	}
+
+	/// <summary>
+	/// 攻撃中なら
+	/// </summary>
+	/// <returns></returns>
+	bool IsAttackEntable() const
+	{
+		return m_enAnimationState != enAnimationState_Attack_1;
+	}
+
 
 	/// <summary>
 	/// 被ダメージ時処理
 	/// </summary>
 	void Damage(int attack);
-
-	/// <summary>
-	/// 被ダメージ用当たり判定
-	/// </summary>
-	//ウィザードのファイヤーボールに当たった時の処理
-	virtual void HitFireBall();
-	//ウィザードのフレイムピラーに当たった時の処理
-	virtual void HitFlamePillar();
 
 	bool RotationOnly();
 
@@ -151,11 +161,19 @@ private:
 
 	Vector3 m_direction= Vector3::Zero;
 
+	int m_attackBoonId = -1;					//攻撃で使うボーンID
+
+	bool m_createAttackCollisionFlag = false;
+
 	float m_angleChangeTime = 5.0f;		//ベクトルを計算するタイマー
 
 	const float m_distanceToPlayer = 500.0f;
+	const float m_attackRange = 60.0f;
+	const float m_stayDistance = 50.0f;
 
 	float m_ramdomAngle = 0.0f;
+
+	const float m_attackIntervalTime = 2.0f;	//攻撃した後のインターバル
 
 };
 
