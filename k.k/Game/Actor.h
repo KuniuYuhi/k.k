@@ -3,6 +3,7 @@
 #include "DamageFont.h"
 
 //class Player;
+class AIActor;
 
 class Actor:public IGameObject
 {
@@ -306,7 +307,7 @@ protected:
 
 	Status m_status;
 	//Player* m_player = nullptr;
-
+	AIActor* m_atttackAIActor = nullptr;		//攻撃してきたAIActor(モンスター)
 	
 	EnComboState m_enNowComboState = enNowCombo_None;		//現在のコンボ
 	EnComboState m_enDamagedComboState = enDamageCombo_None;		//ダメージを受けた時のコンボ
