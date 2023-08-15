@@ -18,7 +18,7 @@ namespace {
 	//ステータス
 	int MAXHP = 120;
 	int MAXMP = 500;
-	int ATK = 10;
+	int ATK = 15;
 	float SPEED = 100.0f;
 	const char* NAME = "Cactus";
 }
@@ -305,6 +305,7 @@ void Cactus::Attack()
 void Cactus::CreateCollision()
 {
 	auto HeadCollision = NewGO<CollisionObject>(0, "monsterattack");
+	HeadCollision->SetCreatorName(GetName());
 	HeadCollision->CreateSphere(
 		m_position,
 		m_rotation,

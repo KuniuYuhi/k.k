@@ -272,7 +272,7 @@ void TurtleShell::DecideNextAction()
 	{
 		return;
 	}
-	if (isRotationEntable() != true)
+	if (m_enAnimationState == enAnimationState_Difence)
 	{
 		return;
 	}
@@ -398,6 +398,7 @@ bool TurtleShell::IsBumpedForest()
 void TurtleShell::CreateCollision()
 {
 	auto HeadCollision = NewGO<CollisionObject>(0, "monsterattack");
+	HeadCollision->SetCreatorName(GetName());
 	HeadCollision->CreateSphere(
 		m_position,
 		m_rotation,

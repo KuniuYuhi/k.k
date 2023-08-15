@@ -296,6 +296,7 @@ void Mushroom::Attack()
 void Mushroom::CreateCollision()
 {
 	auto HeadCollision = NewGO<CollisionObject>(0, "monsterattack");
+	HeadCollision->SetCreatorName(GetName());
 	HeadCollision->CreateSphere(
 		m_position,
 		m_rotation,
