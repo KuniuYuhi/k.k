@@ -22,7 +22,7 @@ void AIActor::SetTransForm(Vector3 position, Quaternion rotation, Vector3 scale)
 	m_scale = scale;
 }
 
-Vector3 AIActor::calcVelocity(Status status,Vector3 targetposition)
+Vector3 AIActor::CalcVelocity(Status status,Vector3 targetposition)
 {
 	Vector3 moveSpeed = Vector3::Zero;
 
@@ -36,7 +36,7 @@ Vector3 AIActor::calcVelocity(Status status,Vector3 targetposition)
 	//速度を設定
 	moveSpeed = diff * status.defaultSpeed;
 	//前方向
-	m_forward = diff;
+	//m_forward = diff;
 	//値をセーブしておく
 	m_SaveMoveSpeed = moveSpeed;
 

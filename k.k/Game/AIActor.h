@@ -29,7 +29,7 @@ public:
 	/// <param name="status">ステータス</param>
 	/// <param name="targetposition">向かいたいターゲットの座標</param>
 	/// <returns>moveSpeed</returns>
-	Vector3 calcVelocity(Status status,Vector3 targetposition);
+	Vector3 CalcVelocity(Status status,Vector3 targetposition);
 
 	//ターゲットに向かうベクトル
 
