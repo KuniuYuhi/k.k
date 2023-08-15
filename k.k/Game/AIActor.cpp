@@ -136,6 +136,8 @@ void AIActor::DamageCollision(CharacterController& characon)
 		//自身のキャラコンと衝突したら
 		if (collision->IsHit(characon) == true)
 		{
+			FireBall* fireball = FindGO<FireBall>("fireball");
+			m_damage = fireball->GetAtk();
 			HitFireBall();
 			return;
 		}
@@ -149,6 +151,8 @@ void AIActor::DamageCollision(CharacterController& characon)
 		//自身のキャラコンと衝突したら
 		if (collision->IsHit(characon) == true)
 		{
+			FlamePillar* flamepillar = FindGO<FlamePillar>("flamepillar");
+			m_damage = flamepillar->GetAtk();
 			HitFlamePillar();
 			return;
 		}
@@ -173,10 +177,16 @@ void AIActor::HitHeroSkillAttack()
 
 void AIActor::HitFireBall()
 {
+	//ダメージを受ける
+	Damage(m_damage);
+	CreateDamageFont(m_damage);
 }
 
 void AIActor::HitFlamePillar()
 {
+	//ダメージを受ける
+	Damage(m_damage);
+	CreateDamageFont(m_damage);
 }
 
 bool AIActor::AttackInterval(const float attackintarvaltime)
