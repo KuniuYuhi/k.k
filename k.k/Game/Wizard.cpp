@@ -192,6 +192,11 @@ bool Wizard::RotationOnly()
 
 void Wizard::Attack()
 {
+	if (isAnimationEntable() != true)
+	{
+		return;
+	}
+
 	//ƒXƒLƒ‹‚ÌØ‚è‘Ö‚¦
 	if (g_pad[0]->IsTrigger(enButtonRB3))
 	{

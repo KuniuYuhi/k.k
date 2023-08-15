@@ -194,7 +194,7 @@ bool Hero::RotationOnly()
 
 void Hero::Attack()
 {
-	if (m_enAnimationState == enAnimationState_Die)
+	if (isAnimationEntable() != true)
 	{
 		return;
 	}
