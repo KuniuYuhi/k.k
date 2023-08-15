@@ -237,6 +237,7 @@ public:
 	enum EnSpecialActionState
 	{
 		enSpecialActionState_Normal,
+		enSpecialActionState_DarkMeteo,
 		enSpecialActionState_Warp,
 		enSpecialActionState_CenterWarp,
 		SpecialActionState

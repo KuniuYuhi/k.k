@@ -7,8 +7,8 @@
 #include "LichStateAttack_2.h"
 #include "LichStateDie.h"
 #include "Game.h"
-#include "FireBall.h"
-#include "FlamePillar.h"
+//#include "FireBall.h"
+//#include "FlamePillar.h"
 #include "DarkWall.h"
 #include "LichStateDamage.h"
 #include "LichStateDarkMeteorite_Start.h"
@@ -253,6 +253,9 @@ void Lich::Damage(int attack)
 {
 	//ヒットカウントを増やす、蓄積ダメージを増やす
 	SetHitCountAndDamage(1, attack);
+
+	//todo HPが半分になったら一旦止める
+
 
 	if (m_status.hp > 0)
 	{
@@ -600,8 +603,6 @@ void Lich::Warp(EnSpecialActionState SpecialActionState)
 
 void Lich::ProcessCommonStateTransition()
 {
-	//無敵時間ではない
-	SetInvincibleFlag(false);
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
 		SetNextAnimationState(enAninationState_Walk);
@@ -718,6 +719,8 @@ void Lich::OnProcessDarkMeteorite_EndStateTransition()
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
+		//無敵時間ではない
+		SetInvincibleFlag(false);
 	}
 }
 
@@ -784,6 +787,9 @@ void Lich::DamageCollision(CharacterController& characon)
 	{
 		return;
 	}
+
+
+
 	////被ダメージ時、デス時は処理をしない
 	//if (isAnimationEntable() != true)
 	//{
@@ -879,6 +885,7 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		//ボール生成
 		FireBall* fireball = NewGO<FireBall>(0, "darkball");
 		fireball->SetLich(this);
+		fireball->Setting(m_position, m_rotation);
 	}
 
 	//ダークウォール生成タイミング
