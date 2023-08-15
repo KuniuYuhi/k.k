@@ -194,7 +194,6 @@ void TurtleShell::Move()
 	{
 		return;
 	}
-
 	//視界にターゲットを見つけたら
 	if (IsFindPlayer(m_distanceToPlayer) == true)
 	{
@@ -205,13 +204,19 @@ void TurtleShell::Move()
 			toPlayerDir.Normalize();
 			//追いかける
 			m_direction = toPlayerDir;
+			//m_moveSpeed = CalcVelocity(m_status, m_direction);
 			m_moveSpeed = m_direction * m_status.defaultSpeed;
+			m_SaveMoveSpeed = m_moveSpeed;
 		}
-		if (isRotationEntable() != true)
+		else
 		{
-			return;
+			//視野角内にはいないが攻撃可能距離にいるなら
+			if (IsFindPlayer(100.0f) == true)
+			{
+				m_moveSpeed = CalcVelocity(m_status, m_targetPosition);
+				m_SaveMoveSpeed = m_moveSpeed;
+			}
 		}
-		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	}
 	else
 	{
@@ -223,18 +228,30 @@ void TurtleShell::Move()
 		}
 		//ランダムな方向に移動
 		m_moveSpeed = m_direction * m_status.defaultSpeed;
-		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+		m_SaveMoveSpeed = m_moveSpeed;
 	}
-	
+
 	//壁にぶつかったら反転
 	if (IsBumpedForest() == true)
 	{
 		m_direction *= -1.0f;
 		m_moveSpeed = m_direction * m_status.defaultSpeed;
+		m_SaveMoveSpeed = m_moveSpeed;
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 		return;
 	}
 
+
+	//プレイヤーとの距離が近くないなら移動する
+	if (IsFindPlayer(m_stayDistance) != true)
+	{
+		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	}
+	else
+	{
+		//範囲内にいるので移動しない
+		m_moveSpeed = Vector3::Zero;
+	}
 }
 
 void TurtleShell::DecideNextAction()

@@ -189,16 +189,24 @@ void Slime::Move()
 	{
 		Vector3 toPlayerDir = m_toTarget;
 		//視野角内にターゲットがいたら
-		if (IsInFieldOfView(toPlayerDir,m_forward,m_angle) == true)
+		if (IsInFieldOfView(toPlayerDir, m_forward, m_angle) == true)
 		{
 			toPlayerDir.Normalize();
 			//追いかける
 			m_direction = toPlayerDir;
+			//m_moveSpeed = CalcVelocity(m_status, m_direction);
 			m_moveSpeed = m_direction * m_status.defaultSpeed;
-
+			m_SaveMoveSpeed = m_moveSpeed;
 		}
-		
-		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+		else
+		{
+			//視野角内にはいないが攻撃可能距離にいるなら
+			if (IsFindPlayer(100.0f) == true)
+			{
+				m_moveSpeed = CalcVelocity(m_status, m_targetPosition);
+				m_SaveMoveSpeed = m_moveSpeed;
+			}
+		}
 	}
 	else
 	{
@@ -210,7 +218,7 @@ void Slime::Move()
 		}
 		//ランダムな方向に移動
 		m_moveSpeed = m_direction * m_status.defaultSpeed;
-		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+		m_SaveMoveSpeed = m_moveSpeed;
 	}
 
 	//壁にぶつかったら反転
@@ -218,13 +226,40 @@ void Slime::Move()
 	{
 		m_direction *= -1.0f;
 		m_moveSpeed = m_direction * m_status.defaultSpeed;
+		m_SaveMoveSpeed = m_moveSpeed;
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 		return;
 	}
 
 
-	////範囲内にプレイヤーがいなかったら
-	//if (IsFindPlayer(m_distanceToPlayer) != true)
+	//プレイヤーとの距離が近くないなら移動する
+	if (IsFindPlayer(m_stayDistance) != true)
+	{
+		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	}
+	else
+	{
+		//範囲内にいるので移動しない
+		m_moveSpeed = Vector3::Zero;
+	}
+
+	////視界にターゲットを見つけたら
+	//if (IsFindPlayer(m_distanceToPlayer) == true)
+	//{
+	//	Vector3 toPlayerDir = m_toTarget;
+	//	//視野角内にターゲットがいたら
+	//	if (IsInFieldOfView(toPlayerDir,m_forward,m_angle) == true)
+	//	{
+	//		toPlayerDir.Normalize();
+	//		//追いかける
+	//		m_direction = toPlayerDir;
+	//		m_moveSpeed = m_direction * m_status.defaultSpeed;
+
+	//	}
+	//	
+	//	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	//}
+	//else
 	//{
 	//	//数秒間隔で向かうベクトルを変える
 	//	if (m_angleChangeTimeFlag == false)
@@ -232,27 +267,9 @@ void Slime::Move()
 	//		m_direction = SetDirection();
 	//		m_angleChangeTimeFlag = true;
 	//	}
-	//	
+	//	//ランダムな方向に移動
 	//	m_moveSpeed = m_direction * m_status.defaultSpeed;
 	//	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-
-	//}
-	////いたら
-	//else
-	//{
-	//	Vector3 toPlayerDir = m_targetPosition;
-	//	toPlayerDir.Normalize();
-	//	//ターゲットに向かうベクトルと前方向の内積を計算する
-	//	float t = toPlayerDir.Dot(m_forward);
-	//	//内積の結果をacos関数に渡して、m_enemyFowradとtoPlayerDirのなす角度を求める。
-	//	float angle = acos(t);
-	//	//視野角判定
-	//	if (fabsf(angle) < Math::DegToRad(m_angle))
-	//	{
-	//		//追いかける
-	//		m_moveSpeed = calcVelocity(m_status,m_targetPosition);
-	//		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-	//	}
 	//}
 
 	////壁にぶつかったら反転
@@ -263,7 +280,6 @@ void Slime::Move()
 	//	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	//	return;
 	//}
-
 }
 
 void Slime::Attack()
@@ -399,6 +415,15 @@ void Slime::HitFlamePillar()
 
 bool Slime::RotationOnly()
 {
+	if (isRotationEntable() != true)
+	{
+		//xかzの移動速度があったら(スティックの入力があったら)。
+		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
+		{
+			m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
+			return true;
+		}
+	}
 	return false;
 }
 

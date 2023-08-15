@@ -58,7 +58,7 @@ public:
 	/// <returns></returns>
 	bool isRotationEntable() const
 	{
-		return true;
+		return m_enAnimationState != enAninationState_Idle;
 	}
 
 	/// <summary>
@@ -177,6 +177,7 @@ private:
 
 	const float m_distanceToPlayer = 500.0f;
 	const float m_attackRange = 60.0f;
+	const float m_stayDistance = 50.0f;
 
 	float m_ramdomAngle = 0.0f;
 

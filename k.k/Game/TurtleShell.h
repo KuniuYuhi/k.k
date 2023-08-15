@@ -214,6 +214,7 @@ private:
 
 	const float m_distanceToPlayer = 400.0f;
 	const float m_attackRange = 60.0f;
+	const float m_stayDistance = 50.0f;
 
 	int m_attackBoonId = -1;					//UŒ‚‚Åg‚¤ƒ{[ƒ“ID
 
