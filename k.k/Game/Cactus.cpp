@@ -162,9 +162,20 @@ void Cactus::Update()
 	ManageState();
 	PlayAnimation();
 
+	if (m_createAttackCollisionFlag == true)
+	{
+		CreateCollision();
+	}
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
+
+	//アニメーションイベント用の関数を設定する。
+	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+		});
+
+	m_attackBoonId = m_modelRender.FindBoneID(L"cactus_head");
 }
 
 void Cactus::Move()
@@ -291,6 +302,19 @@ void Cactus::Attack()
 
 }
 
+void Cactus::CreateCollision()
+{
+	auto HeadCollision = NewGO<CollisionObject>(0, "monsterattack");
+	HeadCollision->CreateSphere(
+		m_position,
+		m_rotation,
+		16.0f
+	);
+	//ワールド座標取得
+	Matrix HeadMatrix = m_modelRender.GetBone(m_attackBoonId)->GetWorldMatrix();
+	HeadCollision->SetWorldMatrix(HeadMatrix);
+}
+
 Vector3 Cactus::SetDirection()
 {
 	Vector3 randomPos = g_vec3Zero;
@@ -344,6 +368,8 @@ bool Cactus::IsBumpedForest()
 
 void Cactus::Damage(int attack)
 {
+	//攻撃中かもしれないので当たり判定を生成しないようにする
+	m_createAttackCollisionFlag = false;
 	//HPを減らす
 	m_status.hp -= attack;
 
@@ -358,14 +384,6 @@ void Cactus::Damage(int attack)
 	//もし防御中なら
 
 	SetNextAnimationState(enAnimationState_Damage);
-}
-
-void Cactus::HitFireBall()
-{
-}
-
-void Cactus::HitFlamePillar()
-{
 }
 
 bool Cactus::RotationOnly()
@@ -538,6 +556,20 @@ void Cactus::OnProcessVictoryStateTransition()
 
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
+	}
+}
+
+void Cactus::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+	//当たり判定生成タイミング
+	if (wcscmp(eventName, L"Collision_Start") == 0)
+	{
+		m_createAttackCollisionFlag = true;
+	}
+	//当たり判定生成終わり
+	if (wcscmp(eventName, L"Collision_End") == 0)
+	{
+		m_createAttackCollisionFlag = false;
 	}
 }
 

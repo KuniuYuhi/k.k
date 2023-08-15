@@ -13,10 +13,13 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	void Move();
 
 	void Attack();
+
+	void CreateCollision();
 
 	Vector3 SetDirection();
 
@@ -52,7 +55,7 @@ public:
 	/// <returns></returns>
 	bool isRotationEntable() const
 	{
-		return m_enAnimationState != enAninationState_Idle;
+		return true;//m_enAnimationState != enAninationState_Idle;
 	}
 
 	/// <summary>
@@ -69,14 +72,6 @@ public:
 	/// 被ダメージ時処理
 	/// </summary>
 	void Damage(int attack);
-
-	///// <summary>
-	///// 被ダメージ用当たり判定
-	///// </summary>
-	////ウィザードのファイヤーボールに当たった時の処理
-	void HitFireBall();
-	////ウィザードのフレイムピラーに当たった時の処理
-	void HitFlamePillar();
 
 	bool RotationOnly();
 
