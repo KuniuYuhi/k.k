@@ -332,6 +332,7 @@ bool Wizard::CreateFireBall()
 		//ファイヤーボール生成
 		FireBall* fireBall = NewGO<FireBall>(0, "fireball");
 		fireBall->SetWizard(this);
+		fireBall->Setting(m_position, m_rotation);
 		//MPを減らす
 		m_status.mp -= m_fireBall_SkillMp;
 
