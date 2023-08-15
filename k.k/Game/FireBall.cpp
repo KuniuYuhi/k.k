@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "FireBall.h"
-#include "Wizard.h"
+//#include "Wizard.h"
 
 FireBall::FireBall()
 {
@@ -105,9 +105,6 @@ void FireBall::Render(RenderContext& rc)
 void FireBall::SetForWizard(const char* collisionname, float speed, 
     float distance, float y_up, float collisionradius, Vector3 scale)
 {
-    m_position = m_wizard->GetPosition();
-    m_rotation = m_wizard->GetRotation();
-
     m_moveSpeed = Vector3::AxisZ;
     m_rotation.Apply(m_moveSpeed);
     //¶¬‚·‚éÀ•W‚ÌŒˆ’è
@@ -144,9 +141,6 @@ void FireBall::SetForWizard(const char* collisionname, float speed,
 void FireBall::SetForLich(const char* collisionname, float speed, 
     float distance, float y_up, float collisionradius, Vector3 scale)
 {
-    m_position = m_lich->GetPosition();
-    m_rotation = m_lich->GetRotation();
-
     m_moveSpeed = Vector3::AxisZ;
     m_rotation.Apply(m_moveSpeed);
     //¶¬‚·‚éÀ•W‚ÌŒˆ’è

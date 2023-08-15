@@ -1,7 +1,10 @@
 #pragma once
 
-#include "Wizard.h"
-#include "Lich.h"
+//#include "Wizard.h"
+
+
+class Lich;
+class Wizard;
 
 class FireBall:public IGameObject
 {
@@ -37,6 +40,16 @@ public:
 		Vector3 scale
 	);
 
+	/// <summary>
+	/// ¶¬‚Ìİ’è
+	/// </summary>
+	/// <param name="position">¶¬‚·‚éƒLƒƒƒ‰‚ÌÀ•W</param>
+	/// <param name="rotation">¶¬‚·‚éƒLƒƒƒ‰‚Ì‰ñ“]</param>
+	void Setting(Vector3 position, Quaternion rotation)
+	{
+		m_position = position;
+		m_rotation = rotation;
+	}
 
 	void SetWizard(Wizard* wizard)
 	{
