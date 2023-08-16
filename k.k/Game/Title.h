@@ -1,4 +1,6 @@
 #pragma once
+
+class Fade;
 class Title :public IGameObject
 {
 public:
@@ -13,6 +15,7 @@ public:
 
 private:
 	SpriteRender m_titleSprite;
+	Fade* m_fade = nullptr;
 
 	float m_wipeSize = 860.0f;
 };
