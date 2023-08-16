@@ -8,6 +8,7 @@ class BossStage1;
 class GameCamera;
 class ResultSeen;
 class GameUI;
+class Fade;
 
 class Game:public IGameObject
 {
@@ -17,12 +18,18 @@ public:
 
 	bool Start();
 	void Update();
+	void Render(RenderContext& rc);
+	/// <summary>
+	/// フェード
+	/// </summary>
+	/// <returns></returns>
+	bool Fadecomplete();
+
+	void CreateBoss();
 
 	void InitSkyCube();
 
 	void GoResult();
-	
-	void SpriteTransform();
 
 	void Spotmove();
 
@@ -49,10 +56,28 @@ public:
 		m_playerAnnihilationFlag = flag;
 	}
 
-	void Render(RenderContext& rc);
+	enum EnGameState
+	{
+		enGameState_Fade,
+		enGameState_GameStart,
+		enGameState_AppearanceBoss,
+		enGameState_Game,
+		enGameState_Pause,
+		enGameState_GameOver,
+		enGameState_GameClear
+	};
+
+	/// <summary>
+	/// 次のゲームステートを設定
+	/// </summary>
+	/// <param name="nextgamestate"></param>
+	void SetNextGameState(EnGameState nextgamestate)
+	{
+		m_enGameState = nextgamestate;
+	}
 
 private:
-
+	Fade* m_fade = nullptr;
 	Player* m_player = nullptr;
 	Lich* m_lich = nullptr;
 	BossStage1* m_bossStage1 = nullptr;
@@ -66,12 +91,8 @@ private:
 
 	ModelRender model;
 
-	FontRender fontTest;
-	float m_fontScale = 1.0f;
 
 	//Level2DRender level2DSp;
-	SpriteRender spriteTest;
-	float wipSize = 5.0f;
 
 	//spotLight
 	Vector3 spPosition = Vector3::Zero;
@@ -80,6 +101,8 @@ private:
 	Vector3 m_position = Vector3(0.0f,0.0f,0.0f);
 	Quaternion m_rotation = Quaternion::Identity;
 	Vector3 m_scale = Vector3::One;
+
+	EnGameState m_enGameState = enGameState_GameStart;
 
 	bool m_DeathBossFlag = false;
 	bool m_createResultFlag = false;

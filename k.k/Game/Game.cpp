@@ -10,6 +10,7 @@
 #include "TurtleShell.h"
 #include "Cactus.h"
 #include "Mushroom.h"
+#include "Fade.h"
 
 
 #include "SkyCube.h"
@@ -66,11 +67,6 @@ bool Game::Start()
 		Vector3(90.0f, 40.0f, 0.0f)
 	);*/
 
-	fontTest.SetText(L"歯");
-	fontTest.SetPosition(Vector3(50.0f, 0.0f, 0.0f));
-	fontTest.SetColor(Vector4(1.0f, 0.0f, 1.0f, 1.0f));
-	fontTest.SetOffset(Vector2(20.0f, -20.0f));
-
 	//レベル2D
 	//level2DSp.Init(
 	//	"Assets/Level2D/testLevel2D.casl",
@@ -88,28 +84,22 @@ bool Game::Start()
 	//		return false;
 	//	});
 
-	spriteTest.Init("Assets/sprite/titleBack.DDS", 1920.0f, 1080.0f);
-	spriteTest.SetPosition(m_position);
 	//単純なリニアワイプ
 	//spriteTest.SetSimpleWipe(true);
 	// 方向を指定するリニアワイプ
 	/*spriteTest.SetWipeWithDirection(true);
 	spriteTest.SetDirection(5.0f, 5.0f);*/
-	//円形ワイプ
-	spriteTest.SetRoundWipe(true);
-	spriteTest.SetRoundWipeStartPosition(1920.0f / 2, 1080.0f / 2);
-	spriteTest.Update();
 
+	//フェードクラスのインスタンスを探す
+	m_fade = FindGO<Fade>("fade");
 	//スカイキューブの初期化
 	InitSkyCube();
-
 
 	m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
 	m_player = NewGO<Player>(0, "player");
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
 	//model.Init("Assets/modelData/character/Wizard/Effect/FireBall.tkm");
-
 
 	/*m_lich = NewGO<Lich>(0, "lich");
 	m_lich->SetPosition({ 0.0f, 0.0f, -500.0f });*/
@@ -128,14 +118,32 @@ bool Game::Start()
 	m_gameUI->GetLich(m_lich);
 
 	//当たり判定の可視化
-	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
+	//画面を明るくする
+	m_fade->StartFadeOut(2.0f);
+	//ゲームステートをスタートにする
+	m_enGameState = enGameState_GameStart;
 
 	return true;
 }
 
 void Game::Update()
 {
+	//フェードアウト仕切らないと処理しない
+	if (Fadecomplete() != true)
+	{
+		return;
+	}
+
+
+
+
+
+
+
+
+
 	/*Quaternion roty = Quaternion::Identity;
 	roty.AddRotationDegY(g_gameTime->GetFrameDeltaTime() * 2000.0f);
 
@@ -152,23 +160,23 @@ void Game::Update()
 	
 
 	Spotmove();
+}
 
-	if (g_pad[0]->IsPress(enButtonStart))
+bool Game::Fadecomplete()
+{
+	//透明でないなら
+	if (m_fade->GetCurrentAlpha() != 0.0f)
 	{
-		//spriteTest.SetSimpleWipe(true);
-		spriteTest.SetWipeSize(wipSize);
-		wipSize += 5.0f;
-		//if (g_renderingEngine->HemiLightIsUse() == false)
-		//{
-		//	//g_renderingEngine->UnUseHemiLight();
-
-		//	g_renderingEngine->UseHemiLight();
-		//}
-		//else
-		//g_renderingEngine->UnUseHemiLight();
-		
-		//g_renderingEngine->UseHemiLight();
+		return false;
 	}
+	//透明なら
+	return true;
+}
+
+void Game::CreateBoss()
+{
+	/*m_lich = NewGO<Lich>(0, "lich");
+	m_lich->SetPosition({ 0.0f, 0.0f, -500.0f });*/
 }
 
 void Game::InitSkyCube()
@@ -196,36 +204,6 @@ void Game::GoResult()
 	{
 		DeleteGO(this);
 	}
-}
-
-void Game::SpriteTransform()
-{
-	//// 左スティック(キーボード：WASD)で平行移動。
-	m_position.x += g_pad[0]->GetLStickXF();
-	//m_position.y += g_pad[0]->GetLStickYF();
-
-	// 右スティック(キーボード：上下左右)で回転。
-	/*m_rotation.AddRotationY(g_pad[0]->GetRStickXF() * 0.05f);
-	m_rotation.AddRotationX(g_pad[0]->GetRStickYF() * 0.05f);*/
-
-	// 上下左右キー(キーボード：2, 4, 6, 8)で拡大
-	if (g_pad[0]->IsPress(enButtonUp)) {
-		m_scale.y += 0.02f;
-	}
-	if (g_pad[0]->IsPress(enButtonDown)) {
-		m_scale.y -= 0.02f;
-	}
-	if (g_pad[0]->IsPress(enButtonRight)) {
-		m_scale.x += 0.02f;
-	}
-	if (g_pad[0]->IsPress(enButtonLeft)) {
-		m_scale.x -= 0.02f;
-	}
-
-	spriteTest.SetPosition(m_position);
-	//spriteTest.SetRotation(m_rotation);
-	spriteTest.SetScale(m_scale);
-	spriteTest.Update();
 }
 
 void Game::Spotmove()
@@ -272,11 +250,4 @@ void Game::Spotmove()
 void Game::Render(RenderContext& rc)
 {
 	//model.Draw(rc);
-
-	//Tree.Draw(rc);
-	
-	//backGround.Draw(rc);
-	
-	//spriteTest.Draw(rc);
-	//fontTest.Draw(rc);
 }
