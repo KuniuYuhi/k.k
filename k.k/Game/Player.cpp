@@ -6,7 +6,7 @@
 #include "Game.h"
 
 //todo ここで当たり判定するのもありかも
-
+//todo 重力
 Player::Player()
 {
 }
@@ -93,9 +93,9 @@ void Player::Update()
 
 		//移動処理
 		m_moveSpeed = m_nowActor->calcVelocity(m_nowActor->GetStatus());
+		m_moveSpeed.y = 0.0f;
 		//キャラコンの移動処理
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-
 		/*rigitBody.SetPositionAndRotation(
 			m_position,
 			m_nowActor->GetRotation()
@@ -115,7 +115,7 @@ void Player::Change()
 	if (m_nowActor->isAnimationSwappable() != true)
 	{
 		//キャラクターの切り替え
-		if (g_pad[0]->IsTrigger(enButtonB))
+		if (g_pad[0]->IsTrigger(enButtonLB1))
 		{
 			switch (m_enActiveCharacter)
 			{
