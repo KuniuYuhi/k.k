@@ -192,35 +192,16 @@ bool Wizard::RotationOnly()
 
 void Wizard::Attack()
 {
-	if (isAnimationEntable() != true)
+	if (isCollisionEntable() != true)
 	{
 		return;
 	}
-
-	//スキルの切り替え
-	if (g_pad[0]->IsTrigger(enButtonRB3))
-	{
-		switch (m_enSkillPatternState)
-		{
-			//フレイムピラーからファイヤーボールに切り替え
-		case Wizard::enSkillPattern_FlamePillar:
-			m_enSkillPatternState = enSkillPattern_FireBall;
-			break;
-			//ファイヤーボールからフレイムピラーに切り替え
-		case Wizard::enSkillPattern_FireBall:
-			m_enSkillPatternState = enSkillPattern_FlamePillar;
-			break;
-		default:
-			break;
-		}
-	}
-
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 通常攻撃
 	////////////////////////////////////////////////////////////////////////////////////////
 	//1コンボ
-	if (g_pad[0]->IsTrigger(enButtonY)&& m_enAttackPatternState==enAttackPattern_None)
+	if (g_pad[0]->IsTrigger(enButtonB)&& m_enAttackPatternState==enAttackPattern_None)
 	{
 		m_enAttackPatternState = enAttackPattern_1;
 		SetNowComboState(enNowCombo_1);
@@ -228,7 +209,7 @@ void Wizard::Attack()
 		return;
 	}
 	//2コンボ受付タイム
-	if (g_pad[0]->IsTrigger(enButtonY) && m_enAttackPatternState == enAttackPattern_1)
+	if (g_pad[0]->IsTrigger(enButtonB) && m_enAttackPatternState == enAttackPattern_1)
 	{
 		m_enAttackPatternState = enAttackPattern_1to4;
 		return;
@@ -239,37 +220,33 @@ void Wizard::Attack()
 	////////////////////////////////////////////////////////////////////////////////////////
 	// スキル
 	////////////////////////////////////////////////////////////////////////////////////////
-
+	//フレイムピラー
 	if (g_pad[0]->IsTrigger(enButtonX) && m_enAttackPatternState == enAttackPattern_None)
 	{
-		//フレイムピラー
-		if (m_enSkillPatternState == enSkillPattern_FlamePillar)
-		{
-			//スキルのMPが足りないなら抜け出す
-			if (m_status.mp < m_flamePillar_skillMp) {
-				return;
-			}
-			m_enAttackPatternState = enAttackPattern_3_start;
-			SetNextAnimationState(enAnimationState_Attack_3_start);
-			//MP回復状態を止める
-			SetRecoveryMpFlag(false);
+		//スキルのMPが足りないなら抜け出す
+		if (m_status.mp < m_flamePillar_skillMp) {
 			return;
 		}
-		//ファイヤーボール
-		else
-		{
-			//スキルのMPが足りないなら抜け出す
-			if (m_status.mp < m_fireBall_SkillMp) {
-				return;
-			}
-			m_enAttackPatternState = enAttackPattern_2_start;
-			SetNextAnimationState(enAnimationState_Attack_2_start);
-			//MP回復状態を止める
-			SetRecoveryMpFlag(false);
-			return;
-		}
+		m_enAttackPatternState = enAttackPattern_3_start;
+		SetNextAnimationState(enAnimationState_Attack_3_start);
+		//MP回復状態を止める
+		SetRecoveryMpFlag(false);
+		return;
 	}
 	
+	//ファイヤーボール
+	if (g_pad[0]->IsTrigger(enButtonY) && m_enAttackPatternState == enAttackPattern_None)
+	{
+		//スキルのMPが足りないなら抜け出す
+		if (m_status.mp < m_fireBall_SkillMp) {
+			return;
+		}
+		m_enAttackPatternState = enAttackPattern_2_start;
+		SetNextAnimationState(enAnimationState_Attack_2_start);
+		//MP回復状態を止める
+		SetRecoveryMpFlag(false);
+		return;
+	}
 
 }
 
@@ -486,7 +463,7 @@ void Wizard::OnProcessAttack_2StateTransition()
 void Wizard::OnProcessAttack_2MainStateTransition()
 {
 	//Xボタンを押している間
-	if (g_pad[0]->IsPress(enButtonX))
+	if (g_pad[0]->IsPress(enButtonY))
 	{
 		//MPが足りなくなったら強制的にスキルを終わる
 		if (!CreateFireBall())
@@ -527,7 +504,7 @@ void Wizard::OnProcessAttack_3StateTransition()
 			
 			return;
 		}
-
+		//メインステートの時に使用される
 		//攻撃パターンをなし状態にする
 		m_enAttackPatternState = enAttackPattern_None;
 		//共通の状態遷移処理に移行

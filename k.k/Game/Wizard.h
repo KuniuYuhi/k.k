@@ -152,12 +152,7 @@ private:
 		enAttackPattern_End
 	};
 
-	//スキルパターンステート
-	enum EnSkillPattern {
-		enSkillPattern_FlamePillar,
-		enSkillPattern_FireBall
-	};
-
+	
 public:
 	//アニメーションステートを設定する
 	void SetAnimationState()
@@ -187,8 +182,6 @@ private:
 	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
 
 	EnAttackPattern m_enAttackPatternState = enAttackPattern_None;
-
-	EnSkillPattern m_enSkillPatternState = enSkillPattern_FlamePillar;
 
 	IWizardState* m_animationState = nullptr;
 
