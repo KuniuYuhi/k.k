@@ -19,11 +19,11 @@ private:
 
 	Level3DRender levelbg;
 	ModelRender backGround;
-	ModelRender Castle;
+	ModelRender m_wall;
 	ModelRender m_forest;
 
 	PhysicsStaticObject BGPhysicsStaticObject;
-	PhysicsStaticObject m_forestPhysicsStaticObject;
+	PhysicsStaticObject m_wallPhysicsStaticObject;
 
 	CollisionObject* m_tree_Collision;
 

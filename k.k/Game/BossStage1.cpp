@@ -34,19 +34,22 @@ bool BossStage1::Start()
 				//コリジョン属性をgroundにする
 				BGPhysicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Ground);
 
-				//森
-				//m_forest.InitShadow("Assets/modelData/BackGround/forest.tkm");
-				//m_forest.SetPosition(objData.position);
-				//m_forest.SetRotation(objData.rotation);
-				//m_forest.SetScale(objData.scale);
-				//m_forest.Update();
-				//m_forestPhysicsStaticObject.CreateFromModel(
-				//	m_forest.GetModel(),
-				//	m_forest.GetModel().GetWorldMatrix()
-				//);
-				////コリジョン属性をforestにする
-				//m_forestPhysicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_forest);
+				//壁
+				m_wall.InitShadow("Assets/modelData/BackGround/wall.tkm");
+				m_wall.SetPosition(objData.position);
+				m_wall.SetRotation(objData.rotation);
+				m_wall.SetScale(objData.scale);
+				m_wall.Update();
+				m_wallPhysicsStaticObject.CreateFromModel(
+					m_wall.GetModel(),
+					m_wall.GetModel().GetWorldMatrix()
+				);
+				//コリジョン属性をforestにする
+				m_wallPhysicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Wall);
 
+				//todo 影落とさなくてもいい
+				//森
+				m_forest.Init("Assets/modelData/BackGround/Trees.tkm");
 				return true;
 
 
@@ -65,5 +68,6 @@ void BossStage1::Update()
 void BossStage1::Render(RenderContext& rc)
 {
 	backGround.Draw(rc);
-	//m_forest.Draw(rc);
+	m_wall.Draw(rc);
+	m_forest.Draw(rc);
 }

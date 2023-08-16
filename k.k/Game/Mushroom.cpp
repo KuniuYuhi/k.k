@@ -38,7 +38,7 @@ struct IsForestResult :public btCollisionWorld::ConvexResultCallback
 	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
 	{
 		//’n–Ê‚Æ‚Ô‚Â‚©‚Á‚Ä‚È‚©‚Á‚½‚çB
-		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_forest) {
+		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
 			//Õ“Ë‚µ‚½‚Ì‚Í•Ç‚Å‚Í‚È‚¢B
 			isHit = false;
 			return 0.0f;
