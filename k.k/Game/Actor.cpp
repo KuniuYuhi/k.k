@@ -81,7 +81,7 @@ Vector3 Actor::calcVelocity(Status status)
 	}
 
 	moveSpeed += right + forward;
-
+	moveSpeed.y = 0.0f;
 	//値をセーブしておく
 	m_SaveMoveSpeed = moveSpeed;
 
