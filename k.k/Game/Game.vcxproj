@@ -254,7 +254,9 @@
     <ClCompile Include="HeroStateDamage.cpp" />
     <ClCompile Include="HeroStateDie.cpp" />
     <ClCompile Include="HeroStateIdle.cpp" />
+    <ClCompile Include="HeroStatePowerUp.cpp" />
     <ClCompile Include="HeroStateRun.cpp" />
+    <ClCompile Include="HeroStateVictory.cpp" />
     <ClCompile Include="HeroStateWalk.cpp" />
     <ClCompile Include="Lich.cpp" />
     <ClCompile Include="LichAction.cpp" />
@@ -352,7 +354,9 @@
     <ClInclude Include="HeroStateDamage.h" />
     <ClInclude Include="HeroStateDie.h" />
     <ClInclude Include="HeroStateIdle.h" />
+    <ClInclude Include="HeroStatePowerUp.h" />
     <ClInclude Include="HeroStateRun.h" />
+    <ClInclude Include="HeroStateVictory.h" />
     <ClInclude Include="HeroStateWalk.h" />
     <ClInclude Include="ICactusState.h" />
     <ClInclude Include="IHeroState.h" />

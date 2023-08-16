@@ -275,6 +275,8 @@
     </ClCompile>
     <ClCompile Include="GameUI.cpp" />
     <ClCompile Include="DamageFont.cpp" />
+    <ClCompile Include="HeroStatePowerUp.cpp" />
+    <ClCompile Include="HeroStateVictory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -545,5 +547,7 @@
     </ClInclude>
     <ClInclude Include="GameUI.h" />
     <ClInclude Include="DamageFont.h" />
+    <ClInclude Include="HeroStatePowerUp.h" />
+    <ClInclude Include="HeroStateVictory.h" />
   </ItemGroup>
 </Project>
