@@ -115,8 +115,8 @@ bool Game::Start()
 	m_lich->SetPosition({ 0.0f, 0.0f, -500.0f });*/
 	/*Slime* slime = NewGO<Slime>(0, "slime");
 	slime->SetPosition({ 0.0f, 0.0f, -300.0f });*/
-	TurtleShell* turtleshell = NewGO<TurtleShell>(0, "turtleshell");
-	turtleshell->SetPosition({ 0.0f, 0.0f, -500.0f });
+	/*TurtleShell* turtleshell = NewGO<TurtleShell>(0, "turtleshell");
+	turtleshell->SetPosition({ 0.0f, 0.0f, -500.0f });*/
 	/*Cactus* cactus = NewGO<Cactus>(0, "cactus");
 	cactus->SetPosition({ 0.0f, 0.0f, -700.0f });*/
 	/*Mushroom* mushroom = NewGO<Mushroom>(0, "mushroom");
@@ -128,7 +128,7 @@ bool Game::Start()
 	m_gameUI->GetLich(m_lich);
 
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 
 	return true;
