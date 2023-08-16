@@ -239,6 +239,7 @@
     <ClCompile Include="DamageFont.cpp" />
     <ClCompile Include="DarkMeteorite.cpp" />
     <ClCompile Include="DarkWall.cpp" />
+    <ClCompile Include="Fade.cpp" />
     <ClCompile Include="FireBall.cpp" />
     <ClCompile Include="FlamePillar.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -339,6 +340,7 @@
     <ClInclude Include="DamageFont.h" />
     <ClInclude Include="DarkMeteorite.h" />
     <ClInclude Include="DarkWall.h" />
+    <ClInclude Include="Fade.h" />
     <ClInclude Include="FireBall.h" />
     <ClInclude Include="FlamePillar.h" />
     <ClInclude Include="Game.h" />

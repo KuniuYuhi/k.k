@@ -275,8 +275,13 @@
     </ClCompile>
     <ClCompile Include="GameUI.cpp" />
     <ClCompile Include="DamageFont.cpp" />
-    <ClCompile Include="HeroStatePowerUp.cpp" />
-    <ClCompile Include="HeroStateVictory.cpp" />
+    <ClCompile Include="HeroStatePowerUp.cpp">
+      <Filter>Hero</Filter>
+    </ClCompile>
+    <ClCompile Include="HeroStateVictory.cpp">
+      <Filter>Hero</Filter>
+    </ClCompile>
+    <ClCompile Include="Fade.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -547,7 +552,12 @@
     </ClInclude>
     <ClInclude Include="GameUI.h" />
     <ClInclude Include="DamageFont.h" />
-    <ClInclude Include="HeroStatePowerUp.h" />
-    <ClInclude Include="HeroStateVictory.h" />
+    <ClInclude Include="HeroStatePowerUp.h">
+      <Filter>Hero</Filter>
+    </ClInclude>
+    <ClInclude Include="HeroStateVictory.h">
+      <Filter>Hero</Filter>
+    </ClInclude>
+    <ClInclude Include="Fade.h" />
   </ItemGroup>
 </Project>
