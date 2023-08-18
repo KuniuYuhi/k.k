@@ -147,7 +147,7 @@ public:
 	/// À•W‚Ìæ“¾
 	/// </summary>
 	/// <returns></returns>
-	const Vector3 GetPosition()
+	const Vector3& GetPosition() const
 	{
 		return m_position;
 	}
@@ -156,7 +156,7 @@ public:
 	/// Šg‘å—¦‚Ìæ“¾
 	/// </summary>
 	/// <returns></returns>
-	const Vector3 GetScale()
+	const Vector3& GetScale() const
 	{
 		return m_scale;
 	}
@@ -165,9 +165,14 @@ public:
 	/// ‰ñ“]‚Ìæ“¾
 	/// </summary>
 	/// <returns></returns>
-	const Quaternion GetRotation()
+	const Quaternion& GetRotation() const
 	{
 		return m_rotation;
+	}
+
+	const Vector3& GetForward() const
+	{
+		return m_forward;
 	}
 
 	void SetWinFlag(bool flag)
