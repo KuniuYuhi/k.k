@@ -17,6 +17,8 @@
 #include "FlamePillar.h"
 #include "WizardStateDie.h"
 #include "WizardStateDamage.h"
+#include "WizardStateVictory_start.h"
+#include "WizardStateVictory_main.h"
 
 namespace {
 	int MAXHP = 150;
@@ -92,6 +94,10 @@ void Wizard::InitModel()
 	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Damage].Load("Assets/animData/character/Wizard/Damage.tka");
 	m_animationClip[enAnimClip_Damage].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Victory_start].Load("Assets/animData/character/Wizard/Victory_start.tka");
+	m_animationClip[enAnimClip_Victory_start].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Victory_main].Load("Assets/animData/character/Wizard/Victory_maintain.tka");
+	m_animationClip[enAnimClip_Victory_main].SetLoopFlag(false);
 
 
 	m_modelRender.Init(
@@ -118,9 +124,11 @@ void Wizard::InitModel()
 
 void Wizard::Update()
 {
+	//勝ったときに処理しない
 	//やられたなら他の処理を実行しない
-	if (GetDieFlag() == true)
+	if (GetDieFlag() == true || m_player->GetGameEndFlag() == true)
 	{
+		m_invincibleTimeFlag = false;
 		ManageState();
 		PlayAnimation();
 		m_modelRender.Update();
@@ -258,7 +266,7 @@ void Wizard::CreateCollision()
 	AtkCollision->CreateBox(
 		m_position,
 		m_wandRotation,
-		Vector3(10.0f, 100.0f, 10.0f)
+		Vector3(20.0f, 100.0f, 20.0f)
 	);
 
 	//杖のボーンのワールド座標を取得
@@ -398,6 +406,14 @@ void Wizard::SetNextAnimationState(EnAnimationState nextState)
 	case Wizard::enAnimationState_Damage:
 		//被ダメージステートを作成する。
 		m_animationState = new WizardStateDamage(this);
+		break;
+	case Wizard::enAnimationState_Victory_start:
+		//被ダメージステートを作成する。
+		m_animationState = new WizardStateVictory_start(this);
+		break;
+	case Wizard::enAnimationState_Victory_main:
+		//被ダメージステートを作成する。
+		m_animationState = new WizardStateVictory_main(this);
 		break;
 
 	default:
@@ -553,6 +569,27 @@ void Wizard::OnProcessDamageStateTransition()
 		m_enAttackPatternState = enAttackPattern_None;
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
+	}
+}
+
+void Wizard::OnProcessVictoryStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//スタートとメインでループさせる
+		switch (m_enAnimationState)
+		{
+		case enAnimationState_Victory_start:
+			SetNextAnimationState(enAnimationState_Victory_main);
+			break;
+		case enAnimationState_Victory_main:
+			SetNextAnimationState(enAnimationState_Victory_start);
+			break;
+
+		default:
+			break;
+		}
 	}
 }
 

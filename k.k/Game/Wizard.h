@@ -104,6 +104,8 @@ public:
 
 	void OnProcessDamageStateTransition();
 
+	void OnProcessVictoryStateTransition();
+
 
 	// アニメーションクリップの番号を表す列挙型。
 	enum EnAnimationClip {
@@ -118,6 +120,8 @@ public:
 		enAnimClip_Attack_4,		// 6 :
 		enAnimClip_Die,
 		enAnimClip_Damage,
+		enAnimClip_Victory_start,
+		enAnimClip_Victory_main,
 		enAnimClip_Num,				// 7 :アニメーションクリップの数
 	};
 
@@ -136,7 +140,9 @@ private:
 		enAnimationState_Attack_3_main,
 		enAnimationState_Attack_4,
 		enAnimationState_Die,
-		enAnimationState_Damage
+		enAnimationState_Damage,
+		enAnimationState_Victory_start,
+		enAnimationState_Victory_main,
 	};
 
 	//攻撃パターンステート
@@ -154,10 +160,13 @@ private:
 
 	
 public:
-	//アニメーションステートを設定する
-	void SetAnimationState()
+	
+	/// <summary>
+	/// 勝利ステートを設定する
+	/// </summary>
+	void SetVictoryAnimationState()
 	{
-		//m_enAnimationState= enAninationState_Idle;
+		SetNextAnimationState(enAnimationState_Victory_start);
 	}
 
 private:
