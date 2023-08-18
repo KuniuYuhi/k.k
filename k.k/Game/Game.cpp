@@ -11,7 +11,7 @@
 #include "Cactus.h"
 #include "Mushroom.h"
 #include "Fade.h"
-
+#include "EntryBoss.h"
 
 #include "SkyCube.h"
 
@@ -19,6 +19,8 @@ namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(1.0f, 1.0f, 1.0f);
 
 	const Vector3 SPOT_LIGHT_COLOR = Vector3(40.0f, 10.0f, 10.0f);
+
+	const Vector3 BOSS_CREATE_POSITION = Vector3(0.0f, 0.0f, 500.0f);
 }
 
 Game::Game()
@@ -27,6 +29,7 @@ Game::Game()
 
 Game::~Game()
 {
+	DeleteGO(m_skyCube);
 	DeleteGO(m_bossStage1);
 	
 	DeleteGO(m_player);
@@ -97,6 +100,7 @@ bool Game::Start()
 
 	m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
 	m_player = NewGO<Player>(0, "player");
+	m_player->SetPosition({ 0.0f,0.0f,-1000.0f });
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
 	//model.Init("Assets/modelData/character/Wizard/Effect/FireBall.tkm");
@@ -112,11 +116,6 @@ bool Game::Start()
 	/*Mushroom* mushroom = NewGO<Mushroom>(0, "mushroom");
 	mushroom->SetPosition({ 0.0f,0.0f,-600.0f });*/
 
-	m_gameUI = NewGO<GameUI>(0, "gameUI");
-	m_gameUI->GetGame(this);
-	m_gameUI->GetPlayer(m_player);
-	m_gameUI->GetLich(m_lich);
-
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
@@ -130,14 +129,8 @@ bool Game::Start()
 
 void Game::Update()
 {
-	//フェードアウト仕切らないと処理しない
-	if (Fadecomplete() != true)
-	{
-		return;
-	}
-
-
-
+	
+	ManageState();
 
 
 
@@ -149,14 +142,6 @@ void Game::Update()
 
 	m_skyCube->SetRotation(roty);
 	m_skyCube->Update();*/
-
-	//ボスがやられたら
-	if (m_DeathBossFlag == true||m_playerAnnihilationFlag==true)
-	{
-		//リザルト画面に遷移するまでの処理
-		GoResult();
-		return;
-	}
 	
 
 	Spotmove();
@@ -175,8 +160,8 @@ bool Game::Fadecomplete()
 
 void Game::CreateBoss()
 {
-	/*m_lich = NewGO<Lich>(0, "lich");
-	m_lich->SetPosition({ 0.0f, 0.0f, -500.0f });*/
+	m_lich = NewGO<Lich>(0, "lich");
+	m_lich->SetPosition(BOSS_CREATE_POSITION);
 }
 
 void Game::InitSkyCube()
@@ -200,6 +185,7 @@ void Game::GoResult()
 	}
 
 	//画面がリザルトの画像になった
+	//円形ワイプが終わったら
 	if (m_result->GetRoundWipeEndFlag() == true)
 	{
 		DeleteGO(this);
@@ -247,7 +233,226 @@ void Game::Spotmove()
 	
 }
 
+bool Game::IsBossMovieSkipTime()
+{
+	if (g_pad[0]->IsPress(enButtonA))
+	{
+		//3秒たったらスキップ
+		if (m_bossMovieSkipTime < m_bossMovieSkipTimer)
+		{
+			return true;
+		}
+		else
+		{
+			m_bossMovieSkipTimer += g_gameTime->GetFrameDeltaTime();
+		}
+	}
+	else
+	{
+		m_bossMovieSkipTimer = 0.0f;
+	}
+
+	return false;
+}
+
+void Game::ManageState()
+{
+	switch (m_enGameState)
+	{
+	case enGameState_Fade:
+		break;
+	case enGameState_GameStart:
+		OnProcessGameStartTransition();
+		break;
+	case enGameState_AppearanceBoss:
+		OnProcessAppearanceBossTransition();
+		break;
+	case enGameState_Game:
+		OnProcessGameTransition();
+		break;
+	case enGameState_Pause:
+		break;
+	case enGameState_GameOver:
+		OnProcessGameOverTransition();
+		break;
+	case enGameState_GameClear:
+		OnProcessGameClearTransition();
+		break;
+	default:
+		break;
+	}
+
+
+
+}
+
+void Game::OnProcessGameStartTransition()
+{
+	//フェードアウト仕切らないと処理しない
+	if (Fadecomplete() != true)
+	{
+		//画面が完全にフェードインしたら
+		if (m_fade->IsFade()==false && m_enFadeState == enFadeState_StartToBoss)
+		{
+			//ステートを切り替える
+			SetNextGameState(enGameState_AppearanceBoss);
+			//カメラをリセットする
+			m_gameCamera->CameraRefresh();
+
+		}
+
+		return;
+	}
+
+	m_cameraZoomOutTimer += g_gameTime->GetFrameDeltaTime();
+	//ある程度ズームしたら
+	if (m_cameraZoomOutTime < m_cameraZoomOutTimer)
+	{
+		//フェードインを始める
+		m_enFadeState = enFadeState_StartToBoss;
+		m_fade->StartFadeIn(3.0f);
+
+	}
+		
+	
+}
+
+void Game::OnProcessAppearanceBossTransition()
+{
+	//ボスの出現アニメーションを再生する。終わったらボス生成
+
+	//フェードに入っている状態なら
+	//フェードインしきったらステートを切り替える
+	if (m_fade->IsFade() == false && m_enFadeState!=enFadeState_None)
+	{
+		switch (m_enFadeState)
+		{
+		case Game::enFadeState_StartToBoss:
+			//このステートに入ってフェードアウトするとき
+			m_fade->StartFadeOut(3.0f);
+			//フェードステートをなしにする
+			m_enFadeState = enFadeState_None;
+			break;
+		case Game::enFadeState_BossToPlayer:
+			//次のステートに移る時
+			//ムービー用のモデルを消す
+			DeleteGO(m_entryBoss);
+			//ボスの生成
+			CreateBoss();
+			//ステートを切り替える
+			SetNextGameState(enGameState_Game);
+			break;
+		default:
+			break;
+		}
+		return;
+	}
+
+	//スキップ処理
+	if (IsBossMovieSkipTime() == true)
+	{
+		//フェードインを始める
+		m_enFadeState = enFadeState_BossToPlayer;
+		m_fade->StartFadeIn(3.0f);
+		return;
+	}
+
+	//ボスの登場ムービークラス生成
+	if (m_bossCreateFlag == false)
+	{
+		m_entryBoss = NewGO<EntryBoss>(0, "entryboss");
+		m_entryBoss->SetPosition(BOSS_CREATE_POSITION);
+		m_entryBoss->SetGame(this);
+		m_bossCreateFlag = true;
+
+	}
+	//ボスの登場ムービーが終わったら
+	if (m_bossMovieEndFlag == true)
+	{
+		//フェードインを始める
+		m_enFadeState = enFadeState_BossToPlayer;
+		m_fade->StartFadeIn(3.0f);
+	}
+}
+
+void Game::OnProcessGameTransition()
+{
+	//ゲームクリア
+	//ボスがやられたら
+	if (m_DeathBossFlag == true)
+	{
+		DeleteGO(m_gameUI);
+		//ステートを切り替える
+		SetNextGameState(enGameState_GameClear);
+		//
+		m_gameCamera->SetLich(m_lich);
+		//カメラをリセットする
+		m_gameCamera->CameraRefresh();
+		return;
+	}
+	//ゲームオーバー
+	//キャラクターが全滅したら
+	if (m_playerAnnihilationFlag == true)
+	{
+		DeleteGO(m_gameUI);
+		//ステートを切り替える
+		SetNextGameState(enGameState_GameOver);
+	}
+
+
+
+	//画面を明るくする
+	if (m_fade->IsFade() == false && m_enFadeState == enFadeState_BossToPlayer)
+	{
+		//UI生成
+		m_gameUI = NewGO<GameUI>(0, "gameUI");
+		m_gameUI->GetGame(this);
+		m_gameUI->GetPlayer(m_player);
+		m_gameUI->GetLich(m_lich);
+		//このステートに入ってフェードアウトするとき
+		m_fade->StartFadeOut(3.0f);
+		//フェードステートをなしにする
+		m_enFadeState = enFadeState_None;
+	}
+}
+
+void Game::OnProcessGameOverTransition()
+{
+	//ゲーム画面からリザルト画面に遷移するまでの処理
+	GoResult();
+}
+
+void Game::OnProcessGameClearTransition()
+{
+	if (m_displayResultFlag == true)
+	{
+		GoResult();
+		return;
+	}
+
+
+	//プレイヤーを見ているならタイトル画面に戻れる
+	if (m_clearCameraState == enClearCameraState_Player)
+	{
+		if (g_pad[0]->IsTrigger(enButtonA))
+		{
+			m_displayResultFlag = true;
+		}
+		return;
+	}
+
+	//リザルト画面がない間
+	m_lich = FindGO<Lich>("lich");
+	if (m_lich == nullptr)
+	{
+		//ボスがいなくなったらカメラの対象を変える
+		SetClearCameraState(Game::enClearCameraState_Player);
+		//リザルト画面表示
+		
+	}
+
+}
+
 void Game::Render(RenderContext& rc)
 {
-	//model.Draw(rc);
 }
