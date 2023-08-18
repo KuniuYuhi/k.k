@@ -239,6 +239,7 @@
     <ClCompile Include="DamageFont.cpp" />
     <ClCompile Include="DarkMeteorite.cpp" />
     <ClCompile Include="DarkWall.cpp" />
+    <ClCompile Include="EntryBoss.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="FireBall.cpp" />
     <ClCompile Include="FlamePillar.cpp" />
@@ -320,6 +321,8 @@
     <ClCompile Include="WizardStateDie.cpp" />
     <ClCompile Include="WizardStateIdle.cpp" />
     <ClCompile Include="WizardStateRun.cpp" />
+    <ClCompile Include="WizardStateVictory_main.cpp" />
+    <ClCompile Include="WizardStateVictory_start.cpp" />
     <ClCompile Include="WizardStateWalk.cpp" />
     <ClCompile Include="WizardState_Attack_4.cpp" />
   </ItemGroup>
@@ -340,6 +343,7 @@
     <ClInclude Include="DamageFont.h" />
     <ClInclude Include="DarkMeteorite.h" />
     <ClInclude Include="DarkWall.h" />
+    <ClInclude Include="EntryBoss.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="FireBall.h" />
     <ClInclude Include="FlamePillar.h" />
@@ -423,6 +427,8 @@
     <ClInclude Include="WizardStateDie.h" />
     <ClInclude Include="WizardStateIdle.h" />
     <ClInclude Include="WizardStateRun.h" />
+    <ClInclude Include="WizardStateVictory_main.h" />
+    <ClInclude Include="WizardStateVictory_start.h" />
     <ClInclude Include="WizardStateWalk.h" />
     <ClInclude Include="WizardState_Attack_4.h" />
   </ItemGroup>

@@ -282,6 +282,9 @@
       <Filter>Hero</Filter>
     </ClCompile>
     <ClCompile Include="Fade.cpp" />
+    <ClCompile Include="EntryBoss.cpp" />
+    <ClCompile Include="WizardStateVictory_start.cpp" />
+    <ClCompile Include="WizardStateVictory_main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -559,5 +562,8 @@
       <Filter>Hero</Filter>
     </ClInclude>
     <ClInclude Include="Fade.h" />
+    <ClInclude Include="EntryBoss.h" />
+    <ClInclude Include="WizardStateVictory_start.h" />
+    <ClInclude Include="WizardStateVictory_main.h" />
   </ItemGroup>
 </Project>
