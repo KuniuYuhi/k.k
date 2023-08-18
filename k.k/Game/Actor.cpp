@@ -60,7 +60,7 @@ Vector3 Actor::calcVelocity(Status status)
 	forward.y = 0.0f;
 	right.y = 0.0f;
 	forward.Normalize();
-
+	right.Normalize();
 	//移動の入力
 	Vector3 stickL = Vector3::Zero;
 	stickL.x = g_pad[0]->GetLStickXF();
@@ -79,9 +79,16 @@ Vector3 Actor::calcVelocity(Status status)
 		right *= stickL.x * (status.defaultSpeed + status.dashSpeed);
 		forward *= stickL.y * (status.defaultSpeed + status.dashSpeed);
 	}
-
 	moveSpeed += right + forward;
 	moveSpeed.y = 0.0f;
+	//前方向の取得
+	//x,yどちらかの入力があったら
+	if (fabsf(forward.x) >= 0.001f || fabsf(forward.z) >= 0.001f)
+	{
+		m_forward = moveSpeed;
+		m_forward.Normalize();
+	}
+
 	//値をセーブしておく
 	m_SaveMoveSpeed = moveSpeed;
 
