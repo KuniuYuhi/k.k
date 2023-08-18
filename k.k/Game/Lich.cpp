@@ -150,13 +150,6 @@ void Lich::InitModel()
 
 void Lich::Update()
 {
-	//MPの表示
-	/*int NowActorMP = m_status.hp;
-	int NowActorMaxMP = m_status.maxHp;
-	wchar_t MP[255];
-	swprintf_s(MP, 255, L"ボス HP %3d/%d", NowActorMP, NowActorMaxMP);
-	m_hpFont.SetText(MP);*/
-
 	//被ダメージの当たり判定
 	DamageCollision(m_charaCon);
 
@@ -280,9 +273,17 @@ void Lich::Damage(int attack)
 			SetInvincibleFlag(true);
 		}
 	}
-	
+	//やられたとき
 	if(m_status.hp <= 0)
 	{
+		//やられるところをゆっくりにする
+		//フレームレートを落とす
+		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 30);
+		//自身が倒されたらことをゲームに伝える
+		m_game = FindGO<Game>("game");
+		m_game->SetDeathBossFlag(true);
+		//カメラがリッチを追うようにする
+		m_game->SetClearCameraState(Game::enClearCameraState_Lich);
 		//Dieフラグをtrueにする
 		m_dieFlag = true;
 		m_status.hp = 0;
@@ -649,10 +650,9 @@ void Lich::OnProcessDieStateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//自身が倒されたらことをゲームに伝える
-		Game* game = FindGO<Game>("game");
-		game->SetDeathBossFlag(true);
-
+		//
+		//m_game->SetClearCameraState(Game::enClearCameraState_Player);
+		DeleteGO(this);
 	}
 }
 
