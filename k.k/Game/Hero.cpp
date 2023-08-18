@@ -112,9 +112,11 @@ void Hero::InitModel()
 
 void Hero::Update()
 {
+	//勝ったときに処理しない
 	//やられたなら他の処理を実行しない
-	if (GetDieFlag() == true)
+	if (GetDieFlag() == true|| m_player->GetGameEndFlag() == true)
 	{
+		m_invincibleTimeFlag = false;
 		ManageState();
 		PlayAnimation();
 		m_modelRender.Update();
@@ -320,6 +322,9 @@ void Hero::CreateSkillCollision()
 
 void Hero::Damage(int attack)
 {
+	//スキル使用時にダメージを受けたかもしれない
+	m_createSkillCollisionFlag = false;
+
 	if (m_status.hp > 0)
 	{
 		m_status.hp -= attack;
@@ -621,10 +626,7 @@ void Hero::OnProcessVictoryStateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//勝ったことを伝える
-
-		//共通の状態遷移処理に移行
-		ProcessCommonStateTransition();
+		
 	}
 }
 

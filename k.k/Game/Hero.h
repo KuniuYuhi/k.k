@@ -199,13 +199,12 @@ private:
 		enAttackPattern_End
 	};
 
-	
-
-public:
-	//アニメーションステートを設定する
-	void SetAnimationState()
+	/// <summary>
+	/// 勝利ステートを設定する
+	/// </summary>
+	void SetVictoryAnimationState()
 	{
-		//m_enAnimationState= enAninationState_Idle;
+		SetNextAnimationState(enAnimationState_Victory);
 	}
 
 private:
