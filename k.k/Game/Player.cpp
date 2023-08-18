@@ -19,6 +19,9 @@ Player::~Player()
 
 bool Player::Start()
 {
+	m_game = FindGO<Game>("game");
+
+
 	m_hero = NewGO<Hero>(0, "hero");
 	m_wizard = NewGO<Wizard>(0, "wizard");
 
@@ -34,6 +37,9 @@ bool Player::Start()
 
 	//現在のキャラクターをヒーローに設定する
 	m_nowActor = actor[m_enActiveCharacter];
+
+	//キャラクターの座標を設定
+	m_nowActor->SetPosition(m_position);
 
 	//座標の設定
 	m_position = m_nowActor->GetPosition();
@@ -59,10 +65,25 @@ bool Player::Start()
 
 void Player::Update()
 {
-	
+	//ボスが死んだら処理しない
+	if (m_game->GetDeathBossFlag() == true)
+	{
+		if (m_gameEndFlag == false)
+		{
+			//アニメーションしていなかったら
+			//現在のアクターのステートを勝利ステートにする
+			m_nowActor->SetVictoryAnimationState();
+			m_gameEndFlag = true;
+		}
+		
+		return;
+	}
+
+
 	//キャラクターが全滅していたら処理しない
 	if (IsAnnihilation() == true)
 	{
+		m_gameEndFlag = true;
 		//ゲームに全滅したことを一度だけ伝える
 		if (m_informGameFlag != true)
 		{
@@ -156,7 +177,7 @@ void Player::ChangeCharacter(EnCharacters nextCharacter)
 	);
 	//m_charaCon.SetRadius(50.0f);
 	//キャラコンの座標
-	m_nowActor->SetCharaConPosition(m_nowActor->GetPosition());
+	//m_nowActor->SetCharaConPosition(m_nowActor->GetPosition());
 	
 
 	//現在のキャラクターを魔法使いに変更する
