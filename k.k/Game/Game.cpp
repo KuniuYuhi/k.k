@@ -10,7 +10,8 @@
 #include "TurtleShell.h"
 #include "Cactus.h"
 #include "Mushroom.h"
-
+#include "Fade.h"
+#include "EntryBoss.h"
 
 #include "SkyCube.h"
 
@@ -18,6 +19,8 @@ namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(1.0f, 1.0f, 1.0f);
 
 	const Vector3 SPOT_LIGHT_COLOR = Vector3(40.0f, 10.0f, 10.0f);
+
+	const Vector3 BOSS_CREATE_POSITION = Vector3(0.0f, 0.0f, 500.0f);
 }
 
 Game::Game()
@@ -26,6 +29,7 @@ Game::Game()
 
 Game::~Game()
 {
+	DeleteGO(m_skyCube);
 	DeleteGO(m_bossStage1);
 	
 	DeleteGO(m_player);
@@ -66,11 +70,6 @@ bool Game::Start()
 		Vector3(90.0f, 40.0f, 0.0f)
 	);*/
 
-	fontTest.SetText(L"歯");
-	fontTest.SetPosition(Vector3(50.0f, 0.0f, 0.0f));
-	fontTest.SetColor(Vector4(1.0f, 0.0f, 1.0f, 1.0f));
-	fontTest.SetOffset(Vector2(20.0f, -20.0f));
-
 	//レベル2D
 	//level2DSp.Init(
 	//	"Assets/Level2D/testLevel2D.casl",
@@ -88,87 +87,81 @@ bool Game::Start()
 	//		return false;
 	//	});
 
-	spriteTest.Init("Assets/sprite/titleBack.DDS", 1920.0f, 1080.0f);
-	spriteTest.SetPosition(m_position);
 	//単純なリニアワイプ
 	//spriteTest.SetSimpleWipe(true);
 	// 方向を指定するリニアワイプ
 	/*spriteTest.SetWipeWithDirection(true);
 	spriteTest.SetDirection(5.0f, 5.0f);*/
-	//円形ワイプ
-	spriteTest.SetRoundWipe(true);
-	spriteTest.SetRoundWipeStartPosition(1920.0f / 2, 1080.0f / 2);
-	spriteTest.Update();
 
+	//フェードクラスのインスタンスを探す
+	m_fade = FindGO<Fade>("fade");
 	//スカイキューブの初期化
 	InitSkyCube();
 
-
 	m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
 	m_player = NewGO<Player>(0, "player");
+	m_player->SetPosition({ 0.0f,0.0f,-1000.0f });
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
 	//model.Init("Assets/modelData/character/Wizard/Effect/FireBall.tkm");
-
 
 	/*m_lich = NewGO<Lich>(0, "lich");
 	m_lich->SetPosition({ 0.0f, 0.0f, -500.0f });*/
 	/*Slime* slime = NewGO<Slime>(0, "slime");
 	slime->SetPosition({ 0.0f, 0.0f, -300.0f });*/
-	TurtleShell* turtleshell = NewGO<TurtleShell>(0, "turtleshell");
-	turtleshell->SetPosition({ 0.0f, 0.0f, -500.0f });
+	/*TurtleShell* turtleshell = NewGO<TurtleShell>(0, "turtleshell");
+	turtleshell->SetPosition({ 0.0f, 0.0f, -500.0f });*/
 	/*Cactus* cactus = NewGO<Cactus>(0, "cactus");
 	cactus->SetPosition({ 0.0f, 0.0f, -700.0f });*/
 	/*Mushroom* mushroom = NewGO<Mushroom>(0, "mushroom");
 	mushroom->SetPosition({ 0.0f,0.0f,-600.0f });*/
 
-	m_gameUI = NewGO<GameUI>(0, "gameUI");
-	m_gameUI->GetGame(this);
-	m_gameUI->GetPlayer(m_player);
-	m_gameUI->GetLich(m_lich);
-
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
+	//画面を明るくする
+	m_fade->StartFadeOut(2.0f);
+	//ゲームステートをスタートにする
+	m_enGameState = enGameState_GameStart;
 
 	return true;
 }
 
 void Game::Update()
 {
+	
+	ManageState();
+
+
+
+
+
+
 	/*Quaternion roty = Quaternion::Identity;
 	roty.AddRotationDegY(g_gameTime->GetFrameDeltaTime() * 2000.0f);
 
 	m_skyCube->SetRotation(roty);
 	m_skyCube->Update();*/
-
-	//ボスがやられたら
-	if (m_DeathBossFlag == true||m_playerAnnihilationFlag==true)
-	{
-		//リザルト画面に遷移するまでの処理
-		GoResult();
-		return;
-	}
 	
 
 	Spotmove();
+}
 
-	if (g_pad[0]->IsPress(enButtonStart))
+bool Game::Fadecomplete()
+{
+	//透明でないなら
+	if (m_fade->GetCurrentAlpha() != 0.0f)
 	{
-		//spriteTest.SetSimpleWipe(true);
-		spriteTest.SetWipeSize(wipSize);
-		wipSize += 5.0f;
-		//if (g_renderingEngine->HemiLightIsUse() == false)
-		//{
-		//	//g_renderingEngine->UnUseHemiLight();
-
-		//	g_renderingEngine->UseHemiLight();
-		//}
-		//else
-		//g_renderingEngine->UnUseHemiLight();
-		
-		//g_renderingEngine->UseHemiLight();
+		return false;
 	}
+	//透明なら
+	return true;
+}
+
+void Game::CreateBoss()
+{
+	m_lich = NewGO<Lich>(0, "lich");
+	m_lich->SetPosition(BOSS_CREATE_POSITION);
 }
 
 void Game::InitSkyCube()
@@ -192,40 +185,11 @@ void Game::GoResult()
 	}
 
 	//画面がリザルトの画像になった
+	//円形ワイプが終わったら
 	if (m_result->GetRoundWipeEndFlag() == true)
 	{
 		DeleteGO(this);
 	}
-}
-
-void Game::SpriteTransform()
-{
-	//// 左スティック(キーボード：WASD)で平行移動。
-	m_position.x += g_pad[0]->GetLStickXF();
-	//m_position.y += g_pad[0]->GetLStickYF();
-
-	// 右スティック(キーボード：上下左右)で回転。
-	/*m_rotation.AddRotationY(g_pad[0]->GetRStickXF() * 0.05f);
-	m_rotation.AddRotationX(g_pad[0]->GetRStickYF() * 0.05f);*/
-
-	// 上下左右キー(キーボード：2, 4, 6, 8)で拡大
-	if (g_pad[0]->IsPress(enButtonUp)) {
-		m_scale.y += 0.02f;
-	}
-	if (g_pad[0]->IsPress(enButtonDown)) {
-		m_scale.y -= 0.02f;
-	}
-	if (g_pad[0]->IsPress(enButtonRight)) {
-		m_scale.x += 0.02f;
-	}
-	if (g_pad[0]->IsPress(enButtonLeft)) {
-		m_scale.x -= 0.02f;
-	}
-
-	spriteTest.SetPosition(m_position);
-	//spriteTest.SetRotation(m_rotation);
-	spriteTest.SetScale(m_scale);
-	spriteTest.Update();
 }
 
 void Game::Spotmove()
@@ -269,14 +233,228 @@ void Game::Spotmove()
 	
 }
 
+bool Game::IsBossMovieSkipTime()
+{
+	if (g_pad[0]->IsPress(enButtonA))
+	{
+		//3秒たったらスキップ
+		if (m_bossMovieSkipTime < m_bossMovieSkipTimer)
+		{
+			return true;
+		}
+		else
+		{
+			m_bossMovieSkipTimer += g_gameTime->GetFrameDeltaTime();
+		}
+	}
+	else
+	{
+		m_bossMovieSkipTimer = 0.0f;
+	}
+
+	return false;
+}
+
+void Game::ManageState()
+{
+	switch (m_enGameState)
+	{
+	case enGameState_Fade:
+		break;
+	case enGameState_GameStart:
+		OnProcessGameStartTransition();
+		break;
+	case enGameState_AppearanceBoss:
+		OnProcessAppearanceBossTransition();
+		break;
+	case enGameState_Game:
+		OnProcessGameTransition();
+		break;
+	case enGameState_Pause:
+		break;
+	case enGameState_GameOver:
+		OnProcessGameOverTransition();
+		break;
+	case enGameState_GameClear:
+		OnProcessGameClearTransition();
+		break;
+	default:
+		break;
+	}
+
+
+
+}
+
+void Game::OnProcessGameStartTransition()
+{
+	//フェードアウト仕切らないと処理しない
+	if (Fadecomplete() != true)
+	{
+		//画面が完全にフェードインしたら
+		if (m_fade->IsFade()==false && m_enFadeState == enFadeState_StartToBoss)
+		{
+			//ステートを切り替える
+			SetNextGameState(enGameState_AppearanceBoss);
+			//カメラをリセットする
+			m_gameCamera->CameraRefresh();
+
+		}
+
+		return;
+	}
+
+	m_cameraZoomOutTimer += g_gameTime->GetFrameDeltaTime();
+	//ある程度ズームしたら
+	if (m_cameraZoomOutTime < m_cameraZoomOutTimer)
+	{
+		//フェードインを始める
+		m_enFadeState = enFadeState_StartToBoss;
+		m_fade->StartFadeIn(3.0f);
+
+	}
+		
+	
+}
+
+void Game::OnProcessAppearanceBossTransition()
+{
+	//ボスの出現アニメーションを再生する。終わったらボス生成
+
+	//フェードに入っている状態なら
+	//フェードインしきったらステートを切り替える
+	if (m_fade->IsFade() == false && m_enFadeState!=enFadeState_None)
+	{
+		switch (m_enFadeState)
+		{
+		case Game::enFadeState_StartToBoss:
+			//このステートに入ってフェードアウトするとき
+			m_fade->StartFadeOut(3.0f);
+			//フェードステートをなしにする
+			m_enFadeState = enFadeState_None;
+			break;
+		case Game::enFadeState_BossToPlayer:
+			//次のステートに移る時
+			//ムービー用のモデルを消す
+			DeleteGO(m_entryBoss);
+			//ボスの生成
+			CreateBoss();
+			//ステートを切り替える
+			SetNextGameState(enGameState_Game);
+			break;
+		default:
+			break;
+		}
+		return;
+	}
+
+	//スキップ処理
+	if (IsBossMovieSkipTime() == true)
+	{
+		//フェードインを始める
+		m_enFadeState = enFadeState_BossToPlayer;
+		m_fade->StartFadeIn(3.0f);
+		return;
+	}
+
+	//ボスの登場ムービークラス生成
+	if (m_bossCreateFlag == false)
+	{
+		m_entryBoss = NewGO<EntryBoss>(0, "entryboss");
+		m_entryBoss->SetPosition(BOSS_CREATE_POSITION);
+		m_entryBoss->SetGame(this);
+		m_bossCreateFlag = true;
+
+	}
+	//ボスの登場ムービーが終わったら
+	if (m_bossMovieEndFlag == true)
+	{
+		//フェードインを始める
+		m_enFadeState = enFadeState_BossToPlayer;
+		m_fade->StartFadeIn(3.0f);
+	}
+}
+
+void Game::OnProcessGameTransition()
+{
+	//ゲームクリア
+	//ボスがやられたら
+	if (m_DeathBossFlag == true)
+	{
+		DeleteGO(m_gameUI);
+		//ステートを切り替える
+		SetNextGameState(enGameState_GameClear);
+		//
+		m_gameCamera->SetLich(m_lich);
+		//カメラをリセットする
+		m_gameCamera->CameraRefresh();
+		return;
+	}
+	//ゲームオーバー
+	//キャラクターが全滅したら
+	if (m_playerAnnihilationFlag == true)
+	{
+		DeleteGO(m_gameUI);
+		//ステートを切り替える
+		SetNextGameState(enGameState_GameOver);
+	}
+
+
+
+	//画面を明るくする
+	if (m_fade->IsFade() == false && m_enFadeState == enFadeState_BossToPlayer)
+	{
+		//UI生成
+		m_gameUI = NewGO<GameUI>(0, "gameUI");
+		m_gameUI->GetGame(this);
+		m_gameUI->GetPlayer(m_player);
+		m_gameUI->GetLich(m_lich);
+		//このステートに入ってフェードアウトするとき
+		m_fade->StartFadeOut(3.0f);
+		//フェードステートをなしにする
+		m_enFadeState = enFadeState_None;
+	}
+}
+
+void Game::OnProcessGameOverTransition()
+{
+	//ゲーム画面からリザルト画面に遷移するまでの処理
+	GoResult();
+}
+
+void Game::OnProcessGameClearTransition()
+{
+	if (m_displayResultFlag == true)
+	{
+		GoResult();
+		return;
+	}
+
+
+	//プレイヤーを見ているならタイトル画面に戻れる
+	if (m_clearCameraState == enClearCameraState_Player)
+	{
+		if (g_pad[0]->IsTrigger(enButtonA))
+		{
+			m_displayResultFlag = true;
+		}
+		return;
+	}
+
+	//リザルト画面がない間
+	m_lich = FindGO<Lich>("lich");
+	if (m_lich == nullptr)
+	{
+		//フレームレートを落とす
+		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 60);
+		//ボスがいなくなったらカメラの対象を変える
+		SetClearCameraState(Game::enClearCameraState_Player);
+		//リザルト画面表示
+		
+	}
+
+}
+
 void Game::Render(RenderContext& rc)
 {
-	//model.Draw(rc);
-
-	//Tree.Draw(rc);
-	
-	//backGround.Draw(rc);
-	
-	//spriteTest.Draw(rc);
-	//fontTest.Draw(rc);
 }

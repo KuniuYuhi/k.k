@@ -27,6 +27,7 @@ int LichAction::NextAction()
 
 	CalcEvalDarkMeteorite(enAttack_DarkMeteorite/*m_action[enAttack_3]*/);
 
+	CalcEvalIdle(enAttack_None);
 
 	//評価値が一番の配列の番号を取得
 	int NextActionNomber = CalcMaxEvalNumber();
@@ -35,7 +36,7 @@ int LichAction::NextAction()
 	switch (NextActionNomber)
 	{
 	case enAttack_None:
-		//何もしない
+		//何もしない(移動)
 		return 0;
 		break;
 	case enAttack_1:
@@ -66,6 +67,8 @@ int LichAction::NextAction()
 		return 0;
 		break;
 	case enAttack_Summon:
+		//この技は無敵状態で打つ
+		m_lich->SetInvincibleFlag(true);
 		//ワープ
 		m_lich->Warp(Lich::enSpecialActionState_CenterWarp);
 		//ステートセット
@@ -150,6 +153,8 @@ void LichAction::CalcEvalSummon(EnActionNumber m_enActionNumber/*Action& action*
 		return;
 	}
 
+
+
 	//自身の状況がよくないときに召喚
 	//座標
 	//5回攻撃されたら
@@ -190,6 +195,6 @@ void LichAction::CalcEvalDarkMeteorite(EnActionNumber m_enActionNumber/*Action& 
 
 void LichAction::CalcEvalIdle(EnActionNumber m_enActionNumber/*Action& action*/)
 {
-	//何回かに一回何もしない
+	//何もしない(移動)
 
 }

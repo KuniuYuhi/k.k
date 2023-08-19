@@ -35,7 +35,6 @@ Cactus::~Cactus()
 	//	//リストから自身を消す
 	//	m_lich->RemoveAIActorFromList(this);
 	//}
-	
 }
 
 bool Cactus::Start()
@@ -72,7 +71,7 @@ struct IsForestResult :public btCollisionWorld::ConvexResultCallback
 	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
 	{
 		//地面とぶつかってなかったら。
-		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_forest) {
+		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
 			//衝突したのは壁ではない。
 			isHit = false;
 			return 0.0f;
@@ -542,6 +541,7 @@ void Cactus::OnProcessDieStateTransition()
 			{
 				//リストから自身を消す
 				m_lich->RemoveAIActorFromList(this);
+				m_elaseListFlag = true;
 			}
 			//自身を削除する
 			DeleteGO(this);

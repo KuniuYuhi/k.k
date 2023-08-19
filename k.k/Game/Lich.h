@@ -365,6 +365,7 @@ private:
 	Level3DRender m_stageLevel;
 	std::vector<Vector3> m_WarpPosition;
 	
+	Game* m_game = nullptr;
 	LichAction* m_lichAction = nullptr;
 	ILichState* m_state = nullptr;
 	DarkMeteorite* m_darkMeteorite = nullptr;

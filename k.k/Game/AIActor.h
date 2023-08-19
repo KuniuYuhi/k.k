@@ -147,7 +147,7 @@ public:
 	/// 座標の取得
 	/// </summary>
 	/// <returns></returns>
-	const Vector3 GetPosition()
+	const Vector3& GetPosition() const
 	{
 		return m_position;
 	}
@@ -156,7 +156,7 @@ public:
 	/// 拡大率の取得
 	/// </summary>
 	/// <returns></returns>
-	const Vector3 GetScale()
+	const Vector3& GetScale() const
 	{
 		return m_scale;
 	}
@@ -165,9 +165,14 @@ public:
 	/// 回転の取得
 	/// </summary>
 	/// <returns></returns>
-	const Quaternion GetRotation()
+	const Quaternion& GetRotation() const
 	{
 		return m_rotation;
+	}
+
+	const Vector3& GetForward() const
+	{
+		return m_forward;
 	}
 
 	void SetWinFlag(bool flag)
@@ -246,6 +251,8 @@ protected:
 
 	float m_angleChangeTimer = 0.0f;
 	bool m_angleChangeTimeFlag = false;
+
+	bool m_elaseListFlag = false;			//自身をリストから削除したかのフラグ
 
 };
 

@@ -150,13 +150,6 @@ void Lich::InitModel()
 
 void Lich::Update()
 {
-	//MPの表示
-	/*int NowActorMP = m_status.hp;
-	int NowActorMaxMP = m_status.maxHp;
-	wchar_t MP[255];
-	swprintf_s(MP, 255, L"ボス HP %3d/%d", NowActorMP, NowActorMaxMP);
-	m_hpFont.SetText(MP);*/
-
 	//被ダメージの当たり判定
 	DamageCollision(m_charaCon);
 
@@ -280,9 +273,17 @@ void Lich::Damage(int attack)
 			SetInvincibleFlag(true);
 		}
 	}
-	
+	//やられたとき
 	if(m_status.hp <= 0)
 	{
+		//やられるところをゆっくりにする
+		//フレームレートを落とす
+		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 30);
+		//自身が倒されたらことをゲームに伝える
+		m_game = FindGO<Game>("game");
+		m_game->SetDeathBossFlag(true);
+		//カメラがリッチを追うようにする
+		m_game->SetClearCameraState(Game::enClearCameraState_Lich);
 		//Dieフラグをtrueにする
 		m_dieFlag = true;
 		m_status.hp = 0;
@@ -369,6 +370,8 @@ void Lich::DecideNextAction()
 		return;
 	}
 
+	
+
 	//HPが半分ならすぐに行動
 	if (m_enSpecialActionState == enSpecialActionState_Warp)
 	{
@@ -377,51 +380,17 @@ void Lich::DecideNextAction()
 		return;
 	}
 	
+	//地面についていないと処理しない
+
+
 	//攻撃可能なら
 	if (m_attackFlag == false)
 	{
-		//m_lichAction = new LichAction(this);
 		//次の行動を選ぶ
 		m_lichAction->NextAction();
-		//delete m_lichAction;
 
 		m_attackFlag = true;
 	}
-
-	//switch (m_enSpecialActionState)
-	//{
-	//	case Lich::enSpecialActionState_Normal:
-	//		//攻撃可能なら
-	//		if (m_attackFlag == false)
-	//		{
-	//			//m_lichAction = new LichAction(this);
-	//			//次の行動を選ぶ
-	//			m_lichAction->NextAction();
-	//			//delete m_lichAction;
-
-	//			m_attackFlag = true;
-	//		}
-	//		break;
-
-	//	case Lich::enSpecialActionState_Warp:
-	//		//ターゲットから一番遠いところに移動する
-	//		Warp(enSpecialActionState_Warp);
-	//		//
-	//		//m_lichAction = new LichAction(this);
-	//		m_lichAction->NextAction();
-	//		//delete m_lichAction;
-	//		//状態を元に戻す
-	//		SetSpecialActionState(enSpecialActionState_Normal);
-	//		break;
-
-	//	/*case Lich::enSpecialActionState_CenterWarp:
-
-	//		break;*/
-
-
-	//	default:
-	//		break;
-	//}
 }
 
 void Lich::PlayAnimation()
@@ -649,10 +618,9 @@ void Lich::OnProcessDieStateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//自身が倒されたらことをゲームに伝える
-		Game* game = FindGO<Game>("game");
-		game->SetDeathBossFlag(true);
-
+		//
+		//m_game->SetClearCameraState(Game::enClearCameraState_Player);
+		DeleteGO(this);
 	}
 }
 
@@ -729,6 +697,8 @@ void Lich::OnProcessSummonStateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		//無敵時間ではない
+		SetInvincibleFlag(false);
 		//ヒットカウントをリセット
 		m_hitCount = 0;
 		//蓄積ダメージをリセット

@@ -49,6 +49,7 @@ public:
 
 	void Damage(int attack);
 
+	void PowerUpTimer();
 
 	bool GetAtkCollsionCreateFlag() const
 	{
@@ -76,6 +77,7 @@ public:
 			m_enAnimationState != enAnimationState_Attack_2 &&
 			m_enAnimationState != enAnimationState_Attack_3 &&
 			m_enAnimationState != enAnimationState_Attack_Skill_Charge&&
+			m_enAnimationState != enAnimationState_PowerUp &&
 			m_enAnimationState != enAnimationState_Damage&&
 			m_enAnimationState != enAnimationState_Die;
 	}
@@ -87,6 +89,7 @@ public:
 	bool isCollisionEntable() const
 	{
 		return m_enAnimationState != enAnimationState_Damage &&
+			m_enAnimationState != enAnimationState_PowerUp &&
 			m_enAnimationState != enAnimationState_Die;
 	}
 
@@ -138,6 +141,14 @@ public:
 	/// ダメージを受けた時のステート遷移処理を実行
 	/// </summary>
 	void OnProcessDamageStateTransition();
+	/// <summary>
+	/// パワーアップのステート遷移処理を実行
+	/// </summary>
+	void OnProcessPowerUpStateTransition();
+	/// <summary>
+	/// 勝利のステート遷移処理を実行
+	/// </summary>
+	void OnProcessVictoryStateTransition();
 
 public:
 	// アニメーションクリップの番号を表す列挙型。
@@ -150,6 +161,8 @@ public:
 		enAnimClip_Attack_3,// 5 : 
 		enAnimClip_Attack_Skill_Charge,
 		enAnimClip_Attack_Skill_Main,// 6 : 
+		enAnimClip_PowerUp,
+		enAnimClip_Victory,
 		enAnimClip_Die,
 		enAnimClip_Damage,
 		enAnimClip_Num,		// 7 :アニメーションクリップの数
@@ -166,6 +179,8 @@ private:
 		enAnimationState_Attack_3,
 		enAnimationState_Attack_Skill_Charge,
 		enAnimationState_Attack_Skill_Main,
+		enAnimationState_PowerUp,
+		enAnimationState_Victory,
 		enAnimationState_Die,
 		enAnimationState_Damage
 	};
@@ -180,16 +195,16 @@ private:
 		enAttackPattern_3,
 		enAttackPattern_Skill_Charge,
 		enAttackPattern_Skill_Main,
+		enAttackPattern_Skill_PowerUp,
 		enAttackPattern_End
 	};
 
-	
-
-public:
-	//アニメーションステートを設定する
-	void SetAnimationState()
+	/// <summary>
+	/// 勝利ステートを設定する
+	/// </summary>
+	void SetVictoryAnimationState()
 	{
-		//m_enAnimationState= enAninationState_Idle;
+		SetNextAnimationState(enAnimationState_Victory);
 	}
 
 private:
@@ -218,6 +233,12 @@ private:
 	IHeroState* m_state = nullptr;					//ステートクラス
 
 	const int m_skillMp = 30;	//スキル発動に必要なMP
+	const int m_skillPowerUpMp = 80;		//パワーアップに必要な
+
+	bool m_powerUpTimeFlag = false;
+	const float m_powerUpTime = 15.0f;				//パワーアップする時間
+	float m_powerUpTimer = 0.0f;					//パワーアップの時間を計るタイマー
+	const int m_powerUpPower = 10;					//パワーアップした時の上がる攻撃力
 
 	int m_swordBoonId = -1;		//剣のボーンID取得用変数
 	int m_skillBoonId = -1;		//スキル使用時のボーン取得用変数

@@ -6,7 +6,7 @@
 #include "Game.h"
 
 //todo ここで当たり判定するのもありかも
-
+//todo 重力
 Player::Player()
 {
 }
@@ -19,6 +19,9 @@ Player::~Player()
 
 bool Player::Start()
 {
+	m_game = FindGO<Game>("game");
+
+
 	m_hero = NewGO<Hero>(0, "hero");
 	m_wizard = NewGO<Wizard>(0, "wizard");
 
@@ -34,6 +37,9 @@ bool Player::Start()
 
 	//現在のキャラクターをヒーローに設定する
 	m_nowActor = actor[m_enActiveCharacter];
+
+	//キャラクターの座標を設定
+	m_nowActor->SetPosition(m_position);
 
 	//座標の設定
 	m_position = m_nowActor->GetPosition();
@@ -59,18 +65,16 @@ bool Player::Start()
 
 void Player::Update()
 {
-	
-	//キャラクターが全滅していたら処理しない
-	if (IsAnnihilation() == true)
+	//ボスが死んだら処理しない
+	if (GameClear() == true)
 	{
-		//ゲームに全滅したことを一度だけ伝える
-		if (m_informGameFlag != true)
-		{
-			Game* game = FindGO<Game>("game");
-			game->SetPlayerAnnihilationFlag(true);
-			m_informGameFlag = true;
-		}
-		
+		return;
+	}
+
+
+	//キャラクターが全滅していたら処理しない
+	if (GameOver() == true)
+	{
 		return;
 	}
 
@@ -88,14 +92,11 @@ void Player::Update()
 			Vector3 a = { 50.0f,0.0f,20.0f };
 			rigitBody.AddForce(a, m_position);
 		}*/
-
-
-
 		//移動処理
 		m_moveSpeed = m_nowActor->calcVelocity(m_nowActor->GetStatus());
+		m_moveSpeed.y = 0.0f;
 		//キャラコンの移動処理
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-
 		/*rigitBody.SetPositionAndRotation(
 			m_position,
 			m_nowActor->GetRotation()
@@ -115,7 +116,7 @@ void Player::Change()
 	if (m_nowActor->isAnimationSwappable() != true)
 	{
 		//キャラクターの切り替え
-		if (g_pad[0]->IsTrigger(enButtonB))
+		if (g_pad[0]->IsTrigger(enButtonLB1))
 		{
 			switch (m_enActiveCharacter)
 			{
@@ -156,7 +157,7 @@ void Player::ChangeCharacter(EnCharacters nextCharacter)
 	);
 	//m_charaCon.SetRadius(50.0f);
 	//キャラコンの座標
-	m_nowActor->SetCharaConPosition(m_nowActor->GetPosition());
+	//m_nowActor->SetCharaConPosition(m_nowActor->GetPosition());
 	
 
 	//現在のキャラクターを魔法使いに変更する
@@ -243,10 +244,45 @@ Actor::EnComboState Player::GetNowComboState() const
 	return m_nowActor->GetNowComboState();
 }
 
-void Player::Render(RenderContext& rc)
+bool Player::GameClear()
 {
-	//m_mpFont.Draw(rc);
-	//m_hpFont.Draw(rc);
+	if (m_game->GetDeathBossFlag() == true)
+	{
+		m_gameEndFlag = true;
+
+		if (m_VictoryAnimFlag == false)
+		{
+			//アニメーションしていなかったら
+			if (m_nowActor->isAnimationEntable() == true)
+			{
+				//現在のアクターのステートを勝利ステートにする
+				m_nowActor->SetVictoryAnimationState();
+				m_VictoryAnimFlag = true;
+			}
+		}
+		return true;
+	}
+
+	return false;
+}
+
+bool Player::GameOver()
+{
+	if (IsAnnihilation() == true)
+	{
+		m_gameEndFlag = true;
+		//ゲームに全滅したことを一度だけ伝える
+		if (m_informGameFlag != true)
+		{
+			Game* game = FindGO<Game>("game");
+			game->SetPlayerAnnihilationFlag(true);
+			m_informGameFlag = true;
+		}
+
+		return true;
+	}
+
+	return false;
 }
 
 

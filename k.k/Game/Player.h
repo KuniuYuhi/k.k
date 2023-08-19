@@ -1,8 +1,10 @@
 #pragma once
 #include "Actor.h"
+
 class Hero;
 class Wizard;
 class Actor;
+class Game;
 
 class Player:public IGameObject
 {
@@ -20,7 +22,9 @@ public:
 	bool Start();
 	void Update();
 
-	void Render(RenderContext& rc);
+	bool GameClear();
+
+	bool GameOver();
 
 	/// <summary>
 	/// キャラクター切り替え処理
@@ -43,16 +47,21 @@ public:
 	/// </summary>
 	bool IsAnnihilation();
 
+	void SetPosition(Vector3 position)
+	{
+		m_position = position;
+	}
+
 	/// <summary>
 	/// 座標の取得
 	/// </summary>
 	/// <returns></returns>
-	Vector3 GetPosition() const
+	const Vector3& GetPosition() const
 	{
 		return m_position;
 	}
 
-	Vector3 GetMoveSpeed() const
+	const Vector3& GetMoveSpeed() const
 	{
 		return m_moveSpeed;
 	}
@@ -69,6 +78,15 @@ public:
 	Status GetNowActorStatus()
 	{
 		return m_nowActor->GetStatus();
+	}
+
+	/// <summary>
+	/// 現在のアクターの前方向の取得。正規化済み
+	/// </summary>
+	/// <returns></returns>
+	const Vector3& GetForward() const
+	{
+		return m_nowActor->GetForward();
 	}
 
 	/// <summary>
@@ -101,9 +119,13 @@ public:
 	/// <returns></returns>
 	Actor::EnComboState GetNowComboState() const;
 
-	
+	bool GetGameEndFlag()
+	{
+		return m_gameEndFlag;
+	}
 
 private:
+	Game* m_game = nullptr;
 	Hero* m_hero = nullptr;
 	Wizard* m_wizard = nullptr;
 
@@ -132,5 +154,9 @@ private:
 
 	bool m_informGameFlag = false;
 
+
+
+	bool m_gameEndFlag = false;		//勝ち負け関わらずバトルが終わったときにtrueにする
+	bool m_VictoryAnimFlag = false;			//勝利アニメーション再生フラグ
 };
 

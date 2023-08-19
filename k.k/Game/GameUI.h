@@ -62,6 +62,7 @@ private:
 	struct MonsterUI
 	{
 		FontRender m_hpFont;
+		FontRender m_AccumulationDamageFont;
 	};
 
 	struct PlayerUI

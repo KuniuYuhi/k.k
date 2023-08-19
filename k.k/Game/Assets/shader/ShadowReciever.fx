@@ -199,10 +199,10 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
     }
 
     //光の合成
-    float3 ligt=directionLig+spotLig+ambient;
+    float3 light = directionLig + pointLig + spotLig + hemiLig + ambient;
 
     //光を色に乗算する
-    albedoColor.xyz*=ligt;
+    albedoColor.xyz*=light;
 
     //ライトビュースクリーン空間からUV座標空間に変換している
     float2 shadowMapUV = psIn.posInLVP.xy / psIn.posInLVP.w;

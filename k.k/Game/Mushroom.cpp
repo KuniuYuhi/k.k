@@ -28,7 +28,11 @@ Mushroom::Mushroom()
 
 Mushroom::~Mushroom()
 {
-	
+	//if (m_lich != nullptr)
+	//{
+	//	//リストから自身を消す
+	//	m_lich->RemoveAIActorFromList(this);
+	//}
 }
 
 //衝突したときに呼ばれる関数オブジェクト(壁用)
@@ -38,7 +42,7 @@ struct IsForestResult :public btCollisionWorld::ConvexResultCallback
 	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
 	{
 		//地面とぶつかってなかったら。
-		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_forest) {
+		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
 			//衝突したのは壁ではない。
 			isHit = false;
 			return 0.0f;
@@ -491,6 +495,7 @@ void Mushroom::OnProcessDieStateTransition()
 		{
 			//リストから自身を消す
 			m_lich->RemoveAIActorFromList(this);
+			m_elaseListFlag = true;
 		}
 		//自身を削除する
 		DeleteGO(this);

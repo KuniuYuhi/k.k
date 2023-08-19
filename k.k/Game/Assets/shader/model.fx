@@ -268,7 +268,7 @@ float4 PSToonMain(SPSIn psIn) : SV_Target0
 
 	albedoColor.xyz*=lig;
 
-	//トゥーンマップの計算
+	//トゥーンマップの計算。ディレクションライトのみ
 	float4 Toon=CalcToonMap(psIn,directionLight.direction);
 
 	albedoColor*=Toon;

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Title.h"
 #include "Game.h"
+#include "Fade.h"
 
 Title::Title()
 {
@@ -18,6 +19,8 @@ bool Title::Start()
     m_titleSprite.SetWipeSize(m_wipeSize);
     m_titleSprite.Update();*/
 
+    m_fade = FindGO<Fade>("fade");
+
     return true;
 }
 
@@ -26,10 +29,21 @@ void Title::Update()
     /*m_titleSprite.SetWipeSize(m_wipeSize);
     m_wipeSize -= 5.0f;*/
 
-    if (g_pad[0]->IsTrigger(enButtonA))
+    //フェードが終わったら消す
+    if (m_fade->GetCurrentAlpha() >= 1.0f)
     {
         Game* game = NewGO<Game>(0, "game");
         DeleteGO(this);
+    }
+
+
+    if (g_pad[0]->IsTrigger(enButtonA))
+    {
+        
+        //フェード開始
+        m_fade->StartFadeIn(2.0f);
+
+        
     }
 }
 

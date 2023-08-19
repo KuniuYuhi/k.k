@@ -31,12 +31,13 @@ Vector3 AIActor::CalcVelocity(Status status,Vector3 targetposition)
 	
 	//正規化
 	diff.Normalize();
-	
+	//前方向
+	m_forward = diff;
+
 	diff.y = 0.0f;
 	//速度を設定
 	moveSpeed = diff * status.defaultSpeed;
-	//前方向
-	//m_forward = diff;
+	
 	//値をセーブしておく
 	m_SaveMoveSpeed = moveSpeed;
 

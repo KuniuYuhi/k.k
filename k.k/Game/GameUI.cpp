@@ -65,6 +65,12 @@ void GameUI::MonsterUIUpdate()
 	swprintf_s(MP, 255, L"ƒ{ƒX HP %3d/%d", NowActorMP, NowActorMaxMP);
 	m_monsterUI.m_hpFont.SetText(MP);
 
+	int a = m_lich->GetAccumulationDamage();
+	int b = m_lich->GetHitCount();
+	wchar_t A[255];
+	swprintf_s(A, 255, L"%3d%3d‰ñ", a,b);
+	m_monsterUI.m_AccumulationDamageFont.SetText(A);
+
 }
 
 void GameUI::DrawPlayerUI(RenderContext& rc)
@@ -81,6 +87,7 @@ void GameUI::DrawMonsterUI(RenderContext& rc)
 	}
 
 	m_monsterUI.m_hpFont.Draw(rc);
+	m_monsterUI.m_AccumulationDamageFont.Draw(rc);
 }
 
 void GameUI::Render(RenderContext& rc)
@@ -110,6 +117,9 @@ void GameUI::InitMonsterUI()
 	m_monsterUI.m_hpFont.SetScale(1.5f);
 	m_monsterUI.m_hpFont.SetPosition(-800.0f, 500.0f);
 
+	m_monsterUI.m_AccumulationDamageFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_monsterUI.m_AccumulationDamageFont.SetScale(1.5f);
+	m_monsterUI.m_AccumulationDamageFont.SetPosition(0.0f, 500.0f);
 
 }
 

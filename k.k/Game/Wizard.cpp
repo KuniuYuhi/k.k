@@ -17,6 +17,8 @@
 #include "FlamePillar.h"
 #include "WizardStateDie.h"
 #include "WizardStateDamage.h"
+#include "WizardStateVictory_start.h"
+#include "WizardStateVictory_main.h"
 
 namespace {
 	int MAXHP = 150;
@@ -92,10 +94,14 @@ void Wizard::InitModel()
 	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Damage].Load("Assets/animData/character/Wizard/Damage.tka");
 	m_animationClip[enAnimClip_Damage].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Victory_start].Load("Assets/animData/character/Wizard/Victory_start.tka");
+	m_animationClip[enAnimClip_Victory_start].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Victory_main].Load("Assets/animData/character/Wizard/Victory_maintain.tka");
+	m_animationClip[enAnimClip_Victory_main].SetLoopFlag(false);
 
 
 	m_modelRender.Init(
-		"Assets/modelData/character/Wizard/Wizard.tkm",
+		"Assets/modelData/character/Wizard/Wizard_red.tkm",
 		m_animationClip,
 		enAnimClip_Num,
 		enModelUpAxisZ
@@ -118,9 +124,11 @@ void Wizard::InitModel()
 
 void Wizard::Update()
 {
+	//勝ったときに処理しない
 	//やられたなら他の処理を実行しない
-	if (GetDieFlag() == true)
+	if (GetDieFlag() == true || m_player->GetGameEndFlag() == true)
 	{
+		m_invincibleTimeFlag = false;
 		ManageState();
 		PlayAnimation();
 		m_modelRender.Update();
@@ -152,22 +160,26 @@ void Wizard::Update()
 
 void Wizard::Move()
 {
-	if (g_pad[0]->IsPress(enButtonA))
+
+	if (isAnimationSwappable() != true)
 	{
-		//ダッシュした瞬間だけ無敵時間にする
-		if (GetInvicibleDashState() == enDashInvicibleState_None)
+		if (g_pad[0]->IsPress(enButtonA))
 		{
-			SetInvicibleDashState(enDashInvicibleState_On);
-			m_invincbledDashTimer = 0.0f;
+			//ダッシュした瞬間だけ無敵時間にする
+			if (GetInvicibleDashState() == enDashInvicibleState_None)
+			{
+				SetInvicibleDashState(enDashInvicibleState_On);
+				m_invincbledDashTimer = 0.0f;
+			}
+			m_dashFlag = true;
 		}
-		m_dashFlag = true;
+		else
+		{
+			SetInvicibleDashState(enDashInvicibleState_None);
+			m_dashFlag = false;
+		}
 	}
-	else
-	{
-		SetInvicibleDashState(enDashInvicibleState_None);
-		m_dashFlag = false;
-	}
-	
+
 	m_moveSpeed = m_player->GetMoveSpeed();
 	m_position = m_player->GetPosition();
 	
@@ -192,35 +204,16 @@ bool Wizard::RotationOnly()
 
 void Wizard::Attack()
 {
-	if (isAnimationEntable() != true)
+	if (isCollisionEntable() != true)
 	{
 		return;
 	}
-
-	//スキルの切り替え
-	if (g_pad[0]->IsTrigger(enButtonRB3))
-	{
-		switch (m_enSkillPatternState)
-		{
-			//フレイムピラーからファイヤーボールに切り替え
-		case Wizard::enSkillPattern_FlamePillar:
-			m_enSkillPatternState = enSkillPattern_FireBall;
-			break;
-			//ファイヤーボールからフレイムピラーに切り替え
-		case Wizard::enSkillPattern_FireBall:
-			m_enSkillPatternState = enSkillPattern_FlamePillar;
-			break;
-		default:
-			break;
-		}
-	}
-
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 通常攻撃
 	////////////////////////////////////////////////////////////////////////////////////////
 	//1コンボ
-	if (g_pad[0]->IsTrigger(enButtonY)&& m_enAttackPatternState==enAttackPattern_None)
+	if (g_pad[0]->IsTrigger(enButtonB)&& m_enAttackPatternState==enAttackPattern_None)
 	{
 		m_enAttackPatternState = enAttackPattern_1;
 		SetNowComboState(enNowCombo_1);
@@ -228,7 +221,7 @@ void Wizard::Attack()
 		return;
 	}
 	//2コンボ受付タイム
-	if (g_pad[0]->IsTrigger(enButtonY) && m_enAttackPatternState == enAttackPattern_1)
+	if (g_pad[0]->IsTrigger(enButtonB) && m_enAttackPatternState == enAttackPattern_1)
 	{
 		m_enAttackPatternState = enAttackPattern_1to4;
 		return;
@@ -239,37 +232,33 @@ void Wizard::Attack()
 	////////////////////////////////////////////////////////////////////////////////////////
 	// スキル
 	////////////////////////////////////////////////////////////////////////////////////////
-
+	//フレイムピラー
 	if (g_pad[0]->IsTrigger(enButtonX) && m_enAttackPatternState == enAttackPattern_None)
 	{
-		//フレイムピラー
-		if (m_enSkillPatternState == enSkillPattern_FlamePillar)
-		{
-			//スキルのMPが足りないなら抜け出す
-			if (m_status.mp < m_flamePillar_skillMp) {
-				return;
-			}
-			m_enAttackPatternState = enAttackPattern_3_start;
-			SetNextAnimationState(enAnimationState_Attack_3_start);
-			//MP回復状態を止める
-			SetRecoveryMpFlag(false);
+		//スキルのMPが足りないなら抜け出す
+		if (m_status.mp < m_flamePillar_skillMp) {
 			return;
 		}
-		//ファイヤーボール
-		else
-		{
-			//スキルのMPが足りないなら抜け出す
-			if (m_status.mp < m_fireBall_SkillMp) {
-				return;
-			}
-			m_enAttackPatternState = enAttackPattern_2_start;
-			SetNextAnimationState(enAnimationState_Attack_2_start);
-			//MP回復状態を止める
-			SetRecoveryMpFlag(false);
-			return;
-		}
+		m_enAttackPatternState = enAttackPattern_3_start;
+		SetNextAnimationState(enAnimationState_Attack_3_start);
+		//MP回復状態を止める
+		SetRecoveryMpFlag(false);
+		return;
 	}
 	
+	//ファイヤーボール
+	if (g_pad[0]->IsTrigger(enButtonY) && m_enAttackPatternState == enAttackPattern_None)
+	{
+		//スキルのMPが足りないなら抜け出す
+		if (m_status.mp < m_fireBall_SkillMp) {
+			return;
+		}
+		m_enAttackPatternState = enAttackPattern_2_start;
+		SetNextAnimationState(enAnimationState_Attack_2_start);
+		//MP回復状態を止める
+		SetRecoveryMpFlag(false);
+		return;
+	}
 
 }
 
@@ -281,7 +270,7 @@ void Wizard::CreateCollision()
 	AtkCollision->CreateBox(
 		m_position,
 		m_wandRotation,
-		Vector3(10.0f, 100.0f, 10.0f)
+		Vector3(20.0f, 100.0f, 20.0f)
 	);
 
 	//杖のボーンのワールド座標を取得
@@ -422,6 +411,14 @@ void Wizard::SetNextAnimationState(EnAnimationState nextState)
 		//被ダメージステートを作成する。
 		m_animationState = new WizardStateDamage(this);
 		break;
+	case Wizard::enAnimationState_Victory_start:
+		//被ダメージステートを作成する。
+		m_animationState = new WizardStateVictory_start(this);
+		break;
+	case Wizard::enAnimationState_Victory_main:
+		//被ダメージステートを作成する。
+		m_animationState = new WizardStateVictory_main(this);
+		break;
 
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
@@ -486,7 +483,7 @@ void Wizard::OnProcessAttack_2StateTransition()
 void Wizard::OnProcessAttack_2MainStateTransition()
 {
 	//Xボタンを押している間
-	if (g_pad[0]->IsPress(enButtonX))
+	if (g_pad[0]->IsPress(enButtonY))
 	{
 		//MPが足りなくなったら強制的にスキルを終わる
 		if (!CreateFireBall())
@@ -527,7 +524,7 @@ void Wizard::OnProcessAttack_3StateTransition()
 			
 			return;
 		}
-
+		//メインステートの時に使用される
 		//攻撃パターンをなし状態にする
 		m_enAttackPatternState = enAttackPattern_None;
 		//共通の状態遷移処理に移行
@@ -576,6 +573,27 @@ void Wizard::OnProcessDamageStateTransition()
 		m_enAttackPatternState = enAttackPattern_None;
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
+	}
+}
+
+void Wizard::OnProcessVictoryStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//スタートとメインでループさせる
+		switch (m_enAnimationState)
+		{
+		case enAnimationState_Victory_start:
+			SetNextAnimationState(enAnimationState_Victory_main);
+			break;
+		case enAnimationState_Victory_main:
+			SetNextAnimationState(enAnimationState_Victory_start);
+			break;
+
+		default:
+			break;
+		}
 	}
 }
 

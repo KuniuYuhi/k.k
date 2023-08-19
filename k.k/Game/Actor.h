@@ -27,18 +27,15 @@ public:
 	void SetTransForm(Vector3 position, Quaternion rotation,Vector3 scale=Vector3::One);
 
 	/// <summary>
-	/// アニメーションステートを設定する
-	/// </summary>
-	virtual void SetAnimationState() = 0;
-
-	/// <summary>
-	/// キャラコンの座標設定
+	/// 座標設定
 	/// </summary>
 	/// <param name="position"></param>
-	void SetCharaConPosition(Vector3 position)
+	void SetPosition(Vector3 position)
 	{
-		//m_charaCon.SetPosition(position);
+		m_position = position;
 	}
+
+	virtual void SetVictoryAnimationState() = 0;
 
 	/// <summary>
 	/// 移動処理
@@ -145,7 +142,7 @@ public:
 	/// 座標の取得
 	/// </summary>
 	/// <returns></returns>
-	const Vector3 GetPosition()
+	const Vector3& GetPosition() const
 	{
 		return m_position;
 	}
@@ -154,7 +151,7 @@ public:
 	/// 拡大率の取得
 	/// </summary>
 	/// <returns></returns>
-	const Vector3 GetScale()
+	const Vector3& GetScale() const
 	{
 		return m_scale;
 	}
@@ -163,7 +160,7 @@ public:
 	/// 回転の取得
 	/// </summary>
 	/// <returns></returns>
-	const Quaternion GetRotation()
+	const Quaternion& GetRotation() const
 	{
 		return m_rotation;
 	}
@@ -172,9 +169,14 @@ public:
 	/// ステータスの取得
 	/// </summary>
 	/// <returns></returns>
-	const Status& GetStatus()
+	const Status& GetStatus() const
 	{
 		return m_status;
+	}
+
+	const Vector3& GetForward() const
+	{
+		return m_forward;
 	}
 
 	/// <summary>
@@ -313,8 +315,9 @@ protected:
 	EnComboState m_enDamagedComboState = enDamageCombo_None;		//ダメージを受けた時のコンボ
 	EnDashInvicibleState m_enDashInvicibleState = enDashInvicibleState_None;	//ダッシュしたときの無敵時間のためのステート
 
-	Vector3 m_position = Vector3::Zero;
-	Vector3 m_moveSpeed = Vector3::Zero;
+	Vector3 m_forward = {0.0f,0.0f,-1.0f};				//前方向
+	Vector3 m_position = Vector3::Zero;				//自身の座標
+	Vector3 m_moveSpeed = Vector3::Zero;			//移動方向
 
 	Vector3 m_SaveMoveSpeed = Vector3::Zero;		//回転のみ使用する時に使う
 

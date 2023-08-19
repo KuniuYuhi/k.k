@@ -11,6 +11,8 @@
 #include "HeroStateAttack_Skill_Main.h"
 #include "HeroStateDie.h"
 #include "HeroStateDamage.h"
+#include "HeroStatePowerUp.h"
+#include "HeroStateVictory.h"
 
 namespace {
 	int MAXHP = 200;
@@ -78,6 +80,11 @@ void Hero::InitModel()
 	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Damage].Load("Assets/animData/character/Player/Damage.tka");
 	m_animationClip[enAnimClip_Damage].SetLoopFlag(false);
+	m_animationClip[enAnimClip_PowerUp].Load("Assets/animData/character/Player/PowerUp.tka");
+	m_animationClip[enAnimClip_PowerUp].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/Player/Victory.tka");
+	m_animationClip[enAnimClip_Victory].SetLoopFlag(true);
+
 
 
 	m_modelRender.Init(
@@ -105,23 +112,24 @@ void Hero::InitModel()
 
 void Hero::Update()
 {
+	//勝ったときに処理しない
 	//やられたなら他の処理を実行しない
-	if (GetDieFlag() == true)
+	if (GetDieFlag() == true|| m_player->GetGameEndFlag() == true)
 	{
+		m_invincibleTimeFlag = false;
 		ManageState();
 		PlayAnimation();
 		m_modelRender.Update();
 		return;
 	}
 
-
-	
-
 	RecoveryMP();
 	Move();
 	Attack();
 	ManageState();
 	PlayAnimation();
+
+	PowerUpTimer();
 
 	if (m_createAttackCollisionFlag == true)
 	{
@@ -146,7 +154,7 @@ void Hero::Update()
 void Hero::Move()
 {
 	//特定のアニメーションが再生中のとき
-	//説明変える
+	//入れ替え可能アニメーションのときだけ
 	if (isAnimationSwappable() != true)
 	{
 		if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
@@ -194,7 +202,8 @@ bool Hero::RotationOnly()
 
 void Hero::Attack()
 {
-	if (isAnimationEntable() != true)
+	//被ダメージ時、デス時に攻撃しない
+	if (isCollisionEntable() != true)
 	{
 		return;
 	}
@@ -203,7 +212,7 @@ void Hero::Attack()
 	// 通常攻撃
 	///////////////////////////////////////////////////////////////////////////////////////////
 	//1コンボ
-	if (g_pad[0]->IsTrigger(enButtonY)&& m_enAttackPatternState==enAttackPattern_None)
+	if (g_pad[0]->IsTrigger(enButtonB)&& m_enAttackPatternState==enAttackPattern_None)
 	{
 		
 		
@@ -215,7 +224,7 @@ void Hero::Attack()
 	//2コンボ目受付
 	if (m_enAttackPatternState == enAttackPattern_1)
 	{
-		if (g_pad[0]->IsTrigger(enButtonY))
+		if (g_pad[0]->IsTrigger(enButtonB))
 		{
 			m_enAttackPatternState = enAttackPattern_1to2;
 			return;
@@ -224,7 +233,7 @@ void Hero::Attack()
 	//3コンボ目受付
 	if (m_enAttackPatternState == enAttackPattern_2)
 	{
-		if (g_pad[0]->IsTrigger(enButtonY))
+		if (g_pad[0]->IsTrigger(enButtonB))
 		{
 			m_enAttackPatternState = enAttackPattern_2to3;
 			return;
@@ -248,8 +257,23 @@ void Hero::Attack()
 			SetNextAnimationState(enAnimationState_Attack_Skill_Charge);
 			//MP回復状態を止める
 			SetRecoveryMpFlag(false);
+			return;
 		}
-		return;
+		
+	}
+
+	//パワーアップ
+	if (m_enAttackPatternState == enAttackPattern_None)
+	{
+		//MPがパワーアップのMPより多かったら
+		if (g_pad[0]->IsPress(enButtonY) && m_status.mp >= m_skillPowerUpMp)
+		{
+			m_enAttackPatternState = enAttackPattern_Skill_PowerUp;
+			SetNextAnimationState(enAnimationState_PowerUp);
+			//MP回復状態を止める
+			SetRecoveryMpFlag(false);
+		}
+		
 	}
 	
  
@@ -295,6 +319,9 @@ void Hero::CreateSkillCollision()
 
 void Hero::Damage(int attack)
 {
+	//スキル使用時にダメージを受けたかもしれない
+	m_createSkillCollisionFlag = false;
+
 	if (m_status.hp > 0)
 	{
 		m_status.hp -= attack;
@@ -312,6 +339,29 @@ void Hero::Damage(int attack)
 		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 30);
 
 		SetNextAnimationState(enAnimationState_Die);
+	}
+}
+
+void Hero::PowerUpTimer()
+{
+	//パワーアップフラグが立っていないと処理しない
+	if (m_powerUpTimeFlag != true)
+	{
+		return;
+	}
+	//制限時間に達したら
+	if (m_powerUpTime < m_powerUpTimer)
+	{
+		//パワーアップ終了
+		m_powerUpTimer = 0.0f;
+		m_powerUpTimeFlag = false;
+		//攻撃力を戻す
+		m_status.atk = m_status.defaultAtk;
+		m_skillAttackPower = SKILL_ATTACK_POWER;
+	}
+	else
+	{
+		m_powerUpTimer += g_gameTime->GetFrameDeltaTime();
 	}
 }
 
@@ -368,7 +418,14 @@ void Hero::SetNextAnimationState(EnAnimationState nextState)
 		//被ダメージメインステートを作成する。
 		m_state = new HeroStateDamage(this);
 		break;
-
+	case Hero::enAnimationState_PowerUp:
+		//パワーアップメインステートを作成する。
+		m_state = new HeroStatePowerUp(this);
+		break;
+	case Hero::enAnimationState_Victory:
+		//勝利メインステートを作成する。
+		m_state = new HeroStateVictory(this);
+		break;
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
 		// クラッシュする
@@ -454,7 +511,7 @@ void Hero::OnProcessAttack_Skill_ChargeStateTransition()
 	//チャージ時間を計算
 	if (m_MaxChargeTime > m_ChargeTimer)
 	{
-		m_ChargeTimer += g_gameTime->GetFrameDeltaTime();
+		m_ChargeTimer += g_gameTime->GetFrameDeltaTime()*2.0f;
 		//
 		if (m_ChargeTimer > m_MaxChargeTime)
 		{
@@ -542,6 +599,34 @@ void Hero::OnProcessDamageStateTransition()
 	}
 }
 
+void Hero::OnProcessPowerUpStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//一定時間パワーアップを開始
+		m_powerUpTimeFlag = true;
+		//攻撃力を上げる
+		m_status.atk += m_powerUpPower;
+		m_skillAttackPower += m_powerUpPower;
+		//スキルを打ち終わったのでMP回復フラグをtrueにする
+		SetRecoveryMpFlag(true);
+		//攻撃パターンをなし状態にする
+		m_enAttackPatternState = enAttackPattern_None;
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
+
+void Hero::OnProcessVictoryStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		
+	}
+}
+
 void Hero::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
 	//アタック1のコンボ受付タイムが始まったら
@@ -603,6 +688,12 @@ void Hero::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		m_createAttackCollisionFlag = false;
 	}
 
+	//パワーアップ！！
+	if (wcscmp(eventName, L"PowerUp") == 0)
+	{
+		//MPを減らす
+		m_status.mp -= m_skillPowerUpMp;
+	}
 
 }
 
