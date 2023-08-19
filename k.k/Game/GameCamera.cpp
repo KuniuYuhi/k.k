@@ -19,8 +19,9 @@ namespace {
 	const Vector3 CENTER_POS = { 600.0f,400.0f,0.0f };
 	const Vector3 END_POS = {100.0f,150.0f,-450.0f };
 
-	const float PLAYER_CAMERA_X = 150.0f;
-	const float PLAYER_CAMERA_Y = 70.0f;
+	const float PLAYER_CAMERA_X = 160.0f;
+	const float PLAYER_CAMERA_Y = 0.0f;
+	const float TARGETPOS_YUP_WIN = 40.0f;
 
 	const float BOSS_CAMERA_X = 400.0f;
 	const float BOSS_CAMERA_Y = 500.0f;
@@ -85,7 +86,7 @@ void GameCamera::ClearCameraForPlayer()
 		forward,
 		PLAYER_CAMERA_X,
 		PLAYER_CAMERA_Y,
-		TARGETPOS_YUP
+		TARGETPOS_YUP_WIN
 	);
 }
 
@@ -246,7 +247,7 @@ void GameCamera::GameClearCamera(Vector3 targetPos, Vector3 forward, float X, fl
 	//注視点の計算
 	m_target = targetPos;
 	//Y座標を上げる
-	targetPos.y += Yup;
+	m_target.y += Yup;
 	//前方向の取得
 	Vector3 CameraPosXZ = forward;
 	CameraPosXZ.y = 0.0f;
@@ -256,10 +257,18 @@ void GameCamera::GameClearCamera(Vector3 targetPos, Vector3 forward, float X, fl
 		CameraPosXZ *= -1.0f;
 	}
 	//XZ方向の
-	CameraPosXZ *= X;
+	if (X > 0.0f)
+	{
+		CameraPosXZ *= X;
+	}
 	//Y方向の
 	Vector3 CameraPosY = Vector3::AxisY;
-	CameraPosY *= Y;
+	//0より大きければ
+	if (Y > 0.0f)
+	{
+		CameraPosY *= Y;
+	}
+	
 
 	//カメラの座標
 	Vector3 newCameraPos = CameraPosXZ + CameraPosY;
