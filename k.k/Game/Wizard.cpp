@@ -101,7 +101,7 @@ void Wizard::InitModel()
 
 
 	m_modelRender.Init(
-		"Assets/modelData/character/Wizard/Wizard.tkm",
+		"Assets/modelData/character/Wizard/Wizard_red.tkm",
 		m_animationClip,
 		enAnimClip_Num,
 		enModelUpAxisZ
@@ -160,22 +160,26 @@ void Wizard::Update()
 
 void Wizard::Move()
 {
-	if (g_pad[0]->IsPress(enButtonA))
+
+	if (isAnimationSwappable() != true)
 	{
-		//ƒ_ƒbƒVƒ…‚µ‚½uŠÔ‚¾‚¯–³“GŽžŠÔ‚É‚·‚é
-		if (GetInvicibleDashState() == enDashInvicibleState_None)
+		if (g_pad[0]->IsPress(enButtonA))
 		{
-			SetInvicibleDashState(enDashInvicibleState_On);
-			m_invincbledDashTimer = 0.0f;
+			//ƒ_ƒbƒVƒ…‚µ‚½uŠÔ‚¾‚¯–³“GŽžŠÔ‚É‚·‚é
+			if (GetInvicibleDashState() == enDashInvicibleState_None)
+			{
+				SetInvicibleDashState(enDashInvicibleState_On);
+				m_invincbledDashTimer = 0.0f;
+			}
+			m_dashFlag = true;
 		}
-		m_dashFlag = true;
+		else
+		{
+			SetInvicibleDashState(enDashInvicibleState_None);
+			m_dashFlag = false;
+		}
 	}
-	else
-	{
-		SetInvicibleDashState(enDashInvicibleState_None);
-		m_dashFlag = false;
-	}
-	
+
 	m_moveSpeed = m_player->GetMoveSpeed();
 	m_position = m_player->GetPosition();
 	

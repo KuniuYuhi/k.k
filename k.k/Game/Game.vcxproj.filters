@@ -283,8 +283,12 @@
     </ClCompile>
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="EntryBoss.cpp" />
-    <ClCompile Include="WizardStateVictory_start.cpp" />
-    <ClCompile Include="WizardStateVictory_main.cpp" />
+    <ClCompile Include="WizardStateVictory_main.cpp">
+      <Filter>Wizard</Filter>
+    </ClCompile>
+    <ClCompile Include="WizardStateVictory_start.cpp">
+      <Filter>Wizard</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -563,7 +567,11 @@
     </ClInclude>
     <ClInclude Include="Fade.h" />
     <ClInclude Include="EntryBoss.h" />
-    <ClInclude Include="WizardStateVictory_start.h" />
-    <ClInclude Include="WizardStateVictory_main.h" />
+    <ClInclude Include="WizardStateVictory_main.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
+    <ClInclude Include="WizardStateVictory_start.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
