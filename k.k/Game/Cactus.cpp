@@ -35,7 +35,6 @@ Cactus::~Cactus()
 	//	//リストから自身を消す
 	//	m_lich->RemoveAIActorFromList(this);
 	//}
-	
 }
 
 bool Cactus::Start()
@@ -542,6 +541,7 @@ void Cactus::OnProcessDieStateTransition()
 			{
 				//リストから自身を消す
 				m_lich->RemoveAIActorFromList(this);
+				m_elaseListFlag = true;
 			}
 			//自身を削除する
 			DeleteGO(this);

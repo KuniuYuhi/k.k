@@ -27,7 +27,11 @@ Slime::Slime()
 
 Slime::~Slime()
 {
-
+	//if (m_lich != nullptr)
+	//{
+	//	//リストから自身を消す
+	//	m_lich->RemoveAIActorFromList(this);
+	//}
 }
 
 //衝突したときに呼ばれる関数オブジェクト(壁用)
@@ -514,6 +518,7 @@ void Slime::OnProcessDieStateTransition()
 		{
 			//リストから自身を消す
 			m_lich->RemoveAIActorFromList(this);
+			m_elaseListFlag = true;
 		}
 		//自身を削除する
 		DeleteGO(this);
