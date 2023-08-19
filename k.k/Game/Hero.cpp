@@ -123,9 +123,6 @@ void Hero::Update()
 		return;
 	}
 
-
-	
-
 	RecoveryMP();
 	Move();
 	Attack();
@@ -157,7 +154,7 @@ void Hero::Update()
 void Hero::Move()
 {
 	//特定のアニメーションが再生中のとき
-	//説明変える
+	//入れ替え可能アニメーションのときだけ
 	if (isAnimationSwappable() != true)
 	{
 		if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
