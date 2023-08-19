@@ -370,6 +370,8 @@ void Lich::DecideNextAction()
 		return;
 	}
 
+	
+
 	//HPが半分ならすぐに行動
 	if (m_enSpecialActionState == enSpecialActionState_Warp)
 	{
@@ -378,51 +380,17 @@ void Lich::DecideNextAction()
 		return;
 	}
 	
+	//地面についていないと処理しない
+
+
 	//攻撃可能なら
 	if (m_attackFlag == false)
 	{
-		//m_lichAction = new LichAction(this);
 		//次の行動を選ぶ
 		m_lichAction->NextAction();
-		//delete m_lichAction;
 
 		m_attackFlag = true;
 	}
-
-	//switch (m_enSpecialActionState)
-	//{
-	//	case Lich::enSpecialActionState_Normal:
-	//		//攻撃可能なら
-	//		if (m_attackFlag == false)
-	//		{
-	//			//m_lichAction = new LichAction(this);
-	//			//次の行動を選ぶ
-	//			m_lichAction->NextAction();
-	//			//delete m_lichAction;
-
-	//			m_attackFlag = true;
-	//		}
-	//		break;
-
-	//	case Lich::enSpecialActionState_Warp:
-	//		//ターゲットから一番遠いところに移動する
-	//		Warp(enSpecialActionState_Warp);
-	//		//
-	//		//m_lichAction = new LichAction(this);
-	//		m_lichAction->NextAction();
-	//		//delete m_lichAction;
-	//		//状態を元に戻す
-	//		SetSpecialActionState(enSpecialActionState_Normal);
-	//		break;
-
-	//	/*case Lich::enSpecialActionState_CenterWarp:
-
-	//		break;*/
-
-
-	//	default:
-	//		break;
-	//}
 }
 
 void Lich::PlayAnimation()
@@ -729,6 +697,8 @@ void Lich::OnProcessSummonStateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		//無敵時間ではない
+		SetInvincibleFlag(false);
 		//ヒットカウントをリセット
 		m_hitCount = 0;
 		//蓄積ダメージをリセット

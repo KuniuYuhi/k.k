@@ -67,6 +67,8 @@ int LichAction::NextAction()
 		return 0;
 		break;
 	case enAttack_Summon:
+		//この技は無敵状態で打つ
+		m_lich->SetInvincibleFlag(true);
 		//ワープ
 		m_lich->Warp(Lich::enSpecialActionState_CenterWarp);
 		//ステートセット
