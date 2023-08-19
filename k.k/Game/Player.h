@@ -22,7 +22,9 @@ public:
 	bool Start();
 	void Update();
 
-	void Render(RenderContext& rc);
+	bool GameClear();
+
+	bool GameOver();
 
 	/// <summary>
 	/// キャラクター切り替え処理
@@ -155,6 +157,6 @@ private:
 
 
 	bool m_gameEndFlag = false;		//勝ち負け関わらずバトルが終わったときにtrueにする
-
+	bool m_VictoryAnimFlag = false;			//勝利アニメーション再生フラグ
 };
 

@@ -66,32 +66,15 @@ bool Player::Start()
 void Player::Update()
 {
 	//ボスが死んだら処理しない
-	if (m_game->GetDeathBossFlag() == true)
+	if (GameClear() == true)
 	{
-		if (m_gameEndFlag == false)
-		{
-			//アニメーションしていなかったら
-			//現在のアクターのステートを勝利ステートにする
-			m_nowActor->SetVictoryAnimationState();
-			m_gameEndFlag = true;
-		}
-		
 		return;
 	}
 
 
 	//キャラクターが全滅していたら処理しない
-	if (IsAnnihilation() == true)
+	if (GameOver() == true)
 	{
-		m_gameEndFlag = true;
-		//ゲームに全滅したことを一度だけ伝える
-		if (m_informGameFlag != true)
-		{
-			Game* game = FindGO<Game>("game");
-			game->SetPlayerAnnihilationFlag(true);
-			m_informGameFlag = true;
-		}
-		
 		return;
 	}
 
@@ -109,9 +92,6 @@ void Player::Update()
 			Vector3 a = { 50.0f,0.0f,20.0f };
 			rigitBody.AddForce(a, m_position);
 		}*/
-
-
-
 		//移動処理
 		m_moveSpeed = m_nowActor->calcVelocity(m_nowActor->GetStatus());
 		m_moveSpeed.y = 0.0f;
@@ -264,10 +244,45 @@ Actor::EnComboState Player::GetNowComboState() const
 	return m_nowActor->GetNowComboState();
 }
 
-void Player::Render(RenderContext& rc)
+bool Player::GameClear()
 {
-	//m_mpFont.Draw(rc);
-	//m_hpFont.Draw(rc);
+	if (m_game->GetDeathBossFlag() == true)
+	{
+		m_gameEndFlag = true;
+
+		if (m_VictoryAnimFlag == false)
+		{
+			//アニメーションしていなかったら
+			if (m_nowActor->isAnimationEntable() == true)
+			{
+				//現在のアクターのステートを勝利ステートにする
+				m_nowActor->SetVictoryAnimationState();
+				m_VictoryAnimFlag = true;
+			}
+		}
+		return true;
+	}
+
+	return false;
+}
+
+bool Player::GameOver()
+{
+	if (IsAnnihilation() == true)
+	{
+		m_gameEndFlag = true;
+		//ゲームに全滅したことを一度だけ伝える
+		if (m_informGameFlag != true)
+		{
+			Game* game = FindGO<Game>("game");
+			game->SetPlayerAnnihilationFlag(true);
+			m_informGameFlag = true;
+		}
+
+		return true;
+	}
+
+	return false;
 }
 
 
