@@ -445,6 +445,8 @@ void Game::OnProcessGameClearTransition()
 	m_lich = FindGO<Lich>("lich");
 	if (m_lich == nullptr)
 	{
+		//フレームレートを落とす
+		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 60);
 		//ボスがいなくなったらカメラの対象を変える
 		SetClearCameraState(Game::enClearCameraState_Player);
 		//リザルト画面表示
