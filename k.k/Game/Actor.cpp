@@ -83,7 +83,7 @@ Vector3 Actor::calcVelocity(Status status)
 	moveSpeed.y = 0.0f;
 	//‘O•ûŒü‚ÌŽæ“¾
 	//x,y‚Ç‚¿‚ç‚©‚Ì“ü—Í‚ª‚ ‚Á‚½‚ç
-	if (fabsf(forward.x) >= 0.001f || fabsf(forward.z) >= 0.001f)
+	if (fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f)
 	{
 		m_forward = moveSpeed;
 		m_forward.Normalize();
