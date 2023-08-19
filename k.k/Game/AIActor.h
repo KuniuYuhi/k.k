@@ -252,5 +252,7 @@ protected:
 	float m_angleChangeTimer = 0.0f;
 	bool m_angleChangeTimeFlag = false;
 
+	bool m_elaseListFlag = false;			//自身をリストから削除したかのフラグ
+
 };
 
