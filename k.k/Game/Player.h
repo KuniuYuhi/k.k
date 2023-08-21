@@ -43,6 +43,12 @@ public:
 	bool ForcedChange();
 
 	/// <summary>
+	/// キャラ切り替えのクールタイムの計算
+	/// </summary>
+	/// <returns>trueで切り替え可能</returns>
+	bool ChangeCharacterTime();
+
+	/// <summary>
 	/// 全滅したか
 	/// </summary>
 	bool IsAnnihilation();
@@ -81,6 +87,15 @@ public:
 	}
 
 	/// <summary>
+	/// サブのアクターのステータスを返す
+	/// </summary>
+	/// <returns></returns>
+	Status GetSubActorStatus()
+	{
+		return m_subActor->GetStatus();
+	}
+
+	/// <summary>
 	/// 現在のアクターの前方向の取得。正規化済み
 	/// </summary>
 	/// <returns></returns>
@@ -89,6 +104,32 @@ public:
 		return m_nowActor->GetForward();
 	}
 
+	/// <summary>
+	/// 現在のアクティブなキャラクターを返す
+	/// </summary>
+	/// <returns></returns>
+	const EnCharacters& GetActiveCharacter() const
+	{
+		return m_enActiveCharacter;
+	}
+
+	/// <summary>
+	/// 現在のキャラの死んだかのフラグ取得
+	/// </summary>
+	/// <returns></returns>
+	const bool GetNowActorDieFlag() const
+	{
+		return m_nowActor->GetDieFlag();
+	}
+	/// <summary>
+	/// サブのキャラの死んだかのフラグ取得
+	/// </summary>
+	/// <returns></returns>
+	const bool GetSubActorDieFlag() const
+	{
+		return m_subActor->GetDieFlag();
+	}
+		
 	/// <summary>
 	/// 現在のキャラクターの攻撃力を返す
 	/// </summary>
@@ -124,6 +165,40 @@ public:
 		return m_gameEndFlag;
 	}
 
+	/// <summary>
+	/// キャラ切り替えフラグの設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetChangCharacterFlag(bool flag)
+	{
+		m_ChangCharacterFlag = flag;
+	}
+	/// <summary>
+	/// キャラ切り替えフラグの取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetChangCharacterFlag() const
+	{
+		return m_ChangCharacterFlag;
+	}
+
+	/// <summary>
+	/// GameUI用のキャラ切り替えフラグの設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetChangCharacterFlagForGameUI(bool flag)
+	{
+		m_ChangCharacterForGameUIFlag = flag;
+	}
+	/// <summary>
+	/// GameUI用のキャラ切り替えフラグの取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetChangCharacterFlagForGameUI() const
+	{
+		return m_ChangCharacterForGameUIFlag;
+	}
+
 private:
 	Game* m_game = nullptr;
 	Hero* m_hero = nullptr;
@@ -154,7 +229,11 @@ private:
 
 	bool m_informGameFlag = false;
 
+	bool m_ChangCharacterFlag = false;			//キャラ切り替えフラグ
+	bool m_ChangCharacterForGameUIFlag = false;			//キャラ切り替えフラグ。gameUI用
 
+	const float m_ChangeCharacterTime = 3.0f;		//キャラ切り替えのクールタイム
+	float m_ChangeCharacterTimer = 0.0f;
 
 	bool m_gameEndFlag = false;		//勝ち負け関わらずバトルが終わったときにtrueにする
 	bool m_VictoryAnimFlag = false;			//勝利アニメーション再生フラグ
