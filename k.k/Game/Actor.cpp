@@ -5,7 +5,7 @@
 #include "Meteo.h"
 #include "AIActor.h"
 
-
+//todo 無敵ダッシュなくす？
 Actor::Actor()
 {
 	//m_player = FindGO<Player>("player");
