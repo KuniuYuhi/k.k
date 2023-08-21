@@ -47,9 +47,8 @@ bool BossStage1::Start()
 				//ƒRƒŠƒWƒ‡ƒ“‘®«‚ğforest‚É‚·‚é
 				m_wallPhysicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Wall);
 
-				//todo ‰e—‚Æ‚³‚È‚­‚Ä‚à‚¢‚¢
 				//X
-				m_forest.Init("Assets/modelData/BackGround/Trees.tkm");
+				m_forest.InitShadow("Assets/modelData/BackGround/Trees.tkm");
 				return true;
 
 
