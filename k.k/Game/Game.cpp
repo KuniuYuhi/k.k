@@ -404,6 +404,8 @@ void Game::OnProcessGameTransition()
 	//âÊñ ÇñæÇÈÇ≠Ç∑ÇÈ
 	if (m_fade->IsFade() == false && m_enFadeState == enFadeState_BossToPlayer)
 	{
+		//
+
 		//UIê∂ê¨
 		m_gameUI = NewGO<GameUI>(0, "gameUI");
 		m_gameUI->GetGame(this);

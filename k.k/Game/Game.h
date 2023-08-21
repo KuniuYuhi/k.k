@@ -189,7 +189,7 @@ private:
 	const float m_cameraZoomOutTime = 2.0f;
 	float m_cameraZoomOutTimer = 0.0f;
 
-	const float m_bossMovieSkipTime = 3.0f;
+	const float m_bossMovieSkipTime = 1.0f;
 	float m_bossMovieSkipTimer = 0.0f;
 
 };
