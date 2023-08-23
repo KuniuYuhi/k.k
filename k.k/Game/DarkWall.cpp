@@ -15,18 +15,13 @@ bool DarkWall::Start()
 {
     m_model.Init("Assets/modelData/character/Lich/Effect/Meteo.tkm");
 
-    //m_position.y -= 50.0f;
+    //攻撃力を設定
+    m_attak = m_lich->GetStatus().atk;
 
     //ボーンの座標の取得
     Matrix matrix = m_lich->GetModelRender().GetBone(m_lich->GetDarkWallBoonId())->GetWorldMatrix();
-
-    
-
     //ベクトルに行列を乗算
     matrix.Apply(m_position);
-
-    
-    
     m_rotation = m_lich->GetRotation();
 
     m_moveSpeed = Vector3::AxisZ;
@@ -36,7 +31,6 @@ bool DarkWall::Start()
     //m_position += m_moveSpeed;
     ////速度を決める
     //m_moveSpeed *= m_speed;
-
     m_collision = NewGO<CollisionObject>(0, "DarkWall");
     m_collision->CreateSphere(
         m_position,
