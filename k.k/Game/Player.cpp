@@ -83,9 +83,6 @@ void Player::Update()
 		return;
 	}
 
-	//
-	ChangeCharacterTime();
-
 	//現在のキャラクターがやられたら強制的に切り替え
 	if (ForcedChange() == false)
 	{
@@ -97,6 +94,9 @@ void Player::Update()
 		}
 		
 	}
+
+	//
+	ChangeCharacterTime();
 
 	//現在のキャラクターがやられていないなら先の処理しない
 	if (m_nowActor->GetDieFlag() != true)
@@ -233,15 +233,15 @@ bool Player::ChangeCharacterTime()
 		return true;
 	}
 
-	if (m_ChangeCharacterTime < m_ChangeCharacterTimer)
+	if (0.0f >= m_ChangeCharacterTimer)
 	{
 		m_ChangCharacterFlag = false;
-		m_ChangeCharacterTimer = 0.0f;
+		m_ChangeCharacterTimer = m_ChangeCharacterTime;
 		return true;
 	}
 	else
 	{
-		m_ChangeCharacterTimer += g_gameTime->GetFrameDeltaTime();
+		m_ChangeCharacterTimer -= g_gameTime->GetFrameDeltaTime();
 	}
 
 	return false;

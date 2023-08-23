@@ -181,6 +181,14 @@ public:
 	{
 		return m_ChangCharacterFlag;
 	}
+	/// <summary>
+	/// キャラ切り替え後の計算中のタイマーの値を返す
+	/// </summary>
+	/// <returns></returns>
+	const float& GetChangeCharacterTimer() const
+	{
+		return m_ChangeCharacterTimer;
+	}
 
 	/// <summary>
 	/// GameUI用のキャラ切り替えフラグの設定
@@ -232,8 +240,9 @@ private:
 	bool m_ChangCharacterFlag = false;			//キャラ切り替えフラグ
 	bool m_ChangCharacterForGameUIFlag = false;			//キャラ切り替えフラグ。gameUI用
 
-	const float m_ChangeCharacterTime = 3.0f;		//キャラ切り替えのクールタイム
-	float m_ChangeCharacterTimer = 0.0f;
+	const float m_ChangeCharacterTime = 3.0f;
+	float m_ChangeCharacterTimer = 3.0f;		//キャラ切り替えのクールタイム
+	
 
 	bool m_gameEndFlag = false;		//勝ち負け関わらずバトルが終わったときにtrueにする
 	bool m_VictoryAnimFlag = false;			//勝利アニメーション再生フラグ
