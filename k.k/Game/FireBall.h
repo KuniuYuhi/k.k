@@ -61,6 +61,11 @@ public:
 		m_lich = lich;
 	}
 
+	void SetLichAtk(int attack)
+	{
+		m_lichAttack = attack;
+	}
+
 	/// <summary>
 	/// 攻撃力の取得
 	/// </summary>
@@ -101,7 +106,7 @@ private:
 	int m_atk = 0;
 
 	const int m_wizardAttack = 30;		//ウィザード用の攻撃力
-	const int m_lichAttack = 20;		//リッチ用の攻撃力
+	int m_lichAttack = 20;		//リッチ用の攻撃力
 
 	//ファイヤーボールのスピード
 	const float m_speed = 150.0f;
