@@ -52,10 +52,13 @@ Lich::Lich()
 
 Lich::~Lich()
 {
-	//生き残っているモンスターを死亡させる
-	for (auto monster : m_monsters)
+	if (m_monsters.size() != 0)
 	{
-		monster->Dead();
+		//生き残っているモンスターを死亡させる
+		for (auto monster : m_monsters)
+		{
+			monster->Dead();
+		}
 	}
 
 	delete m_lichAction;
@@ -855,6 +858,7 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		//ボール生成
 		FireBall* fireball = NewGO<FireBall>(0, "darkball");
 		fireball->SetLich(this);
+		fireball->SetLichAtk(m_status.atk);
 		fireball->Setting(m_position, m_rotation);
 	}
 
