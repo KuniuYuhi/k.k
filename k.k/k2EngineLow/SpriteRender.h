@@ -4,15 +4,14 @@ namespace nsK2EngineLow {
 
 	struct SpriteCB
 	{
-		Vector2 wipeDirection=Vector2(0.0f,0.0f);		//ワイプする方向
-		float pad1;
+		Vector2 RoundWipeStartPosition = Vector2(0.0f, 0.0f);		//円形ワイプを行う始点
 		bool grayScale = false;					//グレースケールをするかどうか
+		float pad1;
+		Vector2 wipeDirection = Vector2(0.0f, 0.0f);		//ワイプする方向
 		bool simpleWipe = false;				//単純なリニアワイプをするかどうか
 		float wipeSize = 0;						//ワイプサイズ
-		bool WipeWithDirection = false;			//方向を指定するリニアワイプをするかどうか
-		Vector2 RoundWipeStartPosition = Vector2(0.0f, 0.0f);		//円形ワイプを行う始点
 		bool RoundWipe = false;					//円形ワイプを使用するかどうか
-
+		bool WipeWithDirection = false;			//方向を指定するリニアワイプをするかどうか
 	};
 
 	class SpriteRender
