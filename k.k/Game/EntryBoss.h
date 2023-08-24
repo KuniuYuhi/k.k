@@ -13,7 +13,37 @@ public:
 	void Render(RenderContext& rc);
 
 	void positionUp();
+	/// <summary>
+	/// スプライトレンダーの初期化
+	/// </summary>
+	void InitSprite();
+	/// <summary>
+	/// 線形補間で使う始点と終点の初期化
+	/// </summary>
+	void InitLerpPosition();
 
+	void SpriteMove();
+
+
+	void FireMove();
+
+	void CompleteTime();
+
+	/// <summary>
+	/// スプライトの座標、サイズ、回転を設定
+	/// </summary>
+	/// <param name="spriterender">スプライトレンダー</param>
+	/// <param name="position">座標</param>
+	/// <param name="scale">サイズ</param>
+	/// <param name="rotation">回転</param>
+	void SettingSpriteRender(
+		SpriteRender& spriterender, Vector3 position, Vector3 scale, Quaternion rotation)
+	{
+		spriterender.SetPosition(position);
+		spriterender.SetScale(scale);
+		spriterender.SetRotation(rotation);
+		spriterender.Update();
+	}
 
 	void SetPosition(Vector3 position)
 	{
@@ -44,7 +74,24 @@ public:
 		enAnimationState_Victory
 	};
 
+	enum EnLichName
+	{
+		L,
+		I,
+		C,
+		H,
+		END
+	};
+
 private:
+
+	struct LichCharInfo
+	{
+		SpriteRender m_CharRender;
+		Vector3 m_startPosition = g_vec3Zero;
+		Vector3 m_endPosition = g_vec3Zero;
+	};
+
 
 	Game* m_game = nullptr;
 
@@ -54,8 +101,30 @@ private:
 	Vector3 m_scale = g_vec3One;
 
 	AnimationClip m_animationClip[enAnimClip_Num];	// アニメーションクリップ 
-
 	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
 
+
+	SpriteRender m_bossTextRender;
+	SpriteRender m_FireRender;
+	SpriteRender m_PressAButton;
+
+	
+	LichCharInfo m_lichCharInfo[END];				//線形補間で使う始点と終点
+
+	//std::vector<SpriteRender> m_lichSprite;		//LICHの文字の画像を一文字ずつ格納
+
+	bool m_completeFlag = false;
+	
+	float m_time = 0.0f;
+
+	bool m_gOTextFlag = false;
+	bool m_FireDrawFlag = false;
+
+	int m_lichTextCount = 0;
+
+	float m_mulValue = 2.0f;
+
+	const float m_endTime = 2.0f;
+	float m_endTimer = 0.0f;
 };
 
