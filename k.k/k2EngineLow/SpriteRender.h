@@ -109,6 +109,19 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
+		/// 座標、拡大率、回転の設定
+		/// </summary>
+		/// <param name="position">座標</param>
+		/// <param name="scale">拡大率</param>
+		/// <param name="rotation">回転。いれなかったら回転なし</param>
+		void SetTransForm(Vector3& position, Vector3& scale, Quaternion& rotation)
+		{
+			SetPosition(position);
+			SetScale(scale);
+			SetRotation(rotation);
+		}
+
+		/// <summary>
 		/// ピボットを設定する
 		/// </summary>
 		/// <param name="pivot"></param>
