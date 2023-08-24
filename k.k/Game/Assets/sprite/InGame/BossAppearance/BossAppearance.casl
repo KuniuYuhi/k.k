@@ -1,6 +1,6 @@
 8
 4,Boss,55,../../Game/Assets/sprite/InGame/BossAppearance/Boss.png,0.0,-103.84615384615381,284,84,10,1.0,1.0,0.5,0.5,8,Boss.dds
-4,Back,55,../../Game/Assets/sprite/InGame/BossAppearance/Back.png,0.0,-332.6923076923076,1650,380,10,1.0,1.0,0.5,0.5,8,Back.dds
+4,Back,55,../../Game/Assets/sprite/InGame/BossAppearance/Back.png,0.0,-492.30769230769215,1650,800,10,1.0,1.0,0.5,0.5,8,Back.dds
 1,L,52,../../Game/Assets/sprite/InGame/BossAppearance/L.png,-411.53846153846143,-301.9230769230768,243,290,10,1.0,1.0,0.5,0.5,5,L.dds
 1,I,52,../../Game/Assets/sprite/InGame/BossAppearance/I.png,-184.61538461538453,-301.9230769230768,167,290,10,1.0,1.0,0.5,0.5,5,I.dds
 1,C,52,../../Game/Assets/sprite/InGame/BossAppearance/C.png,61.53846153846155,-299.9999999999999,280,290,10,1.0,1.0,0.5,0.5,5,C.dds
