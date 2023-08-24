@@ -6,12 +6,9 @@
 #include "Lich.h"
 #include "Result.h"
 #include "GameUI.h"
-#include "Slime.h"
-#include "TurtleShell.h"
-#include "Cactus.h"
-#include "Mushroom.h"
 #include "Fade.h"
 #include "EntryBoss.h"
+#include "BattleStart.h"
 
 #include "SkyCube.h"
 
@@ -102,19 +99,6 @@ bool Game::Start()
 	m_player = NewGO<Player>(0, "player");
 	m_player->SetPosition({ 0.0f,0.0f,-1000.0f });
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
-
-	//model.Init("Assets/modelData/character/Wizard/Effect/FireBall.tkm");
-
-	/*m_lich = NewGO<Lich>(0, "lich");
-	m_lich->SetPosition({ 0.0f, 0.0f, -500.0f });*/
-	/*Slime* slime = NewGO<Slime>(0, "slime");
-	slime->SetPosition({ 0.0f, 0.0f, -300.0f });*/
-	/*TurtleShell* turtleshell = NewGO<TurtleShell>(0, "turtleshell");
-	turtleshell->SetPosition({ 0.0f, 0.0f, -500.0f });*/
-	/*Cactus* cactus = NewGO<Cactus>(0, "cactus");
-	cactus->SetPosition({ 0.0f, 0.0f, -700.0f });*/
-	/*Mushroom* mushroom = NewGO<Mushroom>(0, "mushroom");
-	mushroom->SetPosition({ 0.0f,0.0f,-600.0f });*/
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
@@ -288,12 +272,22 @@ void Game::ManageState()
 
 void Game::OnProcessGameStartTransition()
 {
+	//一度だけバトルスタートクラス生成
+	if (m_gameStartCreateFlag == false)
+	{
+		m_battleStart = NewGO<BattleStart>(0, "battlestart");
+		m_gameStartCreateFlag = true;
+	}
+
 	//フェードアウト仕切らないと処理しない
 	if (Fadecomplete() != true)
 	{
 		//画面が完全にフェードインしたら
 		if (m_fade->IsFade()==false && m_enFadeState == enFadeState_StartToBoss)
 		{
+
+			DeleteGO(m_battleStart);
+			//次のステップ
 			//ステートを切り替える
 			SetNextGameState(enGameState_AppearanceBoss);
 			//カメラをリセットする
@@ -303,6 +297,7 @@ void Game::OnProcessGameStartTransition()
 
 		return;
 	}
+	//プレイヤーを見ている
 
 	m_cameraZoomOutTimer += g_gameTime->GetFrameDeltaTime();
 	//ある程度ズームしたら

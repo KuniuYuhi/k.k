@@ -10,6 +10,7 @@ class ResultSeen;
 class GameUI;
 class Fade;
 class EntryBoss;
+class BattleStart;
 
 class Game:public IGameObject
 {
@@ -156,6 +157,7 @@ private:
 
 	GameUI* m_gameUI = nullptr;
 	EntryBoss* m_entryBoss = nullptr;
+	BattleStart* m_battleStart = nullptr;
 
 	ModelRender model;
 
@@ -171,6 +173,8 @@ private:
 	Vector3 m_scale = Vector3::One;
 
 	EnGameState m_enGameState = enGameState_GameStart;
+
+	bool m_gameStartCreateFlag = false;			//バトルスタートクラス生成フラグ
 
 	bool m_DeathBossFlag = false;				//ボスがやられたのフラグ
 	bool m_ChaseBossFlag = false;				//ボスを見るかのフラグ
