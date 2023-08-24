@@ -1,0 +1,9 @@
+8
+17,Title_BackGround2,59,../../Game/Assets/sprite/InGame/Title/Title_BackGround2.png,0.0,1.1368683772161603e-13,1920,1080,10,1.0,1.0,0.5,0.5,21,Title_BackGround2.dds
+12,GoToGameText,54,../../Game/Assets/sprite/InGame/Title/GoToGameText.png,0.0,-140.0,428,64,10,1.0,1.0,0.5,0.5,16,GoToGameText.dds
+13,HowToPlayText,55,../../Game/Assets/sprite/InGame/Title/HowToPlayText.png,0.0,-215.0,428,64,10,1.0,1.0,0.5,0.5,17,HowToPlayText.dds
+10,actionText,52,../../Game/Assets/sprite/InGame/Title/actionText.png,0.0,-290.0,428,64,10,1.0,1.0,0.5,0.5,14,actionText.dds
+11,GameEndText,53,../../Game/Assets/sprite/InGame/Title/GameEndText.png,5.7692307692308304,-365.0,428,64,10,1.0,1.0,0.5,0.5,15,GameEndText.dds
+15,PushAButtonText,57,../../Game/Assets/sprite/InGame/Title/PushAButtonText.png,0.0,-340.0,540,78,10,1.0,1.0,0.5,0.5,19,PushAButtonText.dds
+9,TitleName,51,../../Game/Assets/sprite/InGame/Title/TitleName.png,0.0,229.99999999999994,1490,420,10,1.0,1.0,0.5,0.5,13,TitleName.dds
+4,Star,46,../../Game/Assets/sprite/InGame/Title/Star.png,269.2307692307693,134.61538461538458,55,55,10,1.0,1.0,1.0,1.0,8,Star.dds
