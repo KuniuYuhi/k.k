@@ -20,7 +20,7 @@ public:
 
 	bool Start();
 	void Update();
-	void Render(RenderContext& rc);
+	
 	/// <summary>
 	/// フェード
 	/// </summary>
@@ -187,16 +187,12 @@ private:
 
 	EnGameState m_enGameState = enGameState_GameStart;
 
-	bool m_gameStartCreateFlag = false;			//バトルスタートクラス生成フラグ
 
 	bool m_DeathBossFlag = false;				//ボスがやられたのフラグ
 	bool m_ChaseBossFlag = false;				//ボスを見るかのフラグ
 
-	bool m_createResultFlag = false;
-
 	bool m_playerAnnihilationFlag = false;
 
-	bool m_bossCreateFlag = false;
 
 	bool m_bossMovieEndFlag = false;			//ボスの登場ムービーが終わったら
 

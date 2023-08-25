@@ -161,7 +161,7 @@ void Game::InitSkyCube()
 
 void Game::GoResult(EnOutCome outcome)
 {
-	if (m_result==nullptr/*m_createResultFlag==false*/)
+	if (m_result == nullptr)
 	{
 		m_result = NewGO<ResultSeen>(0, "result");
 		switch (outcome)
@@ -175,8 +175,6 @@ void Game::GoResult(EnOutCome outcome)
 		default:
 			break;
 		}
-		//生成した
-		m_createResultFlag = true;
 	}
 	//画面がリザルトの画像になった
 	//円形ワイプが終わったら
@@ -283,10 +281,9 @@ void Game::ManageState()
 void Game::OnProcessGameStartTransition()
 {
 	//一度だけバトルスタートクラス生成
-	if (m_gameStartCreateFlag == false)
+	if (m_battleStart == nullptr)
 	{
 		m_battleStart = NewGO<BattleStart>(0, "battlestart");
-		m_gameStartCreateFlag = true;
 	}
 
 	//フェードアウト仕切らないと処理しない
@@ -363,13 +360,11 @@ void Game::OnProcessAppearanceBossTransition()
 	}
 
 	//ボスの登場ムービークラス生成
-	if (m_bossCreateFlag == false)
+	if (m_entryBoss == nullptr)
 	{
 		m_entryBoss = NewGO<EntryBoss>(0, "entryboss");
 		m_entryBoss->SetPosition(BOSS_CREATE_POSITION);
 		m_entryBoss->SetGame(this);
-		m_bossCreateFlag = true;
-
 	}
 	//ボスの登場ムービーが終わったら
 	if (m_bossMovieEndFlag == true)
@@ -409,8 +404,6 @@ void Game::OnProcessGameTransition()
 	//画面を明るくする
 	if (m_fade->IsFade() == false && m_enFadeState == enFadeState_BossToPlayer)
 	{
-		//
-
 		//UI生成
 		m_gameUI = NewGO<GameUI>(0, "gameUI");
 		m_gameUI->GetGame(this);
@@ -436,18 +429,6 @@ void Game::OnProcessGameClearTransition()
 		GoResult(enOutCome_Win);
 		return;
 	}
-
-
-	//プレイヤーを見ているならタイトル画面に戻れる
-	/*if (m_clearCameraState == enClearCameraState_Player)
-	{
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			m_displayResultFlag = true;
-		}
-		return;
-	}*/
-
 	//リザルト画面がない間
 	//リッチがいる間はカメラに移す
 	m_lich = FindGO<Lich>("lich");
@@ -461,8 +442,4 @@ void Game::OnProcessGameClearTransition()
 		m_displayResultFlag = true;
 	}
 
-}
-
-void Game::Render(RenderContext& rc)
-{
 }
