@@ -693,6 +693,7 @@ namespace nsK2EngineLow {
 	const Vector3 g_vec3AxisZ = { 0.0f,  0.0f,  1.0f };
 	const Vector3 g_vec3One = { 1.0f, 1.0f, 1.0f };
 
+	const Vector4 g_vec4Clear = { 1.0f,1.0f,1.0f,0.0f };
 	const Vector4 g_vec4White = { 1.0f, 1.0f, 1.0f, 1.0f };
 	const Vector4 g_vec4Black = { 0.0f, 0.0f, 0.0f, 1.0f };
 	const Vector4 g_vec4Gray = { 0.5f, 0.5f, 0.5f, 1.0f };
