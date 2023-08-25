@@ -159,15 +159,25 @@ void Game::InitSkyCube()
 	m_skyCube->Update();
 }
 
-void Game::GoResult()
+void Game::GoResult(EnOutCome outcome)
 {
-	if (m_createResultFlag==false)
+	if (m_result==nullptr/*m_createResultFlag==false*/)
 	{
 		m_result = NewGO<ResultSeen>(0, "result");
+		switch (outcome)
+		{
+		case Game::enOutCome_Win:
+			m_result->SetOutcome(ResultSeen::enOutcome_Win);
+			break;
+		case Game::enOutCome_Lose:
+			m_result->SetOutcome(ResultSeen::enOutcome_Lose);
+			break;
+		default:
+			break;
+		}
+		//生成した
 		m_createResultFlag = true;
-		
 	}
-
 	//画面がリザルトの画像になった
 	//円形ワイプが終わったら
 	if (m_result->GetRoundWipeEndFlag() == true)
@@ -416,29 +426,30 @@ void Game::OnProcessGameTransition()
 void Game::OnProcessGameOverTransition()
 {
 	//ゲーム画面からリザルト画面に遷移するまでの処理
-	GoResult();
+	GoResult(enOutCome_Lose);
 }
 
 void Game::OnProcessGameClearTransition()
 {
 	if (m_displayResultFlag == true)
 	{
-		GoResult();
+		GoResult(enOutCome_Win);
 		return;
 	}
 
 
 	//プレイヤーを見ているならタイトル画面に戻れる
-	if (m_clearCameraState == enClearCameraState_Player)
+	/*if (m_clearCameraState == enClearCameraState_Player)
 	{
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
 			m_displayResultFlag = true;
 		}
 		return;
-	}
+	}*/
 
 	//リザルト画面がない間
+	//リッチがいる間はカメラに移す
 	m_lich = FindGO<Lich>("lich");
 	if (m_lich == nullptr)
 	{
@@ -447,7 +458,7 @@ void Game::OnProcessGameClearTransition()
 		//ボスがいなくなったらカメラの対象を変える
 		SetClearCameraState(Game::enClearCameraState_Player);
 		//リザルト画面表示
-		
+		m_displayResultFlag = true;
 	}
 
 }

@@ -31,8 +31,6 @@ public:
 
 	void InitSkyCube();
 
-	void GoResult();
-
 	void Spotmove();
 
 	const Vector3 GetPosition() const
@@ -58,7 +56,22 @@ public:
 		m_playerAnnihilationFlag = flag;
 	}
 
+	/// <summary>
+	/// ボス登場ムービーのスキップ処理
+	/// </summary>
+	/// <returns></returns>
 	bool IsBossMovieSkipTime();
+
+	enum EnOutCome
+	{
+		enOutCome_Win,
+		enOutCome_Lose
+	};
+	/// <summary>
+	/// リザルト画面遷移処理
+	/// </summary>
+	/// <param name="outcome">勝敗ステート</param>
+	void GoResult(EnOutCome outcome);
 
 	enum EnGameState
 	{
