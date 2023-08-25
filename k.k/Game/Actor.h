@@ -222,6 +222,7 @@ public:
 		return m_dieToChangeFlag;
 	}
 
+	
 protected:
 
 	/// <summary>
@@ -304,7 +305,7 @@ protected:
 	/// <param name="damage"></param>
 	void CreateDamageFont(int damage);
 	
-
+	
 protected:
 
 	Status m_status;
@@ -340,10 +341,11 @@ protected:
 	const float m_invincbleTime = 2.0f;
 	float m_invincbleTimer = 0.0f;
 
-	const float m_invincbleDashTime = 0.5f;
+	const float m_invincbleDashTime = 0.5f;		//無敵状態ダッシュの時間
 	float m_invincbledDashTimer = 0.0f;
 
-	bool m_modelDrawFlag = false;
+	bool m_modelDrawFlag = false;				//モデルを描画するかのフラグ
+
 
 };
 

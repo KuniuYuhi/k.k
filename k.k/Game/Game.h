@@ -10,6 +10,7 @@ class ResultSeen;
 class GameUI;
 class Fade;
 class EntryBoss;
+class BattleStart;
 
 class Game:public IGameObject
 {
@@ -19,7 +20,7 @@ public:
 
 	bool Start();
 	void Update();
-	void Render(RenderContext& rc);
+	
 	/// <summary>
 	/// フェード
 	/// </summary>
@@ -29,8 +30,6 @@ public:
 	void CreateBoss();
 
 	void InitSkyCube();
-
-	void GoResult();
 
 	void Spotmove();
 
@@ -57,7 +56,22 @@ public:
 		m_playerAnnihilationFlag = flag;
 	}
 
+	/// <summary>
+	/// ボス登場ムービーのスキップ処理
+	/// </summary>
+	/// <returns></returns>
 	bool IsBossMovieSkipTime();
+
+	enum EnOutCome
+	{
+		enOutCome_Win,
+		enOutCome_Lose
+	};
+	/// <summary>
+	/// リザルト画面遷移処理
+	/// </summary>
+	/// <param name="outcome">勝敗ステート</param>
+	void GoResult(EnOutCome outcome);
 
 	enum EnGameState
 	{
@@ -156,6 +170,7 @@ private:
 
 	GameUI* m_gameUI = nullptr;
 	EntryBoss* m_entryBoss = nullptr;
+	BattleStart* m_battleStart = nullptr;
 
 	ModelRender model;
 
@@ -172,14 +187,12 @@ private:
 
 	EnGameState m_enGameState = enGameState_GameStart;
 
+
 	bool m_DeathBossFlag = false;				//ボスがやられたのフラグ
 	bool m_ChaseBossFlag = false;				//ボスを見るかのフラグ
 
-	bool m_createResultFlag = false;
-
 	bool m_playerAnnihilationFlag = false;
 
-	bool m_bossCreateFlag = false;
 
 	bool m_bossMovieEndFlag = false;			//ボスの登場ムービーが終わったら
 
@@ -189,7 +202,7 @@ private:
 	const float m_cameraZoomOutTime = 2.0f;
 	float m_cameraZoomOutTimer = 0.0f;
 
-	const float m_bossMovieSkipTime = 3.0f;
+	const float m_bossMovieSkipTime = 1.0f;
 	float m_bossMovieSkipTimer = 0.0f;
 
 };

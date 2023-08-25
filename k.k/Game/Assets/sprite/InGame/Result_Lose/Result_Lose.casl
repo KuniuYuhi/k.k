@@ -1,0 +1,4 @@
+3
+9,GoToTitle,57,../../Game/Assets/sprite/InGame/Result_Lose/GoToTitle.png,0.0,-407.6923076923076,520,70,10,1.0,1.0,0.5,0.5,13,GoToTitle.dds
+6,Lose_1,54,../../Game/Assets/sprite/InGame/Result_Lose/Lose_1.png,0.0,359.61538461538464,1290,265,10,1.0,1.0,0.5,0.5,10,Lose_1.dds
+6,Lose_2,54,../../Game/Assets/sprite/InGame/Result_Lose/Lose_2.png,0.0,363.46153846153845,1290,265,10,1.0,1.0,0.5,0.5,10,Lose_2.dds

@@ -9,14 +9,14 @@ cbuffer cb : register(b0){
 
 //スプライトの定数バッファー
 cbuffer SpriteCB : register(b1){
-	float2 wipeDirection;		//ワイプ方向
+	float2 RoundWipeStartPosition;   //	円形ワイプを行う始点
 	bool grayScale;		//グレースケールするかどうか
+	float2 wipeDirection;		//ワイプ方向
 	bool simpleWipe;	//単純なリニアワイプをするかどうか
 	float wipeSize;		//ワイプサイズ
-	bool WipeWithDirection;	//方向を指定するリニアワイプをするかどうか
-	float2 RoundWipeStartPosition;   //	円形ワイプを行う始点
 	bool RoundWipe;	//円形ワイプを使用するかどうか
-}
+	bool WipeWithDirection;	//方向を指定するリニアワイプをするかどうか
+};
 
 struct VSInput{
 	float4 pos : POSITION;

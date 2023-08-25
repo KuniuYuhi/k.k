@@ -11,5 +11,5 @@ void HeroStateRun::ManageState()
 void HeroStateRun::PlayAnimation()
 {
 	//走るアニメーションの再生
-	m_hero->GetModelRender().PlayAnimation(Hero::enAnimClip_Run);
+	m_hero->GetModelRender().PlayAnimation(Hero::enAnimClip_Run,0.3f);
 }

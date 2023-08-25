@@ -161,12 +161,12 @@ void Hero::Move()
 		{
 			if (g_pad[0]->IsPress(enButtonA))
 			{
-				//ダッシュした瞬間だけ無敵時間にする
-				if (GetInvicibleDashState() == enDashInvicibleState_None)
-				{
-					SetInvicibleDashState(enDashInvicibleState_On);
-					m_invincbledDashTimer = 0.0f;
-				}
+				////ダッシュした瞬間だけ無敵時間にする
+				//if (GetInvicibleDashState() == enDashInvicibleState_None)
+				//{
+				//	SetInvicibleDashState(enDashInvicibleState_On);
+				//	m_invincbledDashTimer = 0.0f;
+				//}
 				
 				m_dashFlag = true;
 			}

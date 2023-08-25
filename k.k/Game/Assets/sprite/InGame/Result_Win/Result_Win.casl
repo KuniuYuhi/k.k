@@ -1,0 +1,4 @@
+3
+5,light,52,../../Game/Assets/sprite/InGame/Result_Win/light.png,9.615384615384642,442.3076923076924,1410,1410,10,1.0,1.0,0.5,0.5,9,light.dds
+9,GoToTitle,56,../../Game/Assets/sprite/InGame/Result_Win/GoToTitle.png,0.0,-407.6923076923076,520,70,10,1.0,1.0,0.5,0.5,13,GoToTitle.dds
+4,Win!,51,../../Game/Assets/sprite/InGame/Result_Win/Win!.png,38.46153846153857,346.15384615384613,860,340,10,1.0,1.0,0.5,0.5,8,Win!.dds

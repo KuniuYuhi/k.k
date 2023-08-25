@@ -71,9 +71,14 @@ void Player::Update()
 		return;
 	}
 
-
 	//キャラクターが全滅していたら処理しない
 	if (GameOver() == true)
+	{
+		return;
+	}
+
+	//ゲームが始まるまでは移動しない
+	if (m_game->GetNowGameState() != Game::enGameState_Game)
 	{
 		return;
 	}
@@ -81,8 +86,17 @@ void Player::Update()
 	//現在のキャラクターがやられたら強制的に切り替え
 	if (ForcedChange() == false)
 	{
-		Change();
+		//フラグがfalseなら
+		if (m_ChangCharacterFlag == false)
+		{
+			//キャラ切り替え
+			Change();
+		}
+		
 	}
+
+	//
+	ChangeCharacterTime();
 
 	//現在のキャラクターがやられていないなら先の処理しない
 	if (m_nowActor->GetDieFlag() != true)
@@ -131,6 +145,10 @@ void Player::Change()
 			default:
 				break;
 			}
+			//キャラ切り替えフラグ
+			SetChangCharacterFlag(true);
+			//gameUIに知らせる用フラグ。gameUIでfalseに戻す
+			SetChangCharacterFlagForGameUI(true);
 		}
 	}
 }
@@ -158,8 +176,6 @@ void Player::ChangeCharacter(EnCharacters nextCharacter)
 	//m_charaCon.SetRadius(50.0f);
 	//キャラコンの座標
 	//m_nowActor->SetCharaConPosition(m_nowActor->GetPosition());
-	
-
 	//現在のキャラクターを魔法使いに変更する
 	m_enActiveCharacter = nextCharacter;
 
@@ -194,6 +210,8 @@ bool Player::ForcedChange()
 			default:
 				break;
 			}
+			//gameUIに知らせる用フラグ。gameUIでfalseに戻す
+			SetChangCharacterFlagForGameUI(true);
 		}
 		else
 		{
@@ -205,6 +223,28 @@ bool Player::ForcedChange()
 	}
 
 	return true;
+}
+
+bool Player::ChangeCharacterTime()
+{
+	//trueでないなら処理しない
+	if (m_ChangCharacterFlag == false)
+	{
+		return true;
+	}
+
+	if (0.0f >= m_ChangeCharacterTimer)
+	{
+		m_ChangCharacterFlag = false;
+		m_ChangeCharacterTimer = m_ChangeCharacterTime;
+		return true;
+	}
+	else
+	{
+		m_ChangeCharacterTimer -= g_gameTime->GetFrameDeltaTime();
+	}
+
+	return false;
 }
 
 bool Player::IsAnnihilation()

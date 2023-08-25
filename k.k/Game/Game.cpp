@@ -6,12 +6,9 @@
 #include "Lich.h"
 #include "Result.h"
 #include "GameUI.h"
-#include "Slime.h"
-#include "TurtleShell.h"
-#include "Cactus.h"
-#include "Mushroom.h"
 #include "Fade.h"
 #include "EntryBoss.h"
+#include "BattleStart.h"
 
 #include "SkyCube.h"
 
@@ -103,19 +100,6 @@ bool Game::Start()
 	m_player->SetPosition({ 0.0f,0.0f,-1000.0f });
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
-	//model.Init("Assets/modelData/character/Wizard/Effect/FireBall.tkm");
-
-	/*m_lich = NewGO<Lich>(0, "lich");
-	m_lich->SetPosition({ 0.0f, 0.0f, -500.0f });*/
-	/*Slime* slime = NewGO<Slime>(0, "slime");
-	slime->SetPosition({ 0.0f, 0.0f, -300.0f });*/
-	/*TurtleShell* turtleshell = NewGO<TurtleShell>(0, "turtleshell");
-	turtleshell->SetPosition({ 0.0f, 0.0f, -500.0f });*/
-	/*Cactus* cactus = NewGO<Cactus>(0, "cactus");
-	cactus->SetPosition({ 0.0f, 0.0f, -700.0f });*/
-	/*Mushroom* mushroom = NewGO<Mushroom>(0, "mushroom");
-	mushroom->SetPosition({ 0.0f,0.0f,-600.0f });*/
-
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
@@ -175,15 +159,23 @@ void Game::InitSkyCube()
 	m_skyCube->Update();
 }
 
-void Game::GoResult()
+void Game::GoResult(EnOutCome outcome)
 {
-	if (m_createResultFlag==false)
+	if (m_result == nullptr)
 	{
 		m_result = NewGO<ResultSeen>(0, "result");
-		m_createResultFlag = true;
-		
+		switch (outcome)
+		{
+		case Game::enOutCome_Win:
+			m_result->SetOutcome(ResultSeen::enOutcome_Win);
+			break;
+		case Game::enOutCome_Lose:
+			m_result->SetOutcome(ResultSeen::enOutcome_Lose);
+			break;
+		default:
+			break;
+		}
 	}
-
 	//画面がリザルトの画像になった
 	//円形ワイプが終わったら
 	if (m_result->GetRoundWipeEndFlag() == true)
@@ -288,12 +280,21 @@ void Game::ManageState()
 
 void Game::OnProcessGameStartTransition()
 {
+	//一度だけバトルスタートクラス生成
+	if (m_battleStart == nullptr)
+	{
+		m_battleStart = NewGO<BattleStart>(0, "battlestart");
+	}
+
 	//フェードアウト仕切らないと処理しない
 	if (Fadecomplete() != true)
 	{
 		//画面が完全にフェードインしたら
 		if (m_fade->IsFade()==false && m_enFadeState == enFadeState_StartToBoss)
 		{
+
+			DeleteGO(m_battleStart);
+			//次のステップ
 			//ステートを切り替える
 			SetNextGameState(enGameState_AppearanceBoss);
 			//カメラをリセットする
@@ -303,6 +304,7 @@ void Game::OnProcessGameStartTransition()
 
 		return;
 	}
+	//プレイヤーを見ている
 
 	m_cameraZoomOutTimer += g_gameTime->GetFrameDeltaTime();
 	//ある程度ズームしたら
@@ -358,13 +360,11 @@ void Game::OnProcessAppearanceBossTransition()
 	}
 
 	//ボスの登場ムービークラス生成
-	if (m_bossCreateFlag == false)
+	if (m_entryBoss == nullptr)
 	{
 		m_entryBoss = NewGO<EntryBoss>(0, "entryboss");
 		m_entryBoss->SetPosition(BOSS_CREATE_POSITION);
 		m_entryBoss->SetGame(this);
-		m_bossCreateFlag = true;
-
 	}
 	//ボスの登場ムービーが終わったら
 	if (m_bossMovieEndFlag == true)
@@ -419,29 +419,18 @@ void Game::OnProcessGameTransition()
 void Game::OnProcessGameOverTransition()
 {
 	//ゲーム画面からリザルト画面に遷移するまでの処理
-	GoResult();
+	GoResult(enOutCome_Lose);
 }
 
 void Game::OnProcessGameClearTransition()
 {
 	if (m_displayResultFlag == true)
 	{
-		GoResult();
+		GoResult(enOutCome_Win);
 		return;
 	}
-
-
-	//プレイヤーを見ているならタイトル画面に戻れる
-	if (m_clearCameraState == enClearCameraState_Player)
-	{
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			m_displayResultFlag = true;
-		}
-		return;
-	}
-
 	//リザルト画面がない間
+	//リッチがいる間はカメラに移す
 	m_lich = FindGO<Lich>("lich");
 	if (m_lich == nullptr)
 	{
@@ -450,11 +439,7 @@ void Game::OnProcessGameClearTransition()
 		//ボスがいなくなったらカメラの対象を変える
 		SetClearCameraState(Game::enClearCameraState_Player);
 		//リザルト画面表示
-		
+		m_displayResultFlag = true;
 	}
 
-}
-
-void Game::Render(RenderContext& rc)
-{
 }

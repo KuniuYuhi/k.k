@@ -17,6 +17,11 @@ public:
 		m_lich = lich;
 	}
 
+	void SetAtk(int attack)
+	{
+		m_attak = attack;
+	}
+
 	const int GetAtk() const
 	{
 		return m_attak;
@@ -33,7 +38,7 @@ private:
 
 	CollisionObject* m_collision;
 
-	const int m_attak = 20;
+	int m_attak = 20;
 
 	const float m_speed = 50.0f;
 

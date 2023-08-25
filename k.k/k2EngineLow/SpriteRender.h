@@ -4,15 +4,14 @@ namespace nsK2EngineLow {
 
 	struct SpriteCB
 	{
-		Vector2 wipeDirection=Vector2(0.0f,0.0f);		//ワイプする方向
-		float pad1;
+		Vector2 RoundWipeStartPosition = Vector2(0.0f, 0.0f);		//円形ワイプを行う始点
 		bool grayScale = false;					//グレースケールをするかどうか
+		float pad1;
+		Vector2 wipeDirection = Vector2(0.0f, 0.0f);		//ワイプする方向
 		bool simpleWipe = false;				//単純なリニアワイプをするかどうか
 		float wipeSize = 0;						//ワイプサイズ
-		bool WipeWithDirection = false;			//方向を指定するリニアワイプをするかどうか
-		Vector2 RoundWipeStartPosition = Vector2(0.0f, 0.0f);		//円形ワイプを行う始点
 		bool RoundWipe = false;					//円形ワイプを使用するかどうか
-
+		bool WipeWithDirection = false;			//方向を指定するリニアワイプをするかどうか
 	};
 
 	class SpriteRender
@@ -107,6 +106,19 @@ namespace nsK2EngineLow {
 		const Quaternion& GetRotation() const
 		{
 			return m_rotation;
+		}
+
+		/// <summary>
+		/// 座標、拡大率、回転の設定
+		/// </summary>
+		/// <param name="position">座標</param>
+		/// <param name="scale">拡大率</param>
+		/// <param name="rotation">回転。いれなかったら回転なし</param>
+		void SetTransForm(Vector3& position, Vector3& scale, Quaternion& rotation)
+		{
+			SetPosition(position);
+			SetScale(scale);
+			SetRotation(rotation);
 		}
 
 		/// <summary>

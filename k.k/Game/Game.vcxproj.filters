@@ -289,6 +289,7 @@
     <ClCompile Include="WizardStateVictory_start.cpp">
       <Filter>Wizard</Filter>
     </ClCompile>
+    <ClCompile Include="BattleStart.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -573,5 +574,6 @@
     <ClInclude Include="WizardStateVictory_start.h">
       <Filter>Wizard</Filter>
     </ClInclude>
+    <ClInclude Include="BattleStart.h" />
   </ItemGroup>
 </Project>
