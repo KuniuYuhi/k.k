@@ -51,6 +51,8 @@ public:
 
 	void PowerUpTimer();
 
+	bool CalcDash();
+
 	bool GetAtkCollsionCreateFlag() const
 	{
 		return m_createAttackCollisionFlag;
@@ -63,8 +65,8 @@ public:
 	bool isAnimationSwappable() const
 	{
 		return m_enAnimationState != enAninationState_Idle &&
-			m_enAnimationState != enAninationState_Walk &&
-			m_enAnimationState != enAninationState_Run;
+			m_enAnimationState != enAninationState_Walk /*&&
+			m_enAnimationState != enAninationState_Dash*/;
 	}
 
 	/// <summary>
@@ -73,7 +75,8 @@ public:
 	/// <returns></returns>
 	bool isAnimationEntable() const
 	{
-		return m_enAnimationState != enAnimationState_Attack_1 &&
+		return m_enAnimationState != enAninationState_Dash &&
+			m_enAnimationState != enAnimationState_Attack_1 &&
 			m_enAnimationState != enAnimationState_Attack_2 &&
 			m_enAnimationState != enAnimationState_Attack_3 &&
 			m_enAnimationState != enAnimationState_Attack_Skill_Charge&&
@@ -88,14 +91,16 @@ public:
 	/// <returns></returns>
 	bool isCollisionEntable() const
 	{
-		return m_enAnimationState != enAnimationState_Damage &&
+		return m_enAnimationState != enAninationState_Dash &&
+			m_enAnimationState != enAnimationState_Damage &&
 			m_enAnimationState != enAnimationState_PowerUp &&
 			m_enAnimationState != enAnimationState_Die;
 	}
 
 	bool isRotationEntable() const
 	{
-		return m_enAnimationState != enAnimationState_Attack_1 &&
+		return m_enAnimationState != enAninationState_Dash &&
+			m_enAnimationState != enAnimationState_Attack_1 &&
 			m_enAnimationState != enAnimationState_Attack_2 &&
 			m_enAnimationState != enAnimationState_Attack_Skill_Charge;
 	}
@@ -113,6 +118,10 @@ public:
 	/// 共通のステート遷移処理を実行
 	/// </summary>
 	void ProcessCommonStateTransition();
+	/// <summary>
+	/// ダッシュのステート遷移処理を実行
+	/// </summary>
+	void OnProcessDashStateTransition();
 	/// <summary>
 	/// アタック１のステート遷移処理を実行
 	/// </summary>
@@ -155,7 +164,7 @@ public:
 	enum EnAnimationClip {
 		enAnimClip_Idle,	// 0 : 待機アニメーション
 		enAnimClip_Walk,	// 1 : 歩きアニメーション
-		enAnimClip_Run,		// 2 : 走りアニメーション
+		enAnimClip_Dash,		// 2 : 走りアニメーション
 		enAnimClip_Attack_1,// 3 : 
 		enAnimClip_Attack_2,// 4 : 
 		enAnimClip_Attack_3,// 5 : 
@@ -173,7 +182,7 @@ private:
 	enum EnAnimationState {
 		enAninationState_Idle,
 		enAninationState_Walk,
-		enAninationState_Run,
+		enAninationState_Dash,
 		enAnimationState_Attack_1,
 		enAnimationState_Attack_2,
 		enAnimationState_Attack_3,
@@ -244,11 +253,11 @@ private:
 	int m_skillBoonId = -1;		//スキル使用時のボーン取得用変数
 
 	bool m_createSkillCollisionFlag = false;		//スキル使用時に当たり判定を生成するかのフラグ
-
-
-
 	float m_ChargeTimer = 0.0f;
-	const float m_MaxChargeTime = 3.0f;
+	const float m_MaxChargeTime = 3.0f;				//スキル１の溜めの最大時間
+
+
+	float m_dashTimer = 1.0f;
 
 };
 

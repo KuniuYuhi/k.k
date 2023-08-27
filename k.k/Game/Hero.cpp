@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "HeroStateIdle.h"
 #include "HeroStateWalk.h"
-#include "HeroStateRun.h"
+#include "HeroStateDash.h"
 #include "HeroStateAttack_1.h"
 #include "HeroStateAttack_2.h"
 #include "HeroStateAttack_3.h"
@@ -14,11 +14,13 @@
 #include "HeroStatePowerUp.h"
 #include "HeroStateVictory.h"
 
+//todo 今はダッシュ中の当たり判定なし
+
 namespace {
 	int MAXHP = 200;
 	int MAXMP = 100;
 	int ATK = 50;
-	float SPEED = 100.0f;
+	float SPEED = 200.0f;
 	const char* NAME = "Hero";
 
 	const int SKILL_ATTACK_POWER = 30;
@@ -64,8 +66,8 @@ void Hero::InitModel()
 	m_animationClip[enAnimClip_Idle].SetLoopFlag(true);
 	m_animationClip[enAnimClip_Walk].Load("Assets/animData/character/Player/MoveFWD_Battle.tka");
 	m_animationClip[enAnimClip_Walk].SetLoopFlag(true);
-	m_animationClip[enAnimClip_Run].Load("Assets/animData/character/Player/SprintFWD_Battle.tka");
-	m_animationClip[enAnimClip_Run].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Dash].Load("Assets/animData/character/Player/SprintFWD_Battle.tka");
+	m_animationClip[enAnimClip_Dash].SetLoopFlag(true);
 	m_animationClip[enAnimClip_Attack_1].Load("Assets/animData/character/Player/Attack1_1.tka");
 	m_animationClip[enAnimClip_Attack_1].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Attack_2].Load("Assets/animData/character/Player/Attack2.tka");
@@ -107,6 +109,18 @@ void Hero::InitModel()
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
+
+
+	/*RigidBodyInitData rbid;
+	rbid.collider = m_player->GetCharacterController().GetCollider();
+	rbid.mass = 20.0f;
+	rbid.pos = m_position;
+	rbid.restitution = 200.0f;
+	rbid.rot = m_rotation;
+
+	rigitBody.Init(rbid);
+	rigitBody.SetLinearFactor(1.0f, 0.0f, 1.0f);
+	rigitBody.SetAngularFactor(0.0f, 1.0f, 0.0f);*/
 
 }
 
@@ -159,22 +173,29 @@ void Hero::Move()
 	{
 		if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 		{
-			if (g_pad[0]->IsPress(enButtonA))
+			//リジットボディでダッシュ
+			if (g_pad[0]->IsTrigger(enButtonA))
 			{
-				////ダッシュした瞬間だけ無敵時間にする
-				//if (GetInvicibleDashState() == enDashInvicibleState_None)
-				//{
-				//	SetInvicibleDashState(enDashInvicibleState_On);
-				//	m_invincbledDashTimer = 0.0f;
-				//}
-				
-				m_dashFlag = true;
+				SetNextAnimationState(enAninationState_Dash);
 			}
-			else
-			{
-				SetInvicibleDashState(enDashInvicibleState_None);
-				m_dashFlag = false;
-			}
+
+
+			//if (g_pad[0]->IsPress(enButtonA))
+			//{
+			//	////ダッシュした瞬間だけ無敵時間にする
+			//	//if (GetInvicibleDashState() == enDashInvicibleState_None)
+			//	//{
+			//	//	SetInvicibleDashState(enDashInvicibleState_On);
+			//	//	m_invincbledDashTimer = 0.0f;
+			//	//}
+			//	
+			//	m_dashFlag = true;
+			//}
+			//else
+			//{
+			//	SetInvicibleDashState(enDashInvicibleState_None);
+			//	m_dashFlag = false;
+			//}
 		}
 	}
 
@@ -292,7 +313,7 @@ void Hero::CreateCollision()
 	AtkCollision->CreateBox(
 		m_position,
 		Quaternion(90.0f,0.0f,0.0f,1.0f),
-		Vector3(10.0f, 5.0f, 100.0f)
+		Vector3(11.0f, 5.0f, 140.0f)
 	);
 
 	//剣のボーンのワールド座標を取得
@@ -365,6 +386,38 @@ void Hero::PowerUpTimer()
 	}
 }
 
+bool Hero::CalcDash()
+{
+	if (m_dashTimer < 0.0f)
+	{
+		//ダッシュ終わり
+		m_dashTimer = 1.0f;
+
+		return true;
+	}
+	//線形補間
+	float speed;
+	speed = Math::Lerp(m_dashTimer, 0.0f, 12.0f);
+
+	m_dashTimer -= g_gameTime->GetFrameDeltaTime()*(1.0f);
+
+	Vector3 forward = m_forward;
+	forward *= speed;
+
+	//新しい座標にする
+	m_player->CalcPosition(forward, 1.0f);
+	m_position = m_player->GetPosition();
+	//更新
+	SetTransFormModel(m_modelRender);
+	m_modelRender.Update();
+
+	return false;
+
+	//
+	//m_player->GetCharacterController().GetRigidBody()->AddForce(m_forward * 200.0f, m_position);
+
+}
+
 void Hero::SetNextAnimationState(EnAnimationState nextState)
 {
 	if (m_state != nullptr) {
@@ -386,9 +439,9 @@ void Hero::SetNextAnimationState(EnAnimationState nextState)
 		// 歩きステートを作成する。
 		m_state = new HeroStateWalk(this);
 		break;
-	case Hero::enAninationState_Run:
-		// 走るステートを作成する。
-		m_state = new HeroStateRun(this);
+	case Hero::enAninationState_Dash:
+		// ダッシュステートを作成する。
+		m_state = new HeroStateDash(this);
 		break;
 	case Hero::enAnimationState_Attack_1:
 		//アタック１ステートを作成する。
@@ -445,11 +498,11 @@ void Hero::ProcessCommonStateTransition()
 {
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		if (m_dashFlag == true)
+		/*if (m_dashFlag == true)
 		{
-			SetNextAnimationState(enAninationState_Run);
+			SetNextAnimationState(enAninationState_Dash);
 			return;
-		}
+		}*/
 
 		SetNextAnimationState(enAninationState_Walk);
 	}
@@ -459,6 +512,16 @@ void Hero::ProcessCommonStateTransition()
 		SetNextAnimationState(enAninationState_Idle);
 	}
 }
+
+void Hero::OnProcessDashStateTransition()
+{
+	if (CalcDash() == true)
+	{
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
+
 //アタック１の状態遷移処理
 void Hero::OnProcessAttack_1StateTransition()
 {
