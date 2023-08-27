@@ -316,7 +316,7 @@ protected:
 	EnComboState m_enDamagedComboState = enDamageCombo_None;		//ダメージを受けた時のコンボ
 	EnDashInvicibleState m_enDashInvicibleState = enDashInvicibleState_None;	//ダッシュしたときの無敵時間のためのステート
 
-	Vector3 m_forward = {0.0f,0.0f,-1.0f};				//前方向
+	Vector3 m_forward = {0.0f,0.0f,1.0f};				//前方向
 	Vector3 m_position = Vector3::Zero;				//自身の座標
 	Vector3 m_moveSpeed = Vector3::Zero;			//移動方向
 

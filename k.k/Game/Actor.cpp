@@ -31,22 +31,22 @@ void Actor::SetTransForm(Vector3 position, Quaternion rotation,Vector3 scale)
 void Actor::RecoveryMP()
 {
 	//MP‰ñ•œó‘Ô‚È‚ç
-	if (m_recoveryMpFlag == true)
+	if (m_recoveryMpFlag != true)
 	{
-		if (m_status.mp < m_status.maxMp)
-		{
-			m_status.mp += g_gameTime->GetFrameDeltaTime();
+		return;
+	}
+		
+	if (m_status.mp < m_status.maxMp)
+	{
+		m_status.mp += g_gameTime->GetFrameDeltaTime();
 
-			if (m_status.mp > m_status.maxMp)
-			{
-				m_status.mp = m_status.maxMp;
-				//MP‰ñ•œó‘Ô‚ğ‚È‚µ‚É‚·‚é
-				m_recoveryMpFlag = false;
-			}
+		if (m_status.mp > m_status.maxMp)
+		{
+			m_status.mp = m_status.maxMp;
+			//MP‰ñ•œó‘Ô‚ğ‚È‚µ‚É‚·‚é
+			m_recoveryMpFlag = false;
 		}
 	}
-
-	
 }
 
 Vector3 Actor::calcVelocity(Status status)
