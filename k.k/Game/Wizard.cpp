@@ -5,7 +5,7 @@
 #include "WizardStateWalk.h"
 #include "WizardStateRun.h"
 #include "WizardStateAttack_1.h"
-//スキル入れ替えて使える
+
 //連続攻撃ファイヤーボール
 #include "WizardStateAttack_2_Start.h"
 #include "WizardStateAttack_2_main.h"
@@ -13,21 +13,21 @@
 //フレイムーピラー
 #include "WizardStateAttack_3_Start.h"
 #include "WizardStateAttack_3_main.h"
+
 #include "WizardState_Attack_4.h"
 #include "FlamePillar.h"
 #include "WizardStateDie.h"
 #include "WizardStateDamage.h"
 #include "WizardStateVictory_start.h"
 #include "WizardStateVictory_main.h"
+#include "WIzardStateWarp.h"
 
 namespace {
 	int MAXHP = 150;
 	int MAXMP = 200;
 	int ATK = 30;
-	float SPEED = 80.0f;
+	float SPEED = 130.0f;//160
 	const char* NAME = "Wizard";
-
-	
 }
 
 Wizard::Wizard()
@@ -160,25 +160,33 @@ void Wizard::Update()
 
 void Wizard::Move()
 {
-
 	if (isAnimationSwappable() != true)
 	{
-		if (g_pad[0]->IsPress(enButtonA))
+		//ワープ処理
+		if (g_pad[0]->IsTrigger(enButtonA))
 		{
-			//ダッシュした瞬間だけ無敵時間にする
-			if (GetInvicibleDashState() == enDashInvicibleState_None)
-			{
-				SetInvicibleDashState(enDashInvicibleState_On);
-				m_invincbledDashTimer = 0.0f;
-			}
-			m_dashFlag = true;
+			SetNextAnimationState(enAninationState_Warp);
 		}
-		else
-		{
-			SetInvicibleDashState(enDashInvicibleState_None);
-			m_dashFlag = false;
-		}
+		//ステートクラスの中で処理
+
+		//if (g_pad[0]->IsPress(enButtonA))
+		//{
+		//	//ダッシュした瞬間だけ無敵時間にする
+		//	if (GetInvicibleDashState() == enDashInvicibleState_None)
+		//	{
+		//		SetInvicibleDashState(enDashInvicibleState_On);
+		//		m_invincbledDashTimer = 0.0f;
+		//	}
+		//	m_dashFlag = true;
+		//}
+		//else
+		//{
+		//	SetInvicibleDashState(enDashInvicibleState_None);
+		//	m_dashFlag = false;
+		//}
 	}
+
+	
 
 	m_moveSpeed = m_player->GetMoveSpeed();
 	m_position = m_player->GetPosition();
@@ -188,8 +196,7 @@ void Wizard::Move()
 
 bool Wizard::RotationOnly()
 {
-	//ファイヤーボールを打っているとき
-	if (m_enAttackPatternState == enAttackPattern_2_main)
+	if (isRotationEntable()!=true)
 	{
 		//xかzの移動速度があったら(スティックの入力があったら)。
 		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
@@ -270,16 +277,11 @@ void Wizard::CreateCollision()
 	AtkCollision->CreateBox(
 		m_position,
 		m_wandRotation,
-		Vector3(20.0f, 100.0f, 20.0f)
+		Vector3(20.0f, 140.0f, 20.0f)
 	);
 
 	//杖のボーンのワールド座標を取得
 	Matrix WandBoonMatrix = m_modelRender.GetBone(m_magicWandBoonId)->GetWorldMatrix();
-	/*Matrix WandRotMatrix;
-	WandRotMatrix.MakeRotationFromQuaternion(m_wandRotation);
-
-	Matrix finalWandBoonMatrix = WandBoonMatrix * WandRotMatrix;*/
-
 	AtkCollision->SetWorldMatrix(WandBoonMatrix);
 }
 
@@ -348,6 +350,61 @@ void Wizard::PlayAnimation()
 void Wizard::ManageState()
 {
 	m_animationState->ManageState();
+}
+
+bool Wizard::Warp()
+{
+	if (isWarpFlag != true)
+	{
+		//一定時間待ってワープ開始
+		if (m_isWarpStartTimer > 1.0f)
+		{
+			//ワープ開始
+			CalcWarp();
+			//ワープした!
+			isWarpFlag = true;
+		}
+		else
+		{
+			m_isWarpStartTimer += g_gameTime->GetFrameDeltaTime();
+		}
+	}
+	else
+	{
+		//ワープ完了したら一定時間硬直させる
+		if (m_rigidityTime < m_rigidityTimer)
+		{
+			//ワープタイマーリセット
+			m_isWarpStartTimer = 0.0f;
+			m_rigidityTimer = 0.0f;
+			isWarpFlag = false;
+			//ワープ処理終わり
+			return true;
+		}
+		else
+		{
+			m_rigidityTimer += g_gameTime->GetFrameDeltaTime();
+		}
+	}
+	return false;
+}
+
+void Wizard::CalcWarp()
+{
+	//前方向の取得
+	Vector3 forward = m_forward;
+	forward *= m_warpDistance;
+
+	//敵と被るかの検索
+	//todo 
+	 
+	
+	//新しい座標にする
+	m_player->CalcPosition(forward,1.0f);
+	m_position = m_player->GetPosition();
+	//更新
+	SetTransFormModel(m_modelRender);
+	m_modelRender.Update();
 }
 
 bool Wizard::IsComboStateSame()
@@ -419,6 +476,10 @@ void Wizard::SetNextAnimationState(EnAnimationState nextState)
 		//被ダメージステートを作成する。
 		m_animationState = new WizardStateVictory_main(this);
 		break;
+	case Wizard::enAninationState_Warp:
+		//被ダメージステートを作成する。
+		m_animationState = new WIzardStateWarp(this);
+		break;
 
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
@@ -435,11 +496,11 @@ void Wizard::ProcessCommonStateTransition()
 
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		if (m_dashFlag == true)
+		/*if (m_dashFlag == true)
 		{
 			SetNextAnimationState(enAninationState_Run);
 			return;
-		}
+		}*/
 
 		SetNextAnimationState(enAninationState_Walk);
 	}
@@ -594,6 +655,16 @@ void Wizard::OnProcessVictoryStateTransition()
 		default:
 			break;
 		}
+	}
+}
+
+void Wizard::OnProcessWarpStateTransition()
+{
+	//ワープ処理が終わったら
+	if (Warp() == true)
+	{
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
 	}
 }
 

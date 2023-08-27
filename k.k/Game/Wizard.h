@@ -39,11 +39,21 @@ public:
 	void ManageState();
 
 	/// <summary>
+	/// ワープ処理
+	/// </summary>
+	bool Warp();
+	/// <summary>
+	/// ワープ先の座標を計算
+	/// </summary>
+	void CalcWarp();
+
+	/// <summary>
 	/// 特定のアニメーションが再生中(true)なら入れ替え可能。
 	/// </summary>
 	/// <returns></returns>
 	bool isAnimationSwappable() const
 	{
+		//todo ダッシュをワープに
 		return m_enAnimationState != enAninationState_Idle &&
 			m_enAnimationState != enAninationState_Walk &&
 			m_enAnimationState != enAninationState_Run;
@@ -62,6 +72,7 @@ public:
 			m_enAnimationState != enAnimationState_Attack_3_main &&
 			m_enAnimationState != enAnimationState_Attack_4&&
 			m_enAnimationState != enAnimationState_Damage &&
+			m_enAnimationState != enAninationState_Warp &&
 			m_enAnimationState != enAnimationState_Die;
 	}
 
@@ -71,13 +82,15 @@ public:
 	/// <returns></returns>
 	bool isCollisionEntable() const
 	{
-		return m_enAnimationState != enAnimationState_Damage &&
+		return m_enAnimationState != enAninationState_Warp &&
+			m_enAnimationState != enAnimationState_Damage &&
 			m_enAnimationState != enAnimationState_Die;
 	}
 
 	bool isRotationEntable() const
 	{
-		return true;
+		return m_enAnimationState != enAnimationState_Attack_2_main &&
+			m_enAnimationState != enAninationState_Warp;
 	}
 
 	ModelRender& GetModelRender()
@@ -106,12 +119,15 @@ public:
 
 	void OnProcessVictoryStateTransition();
 
+	void OnProcessWarpStateTransition();
+
 
 	// アニメーションクリップの番号を表す列挙型。
 	enum EnAnimationClip {
 		enAnimClip_Idle,			// 0 : 待機アニメーション
 		enAnimClip_Walk,			// 1 : 歩きアニメーション
 		enAnimClip_Run,				// 2 : 走りアニメーション
+		enAnimClip_Warp,
 		enAnimClip_Attack_1,		// 3 : 
 		enAnimClip_Attack_2_start,		// 4 : 
 		enAnimClip_Attack_2_main,
@@ -133,6 +149,7 @@ private:
 		enAninationState_Idle,
 		enAninationState_Walk,
 		enAninationState_Run,
+		enAninationState_Warp,
 		enAnimationState_Attack_1,
 		enAnimationState_Attack_2_start,
 		enAnimationState_Attack_2_main,
@@ -196,14 +213,20 @@ private:
 
 	Quaternion m_wandRotation = Quaternion::Identity;
 
+	bool isWarpFlag = false;					//ワープ(座標の移動)したかのフラグ
+	float m_isWarpStartTimer = 0.0f;		
+	const float m_rigidityTime = 0.4f;
+	float m_rigidityTimer = 0.0f;				//ワープ後の硬直時間のタイマー
+
+	const float m_warpDistance = 300.0f;			//ワープする距離
 
 	bool m_createAttackCollisionFlag = false;		//攻撃時に当たり判定を生成するかのフラグ
 
 	int m_magicWandBoonId = -1;
 
 
-	const int m_flamePillar_skillMp = 50;
-	const int m_fireBall_SkillMp = 10;
+	const int m_flamePillar_skillMp = 20;
+	const int m_fireBall_SkillMp = 5;
 
 
 	bool m_createFireBallFlag = false;
