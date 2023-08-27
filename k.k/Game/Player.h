@@ -53,6 +53,11 @@ public:
 	/// </summary>
 	bool IsAnnihilation();
 
+	/// <summary>
+	/// ç¿ïWÇÃåvéZ
+	/// </summary>
+	void CalcPosition(Vector3 moveSpeed, float deltaTime);
+
 	void SetPosition(Vector3 position)
 	{
 		m_position = position;

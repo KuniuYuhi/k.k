@@ -109,8 +109,9 @@ void Player::Update()
 		//移動処理
 		m_moveSpeed = m_nowActor->calcVelocity(m_nowActor->GetStatus());
 		m_moveSpeed.y = 0.0f;
-		//キャラコンの移動処理
-		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+		
+		CalcPosition(m_moveSpeed,1.0f/60.0f);
+
 		/*rigitBody.SetPositionAndRotation(
 			m_position,
 			m_nowActor->GetRotation()
@@ -257,6 +258,11 @@ bool Player::IsAnnihilation()
 	}
 	//生存しているキャラクターがいる
 	return false;
+}
+
+void Player::CalcPosition(Vector3 moveSpeed,float deltaTime)
+{
+	m_position = m_charaCon.Execute(moveSpeed, deltaTime);
 }
 
 int Player::GetAtk()
