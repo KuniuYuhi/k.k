@@ -86,7 +86,8 @@ void GameCamera::ClearCameraForPlayer()
 		forward,
 		PLAYER_CAMERA_X,
 		PLAYER_CAMERA_Y,
-		TARGETPOS_YUP_WIN
+		TARGETPOS_YUP_WIN,
+		true
 	);
 }
 
@@ -113,6 +114,8 @@ void GameCamera::SetBattleStartCamera()
 	//‘O•ûŒü‚Ìæ“¾
 	Vector3 CameraPosXZ = m_player->GetForward();
 	CameraPosXZ.y = 0.0f;
+	//”½“]
+	CameraPosXZ *= -1.0f;
 	//XZ•ûŒü‚Ì
 	CameraPosXZ *= 400.0f;
 	//Y•ûŒü‚Ì
@@ -219,8 +222,6 @@ void GameCamera::GameStartCamera()
 	Vector3 CameraPosXZ = m_player->GetForward();
 	CameraPosXZ.y = 0.0f;
 
-	//³–Ê‚ğŒ©‚é‚Ì‚Å”½“]‚³‚¹‚é
-	CameraPosXZ *= -1.0f;
 	//XZ•ûŒü‚Ì
 	CameraPosXZ *= 100.0f + m_count;
 	//Y•ûŒü‚Ì
