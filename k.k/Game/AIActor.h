@@ -216,6 +216,8 @@ protected:
 
 	Player* m_player = nullptr;
 
+	PhysicsStaticObject m_monsterStaticObject;		//静的オブジェクト。派生クラスで当たり判定作成
+
 	Status m_status;
 
 	Vector3 m_targetPosition = Vector3::Zero;		//ターゲットの座標を格納
