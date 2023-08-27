@@ -95,7 +95,7 @@ private:
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_collisionPosition= Vector3::Zero;
 	Vector3 m_forWizardBallScale = Vector3::One;
-	Vector3 m_forLichBallScale = { 3.0f,3.0f,3.0f };
+	Vector3 m_forLichBallScale = { 2.3f,2.3f,2.3f };
 	Vector3 m_moveSpeed = Vector3::Zero;
 	Quaternion m_rotation = Quaternion::Identity;
 

@@ -42,7 +42,7 @@ bool FireBall::Start()
             200,
             100,
             60,
-            70,
+            45,
             m_forLichBallScale
         );
         //çUåÇóÕÇÃê›íË
