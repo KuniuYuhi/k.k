@@ -258,7 +258,7 @@
     <ClCompile Include="HeroStateDie.cpp" />
     <ClCompile Include="HeroStateIdle.cpp" />
     <ClCompile Include="HeroStatePowerUp.cpp" />
-    <ClCompile Include="HeroStateRun.cpp" />
+    <ClCompile Include="HeroStateDash.cpp" />
     <ClCompile Include="HeroStateVictory.cpp" />
     <ClCompile Include="HeroStateWalk.cpp" />
     <ClCompile Include="Lich.cpp" />
@@ -325,6 +325,7 @@
     <ClCompile Include="WizardStateVictory_main.cpp" />
     <ClCompile Include="WizardStateVictory_start.cpp" />
     <ClCompile Include="WizardStateWalk.cpp" />
+    <ClCompile Include="WIzardStateWarp.cpp" />
     <ClCompile Include="WizardState_Attack_4.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -363,7 +364,7 @@
     <ClInclude Include="HeroStateDie.h" />
     <ClInclude Include="HeroStateIdle.h" />
     <ClInclude Include="HeroStatePowerUp.h" />
-    <ClInclude Include="HeroStateRun.h" />
+    <ClInclude Include="HeroStateDash.h" />
     <ClInclude Include="HeroStateVictory.h" />
     <ClInclude Include="HeroStateWalk.h" />
     <ClInclude Include="ICactusState.h" />
@@ -432,6 +433,7 @@
     <ClInclude Include="WizardStateVictory_main.h" />
     <ClInclude Include="WizardStateVictory_start.h" />
     <ClInclude Include="WizardStateWalk.h" />
+    <ClInclude Include="WIzardStateWarp.h" />
     <ClInclude Include="WizardState_Attack_4.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

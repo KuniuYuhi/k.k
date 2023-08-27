@@ -1,13 +1,13 @@
 #pragma once
 #include "IHeroState.h"
 //走るステートクラス
-class HeroStateRun:public IHeroState
+class HeroStateDash:public IHeroState
 {
 public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	HeroStateRun(Hero* hero)
+	HeroStateDash(Hero* hero)
 		:IHeroState(hero)
 	{
 	}

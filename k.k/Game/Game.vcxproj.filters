@@ -44,7 +44,7 @@
     <ClCompile Include="HeroStateWalk.cpp">
       <Filter>Hero</Filter>
     </ClCompile>
-    <ClCompile Include="HeroStateRun.cpp">
+    <ClCompile Include="HeroStateDash.cpp">
       <Filter>Hero</Filter>
     </ClCompile>
     <ClCompile Include="WizardStateIdle.cpp">
@@ -290,6 +290,9 @@
       <Filter>Wizard</Filter>
     </ClCompile>
     <ClCompile Include="BattleStart.cpp" />
+    <ClCompile Include="WIzardStateWarp.cpp">
+      <Filter>Wizard</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -311,7 +314,7 @@
     <ClInclude Include="HeroStateWalk.h">
       <Filter>Hero</Filter>
     </ClInclude>
-    <ClInclude Include="HeroStateRun.h">
+    <ClInclude Include="HeroStateDash.h">
       <Filter>Hero</Filter>
     </ClInclude>
     <ClInclude Include="IWizardState.h">
@@ -575,5 +578,8 @@
       <Filter>Wizard</Filter>
     </ClInclude>
     <ClInclude Include="BattleStart.h" />
+    <ClInclude Include="WIzardStateWarp.h">
+      <Filter>Wizard</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
