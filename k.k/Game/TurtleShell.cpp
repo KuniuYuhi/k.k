@@ -116,7 +116,10 @@ void TurtleShell::InitModel()
 		enAnimClip_Num,
 		enModelUpAxisZ
 	);
-
+	//モデルの静的オブジェクト作成
+	//m_monsterStaticObject.CreateFromModel(m_modelRender.GetModel(), m_modelRender.GetModel().GetWorldMatrix());
+	////コリジョン属性を付ける
+	//m_monsterStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Monster);
 
 	m_charaCon.Init(
 		22.0f,
