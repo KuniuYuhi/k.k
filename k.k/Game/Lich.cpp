@@ -33,7 +33,7 @@ namespace {
 
 
 	//ステータス
-	int MAXHP = 50;
+	int MAXHP = 1000;
 	int MAXMP = 500;
 	int ATK = 20;
 	float SPEED = 80.0f;

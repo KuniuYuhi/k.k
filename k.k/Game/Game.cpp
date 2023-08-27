@@ -101,7 +101,7 @@ bool Game::Start()
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
 	//当たり判定の可視化
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	//画面を明るくする
 	m_fade->StartFadeOut(2.0f);
@@ -340,7 +340,7 @@ void Game::OnProcessAppearanceBossTransition()
 			//ムービー用のモデルを消す
 			DeleteGO(m_entryBoss);
 			//ボスの生成
-			CreateBoss();
+			//CreateBoss();
 			//ステートを切り替える
 			SetNextGameState(enGameState_Game);
 			break;
