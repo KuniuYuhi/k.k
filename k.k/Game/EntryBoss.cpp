@@ -3,7 +3,7 @@
 #include "Game.h"
 
 namespace {
-	const float SCALE_UP = 3.0f;
+	const float SCALE_UP = 4.0f;
 
 
 	const Vector3 L_START_POS = { -707.0f,430.0f,0.0f };
@@ -52,7 +52,7 @@ bool EntryBoss::Start()
 		enModelUpAxisZ
 	);
 
-	m_position.y -= 300.0f;
+	m_position.y -= 380.0f;
 	m_scale *= SCALE_UP;
 
 	m_rotation.SetRotationDegY(180.0f);
@@ -127,7 +127,7 @@ void EntryBoss::positionUp()
 			m_gOTextFlag = true;
 		}
 
-		m_position.y += g_gameTime->GetFrameDeltaTime() * 35.0f;
+		m_position.y += g_gameTime->GetFrameDeltaTime() * 45.0f;
 	}
 
 	m_model.SetPosition(m_position);
