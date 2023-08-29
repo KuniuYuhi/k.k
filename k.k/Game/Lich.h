@@ -17,7 +17,7 @@ public:
 	/// </summary>
 	struct InfoAboutAttack
 	{
-		const float m_Attack_1Distance = 600.0f;	//遠距離攻撃
+		const float m_Attack_1Distance = 1000.0f;	//遠距離攻撃
 		const float m_Attack_2Distance = 200.0f;	//近距離攻撃
 	};
 
@@ -164,6 +164,7 @@ public:
 		enAnimClip_Damage,
 		enAnimClip_Die,
 		enAnimClip_Victory,
+		enAnimClip_Angry,
 		enAnimClip_Num,				// 7 :アニメーションクリップの数
 	};
 
@@ -172,11 +173,11 @@ public:
 	/// </summary>
 	void ProcessCommonStateTransition();
 	/// <summary>
-	/// アタック１ステート遷移処理を実行
+	/// アタック１(近距離)ステート遷移処理を実行
 	/// </summary>
 	void OnProcessAttack_1StateTransition();
 	/// <summary>
-	/// アタック2ステート遷移処理を実行
+	/// アタック2(遠距離)ステート遷移処理を実行
 	/// </summary>
 	void OnProcessAttack_2StateTransition();
 	/// <summary>
@@ -188,25 +189,29 @@ public:
 	/// </summary>
 	void OnProcessDamageStateTransition();
 	/// <summary>
-	/// 
+	/// ダークメテオ(スタート)遷移処理を実行
 	/// </summary>
 	void OnProcessDarkMeteorite_StartStateTransition();
 	/// <summary>
-	/// 
+	/// ダークメテオ(メイン)遷移処理を実行
 	/// </summary>
 	void OnProcessDarkMeteorite_MainStateTransition();
 	/// <summary>
-	/// 
+	/// ダークメテオ(エンド)遷移処理を実行
 	/// </summary>
 	void OnProcessDarkMeteorite_EndStateTransition();
 	/// <summary>
-	/// 
+	/// 召喚遷移処理を実行
 	/// </summary>
 	void OnProcessSummonStateTransition();
 	/// <summary>
 	/// 勝利遷移処理を実行
 	/// </summary>
 	void OnProcessVictoryStateTransition();
+	/// <summary>
+	/// 怒りモード遷移処理を実行
+	/// </summary>
+	void OnProcessAngryStateTransition();
 
 	//アニメーションステート
 	enum EnAnimationState {
@@ -224,7 +229,8 @@ public:
 		enAninationState_Summon,
 		enAnimationState_Damage,
 		enAnimationState_Die,
-		enAnimationState_Victory
+		enAnimationState_Victory,
+		enAnimationState_Angry
 	};
 
 	/// <summary>
@@ -240,6 +246,7 @@ public:
 		enSpecialActionState_DarkMeteo,
 		enSpecialActionState_Warp,
 		enSpecialActionState_CenterWarp,
+		enSpecialActionState_AngryMode,			//怒りモード。この時だけ移動する
 		SpecialActionState
 	};
 
@@ -357,6 +364,26 @@ public:
 		return m_monsters.size();
 	}
 
+	/// <summary>
+	/// 怒りモード時間の計算
+	/// </summary>
+	/// <returns></returns>
+	bool CalcAngryTime();
+	/// <summary>
+	/// 怒りモードカウントの取得
+	/// </summary>
+	/// <returns></returns>
+	const int& GetAngryModeCount() const
+	{
+		return m_angryModeCount;
+	}
+
+	/// <summary>
+	/// 勝敗が決定したか
+	/// </summary>
+	/// <returns></returns>
+	bool IsWinnerDecision();
+
 private:
 
 	bool RotationOnly();
@@ -416,5 +443,8 @@ private:
 
 	bool m_createDarkMeteoriteFlag = false;
 
+	const float m_angryLimitTime = 20.0f;
+	float m_angryLimitTimer = 0.0f;
+	int m_angryModeCount = 0;							//怒りモードになる指標となるカウント
 };
 
