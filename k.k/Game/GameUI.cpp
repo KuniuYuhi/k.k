@@ -5,16 +5,20 @@
 #include "Lich.h"
 
 namespace {
+
+	const Vector3 TIMER_POS = { 0.0f,510.0f,0.0f };
+	const Vector2 TIMER_OFFSET = { 50.0f,-20.0f };
+
 	/// <summary>
 	/// 978
 	/// </summary>
-	const Vector3 BOSS_ICON_POS = { -613.0f,470.0f,0.0f };
+	const Vector3 BOSS_ICON_POS = { -613.0f,450.0f,0.0f };
 
-	const Vector3 BOSS_HP_FLAME_POS = { 0.0f,470.0f,0.0f };
-	const Vector3 BOSS_HP_FRONT_POS = { -489.0f,470.0f,0.0f };
-	const Vector3 BOSS_HP_BACK_POS = { 0.0f,470.0f,0.0f };
+	const Vector3 BOSS_HP_FLAME_POS = { 0.0f,450.0f,0.0f };
+	const Vector3 BOSS_HP_FRONT_POS = { -489.0f,450.0f,0.0f };
+	const Vector3 BOSS_HP_BACK_POS = { 0.0f,450.0f,0.0f };
 
-	const Vector2 BSS_HP_FONT_POS = { -200.0f, 496.0f };
+	const Vector2 BSS_HP_FONT_POS = { -200.0f, 476.0f };
 
 	/// <summary>
 	/// プレイヤー側
@@ -77,6 +81,13 @@ bool GameUI::Start()
 	//モンスターのUI
 	InitMonsterUI();
 
+	//制限時間
+	m_TimerFont.SetColor(g_vec4White);
+	m_TimerFont.SetScale(1.1f);
+	m_TimerFont.SetOffset(TIMER_OFFSET);
+	m_TimerFont.SetPosition(TIMER_POS);
+	m_TimerFont.SetShadowParam(true, 2.0f, g_vec4Black);
+
 	m_oldMainCharaHP = m_player->GetNowActorStatus().hp;
 
 	return true;
@@ -99,7 +110,7 @@ void GameUI::PlayerUIUpdate()
 		return;
 	}
 
-
+	TimerUIUpdate();
 
 	UpdateMainStatus();
 	UpdateSubStatus();
@@ -320,6 +331,19 @@ void GameUI::MonsterUIUpdate()
 	m_monsterUI.m_HpFrontRender.Update();
 }
 
+void GameUI::TimerUIUpdate()
+{
+	//分の取得
+	int minute = m_game->GetMinute();
+	//秒の取得
+	int second = m_game->GetSecond();
+
+	wchar_t time[256];
+	swprintf_s(time, 256, L"%d:%02d", minute, second);
+	
+	m_TimerFont.SetText(time);
+}
+
 void GameUI::DrawPlayerUI(RenderContext& rc)
 {
 	m_playerUI.m_hpFont.Draw(rc);
@@ -418,6 +442,8 @@ void GameUI::Render(RenderContext& rc)
 {
 	DrawPlayerUI(rc);
 	DrawMonsterUI(rc);
+
+	m_TimerFont.Draw(rc);
 }
 
 void GameUI::InitPlayerUI()
