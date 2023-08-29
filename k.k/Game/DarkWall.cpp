@@ -2,6 +2,10 @@
 #include "DarkWall.h"
 #include "Lich.h"
 
+namespace {
+    const Vector3 SCALE = { 2.0f,2.0f,2.0f };
+}
+
 DarkWall::DarkWall()
 {
 }
@@ -41,7 +45,7 @@ bool DarkWall::Start()
     m_collision->SetPosition(m_position);
     m_collision->Update();
     
-    m_model.SetTransform(m_position, m_rotation, g_vec3One);
+    m_model.SetTransform(m_position, m_rotation, SCALE);
     m_model.Update();
 
     return true;
