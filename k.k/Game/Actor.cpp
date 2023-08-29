@@ -178,6 +178,8 @@ void Actor::DamageCollision(CharacterController& characon)
 			Meteo* meteo = FindGO<Meteo>("meteo");
 			Damage(meteo->GetAtk());
 			CreateDamageFont(meteo->GetAtk());
+			//ƒƒeƒI‚É“–‚½‚Á‚½‚Ì‚Å‹­§“I‚É”š”­‚³‚¹‚é
+			meteo->Explosion();
 			return;
 		}
 	}
