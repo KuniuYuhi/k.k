@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "Meteo.h"
 
+namespace {
+	const float EXPLOSION_SCALE = 12.0f;
+}
+
 Meteo::Meteo()
 {
 }
@@ -27,6 +31,8 @@ bool Meteo::Start()
 	m_model.SetTransform(m_position, m_rotation, g_vec3One);
 	m_model.Update();
 
+
+	//
 	m_collision = NewGO<CollisionObject>(0, "meteo");
 	m_collision->CreateSphere(
 		m_position,
@@ -37,18 +43,7 @@ bool Meteo::Start()
 	m_collision->SetPosition(m_position);
 	m_collision->Update();
 
-	//爆発範囲の当たり判定作成(非アクティブ)
-	m_explosionCollision = NewGO<CollisionObject>(0, "explosion");
-	m_explosionCollision->CreateSphere(
-		m_position,
-		m_rotation,
-		250.0f
-	);
-	m_explosionCollision->SetIsEnableAutoDelete(false);
-	m_explosionCollision->SetPosition(m_position);
-	m_explosionCollision->Update();
-	//非アクティブにする
-	m_explosionCollision->Deactivate();
+	
 
 	/*Vector3 diff = m_targetPosition - m_position;
 	diff.Normalize();
@@ -60,31 +55,27 @@ bool Meteo::Start()
 
 void Meteo::Update()
 {
+	//爆発したら
 	if (GetExplosionFlag()==true)
 	{
-		Explosion();
+		CalcDeleteTime();
 		
 	}
 	else if(m_movePos.y <= 0.0f)
 	{
-		//爆発範囲のコリジョンを作成
-		//アクティブにする
-		m_explosionCollision->Activate();
-		m_explosionCollision->SetPosition(m_movePos);
-		m_explosionCollision->Update();
-
-		m_scale *= 12.0f;
-
+		DeleteGO(m_collision);
+		CreateExplosionCollision();
+		m_scale *= EXPLOSION_SCALE;
+		//爆発した
 		SetExplosionFlag(true);
 	}
 	else
 	{
 		Move();
-		Rotation();
 	}
 
 	
-	m_model.SetTransform(m_movePos, m_rotation, m_scale);
+	m_model.SetTransform(m_position, m_rotation, m_scale);
 	m_model.Update();
 	
 }
@@ -109,15 +100,24 @@ void Meteo::Move()
 	m_position = m_movePos;
 }
 
-void Meteo::Rotation()
+void Meteo::CreateExplosionCollision()
 {
-	//m_addRotation.AddRotationDegX(m_movePos.x);
-	//m_addRotation.SetRotation(m_position, m_movePos);
-	//m_rotation *= m_addRotation;
+	//爆発範囲の当たり判定作成(非アクティブ)
+	auto explosionCollision = NewGO<CollisionObject>(0, "explosion");
+	explosionCollision->CreateSphere(
+		m_position,
+		m_rotation,
+		250.0f
+	);
+	explosionCollision->SetPosition(m_position);
+}
 
-	//m_addRotation.AddRotationDegX(m_movePos.x);
-	
-	//m_rotation.AddRotationDegX(m_movePos.x);
+void Meteo::Explosion()
+{
+	//爆発コリジョンは作成しない
+	//爆発した
+	SetExplosionFlag(true);
+	m_scale *= EXPLOSION_SCALE;
 }
 
 void Meteo::Render(RenderContext& rc)
@@ -125,7 +125,7 @@ void Meteo::Render(RenderContext& rc)
 	m_model.Draw(rc);
 }
 
-void Meteo::Explosion()
+void Meteo::CalcDeleteTime()
 {
 	if (m_explosionEndTime < m_explosionEndTimer)
 	{
@@ -134,11 +134,5 @@ void Meteo::Explosion()
 	else
 	{
 		m_explosionEndTimer += g_gameTime->GetFrameDeltaTime();
-	}
-
-
-	
-	
-
-	
+	}	
 }
