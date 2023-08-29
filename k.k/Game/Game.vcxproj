@@ -263,6 +263,7 @@
     <ClCompile Include="HeroStateWalk.cpp" />
     <ClCompile Include="Lich.cpp" />
     <ClCompile Include="LichAction.cpp" />
+    <ClCompile Include="LichStateAngry.cpp" />
     <ClCompile Include="LichStateAttack_1.cpp" />
     <ClCompile Include="LichStateAttack_2.cpp" />
     <ClCompile Include="LichStateDamage.cpp" />
@@ -376,6 +377,7 @@
     <ClInclude Include="IWizardState.h" />
     <ClInclude Include="Lich.h" />
     <ClInclude Include="LichAction.h" />
+    <ClInclude Include="LichStateAngry.h" />
     <ClInclude Include="LichStateAttack_1.h" />
     <ClInclude Include="LichStateAttack_2.h" />
     <ClInclude Include="LichStateDamage.h" />

@@ -293,6 +293,9 @@
     <ClCompile Include="WIzardStateWarp.cpp">
       <Filter>Wizard</Filter>
     </ClCompile>
+    <ClCompile Include="LichStateAngry.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -580,6 +583,9 @@
     <ClInclude Include="BattleStart.h" />
     <ClInclude Include="WIzardStateWarp.h">
       <Filter>Wizard</Filter>
+    </ClInclude>
+    <ClInclude Include="LichStateAngry.h">
+      <Filter>Lich</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
