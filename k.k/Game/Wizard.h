@@ -186,6 +186,14 @@ public:
 		SetNextAnimationState(enAnimationState_Victory_start);
 	}
 
+	/// <summary>
+	/// アイドルステートを設定する
+	/// </summary>
+	void SetIdleAnimationState()
+	{
+		SetNextAnimationState(enAninationState_Idle);
+	}
+
 private:
 	
 	bool IsComboStateSame();
