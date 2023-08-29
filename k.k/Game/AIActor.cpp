@@ -299,7 +299,7 @@ bool AIActor::IsFindPlayer(float distance)
 
 Quaternion AIActor::Rotation()
 {
-	//todo targetにしたらターゲットに向いたまま回転
+	
 
 	if (RotationOnly() == true)
 	{
