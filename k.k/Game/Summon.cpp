@@ -35,7 +35,7 @@ void Summon::Update()
 	//¢Š«‚·‚éÀ•W‚ğŒˆ‚ß‚é
 	CalcCirclePoints(
 		m_lichPosition,
-		500.0f,
+		300.0f,
 		m_createMonsters
 	);
 
