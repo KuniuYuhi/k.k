@@ -4,8 +4,8 @@
 #include "Player.h"
 
 namespace {
-	const int MAX_LENGTH = 200;
-	const int MIN_LENGTH = -200;
+	const int MAX_LENGTH = 50;
+	const int MIN_LENGTH = -50;
 }
 
 DarkMeteorite::DarkMeteorite()
