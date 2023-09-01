@@ -19,7 +19,7 @@ bool FireBall::Start()
     //ウィザード用の設定
     if (m_wizard != nullptr)
     {
-       m_model.Init("Assets/modelData/character/Wizard/Effect/FireBall.tkm");
+       m_model.Init("Assets/modelData/character/Wizard/Effect/FireBall.tkm",nullptr ,0 ,enModelUpAxisZ ,false,false,false);
         SetForWizard(
             m_fireBall,
             m_speed,
@@ -36,7 +36,7 @@ bool FireBall::Start()
     //リッチ用の設定
     else if (m_lich != nullptr)
     {
-       m_model.Init("Assets/modelData/character/Lich/Effect/DarkBall.tkm");
+       m_model.Init("Assets/modelData/character/Lich/Effect/DarkBall.tkm", nullptr, 0, enModelUpAxisZ, false,false,false);
         SetForLich(
             m_darkBall,
             200,
