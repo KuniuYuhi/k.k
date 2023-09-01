@@ -3,6 +3,8 @@
 #include "Lich.h"
 #include "Player.h"
 
+//todo なかなか近づいて来ないとワープ
+
 //行動の優先度つける
 void LichAction::SettingPriority()
 {
@@ -135,7 +137,7 @@ void LichAction::CalcEvalAttack1(EnActionNumber m_enActionNumber)
 	//攻撃範囲内にプレイヤーがいたら
 	if(m_lich->IsFindPlayer(m_lich->GetInfoAboutAttack().m_Attack_1Distance)==true)
 	{
-		m_action[m_enActionNumber].m_eval = 100;
+		m_action[m_enActionNumber].m_eval = 150;
 	}
 	else
 	{
@@ -148,7 +150,7 @@ void LichAction::CalcEvalAttack2(EnActionNumber m_enActionNumber)
 	//攻撃範囲内にプレイヤーがいたら
 	if (m_lich->IsFindPlayer(m_lich->GetInfoAboutAttack().m_Attack_2Distance) == true)
 	{
-		m_action[m_enActionNumber].m_eval = 120;
+		m_action[m_enActionNumber].m_eval = 200;
 	}
 	else
 	{
@@ -168,8 +170,6 @@ void LichAction::CalcEvalSummon(EnActionNumber m_enActionNumber)
 		m_firstActionNumber = enAttack_None;
 		return;
 	}
-
-
 	//既に6体以上モンスターがいたらこの行動をさせない
 	if (m_lich->GetAIActors() >= 6)
 	{
@@ -210,12 +210,17 @@ void LichAction::CalcEvalDarkMeteorite(EnActionNumber m_enActionNumber)
 		m_action[m_enActionNumber].m_eval = INT_MIN;
 		return;
 	}
-	//時間が30秒たったら
+	
+	//前の行動が召喚ならこの行動の評価値を上げる
+	if (m_oldActionNumber == enAttack_Summon)
+	{
+		m_action[m_enActionNumber].m_eval += 30;
+	}
 
 	//todo 条件
 	m_action[m_enActionNumber].m_eval += 5;
 	
-	if (m_lich->IsFindPlayer(m_lich->GetInfoAboutAttack().m_Attack_2Distance) == false)
+	if (m_lich->IsFindPlayer(m_lich->GetInfoAboutAttack().m_Attack_1Distance) == true)
 	{
 		m_action[m_enActionNumber].m_eval += 5;
 	}
@@ -245,6 +250,13 @@ void LichAction::CalcEvalAngryMode(EnActionNumber m_enActionNumber)
 
 void LichAction::CalcEvalIdle(EnActionNumber m_enActionNumber)
 {
-	//何もしない(移動)
+	m_action[m_enActionNumber].m_eval = 0;
+	//何もしない
+	//攻撃範囲に敵がいないなら
+	if (m_lich->IsFindPlayer(m_lich->GetInfoAboutAttack().m_Attack_1Distance) == false)
+	{
+		//m_action[m_enActionNumber].m_eval = 500;
+	}
 
+	
 }
