@@ -94,8 +94,11 @@ bool Game::Start()
 
 	m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
 	m_player = NewGO<Player>(0, "player");
-	m_player->SetPosition({ 0.0f,0.0f,-1000.0f });
+	m_player->SetPosition({ 0.0f,0.0f,-500.0f });
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
+
+	//ボスの生成。非アクティブにする
+	CreateBoss();
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
@@ -133,6 +136,7 @@ void Game::CreateBoss()
 {
 	m_lich = NewGO<Lich>(0, "lich");
 	m_lich->SetPosition(BOSS_CREATE_POSITION);
+	m_lich->Deactivate();
 }
 
 void Game::InitSkyCube()
@@ -353,8 +357,8 @@ void Game::OnProcessAppearanceBossTransition()
 			//次のステートに移る時
 			//ムービー用のモデルを消す
 			DeleteGO(m_entryBoss);
-			//ボスの生成
-			CreateBoss();
+			//ボスのアクティブ化
+			m_lich->Activate();
 			//ステートを切り替える
 			SetNextGameState(enGameState_Game);
 			break;
