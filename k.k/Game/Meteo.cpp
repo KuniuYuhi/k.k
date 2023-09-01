@@ -1,8 +1,11 @@
 #include "stdafx.h"
 #include "Meteo.h"
 
+//todo メテオが爆発するとき処理が止まる
+
 namespace {
 	const float EXPLOSION_SCALE = 12.0f;
+	const Vector3 SCALE = { 1.4f,1.4f,1.4f };
 }
 
 Meteo::Meteo()
@@ -18,7 +21,7 @@ Meteo::~Meteo()
 
 bool Meteo::Start()
 {
-	m_model.Init("Assets/modelData/character/Lich/Effect/Meteo.tkm");
+	m_model.Init("Assets/modelData/character/Lich/Effect/Meteo.tkm", nullptr, 0, enModelUpAxisZ, false, false, false);
 
 	m_movePos = m_position;
 	//始点を決める
@@ -28,7 +31,9 @@ bool Meteo::Start()
 	//Y座標を上げる
 	m_centerPosition.y += m_yUp;
 
-	m_model.SetTransform(m_position, m_rotation, g_vec3One);
+	m_scale = SCALE;
+
+	m_model.SetTransform(m_position, m_rotation, m_scale);
 	m_model.Update();
 
 
@@ -90,7 +95,7 @@ void Meteo::Move()
 	//線形補間した２つのベクトルを更に線形補間
 	m_movePos.Lerp(m_timer, StartToCenter, CenterToEnd);
 	//
-	m_timer += 0.01f*0.4f;
+	m_timer += 0.01f*0.65f;
 
 	//設定と更新
 	m_collision->SetPosition(m_movePos);
@@ -102,12 +107,12 @@ void Meteo::Move()
 
 void Meteo::CreateExplosionCollision()
 {
-	//爆発範囲の当たり判定作成(非アクティブ)
+	//爆発範囲の当たり判定作成
 	auto explosionCollision = NewGO<CollisionObject>(0, "explosion");
 	explosionCollision->CreateSphere(
 		m_position,
 		m_rotation,
-		250.0f
+		220.0f
 	);
 	explosionCollision->SetPosition(m_position);
 }
