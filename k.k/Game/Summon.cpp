@@ -10,6 +10,8 @@
 
 namespace {
 	const float PI = 3.14f;
+
+	const int SUMMON_POS_MAX_SIZE = 10;
 }
 
 
@@ -24,6 +26,8 @@ Summon::~Summon()
 bool Summon::Start()
 {
 	m_lichPosition = m_lich->GetPosition();
+	//格納できるサイズを決める
+	m_summonPositions.reserve(SUMMON_POS_MAX_SIZE);
 
 	return true;
 }
@@ -47,8 +51,9 @@ void Summon::Update()
 
 void Summon::CalcCirclePoints(Vector3 center, float radius, int numPoints)
 {
+	//todo ボスの向きによってかえる
 	//角度
-	float en = 360.0f;
+	float en = -180.0f;
 	en /= numPoints;
 
 	for (int i = 1; i <= numPoints; i++)
@@ -80,8 +85,21 @@ void Summon::SetSummonMonsterPos()
 
 void Summon::SummonMonster(Vector3 summonPosition)
 {
+	//タートルは一度の召喚で2体まで
+	if (m_summonTurtleShellCount <= 0)
+	{
+		m_divMonster = 3;
+	}
+	
+	//最初の召喚ならタートルを召喚しない
+	if (m_firstSummonFlag == true)
+	{
+		m_divMonster = 3;
+	}
+	
 	//ランダムに選ぶ
-	int number = rand() % 4;
+	int number = rand() % m_divMonster;
+	
 
 	switch (number)
 	{
@@ -93,6 +111,7 @@ void Summon::SummonMonster(Vector3 summonPosition)
 		m_lich->AddAIActorFromList(m_slime);
 		break;
 	case enMonster_TurtleShell:
+		m_summonTurtleShellCount--;
 		m_turtleShell = NewGO<TurtleShell>(0, "turtleshell");
 		m_turtleShell->SetPosition(summonPosition);
 		m_turtleShell->SetRotation(m_lich->GetRotation());
