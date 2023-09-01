@@ -137,12 +137,16 @@ void Slime::Update()
 {
 	if (m_lich != nullptr)
 	{
-		//プレイヤーかボスがやられたら消える
 		if (m_lich->GetWinFlag() == true)
 		{
 			SetWinFlag(true);
 			//攻撃中でなければ
 			SetNextAnimationState(enAnimationState_Victory);
+		}
+		if (m_lich->GetTimeUpEndFlag() == true)
+		{
+			SetWinFlag(true);
+			SetNextAnimationState(enAninationState_Idle);
 		}
 	}
 	
