@@ -17,8 +17,9 @@ public:
 	/// </summary>
 	struct InfoAboutAttack
 	{
-		const float m_Attack_1Distance = 1000.0f;	//遠距離攻撃
+		const float m_Attack_1Distance = 1200.0f;	//遠距離攻撃
 		const float m_Attack_2Distance = 200.0f;	//近距離攻撃
+		const float m_Attack_DarkMeteoDistance = 1200.0f;	//ダークメテオ
 	};
 
 	bool Start();
@@ -68,9 +69,13 @@ public:
 	/// <summary>
 	/// ダークメテオの生成
 	/// </summary>
-	void CreateDarkMeteorite();
+	/// <param name="lastMeteoFlag">ダークメテオの本体を撃つかのフラグ</param>
+	void CreateDarkMeteorite(bool lastMeteoFlag = false);
 
-	bool IsRisingDarkMeteorite();
+	/// <summary>
+	/// ダークメテオの削除。(ダークメテオ生成中にプレイヤーがやられるかもしれないから)
+	/// </summary>
+	void DeleteDarkMeteo();
 
 	/// <summary>
 	/// 次の行動を決定
@@ -243,9 +248,7 @@ public:
 	enum EnSpecialActionState
 	{
 		enSpecialActionState_Normal,
-		enSpecialActionState_DarkMeteo,
 		enSpecialActionState_Warp,
-		enSpecialActionState_CenterWarp,
 		enSpecialActionState_AngryMode,			//怒りモード。この時だけ移動する
 		SpecialActionState
 	};
@@ -384,6 +387,15 @@ public:
 	/// <returns></returns>
 	bool IsWinnerDecision();
 
+	/// <summary>
+	/// タイムアップで終わったかのフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetTimeUpEndFlag() const
+	{
+		return m_timeUpEndFlag;
+	}
+
 private:
 
 	bool RotationOnly();
@@ -431,17 +443,18 @@ private:
 	InfoAboutAttack m_InfoAboutAttack;
 
 
-	bool m_halfHpFlag = false;
+	bool m_halfHpFlag = false;				//攻撃がより攻撃的になる
 
 	bool m_dieFlag = false;
 	bool m_winFlag = false;
 
 	bool m_invincibleFlag = false;
 
-
-	const float m_RisingLimit = 200.0f;
+	bool m_timeUpEndFlag = false;
 
 	bool m_createDarkMeteoriteFlag = false;
+
+	bool m_firstSummonFlag = true;
 
 	const float m_angryLimitTime = 20.0f;
 	float m_angryLimitTimer = 0.0f;

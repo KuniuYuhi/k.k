@@ -28,6 +28,7 @@ namespace {
 	const float DISTANCE = 4000.0f;									//プレイヤーを発見できる距離
 	const float NON_WARP_DISTANCE = 400.0f;							//ワープ不要な距離
 
+	const float FARST_ATTACK_INTERVAL = 3.0f;
 
 	//ステータス
 	int MAXHP = 1000;
@@ -45,6 +46,9 @@ Lich::Lich()
 	m_distance = DISTANCE;
 	//リッチのサイズを設定
 	m_scale *= SCALE_UP;
+
+	//最初の攻撃のインターバルを早める
+	m_attackIntervalTimer = FARST_ATTACK_INTERVAL;
 }
 
 Lich::~Lich()
@@ -192,8 +196,10 @@ bool Lich::IsWinnerDecision()
 	if (m_game->IsTimeUp() == true)
 	{
 		SetNextAnimationState(enAninationState_Idle);
-		//モンスターに教える
-		
+		//タイムアップで終わったのでフラグをtrueにする
+		m_timeUpEndFlag = true;
+		//ダークメテオの削除
+		DeleteDarkMeteo();
 		return true;
 	}
 	//プレイヤーが全滅したら勝利アニメーション設定
@@ -205,11 +211,15 @@ bool Lich::IsWinnerDecision()
 		{
 			SetNextAnimationState(enAnimationState_Victory);
 		}
+		//ダークメテオの削除
+		DeleteDarkMeteo();
 		return true;
 	}
 	//勝ったフラグがtrueなら
 	if (GetWinFlag() == true)
 	{
+		//ダークメテオの削除
+		DeleteDarkMeteo();
 		return true;
 	}
 	//自身がやられたら
@@ -500,8 +510,6 @@ void Lich::SetStageLevelPosition()
 		"Assets/level3D/BossStage1.tkl",
 		[&](LevelObjectData& objData)
 		{
-
-
 			if (objData.ForwardMatchName(L"Pos") == true) {
 				//ワープする座標を配列に格納する
 				Vector3 warpPos = objData.position;
@@ -530,7 +538,7 @@ void Lich::Warp(EnSpecialActionState SpecialActionState)
 			}
 		}
 	}
-	else if (SpecialActionState == enSpecialActionState_CenterWarp)
+	/*else if (SpecialActionState == enSpecialActionState_CenterWarp)
 	{
 		Vector3 CenterPos = Vector3::Zero;
 		Vector3 diff = CenterPos - m_position;
@@ -539,7 +547,7 @@ void Lich::Warp(EnSpecialActionState SpecialActionState)
 		{
 			m_position = CenterPos;
 		}
-	}
+	}*/
 
 	Vector3 o = Vector3::Zero;
 	//ワープする
@@ -614,6 +622,15 @@ void Lich::OnProcessDamageStateTransition()
 
 void Lich::OnProcessDarkMeteorite_StartStateTransition()
 {
+	//アニメーション中に勝敗が決まったら
+	if (IsWinnerDecision() == true)
+	{
+		DeleteGO(m_darkMeteorite);
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+		return;
+	}
+
 	//サイズが最大まで大きくなったら
 	//自分の変数にしてもいいかも
 	if (m_createDarkMeteoriteFlag == true)
@@ -629,7 +646,7 @@ void Lich::OnProcessDarkMeteorite_StartStateTransition()
 		if (m_modelRender.IsPlayingAnimation() == false)
 		{
 			//一度だけダークメテオを生成
-			CreateDarkMeteorite();
+			CreateDarkMeteorite(true);
 			m_createDarkMeteoriteFlag = true;
 		}
 	}
@@ -638,6 +655,15 @@ void Lich::OnProcessDarkMeteorite_StartStateTransition()
 
 void Lich::OnProcessDarkMeteorite_MainStateTransition()
 {
+	//アニメーション中に勝敗が決まったら
+	if (IsWinnerDecision() == true)
+	{
+		DeleteGO(m_darkMeteorite);
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+		return;
+	}
+
 	//メテオを全て生成したら
 	if (m_darkMeteorite->GetShotEndFlag() == true)
 	{
@@ -701,34 +727,25 @@ void Lich::CreateDarkWall()
 	darkball->SetLich(this);
 }
 
-void Lich::CreateDarkMeteorite()
+void Lich::CreateDarkMeteorite(bool lastMeteoFlag)
 {
-	//玉を生成
+	//大きなメテオを作成
 	m_darkMeteorite = NewGO<DarkMeteorite>(0, "darkmeteorite");
 	Vector3 pos = m_position;
 	pos.y += 370.0f;
 	m_darkMeteorite->SetPosition(pos);
 	m_darkMeteorite->SetRotation(m_rotation);
+	m_darkMeteorite->SetmLastBigMeteoShotFlag(lastMeteoFlag);
 }
 
-bool Lich::IsRisingDarkMeteorite()
+void Lich::DeleteDarkMeteo()
 {
-	//Y座標が上限に到達したら
-	if (m_RisingLimit <= m_position.y)
+	//ダークメテオが生成されていたら削除する
+	m_darkMeteorite = FindGO<DarkMeteorite>("darkmeteorite");
+	if (m_darkMeteorite != nullptr)
 	{
-		return true;
+		DeleteGO(m_darkMeteorite);
 	}
-	else
-	{
-		Vector3 moveSpeed = Vector3::Zero;
-		moveSpeed.y += g_gameTime->GetFrameDeltaTime() * 250.0f;
-		m_moveSpeed = moveSpeed;
-
-		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 2.0f);
-
-		return false;
-	}
-
 }
 
 void Lich::DamageCollision(CharacterController& characon)
@@ -861,17 +878,17 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		m_darkMeteorite->SetTargetPosition(m_targetPosition);
 	}
 
-	//
-	//if (wcscmp(eventName, L"Stop") == 0)
-	//{
-	//	m_modelRender.
-	//}
-	//
 	if (wcscmp(eventName, L"Summon") == 0)
 	{
 		//モンスターを召喚する
 		Summon* summon = NewGO<Summon>(0, "summon");
 		summon->SetLich(this);
+		//最初の召喚だけ
+		if (m_firstSummonFlag == true)
+		{
+			summon->SetFirstSummonFlag(m_firstSummonFlag);
+			m_firstSummonFlag = false;
+		}
 	}
 
 }
