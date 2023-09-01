@@ -371,7 +371,7 @@ void Hero::PowerUpTimer()
 
 bool Hero::CalcDash()
 {
-	if (m_dashTimer < 0.0f)
+	if (m_dashTimer < 0.2f)
 	{
 		//ダッシュ終わり
 		m_dashTimer = 1.0f;
@@ -380,7 +380,7 @@ bool Hero::CalcDash()
 	}
 	//線形補間
 	float speed;
-	speed = Math::Lerp(m_dashTimer, 0.0f, 12.0f);
+	speed = Math::Lerp(m_dashTimer, 0.0f, 8.0f);
 
 	m_dashTimer -= g_gameTime->GetFrameDeltaTime()*(1.0f);
 
