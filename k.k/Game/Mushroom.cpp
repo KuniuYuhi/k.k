@@ -391,6 +391,15 @@ void Mushroom::Damage(int attack)
 
 bool Mushroom::RotationOnly()
 {
+	if (isRotationEntable() != true)
+	{
+		//xかzの移動速度があったら(スティックの入力があったら)。
+		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
+		{
+			m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
+			return true;
+		}
+	}
 	return false;
 }
 
