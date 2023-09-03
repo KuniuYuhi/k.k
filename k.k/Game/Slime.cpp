@@ -224,7 +224,7 @@ void Slime::Move()
 		//数秒間隔で向かうベクトルを変える
 		if (m_angleChangeTimeFlag == false)
 		{
-			m_direction = SetDirection();
+			m_direction = SetDirection(m_angleRange);
 			m_angleChangeTimeFlag = true;
 		}
 		//ランダムな方向に移動
@@ -330,12 +330,12 @@ void Slime::Attack()
 
 }
 
-Vector3 Slime::SetDirection()
+Vector3 Slime::SetDirection(int range)
 {
 	Vector3 randomPos = g_vec3Zero;
 	randomPos.y = 0.0f;
-	float X = (rand() % (2 - (-2) + 1)) + (-2);
-	float Z = (rand() % (2 - (-2) + 1)) + (-2);
+	float X = (rand() % (range - (-range) + 1)) + (-range);
+	float Z = (rand() % (range - (-range) + 1)) + (-range);
 	randomPos.x += X;
 	randomPos.z += Z;
 	randomPos.Normalize();

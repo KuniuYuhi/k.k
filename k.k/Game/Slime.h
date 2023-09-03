@@ -19,8 +19,12 @@ public:
 
 	void Attack();
 
-	Vector3 SetDirection();
+	Vector3 SetDirection(int range);
 
+	/// <summary>
+	/// 壁(森)にぶつかったか
+	/// </summary>
+	/// <returns></returns>
 	bool IsBumpedForest();
 
 	/// <summary>
@@ -165,7 +169,7 @@ private:
 
 	bool m_createAttackCollisionFlag = false;
 
-	float m_angleChangeTime = 5.0f;		//ベクトルを計算するタイマー
+	float m_angleChangeTime = 5.0f;		//向かうベクトルを計算するタイマー
 
 	const float m_distanceToPlayer = 500.0f;
 	const float m_attackRange = 60.0f;
@@ -174,6 +178,8 @@ private:
 	float m_ramdomAngle = 0.0f;
 
 	const float m_attackIntervalTime = 2.0f;	//攻撃した後のインターバル
+
+	const int m_angleRange = 2;					//移動するアングルの範囲
 
 };
 
