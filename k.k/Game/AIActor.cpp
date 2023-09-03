@@ -42,17 +42,16 @@ Vector3 AIActor::CalcVelocity(Status status,Vector3 targetposition)
 	m_SaveMoveSpeed = moveSpeed;
 
 	//特定のアニメーションが再生中のとき
-	if (isAnimationEntable() != true)
+	/*if (isAnimationEntable() != true)
 	{
 		return moveSpeed = Vector3::Zero;
 	}
 	else
 	{
 		return moveSpeed;
-	}
+	}*/
 
-	
-	
+	return moveSpeed;
 }
 
 bool AIActor::IsInFieldOfView(Vector3 toPlayerDir, Vector3 forward, float angle)
@@ -87,6 +86,7 @@ void AIActor::SetTargetPosition()
 
 void AIActor::CreateDamageFont(int damage)
 {
+	//受けるダメージを生成する
 	DamageFont* damagefont = NewGO<DamageFont>(0, "damagefont");
 	damagefont->Setting(
 		DamageFont::enDamageActor_Monster, 
@@ -299,7 +299,8 @@ bool AIActor::IsFindPlayer(float distance)
 
 Quaternion AIActor::Rotation()
 {
-	
+	//todo 線形補間で緩やかに回転
+	//セーブする値
 
 	if (RotationOnly() == true)
 	{
@@ -311,8 +312,19 @@ Quaternion AIActor::Rotation()
 	//xかzの移動速度があったら(スティックの入力があったら)。
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
+
+		m_rotTimer += g_gameTime->GetFrameDeltaTime();
+		if (m_rotTimer > 1.0f)
+		{
+			m_rotTimer = 0.0f;
+		}
+
+		Vector3 nowMoveSpeed;
+		nowMoveSpeed.Lerp(m_rotTimer, m_SaveMoveSpeed, m_moveSpeed);
+
 		m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
 	}
+	//前方向を設定
 	m_forward = Vector3::AxisZ;
 	m_rotation.Apply(m_forward);
 	return m_rotation;
