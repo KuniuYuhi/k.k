@@ -93,7 +93,7 @@ private:
 	bool m_resultEndFlag = false;
 
 
-
+	float m_goToTitleTime = 1.0f;
 
 };
 

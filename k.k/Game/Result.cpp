@@ -12,6 +12,10 @@ namespace {
 
 	const Vector3 GO_TO_TITLE_POS = { 0.0f,-407.0f,0.0f };
 
+	const float WIPE_SPEED = 12.0f;
+
+	const float RIGHT_SPEED = 20.0f;
+
 }
 
 ResultSeen::ResultSeen()
@@ -24,7 +28,7 @@ ResultSeen::~ResultSeen()
 
 bool ResultSeen::Start()
 {
-	m_resultSprite.Init("Assets/sprite/result.DDS", 1920, 1080);
+	m_resultSprite.Init("Assets/sprite/InGame/Result_Lose/Fade_Black.DDS", 1920, 1080);
 	m_resultSprite.SetRoundWipe(true);
 	m_resultSprite.SetRoundWipeStartPosition(1920.0f / 2, 1080.0f / 2);
 	m_resultSprite.SetWipeSize(m_wipeSize);
@@ -81,14 +85,13 @@ void ResultSeen::WinState()
 
 
 
-	m_rightRotation.AddRotationDegZ(g_gameTime->GetFrameDeltaTime() * 20.0f);
+	m_rightRotation.AddRotationDegZ(g_gameTime->GetFrameDeltaTime() * RIGHT_SPEED);
 	m_rightRender.SetRotation(m_rightRotation);
 	m_rightRender.Update();
 }
 
 void ResultSeen::LoseState()
 {
-	//
 	if (m_resultEndFlag == true)
 	{
 		ResultEnd();
@@ -102,12 +105,6 @@ void ResultSeen::LoseState()
 			m_resultEndFlag = true;
 		}
 	}
-
-
-
-
-	
-
 }
 
 void ResultSeen::ResultEnd()
@@ -115,7 +112,7 @@ void ResultSeen::ResultEnd()
 	if (m_roundWipeEndFlag != true)
 	{
 		m_resultSprite.SetWipeSize(m_wipeSize);
-		m_wipeSize -= 6.0f;
+		m_wipeSize -= WIPE_SPEED;
 
 		if (m_wipeSize < 0.0)
 		{
@@ -125,10 +122,14 @@ void ResultSeen::ResultEnd()
 	//円形ワイプが終わったら
 	else
 	{
-		if (g_pad[0]->IsTrigger(enButtonA))
+		if (m_goToTitleTime <= 0.0f)
 		{
 			Title* title = NewGO<Title>(0, "title");
 			DeleteGO(this);
+		}
+		else
+		{
+			m_goToTitleTime -= g_gameTime->GetFrameDeltaTime();
 		}
 
 		
