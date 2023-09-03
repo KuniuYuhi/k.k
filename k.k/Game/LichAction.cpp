@@ -171,7 +171,7 @@ void LichAction::CalcEvalSummon(EnActionNumber m_enActionNumber)
 		return;
 	}
 	//既に6体以上モンスターがいたらこの行動をさせない
-	if (m_lich->GetAIActors() >= 6)
+	if (m_lich->GetAIActors() >= 7)
 	{
 		m_action[m_enActionNumber].m_eval = INT_MIN;
 		return;
