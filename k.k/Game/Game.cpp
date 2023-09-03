@@ -10,6 +10,8 @@
 #include "EntryBoss.h"
 #include "BattleStart.h"
 
+#include "Slime.h"
+
 #include "SkyCube.h"
 
 namespace {
@@ -50,6 +52,9 @@ bool Game::Start()
 	g_renderingEngine->SetDerectionLight(0, directionLightDir, directionLightColor);
 	//環境光
 	g_renderingEngine->SetAmbient(Vector3(0.5f, 0.5f, 0.5f));
+
+	g_renderingEngine->UseHemiLight();
+
 	//ポイントライト
 	/*g_renderingEngine->SetPointLight(
 		Vector3(200.0f, 50.0f, 200.0f),
@@ -358,7 +363,11 @@ void Game::OnProcessAppearanceBossTransition()
 			//ムービー用のモデルを消す
 			DeleteGO(m_entryBoss);
 			//ボスのアクティブ化
-			m_lich->Activate();
+			//m_lich->Activate();
+			 
+			Slime* slime = NewGO<Slime>(0, "slime");
+			slime->SetPosition({ 0.0f, 0.0f, 0.0f });
+			 
 			//ステートを切り替える
 			SetNextGameState(enGameState_Game);
 			break;
