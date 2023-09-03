@@ -14,7 +14,7 @@
 #include "HeroStatePowerUp.h"
 #include "HeroStateVictory.h"
 
-//todo 今はダッシュ中の当たり判定なし
+//todo ダッシュ時攻撃アニメーション変更
 
 namespace {
 	int MAXHP = 200;
@@ -122,7 +122,7 @@ void Hero::Update()
 		PlayAnimation();
 		m_modelRender.Update();
 		return;
-	}//todo 移動したままになっている
+	}
 
 
 
@@ -485,12 +485,6 @@ void Hero::ProcessCommonStateTransition()
 {
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		/*if (m_dashFlag == true)
-		{
-			SetNextAnimationState(enAninationState_Dash);
-			return;
-		}*/
-
 		SetNextAnimationState(enAninationState_Walk);
 	}
 	else
