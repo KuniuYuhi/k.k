@@ -16,7 +16,6 @@ Meteo::~Meteo()
 {
 	DeleteGO(m_collision);
 	DeleteGO(m_explosionCollision);
-	
 }
 
 bool Meteo::Start()
@@ -35,9 +34,7 @@ bool Meteo::Start()
 
 	m_model.SetTransform(m_position, m_rotation, m_scale);
 	m_model.Update();
-
-
-	//
+	//ƒƒeƒI‚Ì“–‚½‚è”»’è‚Ì¶¬
 	m_collision = NewGO<CollisionObject>(0, "meteo");
 	m_collision->CreateSphere(
 		m_position,
@@ -47,13 +44,6 @@ bool Meteo::Start()
 	m_collision->SetIsEnableAutoDelete(false);
 	m_collision->SetPosition(m_position);
 	m_collision->Update();
-
-	
-
-	/*Vector3 diff = m_targetPosition - m_position;
-	diff.Normalize();
-	m_moveSpeed = diff * m_speed;*/
-
 
     return true;
 }
@@ -79,10 +69,8 @@ void Meteo::Update()
 		Move();
 	}
 
-	
 	m_model.SetTransform(m_position, m_rotation, m_scale);
-	m_model.Update();
-	
+	m_model.Update();	
 }
 
 void Meteo::Move()
@@ -101,7 +89,6 @@ void Meteo::Move()
 	m_collision->SetPosition(m_movePos);
 	m_collision->Update();
 	
-
 	m_position = m_movePos;
 }
 
@@ -112,7 +99,7 @@ void Meteo::CreateExplosionCollision()
 	explosionCollision->CreateSphere(
 		m_position,
 		m_rotation,
-		220.0f
+		280.0f
 	);
 	explosionCollision->SetPosition(m_position);
 }
