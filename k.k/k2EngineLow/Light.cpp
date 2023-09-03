@@ -17,9 +17,9 @@ void nsK2EngineLow::SceneLight::Init()
 	m_light.ambientLight.y = 0.3f;
 	m_light.ambientLight.z = 0.3f;
 	//半球ライトの地面色
-	m_light.hemiSphereLight.groundColor = Vector3(0.5f,0.5f,0.5f);
+	m_light.hemiSphereLight.groundColor = Vector3(0.1f,0.1f,0.1f);
 	//半球ライトの天球色
-	m_light.hemiSphereLight.skyColor = Vector3(0.5f, 0.5f, 0.5f);
+	m_light.hemiSphereLight.skyColor = Vector3(0.05f, 0.1f, 0.2f);
 	//半球ライトの地面の法線
 	m_light.hemiSphereLight.groundNormal = Vector3(0.0f, 1.0f, 0.0f);
 
