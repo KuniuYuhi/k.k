@@ -65,26 +65,14 @@ bool Player::Start()
 
 void Player::Update()
 {
-	////ボスが死んだら処理しない
-	//if (GameClear() == true)
-	//{
-	//	return;
-	//}
-
-	////キャラクターが全滅していたら処理しない
-	//if (GameOver() == true)
-	//{
-	//	return;
-	//}
-
-	//ゲームが始まるまでは移動しない
-	if (m_game->GetNowGameState() != Game::enGameState_Game)
+	//勝敗が決まったら
+	if (IsWinnerDecision() == true)
 	{
 		return;
 	}
 
-	//勝敗が決まったら
-	if (IsWinnerDecision() == true)
+	//ゲームが始まるまでは移動しない
+	if (m_game->GetNowGameState() != Game::enGameState_Game)
 	{
 		return;
 	}
