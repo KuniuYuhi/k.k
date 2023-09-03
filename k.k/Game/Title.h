@@ -21,6 +21,15 @@ public:
 
 	void CalcAlphaAButtonText();
 
+	void MoveCursor();
+
+
+	void GoToPlayMode();
+	void HowToPlayMode();
+	void ActionMode();
+	void GameEndMode();
+
+
 	/// <summary>
 	/// ☆を光らせる処理
 	/// </summary>
@@ -42,6 +51,11 @@ public:
 		spriterender.Update();
 	}
 
+	/// <summary>
+	/// 選ばれているモードのテキスト画像を大きくする。それ以外は小さくする
+	/// </summary>
+	void SetScaleModeText();
+
 	enum EnTitleAnimStep
 	{
 		enStep1_TitleTextAlpha,
@@ -56,6 +70,15 @@ public:
 		enStarStep_End
 	};
 
+	enum EnMode
+	{
+		enMode_GoToPlay,
+		enMode_HowToPlay,
+		enMode_Action,
+		enMode_GameEnd,
+		enMode_Num
+	};
+
 private:
 
 	SpriteRender m_titleNameRender;
@@ -66,11 +89,21 @@ private:
 	SpriteRender m_howToPlayTextRender;
 	SpriteRender m_actionTextRender;
 	SpriteRender m_gameEndTextRender;
+	SpriteRender m_cursorRender;
+	SpriteRender m_howToPlayRender;
+	SpriteRender m_actionRender;
 
 	Fade* m_fade = nullptr;
 
 	EnTitleAnimStep m_step = enStep1_TitleTextAlpha;
 	EnStarScaleState m_starScaleStep = enStarStep1_ScaleUp;
+
+
+	Vector3 m_gTPScale = g_vec3One;
+	Vector3 m_hTPScale = g_vec3One;
+	Vector3 m_actionScale = g_vec3One;
+	Vector3 m_gameEndScale = g_vec3One;
+
 
 	float m_wipeSize = 860.0f;
 
@@ -88,5 +121,15 @@ private:
 	Quaternion m_starRotation = g_quatIdentity;
 	float m_scaleTimer = 0.0f;
 	float m_mulTimerValue = 5.0f;
+
+	int m_selectCursor = 0;
+
+	bool m_SelectModeFlag = false;				//モードを決めているかのフラグ
+
+	bool m_drawHowToPlayFlag = false;
+	bool m_drawActionFlag = false;
+
+
+
 };
 
