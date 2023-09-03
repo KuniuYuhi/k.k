@@ -39,7 +39,7 @@ bool FireBall::Start()
        m_model.Init("Assets/modelData/character/Lich/Effect/DarkBall.tkm", nullptr, 0, enModelUpAxisZ, false,false,false);
         SetForLich(
             m_darkBall,
-            200,
+            350,
             100,
             60,
             45,
