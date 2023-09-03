@@ -82,6 +82,8 @@ void GameCamera::Update()
 void GameCamera::ClearCameraForPlayer()
 {
 	//注視点の計算
+	m_springCamera.Refresh();
+
 	m_target = m_player->GetPosition();
 	Vector3 forward = m_player->GetForward();
 	forward.Normalize();
@@ -93,6 +95,9 @@ void GameCamera::ClearCameraForPlayer()
 		PLAYER_CAMERA_Y,
 		TARGETPOS_YUP_WIN
 	);
+
+	//ゲームにプレイヤーをみたことを教える
+
 }
 
 void GameCamera::ClearCameraForBoss()
