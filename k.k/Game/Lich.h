@@ -67,6 +67,18 @@ public:
 	void CreateDarkWall();
 
 	/// <summary>
+	/// ダークボールの生成
+	/// </summary>
+	/// <param name="AddBallFlag">ダークボールを複数生成するかのフラグ</param>
+	void CreateDarkBall(bool AddBallFlag = false);
+
+	/// <summary>
+	/// ダークボールの追加の生成
+	/// </summary>
+	/// <param name="degY">現在の回転からY軸の加算する値</param>
+	void AddCreateDarkBall(float degY);
+
+	/// <summary>
 	/// ダークメテオの生成
 	/// </summary>
 	/// <param name="lastMeteoFlag">ダークメテオの本体を撃つかのフラグ</param>
@@ -113,7 +125,8 @@ public:
 			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_start &&
 			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_main &&
 			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_end &&
-			m_enAnimationState != enAninationState_Summon;
+			m_enAnimationState != enAninationState_Summon &&
+			m_enAnimationState != enAnimationState_Warp;
 	}
 
 	/// <summary>
@@ -217,6 +230,10 @@ public:
 	/// 怒りモード遷移処理を実行
 	/// </summary>
 	void OnProcessAngryStateTransition();
+	/// <summary>
+	/// ワープ遷移処理を実行
+	/// </summary>
+	void OnProcessWarpStateTransition();
 
 	//アニメーションステート
 	enum EnAnimationState {
@@ -235,7 +252,8 @@ public:
 		enAnimationState_Damage,
 		enAnimationState_Die,
 		enAnimationState_Victory,
-		enAnimationState_Angry
+		enAnimationState_Angry,
+		enAnimationState_Warp
 	};
 
 	/// <summary>
@@ -264,9 +282,14 @@ public:
 	}
 
 	/// <summary>
-	/// ターゲットから一番遠いところに座標を移動させる
+	/// ワープ先の座標を決める
 	/// </summary>
-	void Warp(EnSpecialActionState SpecialActionState);
+	void DecideWarpPosition();
+
+	/// <summary>
+	/// ワープ先の座標に移動する
+	/// </summary>
+	void MoveWarpPosition();
 
 
 	/// <summary>
@@ -396,13 +419,29 @@ public:
 		return m_timeUpEndFlag;
 	}
 
+	enum EnWarpStep
+	{
+		enWarpStep_Up,
+		enWarpStep_Warp,
+		enWarpStep_Down,
+		enWarpStep_End
+	};
+
+	void OnProcessenWarpStepUp();
+	void OnProcessenWarpStepWarp();
+	void OnProcessenWarpSteDown();
+	void OnProcessenWarpStepEnd();
+
+
 private:
 
 	bool RotationOnly();
 
+	EnWarpStep m_enWarpStep = enWarpStep_Up;
+
 
 	Level3DRender m_stageLevel;
-	std::vector<Vector3> m_WarpPosition;
+	std::vector<Vector3> m_warpPositions;
 	
 	Game* m_game = nullptr;
 	LichAction* m_lichAction = nullptr;
@@ -422,7 +461,7 @@ private:
 
 	CharacterController m_charaCon;
 
-	FontRender m_hpFont;
+	Vector3 m_warpPosition = g_vec3Zero;
 
 	//被ダメージ時にカウントを増やす
 	int m_hitCount = 0;
@@ -437,7 +476,7 @@ private:
 
 	bool m_CreateDarkWallFlag = false;			//ダークウォール生成フラグ
 
-	const float m_attackIntervalTime = 4.0f;
+	float m_attackIntervalTime = 4.0f;
 	const float m_damageIntervalTime = 0.5f;
 	
 	InfoAboutAttack m_InfoAboutAttack;
