@@ -299,6 +299,12 @@
     <ClCompile Include="LichStateAngry.cpp">
       <Filter>Lich</Filter>
     </ClCompile>
+    <ClCompile Include="LichStateWarp.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
+    <ClCompile Include="MobMonster.cpp">
+      <Filter>MobMonster</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -589,6 +595,12 @@
     </ClInclude>
     <ClInclude Include="LichStateAngry.h">
       <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="LichStateWarp.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
+    <ClInclude Include="MobMonster.h">
+      <Filter>MobMonster</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
