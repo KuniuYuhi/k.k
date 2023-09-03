@@ -213,7 +213,7 @@ void DarkMeteorite::CreateCollision()
 	m_collision->CreateSphere(
 		m_position,
 		g_quatIdentity,
-		100.0f
+		120.0f
 	);
 	m_collision->SetIsEnableAutoDelete(false);
 	m_collision->SetPosition(m_position);
@@ -279,31 +279,31 @@ bool DarkMeteorite::IsHitGround(Vector3 targetposition,float up, float down)
 bool DarkMeteorite::IsHitWall(Vector3 pos1, Vector3 pos2)
 {
 	BoxCollider m_boxCollider;
-	m_boxCollider.Create(Vector3(10.0f, 10.0f, 10.0f));
+	m_boxCollider.Create(Vector3(1.0f, 1.0f, 1.0f));
 
 	btTransform start, end;
 	start.setIdentity();
 	end.setIdentity();
 	//始点はエネミーの座標。
-	start.setOrigin(btVector3(pos1.x, pos1.y, pos1.z));
+	start.setOrigin(btVector3(pos1.x, 0.0f, pos1.z));
 	//終点はプレイヤーの座標。
-	end.setOrigin(btVector3(pos2.x, pos2.y, pos2.z));
+	end.setOrigin(btVector3(pos2.x, 0.0f, pos2.z));
 
 	//壁の判定を返す
-	IsGroundResult callback_Ground;
+	IsWallResult isWallResult;
 	//コライダーを始点から終点まで動かして。
 	//壁と衝突するかどうかを調べる。
 	PhysicsWorld::GetInstance()->ConvexSweepTest(
 		(const btConvexShape*)m_boxCollider.GetBody(),
-		start, end, callback_Ground);
-	//地面に衝突した
-	if (callback_Ground.isHit == true)
+		start, end, isWallResult);
+	//壁に衝突した
+	if (isWallResult.isHit == true)
 	{
 		return true;
 	}
 	else
 	{
-		//地面ではなかった
+		//壁ではなかった
 		return false;
 	}
 }
@@ -319,10 +319,10 @@ void DarkMeteorite::ShotManageState()
 		Shot();
 		break;
 	case DarkMeteorite::enShotState_BigMeteo:
-
 		move();
 		break;
 	default:
+		DeleteGO(this);
 		break;
 	}
 }
@@ -334,18 +334,20 @@ void DarkMeteorite::Render(RenderContext& rc)
 
 void DarkMeteorite::move()
 {
-	if (m_bigMeteoMoveCount > 0)
+	if (m_bigMeteoMoveCount > 0 && m_chaseFlag!=false)
 	{
+		//ターゲットの向かうベクトルを計算
 		m_targetPosition = m_player->GetPosition();
 		m_moveSpeed = m_targetPosition - m_position;
-		//正規化
-		m_moveSpeed.Normalize();
-		m_moveSpeed *= BIGMETEO_SPEED;
 		//カウントを減らす
 		m_bigMeteoMoveCount-=g_gameTime->GetFrameDeltaTime();
 	}
 	
+	//正規化
+	m_moveSpeed.Normalize();
+	m_moveSpeed *= BIGMETEO_SPEED;
 
+	//地面につくまでの処理
 	if (m_isBigMeteoYDownFlag == false)
 	{
 		//地面についていない間斜め下に移動
@@ -356,14 +358,20 @@ void DarkMeteorite::move()
 		else
 		{
 			m_isBigMeteoYDownFlag = true;
+			//地面についた
+			//全ての玉を撃ち終わった
+			m_shotEndFlag = true;
 			m_moveSpeed.y = 0.0f;
 		}
 	}
+	//地面についてからの処理
 	else
 	{
+		m_moveSpeed.y = 0.0f;
 		Vector3 addPos = m_moveSpeed;
 		addPos.Normalize();
-		Vector3 pos2 = m_position + (addPos * 0.65f);
+		Vector3 pos2 = m_position;
+		pos2.Add(addPos * 2.0f);
 		//壁との衝突判定
 		if (IsHitWall(m_position, pos2) == true)
 		{
@@ -372,10 +380,22 @@ void DarkMeteorite::move()
 			m_shotEndFlag = true;
 			m_enShotState = enShotState_End;
 		}
+		
 	}
+	
 	
 	m_position += m_moveSpeed * g_gameTime->GetFrameDeltaTime()*1.5f;
 
+	//一度プレイヤーにぶつかるまでは追いかける
+	if (m_chaseFlag == true)
+	{
+		Vector3 length = m_targetPosition - m_position;
+		if (length.Length() < 100.0f)
+		{
+			m_chaseFlag = false;
+		}
+	}
+	
 	m_model.SetPosition(m_position);
 
 	m_collision->SetPosition(m_position);

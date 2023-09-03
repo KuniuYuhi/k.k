@@ -145,5 +145,7 @@ private:
 
 	const int m_bigMeteoAttack = 80;
 
+	bool m_chaseFlag = true;					//プレイヤーを追いかけるかのフラグ。trueで追いかける
+
 };
 
