@@ -330,7 +330,9 @@ void Lich::Damage(int attack)
 		m_status.hp = 0;
 		//技の途中でやられたかもしれない
 		m_CreateDarkWallFlag = false;
+		//やられステート
 		SetNextAnimationState(enAnimationState_Die);
+		m_modelRender.SetAnimationSpeed(0.8f);
 	}
 }
 
