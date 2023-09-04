@@ -160,6 +160,8 @@ private:
 		SpriteRender m_ChangeCharacterIconBlackRender;
 		FontRender m_ChangeCharacterCoolTimeFont;
 
+		SpriteRender m_TimeFlameRender;
+
 	};
 
 	FontRender m_TimerFont;				//êßå¿éûä‘
