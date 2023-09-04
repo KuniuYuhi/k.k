@@ -1,10 +1,10 @@
 #pragma once
-#include "AIActor.h"
+#include "MobMonster.h"
 
 class Lich;
 class ISlimeState;
 
-class Slime :public AIActor
+class Slime :public MobMonster
 {
 public:
 	Slime();
@@ -15,17 +15,17 @@ public:
 	void Render(RenderContext& rc);
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
-	void Move();
+	//void Move();
 
 	void Attack();
 
-	Vector3 SetDirection(int range);
+	//Vector3 SetDirection(int range);
 
 	/// <summary>
 	/// 壁(森)にぶつかったか
 	/// </summary>
 	/// <returns></returns>
-	bool IsBumpedForest();
+	//bool IsBumpedForest();
 
 	/// <summary>
 	/// 当たり判定生成
@@ -79,8 +79,6 @@ public:
 	/// 被ダメージ時処理
 	/// </summary>
 	void Damage(int attack);
-
-	bool RotationOnly();
 
 
 	// アニメーションクリップの番号を表す列挙型。
@@ -168,18 +166,6 @@ private:
 	int m_attackBoonId = -1;					//攻撃で使うボーンID
 
 	bool m_createAttackCollisionFlag = false;
-
-	float m_angleChangeTime = 5.0f;		//向かうベクトルを計算するタイマー
-
-	const float m_distanceToPlayer = 500.0f;
-	const float m_attackRange = 60.0f;
-	const float m_stayDistance = 50.0f;
-
-	float m_ramdomAngle = 0.0f;
-
-	const float m_attackIntervalTime = 2.0f;	//攻撃した後のインターバル
-
-	const int m_angleRange = 2;					//移動するアングルの範囲
 
 };
 
