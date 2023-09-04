@@ -3,9 +3,6 @@
 class Player;
 class Lich;
 
-
-
-
 ///リッチの行動を決めるクラス。評価値で決まる
 class LichAction:public Noncopyable
 {
@@ -23,31 +20,23 @@ public:
 		enAttack_1,
 		enAttack_2,
 		enAttack_DarkMeteorite,
-		enAttack_Summon
+		enAttack_Summon,
+		enAttack_AngryMode
 	};
 
 	EnActionNumber m_enActionNumber;
 
 	struct Action
 	{
-		int m_eval = 0;
-		EnActionNumber m_enAction;
+		int m_eval = 0;					//評価値
+		EnActionNumber m_enAction;		//行動
+		int m_priority = 0;				//優先度
 	};
 
-	//次の行動
-	/*enum enNextAction
-	{
-		enNextAction_None,
-		enNextAction_1,
-		enNextAction_2,
-		enNextAction_3
-	};
-
-	struct Action
-	{
-		int m_eval = 0;
-		enNextAction m_enNextAction;
-	};*/
+	/// <summary>
+	/// それぞれの行動の優先度を設定する
+	/// </summary>
+	void SettingPriority();
 
 	int NextAction();
 
@@ -75,31 +64,33 @@ public:
 private:
 	
 	
-	void CalcEvalIdle(EnActionNumber m_enActionNumber/*Action& action*/);
+	void CalcEvalIdle(EnActionNumber m_enActionNumber);
 
-	void CalcEvalAttack1(EnActionNumber m_enActionNumber/*Action& action*/);
+	void CalcEvalAttack1(EnActionNumber m_enActionNumber);
 
-	void CalcEvalAttack2(EnActionNumber m_enActionNumber/*Action& action*/);
+	void CalcEvalAttack2(EnActionNumber m_enActionNumber);
 
-	void CalcEvalSummon(EnActionNumber m_enActionNumber/*Action& action*/);
+	void CalcEvalSummon(EnActionNumber m_enActionNumber);
 
-	void CalcEvalDarkMeteorite(EnActionNumber m_enActionNumber/*Action& action*/);
+	void CalcEvalDarkMeteorite(EnActionNumber m_enActionNumber);
 
-
+	void CalcEvalAngryMode(EnActionNumber m_enActionNumber);
 	
 
 	Player* m_player = nullptr;
 	Lich* m_lich = nullptr;
 
-	const int m_actionAmount = 5;
+	const int m_actionAmount = 6;
 
 	EnActionNumber m_oldActionNumber = enAttack_None;
 
+	EnActionNumber m_firstActionNumber = enAttack_Summon;			//最初の行動
+
 	//構造体にしたい
 	//行動の数分の評価値
-	int m_eval[5];
+	int m_eval[6];
 
-	Action m_action[5] = { 0 };
+	Action m_action[6] = { 0 };
 
 
 	

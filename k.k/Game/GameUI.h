@@ -54,6 +54,11 @@ public:
 	/// </summary>
 	void MonsterUIUpdate();
 
+	/// <summary>
+	/// タイマーのUIの処理
+	/// </summary>
+	void TimerUIUpdate();
+
 	void DrawPlayerUI(RenderContext& rc);
 
 	void DrawMonsterUI(RenderContext& rc);
@@ -155,7 +160,11 @@ private:
 		SpriteRender m_ChangeCharacterIconBlackRender;
 		FontRender m_ChangeCharacterCoolTimeFont;
 
+		SpriteRender m_TimeFlameRender;
+
 	};
+
+	FontRender m_TimerFont;				//制限時間
 
 	Game* m_game = nullptr;
 	Player* m_player = nullptr;

@@ -7,8 +7,6 @@
 #include "LichStateAttack_2.h"
 #include "LichStateDie.h"
 #include "Game.h"
-//#include "FireBall.h"
-//#include "FlamePillar.h"
 #include "DarkWall.h"
 #include "LichStateDamage.h"
 #include "LichStateDarkMeteorite_Start.h"
@@ -20,23 +18,34 @@
 
 #include "LichAction.h"
 #include "Summon.h"
-
-//#include "DamageFont.h"
+#include "LichStateAngry.h"
+#include "LichStateWarp.h"
 
 //todo ターゲットがしばらく近くにいたら逃げる
 
 namespace {
-	const float SCALE_UP = 3.0f;									//キャラクターのサイズ
+	const float SCALE_UP = 4.0f;									//キャラクターのサイズ
 	const Vector3 FIRST_POSITION = Vector3(0.0f, 0.0f, -250.0f);	//最初の座標
 	const float DISTANCE = 4000.0f;									//プレイヤーを発見できる距離
 	const float NON_WARP_DISTANCE = 400.0f;							//ワープ不要な距離
 
+	const float FARST_ATTACK_INTERVAL = 3.0f;
+
+	const Vector3 WARP_UP = { 0.0f,800.0f,0.0f };
+	const Vector3 WARP_DOWN = { 0.0f,-800.0f,0.0f };
+
+	const float WARP_POS_Y_UP = 2500.0f;
+
+	const float ADD_CREATE_DARK_BALL_1_Y = 30.0f;
+	const float ADD_CREATE_DARK_BALL_2_Y = -30.0f;
+
+	const float HULF_HP_ATK_INTERVAL = 3;
 
 	//ステータス
 	int MAXHP = 1000;
 	int MAXMP = 500;
 	int ATK = 20;
-	float SPEED = 80.0f;
+	float SPEED = 160.0f;
 	const char* NAME = "Lich";
 }
 
@@ -48,6 +57,9 @@ Lich::Lich()
 	m_distance = DISTANCE;
 	//リッチのサイズを設定
 	m_scale *= SCALE_UP;
+
+	//最初の攻撃のインターバルを早める
+	m_attackIntervalTimer = FARST_ATTACK_INTERVAL;
 }
 
 Lich::~Lich()
@@ -66,9 +78,13 @@ Lich::~Lich()
 
 bool Lich::Start()
 {
+	//乱数を初期化。
+	srand((unsigned)time(NULL));
+
+	m_game = FindGO<Game>("game");
+
 	//初期のアニメーションステートを待機状態にする。
 	SetNextAnimationState(enAninationState_Idle);
-
 
 	//ステータスの初期化
 	m_status.InitStatus(
@@ -82,10 +98,12 @@ bool Lich::Start()
 	InitModel();
 	//
 	SetStageLevelPosition();
-	//
+	//状態ステート
 	SetSpecialActionState(enSpecialActionState_Normal);
 	
 	m_lichAction = new LichAction(this);
+	//todo 優先度設定する
+	m_lichAction->SettingPriority();
 
 	return true;
 }
@@ -114,6 +132,8 @@ void Lich::InitModel()
 	m_animationClip[enAnimClip_Summon].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/Lich/Victory.tka");
 	m_animationClip[enAnimClip_Victory].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Angry].Load("Assets/animData/character/Lich/Angry.tka");
+	m_animationClip[enAnimClip_Angry].SetLoopFlag(false);
 
 
 	m_modelRender.Init("Assets/modelData/character/Lich/Lich.tkm",
@@ -137,10 +157,6 @@ void Lich::InitModel()
 		m_position
 	);
 
-	/*m_hpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_hpFont.SetScale(1.5f);
-	m_hpFont.SetPosition(-800.0f, 500.0f);*/
-
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
@@ -152,28 +168,9 @@ void Lich::InitModel()
 }
 
 void Lich::Update()
-{
-	//被ダメージの当たり判定
-	DamageCollision(m_charaCon);
-
-	//攻撃中じゃないなら
-	/*if (IsAttackEntable() != true)
-	{*/
-		//プレイヤーが全滅したら勝利アニメーション設定
-		if (m_player->IsAnnihilation() == true && m_enAnimationState!= enAnimationState_Victory)
-		{
-			SetWinFlag(true);
-			//攻撃中じゃないなら
-			if (IsAttackEntable() == true)
-			{
-				SetNextAnimationState(enAnimationState_Victory);
-			}
-		}
-	//}
-	
-
-	//倒されたら他の処理を実行しないようにする
-	if (m_dieFlag==true|| GetWinFlag() == true)
+{	
+	//勝敗が決まったら他の処理を実行しないようにする
+	if (IsWinnerDecision()==true)
 	{
 		ManageState();
 		PlayAnimation();
@@ -181,15 +178,14 @@ void Lich::Update()
 		return;
 	}
 
-	//ダークウォールの生成
-	/*if (m_CreateDarkWallFlag == true)
-	{
-		CreateDarkWall();
-	}*/
-
+	//被ダメージの当たり判定
+	DamageCollision(m_charaCon);
 	//インターバルの計算
 	AttackInterval(m_attackIntervalTime);
 	DamageInterval(m_damageIntervalTime);
+
+	//怒りモードなら怒りモードタイマーの計算
+	CalcAngryTime();
 
 	Move();
 	Rotation();
@@ -205,6 +201,47 @@ void Lich::Update()
 	m_oldMoveSpeed = m_moveSpeed;
 }
 
+bool Lich::IsWinnerDecision()
+{
+	//タイムアップしたら
+	if (m_game->IsTimeUp() == true)
+	{
+		SetNextAnimationState(enAninationState_Idle);
+		//タイムアップで終わったのでフラグをtrueにする
+		m_timeUpEndFlag = true;
+		//ダークメテオの削除
+		DeleteDarkMeteo();
+		return true;
+	}
+	//プレイヤーが全滅したら勝利アニメーション設定
+	if (m_player->IsAnnihilation() == true && m_enAnimationState != enAnimationState_Victory)
+	{
+		SetWinFlag(true);
+		//攻撃中じゃないなら
+		if (IsAttackEntable() == true)
+		{
+			SetNextAnimationState(enAnimationState_Victory);
+		}
+		//ダークメテオの削除
+		DeleteDarkMeteo();
+		return true;
+	}
+	//勝ったフラグがtrueなら
+	if (GetWinFlag() == true)
+	{
+		//ダークメテオの削除
+		DeleteDarkMeteo();
+		return true;
+	}
+	//自身がやられたら
+	if (m_dieFlag == true)
+	{
+		return true;
+	}
+	//全て違うなら
+	return false;
+}
+
 void Lich::Move()
 {
 	//プレイヤーの座標を取得
@@ -216,6 +253,13 @@ void Lich::Move()
 	//被ダメージ時は処理をしない
 	if (isAnimationEntable() != true)
 	{
+		return;
+	}
+	//怒りモードでないなら抜け出す
+	if (m_enSpecialActionState != enSpecialActionState_AngryMode)
+	{
+		//移動しないようにする
+		m_moveSpeed = Vector3::Zero;
 		return;
 	}
 
@@ -234,7 +278,6 @@ void Lich::Move()
 			//移動しないようにする
 			m_moveSpeed = Vector3::Zero;
 		}
-
 		//移動する
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	}
@@ -249,9 +292,8 @@ void Lich::Damage(int attack)
 {
 	//ヒットカウントを増やす、蓄積ダメージを増やす
 	SetHitCountAndDamage(1, attack);
-
-	//todo HPが半分になったら一旦止める
-
+	//怒りモードカウントを増やす
+	m_angryModeCount++;
 
 	if (m_status.hp > 0)
 	{
@@ -262,18 +304,15 @@ void Lich::Damage(int attack)
 			m_CreateDarkWallFlag = false;
 			SetNextAnimationState(enAnimationState_Damage);
 		}
-
 		//HPを減らす
 		m_status.hp -= attack;
 
-		//HPが半分になったらワープする
-		if (m_status.hp <= m_status.maxHp / 2 && m_halfHpFlag == false)
+		//HPが半分になったら
+		if (m_status.hp <= m_status.maxHp / 2)
 		{
-			//ワープするステートにする
-			SetSpecialActionState(enSpecialActionState_Warp);
 			m_halfHpFlag = true;
-			//ダークメテオを使い終わるまでダメージを受けないようにする
-			SetInvincibleFlag(true);
+			//攻撃間隔を短くする
+			m_attackIntervalTime = HULF_HP_ATK_INTERVAL;
 		}
 	}
 	//やられたとき
@@ -283,7 +322,6 @@ void Lich::Damage(int attack)
 		//フレームレートを落とす
 		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 30);
 		//自身が倒されたらことをゲームに伝える
-		m_game = FindGO<Game>("game");
 		m_game->SetDeathBossFlag(true);
 		//カメラがリッチを追うようにする
 		m_game->SetClearCameraState(Game::enClearCameraState_Lich);
@@ -292,7 +330,9 @@ void Lich::Damage(int attack)
 		m_status.hp = 0;
 		//技の途中でやられたかもしれない
 		m_CreateDarkWallFlag = false;
+		//やられステート
 		SetNextAnimationState(enAnimationState_Die);
+		m_modelRender.SetAnimationSpeed(0.8f);
 	}
 }
 
@@ -308,11 +348,7 @@ void Lich::CreateDamageFont(int damage)
 
 bool Lich::Isflinch()
 {
-	//乱数を初期化。
-	srand((unsigned)time(NULL));
-
 	int value = rand() % 10;
-
 	if (value > 7)
 	{
 		//怯む
@@ -323,7 +359,6 @@ bool Lich::Isflinch()
 		//怯まない
 		return false;
 	}
-	
 }
 
 bool Lich::IsDistanceToPlayer()
@@ -341,6 +376,40 @@ bool Lich::IsDistanceToPlayer()
 		return false;
 	}
 	
+}
+
+bool Lich::CalcAngryTime()
+{
+	//怒りモードでないときは処理しない
+	if (m_enSpecialActionState != enSpecialActionState_AngryMode)
+	{
+		return false;
+	}
+
+	if (IsAttackEntable() != true)
+	{
+		return false;
+	}
+
+	if (m_angryLimitTime < m_angryLimitTimer)
+	{
+		m_angryLimitTimer = 0.0f;
+		//通常に戻す
+		SetSpecialActionState(enSpecialActionState_Normal);
+		//怒りモードカウントをリセットする
+		m_angryModeCount = 0;
+		//怒りモードから戻るときにプレイヤーから一番遠いところにワープする
+		SetNextAnimationState(enAnimationState_Warp);
+		//無敵時間にする
+		SetInvincibleFlag(true);
+		return false;
+	}
+	else
+	{
+		m_angryLimitTimer += g_gameTime->GetFrameDeltaTime();
+	}
+
+	return true;
 }
 
 bool Lich::RotationOnly()
@@ -361,6 +430,9 @@ bool Lich::RotationOnly()
 
 void Lich::DecideNextAction()
 {
+	//todo 通常と怒りモードで攻撃範囲や速度を変えたい
+
+
 	//被ダメージ時は処理をしない
 	if (isAnimationEntable() != true)
 	{
@@ -373,19 +445,12 @@ void Lich::DecideNextAction()
 		return;
 	}
 
-	
-
-	//HPが半分ならすぐに行動
-	if (m_enSpecialActionState == enSpecialActionState_Warp)
+	//ワープ処理中は処理をしない
+	/*if (GetSpecialActionState() == enSpecialActionState_Warp)
 	{
-		//ダークメテオ確定
-		m_lichAction->NextAction();
 		return;
-	}
+	}*/
 	
-	//地面についていないと処理しない
-
-
 	//攻撃可能なら
 	if (m_attackFlag == false)
 	{
@@ -465,6 +530,14 @@ void Lich::SetNextAnimationState(EnAnimationState nextState)
 		//勝利ステートを作成する
 		m_state = new LichStateVictory(this);
 		break;
+	case Lich::enAnimationState_Angry:
+		//怒りモードステートを作成する
+		m_state = new LichStateAngry(this);
+		break;
+	case Lich::enAnimationState_Warp:
+		//ワープステートを作成する
+		m_state = new LichStateWarp(this);
+		break;
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
 		std::abort();
@@ -478,99 +551,41 @@ void Lich::SetStageLevelPosition()
 		"Assets/level3D/BossStage1.tkl",
 		[&](LevelObjectData& objData)
 		{
-
-
 			if (objData.ForwardMatchName(L"Pos") == true) {
 				//ワープする座標を配列に格納する
 				Vector3 warpPos = objData.position;
-				m_WarpPosition.emplace_back(warpPos);
+				m_warpPositions.emplace_back(warpPos);
 				return true;
 			}
 			return false;
 		});
 }
 
-void Lich::Warp(EnSpecialActionState SpecialActionState)
+void Lich::DecideWarpPosition()
 {
-	if (SpecialActionState == enSpecialActionState_Warp)
+	float MaxLength = 0.0f;
+	//ターゲットから一番遠いところ座標を調べる
+	for (int amount = 0; amount < m_warpPositions.size(); amount++)
 	{
-		float MaxLength = 0.0f;
-		//ターゲットから一番遠いところ座標を調べる
-		for (int amount = 0; amount < m_WarpPosition.size(); amount++)
+		//ターゲットから自身へのベクトル
+		Vector3 diff = m_warpPositions[amount] - m_targetPosition;
+		//ターゲットから一番遠いところの座標にする
+		if (MaxLength < diff.Length())
 		{
-			//
-			Vector3 diff = m_WarpPosition[amount] - m_targetPosition;
-			//
-			if (MaxLength < diff.Length())
-			{
-				MaxLength = diff.Length();
-				m_position = m_WarpPosition[amount];
-			}
+			MaxLength = diff.Length();
+			//一番遠いところの座標
+			m_warpPosition = m_warpPositions[amount];
 		}
 	}
-	else if (SpecialActionState == enSpecialActionState_CenterWarp)
-	{
-		Vector3 CenterPos = Vector3::Zero;
-		Vector3 diff = CenterPos - m_position;
+}
 
-		if (diff.Length() > NON_WARP_DISTANCE)
-		{
-			m_position = CenterPos;
-		}
-	}
-
-
-	//switch (m_enSpecialActionState)
-	//{
-	//	//一番遠いところにワープする
-	//case Lich::enSpecialActionState_Warp:
-	//	float MaxLength = 0.0f;
-	//	//ターゲットから一番遠いところ座標を調べる
-	//	for (int amount = 0; amount < m_WarpPosition.size(); amount++)
-	//	{
-	//		//
-	//		Vector3 diff = m_WarpPosition[amount] - m_targetPosition;
-	//		//
-	//		if (MaxLength < diff.Length())
-	//		{
-	//			MaxLength = diff.Length();
-	//			m_position = m_WarpPosition[amount];
-	//		}
-	//	}
-	//	break;
-	//	//真ん中か真ん中近くにワープする
-	//case Lich::enSpecialActionState_CenterWarp:
-	//	Vector3 CenterPos = Vector3::Zero;
-	//	Vector3 diff = CenterPos - m_position;
-
-	//	if (diff.Length() > NON_WARP_DISTANCE)
-	//	{
-	//		m_position = CenterPos;
-	//	}
-
-	//	break;
-
-	//default:
-	//	break;
-	//}
-	//float MaxLength = 0.0f;
-	////ターゲットから一番遠いところ座標を調べる
-	//for (int amount = 0; amount < m_WarpPosition.size(); amount++)
-	//{
-	//	//
-	//	Vector3 diff = m_WarpPosition[amount] - m_targetPosition;
-	//	//
-	//	if (MaxLength < diff.Length())
-	//	{
-	//		MaxLength = diff.Length();
-	//		m_position = m_WarpPosition[amount];
-	//	}
-	//}
-
-	Vector3 o = Vector3::Zero;
-	//ワープする
+void Lich::MoveWarpPosition()
+{
+	m_warpPosition.y += WARP_POS_Y_UP;
+	m_position = m_warpPosition;
 	m_charaCon.SetPosition(m_position);
-	m_charaCon.Execute(o, 1.0f / 60.0f);
+	Vector3 zero = g_vec3Zero;
+	m_charaCon.Execute(zero, 1.0f / 60.0f);
 }
 
 void Lich::ProcessCommonStateTransition()
@@ -640,36 +655,52 @@ void Lich::OnProcessDamageStateTransition()
 
 void Lich::OnProcessDarkMeteorite_StartStateTransition()
 {
-	
-
-	//上昇していないなら処理をしない
-	if (IsRisingDarkMeteorite() != true)
+	//アニメーション中に勝敗が決まったら
+	if (IsWinnerDecision() == true)
 	{
+		DeleteGO(m_darkMeteorite);
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
 		return;
-	}
-	//一度だけダークメテオを生成
-	if (m_createDarkMeteoriteFlag == false)
-	{
-		CreateDarkMeteorite();
-		m_createDarkMeteoriteFlag = true;
 	}
 
 	//サイズが最大まで大きくなったら
 	//自分の変数にしてもいいかも
-	if (m_darkMeteorite->GetSizeUpFlag() == true)
+	if (m_createDarkMeteoriteFlag == true)
 	{
-		//メインに移る
-		SetNextAnimationState(enAnimationState_Attack_DarkMeteorite_main);
-		return;
+		if (m_darkMeteorite->GetSizeUpFlag() == true)
+		{
+			SetNextAnimationState(enAnimationState_Attack_DarkMeteorite_main);
+			return;
+		}
 	}
+	else
+	{
+		if (m_modelRender.IsPlayingAnimation() == false)
+		{
+			//一度だけダークメテオを生成
+			CreateDarkMeteorite(true);
+			m_createDarkMeteoriteFlag = true;
+		}
+	}
+	
 }
 
 void Lich::OnProcessDarkMeteorite_MainStateTransition()
 {
+	//アニメーション中に勝敗が決まったら
+	if (IsWinnerDecision() == true)
+	{
+		DeleteGO(m_darkMeteorite);
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+		return;
+	}
+
 	//メテオを全て生成したら
 	if (m_darkMeteorite->GetShotEndFlag() == true)
 	{
-		DeleteGO(m_darkMeteorite);
+		//DeleteGO(m_darkMeteorite);
 		//エンドに移る
 		SetNextAnimationState(enAnimationState_Attack_DarkMeteorite_end);
 	}
@@ -677,17 +708,10 @@ void Lich::OnProcessDarkMeteorite_MainStateTransition()
 
 void Lich::OnProcessDarkMeteorite_EndStateTransition()
 {
-	//地面に降りる
-	m_moveSpeed = Vector3::AxisY;
-	m_moveSpeed.y *= -m_status.defaultSpeed;
-
-	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-	
-	//地面に着いたら
-	if (m_charaCon.IsOnGround() == true)
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		m_moveSpeed = Vector3::Zero;
-		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+		m_createDarkMeteoriteFlag = false;
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 		//無敵時間ではない
@@ -713,7 +737,96 @@ void Lich::OnProcessSummonStateTransition()
 
 void Lich::OnProcessVictoryStateTransition()
 {
+	//アニメーシがループするので特に処理しない
 }
+
+void Lich::OnProcessAngryStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//怒りモードに移行
+		SetSpecialActionState(enSpecialActionState_AngryMode);
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+		//無敵時間ではない
+		SetInvincibleFlag(false);
+	}
+}
+
+void Lich::OnProcessWarpStateTransition()
+{
+	switch (m_enWarpStep)
+	{
+	case Lich::enWarpStep_Up:
+		OnProcessenWarpStepUp();
+		break;
+	case Lich::enWarpStep_Warp:
+		OnProcessenWarpStepWarp();
+		break;
+	case Lich::enWarpStep_Down:
+		OnProcessenWarpSteDown();
+		break;
+	case Lich::enWarpStep_End:
+		OnProcessenWarpStepEnd();
+		break;
+
+	default:
+		break;
+	}
+}
+
+void Lich::OnProcessenWarpStepUp()
+{
+	DecideWarpPosition();
+	Vector3 Up = WARP_UP;
+	//ワープする前に上に上昇する
+	m_position = m_charaCon.Execute(Up, 1.0f / 30.0f);
+
+	if (m_position.y >= 2500.0f)
+	{
+		//次のステップに進む
+		m_enWarpStep = enWarpStep_Warp;
+	}
+}
+
+void Lich::OnProcessenWarpStepWarp()
+{
+	MoveWarpPosition();
+	//次のステップに進む
+	m_enWarpStep = enWarpStep_Down;
+}
+
+void Lich::OnProcessenWarpSteDown()
+{
+	//
+	if (m_charaCon.IsOnGround()==true)
+	{
+		m_position.y = 0.0f;
+		m_charaCon.SetPosition(m_position);
+		Vector3 zero = g_vec3Zero;
+		m_charaCon.Execute(zero, 1.0f / 60.0f);
+		//次のステップに進む
+		m_enWarpStep = enWarpStep_End;
+	}
+	else
+	{
+		Vector3 Down = WARP_DOWN;
+		//ワープ先で下がる
+		m_position = m_charaCon.Execute(Down, 1.0f / 30.0f);
+	}
+}
+
+void Lich::OnProcessenWarpStepEnd()
+{
+	//共通の状態遷移処理に移行
+	ProcessCommonStateTransition();
+	//無敵時間ではない
+	SetInvincibleFlag(false);
+	//ステップ終わり
+	m_enWarpStep = enWarpStep_Up;
+}
+
 
 void Lich::CreateDarkWall()
 {
@@ -721,34 +834,53 @@ void Lich::CreateDarkWall()
 	darkball->SetLich(this);
 }
 
-void Lich::CreateDarkMeteorite()
+void Lich::CreateDarkBall(bool AddBallFlag)
 {
-	//玉を生成
+	FireBall* fireball = NewGO<FireBall>(0, "darkball");
+	fireball->SetLich(this);
+	fireball->SetLichAtk(m_status.atk);
+	fireball->Setting(m_position, m_rotation);
+	
+	if (AddBallFlag != true)
+	{
+		return;
+	}
+
+	//あと二つ生成する
+	AddCreateDarkBall(ADD_CREATE_DARK_BALL_1_Y);
+	AddCreateDarkBall(ADD_CREATE_DARK_BALL_2_Y);
+}
+
+void Lich::AddCreateDarkBall(float degY)
+{
+	Quaternion right = m_rotation;
+	right.AddRotationDegY(degY);
+
+	FireBall* fireball1 = NewGO<FireBall>(0, "darkball");
+	fireball1->SetLich(this);
+	fireball1->SetLichAtk(m_status.atk);
+	fireball1->Setting(m_position, right);
+}
+
+void Lich::CreateDarkMeteorite(bool lastMeteoFlag)
+{
+	//大きなメテオを作成
 	m_darkMeteorite = NewGO<DarkMeteorite>(0, "darkmeteorite");
 	Vector3 pos = m_position;
 	pos.y += 370.0f;
 	m_darkMeteorite->SetPosition(pos);
 	m_darkMeteorite->SetRotation(m_rotation);
+	m_darkMeteorite->SetmLastBigMeteoShotFlag(lastMeteoFlag);
 }
 
-bool Lich::IsRisingDarkMeteorite()
+void Lich::DeleteDarkMeteo()
 {
-	//Y座標が上限に到達したら
-	if (m_RisingLimit <= m_position.y)
+	//ダークメテオが生成されていたら削除する
+	m_darkMeteorite = FindGO<DarkMeteorite>("darkmeteorite");
+	if (m_darkMeteorite != nullptr)
 	{
-		return true;
+		DeleteGO(m_darkMeteorite);
 	}
-	else
-	{
-		Vector3 moveSpeed = Vector3::Zero;
-		moveSpeed.y += g_gameTime->GetFrameDeltaTime() * 250.0f;
-		m_moveSpeed = moveSpeed;
-
-		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 2.0f);
-
-		return false;
-	}
-
 }
 
 void Lich::DamageCollision(CharacterController& characon)
@@ -760,9 +892,6 @@ void Lich::DamageCollision(CharacterController& characon)
 	{
 		return;
 	}
-
-
-
 	////被ダメージ時、デス時は処理をしない
 	//if (isAnimationEntable() != true)
 	//{
@@ -847,7 +976,6 @@ void Lich::DamageCollision(CharacterController& characon)
 			}
 		}
 	}
-
 }
 
 void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
@@ -856,10 +984,7 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	if (wcscmp(eventName, L"Create_Ball") == 0)
 	{
 		//ボール生成
-		FireBall* fireball = NewGO<FireBall>(0, "darkball");
-		fireball->SetLich(this);
-		fireball->SetLichAtk(m_status.atk);
-		fireball->Setting(m_position, m_rotation);
+		CreateDarkBall(m_halfHpFlag);
 	}
 
 	//ダークウォール生成タイミング
@@ -881,25 +1006,23 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		m_darkMeteorite->SetTargetPosition(m_targetPosition);
 	}
 
-	//
-	//if (wcscmp(eventName, L"Stop") == 0)
-	//{
-	//	m_modelRender.
-	//}
-	//
 	if (wcscmp(eventName, L"Summon") == 0)
 	{
 		//モンスターを召喚する
 		Summon* summon = NewGO<Summon>(0, "summon");
 		summon->SetLich(this);
+		//最初の召喚だけ
+		if (m_firstSummonFlag == true)
+		{
+			summon->SetFirstSummonFlag(m_firstSummonFlag);
+			m_firstSummonFlag = false;
+		}
 	}
-
 }
 
 void Lich::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
-	//m_hpFont.Draw(rc);
 }
 
 

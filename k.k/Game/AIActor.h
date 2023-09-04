@@ -86,13 +86,13 @@ public:
 	virtual bool isAnimationEntable() const = 0;
 
 	/// <summary>
-	/// 
+	/// 回転可能か
 	/// </summary>
 	/// <returns></returns>
 	virtual bool isRotationEntable() const = 0;
 
 	/// <summary>
-	/// 
+	/// 攻撃可能か
 	/// </summary>
 	/// <returns></returns>
 	virtual bool IsAttackEntable() const = 0;
@@ -209,52 +209,54 @@ protected:
 	Quaternion Rotation();
 
 	/// <summary>
-	/// 
+	/// 回転のみを行う処理条件
 	/// </summary>
 	/// <returns></returns>
 	virtual bool RotationOnly() = 0;
 
-	Player* m_player = nullptr;
+	Player*				m_player = nullptr;
 
-	PhysicsStaticObject m_monsterStaticObject;		//静的オブジェクト。派生クラスで当たり判定作成
+	PhysicsStaticObject			m_monsterStaticObject;					//静的オブジェクト。派生クラスで当たり判定作成
 
-	Status m_status;
+	Status						m_status;
 
-	Vector3 m_targetPosition = Vector3::Zero;		//ターゲットの座標を格納
+	Vector3						m_targetPosition = Vector3::Zero;		//ターゲットの座標を格納
 
-	Vector3 m_toTarget= Vector3::Zero;				//ターゲットに向かうベクトル
+	Vector3						m_toTarget= Vector3::Zero;				//ターゲットに向かうベクトル
 
-	Vector3 m_position = Vector3::Zero;
-	Vector3 m_oldPosition= Vector3::Zero;
-	Vector3 m_oldMoveSpeed = Vector3::Zero;
-	Vector3 m_moveSpeed = Vector3::Zero;
+	Vector3						m_position = Vector3::Zero;
+	Vector3						m_oldPosition= Vector3::Zero;
+	Vector3						m_oldMoveSpeed = Vector3::Zero;
+	Vector3						m_moveSpeed = Vector3::Zero;
 
-	Vector3 m_forward = Vector3::Zero;				//前方向
+	Vector3						m_forward = Vector3::Zero;				//前方向
 
-	Vector3 m_SaveMoveSpeed = Vector3::Zero;		//回転のみ使用する時に使う
+	Vector3						m_SaveMoveSpeed = Vector3::Zero;		//回転のみ使用する時に使う
 
-	Quaternion m_rotation = Quaternion::Identity;
-	Vector3 m_scale = Vector3::One;
+	Quaternion					m_rotation = Quaternion::Identity;
+	Vector3						m_scale = Vector3::One;
 
-	int m_damage = 0;				//受けたダメージを代入する
+	int							m_damage = 0;							//受けたダメージを代入する
 
-	bool m_dashFlag = false;		//ダッシュするかのフラグ
-	bool m_attackFlag = true;		//攻撃していいかのフラグ。falseで攻撃可能
-	bool m_damageFlag = false;		//ダメージを受けられるかのフラグ。falseで被ダメージ可能
+	bool						m_dashFlag = false;						//ダッシュするかのフラグ
+	bool						m_attackFlag = true;					//攻撃していいかのフラグ。falseで攻撃可能
+	bool						m_damageFlag = false;					//ダメージを受けられるかのフラグ。falseで被ダメージ可能
 
-	float m_attackIntervalTimer = 0.0f;		//アタックのインターバルタイマー
-	float m_damageIntervalTimer = 0.0f;		//ダメージのインターバルタイマー
+	float						m_attackIntervalTimer = 0.0f;			//アタックのインターバルタイマー
+	float						m_damageIntervalTimer = 0.0f;			//ダメージのインターバルタイマー
 
-	float m_distance = 0.0f;	//プレイヤーを発見できる距離
+	float						m_distance = 0.0f;						//プレイヤーを発見できる距離
 
-	float m_angle = 0.0f;			//視野角
+	float						m_angle = 0.0f;							//視野角
 
-	bool m_winFlag = false;
+	bool						m_winFlag = false;
 
-	float m_angleChangeTimer = 0.0f;
-	bool m_angleChangeTimeFlag = false;
+	float						m_angleChangeTimer = 0.0f;
+	bool						m_angleChangeTimeFlag = false;
 
-	bool m_elaseListFlag = false;			//自身をリストから削除したかのフラグ
+	bool						m_elaseListFlag = false;				//自身をリストから削除したかのフラグ
+
+	float						m_rotTimer = 0.0f;						//回転の線形補間で使うタイマー
 
 };
 

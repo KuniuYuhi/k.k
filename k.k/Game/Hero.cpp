@@ -14,7 +14,7 @@
 #include "HeroStatePowerUp.h"
 #include "HeroStateVictory.h"
 
-//todo 今はダッシュ中の当たり判定なし
+//todo ダッシュ時攻撃アニメーション変更
 
 namespace {
 	int MAXHP = 200;
@@ -66,7 +66,7 @@ void Hero::InitModel()
 	m_animationClip[enAnimClip_Idle].SetLoopFlag(true);
 	m_animationClip[enAnimClip_Walk].Load("Assets/animData/character/Player/MoveFWD_Battle.tka");
 	m_animationClip[enAnimClip_Walk].SetLoopFlag(true);
-	m_animationClip[enAnimClip_Dash].Load("Assets/animData/character/Player/SprintFWD_Battle.tka");
+	m_animationClip[enAnimClip_Dash].Load("Assets/animData/character/Player/Dash.tka");
 	m_animationClip[enAnimClip_Dash].SetLoopFlag(true);
 	m_animationClip[enAnimClip_Attack_1].Load("Assets/animData/character/Player/Attack1_1.tka");
 	m_animationClip[enAnimClip_Attack_1].SetLoopFlag(false);
@@ -109,19 +109,6 @@ void Hero::InitModel()
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
-
-
-	/*RigidBodyInitData rbid;
-	rbid.collider = m_player->GetCharacterController().GetCollider();
-	rbid.mass = 20.0f;
-	rbid.pos = m_position;
-	rbid.restitution = 200.0f;
-	rbid.rot = m_rotation;
-
-	rigitBody.Init(rbid);
-	rigitBody.SetLinearFactor(1.0f, 0.0f, 1.0f);
-	rigitBody.SetAngularFactor(0.0f, 1.0f, 0.0f);*/
-
 }
 
 void Hero::Update()
@@ -136,6 +123,8 @@ void Hero::Update()
 		m_modelRender.Update();
 		return;
 	}
+
+
 
 	RecoveryMP();
 	Move();
@@ -176,26 +165,20 @@ void Hero::Move()
 			//リジットボディでダッシュ
 			if (g_pad[0]->IsTrigger(enButtonA))
 			{
+				//ダッシュ用の前方向を取得
+				m_dashForward = m_forward;
+				//ダッシュした瞬間だけ無敵状態にする
+				SetInvicibleDashState(enDashInvicibleState_On);
+				m_invincbledDashTimer = 0.0f;
+				//ダッシュの途中で攻撃したりダメージ受けたかもしれないのでタイマーリセット
+				m_dashTimer = 1.0f;
 				SetNextAnimationState(enAninationState_Dash);
 			}
 
 
-			//if (g_pad[0]->IsPress(enButtonA))
-			//{
-			//	////ダッシュした瞬間だけ無敵時間にする
-			//	//if (GetInvicibleDashState() == enDashInvicibleState_None)
-			//	//{
-			//	//	SetInvicibleDashState(enDashInvicibleState_On);
-			//	//	m_invincbledDashTimer = 0.0f;
-			//	//}
-			//	
-			//	m_dashFlag = true;
-			//}
-			//else
-			//{
-			//	SetInvicibleDashState(enDashInvicibleState_None);
-			//	m_dashFlag = false;
-			//}
+				//SetInvicibleDashState(enDashInvicibleState_None);
+				
+			
 		}
 	}
 
@@ -388,7 +371,7 @@ void Hero::PowerUpTimer()
 
 bool Hero::CalcDash()
 {
-	if (m_dashTimer < 0.0f)
+	if (m_dashTimer < 0.2f)
 	{
 		//ダッシュ終わり
 		m_dashTimer = 1.0f;
@@ -397,16 +380,20 @@ bool Hero::CalcDash()
 	}
 	//線形補間
 	float speed;
-	speed = Math::Lerp(m_dashTimer, 0.0f, 12.0f);
+	speed = Math::Lerp(m_dashTimer, 0.0f, 8.0f);
 
 	m_dashTimer -= g_gameTime->GetFrameDeltaTime()*(1.0f);
 
-	Vector3 forward = m_forward;
+	Vector3 forward = m_dashForward;
 	forward *= speed;
 
 	//新しい座標にする
 	m_player->CalcPosition(forward, 1.0f);
 	m_position = m_player->GetPosition();
+
+	forward.Normalize();
+	m_forward = forward;
+
 	//更新
 	SetTransFormModel(m_modelRender);
 	m_modelRender.Update();
@@ -498,12 +485,6 @@ void Hero::ProcessCommonStateTransition()
 {
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		/*if (m_dashFlag == true)
-		{
-			SetNextAnimationState(enAninationState_Dash);
-			return;
-		}*/
-
 		SetNextAnimationState(enAninationState_Walk);
 	}
 	else

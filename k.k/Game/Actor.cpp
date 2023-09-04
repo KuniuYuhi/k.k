@@ -3,6 +3,7 @@
 #include "FireBall.h"
 #include "DarkWall.h"
 #include "Meteo.h"
+#include "DarkMeteorite.h"
 #include "AIActor.h"
 
 //todo 無敵ダッシュなくす？
@@ -178,6 +179,8 @@ void Actor::DamageCollision(CharacterController& characon)
 			Meteo* meteo = FindGO<Meteo>("meteo");
 			Damage(meteo->GetAtk());
 			CreateDamageFont(meteo->GetAtk());
+			//メテオに当たったので強制的に爆発させる
+			meteo->Explosion();
 			return;
 		}
 	}
@@ -207,6 +210,21 @@ void Actor::DamageCollision(CharacterController& characon)
 			m_atttackAIActor = FindGO<AIActor>(collision->GetCreatorName());
 			Damage(m_atttackAIActor->GetStatus().atk);
 			CreateDamageFont(m_atttackAIActor->GetStatus().atk);
+			return;
+		}
+	}
+
+	//モンスターの攻撃の当たり判定
+	const auto& DarkMeteoCollisions = g_collisionObjectManager->FindCollisionObjects("bigmeteo");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : DarkMeteoCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(characon) == true)
+		{
+			DarkMeteorite* darkMeteo = FindGO<DarkMeteorite>("darkmeteorite");
+			Damage(darkMeteo->GetAtk());
+			CreateDamageFont(darkMeteo->GetAtk());
 			return;
 		}
 	}

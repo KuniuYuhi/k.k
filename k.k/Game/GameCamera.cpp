@@ -6,7 +6,12 @@
 #include "Lich.h"
 
 namespace {
-	const float TARGETPOS_YUP = 40.0f;
+
+	const float MAX_CAMERA_TOP = -0.1f;
+	const float MAX_CAMERA_UNDER = 0.8f;
+
+	const float TARGETPOS_YUP = 140.0f;
+	const float TARGETPOS_GAMESTART_YUP = 38.0f;
 
 	const float STARTCAMERA_YUP = 60.0f;
 
@@ -15,9 +20,9 @@ namespace {
 	const Quaternion END_ROT = { -60.0f,90.0f,0.0f,1.0f };
 
 
-	const Vector3 START_POS = { 0.0f,600.0f,800.0f };
-	const Vector3 CENTER_POS = { 600.0f,400.0f,0.0f };
-	const Vector3 END_POS = {100.0f,150.0f,-450.0f };
+	const Vector3 START_POS = { 0.0f,670.0f,800.0f };
+	const Vector3 CENTER_POS = { 700.0f,470.0f,0.0f };
+	const Vector3 END_POS = {160.0f,230.0f,-550.0f };
 
 	const float PLAYER_CAMERA_X = 160.0f;
 	const float PLAYER_CAMERA_Y = 0.0f;
@@ -43,7 +48,7 @@ bool GameCamera::Start()
 
 	m_toCameraPosForBoss.Set(0.0f, 300.0f, 600.0f);
 	//注視点から視点までのベクトルを設定。300,400
-	m_toCameraPos.Set(0.0f, 300.0f, 400.0f);
+	m_toCameraPos.Set(0.0f, 50.0f, 460.0f);
 	//カメラをプレイヤーの後ろにするときに使う
 	m_position = m_toCameraPos;
 
@@ -77,6 +82,8 @@ void GameCamera::Update()
 void GameCamera::ClearCameraForPlayer()
 {
 	//注視点の計算
+	m_springCamera.Refresh();
+
 	m_target = m_player->GetPosition();
 	Vector3 forward = m_player->GetForward();
 	forward.Normalize();
@@ -86,9 +93,11 @@ void GameCamera::ClearCameraForPlayer()
 		forward,
 		PLAYER_CAMERA_X,
 		PLAYER_CAMERA_Y,
-		TARGETPOS_YUP_WIN,
-		true
+		TARGETPOS_YUP_WIN
 	);
+
+	//ゲームにプレイヤーをみたことを教える
+
 }
 
 void GameCamera::ClearCameraForBoss()
@@ -120,7 +129,7 @@ void GameCamera::SetBattleStartCamera()
 	CameraPosXZ *= 400.0f;
 	//Y方向の
 	Vector3 CameraPosY = Vector3::AxisY;
-	CameraPosY *= 300.0f;
+	CameraPosY *= 100.0f;
 
 	//新しいカメラの座標
 	Vector3 newCameraPos = CameraPosXZ + CameraPosY;
@@ -192,18 +201,24 @@ void GameCamera::ChaseCamera(bool Reversesflag)
 	qRot.Apply(m_toCameraPos);
 
 	//カメラの回転の上限をチェックする。
-	//Vector3 toPosDir = m_toCameraPos;
-	//toPosDir.Normalize();
-	//if (toPosDir.y < MAX_CAMERA_TOP) {
-	//	//カメラが上向きすぎ。
-	//	m_toCameraPos = toCameraPosOld;
-	//}
-	//else if (toPosDir.y > MAX_CAMERA_UNDER) {
-	//	//カメラが下向きすぎ。
-	//	m_toCameraPos = toCameraPosOld;
-	//}
+	Vector3 toPosDir = m_toCameraPos;
+	toPosDir.Normalize();
+	if (toPosDir.y < MAX_CAMERA_TOP) {
+		//カメラが上向きすぎ。
+		m_toCameraPos = toCameraPosOld;
+	}
+	else if (toPosDir.y > MAX_CAMERA_UNDER) {
+		//カメラが下向きすぎ。
+		m_toCameraPos = toCameraPosOld;
+	}
 
-	Vector3 finalCameraPos = m_toCameraPos + m_target;
+	Vector3 finalCameraPos;
+	//カメラの位置の衝突解決する
+	m_cameraCollisionSolver.Execute(
+		finalCameraPos,
+		m_target + m_toCameraPos,
+		m_target
+	);
 
 	//視点と注視点を設定
 	m_springCamera.SetTarget(m_target);
@@ -217,7 +232,7 @@ void GameCamera::GameStartCamera()
 {
 	//注視点の計算
 	m_target = m_player->GetPosition();
-	m_target.y += TARGETPOS_YUP;
+	m_target.y += TARGETPOS_GAMESTART_YUP;
 	//前方向の取得
 	Vector3 CameraPosXZ = m_player->GetForward();
 	CameraPosXZ.y = 0.0f;

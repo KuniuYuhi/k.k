@@ -45,11 +45,16 @@ public:
 	enum EnMonster
 	{
 		enMonster_Slime,
-		enMonster_TurtleShell,
 		enMonster_Mushroom,
 		enMonster_Cactus,
+		enMonster_TurtleShell,
 		enMonster_Num
 	};
+
+	void SetFirstSummonFlag(bool flag)
+	{
+		m_firstSummonFlag = flag;
+	}
 
 
 private:
@@ -65,9 +70,12 @@ private:
 	//¶¬‚·‚éƒ‚ƒ“ƒXƒ^[‚Ì”
 	int m_createMonsters = 6;
 
+	int m_divMonster = 4;
+
+	int m_summonTurtleShellCount = 2;
+
 	std::vector<Vector3> m_summonPositions;
 
-	std::vector<AIActor*> m_monsters;
-
+	bool m_firstSummonFlag = false;
 };
 

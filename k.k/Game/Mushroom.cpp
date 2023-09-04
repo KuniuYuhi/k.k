@@ -137,12 +137,16 @@ void Mushroom::Update()
 {
 	if (m_lich != nullptr)
 	{
-		//プレイヤーかボスがやられたら消える
 		if (m_lich->GetWinFlag() == true)
 		{
 			SetWinFlag(true);
 			//攻撃中でなければ
 			SetNextAnimationState(enAnimationState_Victory);
+		}
+		if (m_lich->GetTimeUpEndFlag() == true)
+		{
+			SetWinFlag(true);
+			SetNextAnimationState(enAninationState_Idle);
 		}
 	}
 
@@ -387,6 +391,15 @@ void Mushroom::Damage(int attack)
 
 bool Mushroom::RotationOnly()
 {
+	if (isRotationEntable() != true)
+	{
+		//xかzの移動速度があったら(スティックの入力があったら)。
+		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
+		{
+			m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
+			return true;
+		}
+	}
 	return false;
 }
 

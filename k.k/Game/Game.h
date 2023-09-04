@@ -33,6 +33,10 @@ public:
 
 	void Spotmove();
 
+	bool CalcTimeLimit();
+
+
+
 	const Vector3 GetPosition() const
 	{
 		return m_position;
@@ -81,6 +85,7 @@ public:
 		enGameState_Game,
 		enGameState_Pause,
 		enGameState_GameOver,
+		enGameState_GameOver_TimeUp,
 		enGameState_GameClear
 	};
 
@@ -104,12 +109,31 @@ public:
 		m_enGameState = nextgamestate;
 	}
 	/// <summary>
-	/// 
+	/// ゲームステートを取得
 	/// </summary>
 	/// <returns></returns>
 	EnGameState GetNowGameState()
 	{
 		return m_enGameState;
+	}
+
+	/// <summary>
+	/// タイムアップか
+	/// </summary>
+	/// <returns>タイムアップならtrueを返す</returns>
+	bool IsTimeUp()
+	{
+		return m_enGameState == enGameState_GameOver_TimeUp;
+	}
+	/// <summary>
+	/// 勝敗が決まったか
+	/// </summary>
+	/// <returns></returns>
+	bool IsWinnerDecision()
+	{
+		return m_enGameState == enGameState_GameOver_TimeUp ||
+			m_enGameState == enGameState_GameOver ||
+			m_enGameState == enGameState_GameClear;
 	}
 
 	/// <summary>
@@ -144,6 +168,17 @@ public:
 	EnClearCameraState GetClearCameraState()
 	{
 		return m_clearCameraState;
+	}
+
+
+	const float& GetMinute() const
+	{
+		return m_minute;
+	}
+
+	const float& GetSecond() const
+	{
+		return m_second;
 	}
 
 private:
@@ -186,6 +221,11 @@ private:
 	Vector3 m_scale = Vector3::One;
 
 	EnGameState m_enGameState = enGameState_GameStart;
+
+
+	float m_TimeLimit = 300.0f;			//制限時間三分
+	float m_minute = 3.0f;
+	float m_second = 0.0f;
 
 
 	bool m_DeathBossFlag = false;				//ボスがやられたのフラグ

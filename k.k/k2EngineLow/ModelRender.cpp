@@ -3,7 +3,8 @@
 
 namespace nsK2EngineLow {
 
-	void ModelRender::Init(const char* tkmFilepath,AnimationClip* animationClips, int numAnimationClips, EnModelUpAxis enModelUpAxis, bool shadow, bool toon,bool outline)
+	void ModelRender::Init(const char* tkmFilepath,AnimationClip* animationClips,
+		int numAnimationClips, EnModelUpAxis enModelUpAxis, bool shadow, bool toon,bool outline)
 	{
 		//tkmファイルパスを設定
 		m_modelInitData.m_tkmFilePath = tkmFilepath;

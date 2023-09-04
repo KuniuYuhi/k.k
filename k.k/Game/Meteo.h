@@ -11,11 +11,16 @@ public:
 	void Update();
 	void Render(RenderContext& rc);
 
-	void Explosion();
+	void CalcDeleteTime();
 
 	void Move();
 
-	void Rotation();
+	void CreateExplosionCollision();
+
+	/// <summary>
+	/// プレイヤーがメテオに接触したら強制的に爆発させる
+	/// </summary>
+	void Explosion();
 
 	void SetPosition(Vector3 position)
 	{
@@ -81,10 +86,10 @@ private:
 
 	float m_timer = 0.0f;
 
-	const float m_explosionEndTime = 1.0f;
+	const float m_explosionEndTime = 0.5f;
 	float m_explosionEndTimer = 0.0f;
 
-	const int m_attack = 50;
+	const int m_attack = 60;
 	const int m_explosionAttack = 40;
 
 

@@ -5,16 +5,20 @@
 #include "Lich.h"
 
 namespace {
+
+	const Vector3 TIMER_POS = { 0.0f,510.0f,0.0f };
+	const Vector2 TIMER_OFFSET = { 50.0f,-20.0f };
+
 	/// <summary>
 	/// 978
 	/// </summary>
-	const Vector3 BOSS_ICON_POS = { -613.0f,470.0f,0.0f };
+	const Vector3 BOSS_ICON_POS = { -582.0f,450.0f,0.0f };
 
-	const Vector3 BOSS_HP_FLAME_POS = { 0.0f,470.0f,0.0f };
-	const Vector3 BOSS_HP_FRONT_POS = { -489.0f,470.0f,0.0f };
-	const Vector3 BOSS_HP_BACK_POS = { 0.0f,470.0f,0.0f };
+	const Vector3 BOSS_HP_FLAME_POS = { 0.0f,450.0f,0.0f };
+	const Vector3 BOSS_HP_FRONT_POS = { -489.0f,450.0f,0.0f };
+	const Vector3 BOSS_HP_BACK_POS = { 0.0f,450.0f,0.0f };
 
-	const Vector2 BSS_HP_FONT_POS = { -200.0f, 496.0f };
+	const Vector2 BSS_HP_FONT_POS = { -200.0f, 476.0f };
 
 	/// <summary>
 	/// プレイヤー側
@@ -57,6 +61,7 @@ namespace {
 
 	const Vector3 ICON_LERP_CENTER_POS = { -571.0f,300.0f,0.0f };
 
+	const Vector3 TIME_FLAME_POS = { 0.0f,509.0f,0.0f };
 
 	const float CHANGE_CHARA_COOLTIME = 3.0f;
 
@@ -76,6 +81,13 @@ bool GameUI::Start()
 	InitPlayerUI();
 	//モンスターのUI
 	InitMonsterUI();
+
+	//制限時間
+	m_TimerFont.SetColor(g_vec4White);
+	m_TimerFont.SetScale(1.1f);
+	m_TimerFont.SetOffset(TIMER_OFFSET);
+	m_TimerFont.SetPosition(TIMER_POS);
+	m_TimerFont.SetShadowParam(true, 2.0f, g_vec4Black);
 
 	m_oldMainCharaHP = m_player->GetNowActorStatus().hp;
 
@@ -99,7 +111,7 @@ void GameUI::PlayerUIUpdate()
 		return;
 	}
 
-
+	TimerUIUpdate();
 
 	UpdateMainStatus();
 	UpdateSubStatus();
@@ -320,6 +332,19 @@ void GameUI::MonsterUIUpdate()
 	m_monsterUI.m_HpFrontRender.Update();
 }
 
+void GameUI::TimerUIUpdate()
+{
+	//分の取得
+	int minute = m_game->GetMinute();
+	//秒の取得
+	int second = m_game->GetSecond();
+
+	wchar_t time[256];
+	swprintf_s(time, 256, L"%d:%02d", minute, second);
+	
+	m_TimerFont.SetText(time);
+}
+
 void GameUI::DrawPlayerUI(RenderContext& rc)
 {
 	m_playerUI.m_hpFont.Draw(rc);
@@ -393,6 +418,9 @@ void GameUI::DrawPlayerUI(RenderContext& rc)
 	//Yボタン
 	m_playerUI.m_SkillButtonYRender.Draw(rc);
 
+	//制限時間の枠
+	m_playerUI.m_TimeFlameRender.Draw(rc);
+
 }
 
 void GameUI::DrawMonsterUI(RenderContext& rc)
@@ -407,17 +435,21 @@ void GameUI::DrawMonsterUI(RenderContext& rc)
 
 	//アイコン
 	m_monsterUI.m_IconRender.Draw(rc);
-	//HPのフレーム
-	m_monsterUI.m_HpFlameRender.Draw(rc);
+
 	//HP
 	m_monsterUI.m_HpBackRender.Draw(rc);
 	m_monsterUI.m_HpFrontRender.Draw(rc);
+
+	//HPのフレーム
+	m_monsterUI.m_HpFlameRender.Draw(rc);
 }
 
 void GameUI::Render(RenderContext& rc)
 {
 	DrawPlayerUI(rc);
 	DrawMonsterUI(rc);
+
+	m_TimerFont.Draw(rc);
 }
 
 void GameUI::InitPlayerUI()
@@ -551,7 +583,10 @@ void GameUI::InitPlayerUI()
 	SettingSpriteRender(
 		m_playerUI.m_SkillFireBallRender, SKILL_2__POS, Vector3(0.7f, 0.7f, 0.7f), g_quatIdentity);
 
-
+	//制限時間の枠
+	m_playerUI.m_TimeFlameRender.Init("Assets/sprite/InGame/Character/TimeFlame.DDS", 251, 124);
+	SettingSpriteRender(
+		m_playerUI.m_TimeFlameRender, TIME_FLAME_POS, Vector3(0.6f, 0.6f, 0.6f), g_quatIdentity);
 
 
 }
@@ -572,15 +607,15 @@ void GameUI::InitMonsterUI()
 	SettingSpriteRender(
 		m_monsterUI.m_IconRender, BOSS_ICON_POS, Vector3(0.8f,0.8f,0.8f), g_quatIdentity);
 	//ボスのHPのフレーム
-	m_monsterUI.m_HpFlameRender.Init("Assets/sprite/InGame/Character/HP_Flame_Boss.DDS", 1000, 80);
+	m_monsterUI.m_HpFlameRender.Init("Assets/sprite/InGame/Character/HP_Flame_Boss.DDS", 1000, 60);
 	SettingSpriteRender(
 		m_monsterUI.m_HpFlameRender, BOSS_HP_FLAME_POS, g_vec3One, g_quatIdentity);
 	//ボスのHP
-	m_monsterUI.m_HpFrontRender.Init("Assets/sprite/InGame/Character/HP_Front_Boss.DDS", 978, 57);
+	m_monsterUI.m_HpFrontRender.Init("Assets/sprite/InGame/Character/HP_Front_Boss.DDS", 978, 47);
 	m_monsterUI.m_HpFrontRender.SetPivot(HP_OR_MP_PIBOT);
 	SettingSpriteRender(
 		m_monsterUI.m_HpFrontRender, BOSS_HP_FRONT_POS, g_vec3One, g_quatIdentity);
-	m_monsterUI.m_HpBackRender.Init("Assets/sprite/InGame/Character/HP_Back_Boss.DDS", 978, 57);
+	m_monsterUI.m_HpBackRender.Init("Assets/sprite/InGame/Character/HP_Back_Boss.DDS", 978, 47);
 	SettingSpriteRender(
 		m_monsterUI.m_HpBackRender, BOSS_HP_BACK_POS, g_vec3One, g_quatIdentity);
 }

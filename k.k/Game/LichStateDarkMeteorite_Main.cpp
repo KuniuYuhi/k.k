@@ -9,5 +9,5 @@ void LichStateDarkMeteorite_Main::ManageState()
 
 void LichStateDarkMeteorite_Main::PlayAnimation()
 {
-	m_lich->GetModelRender().PlayAnimation(Lich::enAnimClip_Attack_DarkMeteorite_main);
+	m_lich->GetModelRender().PlayAnimation(Lich::enAnimClip_Attack_DarkMeteorite_main,0.8f);
 }

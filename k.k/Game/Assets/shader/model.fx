@@ -356,7 +356,7 @@ float3 CalcLigFromDrectionLight(SPSIn psIn,float3 normal)
 	//最終的なリムの強さを求める
 	float limPower=power1*power2;
 	//強さを指数関数的にする
-	limPower=pow(limPower,1.1f);
+	limPower=pow(limPower,1.2f);
 	//リムライトのカラーを計算する
 	float3 limColor=limPower*directionLight.color;
 

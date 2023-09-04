@@ -263,6 +263,7 @@
     <ClCompile Include="HeroStateWalk.cpp" />
     <ClCompile Include="Lich.cpp" />
     <ClCompile Include="LichAction.cpp" />
+    <ClCompile Include="LichStateAngry.cpp" />
     <ClCompile Include="LichStateAttack_1.cpp" />
     <ClCompile Include="LichStateAttack_2.cpp" />
     <ClCompile Include="LichStateDamage.cpp" />
@@ -274,8 +275,10 @@
     <ClCompile Include="LichStateSummon.cpp" />
     <ClCompile Include="LichStateVictory.cpp" />
     <ClCompile Include="LichStateWalk.cpp" />
+    <ClCompile Include="LichStateWarp.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Meteo.cpp" />
+    <ClCompile Include="MobMonster.cpp" />
     <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="MushroomStateAttack_1.cpp" />
     <ClCompile Include="MushroomStateAttack_2.cpp" />
@@ -376,6 +379,7 @@
     <ClInclude Include="IWizardState.h" />
     <ClInclude Include="Lich.h" />
     <ClInclude Include="LichAction.h" />
+    <ClInclude Include="LichStateAngry.h" />
     <ClInclude Include="LichStateAttack_1.h" />
     <ClInclude Include="LichStateAttack_2.h" />
     <ClInclude Include="LichStateDamage.h" />
@@ -387,7 +391,9 @@
     <ClInclude Include="LichStateSummon.h" />
     <ClInclude Include="LichStateVictory.h" />
     <ClInclude Include="LichStateWalk.h" />
+    <ClInclude Include="LichStateWarp.h" />
     <ClInclude Include="Meteo.h" />
+    <ClInclude Include="MobMonster.h" />
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="MushroomStateAttack_1.h" />
     <ClInclude Include="MushroomStateAttack_2.h" />

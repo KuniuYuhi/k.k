@@ -91,7 +91,7 @@ public:
 	/// <returns></returns>
 	bool isCollisionEntable() const
 	{
-		return m_enAnimationState != enAninationState_Dash &&
+		return /*m_enAnimationState != enAninationState_Dash &&*/
 			m_enAnimationState != enAnimationState_Damage &&
 			m_enAnimationState != enAnimationState_PowerUp &&
 			m_enAnimationState != enAnimationState_Die;
@@ -99,7 +99,7 @@ public:
 
 	bool isRotationEntable() const
 	{
-		return m_enAnimationState != enAninationState_Dash &&
+		return /*m_enAnimationState != enAninationState_Dash &&*/
 			m_enAnimationState != enAnimationState_Attack_1 &&
 			m_enAnimationState != enAnimationState_Attack_2 &&
 			m_enAnimationState != enAnimationState_Attack_Skill_Charge;
@@ -216,6 +216,14 @@ private:
 		SetNextAnimationState(enAnimationState_Victory);
 	}
 
+	/// <summary>
+	/// アイドルステートを設定する
+	/// </summary>
+	void SetIdleAnimationState()
+	{
+		SetNextAnimationState(enAninationState_Idle);
+	}
+
 private:
 	
 	/// <summary>
@@ -240,6 +248,8 @@ private:
 	Player* m_player = nullptr;
 
 	IHeroState* m_state = nullptr;					//ステートクラス
+
+	Vector3 m_dashForward = g_vec3Zero;
 
 	const int m_skillMp = 30;	//スキル発動に必要なMP
 	const int m_skillPowerUpMp = 80;		//パワーアップに必要な

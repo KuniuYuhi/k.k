@@ -10,6 +10,8 @@
 #include "EntryBoss.h"
 #include "BattleStart.h"
 
+#include "Slime.h"
+
 #include "SkyCube.h"
 
 namespace {
@@ -17,7 +19,10 @@ namespace {
 
 	const Vector3 SPOT_LIGHT_COLOR = Vector3(40.0f, 10.0f, 10.0f);
 
-	const Vector3 BOSS_CREATE_POSITION = Vector3(0.0f, 0.0f, 500.0f);
+	const Vector3 BOSS_CREATE_POSITION = Vector3(0.0f, 0.0f, 900.0f);
+
+
+	const float SECOND = 60.0f;
 }
 
 Game::Game()
@@ -47,6 +52,9 @@ bool Game::Start()
 	g_renderingEngine->SetDerectionLight(0, directionLightDir, directionLightColor);
 	//環境光
 	g_renderingEngine->SetAmbient(Vector3(0.5f, 0.5f, 0.5f));
+
+	g_renderingEngine->UseHemiLight();
+
 	//ポイントライト
 	/*g_renderingEngine->SetPointLight(
 		Vector3(200.0f, 50.0f, 200.0f),
@@ -84,12 +92,6 @@ bool Game::Start()
 	//		return false;
 	//	});
 
-	//単純なリニアワイプ
-	//spriteTest.SetSimpleWipe(true);
-	// 方向を指定するリニアワイプ
-	/*spriteTest.SetWipeWithDirection(true);
-	spriteTest.SetDirection(5.0f, 5.0f);*/
-
 	//フェードクラスのインスタンスを探す
 	m_fade = FindGO<Fade>("fade");
 	//スカイキューブの初期化
@@ -97,11 +99,14 @@ bool Game::Start()
 
 	m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
 	m_player = NewGO<Player>(0, "player");
-	m_player->SetPosition({ 0.0f,0.0f,-1000.0f });
+	m_player->SetPosition({ 0.0f,0.0f,-500.0f });
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
+	//ボスの生成。非アクティブにする
+	CreateBoss();
+
 	//当たり判定の可視化
-	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	//画面を明るくする
 	m_fade->StartFadeOut(2.0f);
@@ -117,16 +122,6 @@ void Game::Update()
 	ManageState();
 
 
-
-
-
-
-	/*Quaternion roty = Quaternion::Identity;
-	roty.AddRotationDegY(g_gameTime->GetFrameDeltaTime() * 2000.0f);
-
-	m_skyCube->SetRotation(roty);
-	m_skyCube->Update();*/
-	
 
 	Spotmove();
 }
@@ -146,6 +141,7 @@ void Game::CreateBoss()
 {
 	m_lich = NewGO<Lich>(0, "lich");
 	m_lich->SetPosition(BOSS_CREATE_POSITION);
+	m_lich->Deactivate();
 }
 
 void Game::InitSkyCube()
@@ -225,6 +221,34 @@ void Game::Spotmove()
 	
 }
 
+bool Game::CalcTimeLimit()
+{
+	//0秒以下なら
+	if (m_second <= 0) {
+		//1分減らす
+		m_minute--;
+		//もし0分なら、秒も0にする
+		if (m_minute < 0) {
+			m_second = 0.0f;
+			m_minute = 0.0f;
+			//制限時間に達した
+			// ゲームオーバー
+			return true;
+		}
+		//60秒に戻す
+		else
+		{
+			m_second = SECOND;
+		}
+	}
+	else
+	{
+		//秒を減らす
+		m_second -= g_gameTime->GetFrameDeltaTime();
+	}
+	return false;
+}
+
 bool Game::IsBossMovieSkipTime()
 {
 	if (g_pad[0]->IsPress(enButtonA))
@@ -267,6 +291,9 @@ void Game::ManageState()
 	case enGameState_GameOver:
 		OnProcessGameOverTransition();
 		break;
+	case enGameState_GameOver_TimeUp:
+		OnProcessGameOverTransition();
+		break;
 	case enGameState_GameClear:
 		OnProcessGameClearTransition();
 		break;
@@ -305,7 +332,6 @@ void Game::OnProcessGameStartTransition()
 		return;
 	}
 	//プレイヤーを見ている
-
 	m_cameraZoomOutTimer += g_gameTime->GetFrameDeltaTime();
 	//ある程度ズームしたら
 	if (m_cameraZoomOutTime < m_cameraZoomOutTimer)
@@ -313,10 +339,7 @@ void Game::OnProcessGameStartTransition()
 		//フェードインを始める
 		m_enFadeState = enFadeState_StartToBoss;
 		m_fade->StartFadeIn(3.0f);
-
 	}
-		
-	
 }
 
 void Game::OnProcessAppearanceBossTransition()
@@ -339,8 +362,8 @@ void Game::OnProcessAppearanceBossTransition()
 			//次のステートに移る時
 			//ムービー用のモデルを消す
 			DeleteGO(m_entryBoss);
-			//ボスの生成
-			//CreateBoss();
+			//ボスのアクティブ化
+			m_lich->Activate(); 
 			//ステートを切り替える
 			SetNextGameState(enGameState_Game);
 			break;
@@ -377,6 +400,16 @@ void Game::OnProcessAppearanceBossTransition()
 
 void Game::OnProcessGameTransition()
 {
+	//制限時間の処理
+	if (CalcTimeLimit() == true)
+	{
+		//タイムアップ
+		DeleteGO(m_gameUI);
+		//ステートを切り替える
+		SetNextGameState(enGameState_GameOver_TimeUp);
+	}
+
+
 	//ゲームクリア
 	//ボスがやられたら
 	if (m_DeathBossFlag == true)

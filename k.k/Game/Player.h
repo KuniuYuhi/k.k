@@ -22,9 +22,17 @@ public:
 	bool Start();
 	void Update();
 
+	/// <summary>
+	/// 勝敗が決定したか
+	/// </summary>
+	/// <returns></returns>
+	bool IsWinnerDecision();
+
 	bool GameClear();
 
 	bool GameOver();
+
+	bool TimeUp();
 
 	/// <summary>
 	/// キャラクター切り替え処理
@@ -251,5 +259,6 @@ private:
 
 	bool m_gameEndFlag = false;		//勝ち負け関わらずバトルが終わったときにtrueにする
 	bool m_VictoryAnimFlag = false;			//勝利アニメーション再生フラグ
+	bool m_idleAnimFlag = false;			//アイドルアニメーション再生フラグ
 };
 

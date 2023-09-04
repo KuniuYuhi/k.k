@@ -37,6 +37,8 @@ public:
 
 	virtual void SetVictoryAnimationState() = 0;
 
+	virtual void SetIdleAnimationState() = 0;
+
 	/// <summary>
 	/// 移動処理
 	/// </summary>
@@ -297,6 +299,10 @@ protected:
 		return m_enDashInvicibleState;
 	}
 
+	/// <summary>
+	/// ダッシュしたときの無敵時間の計算
+	/// </summary>
+	/// <returns></returns>
 	bool CalcInvicibleDash();
 	
 	/// <summary>
@@ -341,7 +347,7 @@ protected:
 	const float m_invincbleTime = 2.0f;
 	float m_invincbleTimer = 0.0f;
 
-	const float m_invincbleDashTime = 0.5f;		//無敵状態ダッシュの時間
+	const float m_invincbleDashTime = 0.3f;		//無敵状態ダッシュの時間
 	float m_invincbledDashTimer = 0.0f;
 
 	bool m_modelDrawFlag = false;				//モデルを描画するかのフラグ

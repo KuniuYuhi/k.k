@@ -65,14 +65,8 @@ bool Player::Start()
 
 void Player::Update()
 {
-	//ボスが死んだら処理しない
-	if (GameClear() == true)
-	{
-		return;
-	}
-
-	//キャラクターが全滅していたら処理しない
-	if (GameOver() == true)
+	//勝敗が決まったら
+	if (IsWinnerDecision() == true)
 	{
 		return;
 	}
@@ -290,6 +284,30 @@ Actor::EnComboState Player::GetNowComboState() const
 	return m_nowActor->GetNowComboState();
 }
 
+bool Player::IsWinnerDecision()
+{
+	//勝利
+	//ボスが死んだら処理しない
+	if (GameClear() == true)
+	{
+		return true;
+	}
+	//敗北
+	//キャラクターが全滅していたら処理しない
+	if (GameOver() == true)
+	{
+		return true;
+	}
+	//タイムアップ
+	if (TimeUp() == true)
+	{
+		//ここかく
+		return true;
+	}
+	//それ以外なら	
+	return false;
+}
+
 bool Player::GameClear()
 {
 	if (m_game->GetDeathBossFlag() == true)
@@ -325,6 +343,28 @@ bool Player::GameOver()
 			m_informGameFlag = true;
 		}
 
+		return true;
+	}
+
+	return false;
+}
+
+bool Player::TimeUp()
+{
+	if (m_game->IsTimeUp() == true)
+	{
+		m_gameEndFlag = true;
+
+		if (m_idleAnimFlag == false)
+		{
+			//アニメーションしていなかったら
+			if (m_nowActor->isAnimationEntable() == true)
+			{
+				//現在のアクターのステートをアイドルステートにする
+				m_nowActor->SetIdleAnimationState();
+				m_idleAnimFlag = true;
+			}
+		}
 		return true;
 	}
 
