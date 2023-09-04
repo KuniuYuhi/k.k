@@ -363,11 +363,7 @@ void Game::OnProcessAppearanceBossTransition()
 			//ムービー用のモデルを消す
 			DeleteGO(m_entryBoss);
 			//ボスのアクティブ化
-			//m_lich->Activate();
-			 
-			Slime* slime = NewGO<Slime>(0, "slime");
-			slime->SetPosition({ 0.0f, 0.0f, 0.0f });
-			 
+			m_lich->Activate(); 
 			//ステートを切り替える
 			SetNextGameState(enGameState_Game);
 			break;
