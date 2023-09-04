@@ -22,7 +22,7 @@ public:
 	/// 壁(森)にぶつかったか
 	/// </summary>
 	/// <returns></returns>
-	bool IsBumpedForest();
+	virtual bool IsBumpedForest();
 
 	/// <summary>
 	/// 特定のアニメーションが再生中か
@@ -76,14 +76,14 @@ protected:
 
 	float					m_angleChangeTime = 0.0f;					//向かうベクトルを計算するタイマー
 
-	const float				m_distanceToPlayer = 0.0f;				//プレイヤーとの距離
-	const float				m_attackRange = 0.0f;						//攻撃できる範囲
-	const float				m_stayDistance = 0.0f;						//移動しない距離
+	float				m_distanceToPlayer = 0.0f;				//プレイヤーとの距離
+	float				m_attackRange = 0.0f;						//攻撃できる範囲
+	float				m_stayRange = 0.0f;						//移動しない範囲
 
 	float					m_ramdomAngle = 0.0f;						//
 
-	const float				m_attackIntervalTime = 0.0f;				//攻撃した後のインターバル
+	float				m_attackIntervalTime = 0.0f;				//攻撃した後のインターバル
 
-	const int				m_angleRange = 2;					//移動するアングルの範囲
+	int				m_angleRange = 2;					//移動するアングルの範囲
 };
 

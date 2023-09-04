@@ -99,7 +99,7 @@ void MobMonster::Move(CharacterController& charaCon)
 
 
 	//プレイヤーとの距離が近くないなら移動する
-	if (IsFindPlayer(m_stayDistance) != true)
+	if (IsFindPlayer(m_stayRange) != true)
 	{
 		m_position = charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	}
@@ -112,10 +112,51 @@ void MobMonster::Move(CharacterController& charaCon)
 
 Vector3 MobMonster::SetDirection(int range)
 {
-	return Vector3();
+	Vector3 randomPos = g_vec3Zero;
+	randomPos.y = 0.0f;
+	float X = (rand() % (range - (-range) + 1)) + (-range);
+	float Z = (rand() % (range - (-range) + 1)) + (-range);
+	randomPos.x += X;
+	randomPos.z += Z;
+	randomPos.Normalize();
+
+	return randomPos;
 }
 
 bool MobMonster::IsBumpedForest()
 {
-	return false;
+	Vector3 pos1 = m_position;
+	Vector3 pos2 = m_position;
+	pos1.Normalize();
+	//pos2.Add(pos1 * 30.0f);
+	pos2 += pos1 * 30.0f;
+	SphereCollider m_sphereCollider;
+	m_sphereCollider.Create(1.0f);
+
+	btTransform start, end;
+	start.setIdentity();
+	end.setIdentity();
+	//始点はエネミーの座標。
+	start.setOrigin(btVector3(m_position.x, m_position.y, m_position.z));
+	//終点はプレイヤーの座標。
+	end.setOrigin(btVector3(
+		pos2.x, pos2.y, pos2.z));
+
+	//壁の判定を返す
+	IsForestResult callback_Forest;
+	//コライダーを始点から終点まで動かして。
+	//壁と衝突するかどうかを調べる。
+	PhysicsWorld::GetInstance()->ConvexSweepTest(
+		(const btConvexShape*)m_sphereCollider.GetBody(),
+		start, end, callback_Forest);
+	//森に衝突した
+	if (callback_Forest.isHit == true)
+	{
+		return true;
+	}
+	else
+	{
+		//衝突しなかった
+		return false;
+	}
 }
