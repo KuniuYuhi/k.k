@@ -14,6 +14,8 @@ public:
 
 	void Timer();
 
+	void CalcDamageTime();
+
 	void Render(RenderContext& rc);
 
 	void SetPosition(Vector3 postion)
@@ -35,9 +37,19 @@ public:
 	/// UŒ‚—Í‚Ìæ“¾
 	/// </summary>
 	/// <returns></returns>
-	const int GetAtk()
+	const int& GetAtk() const
 	{
 		return m_AttackPower;
+	}
+
+	const bool& GetCanDamageFlag() const
+	{
+		return m_canDamageFlag;
+	}
+
+	void SetCanDamageFlag(bool flag)
+	{
+		m_canDamageFlag = flag;
 	}
 
 private:
@@ -58,5 +70,10 @@ private:
 	float m_pillarTimer = 0;
 
 	const float m_distance = 300.0f;
+
+	bool m_canDamageFlag = false;			//ƒ_ƒ[ƒW‚ğ—^‚¦‚ç‚ê‚é‚©	
+	const float m_canDamageTime = 1.0f;
+	float m_canDamageTimer = 0.0f;
+
 };
 

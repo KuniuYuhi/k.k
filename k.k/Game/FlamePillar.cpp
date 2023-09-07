@@ -54,6 +54,7 @@ bool FlamePillar::Start()
 
 void FlamePillar::Update()
 {
+    CalcDamageTime();
     Timer();
 }
 
@@ -67,6 +68,24 @@ void FlamePillar::Timer()
     else
     {
         m_pillarTimer += g_gameTime->GetFrameDeltaTime();
+    }
+}
+
+void FlamePillar::CalcDamageTime()
+{
+    if (m_canDamageFlag != true)
+    {
+        return;
+    }
+
+    if (m_canDamageTime < m_canDamageTimer)
+    {
+        m_canDamageTimer = 0.0f;
+        m_canDamageFlag = false;
+    }
+    else
+    {
+        m_canDamageTimer += g_gameTime->GetFrameDeltaTime();
     }
 }
 
