@@ -357,13 +357,10 @@ bool Player::TimeUp()
 
 		if (m_idleAnimFlag == false)
 		{
-			//アニメーションしていなかったら
-			if (m_nowActor->isAnimationEntable() == true)
-			{
-				//現在のアクターのステートをアイドルステートにする
-				m_nowActor->SetIdleAnimationState();
-				m_idleAnimFlag = true;
-			}
+			//現在のアクターのステートをアイドルステートにする
+			m_nowActor->SetIdleAnimationState();
+			m_idleAnimFlag = true;
+			
 		}
 		return true;
 	}
