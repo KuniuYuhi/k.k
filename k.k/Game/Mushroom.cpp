@@ -8,22 +8,40 @@
 #include "MushroomStateDamage.h"
 #include "MushroomStateDie.h"
 #include "MushroomStateVictory.h"
+#include "MushroomStateAppear.h"
+
 #include "Lich.h"
 
 namespace {
 	const float ANGLE = 50.0f;				//視野角
+	const float DISTANCE_TO_PLAYER = 450.0f;			//プレイヤーとの距離
+	const float ATTACK_RANGE = 45.0f;					//攻撃できる距離
+	const float STAY_RANGR = 45.0f;						//停止する距離
+	const float ATTACK_INTAERVALE_TIME = 1.5f;			//攻撃する間隔
+	const float ANGLE_RANGE = 2.0f;						//移動するアングルの範囲
+	const float POS2_LENGTH = 30.0f;
 
 	//ステータス
 	int MAXHP = 100;
 	int MAXMP = 500;
 	int ATK = 7;
-	float SPEED = 110.0f;
+	float SPEED = 130.0f;
 	const char* NAME = "Mushroom";
 }
 
 Mushroom::Mushroom()
 {
 	m_angle = ANGLE;
+
+	m_distanceToPlayer = DISTANCE_TO_PLAYER;
+	m_attackRange = ATTACK_RANGE;
+	m_stayRange = STAY_RANGR;
+
+	m_attackIntervalTime = ATTACK_INTAERVALE_TIME;
+
+	m_angleRange = ANGLE_RANGE;
+
+	m_pos2Length = POS2_LENGTH;
 }
 
 Mushroom::~Mushroom()
@@ -36,27 +54,27 @@ Mushroom::~Mushroom()
 }
 
 //衝突したときに呼ばれる関数オブジェクト(壁用)
-struct IsForestResult :public btCollisionWorld::ConvexResultCallback
-{
-	bool isHit = false;						//衝突フラグ。
-	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
-	{
-		//地面とぶつかってなかったら。
-		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
-			//衝突したのは壁ではない。
-			isHit = false;
-			return 0.0f;
-		}
-		else
-		{
-			//地面とぶつかったら。
-		//フラグをtrueに。
-			isHit = true;
-			return 0.0f;
-		}
-
-	}
-};
+//struct IsForestResult :public btCollisionWorld::ConvexResultCallback
+//{
+//	bool isHit = false;						//衝突フラグ。
+//	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
+//	{
+//		//地面とぶつかってなかったら。
+//		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
+//			//衝突したのは壁ではない。
+//			isHit = false;
+//			return 0.0f;
+//		}
+//		else
+//		{
+//			//地面とぶつかったら。
+//		//フラグをtrueに。
+//			isHit = true;
+//			return 0.0f;
+//		}
+//
+//	}
+//};
 
 bool Mushroom::Start()
 {
@@ -73,8 +91,7 @@ bool Mushroom::Start()
 	InitModel();
 
 	//まず召喚アニメーション。その後行動
-
-
+	SetNextAnimationState(enAnimationState_Appear);
 
 	//　乱数を初期化。
 	srand((unsigned)time(NULL));
@@ -103,6 +120,8 @@ void Mushroom::InitModel()
 	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/Mushroom/Victory.tka");
 	m_animationClip[enAnimClip_Victory].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Appear].Load("Assets/animData/character/Mushroom/Appear.tka");
+	m_animationClip[enAnimClip_Appear].SetLoopFlag(false);
 
 	m_modelRender.Init(
 		"Assets/modelData/character/Mushroom/Mushroom.tkm",
@@ -150,7 +169,7 @@ void Mushroom::Update()
 		}
 	}
 
-	if (GetWinFlag() == true)
+	if (IsStopProcessing() == true)
 	{
 		ManageState();
 		PlayAnimation();
@@ -164,7 +183,7 @@ void Mushroom::Update()
 
 	AngleChangeTimeIntarval(m_angleChangeTime);
 
-	Move();
+	Move(m_charaCon);
 	Rotation();
 
 	//攻撃
@@ -182,78 +201,78 @@ void Mushroom::Update()
 	m_modelRender.Update();
 }
 
-void Mushroom::Move()
-{
-	//特定のアニメーションが再生中なら抜け出す
-	if (isAnimationEntable() != true)
-	{
-		return;
-	}
-	//攻撃中は処理しない
-	if (IsAttackEntable() != true)
-	{
-		return;
-	}
-
-	//視界にターゲットを見つけたら
-	if (IsFindPlayer(m_distanceToPlayer) == true)
-	{
-		Vector3 toPlayerDir = m_toTarget;
-		//視野角内にターゲットがいたら
-		if (IsInFieldOfView(toPlayerDir, m_forward, m_angle) == true)
-		{
-			toPlayerDir.Normalize();
-			//追いかける
-			m_direction = toPlayerDir;
-			//m_moveSpeed = CalcVelocity(m_status, m_direction);
-			m_moveSpeed = m_direction * m_status.defaultSpeed;
-			m_SaveMoveSpeed = m_moveSpeed;
-		}
-		else
-		{
-			//視野角内にはいないが攻撃可能距離にいるなら
-			if (IsFindPlayer(100.0f) == true)
-			{
-				m_moveSpeed = CalcVelocity(m_status, m_targetPosition);
-				m_SaveMoveSpeed = m_moveSpeed;
-			}
-		}
-	}
-	else
-	{
-		//数秒間隔で向かうベクトルを変える
-		if (m_angleChangeTimeFlag == false)
-		{
-			m_direction = SetDirection();
-			m_angleChangeTimeFlag = true;
-		}
-		//ランダムな方向に移動
-		m_moveSpeed = m_direction * m_status.defaultSpeed;
-		m_SaveMoveSpeed = m_moveSpeed;
-	}
-
-	//壁にぶつかったら反転
-	if (IsBumpedForest() == true)
-	{
-		m_direction *= -1.0f;
-		m_moveSpeed = m_direction * m_status.defaultSpeed;
-		m_SaveMoveSpeed = m_moveSpeed;
-		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-		return;
-	}
-
-
-	//プレイヤーとの距離が近くないなら移動する
-	if (IsFindPlayer(m_stayDistance) != true)
-	{
-		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-	}
-	else
-	{
-		//範囲内にいるので移動しない
-		m_moveSpeed = Vector3::Zero;
-	}
-}
+//void Mushroom::Move()
+//{
+//	//特定のアニメーションが再生中なら抜け出す
+//	if (isAnimationEntable() != true)
+//	{
+//		return;
+//	}
+//	//攻撃中は処理しない
+//	if (IsAttackEntable() != true)
+//	{
+//		return;
+//	}
+//
+//	//視界にターゲットを見つけたら
+//	if (IsFindPlayer(m_distanceToPlayer) == true)
+//	{
+//		Vector3 toPlayerDir = m_toTarget;
+//		//視野角内にターゲットがいたら
+//		if (IsInFieldOfView(toPlayerDir, m_forward, m_angle) == true)
+//		{
+//			toPlayerDir.Normalize();
+//			//追いかける
+//			m_direction = toPlayerDir;
+//			//m_moveSpeed = CalcVelocity(m_status, m_direction);
+//			m_moveSpeed = m_direction * m_status.defaultSpeed;
+//			m_SaveMoveSpeed = m_moveSpeed;
+//		}
+//		else
+//		{
+//			//視野角内にはいないが攻撃可能距離にいるなら
+//			if (IsFindPlayer(100.0f) == true)
+//			{
+//				m_moveSpeed = CalcVelocity(m_status, m_targetPosition);
+//				m_SaveMoveSpeed = m_moveSpeed;
+//			}
+//		}
+//	}
+//	else
+//	{
+//		//数秒間隔で向かうベクトルを変える
+//		if (m_angleChangeTimeFlag == false)
+//		{
+//			m_direction = SetDirection();
+//			m_angleChangeTimeFlag = true;
+//		}
+//		//ランダムな方向に移動
+//		m_moveSpeed = m_direction * m_status.defaultSpeed;
+//		m_SaveMoveSpeed = m_moveSpeed;
+//	}
+//
+//	//壁にぶつかったら反転
+//	if (IsBumpedForest() == true)
+//	{
+//		m_direction *= -1.0f;
+//		m_moveSpeed = m_direction * m_status.defaultSpeed;
+//		m_SaveMoveSpeed = m_moveSpeed;
+//		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+//		return;
+//	}
+//
+//
+//	//プレイヤーとの距離が近くないなら移動する
+//	if (IsFindPlayer(m_stayDistance) != true)
+//	{
+//		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+//	}
+//	else
+//	{
+//		//範囲内にいるので移動しない
+//		m_moveSpeed = Vector3::Zero;
+//	}
+//}
 
 void Mushroom::Attack()
 {
@@ -318,56 +337,73 @@ void Mushroom::CreateCollision()
 	HeadCollision->SetWorldMatrix(HeadMatrix);
 }
 
-Vector3 Mushroom::SetDirection()
+bool Mushroom::IsStopProcessing()
 {
-	Vector3 randomPos = g_vec3Zero;
-	randomPos.y = 0.0f;
-	float X = (rand() % (2 - (-2) + 1)) + (-2);
-	float Z = (rand() % (2 - (-2) + 1)) + (-2);
-	randomPos.x += X;
-	randomPos.z += Z;
-	randomPos.Normalize();
-
-	return randomPos;
-}
-
-bool Mushroom::IsBumpedForest()
-{
-	Vector3 pos1 = m_position;
-	Vector3 pos2 = m_position;
-	pos1.Normalize();
-	pos2 += pos1 * 30.0f;
-
-	SphereCollider m_sphereCollider;
-	m_sphereCollider.Create(1.0f);
-
-	btTransform start, end;
-	start.setIdentity();
-	end.setIdentity();
-	//始点はエネミーの座標。
-	start.setOrigin(btVector3(m_position.x, m_position.y, m_position.z));
-	//終点はプレイヤーの座標。
-	end.setOrigin(btVector3(
-		pos2.x, pos2.y, pos2.z));
-
-	//壁の判定を返す
-	IsForestResult callback_Forest;
-	//コライダーを始点から終点まで動かして。
-	//壁と衝突するかどうかを調べる。
-	PhysicsWorld::GetInstance()->ConvexSweepTest(
-		(const btConvexShape*)m_sphereCollider.GetBody(),
-		start, end, callback_Forest);
-	//森に衝突した
-	if (callback_Forest.isHit == true)
+	//勝利したら
+	if (GetWinFlag() == true)
 	{
 		return true;
 	}
-	else
+	//召喚された時のアニメーションステートなら	
+	if (m_enAnimationState == enAnimationState_Appear)
 	{
-		//衝突しなかった
-		return false;
+		return true;
 	}
+
+	//それ以外なら
+	return false;
 }
+
+//Vector3 Mushroom::SetDirection()
+//{
+//	Vector3 randomPos = g_vec3Zero;
+//	randomPos.y = 0.0f;
+//	float X = (rand() % (2 - (-2) + 1)) + (-2);
+//	float Z = (rand() % (2 - (-2) + 1)) + (-2);
+//	randomPos.x += X;
+//	randomPos.z += Z;
+//	randomPos.Normalize();
+//
+//	return randomPos;
+//}
+
+//bool Mushroom::IsBumpedForest()
+//{
+//	Vector3 pos1 = m_position;
+//	Vector3 pos2 = m_position;
+//	pos1.Normalize();
+//	pos2 += pos1 * 30.0f;
+//
+//	SphereCollider m_sphereCollider;
+//	m_sphereCollider.Create(1.0f);
+//
+//	btTransform start, end;
+//	start.setIdentity();
+//	end.setIdentity();
+//	//始点はエネミーの座標。
+//	start.setOrigin(btVector3(m_position.x, m_position.y, m_position.z));
+//	//終点はプレイヤーの座標。
+//	end.setOrigin(btVector3(
+//		pos2.x, pos2.y, pos2.z));
+//
+//	//壁の判定を返す
+//	IsForestResult callback_Forest;
+//	//コライダーを始点から終点まで動かして。
+//	//壁と衝突するかどうかを調べる。
+//	PhysicsWorld::GetInstance()->ConvexSweepTest(
+//		(const btConvexShape*)m_sphereCollider.GetBody(),
+//		start, end, callback_Forest);
+//	//森に衝突した
+//	if (callback_Forest.isHit == true)
+//	{
+//		return true;
+//	}
+//	else
+//	{
+//		//衝突しなかった
+//		return false;
+//	}
+//}
 
 void Mushroom::Damage(int attack)
 {
@@ -450,6 +486,9 @@ void Mushroom::SetNextAnimationState(EnAnimationState nextState)
 	case Mushroom::enAnimationState_Victory:
 		m_state = new MushroomStateVictory(this);
 		break;
+	case Mushroom::enAnimationState_Appear:
+		m_state = new MashroomStateAppear(this);
+		break;
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
 		std::abort();
@@ -523,7 +562,16 @@ void Mushroom::OnProcessVictoryStateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
 
+void Mushroom::OnProcessAppearStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}
