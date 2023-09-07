@@ -62,15 +62,18 @@ public:
 private:
 
 	FontRender m_damageFont;
+	SpriteRender m_damageBackRender;
 
 	EnDamageActor m_damageActor;
 
 	Vector3 m_position = g_vec3Zero;
 	Vector2 m_damagePosition = g_vec2Zero;
+	Vector3 m_damageBackPosition = g_vec3Zero;
 
 	Vector3 m_scale = g_vec3One;
 	Vector2 m_ofset;
 	Vector4 m_color = g_vec4White;
+	Vector4 m_backColor = g_vec4White;
 
 	int m_damage;
 	float m_yUp;

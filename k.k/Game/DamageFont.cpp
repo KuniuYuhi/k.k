@@ -9,6 +9,9 @@ namespace {
 	const float Y_UP_MONSTER = 50.0f;
 	const float Y_UP_BOSS = 170.0f;
 
+	const Vector3 BACK_SCALE_PLAYER = { 1.2f,1.2f,0.0f };
+	const Vector3 BACK_SCALE_MONSTER = { 1.2f,1.2f,0.0f };
+	const Vector3 BACK_SCALE_BOSS = { 1.5f,1.5f,0.0f };
 }
 
 DamageFont::DamageFont()
@@ -50,6 +53,9 @@ void DamageFont::Update()
 
 void DamageFont::InitFont()
 {
+	m_damageBackRender.Init("Assets/sprite/InGame/DamageEffect/Damage.DDS", 150, 150);
+	
+
 	switch (m_damageActor)
 	{
 	case DamageFont::enDamageActor_Player:
@@ -57,21 +63,30 @@ void DamageFont::InitFont()
 		m_color = g_vec4Red;
 		m_damageFont.SetColor(m_color);
 		m_damageFont.SetScale(SCALE_PLAYER);
+		m_damageFont.SetOffset(24.0f, -12.0f);
 		m_yUp = Y_UP_PLAYER;
+		//‰æ‘œ‚ðŠg‘å
+		m_damageBackRender.SetScale(BACK_SCALE_PLAYER);
 		break;
 	case DamageFont::enDamageActor_Monster:
 		//•¶Žš‚ÌF‚ð”’‚É‚·‚é
 		m_color = g_vec4White;
 		m_damageFont.SetColor(m_color);
 		m_damageFont.SetScale(SCALE_MONSTER);
+		m_damageFont.SetOffset(24.0f, -12.0f);
 		m_yUp = Y_UP_MONSTER;
+		//‰æ‘œ‚ðŠg‘å
+		m_damageBackRender.SetScale(BACK_SCALE_MONSTER);
 		break;
 	case DamageFont::enDamageActor_Boss:
 		//•¶Žš‚ÌF‚ð”’‚É‚·‚é
 		m_color = g_vec4White;
 		m_damageFont.SetColor(m_color);
 		m_damageFont.SetScale(SCALE_BOSS);
+		m_damageFont.SetOffset(24.0f, -13.0f);
 		m_yUp = Y_UP_BOSS;
+		//‰æ‘œ‚ðŠg‘å
+		m_damageBackRender.SetScale(BACK_SCALE_BOSS);
 		//À•W‚ðƒ‰ƒ“ƒ_ƒ€‚É‚·‚é
 		m_positionRandomFlag = true;
 		break;
@@ -91,6 +106,11 @@ void DamageFont::InitFont()
 		m_damagePosition.x += (rand() % (100 - (-100) + 1)) + (-100);
 		m_damagePosition.y += (rand() % (100 - (-100) + 1)) + (-100);
 	}
+	else
+	{
+		m_damagePosition.x += (rand() % (50 - (-50) + 1)) + (-50);
+		m_damagePosition.y += (rand() % (50 - (-50) + 1)) + (-50);
+	}
 	
 
 	wchar_t damage[255];
@@ -99,23 +119,41 @@ void DamageFont::InitFont()
 	m_damageFont.SetShadowParam(true, 2.0f, g_vec4Black);
 
 	m_damageFont.SetPosition(m_damagePosition);
+
+	//‰æ‘œ
+	m_damageBackPosition.x = m_damagePosition.x;
+	m_damageBackPosition.y = m_damagePosition.y;
+
+	m_damageBackRender.SetPosition(m_damageBackPosition);
+	m_damageBackRender.Update();
 }
 
 void DamageFont::Move()
 {
 	m_damagePosition.y += g_gameTime->GetFrameDeltaTime() * 60.0f;
 
+	m_damageBackPosition.y = m_damagePosition.y;
+
 	m_damageFont.SetPosition(m_damagePosition);
+
+	m_damageBackRender.SetPosition(m_damageBackPosition);
+	m_damageBackRender.Update();
 }
 
 void DamageFont::TransparencyFont()
 {
-	m_color.w -= g_gameTime->GetFrameDeltaTime() * 2.0f;
+	m_color.w -= g_gameTime->GetFrameDeltaTime() * 2.2f;
+	m_backColor.w = m_color.w;
 
 	m_damageFont.SetColor(m_color);
+
+	m_damageBackRender.SetMulColor(m_backColor);
+	m_damageBackRender.Update();
 }
 
 void DamageFont::Render(RenderContext& rc)
 {
+	m_damageBackRender.Draw(rc);
+
 	m_damageFont.Draw(rc);
 }
