@@ -1,10 +1,10 @@
 #pragma once
-#include "AIActor.h"
+#include "MobMonster.h"
 
 class Lich;
 class ICactusState;
 
-class Cactus :public AIActor
+class Cactus :public MobMonster
 {
 public:
 	Cactus();
@@ -15,15 +15,15 @@ public:
 	void Render(RenderContext& rc);
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
-	void Move();
-
 	void Attack();
 
+	/// <summary>
+	/// 処理を止めるか
+	/// </summary>
+	/// <returns></returns>
+	bool IsStopProcessing();
+
 	void CreateCollision();
-
-	Vector3 SetDirection();
-
-	bool IsBumpedForest();
 
 	void SetLich(Lich* lich)
 	{
@@ -87,6 +87,7 @@ public:
 		enAnimClip_Damage,
 		enAnimClip_Die,
 		enAnimClip_Victory,
+		enAnimClip_Appear,
 		enAnimClip_Num,				// 7 :アニメーションクリップの数
 	};
 
@@ -122,6 +123,10 @@ public:
 	/// 勝利ステート遷移処理を実行
 	/// </summary>
 	void OnProcessVictoryStateTransition();
+	/// <summary>
+	/// 召喚された時のステート遷移処理を実行
+	/// </summary>
+	void OnProcessAppearStateTransition();
 
 	//アニメーションステート
 	enum EnAnimationState {
@@ -134,7 +139,8 @@ public:
 		enAnimationState_PlantToBattle,
 		enAnimationState_Damage,
 		enAnimationState_Die,
-		enAnimationState_Victory
+		enAnimationState_Victory,
+		enAnimationState_Appear
 	};
 
 	/// <summary>
@@ -179,21 +185,10 @@ private:
 
 	CharacterController m_charaCon;
 
-	float m_angleChangeTime = 6.0f;		//ベクトルを計算するタイマー
-
-	Vector3 m_direction = Vector3::Zero;
-
-	const float m_distanceToPlayer = 300.0f;
-	const float m_attackRange = 60.0f;
-	const float m_stayDistance = 50.0f;
+	//Vector3 m_direction = Vector3::Zero;
 
 	int m_attackBoonId = -1;					//攻撃で使うボーンID
 
 	bool m_createAttackCollisionFlag = false;
-
-	const float m_attackIntervalTime = 2.0f;	//攻撃した後のインターバル
-
-
-
 };
 
