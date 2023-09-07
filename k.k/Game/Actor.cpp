@@ -80,14 +80,18 @@ Vector3 Actor::calcVelocity(Status status)
 		right *= stickL.x * (status.defaultSpeed + status.dashSpeed);
 		forward *= stickL.y * (status.defaultSpeed + status.dashSpeed);
 	}
+
 	moveSpeed += right + forward;
 	moveSpeed.y = 0.0f;
 	//前方向の取得
-	//x,yどちらかの入力があったら
-	if (fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f)
+	if (isRotationEntable() != false)
 	{
-		m_forward = moveSpeed;
-		m_forward.Normalize();
+		//x,yどちらかの入力があったら
+		if (fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f)
+		{
+			m_forward = moveSpeed;
+			m_forward.Normalize();
+		}
 	}
 
 	//値をセーブしておく
@@ -96,13 +100,12 @@ Vector3 Actor::calcVelocity(Status status)
 	//特定のアニメーションが再生中なら移動なし
 	if (isAnimationEntable() != true)
 	{
-		return moveSpeed = Vector3::Zero;
+		return moveSpeed = g_vec3Zero;
 	}
 	else
 	{
 		return moveSpeed;
 	}
-	
 	
 }
 
