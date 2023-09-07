@@ -2,6 +2,7 @@
 #include "Level3DRender.h"
 
 class Player;
+//class Level3DRender;
 
 class BossStage1:public IGameObject
 {

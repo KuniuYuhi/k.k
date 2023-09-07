@@ -153,13 +153,13 @@ void GameUI::UpdateMainStatus()
 	//HPフォント
 	int HpFont = m_player->GetNowActorStatus().hp;
 	wchar_t HP[255];
-	swprintf_s(HP, 255, L"HP            %3d", HpFont);
+	swprintf_s(HP, 255, L"H P            %3d", HpFont);
 	m_playerUI.m_hpFont.SetText(HP);
 
 	//HPフォント
 	int MpFont = m_player->GetNowActorStatus().mp;
 	wchar_t MP[255];
-	swprintf_s(MP, 255, L"MP           %3d", MpFont);
+	swprintf_s(MP, 255, L"M P           %3d", MpFont);
 	m_playerUI.m_mpFont.SetText(MP);
 
 	//更新
