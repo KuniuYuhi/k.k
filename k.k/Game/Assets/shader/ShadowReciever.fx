@@ -146,7 +146,7 @@ SPSIn VSMain(SVSIn vsIn)
     psIn.pos = mul(mProj, psIn.pos);
 
     psIn.uv = vsIn.uv;
-
+    //法線
     psIn.normal = mul(mWorld, vsIn.normal);
     psIn.normal=normalize(psIn.normal);
 
@@ -155,6 +155,9 @@ SPSIn VSMain(SVSIn vsIn)
 
     //ライトビュースクリーン空間の座標を計算する
     psIn.posInLVP = mul(mLVP, worldPos);
+
+    //カメラ空間の法線を求める
+	//psIn.normalInView=mul(mView,psIn.normal);
 
     return psIn;
 }
@@ -288,7 +291,19 @@ float3 CalcLigFromDirectionLight(SPSIn psIn,float3 normal)
     float3 specDirection = CalcPhongSpecular(
             directionLight.direction, directionLight.color, psIn.worldPos, normal,psIn.uv);
     
-    return diffDirection + specDirection;
+    //サーフェイスの法線と光の入射方向に依存するリムの強さを求める
+	//float power1=1.0f-max(0.0f,dot(directionLight.direction,normal));
+	//サーフェイスの法線と視線の方向に依存するリムの強さを求める
+	//float power2=1.0f-max(0.0f,psIn.normalInView.z*-1.0f);
+	//最終的なリムの強さを求める
+	//float limPower=power1*power2;
+	//強さを指数関数的にする
+	//limPower=pow(limPower,1.2f);
+	//リムライトのカラーを計算する
+	//float3 limColor=limPower*directionLight.color;
+
+    //最終的な光
+    return diffDirection + specDirection;//+limColor;
 }
 
 /////////////////////////////////////////////////////////////////////////
