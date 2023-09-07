@@ -78,6 +78,11 @@ void AIActor::Attack()
 {
 }
 
+bool AIActor::IsStopProcessing()
+{
+	return false;
+}
+
 void AIActor::SetTargetPosition()
 {
 	//ターゲット(プレイヤー)の座標を取得
@@ -98,7 +103,7 @@ void AIActor::CreateDamageFont(int damage)
 void AIActor::DamageCollision(CharacterController& characon)
 {
 	//抜け出す処理
-	if (isAnimationEntable() != true)
+	if (IsCollisionDetection() == true)
 	{
 		return;
 	}
@@ -140,6 +145,8 @@ void AIActor::DamageCollision(CharacterController& characon)
 			FireBall* fireball = FindGO<FireBall>("fireball");
 			m_damage = fireball->GetAtk();
 			HitFireBall();
+			//ぶつかったのでファイヤーボールを消すフラグを立てる
+			fireball->SetHitEnemeyFlag(true);
 			return;
 		}
 	}
@@ -153,11 +160,30 @@ void AIActor::DamageCollision(CharacterController& characon)
 		if (collision->IsHit(characon) == true)
 		{
 			FlamePillar* flamepillar = FindGO<FlamePillar>("flamepillar");
+
+			bool damageFlag = flamepillar->GetCanDamageFlag();
 			m_damage = flamepillar->GetAtk();
-			HitFlamePillar();
+			HitFlamePillar(damageFlag);
+			//ダメージフラグが立っていなかったら
+			if (flamepillar->GetCanDamageFlag() != true)
+			{
+				//フラグを立てる(ダメージ受けた)
+				flamepillar->SetCanDamageFlag(true);
+			}
 			return;
 		}
 	}
+}
+
+bool AIActor::IsCollisionDetection()
+{
+	//特定のアニメーションが再生中なら
+	if (isAnimationEntable() != true)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void AIActor::HitNormalAttack()
@@ -183,7 +209,7 @@ void AIActor::HitFireBall()
 	CreateDamageFont(m_damage);
 }
 
-void AIActor::HitFlamePillar()
+void AIActor::HitFlamePillar(bool damageFlag)
 {
 	//ダメージを受ける
 	Damage(m_damage);

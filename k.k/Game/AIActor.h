@@ -50,6 +50,12 @@ public:
 	virtual void Attack();
 
 	/// <summary>
+	/// 処理を止めるか
+	/// </summary>
+	/// <returns></returns>
+	virtual bool IsStopProcessing();
+
+	/// <summary>
 	/// ターゲットの座標をm_targetPsitionに代入する
 	/// </summary>
 	void SetTargetPosition();
@@ -111,8 +117,15 @@ public:
 	/// 被ダメージ用当たり判定
 	/// </summary>
 	virtual void DamageCollision(CharacterController& characon);
+
+	/// <summary>
+	/// 当たり判定の処理をするか
+	/// </summary>
+	virtual bool IsCollisionDetection();
+
 	//通常攻撃に当たった時の処理
 	virtual void HitNormalAttack();
+
 	//ヒーローのスキルに当たった時の処理
 	virtual void HitHeroSkillAttack();
 	/// <summary>
@@ -122,7 +135,7 @@ public:
 	/// <summary>
 	/// ウィザードのフレイムピラーに当たった時の処理。派生クラスで実装
 	/// </summary>
-	virtual void HitFlamePillar();
+	virtual void HitFlamePillar(bool damageFlag = false);
 
 	/// <summary>
 	/// ステータスの取得
@@ -257,6 +270,8 @@ protected:
 	bool						m_elaseListFlag = false;				//自身をリストから削除したかのフラグ
 
 	float						m_rotTimer = 0.0f;						//回転の線形補間で使うタイマー
+
+
 
 };
 
