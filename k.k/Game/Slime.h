@@ -15,17 +15,13 @@ public:
 	void Render(RenderContext& rc);
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
-	//void Move();
-
 	void Attack();
 
-	//Vector3 SetDirection(int range);
-
 	/// <summary>
-	/// 壁(森)にぶつかったか
+	/// 処理を止めるか
 	/// </summary>
 	/// <returns></returns>
-	//bool IsBumpedForest();
+	bool IsStopProcessing();
 
 	/// <summary>
 	/// 当たり判定生成
@@ -90,6 +86,7 @@ public:
 		enAnimClip_Damage,
 		enAnimClip_Die,
 		enAnimClip_Victory,
+		enAnimClip_Appear,
 		enAnimClip_Num,				// 7 :アニメーションクリップの数
 	};
 
@@ -113,6 +110,10 @@ public:
 	/// 勝利ステート遷移処理を実行
 	/// </summary>
 	void OnProcessVictoryStateTransition();
+	/// <summary>
+	/// 召喚された時のステート遷移処理を実行
+	/// </summary>
+	void OnProcessAppearStateTransition();
 
 	//アニメーションステート
 	enum EnAnimationState {
@@ -122,7 +123,8 @@ public:
 		enAnimationState_Attack_1,
 		enAnimationState_Damage,
 		enAnimationState_Die,
-		enAnimationState_Victory
+		enAnimationState_Victory,
+		enAnimationState_Appear
 	};
 
 	/// <summary>
@@ -161,7 +163,7 @@ private:
 	ModelRender m_modelRender;
 	CharacterController m_charaCon;
 
-	Vector3 m_direction= Vector3::Zero;
+	//Vector3 m_direction= Vector3::Zero;
 
 	int m_attackBoonId = -1;					//攻撃で使うボーンID
 

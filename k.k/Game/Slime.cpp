@@ -7,30 +7,30 @@
 #include "SlimeStateDamage.h"
 #include "SlimeStateDie.h"
 #include "SlimeStateVictory.h"
+#include "SlimeStateAppear.h"
+
 #include "Lich.h"
 
 namespace {
 	const float ANGLE = 45.0f;				//視野角
-	const float ANGLE_CHANGE_TIME = 5.0f;				//向かうベクトルを計算するタイマー
-	const float DISTANCE_TO_PLAYER = 600.0f;
-	const float ATTACK_RANGE = 50.0f;
-	const float STAY_RANGR = 45.0f;
+	const float DISTANCE_TO_PLAYER = 600.0f;			//プレイヤーとの距離
+	const float ATTACK_RANGE = 50.0f;					//攻撃できる距離
+	const float STAY_RANGR = 45.0f;						//停止する距離
 	const float ATTACK_INTAERVALE_TIME = 2.0f;			//攻撃する間隔
 	const float ANGLE_RANGE = 2.0f;						//移動するアングルの範囲
+	const float POS2_LENGTH = 30.0f;
 
 	//ステータス
 	int MAXHP = 150;
 	int MAXMP = 500;
 	int ATK = 10;
-	float SPEED = 120.0f;
+	float SPEED = 110.0f;
 	const char* NAME = "Slime";
 }
 
 Slime::Slime()
 {
 	m_angle = ANGLE;
-
-	m_angleChangeTime = ANGLE_CHANGE_TIME;
 
 	m_distanceToPlayer = DISTANCE_TO_PLAYER;
 	m_attackRange = ATTACK_RANGE;
@@ -40,6 +40,7 @@ Slime::Slime()
 
 	m_angleRange = ANGLE_RANGE;
 
+	m_pos2Length = POS2_LENGTH;
 }
 
 Slime::~Slime()
@@ -67,7 +68,7 @@ bool Slime::Start()
 	InitModel();
 
 	//まず召喚アニメーション。その後行動
-
+	SetNextAnimationState(enAnimationState_Appear);
 
 	//　乱数を初期化。
 	srand((unsigned)time(NULL));
@@ -95,6 +96,8 @@ void Slime::InitModel()
 	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/Slime/Victory.tka");
 	m_animationClip[enAnimClip_Victory].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Appear].Load("Assets/animData/character/Slime/Appear.tka");
+	m_animationClip[enAnimClip_Appear].SetLoopFlag(false);
 
 	m_modelRender.Init(
 		"Assets/modelData/character/Slime/slime.tkm",
@@ -131,22 +134,25 @@ void Slime::Update()
 {
 	if (m_lich != nullptr)
 	{
+		//勝利したら
 		if (m_lich->GetWinFlag() == true)
 		{
 			SetWinFlag(true);
 			//攻撃中でなければ
 			SetNextAnimationState(enAnimationState_Victory);
 		}
+		//タイムアップフラグがtrueなら
 		if (m_lich->GetTimeUpEndFlag() == true)
 		{
+			//敵の勝利
 			SetWinFlag(true);
 			SetNextAnimationState(enAninationState_Idle);
 		}
 	}
 	
-	//勝ったら
-	if (GetWinFlag() == true)
+	if (IsStopProcessing()==true)
 	{
+		//これより下の処理をしない
 		ManageState();
 		PlayAnimation();
 		m_modelRender.Update();
@@ -212,6 +218,23 @@ void Slime::Attack()
 	}
 
 
+}
+
+bool Slime::IsStopProcessing()
+{
+	//勝利したら
+	if (GetWinFlag() == true)
+	{
+		return true;
+	}
+	//召喚された時のアニメーションステートなら	
+	if (m_enAnimationState == enAnimationState_Appear)
+	{
+		return true;
+	}
+
+	//それ以外なら
+	return false;
 }
 
 void Slime::CreateCollision()
@@ -293,6 +316,9 @@ void Slime::SetNextAnimationState(EnAnimationState nextState)
 	case Slime::enAnimationState_Victory:
 		m_state = new SlimeStateVictory(this);
 		break;
+	case Slime::enAnimationState_Appear:
+		m_state = new SlimeStateAppear(this);
+		break;
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
 		std::abort();
@@ -356,6 +382,16 @@ void Slime::OnProcessVictoryStateTransition()
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 
+		//共通の状態遷移処理に移行
+		ProcessCommonStateTransition();
+	}
+}
+
+void Slime::OnProcessAppearStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}
