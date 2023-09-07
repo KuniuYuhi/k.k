@@ -167,26 +167,7 @@ void Wizard::Move()
 		{
 			SetNextAnimationState(enAninationState_Warp);
 		}
-		//ステートクラスの中で処理
-
-		//if (g_pad[0]->IsPress(enButtonA))
-		//{
-		//	//ダッシュした瞬間だけ無敵時間にする
-		//	if (GetInvicibleDashState() == enDashInvicibleState_None)
-		//	{
-		//		SetInvicibleDashState(enDashInvicibleState_On);
-		//		m_invincbledDashTimer = 0.0f;
-		//	}
-		//	m_dashFlag = true;
-		//}
-		//else
-		//{
-		//	SetInvicibleDashState(enDashInvicibleState_None);
-		//	m_dashFlag = false;
-		//}
 	}
-
-	
 
 	m_moveSpeed = m_player->GetMoveSpeed();
 	m_position = m_player->GetPosition();
@@ -392,15 +373,22 @@ bool Wizard::Warp()
 void Wizard::CalcWarp()
 {
 	//前方向の取得
-	Vector3 forward = m_forward;
-	forward *= m_warpDistance;
+	Vector3 direction = m_SaveMoveSpeed;
+	//移動方向の入力がなかったら
+	/*if (fabsf(direction.x) <= 0.001f && fabsf(direction.z) <= 0.001f)
+	{
+		m_rotation.Apply(direction);
+	}*/
+
+	direction.Normalize();
+	direction *= m_warpDistance;
 
 	//敵と被るかの検索
 	//todo 
 	 
 	
 	//新しい座標にする
-	m_player->CalcPosition(forward,1.0f);
+	m_player->CalcPosition(direction,1.0f);
 	m_position = m_player->GetPosition();
 	//更新
 	SetTransFormModel(m_modelRender);
