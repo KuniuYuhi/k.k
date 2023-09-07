@@ -73,7 +73,10 @@ Lich::~Lich()
 		}
 	}
 
-	delete m_lichAction;
+	if (m_lichAction != nullptr)
+	{
+		delete m_lichAction;
+	}
 }
 
 bool Lich::Start()
@@ -170,7 +173,7 @@ void Lich::InitModel()
 void Lich::Update()
 {	
 	//勝敗が決まったら他の処理を実行しないようにする
-	if (IsWinnerDecision()==true)
+	if (IsStopProcessing()==true)
 	{
 		ManageState();
 		PlayAnimation();
@@ -201,7 +204,7 @@ void Lich::Update()
 	m_oldMoveSpeed = m_moveSpeed;
 }
 
-bool Lich::IsWinnerDecision()
+bool Lich::IsStopProcessing()
 {
 	//タイムアップしたら
 	if (m_game->IsTimeUp() == true)
@@ -272,6 +275,7 @@ void Lich::Move()
 	//プレイヤーを見つけたら
 	else if (IsFindPlayer(m_distance) == true)
 	{
+		//範囲内でもちょびちょび動かないようにしたい
 		//一定の距離になったらそれ以上動かない(ターゲットに近づかないようにする)
 		if (IsDistanceToPlayer() == true)
 		{
@@ -445,12 +449,6 @@ void Lich::DecideNextAction()
 		return;
 	}
 
-	//ワープ処理中は処理をしない
-	/*if (GetSpecialActionState() == enSpecialActionState_Warp)
-	{
-		return;
-	}*/
-	
 	//攻撃可能なら
 	if (m_attackFlag == false)
 	{
@@ -656,7 +654,7 @@ void Lich::OnProcessDamageStateTransition()
 void Lich::OnProcessDarkMeteorite_StartStateTransition()
 {
 	//アニメーション中に勝敗が決まったら
-	if (IsWinnerDecision() == true)
+	if (IsStopProcessing() == true)
 	{
 		DeleteGO(m_darkMeteorite);
 		//共通の状態遷移処理に移行
@@ -689,7 +687,7 @@ void Lich::OnProcessDarkMeteorite_StartStateTransition()
 void Lich::OnProcessDarkMeteorite_MainStateTransition()
 {
 	//アニメーション中に勝敗が決まったら
-	if (IsWinnerDecision() == true)
+	if (IsStopProcessing() == true)
 	{
 		DeleteGO(m_darkMeteorite);
 		//共通の状態遷移処理に移行
@@ -867,7 +865,7 @@ void Lich::CreateDarkMeteorite(bool lastMeteoFlag)
 	//大きなメテオを作成
 	m_darkMeteorite = NewGO<DarkMeteorite>(0, "darkmeteorite");
 	Vector3 pos = m_position;
-	pos.y += 370.0f;
+	pos.y += 410.0f;
 	m_darkMeteorite->SetPosition(pos);
 	m_darkMeteorite->SetRotation(m_rotation);
 	m_darkMeteorite->SetmLastBigMeteoShotFlag(lastMeteoFlag);
@@ -883,14 +881,12 @@ void Lich::DeleteDarkMeteo()
 	}
 }
 
-void Lich::DamageCollision(CharacterController& characon)
+bool Lich::IsCollisionDetection()
 {
-	//抜け出す処理
-	//死んだら処理をしない todo
 	//無敵時間の間は処理をしない
 	if (GetInvincibleFlag() == true)
 	{
-		return;
+		return true;
 	}
 	////被ダメージ時、デス時は処理をしない
 	//if (isAnimationEntable() != true)
@@ -903,78 +899,40 @@ void Lich::DamageCollision(CharacterController& characon)
 	//	return;
 	//}
 
-	//通常攻撃の当たり判定
-	const auto& Attack_1Collisions = g_collisionObjectManager->FindCollisionObjects("Attack");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : Attack_1Collisions)
-	{
-		//自身のキャラコンと衝突したら
-		if (collision->IsHit(characon) == true)
-		{
-			//１コンボの間に1回だけ判定
+	return false;
+}
+
+void Lich::HitNormalAttack()
+{
+	//１コンボの間に1回だけ判定
 			//ダメージを受けた時のコンボステートと現在のコンボステートが違うなら
-			if (m_player->IsComboStateSame()==true)
-			{
-				Damage(m_player->GetAtk());
-				CreateDamageFont(m_player->GetAtk());
-				//ダメージを受けた時のコンボステートに現在のコンボステートを代入する
-				m_player->SetDamagedComboState(m_player->GetNowComboState());
-			}
-		}
-	}
-	
-	//ヒーローのスキルの当たり判定
-	const auto& SkillCollisions = g_collisionObjectManager->FindCollisionObjects("SkillAttack");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : SkillCollisions)
+	if (m_player->IsComboStateSame() == true)
 	{
-		//自身のキャラコンと衝突したら
-		if (collision->IsHit(characon) == true)
-		{
-			//一定間隔でダメージを受ける
-			if (m_damageFlag == false)
-			{
-				m_damageFlag = true;
-				Damage(m_player->GetSkillAtk());
-				CreateDamageFont(m_player->GetSkillAtk());
-			}
-		}
+		Damage(m_player->GetAtk());
+		CreateDamageFont(m_player->GetAtk());
+		//ダメージを受けた時のコンボステートに現在のコンボステートを代入する
+		m_player->SetDamagedComboState(m_player->GetNowComboState());
 	}
+}
 
-	//ウィザードのファイヤーボールの当たり判定
-	const auto& FireBallCollisions = g_collisionObjectManager->FindCollisionObjects("fireball");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : FireBallCollisions)
+void Lich::HitHeroSkillAttack()
+{
+	//一定間隔でダメージを受ける
+	if (m_damageFlag == false)
 	{
-		//自身のキャラコンと衝突したら
-		if (collision->IsHit(characon) == true)
-		{
-			auto fireball = FindGO<FireBall>(collision->GetName());
-			Damage(fireball->GetAtk());
-			CreateDamageFont(fireball->GetAtk());
-			//ぶつかったのでファイヤーボールを消すフラグを立てる
-			fireball->SetHitEnemeyFlag(true);
-		}
+		m_damageFlag = true;
+		Damage(m_player->GetSkillAtk());
+		CreateDamageFont(m_player->GetSkillAtk());
 	}
+}
 
-	//ウィザードのフレイムピラーの当たり判定
-	const auto& FlamePillarCollisions = g_collisionObjectManager->FindCollisionObjects("flamepillar");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : FlamePillarCollisions)
+void Lich::HitFlamePillar(bool damageFlag)
+{
+	if (damageFlag == false)
 	{
-		//自身のキャラコンと衝突したら
-		if (collision->IsHit(characon) == true)
-		{
-			//一定間隔でダメージを受ける
-			if (m_damageFlag == false)
-			{
-				auto flamepillar = FindGO<FlamePillar>(collision->GetName());
-
-				m_damageFlag = true;
-				Damage(flamepillar->GetAtk());
-				CreateDamageFont(flamepillar->GetAtk());
-			}
-		}
+		//ダメージを受ける
+		Damage(m_damage);
+		CreateDamageFont(m_damage);
 	}
 }
 

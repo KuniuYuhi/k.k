@@ -57,9 +57,24 @@ public:
 	void Damage(int attack);
 
 	/// <summary>
-	/// 被ダメージ用当たり判定
+	/// 当たり判定の処理をするか
 	/// </summary>
-	void DamageCollision(CharacterController& characon)override;
+	bool IsCollisionDetection();
+
+	/// <summary>
+	/// 通常攻撃に当たった時の処理
+	/// </summary>
+	void HitNormalAttack();
+	
+	/// <summary>
+	/// ヒーローのスキルに当たった時の処理
+	/// </summary>
+	void HitHeroSkillAttack();
+
+	/// <summary>
+	/// ウィザードのフレイムピラーに当たった時の処理。派生クラスで実装
+	/// </summary>
+	void HitFlamePillar(bool damageFlag = false);
 
 	/// <summary>
 	/// ダークウォールの生成
@@ -405,10 +420,10 @@ public:
 	}
 
 	/// <summary>
-	/// 勝敗が決定したか
+	/// 処理を止めるか
 	/// </summary>
 	/// <returns></returns>
-	bool IsWinnerDecision();
+	bool IsStopProcessing();
 
 	/// <summary>
 	/// タイムアップで終わったかのフラグを取得
