@@ -228,6 +228,7 @@
     <ClCompile Include="BattleStart.cpp" />
     <ClCompile Include="BossStage1.cpp" />
     <ClCompile Include="Cactus.cpp" />
+    <ClCompile Include="CactusStateAppear.cpp" />
     <ClCompile Include="CactusStateAttack_1.cpp" />
     <ClCompile Include="CactusStateAttack_2.cpp" />
     <ClCompile Include="CactusStateDamage.cpp" />
@@ -277,6 +278,7 @@
     <ClCompile Include="LichStateWalk.cpp" />
     <ClCompile Include="LichStateWarp.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MushroomStateAppear.cpp" />
     <ClCompile Include="Meteo.cpp" />
     <ClCompile Include="MobMonster.cpp" />
     <ClCompile Include="Mushroom.cpp" />
@@ -290,6 +292,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="Slime.cpp" />
+    <ClCompile Include="SlimeStateAppear.cpp" />
     <ClCompile Include="SlimeStateAttack.cpp" />
     <ClCompile Include="SlimeStateDamage.cpp" />
     <ClCompile Include="SlimeStateDie.cpp" />
@@ -306,6 +309,7 @@
     <ClCompile Include="system\system.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="TurtleShell.cpp" />
+    <ClCompile Include="TurtleShellStateAppear.cpp" />
     <ClCompile Include="TurtleShellStateAttack_1.cpp" />
     <ClCompile Include="TurtleShellStateAttack_2.cpp" />
     <ClCompile Include="TurtleShellStateDamage.cpp" />
@@ -337,6 +341,7 @@
     <ClInclude Include="BattleStart.h" />
     <ClInclude Include="BossStage1.h" />
     <ClInclude Include="Cactus.h" />
+    <ClInclude Include="CactusStateAppear.h" />
     <ClInclude Include="CactusStateAttack_1.h" />
     <ClInclude Include="CactusStateAttack_2.h" />
     <ClInclude Include="CactusStateDamage.h" />
@@ -392,6 +397,7 @@
     <ClInclude Include="LichStateVictory.h" />
     <ClInclude Include="LichStateWalk.h" />
     <ClInclude Include="LichStateWarp.h" />
+    <ClInclude Include="MushroomStateAppear.h" />
     <ClInclude Include="Meteo.h" />
     <ClInclude Include="MobMonster.h" />
     <ClInclude Include="Mushroom.h" />
@@ -405,6 +411,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="Slime.h" />
+    <ClInclude Include="SlimeStateAppear.h" />
     <ClInclude Include="SlimeStateAttack.h" />
     <ClInclude Include="SlimeStateDamage.h" />
     <ClInclude Include="SlimeStateDie.h" />
@@ -417,6 +424,7 @@
     <ClInclude Include="system\system.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="TurtleShell.h" />
+    <ClInclude Include="TurtleShellStateAppear.h" />
     <ClInclude Include="TurtleShellStateAttack_1.h" />
     <ClInclude Include="TurtleShellStateAttack_2.h" />
     <ClInclude Include="TurtleShellStateDamage.h" />

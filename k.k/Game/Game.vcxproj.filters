@@ -305,6 +305,16 @@
     <ClCompile Include="MobMonster.cpp">
       <Filter>MobMonster</Filter>
     </ClCompile>
+    <ClCompile Include="MushroomStateAppear.cpp">
+      <Filter>MobMonster\Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStateAppear.cpp">
+      <Filter>MobMonster\Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateAppear.cpp">
+      <Filter>MobMonster\Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateAppear.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -602,5 +612,15 @@
     <ClInclude Include="MobMonster.h">
       <Filter>MobMonster</Filter>
     </ClInclude>
+    <ClInclude Include="MushroomStateAppear.h">
+      <Filter>MobMonster\Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStateAppear.h">
+      <Filter>MobMonster\Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateAppear.h">
+      <Filter>MobMonster\Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateAppear.h" />
   </ItemGroup>
 </Project>
