@@ -88,7 +88,7 @@ void MobMonster::Move(CharacterController& charaCon)
 	}
 
 	//•Ç‚É‚Ô‚Â‚©‚Á‚½‚ç”½“]
-	if (IsBumpedForest() == true)
+	if (IsBumpedForest(m_pos2Length) == true)
 	{
 		m_direction *= -1.0f;
 		m_moveSpeed = m_direction * m_status.defaultSpeed;
@@ -123,13 +123,13 @@ Vector3 MobMonster::SetDirection(int range)
 	return randomPos;
 }
 
-bool MobMonster::IsBumpedForest()
+bool MobMonster::IsBumpedForest(float pos2Length)
 {
 	Vector3 pos1 = m_position;
 	Vector3 pos2 = m_position;
 	pos1.Normalize();
 	//pos2.Add(pos1 * 30.0f);
-	pos2 += pos1 * 30.0f;
+	pos2 += pos1 * pos2Length;
 	SphereCollider m_sphereCollider;
 	m_sphereCollider.Create(1.0f);
 

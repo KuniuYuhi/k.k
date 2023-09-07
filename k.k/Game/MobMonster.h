@@ -22,7 +22,7 @@ public:
 	/// 壁(森)にぶつかったか
 	/// </summary>
 	/// <returns></returns>
-	virtual bool IsBumpedForest();
+	virtual bool IsBumpedForest(float pos2Length);
 
 	/// <summary>
 	/// 特定のアニメーションが再生中か
@@ -85,5 +85,7 @@ protected:
 	float				m_attackIntervalTime = 0.0f;				//攻撃した後のインターバル
 
 	int				m_angleRange = 2;					//移動するアングルの範囲
+
+	float				m_pos2Length = 0.0;				//壁と判
 };
 
