@@ -10,7 +10,7 @@ namespace {
 
 	const float BIGMETEO_SPEED = 200.0f;
 
-	const float Y_DOWN = -150.0f;
+	const float Y_DOWN = -200.0f;
 
 	const float GROUND_CHECK_Y_UP = 20.0f;
 	const float GROUND_CHECK_Y_DOWN = -20.0f;
