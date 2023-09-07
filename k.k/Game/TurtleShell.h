@@ -1,10 +1,10 @@
 #pragma once
-#include "AIActor.h"
+#include "MobMonster.h"
 
 class Lich;
 class ITurtleShellState;
 
-class TurtleShell:public AIActor
+class TurtleShell:public MobMonster
 {
 public:
 	TurtleShell();
@@ -14,10 +14,6 @@ public:
 	void Update();
 	void Render(RenderContext& rc);
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
-	/// <summary>
-	/// 移動処理
-	/// </summary>
-	void Move();
 
 	void Attack();
 
@@ -28,11 +24,13 @@ public:
 	/// </summary>
 	void DecideNextAction();
 
-	Vector3 SetDirection();
-
-	bool IsBumpedForest();
-
 	void CreateCollision();
+
+	/// <summary>
+	/// 処理を止めるか
+	/// </summary>
+	/// <returns></returns>
+	bool IsStopProcessing();
 
 	void SetLich(Lich* lich)
 	{
@@ -106,6 +104,7 @@ public:
 		enAnimClip_Damage,
 		enAnimClip_Die,
 		enAnimClip_Victory,
+		enAnimClip_Appear,
 		enAnimClip_Num,				// 7 :アニメーションクリップの数
 	};
 
@@ -141,6 +140,10 @@ public:
 	/// 勝利ステート遷移処理を実行
 	/// </summary>
 	void OnProcessVictoryStateTransition();
+	/// <summary>
+	/// 召喚された時のステート遷移処理を実行
+	/// </summary>
+	void OnProcessAppearStateTransition();
 
 	//アニメーションステート
 	enum EnAnimationState {
@@ -153,7 +156,8 @@ public:
 		enAnimationState_DifenceDamage,
 		enAnimationState_Damage,
 		enAnimationState_Die,
-		enAnimationState_Victory
+		enAnimationState_Victory,
+		enAnimationState_Appear
 	};
 
 	/// <summary>
@@ -195,19 +199,19 @@ private:
 
 	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
 
-	float m_angleChangeTime = 0.0f;		//ベクトルを計算するタイマー。生成時に決める
+	//float m_angleChangeTime = 0.0f;		//ベクトルを計算するタイマー。生成時に決める
 
 	ModelRender m_modelRender;
 
 	CharacterController m_charaCon;
 
-	Vector3 m_direction = Vector3::Zero;
+	//Vector3 m_direction = Vector3::Zero;
 
-	const float m_attackIntervalTime = 2.0f;	//攻撃した後のインターバル
+	//const float m_attackIntervalTime = 2.0f;	//攻撃した後のインターバル
 
-	const float m_distanceToPlayer = 400.0f;
-	const float m_attackRange = 60.0f;
-	const float m_stayDistance = 50.0f;
+	//const float m_distanceToPlayer = 400.0f;
+	//const float m_attackRange = 60.0f;
+	//const float m_stayDistance = 50.0f;
 
 	int m_attackBoonId = -1;					//攻撃で使うボーンID
 
