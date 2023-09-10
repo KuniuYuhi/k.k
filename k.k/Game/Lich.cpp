@@ -139,7 +139,7 @@ void Lich::InitModel()
 	m_animationClip[enAnimClip_Angry].SetLoopFlag(false);
 
 
-	m_modelRender.Init("Assets/modelData/character/Lich/Lich.tkm",
+	m_modelRender.Init("Assets/modelData/character/Lich/Lich_real.tkm",
 		m_animationClip,
 		enAnimClip_Num,
 		enModelUpAxisZ

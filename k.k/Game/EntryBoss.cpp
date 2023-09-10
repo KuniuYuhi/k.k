@@ -40,13 +40,13 @@ EntryBoss::~EntryBoss()
 bool EntryBoss::Start()
 {
 
-	m_animationClip[enAnimClip_Idle].Load("Assets/animData/character/Lich/Idle.tka");
+	m_animationClip[enAnimClip_Idle].Load("Assets/animData/character/Lich/deleteAtk2.tka");
 	m_animationClip[enAnimClip_Idle].SetLoopFlag(true);
-	m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/Lich/Victory.tka");
+	m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/Lich/deleteAtk.tka");
 	m_animationClip[enAnimClip_Victory].SetLoopFlag(true);
 
 	m_model.Init(
-		"Assets/modelData/character/Lich/Lich.tkm",
+		"Assets/modelData/character/Lich/delete.tkm",
 		m_animationClip,
 		enAnimClip_Num,
 		enModelUpAxisZ
