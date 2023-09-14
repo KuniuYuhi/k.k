@@ -35,7 +35,19 @@ public:
 	/// </summary>
 	void SummonMonster(Vector3 summonPosition);
 
+	/// <summary>
+	/// モンスターを召喚するかのフラグの設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetSummonStartFlag(bool flag)
+	{
+		m_isSummonStartFlag = flag;
+	}
 
+	/// <summary>
+	/// リストの座標からエフェクトを生成する
+	/// </summary>
+	void SetCircleEffect();
 
 	void SetLich(Lich* lich)
 	{
@@ -72,10 +84,12 @@ private:
 
 	int m_divMonster = 4;
 
-	int m_summonTurtleShellCount = 2;
+	int m_summonTurtleShellCount = 2;			//とげ甲羅の召喚される上限の数
 
 	std::vector<Vector3> m_summonPositions;
 
 	bool m_firstSummonFlag = false;
+
+	bool m_isSummonStartFlag = false;				//モンスターを召喚するかのフラグ
 };
 
