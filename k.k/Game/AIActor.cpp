@@ -91,7 +91,7 @@ void AIActor::SetTargetPosition()
 
 void AIActor::CreateDamageFont(int damage)
 {
-	//受けるダメージを生成する
+	//受けるダメージを表示するオブジェクトを生成する
 	DamageFont* damagefont = NewGO<DamageFont>(0, "damagefont");
 	damagefont->Setting(
 		DamageFont::enDamageActor_Monster, 
@@ -146,7 +146,7 @@ void AIActor::DamageCollision(CharacterController& characon)
 			m_damage = fireball->GetAtk();
 			HitFireBall();
 			//ぶつかったのでファイヤーボールを消すフラグを立てる
-			fireball->SetHitEnemeyFlag(true);
+			fireball->SetHitFlag(true);
 			return;
 		}
 	}
