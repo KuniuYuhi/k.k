@@ -13,9 +13,17 @@ public:
 
 	void CalcDeleteTime();
 
+	/// <summary>
+	/// 引数の座標との距離によってダメージを変える
+	/// </summary>
+	int CalcDamageToDistance(const Vector3 targetPosition);
+
 	void Move();
 
 	void CreateExplosionCollision();
+
+
+	bool IsGroundCheck(const float downValue);
 
 	/// <summary>
 	/// プレイヤーがメテオに接触したら強制的に爆発させる
@@ -60,6 +68,8 @@ public:
 private:
 
 	ModelRender m_model;
+	EffectEmitter* m_meteoEffect;
+	EffectEmitter* m_ExplosionEffect;
 
 	CollisionObject* m_collision;
 	CollisionObject* m_explosionCollision;
@@ -92,6 +102,6 @@ private:
 	const int m_attack = 60;
 	const int m_explosionAttack = 40;
 
-
+	bool m_explosionEffectFlag = false;
 };
 
