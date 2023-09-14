@@ -88,6 +88,11 @@ public:
 		return m_bigMeteoAttack;
 	}
 
+	void SetChaseFlag(bool flag)
+	{
+		m_chaseFlag = flag;
+	}
+
 private:
 
 	enum EnShotState
@@ -101,6 +106,8 @@ private:
 
 	Player* m_player = nullptr;
 	Lich* m_lich = nullptr;
+	EffectEmitter* m_darkMeteoriteEffect;
+	EffectEmitter* m_windEffect;
 
 	std::vector<Meteo*> m_meteos;		//生成したメテオを格納するリスト
 
@@ -114,8 +121,8 @@ private:
 	Vector3 m_scale = g_vec3One;
 	Vector3 m_moveSpeed = g_vec3Zero;
 
-	RigidBody m_rigidBody;		//剛体。
-	BoxCollider	m_boxCollider;
+	//RigidBody m_rigidBody;		//剛体。
+	//BoxCollider	m_boxCollider;
 
 	const Vector3 m_maxScale = { 15.0f,15.0f,15.0f };
 
@@ -133,7 +140,7 @@ private:
 	float m_createTimer = 0.0f;
 
 	//メテオを生成する数
-	const int m_createMeteoCount = 6;
+	const int m_createMeteoCount = 5;
 	int m_meteoCounter = 0;
 
 	bool m_lastBigMeteoShotFlag = false;

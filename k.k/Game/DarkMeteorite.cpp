@@ -3,6 +3,7 @@
 #include "Meteo.h"
 #include "Player.h"
 #include "Lich.h"
+#include "InitEffect.h"
 
 namespace {
 	const int MAX_LENGTH = 50;
@@ -15,17 +16,28 @@ namespace {
 	const float GROUND_CHECK_Y_UP = 20.0f;
 	const float GROUND_CHECK_Y_DOWN = -20.0f;
 
-	const float BIGMETEO_GROUND_CHECK_Y_UP = 90.0f;
-	const float BIGMETEO_GROUND_CHECK_Y_DOWN = 120.0f;
+	const float BIGMETEO_GROUND_CHECK_Y_UP = -100.0f;
+	const float BIGMETEO_GROUND_CHECK_Y_DOWN = -130.0f;
 }
 
 DarkMeteorite::DarkMeteorite()
 {
+
+	
 }
 
 DarkMeteorite::~DarkMeteorite()
 {
 	DeleteGO(m_collision);
+
+	if (m_darkMeteoriteEffect != nullptr)
+	{
+		m_darkMeteoriteEffect->Stop();
+	}
+	if (m_windEffect != nullptr)
+	{
+		m_windEffect->Stop();
+	}
 
 	if (m_meteos.size() != 0)
 	{
@@ -85,13 +97,21 @@ struct IsWallResult :public btCollisionWorld::ConvexResultCallback
 
 bool DarkMeteorite::Start()
 {
-	m_model.Init("Assets/modelData/character/Lich/Effect/DarkBall.tkm", nullptr, 0, enModelUpAxisZ, false, false, false);
-
+	m_model.Init("Assets/modelData/character/Lich/Effect/Meteo.tkm", nullptr, 0, enModelUpAxisZ, false, false, false);
 
 	m_model.SetTransform(m_position, m_rotation, g_vec3One);
 	m_model.Update();
 
 	m_player = FindGO<Player>("player");
+
+	//ビッグメテオの当たり判定生成
+	CreateCollision();
+
+	m_darkMeteoriteEffect = NewGO<EffectEmitter>(0);
+	m_darkMeteoriteEffect->Init(InitEffect::enEffect_DarkMeteorite);
+	m_darkMeteoriteEffect->Play();
+	m_darkMeteoriteEffect->SetPosition(m_position);
+	
 
 	return true;
 }
@@ -100,9 +120,6 @@ void DarkMeteorite::Update()
 {
 
 	ShotManageState();
-
-	
-
 
 	m_model.Update();
 }
@@ -117,6 +134,10 @@ void DarkMeteorite::SizeUp()
 
 	m_scale *= 1.0f + g_gameTime->GetFrameDeltaTime() * 1.5f;
 	m_model.SetScale(m_scale);
+	Vector3 effectScale = m_scale * 1.8f;
+	m_darkMeteoriteEffect->SetScale(effectScale);
+	m_darkMeteoriteEffect->Update();
+
 	//一定のサイズになったら処理をしない
 	if (m_maxScale.x <= m_scale.x)
 	{
@@ -172,8 +193,7 @@ void DarkMeteorite::Shot()
 			m_moveSpeed *= BIGMETEO_SPEED;
 			//ステートを変える
 			m_enShotState = enShotState_BigMeteo;
-			//ビッグメテオの当たり判定生成
-			CreateCollision();
+			
 		}
 		else
 		{
@@ -182,9 +202,6 @@ void DarkMeteorite::Shot()
 
 		}
 	}
-
-
-	
 }
 
 Vector3 DarkMeteorite::SetMeteoTargetPosition()
@@ -209,6 +226,7 @@ Vector3 DarkMeteorite::SetMeteoTargetPosition()
 
 void DarkMeteorite::CreateCollision()
 {
+	//本体の当たり判定の生成
 	m_collision = NewGO<CollisionObject>(0, "bigmeteo");
 	m_collision->CreateSphere(
 		m_position,
@@ -222,6 +240,7 @@ void DarkMeteorite::CreateCollision()
 
 void DarkMeteorite::CreateMeteo(Vector3 targetposition)
 {
+	//メテオの生成とリストに格納
 	Vector3 createPos = m_position;
 	createPos.y += 70.0f;
 	Meteo* meteo = NewGO<Meteo>(0, "meteo");
@@ -345,6 +364,9 @@ void DarkMeteorite::move()
 	
 	//正規化
 	m_moveSpeed.Normalize();
+	//回転
+	m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
+
 	m_moveSpeed *= BIGMETEO_SPEED;
 
 	//地面につくまでの処理
@@ -362,6 +384,13 @@ void DarkMeteorite::move()
 			//全ての玉を撃ち終わった
 			m_shotEndFlag = true;
 			m_moveSpeed.y = 0.0f;
+
+			m_windEffect = NewGO<EffectEmitter>(0);
+			m_windEffect->Init(InitEffect::enEffect_DarkMeteorite_Wind);
+			m_windEffect->Play();
+			m_windEffect->SetPosition(m_position);
+			m_windEffect->SetScale({ 30.0f,30.0f,30.0f });
+			m_windEffect->Update();
 		}
 	}
 	//地面についてからの処理
@@ -383,21 +412,23 @@ void DarkMeteorite::move()
 		
 	}
 	
-	
 	m_position += m_moveSpeed * g_gameTime->GetFrameDeltaTime()*1.5f;
 
-	//一度プレイヤーにぶつかるまでは追いかける
-	if (m_chaseFlag == true)
-	{
-		Vector3 length = m_targetPosition - m_position;
-		if (length.Length() < 100.0f)
-		{
-			m_chaseFlag = false;
-		}
-	}
-	
 	m_model.SetPosition(m_position);
-
+	
 	m_collision->SetPosition(m_position);
 	m_collision->Update();
+
+	m_darkMeteoriteEffect->SetPosition(m_position);
+	m_darkMeteoriteEffect->Update();
+
+	if (m_windEffect != nullptr)
+	{
+		Vector3 pos = m_position;
+		pos.y = 0.0f;
+		m_windEffect->SetPosition(pos);
+		m_windEffect->SetRotation(m_rotation);
+		m_windEffect->Update();
+	}
+	
 }
