@@ -76,8 +76,8 @@ int LichAction::NextAction()
 	case enAttack_Summon:
 		//この技は無敵状態で打つ
 		m_lich->SetInvincibleFlag(true);
-		//ワープ
-		//m_lich->Warp(Lich::enSpecialActionState_CenterWarp);
+		//召喚クラスの生成
+		m_lich->CreateSummon();
 		//ステートセット
 		m_lich->SetNextAnimationState(Lich::enAninationState_Summon);
 		//蓄積した値を0にする
