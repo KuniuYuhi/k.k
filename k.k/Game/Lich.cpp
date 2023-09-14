@@ -8,6 +8,7 @@
 #include "LichStateDie.h"
 #include "Game.h"
 #include "DarkWall.h"
+#include "DarkBall.h"
 #include "LichStateDamage.h"
 #include "LichStateDarkMeteorite_Start.h"
 #include "LichStateDarkMeteorite_Main.h"
@@ -834,11 +835,10 @@ void Lich::CreateDarkWall()
 
 void Lich::CreateDarkBall(bool AddBallFlag)
 {
-	FireBall* fireball = NewGO<FireBall>(0, "darkball");
-	fireball->SetLich(this);
-	fireball->SetLichAtk(m_status.atk);
-	fireball->Setting(m_position, m_rotation);
-	
+	DarkBall* darkBall = NewGO<DarkBall>(0, "darkball");
+	darkBall->SetLich(this);
+	darkBall->SetAtk(m_status.atk);
+	darkBall->Setting(m_position, m_rotation);
 	if (AddBallFlag != true)
 	{
 		return;
@@ -854,10 +854,10 @@ void Lich::AddCreateDarkBall(float degY)
 	Quaternion right = m_rotation;
 	right.AddRotationDegY(degY);
 
-	FireBall* fireball1 = NewGO<FireBall>(0, "darkball");
-	fireball1->SetLich(this);
-	fireball1->SetLichAtk(m_status.atk);
-	fireball1->Setting(m_position, right);
+	DarkBall* darkBall = NewGO<DarkBall>(0, "darkball");
+	darkBall->SetLich(this);
+	darkBall->SetAtk(m_status.atk);
+	darkBall->Setting(m_position, right);
 }
 
 void Lich::CreateDarkMeteorite(bool lastMeteoFlag)
@@ -865,7 +865,7 @@ void Lich::CreateDarkMeteorite(bool lastMeteoFlag)
 	//大きなメテオを作成
 	m_darkMeteorite = NewGO<DarkMeteorite>(0, "darkmeteorite");
 	Vector3 pos = m_position;
-	pos.y += 410.0f;
+	pos.y += 840.0f;
 	m_darkMeteorite->SetPosition(pos);
 	m_darkMeteorite->SetRotation(m_rotation);
 	m_darkMeteorite->SetmLastBigMeteoShotFlag(lastMeteoFlag);
@@ -881,6 +881,19 @@ void Lich::DeleteDarkMeteo()
 	}
 }
 
+void Lich::CreateSummon()
+{
+	//モンスターを召喚する
+	m_summon = NewGO<Summon>(0, "summon");
+	m_summon->SetLich(this);
+	//最初の召喚だけ
+	if (m_firstSummonFlag == true)
+	{
+		m_summon->SetFirstSummonFlag(m_firstSummonFlag);
+		m_firstSummonFlag = false;
+	}
+}
+
 bool Lich::IsCollisionDetection()
 {
 	//無敵時間の間は処理をしない
@@ -888,17 +901,7 @@ bool Lich::IsCollisionDetection()
 	{
 		return true;
 	}
-	////被ダメージ時、デス時は処理をしない
-	//if (isAnimationEntable() != true)
-	//{
-	//	return;
-	//}
-	////攻撃中は処理をしない
-	//if (IsAttackEntable() != true)
-	//{
-	//	return;
-	//}
-
+	
 	return false;
 }
 
@@ -966,15 +969,8 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 
 	if (wcscmp(eventName, L"Summon") == 0)
 	{
-		//モンスターを召喚する
-		Summon* summon = NewGO<Summon>(0, "summon");
-		summon->SetLich(this);
-		//最初の召喚だけ
-		if (m_firstSummonFlag == true)
-		{
-			summon->SetFirstSummonFlag(m_firstSummonFlag);
-			m_firstSummonFlag = false;
-		}
+		//モンスターの召喚
+		m_summon->SetSummonStartFlag(true);
 	}
 }
 

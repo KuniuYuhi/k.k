@@ -5,6 +5,7 @@
 class ILichState;
 class LichAction;
 class DarkMeteorite;
+class Summon;
 
 class Lich:public AIActor
 {
@@ -103,6 +104,11 @@ public:
 	/// ダークメテオの削除。(ダークメテオ生成中にプレイヤーがやられるかもしれないから)
 	/// </summary>
 	void DeleteDarkMeteo();
+
+	/// <summary>
+	/// 召喚クラスの生成
+	/// </summary>
+	void CreateSummon();
 
 	/// <summary>
 	/// 次の行動を決定
@@ -462,6 +468,7 @@ private:
 	LichAction* m_lichAction = nullptr;
 	ILichState* m_state = nullptr;
 	DarkMeteorite* m_darkMeteorite = nullptr;
+	Summon* m_summon = nullptr;
 
 	std::vector<AIActor*> m_monsters;
 
