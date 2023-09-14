@@ -13,6 +13,7 @@
 #include "Slime.h"
 
 #include "SkyCube.h"
+#include "InitEffect.h"
 
 namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(1.0f, 1.0f, 1.0f);
@@ -91,6 +92,12 @@ bool Game::Start()
 
 	//		return false;
 	//	});
+
+
+	//エフェクト初期化クラスの生成。
+	InitEffect* initEffect = new InitEffect();
+	initEffect->InitEFK();
+	delete initEffect;
 
 	//フェードクラスのインスタンスを探す
 	m_fade = FindGO<Fade>("fade");
