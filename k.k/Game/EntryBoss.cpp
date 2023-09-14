@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "EntryBoss.h"
 #include "Game.h"
+#include "InitEffect.h"
 
 namespace {
 	const float SCALE_UP = 4.0f;
@@ -35,22 +36,45 @@ EntryBoss::EntryBoss()
 
 EntryBoss::~EntryBoss()
 {
+	//エフェクトの停止
+	if (m_CircleEffect != nullptr)
+	{
+		m_CircleEffect->Stop();
+	}
+	
+	if (m_FogRemovalEffect != nullptr)
+	{
+		m_FogRemovalEffect->Stop();
+	}
+	
 }
 
 bool EntryBoss::Start()
 {
-
-	m_animationClip[enAnimClip_Idle].Load("Assets/animData/character/Lich/deleteAtk2.tka");
+	//m_animationClip[enAnimClip_Idle].Load("Assets/animData/character/Lich/deleteAtk.tka");
+	//m_animationClip[enAnimClip_Idle].SetLoopFlag(true);
+	//m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/Lich/deleteAtk.tka");
+	//m_animationClip[enAnimClip_Victory].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Idle].Load("Assets/animData/character/Lich/Idle.tka");
 	m_animationClip[enAnimClip_Idle].SetLoopFlag(true);
-	m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/Lich/deleteAtk.tka");
-	m_animationClip[enAnimClip_Victory].SetLoopFlag(true);
+	m_animationClip[enAnimClip_FogRemoval].Load("Assets/animData/character/Lich/FogRemoval.tka");
+	m_animationClip[enAnimClip_FogRemoval].SetLoopFlag(false);
 
 	m_model.Init(
-		"Assets/modelData/character/Lich/delete.tkm",
+		"Assets/modelData/character/Lich/Lich_real.tkm",
 		m_animationClip,
 		enAnimClip_Num,
 		enModelUpAxisZ
 	);
+
+	Vector3 pos = m_position;
+	pos.y += 5.0f;
+	m_CircleEffect = NewGO<EffectEmitter>(0);
+	m_CircleEffect->Init(InitEffect::enEffect_Boss_Summon_Circle);
+	m_CircleEffect->Play();
+	m_CircleEffect->SetPosition(pos);
+	m_CircleEffect->SetScale({ 15.0f,15.0f,15.0f });
+	m_CircleEffect->Update();
 
 	m_position.y -= 380.0f;
 	m_scale *= SCALE_UP;
@@ -76,6 +100,11 @@ bool EntryBoss::Start()
 		Vector3(90.0f, 40.0f, 0.0f)
 	);*/
 
+	
+	//アニメーションイベント用の関数を設定する。
+	m_model.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+		});
 
 	InitSprite();
 	InitLerpPosition();
@@ -85,8 +114,10 @@ bool EntryBoss::Start()
 
 void EntryBoss::Update()
 {
+	//登場ムービー処理がおわったら
 	if (m_completeFlag == true)
 	{
+		//しばらく静止してから終わる
 		CompleteTime();
 	}
 	else
@@ -100,24 +131,41 @@ void EntryBoss::Update()
 		}
 
 		//「L」「I」「C」「H」が表示されたら
-		if (m_FireDrawFlag == true)
+		/*if (m_FireDrawFlag == true)
 		{
 			FireMove();
+		}*/
+	}
+
+	if (m_FogRemovalEffect != nullptr)
+	{
+		if (m_FogRemovalEffect->IsPlay() == false)
+		{
+			//やること終わり
+			//しばらくそのままにする
+			m_completeFlag = true;
 		}
 	}
+
+
+	MamageState();
+	Animation();
 	
-	m_model.PlayAnimation(enAnimClip_Idle);
 	m_model.Update();
 }
 
 void EntryBoss::positionUp()
 {
-	
+	if (m_positionUpFlag == true)
+	{
+		return;
+	}
 
 	if (m_position.y >= 0.0f)
 	{
 		m_position.y = 0.0f;
-		
+		SetNextAnimationState(enAnimationState_FogRemoval);
+		m_positionUpFlag = true;
 	}
 	else
 	{
@@ -126,7 +174,7 @@ void EntryBoss::positionUp()
 		{
 			m_gOTextFlag = true;
 		}
-
+		//少しずつ浮き上がる
 		m_position.y += g_gameTime->GetFrameDeltaTime() * 45.0f;
 	}
 
@@ -136,26 +184,15 @@ void EntryBoss::positionUp()
 
 void EntryBoss::InitSprite()
 {
-	
 	m_lichCharInfo[L].m_CharRender.Init("Assets/sprite/InGame/BossAppearance/L.DDS", 243, 290);
 	SettingSpriteRender(m_lichCharInfo[L].m_CharRender, L_START_POS, START_SCALE, g_quatIdentity);
-	
-
 	m_lichCharInfo[I].m_CharRender.Init("Assets/sprite/InGame/BossAppearance/I.DDS", 167, 290);
 	SettingSpriteRender(m_lichCharInfo[I].m_CharRender, I_START_POS, START_SCALE, g_quatIdentity);
-	
-
 	m_lichCharInfo[C].m_CharRender.Init("Assets/sprite/InGame/BossAppearance/C.DDS", 280, 290);
 	SettingSpriteRender(m_lichCharInfo[C].m_CharRender, C_START_POS, START_SCALE, g_quatIdentity);
-
-
 	m_lichCharInfo[H].m_CharRender.Init("Assets/sprite/InGame/BossAppearance/H.DDS", 307, 290);
 	SettingSpriteRender(m_lichCharInfo[H].m_CharRender, H_START_POS, START_SCALE, g_quatIdentity);
 	
-
-
-
-
 	m_bossTextRender.Init("Assets/sprite/InGame/BossAppearance/Boss.DDS", 284, 84);
 	SettingSpriteRender(m_bossTextRender, BOSS_TEXT_POS, g_vec3One, g_quatIdentity);
 
@@ -164,7 +201,6 @@ void EntryBoss::InitSprite()
 
 	m_PressAButton.Init("Assets/sprite/InGame/BossAppearance/SkipText.DDS", 720, 76);
 	SettingSpriteRender(m_PressAButton, PRESS_A_POS, PRESS_A_SCALE, g_quatIdentity);
-	
 }
 
 void EntryBoss::InitLerpPosition()
@@ -172,21 +208,16 @@ void EntryBoss::InitLerpPosition()
 	//「L」の始点と終点
 	m_lichCharInfo[L].m_startPosition = L_START_POS;
 	m_lichCharInfo[L].m_endPosition = L_END_POS;
-
 	//「I」の始点と終点
 	m_lichCharInfo[I].m_startPosition = I_START_POS;
 	m_lichCharInfo[I].m_endPosition = I_END_POS;
-
 	//「C」の始点と終点
 	m_lichCharInfo[C].m_startPosition = C_START_POS;
 	m_lichCharInfo[C].m_endPosition = C_END_POS;
-
 	//「I」の始点と終点
 	m_lichCharInfo[H].m_startPosition = H_START_POS;
 	m_lichCharInfo[H].m_endPosition = H_END_POS;
-
 }
-
 
 void EntryBoss::SpriteMove()
 {
@@ -196,7 +227,7 @@ void EntryBoss::SpriteMove()
 		return;
 	}
 
-	m_time += g_gameTime->GetFrameDeltaTime() * 3.0f;
+	m_time += g_gameTime->GetFrameDeltaTime() * 3.8f;
 
 	//文字の座標の線形補間
 	Vector3 LerpPos;
@@ -246,6 +277,7 @@ void EntryBoss::FireMove()
 
 void EntryBoss::CompleteTime()
 {
+	//処理がおわったらしばらく停止してから
 	if (m_endTime < m_endTimer)
 	{
 		//登場ムービーが終わったことを伝える
@@ -254,6 +286,63 @@ void EntryBoss::CompleteTime()
 	else
 	{
 		m_endTimer += g_gameTime->GetFrameDeltaTime();
+	}
+}
+
+void EntryBoss::MamageState()
+{
+	switch (m_enAnimationState)
+	{
+	case EntryBoss::enAninationState_Idle:
+		OnProcessCommonStateTransition();
+		break;
+	case EntryBoss::enAnimationState_FogRemoval:
+		OnProcessFogRemovalStateTransition();
+		break;
+	default:
+		break;
+	}
+}
+
+void EntryBoss::Animation()
+{
+	switch (m_enAnimationState)
+	{
+	case EntryBoss::enAninationState_Idle:
+		m_model.PlayAnimation(enAnimClip_Idle, 0.4f);
+		break;
+	case EntryBoss::enAnimationState_FogRemoval:
+		m_model.PlayAnimation(enAnimClip_FogRemoval);
+		break;
+	default:
+		break;
+	}
+}
+
+void EntryBoss::OnProcessCommonStateTransition()
+{
+	SetNextAnimationState(enAninationState_Idle);
+}
+
+void EntryBoss::OnProcessFogRemovalStateTransition()
+{
+	if (m_model.IsPlayingAnimation() == false)
+	{
+		OnProcessCommonStateTransition();
+	}
+}
+
+void EntryBoss::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+	//霧払いエフェクトの再生
+	if (wcscmp(eventName, L"FogRemoval") == 0)
+	{
+		m_FogRemovalEffect = NewGO<EffectEmitter>(0);
+		m_FogRemovalEffect->Init(InitEffect::enEffect_Boss_Summon_FogRemoval);
+		m_FogRemovalEffect->Play();
+		m_FogRemovalEffect->SetPosition(m_position);
+		m_FogRemovalEffect->SetScale({ 15.0f,40.0f,15.0f });
+		m_FogRemovalEffect->Update();
 	}
 }
 
@@ -270,7 +359,7 @@ void EntryBoss::Render(RenderContext& rc)
 	{
 		m_PressAButton.Draw(rc);
 	}
-	
+
 
 	if (m_gOTextFlag != true)
 	{
@@ -293,12 +382,6 @@ void EntryBoss::Render(RenderContext& rc)
 	{
 		m_lichCharInfo[H].m_CharRender.Draw(rc);
 	}
-
-	
-	
-	
-	
-
 	//カウントされた数画像を表示する
 	/*for (int i = 0; i < m_lichTextCount; i++)
 	{
