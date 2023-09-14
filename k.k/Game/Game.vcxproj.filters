@@ -314,7 +314,12 @@
     <ClCompile Include="CactusStateAppear.cpp">
       <Filter>MobMonster\Cactus</Filter>
     </ClCompile>
-    <ClCompile Include="TurtleShellStateAppear.cpp" />
+    <ClCompile Include="InitEffect.cpp" />
+    <ClCompile Include="TurtleShellStateAppear.cpp">
+      <Filter>MobMonster\TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="MagicBall.cpp" />
+    <ClCompile Include="DarkBall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -621,6 +626,11 @@
     <ClInclude Include="CactusStateAppear.h">
       <Filter>MobMonster\Cactus</Filter>
     </ClInclude>
-    <ClInclude Include="TurtleShellStateAppear.h" />
+    <ClInclude Include="InitEffect.h" />
+    <ClInclude Include="TurtleShellStateAppear.h">
+      <Filter>MobMonster\TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="MagicBall.h" />
+    <ClInclude Include="DarkBall.h" />
   </ItemGroup>
 </Project>
