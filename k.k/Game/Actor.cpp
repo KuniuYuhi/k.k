@@ -2,6 +2,7 @@
 #include "Actor.h"
 #include "FireBall.h"
 #include "DarkWall.h"
+#include "DarkBall.h"
 #include "Meteo.h"
 #include "DarkMeteorite.h"
 #include "AIActor.h"
@@ -149,9 +150,11 @@ void Actor::DamageCollision(CharacterController& characon)
 		//自身のキャラコンと衝突したら
 		if (collision->IsHit(characon) == true)
 		{
-			FireBall* fireball = FindGO<FireBall>("darkball");
-			Damage(fireball->GetAtk());
-			CreateDamageFont(fireball->GetAtk());
+			DarkBall* darkball = FindGO<DarkBall>("darkball");
+			//ぶつかったのでフラグを立てる
+			darkball->SetHitFlag(true);
+			Damage(darkball->GetAtk());
+			CreateDamageFont(darkball->GetAtk());
 			return;
 		}
 	}
@@ -196,8 +199,9 @@ void Actor::DamageCollision(CharacterController& characon)
 		if (collision->IsHit(characon) == true)
 		{
 			Meteo* meteo = FindGO<Meteo>("meteo");
-			Damage(meteo->GetExplosionAttack());
-			CreateDamageFont(meteo->GetExplosionAttack());
+			int damage = meteo->CalcDamageToDistance(m_position);
+			Damage(damage);
+			CreateDamageFont(damage);
 			return;
 		}
 	}
@@ -228,6 +232,7 @@ void Actor::DamageCollision(CharacterController& characon)
 			DarkMeteorite* darkMeteo = FindGO<DarkMeteorite>("darkmeteorite");
 			Damage(darkMeteo->GetAtk());
 			CreateDamageFont(darkMeteo->GetAtk());
+			darkMeteo->SetChaseFlag(true);
 			return;
 		}
 	}
@@ -287,6 +292,12 @@ bool Actor::CalcInvicibleDash()
 
 void Actor::CreateDamageFont(int damage)
 {
+	//ダメージが0か0以下ならフォントを出さない
+	if (damage <= 0)
+	{
+		return;
+	}
+
 	DamageFont* damagefont = NewGO<DamageFont>(0, "damagefont");
 	damagefont->Setting(
 		DamageFont::enDamageActor_Player,
