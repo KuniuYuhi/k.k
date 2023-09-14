@@ -323,6 +323,8 @@ void Hero::CreateSkillCollision()
 
 void Hero::Damage(int attack)
 {
+	//todo ダメージが0の時
+
 	//スキル使用時にダメージを受けたかもしれない
 	m_createSkillCollisionFlag = false;
 
