@@ -50,7 +50,7 @@ namespace nsK2EngineLow {
 	//トゥーンテクスチャを設定する
 	void RenderingEngine::SetToonTextureDDS()
 	{
-		const wchar_t* toontexture = L"Assets/shader/ToonTextrue/toontexture2.DDS";
+		const wchar_t* toontexture = L"Assets/shader/ToonTextrue/lamp.DDS";
 		m_toontexture.InitFromDDSFile(toontexture);
 	}
 
