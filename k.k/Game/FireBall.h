@@ -41,6 +41,15 @@ public:
 		m_wizard = wizard;
 	}
 
+	/// <summary>
+	/// ヒットしたかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetHitFlag(bool flag)
+	{
+		m_hitFlag = flag;
+	}
+
 private:
 	Wizard* m_wizard = nullptr;
 
@@ -56,6 +65,5 @@ private:
 	const int m_wizardAttack = 30;		//ウィザード用の攻撃力
 
 	const int m_moveLimitTimer = 3;
-
 };
 

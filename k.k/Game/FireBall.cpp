@@ -3,6 +3,11 @@
 #include "InitEffect.h"
 
 namespace {
+    const float FIRE_BALL_SIZE = 6.0f;
+    const float EXPLOSION_SIZE = 6.0f;
+}
+
+namespace {
     const int ADD_CREATE_POS = 60;
     const float SPEED = 180.0f;
     const float RADIUS = 15.0f;
@@ -42,9 +47,9 @@ bool FireBall::Start()
 
     //エフェクトの設定
     m_fireBallEffect = NewGO<EffectEmitter>(0, "fireball");
-    m_fireBallEffect->Init(InitEffect::enEffect_DarkBall);
+    m_fireBallEffect->Init(InitEffect::enEffect_FireBall);
     m_fireBallEffect->Play();
-    m_fireBallEffect->SetScale({ 6.0f,6.0f,6.0f });
+    m_fireBallEffect->SetScale(g_vec3One * FIRE_BALL_SIZE);
     m_fireBallEffect->SetPosition(m_collisionPosition);
     m_fireBallEffect->SetRotation(m_rotation);
     m_fireBallEffect->Update();
@@ -57,7 +62,7 @@ void FireBall::Update()
     //敵にぶつかったら自身を消す
     if (m_hitFlag == true)
     {
-        DeleteGO(this);
+        Explosion();
     }
 
     CalcMoveTime(m_moveLimitTimer);
@@ -103,5 +108,13 @@ void FireBall::SettingCollision()
 
 void FireBall::Explosion()
 {
+    //爆発
+    EffectEmitter* explosionEffect = NewGO<EffectEmitter>(0);
+    explosionEffect->Init(InitEffect::enEffect_FireBall_Explosion);
+    explosionEffect->Play();
+    explosionEffect->SetScale(g_vec3One * EXPLOSION_SIZE);
+    explosionEffect->SetPosition(m_collisionPosition);
+    explosionEffect->Update();
+
     DeleteGO(this);
 }
