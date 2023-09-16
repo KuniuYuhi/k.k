@@ -137,6 +137,10 @@ public:
 	/// </summary>
 	virtual void HitFlamePillar(bool damageFlag = false);
 
+
+	virtual void CreateHitEffect();
+
+
 	/// <summary>
 	/// ステータスの取得
 	/// </summary>
@@ -229,7 +233,7 @@ protected:
 
 	Player*				m_player = nullptr;
 
-	PhysicsStaticObject			m_monsterStaticObject;					//静的オブジェクト。派生クラスで当たり判定作成
+	//PhysicsStaticObject			m_monsterStaticObject;					//静的オブジェクト。派生クラスで当たり判定作成
 
 	Status						m_status;
 

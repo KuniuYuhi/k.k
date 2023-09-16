@@ -116,6 +116,7 @@ void AIActor::DamageCollision(CharacterController& characon)
 		//自身のキャラコンと衝突したら
 		if (collision->IsHit(characon) == true)
 		{
+			CreateHitEffect();
 			HitNormalAttack();
 			return;
 		}
@@ -129,6 +130,7 @@ void AIActor::DamageCollision(CharacterController& characon)
 		//自身のキャラコンと衝突したら
 		if (collision->IsHit(characon) == true)
 		{
+			CreateHitEffect();
 			HitHeroSkillAttack();
 			return;
 		}
@@ -214,6 +216,10 @@ void AIActor::HitFlamePillar(bool damageFlag)
 	//ダメージを受ける
 	Damage(m_damage);
 	CreateDamageFont(m_damage);
+}
+
+void AIActor::CreateHitEffect()
+{
 }
 
 bool AIActor::AttackInterval(const float attackintarvaltime)
