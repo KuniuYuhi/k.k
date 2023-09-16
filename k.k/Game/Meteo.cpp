@@ -102,28 +102,11 @@ void Meteo::Update()
 		CalcDeleteTime();
 		return;
 	}
-
-
-	if (m_explosionEffectFlag!=true && m_collision->IsDead() != true)
-	{
-		if (IsGroundCheck(DELETE_DOWN))
-		{
-			m_collision->Dead();
-			//爆発する
-			m_explosionEffectFlag = true;
-			//爆発エフェクトの生成
-			while (m_ExplosionEffect == nullptr)
-			{
-				Explosion();
-			}
-			
-		}
-	}
 	
 	//爆発するまでの処理
-	//地面につくまで
 	if(IsGroundCheck(DOWN)==true || m_movePos.y <= 0.0f)
 	{
+		//地面についた
 		//爆発用当たり判定の生成
 		CreateExplosionCollision();
 		//爆発した
@@ -131,7 +114,26 @@ void Meteo::Update()
 	}
 	else
 	{
+		//地面につくまで
+		//移動処理
 		Move();
+	}
+
+	if (m_explosionEffectFlag != true && m_collision->IsDead() != true)
+	{
+		if (IsGroundCheck(DELETE_DOWN)|| m_movePos.y <= 60.0f )
+		{
+			m_collision->Dead();
+			
+			//爆発エフェクトの生成
+			while (m_ExplosionEffect == nullptr)
+			{
+				//爆発する
+				m_explosionEffectFlag = true;
+				Explosion();
+			}
+
+		}
 	}
 }
 
