@@ -293,6 +293,7 @@ void Cactus::Damage(int attack)
 	{
 		m_status.hp = 0;
 		SetNextAnimationState(enAnimationState_Die);
+		Dead();
 		return;
 	}
 

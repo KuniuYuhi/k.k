@@ -133,6 +133,7 @@ public:
 	/// <param name="nextState"></param>
 	void SetNextAnimationState(EnAnimationState nextState);
 
+	//void Dead();
 
 private:
 	/// <summary>

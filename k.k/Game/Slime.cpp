@@ -10,6 +10,7 @@
 #include "SlimeStateAppear.h"
 
 #include "Lich.h"
+#include "InitEffect.h"
 
 namespace {
 	const float ANGLE = 45.0f;				//視野角
@@ -265,6 +266,7 @@ void Slime::Damage(int attack)
 		//やられアニメーションステート
 		m_status.hp = 0;
 		SetNextAnimationState(enAnimationState_Die);
+		Dead();
 		return;
 	}
 	//被ダメージアニメーションステート
@@ -325,6 +327,16 @@ void Slime::SetNextAnimationState(EnAnimationState nextState)
 		break;
 	}
 }
+
+//void Slime::Dead()
+//{
+//	EffectEmitter* deadEffect = NewGO<EffectEmitter>(0);
+//	deadEffect->Init(InitEffect::enEffect_Mob_Dead);
+//	deadEffect->Play();
+//	deadEffect->SetPosition(m_position);
+//	deadEffect->SetScale(g_vec3One * 2.5f);
+//	deadEffect->Update();
+//}
 
 void Slime::ProcessCommonStateTransition()
 {
