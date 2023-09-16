@@ -31,7 +31,7 @@ int LichAction::NextAction()
 
 	CalcEvalSummon(enAttack_Summon);
 
-	CalcEvalDarkMeteorite(enAttack_DarkMeteorite);
+	//CalcEvalDarkMeteorite(enAttack_DarkMeteorite);
 
 	CalcEvalAngryMode(enAttack_AngryMode);
 
