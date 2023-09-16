@@ -236,6 +236,8 @@ private:
 
 
 
+	EffectEmitter* m_dashEffect;
+
 	ModelRender m_modelRender;
 
 	Animation m_animation;	// アニメーション
@@ -268,6 +270,8 @@ private:
 
 
 	float m_dashTimer = 1.0f;
+
+	bool m_dashEffectFlag = false;
 
 };
 

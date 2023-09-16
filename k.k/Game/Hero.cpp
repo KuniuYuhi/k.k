@@ -14,6 +14,8 @@
 #include "HeroStatePowerUp.h"
 #include "HeroStateVictory.h"
 
+#include "InitEffect.h"
+
 //todo ダッシュ時攻撃アニメーション変更
 
 namespace {
@@ -109,6 +111,10 @@ void Hero::InitModel()
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
+
+
+	
+
 }
 
 void Hero::Update()
@@ -144,8 +150,10 @@ void Hero::Update()
 		CreateSkillCollision();
 	}
 
+	CalcInvincibleTime();
+
 	//無敵時間でないなら当たり判定の処理を行う
-	if (CalcInvincibleTime() == false&& CalcInvicibleDash()==false)
+	if (CalcInvicibleDash() == false)
 	{
 		DamageCollision(m_player->GetCharacterController());
 	}
@@ -173,12 +181,17 @@ void Hero::Move()
 				//ダッシュの途中で攻撃したりダメージ受けたかもしれないのでタイマーリセット
 				m_dashTimer = 1.0f;
 				SetNextAnimationState(enAninationState_Dash);
-			}
-
-
-				//SetInvicibleDashState(enDashInvicibleState_None);
-				
-			
+				//ダッシュエフェクト再生
+				//ダッシュエフェクトの読み込み
+				m_dashEffect = NewGO<EffectEmitter>(0);
+				m_dashEffect->Init(InitEffect::enEffect_Dash);
+				m_dashEffect->Play();
+				m_dashEffect->SetScale({10.0f,20.0f,8.0f});
+				m_dashEffect->SetPosition(m_position);
+				m_dashEffect->SetRotation(m_rotation);
+				m_dashEffect->Update();
+				m_dashEffectFlag = true;
+			}	
 		}
 	}
 
@@ -186,6 +199,13 @@ void Hero::Move()
 	m_position = m_player->GetPosition();
 	
 	Rotation();
+
+	if (m_dashEffectFlag ==true)
+	{
+		m_dashEffect->SetPosition(m_position);
+		m_dashEffect->SetRotation(m_rotation);
+		m_dashEffect->Update();
+	}
 }
 
 bool Hero::RotationOnly()
@@ -491,7 +511,7 @@ void Hero::ProcessCommonStateTransition()
 	}
 	else
 	{
-		m_dashFlag = false;
+		m_dashEffectFlag = false;
 		SetNextAnimationState(enAninationState_Idle);
 	}
 }
@@ -500,6 +520,10 @@ void Hero::OnProcessDashStateTransition()
 {
 	if (CalcDash() == true)
 	{
+		m_dashEffect->Stop();
+		
+		m_dashEffectFlag = false;
+
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}
