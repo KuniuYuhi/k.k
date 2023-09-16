@@ -31,8 +31,22 @@ void InitEffect::InitEFK()
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Meteo, u"Assets/effect/sprite/Meteo.efk");
 	//メテオの爆発エフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Meteo_Explosion, u"Assets/effect/sprite/Meteo_Explosion.efk");
-
-
+	//モブモンスターのやられエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Mob_Dead, u"Assets/effect/sprite/Mob_Dead.efk");
+	//ダメージ無効エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Invalibation, u"Assets/effect/sprite/Invalibation.efk");
+	//ダッシュエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Dash, u"Assets/effect/sprite/Dash.efk");
+	//ヒットエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Hit, u"Assets/effect/sprite/hit.efk");
+	//ファイヤーボールエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_FireBall, u"Assets/effect/sprite/FireBall.efk");
+	//ファイヤーボールの爆発エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_FireBall_Explosion, u"Assets/effect/sprite/FireBall_Explosion.efk");
+	//フレイムピラーエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_FlamePillar, u"Assets/effect/sprite/FlamePillar.efk");
+	//フレイムピラーの魔法陣のエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_FlamePillar_Circle, u"Assets/effect/sprite/FlamePillar_Circle.efk");
 
 
 }

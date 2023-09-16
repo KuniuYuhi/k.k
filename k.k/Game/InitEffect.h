@@ -22,6 +22,14 @@ public:
 		enEffect_DarkMeteorite_Wind,							//ダークメテオの風
 		enEffect_Meteo,											//メテオ
 		enEffect_Meteo_Explosion,								//メテオの爆発
+		enEffect_Mob_Dead,										//モブモンスターがやられたときのエフェクト
+		enEffect_Invalibation,									//ダメージが無効のときのエフェクト
+		enEffect_Dash,											//ダッシュ
+		enEffect_Hit,											//ヒット
+		enEffect_FireBall,										//ファイヤーボール
+		enEffect_FireBall_Explosion,							//ファイヤーボールの爆発
+		enEffect_FlamePillar,									//フレイムピラー
+		enEffect_FlamePillar_Circle,							//フレイムピラーの魔法陣
 
 	};
 };
