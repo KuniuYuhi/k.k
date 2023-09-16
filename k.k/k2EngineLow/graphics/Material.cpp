@@ -162,7 +162,9 @@ namespace nsK2EngineLow {
 		AlphaBlendMode alphaBlendMode,
 		bool isDepthWrite,
 		bool isDepthTest,
-		D3D12_CULL_MODE cullMode
+		D3D12_CULL_MODE cullMode,
+		D3D12_TEXTURE_ADDRESS_MODE addressU,
+		D3D12_TEXTURE_ADDRESS_MODE addressV
 	)
 	{
 		//テクスチャをロード。
@@ -178,8 +180,8 @@ namespace nsK2EngineLow {
 		D3D12_STATIC_SAMPLER_DESC samplerDescArray[2];
 		//デフォルトのサンプラ
 		samplerDescArray[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-		samplerDescArray[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-		samplerDescArray[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		samplerDescArray[0].AddressU = addressU;
+		samplerDescArray[0].AddressV = addressV;
 		samplerDescArray[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 		samplerDescArray[0].MipLODBias = 0;
 		samplerDescArray[0].MaxAnisotropy = 0;
