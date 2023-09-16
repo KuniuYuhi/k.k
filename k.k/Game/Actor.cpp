@@ -112,32 +112,42 @@ Vector3 Actor::calcVelocity(Status status)
 
 bool Actor::CalcInvincibleTime()
 {
-	//無敵時間フラグが立ったら
-	if (m_invincibleTimeFlag == true)
+	if (m_invincibleTimeFlag != true)
 	{
-		if (m_invincbleTime < m_invincbleTimer)
-		{
-			m_invincbleTimer = 0.0f;
-			//フラグを
-			m_invincibleTimeFlag = false;
-
-			//return false;
-		}
-		else
-		{
-			m_invincbleTimer += g_gameTime->GetFrameDeltaTime();
-		}
-
-		return true;
+		return false;
 	}
 
-	return false;
+	//無敵時間フラグが立ったら
+	if (m_invincbleTime < m_invincbleTimer)
+	{
+		m_invincbleTimer = 0.0f;
+		//フラグを
+		m_invincibleTimeFlag = false;
+		return false;
+	}
+	else
+	{
+		m_invincbleTimer += g_gameTime->GetFrameDeltaTime();
+		return true;
+
+	}
 }
 
 void Actor::DamageCollision(CharacterController& characon)
 {
 	//抜け出す処理
 	if (isCollisionEntable() != true)
+	{
+		return;
+	}
+
+	if (IsInvincible() == true)
+	{
+		return;
+	}
+
+	//キャラ切り替え直後なら処理しない
+	if (GetInvincibleTimeFlag() == true)
 	{
 		return;
 	}
@@ -235,6 +245,27 @@ void Actor::DamageCollision(CharacterController& characon)
 			darkMeteo->SetChaseFlag(true);
 			return;
 		}
+	}
+
+}
+
+bool Actor::IsInvincible()
+{
+	if (m_changeCharacterInvincbleFlag != true)
+	{
+		return false;
+	}
+
+	if (m_changeCharaInvisibleTime < m_changeCharaInvisibleTimer)
+	{
+		SetChangeCharacterInvincbleFlag(false);
+		m_changeCharaInvisibleTimer = 0.0f;
+		return false;
+	}
+	else
+	{
+		m_changeCharaInvisibleTimer += g_gameTime->GetFrameDeltaTime();
+		return true;
 	}
 
 }

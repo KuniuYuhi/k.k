@@ -87,6 +87,10 @@ public:
 	/// <returns></returns>
 	virtual bool isRotationEntable() const = 0;
 
+	/// <summary>
+	/// キャラ切り替え直後の無敵時間かどうか
+	/// </summary>
+	bool IsInvincible();
 
 	//敵のダメージ判定用コンボステート
 	enum EnComboState
@@ -224,6 +228,22 @@ public:
 		return m_dieToChangeFlag;
 	}
 
+	void SetInvicibleTimeFlag(bool flag)
+	{
+		m_invincibleTimeFlag = flag;
+	}
+
+	const bool GetInvincibleTimeFlag()
+	{
+		return m_invincibleTimeFlag;
+	}
+
+	void SetChangeCharacterInvincbleFlag(bool flag)
+	{
+		m_changeCharacterInvincbleFlag = flag;
+	}
+
+
 	
 protected:
 
@@ -260,16 +280,6 @@ protected:
 	void SetRecoveryMpFlag(bool flag)
 	{
 		m_recoveryMpFlag = flag;
-	}
-
-	void SetInvicibleTimeFlag(bool flag)
-	{
-		m_invincibleTimeFlag = flag;
-	}
-
-	const bool GetInvincibleTimeFlag()
-	{
-		return m_invincibleTimeFlag;
 	}
 
 	/// <summary>
@@ -352,6 +362,9 @@ protected:
 
 	bool m_modelDrawFlag = false;				//モデルを描画するかのフラグ
 
+	bool m_changeCharacterInvincbleFlag = false;		//キャラを切り替えた直後の無敵時間のフラグ
+	const float m_changeCharaInvisibleTime = 1.0f;
+	float m_changeCharaInvisibleTimer = 0.0f;
 
 };
 
