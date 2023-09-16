@@ -3,6 +3,7 @@
 
 class Player;
 class IWizardState;
+class FlamePillar;
 
 class Wizard :public Actor
 {
@@ -207,6 +208,7 @@ private:
 	bool RotationOnly();
 	
 	Player* m_player = nullptr;
+	FlamePillar* m_flamePillar = nullptr;
 
 	ModelRender m_modelRender;
 

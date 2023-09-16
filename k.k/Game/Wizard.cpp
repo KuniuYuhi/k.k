@@ -36,6 +36,8 @@ Wizard::Wizard()
 
 Wizard::~Wizard()
 {
+	//フレイムピラーの削除
+	//DeleteGO(m_flamePillar);
 }
 
 bool Wizard::Start()
@@ -148,8 +150,10 @@ void Wizard::Update()
 		CreateCollision();
 	}
 	
+	CalcInvincibleTime();
+
 	//無敵時間でないなら当たり判定の処理を行う
-	if (CalcInvincibleTime() == false && CalcInvicibleDash() == false)
+	if (CalcInvicibleDash() == false)
 	{
 		DamageCollision(m_player->GetCharacterController());
 	}
@@ -229,6 +233,8 @@ void Wizard::Attack()
 		}
 		m_enAttackPatternState = enAttackPattern_3_start;
 		SetNextAnimationState(enAnimationState_Attack_3_start);
+		//フレイムピラー生成
+		CreateFlamePillar();
 		//MP回復状態を止める
 		SetRecoveryMpFlag(false);
 		return;
@@ -268,6 +274,13 @@ void Wizard::CreateCollision()
 
 void Wizard::Damage(int attack)
 {
+	//フレイムピラーの始めのアニメーションだったら
+	if (m_enAnimationState == enAnimationState_Attack_3_start)
+	{
+		//フレイムピラーの削除
+		DeleteGO(m_flamePillar);
+	}
+
 	if (m_status.hp > 0)
 	{
 		m_status.hp -= attack;
@@ -290,8 +303,8 @@ void Wizard::Damage(int attack)
 void Wizard::CreateFlamePillar()
 {
 	//フレイムピラー生成
-	FlamePillar* flamePillar = NewGO<FlamePillar>(0, "flamepillar");
-	flamePillar->SetWizard(this);
+	m_flamePillar = NewGO<FlamePillar>(0, "flamepillar");
+	m_flamePillar->SetWizard(this);
 	//MPを減らす
 	m_status.mp -= m_flamePillar_skillMp;
 }
@@ -567,10 +580,8 @@ void Wizard::OnProcessAttack_3StateTransition()
 			m_enAttackPatternState = enAttackPattern_3_main;
 			//メインアニメーションを再生
 			SetNextAnimationState(enAnimationState_Attack_3_main);
-
-			//フレイムピラー生成
-			CreateFlamePillar();
-			
+			//フレイムピラー発動
+			m_flamePillar->SetStartFlamePllarFlag(true);
 			return;
 		}
 		//メインステートの時に使用される
