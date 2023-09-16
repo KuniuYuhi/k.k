@@ -1,5 +1,13 @@
 #include "stdafx.h"
 #include "MobMonster.h"
+#include "InitEffect.h"
+
+namespace {
+	const float DEAD_EFFECT_SIZE = 2.0f;
+	const float HIT_EFFECT_SIZE = 15.0f;
+
+	const float FIND_DISTANCE = 200.0f;
+}
 
 //衝突したときに呼ばれる関数オブジェクト(壁用)
 struct IsForestResult :public btCollisionWorld::ConvexResultCallback
@@ -20,9 +28,30 @@ struct IsForestResult :public btCollisionWorld::ConvexResultCallback
 			isHit = true;
 			return 0.0f;
 		}
-
 	}
 };
+
+//衝突したときに呼ばれる関数オブジェクト(壁用)
+//struct IsMonsterResult :public btCollisionWorld::ConvexResultCallback
+//{
+//	bool isHit = false;						//衝突フラグ。
+//	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
+//	{
+//		//地面とぶつかってなかったら。
+//		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Monster) {
+//			//衝突したのは壁ではない。
+//			isHit = false;
+//			return 0.0f;
+//		}
+//		else
+//		{
+//			//地面とぶつかったら。
+//		//フラグをtrueに。
+//			isHit = true;
+//			return 0.0f;
+//		}
+//	}
+//};
 
 bool MobMonster::RotationOnly()
 {
@@ -67,7 +96,7 @@ void MobMonster::Move(CharacterController& charaCon)
 		else
 		{
 			//視野角内にはいないが攻撃可能距離にいるなら
-			if (IsFindPlayer(100.0f) == true)
+			if (IsFindPlayer(FIND_DISTANCE) == true)
 			{
 				m_moveSpeed = CalcVelocity(m_status, m_targetPosition);
 				m_SaveMoveSpeed = m_moveSpeed;
@@ -101,6 +130,13 @@ void MobMonster::Move(CharacterController& charaCon)
 	//プレイヤーとの距離が近くないなら移動する
 	if (IsFindPlayer(m_stayRange) != true)
 	{
+		//弾き処理
+		//モンスターが近くにいるなら
+		if (IsBumpedMonster() == true)
+		{
+			Pass();
+		}
+
 		m_position = charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	}
 	else
@@ -128,7 +164,6 @@ bool MobMonster::IsBumpedForest(float pos2Length)
 	Vector3 pos1 = m_position;
 	Vector3 pos2 = m_position;
 	pos1.Normalize();
-	//pos2.Add(pos1 * 30.0f);
 	pos2 += pos1 * pos2Length;
 	SphereCollider m_sphereCollider;
 	m_sphereCollider.Create(1.0f);
@@ -159,4 +194,35 @@ bool MobMonster::IsBumpedForest(float pos2Length)
 		//衝突しなかった
 		return false;
 	}
+}
+
+bool MobMonster::IsBumpedMonster()
+{
+	return false;
+}
+
+void MobMonster::Pass()
+{
+	m_moveSpeed += m_passPower;
+	m_SaveMoveSpeed = m_moveSpeed;
+}
+
+void MobMonster::Dead()
+{
+	EffectEmitter* deadEffect = NewGO<EffectEmitter>(0);
+	deadEffect->Init(InitEffect::enEffect_Mob_Dead);
+	deadEffect->Play();
+	deadEffect->SetPosition(m_position);
+	deadEffect->SetScale(g_vec3One * DEAD_EFFECT_SIZE);
+	deadEffect->Update();
+}
+
+void MobMonster::CreateHitEffect()
+{
+	EffectEmitter* hitEffect = NewGO<EffectEmitter>(0);
+	hitEffect->Init(InitEffect::enEffect_Hit);
+	hitEffect->Play();
+	hitEffect->SetPosition(m_position);
+	hitEffect->SetScale(g_vec3One * HIT_EFFECT_SIZE);
+	hitEffect->Update();
 }
