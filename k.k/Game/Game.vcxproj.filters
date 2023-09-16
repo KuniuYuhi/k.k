@@ -319,7 +319,9 @@
       <Filter>MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="MagicBall.cpp" />
-    <ClCompile Include="DarkBall.cpp" />
+    <ClCompile Include="DarkBall.cpp">
+      <Filter>Lich</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -631,6 +633,8 @@
       <Filter>MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="MagicBall.h" />
-    <ClInclude Include="DarkBall.h" />
+    <ClInclude Include="DarkBall.h">
+      <Filter>Lich</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

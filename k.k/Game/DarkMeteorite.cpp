@@ -396,12 +396,13 @@ void DarkMeteorite::move()
 	//’n–Ê‚É‚Â‚¢‚Ä‚©‚ç‚Ìˆ—
 	else
 	{
+		//•Ç‚Æ‚ÌÕ“Ë”»’è
+		//todo ‚½‚Ü‚ÉÁ‚¦‚È‚¢‚Ì‚Å§ŒÀŠÔ‚ğ‹‚ß‚é
 		m_moveSpeed.y = 0.0f;
 		Vector3 addPos = m_moveSpeed;
 		addPos.Normalize();
 		Vector3 pos2 = m_position;
-		pos2.Add(addPos * 2.0f);
-		//•Ç‚Æ‚ÌÕ“Ë”»’è
+		pos2.Add(addPos * 3.0f);
 		if (IsHitWall(m_position, pos2) == true)
 		{
 			//”š”­

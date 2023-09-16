@@ -161,6 +161,11 @@ void Lich::InitModel()
 		m_position
 	);
 
+	//モデルの静的オブジェクト作成
+	//m_monsterStaticObject.CreateFromModel(m_modelRender.GetModel(), m_modelRender.GetModel().GetWorldMatrix());
+	////コリジョン属性を付ける
+	//m_monsterStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Monster);
+
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
