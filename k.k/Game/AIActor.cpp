@@ -28,16 +28,13 @@ Vector3 AIActor::CalcVelocity(Status status,Vector3 targetposition)
 
 	//自身からターゲットに向かうベクトルを計算する
 	Vector3 diff = targetposition - m_position;
-	
+	diff.y = 0.0f;
 	//正規化
 	diff.Normalize();
-	//前方向
-	m_forward = diff;
-
-	diff.y = 0.0f;
 	//速度を設定
 	moveSpeed = diff * status.defaultSpeed;
-	
+	//前方向を設定
+	m_forward = diff;
 	//値をセーブしておく
 	m_SaveMoveSpeed = moveSpeed;
 
@@ -58,6 +55,8 @@ bool AIActor::IsInFieldOfView(Vector3 toPlayerDir, Vector3 forward, float angle)
 {
 	//ベクトル正規化
 	toPlayerDir.Normalize();
+	//前方向を正規化
+	//forward.Normalize();
 	//ターゲットに向かうベクトルと前方向の内積を計算する
 	float t = toPlayerDir.Dot(forward);
 	//内積の結果をacos関数に渡して、m_enemyFowradとtoPlayerDirのなす角度を求める。
@@ -329,32 +328,30 @@ bool AIActor::IsFindPlayer(float distance)
 	return false;
 }
 
-Quaternion AIActor::Rotation()
+Quaternion AIActor::Rotation(float rotSpeed,float rotOnlySpeed)
 {
-	//todo 線形補間で緩やかに回転
-	//セーブする値
-
 	if (RotationOnly() == true)
 	{
+		//xかzの移動速度があったら(スティックの入力があったら)。
+		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
+		{
+			m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotOnlySpeed, m_rotMove, m_SaveMoveSpeed);
+			m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
+		}
+
+		//前方向を設定
 		m_forward = Vector3::AxisZ;
 		m_rotation.Apply(m_forward);
+
 		return m_rotation;
 	}
 
-	//xかzの移動速度があったら(スティックの入力があったら)。
+	//xかzの移動速度があったら
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-
-		m_rotTimer += g_gameTime->GetFrameDeltaTime();
-		if (m_rotTimer > 1.0f)
-		{
-			m_rotTimer = 0.0f;
-		}
-
-		Vector3 nowMoveSpeed;
-		nowMoveSpeed.Lerp(m_rotTimer, m_SaveMoveSpeed, m_moveSpeed);
-
-		m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
+		//緩やかに回転させる
+		m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotSpeed, m_rotMove, m_moveSpeed);
+		m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
 	}
 	//前方向を設定
 	m_forward = Vector3::AxisZ;
