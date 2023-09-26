@@ -11,9 +11,6 @@ namespace nsK2EngineLow {
 		m_shadow.Init();
 		m_postEffect.Init(m_mainRenderTarget);
 		InitCopyToFrameBufferSprite();
-
-
-
 		m_sceneLight.Init();
 		SetToonTextureDDS();
 	}
@@ -50,7 +47,7 @@ namespace nsK2EngineLow {
 	//トゥーンテクスチャを設定する
 	void RenderingEngine::SetToonTextureDDS()
 	{
-		const wchar_t* toontexture = L"Assets/shader/ToonTextrue/lamp.DDS";
+		const wchar_t* toontexture = L"Assets/shader/ToonTextrue/lamp_glay.DDS";
 		m_toontexture.InitFromDDSFile(toontexture);
 	}
 
