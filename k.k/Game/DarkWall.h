@@ -10,7 +10,11 @@ public:
 
 	bool Start();
 	void Update();
-	void Render(RenderContext& rc);
+	
+	/// <summary>
+	/// çsóÒÇç¿ïWÇ…ìKâûÇ∑ÇÈ
+	/// </summary>
+	Vector3 AppltMatrixToPosition();
 
 	void SetLich(Lich* lich)
 	{
@@ -28,22 +32,21 @@ public:
 	}
 
 private:
-	Lich* m_lich = nullptr;
+	Lich*							m_lich = nullptr;
+	EffectEmitter*					m_darkWallEffect = nullptr;
 
-	ModelRender m_model;
+	Vector3							m_position = Vector3::Zero;
+	Vector3							m_collisionPosition = Vector3::Zero;
+	Quaternion						m_rotation = Quaternion::Identity;
 
-	Vector3 m_position = Vector3::Zero;
-	Vector3 m_moveSpeed = Vector3::Zero;
-	Quaternion m_rotation = Quaternion::Identity;
+	CollisionObject*				m_collision;
 
-	CollisionObject* m_collision;
+	int								m_attak = 20;
 
-	int m_attak = 20;
+	const float						m_speed = 50.0f;
 
-	const float m_speed = 50.0f;
-
-	const float m_deleteTime = 2.0f;
-	float m_deleteTimer = 0.0f;
+	const float						m_deleteTime = 2.0f;
+	float							m_deleteTimer = 0.0f;
 
 };
 
