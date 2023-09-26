@@ -6,12 +6,10 @@
 #include "Meteo.h"
 #include "DarkMeteorite.h"
 #include "AIActor.h"
+#include "MagicBall.h"
 
-//todo 無敵ダッシュなくす？
 Actor::Actor()
 {
-	//m_player = FindGO<Player>("player");
-	//m_charaCon;
 }
 
 Actor::~Actor()
@@ -160,7 +158,8 @@ void Actor::DamageCollision(CharacterController& characon)
 		//自身のキャラコンと衝突したら
 		if (collision->IsHit(characon) == true)
 		{
-			DarkBall* darkball = FindGO<DarkBall>("darkball");
+			//DarkBall* darkball = FindGO<DarkBall>("darkball");
+			MagicBall* darkball = FindGO<MagicBall>(collision->GetCreatorName());
 			//ぶつかったのでフラグを立てる
 			darkball->SetHitFlag(true);
 			Damage(darkball->GetAtk());
@@ -283,17 +282,25 @@ bool Actor::IsComboStateSame()
 		return false;
 }
 
-Quaternion Actor::Rotation()
+Quaternion Actor::Rotation(float rotSpeed,float rotOnlySpeed)
 {
 	//回転だけさせたいなら
 	if (RotationOnly() == true)
 	{
+		//xかzの移動速度があったら(スティックの入力があったら)。
+		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
+		{
+			m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotOnlySpeed, m_rotMove, m_SaveMoveSpeed);
+			m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
+		}
+
 		return m_rotation;
 	}
 
 	//xかzの移動速度があったら(スティックの入力があったら)。
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
+		m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotSpeed, m_rotMove, m_SaveMoveSpeed);
 		m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
 	}
 
