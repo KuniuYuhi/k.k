@@ -151,7 +151,7 @@ private:
 	/// </summary>
 	void ManageState();
 
-	Lich* m_lich = nullptr;
+	//Lich* m_lich = nullptr;
 	ISlimeState* m_state = nullptr;
 
 	Animation m_animation;	// アニメーション

@@ -20,6 +20,7 @@ namespace {
 	const float ATTACK_INTAERVALE_TIME = 2.0f;			//攻撃する間隔
 	const float ANGLE_RANGE = 2.0f;						//移動するアングルの範囲
 	const float POS2_LENGTH = 30.0f;
+	const float ROT_SPEED = 4.0f;
 
 	//ステータス
 	int MAXHP = 150;
@@ -167,7 +168,7 @@ void Slime::Update()
 	AngleChangeTimeIntarval(m_angleChangeTime);
 
 	Move(m_charaCon);
-	Rotation();
+	Rotation(ROT_SPEED, ROT_SPEED);
 
 	//攻撃
 	Attack();
@@ -327,16 +328,6 @@ void Slime::SetNextAnimationState(EnAnimationState nextState)
 		break;
 	}
 }
-
-//void Slime::Dead()
-//{
-//	EffectEmitter* deadEffect = NewGO<EffectEmitter>(0);
-//	deadEffect->Init(InitEffect::enEffect_Mob_Dead);
-//	deadEffect->Play();
-//	deadEffect->SetPosition(m_position);
-//	deadEffect->SetScale(g_vec3One * 2.5f);
-//	deadEffect->Update();
-//}
 
 void Slime::ProcessCommonStateTransition()
 {

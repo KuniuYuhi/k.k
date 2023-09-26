@@ -73,8 +73,6 @@ public:
 	/// </summary>
 	void Damage(int attack);
 
-	bool RotationOnly();
-
 	// アニメーションクリップの番号を表す列挙型。
 	enum EnAnimationClip {
 		enAnimClip_Idle,			// 0 : 待機アニメーション
@@ -173,7 +171,7 @@ private:
 		enAttackName_2
 	};
 
-	Lich* m_lich = nullptr;
+	//Lich* m_lich = nullptr;
 	ICactusState* m_state = nullptr;
 
 	Animation m_animation;	// アニメーション

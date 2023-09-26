@@ -19,7 +19,8 @@ namespace {
 	const float STAY_RANGR = 45.0f;						//停止する距離
 	const float ATTACK_INTAERVALE_TIME = 1.5f;			//攻撃する間隔
 	const float ANGLE_RANGE = 2.0f;						//移動するアングルの範囲
-	const float POS2_LENGTH = 30.0f;
+	const float POS2_LENGTH = 27.0f;
+	const float ROT_SPEED = 4.3f;
 
 	//ステータス
 	int MAXHP = 100;
@@ -52,29 +53,6 @@ Mushroom::~Mushroom()
 	//	m_lich->RemoveAIActorFromList(this);
 	//}
 }
-
-//衝突したときに呼ばれる関数オブジェクト(壁用)
-//struct IsForestResult :public btCollisionWorld::ConvexResultCallback
-//{
-//	bool isHit = false;						//衝突フラグ。
-//	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
-//	{
-//		//地面とぶつかってなかったら。
-//		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
-//			//衝突したのは壁ではない。
-//			isHit = false;
-//			return 0.0f;
-//		}
-//		else
-//		{
-//			//地面とぶつかったら。
-//		//フラグをtrueに。
-//			isHit = true;
-//			return 0.0f;
-//		}
-//
-//	}
-//};
 
 bool Mushroom::Start()
 {
@@ -184,7 +162,7 @@ void Mushroom::Update()
 	AngleChangeTimeIntarval(m_angleChangeTime);
 
 	Move(m_charaCon);
-	Rotation();
+	Rotation(ROT_SPEED, ROT_SPEED);
 
 	//攻撃
 	Attack();
@@ -300,20 +278,6 @@ void Mushroom::Damage(int attack)
 	//もし防御中なら
 
 	SetNextAnimationState(enAnimationState_Damage);
-}
-
-bool Mushroom::RotationOnly()
-{
-	if (isRotationEntable() != true)
-	{
-		//xかzの移動速度があったら(スティックの入力があったら)。
-		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
-		{
-			m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
-			return true;
-		}
-	}
-	return false;
 }
 
 void Mushroom::ManageState()

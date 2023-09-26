@@ -22,6 +22,7 @@ namespace {
 	const float ATTACK_INTAERVALE_TIME = 2.5f;			//攻撃する間隔
 	const float ANGLE_RANGE = 2.0f;						//移動するアングルの範囲
 	const float POS2_LENGTH = 30.0f;
+	const float ROT_SPEED = 3.8f;
 
 	//ステータス
 	int MAXHP = 200;
@@ -190,7 +191,7 @@ void TurtleShell::Update()
 	AngleChangeTimeIntarval(m_angleChangeTime);
 
 	Move(m_charaCon);
-	Rotation();
+	Rotation(ROT_SPEED, ROT_SPEED);
 
 	ManageState();
 	PlayAnimation();
@@ -201,8 +202,6 @@ void TurtleShell::Update()
 	{
 		CreateCollision();
 	}
-
-	m_oldPosition = m_position;
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
@@ -389,11 +388,6 @@ bool TurtleShell::RotationOnly()
 {
 	if (m_enAnimationState == enAnimationState_Difence)
 	{
-		//xかzの移動速度があったら(スティックの入力があったら)。
-		if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
-		{
-			m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
-		}
 		return true;
 	}
 
