@@ -18,6 +18,7 @@ public:
 		enEffect_Mob_Summon_Right,								//モンスターの召喚された瞬間のライト
 		enEffect_DarkBall,										//ダークボール
 		enEffect_DarkBall_Explosion,							//ダークボールの爆発
+		enEffect_DarkWall,										//ダークウォール
 		enEffect_DarkMeteorite,									//ダークメテオ
 		enEffect_DarkMeteorite_Wind,							//ダークメテオの風
 		enEffect_Meteo,											//メテオ
@@ -30,6 +31,8 @@ public:
 		enEffect_FireBall_Explosion,							//ファイヤーボールの爆発
 		enEffect_FlamePillar,									//フレイムピラー
 		enEffect_FlamePillar_Circle,							//フレイムピラーの魔法陣
+		enEffect_SwordStorm,									//ソードストーム
+		
 
 	};
 };

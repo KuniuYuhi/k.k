@@ -47,6 +47,10 @@ void InitEffect::InitEFK()
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_FlamePillar, u"Assets/effect/sprite/FlamePillar.efk");
 	//フレイムピラーの魔法陣のエフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_FlamePillar_Circle, u"Assets/effect/sprite/FlamePillar_Circle.efk");
+	//ダークウォールのエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_DarkWall, u"Assets/effect/sprite/DarkWall.efk");
+	//ソードストームのエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_SwordStorm, u"Assets/effect/sprite/SwordStorm.efk");
 
 
 }
