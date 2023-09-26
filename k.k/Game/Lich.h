@@ -6,6 +6,8 @@ class ILichState;
 class LichAction;
 class DarkMeteorite;
 class Summon;
+class DarkBall;
+class DarkWall;
 
 class Lich:public AIActor
 {
@@ -91,8 +93,9 @@ public:
 	/// <summary>
 	/// ダークボールの追加の生成
 	/// </summary>
-	/// <param name="degY">現在の回転からY軸の加算する値</param>
-	void AddCreateDarkBall(float degY);
+	/// <param name="darkBall">現在の回転からY軸の加算する値</param>
+	/// <param name="degY">ダークボールのオブジェクト名</param>
+	void AddCreateDarkBall(DarkBall* darkBall, const char* name,float degY);
 
 	/// <summary>
 	/// ダークメテオの生成
@@ -286,10 +289,9 @@ public:
 	//
 	enum EnSpecialActionState
 	{
-		enSpecialActionState_Normal,
-		enSpecialActionState_Warp,
+		enSpecialActionState_Normal,			//通常。移動しない
 		enSpecialActionState_AngryMode,			//怒りモード。この時だけ移動する
-		SpecialActionState
+		SpecialActionState_Num
 	};
 
 	void SetSpecialActionState(EnSpecialActionState SpecialActionState)
@@ -411,6 +413,11 @@ public:
 		return m_monsters.size();
 	}
 
+	std::vector<AIActor*>& GetMonsters()
+	{
+		return m_monsters;
+	}
+
 	/// <summary>
 	/// 怒りモード時間の計算
 	/// </summary>
@@ -458,67 +465,62 @@ private:
 
 	bool RotationOnly();
 
-	EnWarpStep m_enWarpStep = enWarpStep_Up;
+	std::vector<Vector3>			m_warpPositions;										//ワープ先の座標のリスト
+	std::vector<AIActor*>			m_monsters;												//召喚したモンスターの情報を格納するリスト
 
-
-	Level3DRender m_stageLevel;
-	std::vector<Vector3> m_warpPositions;
+	EnAnimationState				m_enAnimationState = enAninationState_Idle;				//アニメーションステート
+	EnSpecialActionState			m_enSpecialActionState = enSpecialActionState_Normal;	//特別な状態ステート(通常、怒りモード)
+	EnWarpStep						m_enWarpStep = enWarpStep_Up;							//ワープ処理ステート
 	
-	Game* m_game = nullptr;
-	LichAction* m_lichAction = nullptr;
-	ILichState* m_state = nullptr;
-	DarkMeteorite* m_darkMeteorite = nullptr;
-	Summon* m_summon = nullptr;
+	Game*							m_game = nullptr;
+	LichAction*						m_lichAction = nullptr;
+	ILichState*						m_state = nullptr;
+	DarkMeteorite*					m_darkMeteorite = nullptr;
+	Summon*							m_summon = nullptr;
+	DarkBall*						m_darkBall_light = nullptr;
+	DarkBall*						m_darkBall_left = nullptr;
+	DarkWall*						m_darkWall = nullptr;
 
-	std::vector<AIActor*> m_monsters;
-
-	Animation m_animation;	// アニメーション
-	AnimationClip m_animationClip[enAnimClip_Num];	// アニメーションクリップ 
-
-	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
-
-	EnSpecialActionState m_enSpecialActionState = enSpecialActionState_Normal;
-
-	ModelRender m_modelRender;
-
-	CharacterController m_charaCon;
-
-	Vector3 m_warpPosition = g_vec3Zero;
-
-	//被ダメージ時にカウントを増やす
-	int m_hitCount = 0;
-	//被ダメージ時に受けたダメージ分増やす
-	int m_accumulationDamage = 0;
-
-	const float m_distanceToPlayer = 300.0f;
-
-	int m_darkWallBoonId = -1;					//ダークウォールで使うボーンID
-
-	bool m_attackRangeFlag = false;				//攻撃範囲にいるかのフラグ
-
-	bool m_CreateDarkWallFlag = false;			//ダークウォール生成フラグ
-
-	float m_attackIntervalTime = 4.0f;
-	const float m_damageIntervalTime = 0.5f;
+	Level3DRender					m_stageLevel;
+	Animation						m_animation;											// アニメーション
+	AnimationClip					m_animationClip[enAnimClip_Num];						// アニメーションクリップ 
 	
-	InfoAboutAttack m_InfoAboutAttack;
+	ModelRender						m_modelRender;											//モデルレンダー
+	CharacterController				m_charaCon;												//キャラクターコントローラー
 
+	Vector3							m_warpPosition = g_vec3Zero;							//ワープの座標
+	Vector3							m_toPlayerDir = g_vec3Zero;								//プレイヤーに向かうベクトル
 
-	bool m_halfHpFlag = false;				//攻撃がより攻撃的になる
+	
+	int								m_hitCount = 0;											//被ダメージ時にカウントを増やす
+	int								m_accumulationDamage = 0;								//被ダメージ時に受けたダメージ分増やす
 
-	bool m_dieFlag = false;
-	bool m_winFlag = false;
+	const float						m_distanceToPlayer = 300.0f;							//プレイヤーとの距離
 
-	bool m_invincibleFlag = false;
+	int								m_darkWallBoonId = -1;									//ダークウォールで使うボーンID
 
-	bool m_timeUpEndFlag = false;
+	bool							m_attackRangeFlag = false;								//攻撃範囲にいるかのフラグ
 
-	bool m_createDarkMeteoriteFlag = false;
+	float							m_attackIntervalTime = 4.0f;
+	const float						m_damageIntervalTime = 0.5f;							//ダメージを受ける間隔
+	
+	InfoAboutAttack					m_InfoAboutAttack;										//攻撃に関する情報
 
-	bool m_firstSummonFlag = true;
+	bool							m_halfHpFlag = false;									//攻撃がより攻撃的になる
 
-	const float m_angryLimitTime = 20.0f;
-	float m_angryLimitTimer = 0.0f;
-	int m_angryModeCount = 0;							//怒りモードになる指標となるカウント
+	bool							m_dieFlag = false;										//死んだフラグ
+	bool							m_winFlag = false;										//勝利フラグ
+
+	bool							m_invincibleFlag = false;								//無敵状態フラグ
+	
+	bool							m_timeUpEndFlag = false;								//タイムアップでゲームが終わったかのフラグ
+
+	bool							m_createDarkMeteoriteFlag = false;						//ダークメテオ生成フラグ
+
+	bool							m_firstSummonFlag = true;								//初めての召喚かのフラグ
+
+	const float						m_angryLimitTime = 20.0f;
+	float							m_angryLimitTimer = 0.0f;
+	int								m_angryModeCount = 0;									//怒りモードになる指標となるカウント
 };
 
