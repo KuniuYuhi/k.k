@@ -45,7 +45,9 @@ namespace nsK2EngineLow {
 			initData.m_alphaBlendMode,
 			initData.m_isDepthWrite,
 			initData.m_isDepthTest,
-			initData.m_cullMode
+			initData.m_cullMode,
+			initData.addressU,
+			initData.addressV
 		);
 
 		UpdateWorldMatrix(g_vec3Zero, g_quatIdentity, g_vec3One);

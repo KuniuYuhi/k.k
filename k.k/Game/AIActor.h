@@ -137,6 +137,10 @@ public:
 	/// </summary>
 	virtual void HitFlamePillar(bool damageFlag = false);
 
+
+	virtual void CreateHitEffect();
+
+
 	/// <summary>
 	/// ステータスの取得
 	/// </summary>
@@ -216,10 +220,12 @@ protected:
 	virtual void ManageState() = 0;
 
 	/// <summary>
-	/// 移動時の回転
+	///  移動時の回転
 	/// </summary>
+	/// <param name="rotSpeed">線形補間時の回転速度(移動時)</param>
+	/// <param name="rotOnlySpeed">線形補間時の回転速度(回転のみの時)</param>
 	/// <returns></returns>
-	Quaternion Rotation();
+	virtual Quaternion Rotation(float rotSpeed, float rotOnlySpeed);
 
 	/// <summary>
 	/// 回転のみを行う処理条件
@@ -229,8 +235,6 @@ protected:
 
 	Player*				m_player = nullptr;
 
-	PhysicsStaticObject			m_monsterStaticObject;					//静的オブジェクト。派生クラスで当たり判定作成
-
 	Status						m_status;
 
 	Vector3						m_targetPosition = Vector3::Zero;		//ターゲットの座標を格納
@@ -238,8 +242,7 @@ protected:
 	Vector3						m_toTarget= Vector3::Zero;				//ターゲットに向かうベクトル
 
 	Vector3						m_position = Vector3::Zero;
-	Vector3						m_oldPosition= Vector3::Zero;
-	Vector3						m_oldMoveSpeed = Vector3::Zero;
+	Vector3						m_rotMove = Vector3::Zero;
 	Vector3						m_moveSpeed = Vector3::Zero;
 
 	Vector3						m_forward = Vector3::Zero;				//前方向

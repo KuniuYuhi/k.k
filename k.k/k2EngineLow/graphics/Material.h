@@ -26,7 +26,9 @@ namespace nsK2EngineLow {
 			AlphaBlendMode alphaBlendMode,
 			bool isDepthWrite,
 			bool isDepthTest,
-			D3D12_CULL_MODE cullMode
+			D3D12_CULL_MODE cullMode,
+			D3D12_TEXTURE_ADDRESS_MODE addressU,
+			D3D12_TEXTURE_ADDRESS_MODE addressV
 		);
 		/// <summary>
 		/// レンダリングを開始するときに呼び出す関数。

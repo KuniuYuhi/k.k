@@ -168,6 +168,10 @@ void Player::ChangeCharacter(EnCharacters nextCharacter)
 		actor[m_enActiveCharacter]->GetPosition(),
 		actor[m_enActiveCharacter]->GetRotation()
 	);
+
+	//キャラを切り替えたので無敵時間フラグをtrueにする
+	m_nowActor->SetChangeCharacterInvincbleFlag(true);
+
 	//m_charaCon.SetRadius(50.0f);
 	//キャラコンの座標
 	//m_nowActor->SetCharaConPosition(m_nowActor->GetPosition());

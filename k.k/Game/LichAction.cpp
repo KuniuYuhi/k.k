@@ -31,7 +31,7 @@ int LichAction::NextAction()
 
 	CalcEvalSummon(enAttack_Summon);
 
-	CalcEvalDarkMeteorite(enAttack_DarkMeteorite);
+	//CalcEvalDarkMeteorite(enAttack_DarkMeteorite);
 
 	CalcEvalAngryMode(enAttack_AngryMode);
 
@@ -62,27 +62,23 @@ int LichAction::NextAction()
 	case enAttack_DarkMeteorite:
 		//この技は無敵状態で打つ
 		m_lich->SetInvincibleFlag(true);
-		//特別な行動ステートを元に戻す
-		//m_lich->SetSpecialActionState(Lich::enSpecialActionState_Normal);
 		//ステートセット
 		m_lich->SetNextAnimationState(Lich::enAnimationState_Attack_DarkMeteorite_start);
-		//どんな行動をしたか保存する
-		m_oldActionNumber = enAttack_DarkMeteorite;
 		//評価値リセット
 		m_action[NextActionNomber].m_eval = 0;
-
+		//どんな行動をしたか保存する
+		m_oldActionNumber = enAttack_DarkMeteorite;
 		return 0;
 		break;
 	case enAttack_Summon:
 		//この技は無敵状態で打つ
 		m_lich->SetInvincibleFlag(true);
-		//ワープ
-		//m_lich->Warp(Lich::enSpecialActionState_CenterWarp);
+		//召喚クラスの生成
+		m_lich->CreateSummon();
 		//ステートセット
 		m_lich->SetNextAnimationState(Lich::enAninationState_Summon);
 		//蓄積した値を0にする
 		m_lich->SetHitCountAndDamage(0, 0);
-		
 		//どんな行動をしたか保存する
 		m_oldActionNumber = enAttack_Summon;
 		return 0;

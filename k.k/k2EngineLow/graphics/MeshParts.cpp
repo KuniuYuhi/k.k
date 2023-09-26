@@ -33,7 +33,9 @@ namespace nsK2EngineLow {
 		AlphaBlendMode alphaBlendMode,
 		bool isDepthWrite,
 		bool isDepthTest,
-		D3D12_CULL_MODE cullMode
+		D3D12_CULL_MODE cullMode,
+		D3D12_TEXTURE_ADDRESS_MODE addressU,
+		D3D12_TEXTURE_ADDRESS_MODE addressV
 	)
 	{
 		m_meshs.resize(tkmFile.GetNumMesh());
@@ -53,7 +55,9 @@ namespace nsK2EngineLow {
 				alphaBlendMode,
 				isDepthWrite,
 				isDepthTest,
-				cullMode
+				cullMode,
+				addressU,
+				addressV
 			);
 			meshNo++;
 		});
@@ -132,7 +136,9 @@ namespace nsK2EngineLow {
 		AlphaBlendMode alphaBlendMode,
 		bool isDepthWrite,
 		bool isDepthTest,
-		D3D12_CULL_MODE cullMode
+		D3D12_CULL_MODE cullMode,
+		D3D12_TEXTURE_ADDRESS_MODE addressU,
+		D3D12_TEXTURE_ADDRESS_MODE addressV
 	) {
 		//1. 頂点バッファを作成。
 		int numVertex = (int)tkmMesh.vertexBuffer.size();
@@ -199,7 +205,9 @@ namespace nsK2EngineLow {
 				alphaBlendMode,
 				isDepthWrite,
 				isDepthTest,
-				cullMode
+				cullMode,
+				addressU,
+				addressV
 			);
 			//作成したマテリアル数をカウントする。
 			materialNum++;

@@ -2,15 +2,14 @@
 #include "Actor.h"
 #include "FireBall.h"
 #include "DarkWall.h"
+#include "DarkBall.h"
 #include "Meteo.h"
 #include "DarkMeteorite.h"
 #include "AIActor.h"
+#include "MagicBall.h"
 
-//todo 無敵ダッシュなくす？
 Actor::Actor()
 {
-	//m_player = FindGO<Player>("player");
-	//m_charaCon;
 }
 
 Actor::~Actor()
@@ -111,32 +110,42 @@ Vector3 Actor::calcVelocity(Status status)
 
 bool Actor::CalcInvincibleTime()
 {
-	//無敵時間フラグが立ったら
-	if (m_invincibleTimeFlag == true)
+	if (m_invincibleTimeFlag != true)
 	{
-		if (m_invincbleTime < m_invincbleTimer)
-		{
-			m_invincbleTimer = 0.0f;
-			//フラグを
-			m_invincibleTimeFlag = false;
-
-			//return false;
-		}
-		else
-		{
-			m_invincbleTimer += g_gameTime->GetFrameDeltaTime();
-		}
-
-		return true;
+		return false;
 	}
 
-	return false;
+	//無敵時間フラグが立ったら
+	if (m_invincbleTime < m_invincbleTimer)
+	{
+		m_invincbleTimer = 0.0f;
+		//フラグを
+		m_invincibleTimeFlag = false;
+		return false;
+	}
+	else
+	{
+		m_invincbleTimer += g_gameTime->GetFrameDeltaTime();
+		return true;
+
+	}
 }
 
 void Actor::DamageCollision(CharacterController& characon)
 {
 	//抜け出す処理
 	if (isCollisionEntable() != true)
+	{
+		return;
+	}
+
+	if (IsInvincible() == true)
+	{
+		return;
+	}
+
+	//キャラ切り替え直後なら処理しない
+	if (GetInvincibleTimeFlag() == true)
 	{
 		return;
 	}
@@ -149,9 +158,12 @@ void Actor::DamageCollision(CharacterController& characon)
 		//自身のキャラコンと衝突したら
 		if (collision->IsHit(characon) == true)
 		{
-			FireBall* fireball = FindGO<FireBall>("darkball");
-			Damage(fireball->GetAtk());
-			CreateDamageFont(fireball->GetAtk());
+			//DarkBall* darkball = FindGO<DarkBall>("darkball");
+			MagicBall* darkball = FindGO<MagicBall>(collision->GetCreatorName());
+			//ぶつかったのでフラグを立てる
+			darkball->SetHitFlag(true);
+			Damage(darkball->GetAtk());
+			CreateDamageFont(darkball->GetAtk());
 			return;
 		}
 	}
@@ -196,8 +208,9 @@ void Actor::DamageCollision(CharacterController& characon)
 		if (collision->IsHit(characon) == true)
 		{
 			Meteo* meteo = FindGO<Meteo>("meteo");
-			Damage(meteo->GetExplosionAttack());
-			CreateDamageFont(meteo->GetExplosionAttack());
+			int damage = meteo->CalcDamageToDistance(m_position);
+			Damage(damage);
+			CreateDamageFont(damage);
 			return;
 		}
 	}
@@ -228,8 +241,30 @@ void Actor::DamageCollision(CharacterController& characon)
 			DarkMeteorite* darkMeteo = FindGO<DarkMeteorite>("darkmeteorite");
 			Damage(darkMeteo->GetAtk());
 			CreateDamageFont(darkMeteo->GetAtk());
+			darkMeteo->SetChaseFlag(true);
 			return;
 		}
+	}
+
+}
+
+bool Actor::IsInvincible()
+{
+	if (m_changeCharacterInvincbleFlag != true)
+	{
+		return false;
+	}
+
+	if (m_changeCharaInvisibleTime < m_changeCharaInvisibleTimer)
+	{
+		SetChangeCharacterInvincbleFlag(false);
+		m_changeCharaInvisibleTimer = 0.0f;
+		return false;
+	}
+	else
+	{
+		m_changeCharaInvisibleTimer += g_gameTime->GetFrameDeltaTime();
+		return true;
 	}
 
 }
@@ -247,17 +282,25 @@ bool Actor::IsComboStateSame()
 		return false;
 }
 
-Quaternion Actor::Rotation()
+Quaternion Actor::Rotation(float rotSpeed,float rotOnlySpeed)
 {
 	//回転だけさせたいなら
 	if (RotationOnly() == true)
 	{
+		//xかzの移動速度があったら(スティックの入力があったら)。
+		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
+		{
+			m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotOnlySpeed, m_rotMove, m_SaveMoveSpeed);
+			m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
+		}
+
 		return m_rotation;
 	}
 
 	//xかzの移動速度があったら(スティックの入力があったら)。
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
+		m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotSpeed, m_rotMove, m_SaveMoveSpeed);
 		m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
 	}
 
@@ -287,6 +330,12 @@ bool Actor::CalcInvicibleDash()
 
 void Actor::CreateDamageFont(int damage)
 {
+	//ダメージが0か0以下ならフォントを出さない
+	if (damage <= 0)
+	{
+		return;
+	}
+
 	DamageFont* damagefont = NewGO<DamageFont>(0, "damagefont");
 	damagefont->Setting(
 		DamageFont::enDamageActor_Player,

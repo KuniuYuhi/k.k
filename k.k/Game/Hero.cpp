@@ -14,9 +14,17 @@
 #include "HeroStatePowerUp.h"
 #include "HeroStateVictory.h"
 
+#include "InitEffect.h"
+
 //todo ダッシュ時攻撃アニメーション変更
 
 namespace {
+	const float ROT_SPEED = 2.0f;
+	const float ROT_ONLY_SPEED = 2.2f;
+
+	const float SWORD_EFFECT_SIZE = 10.0f;
+	const Vector3 DASH_EFFECT_SIZE = { 10.0f,20.0f,8.0f };
+
 	int MAXHP = 200;
 	int MAXMP = 100;
 	int ATK = 50;
@@ -109,6 +117,10 @@ void Hero::InitModel()
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
+
+
+	
+
 }
 
 void Hero::Update()
@@ -144,8 +156,10 @@ void Hero::Update()
 		CreateSkillCollision();
 	}
 
+	CalcInvincibleTime();
+
 	//無敵時間でないなら当たり判定の処理を行う
-	if (CalcInvincibleTime() == false&& CalcInvicibleDash()==false)
+	if (CalcInvicibleDash() == false)
 	{
 		DamageCollision(m_player->GetCharacterController());
 	}
@@ -173,19 +187,31 @@ void Hero::Move()
 				//ダッシュの途中で攻撃したりダメージ受けたかもしれないのでタイマーリセット
 				m_dashTimer = 1.0f;
 				SetNextAnimationState(enAninationState_Dash);
-			}
-
-
-				//SetInvicibleDashState(enDashInvicibleState_None);
-				
-			
+				//ダッシュエフェクト再生
+				//ダッシュエフェクトの読み込み
+				m_dashEffect = NewGO<EffectEmitter>(0);
+				m_dashEffect->Init(InitEffect::enEffect_Dash);
+				m_dashEffect->Play();
+				m_dashEffect->SetScale(DASH_EFFECT_SIZE);
+				m_dashEffect->SetPosition(m_position);
+				m_dashEffect->SetRotation(m_rotation);
+				m_dashEffect->Update();
+				m_dashEffectFlag = true;
+			}	
 		}
 	}
 
 	m_moveSpeed = m_player->GetMoveSpeed();
 	m_position = m_player->GetPosition();
 	
-	Rotation();
+	Rotation(ROT_SPEED, ROT_ONLY_SPEED);
+
+	if (m_dashEffectFlag ==true)
+	{
+		m_dashEffect->SetPosition(m_position);
+		m_dashEffect->SetRotation(m_rotation);
+		m_dashEffect->Update();
+	}
 }
 
 bool Hero::RotationOnly()
@@ -193,11 +219,6 @@ bool Hero::RotationOnly()
 	//スキルのチャージ時間の間
 	if (isRotationEntable()!=true)
 	{
-		//xかzの移動速度があったら(スティックの入力があったら)。
-		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
-		{
-			m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
-		}
 		return true;
 	}
 
@@ -276,11 +297,8 @@ void Hero::Attack()
 			SetNextAnimationState(enAnimationState_PowerUp);
 			//MP回復状態を止める
 			SetRecoveryMpFlag(false);
-		}
-		
+		}	
 	}
-	
- 
 }
 
 void Hero::PlayAnimation()
@@ -323,16 +341,27 @@ void Hero::CreateSkillCollision()
 
 void Hero::Damage(int attack)
 {
-	//スキル使用時にダメージを受けたかもしれない
-	m_createSkillCollisionFlag = false;
-
+	//スキル使用中なら
+	{
+		m_dashFlag = false;
+		//スキルを打ち終わったのでMP回復フラグをtrueにする
+		SetRecoveryMpFlag(true);
+		//スキル使用時にダメージを受けたかもしれない
+		m_createSkillCollisionFlag = false;
+		//エフェクトの停止
+		if (m_swordStormEffect != nullptr)
+		{
+			m_swordStormEffect->Stop();
+		}
+	}
+	//HPが0より大きいなら
 	if (m_status.hp > 0)
 	{
 		m_status.hp -= attack;
 		SetInvicibleTimeFlag(true);
 		SetNextAnimationState(enAnimationState_Damage);
 	}
-
+	//0か0以下なら
 	if (m_status.hp <= 0)
 	{
 		//やられたのでdieFlagをtrueにする
@@ -399,10 +428,6 @@ bool Hero::CalcDash()
 	m_modelRender.Update();
 
 	return false;
-
-	//
-	//m_player->GetCharacterController().GetRigidBody()->AddForce(m_forward * 200.0f, m_position);
-
 }
 
 void Hero::SetNextAnimationState(EnAnimationState nextState)
@@ -489,7 +514,7 @@ void Hero::ProcessCommonStateTransition()
 	}
 	else
 	{
-		m_dashFlag = false;
+		m_dashEffectFlag = false;
 		SetNextAnimationState(enAninationState_Idle);
 	}
 }
@@ -498,6 +523,10 @@ void Hero::OnProcessDashStateTransition()
 {
 	if (CalcDash() == true)
 	{
+		m_dashEffect->Stop();
+		
+		m_dashEffectFlag = false;
+
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}
@@ -555,8 +584,9 @@ void Hero::OnProcessAttack_Skill_ChargeStateTransition()
 	//チャージ時間を計算
 	if (m_MaxChargeTime > m_ChargeTimer)
 	{
+		//チャージ
 		m_ChargeTimer += g_gameTime->GetFrameDeltaTime()*2.0f;
-		//
+		//最大まで溜まったら最大値にする
 		if (m_ChargeTimer > m_MaxChargeTime)
 		{
 			m_ChargeTimer = m_MaxChargeTime;
@@ -578,9 +608,17 @@ void Hero::OnProcessAttack_Skill_ChargeStateTransition()
 		m_dashFlag = true;
 		//当たり判定作成
 		m_createSkillCollisionFlag = true;
-
+		//ステートをメインに遷移
 		m_enAttackPatternState = enAttackPattern_Skill_Main;
 		SetNextAnimationState(enAnimationState_Attack_Skill_Main);
+		//エフェクト再生
+		m_swordStormEffect = NewGO<EffectEmitter>(0);
+		m_swordStormEffect->Init(InitEffect::enEffect_SwordStorm);
+		m_swordStormEffect->Play();
+		m_swordStormEffect->SetPosition(m_position);
+		m_swordStormEffect->SetScale(g_vec3One * SWORD_EFFECT_SIZE);
+		m_swordStormEffect->Update();
+
 	}
 
 }
@@ -592,15 +630,14 @@ void Hero::OnProcessAttack_Skill_MainStateTransition()
 	{
 		//ダッシュフラグをfalseにする
 		m_dashFlag = false;
-
+		//当たり判定の生成をやめる
 		m_createSkillCollisionFlag = false;
-
+		//エフェクトの停止
+		m_swordStormEffect->Stop();
 		//チャージ時間をリセット
 		m_ChargeTimer = 0.0f;
-
 		//スキルを打ち終わったのでMP回復フラグをtrueにする
 		SetRecoveryMpFlag(true);
-
 		//攻撃パターンをなし状態にする
 		m_enAttackPatternState = enAttackPattern_None;
 		//共通の状態遷移処理に移行
@@ -608,6 +645,10 @@ void Hero::OnProcessAttack_Skill_MainStateTransition()
 	}
 	else
 	{
+		//エフェクトの座標を更新
+		m_swordStormEffect->SetPosition(m_position);
+		m_swordStormEffect->Update();
+		//チャージした時間を減らす
 		m_ChargeTimer -= g_gameTime->GetFrameDeltaTime();
 	}
 }
@@ -664,11 +705,6 @@ void Hero::OnProcessPowerUpStateTransition()
 
 void Hero::OnProcessVictoryStateTransition()
 {
-	//アニメーションの再生が終わったら
-	if (m_modelRender.IsPlayingAnimation() == false)
-	{
-		
-	}
 }
 
 void Hero::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
@@ -743,7 +779,7 @@ void Hero::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 
 void Hero::Render(RenderContext& rc)
 {
-	//無敵時間の間は
+	//無敵時間の間は点滅
 	if (m_invincibleTimeFlag == true)
 	{
 		if (m_modelDrawFlag == true)

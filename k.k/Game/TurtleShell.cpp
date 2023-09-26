@@ -22,6 +22,7 @@ namespace {
 	const float ATTACK_INTAERVALE_TIME = 2.5f;			//攻撃する間隔
 	const float ANGLE_RANGE = 2.0f;						//移動するアングルの範囲
 	const float POS2_LENGTH = 30.0f;
+	const float ROT_SPEED = 3.8f;
 
 	//ステータス
 	int MAXHP = 200;
@@ -190,7 +191,7 @@ void TurtleShell::Update()
 	AngleChangeTimeIntarval(m_angleChangeTime);
 
 	Move(m_charaCon);
-	Rotation();
+	Rotation(ROT_SPEED, ROT_SPEED);
 
 	ManageState();
 	PlayAnimation();
@@ -202,89 +203,9 @@ void TurtleShell::Update()
 		CreateCollision();
 	}
 
-	m_oldPosition = m_position;
-
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
 }
-
-//void TurtleShell::Move()
-//{
-//	//特定のアニメーションが再生中なら抜け出す
-//	if (isAnimationEntable() != true)
-//	{
-//		return;
-//	}
-//	//攻撃中は処理しない
-//	if (IsAttackEntable() != true)
-//	{
-//		return;
-//	}
-//
-//	if (m_enAnimationState==enAnimationState_Difence)
-//	{
-//		return;
-//	}
-//
-//	//視界にターゲットを見つけたら
-//	if (IsFindPlayer(m_distanceToPlayer) == true)
-//	{
-//		Vector3 toPlayerDir = m_toTarget;
-//		//視野角内にターゲットがいたら
-//		if (IsInFieldOfView(toPlayerDir, m_forward, m_angle) == true)
-//		{
-//			toPlayerDir.Normalize();
-//			//追いかける
-//			m_direction = toPlayerDir;
-//			//m_moveSpeed = CalcVelocity(m_status, m_direction);
-//			m_moveSpeed = m_direction * m_status.defaultSpeed;
-//			m_SaveMoveSpeed = m_moveSpeed;
-//		}
-//		else
-//		{
-//			//視野角内にはいないが攻撃可能距離にいるなら
-//			if (IsFindPlayer(100.0f) == true)
-//			{
-//				m_moveSpeed = CalcVelocity(m_status, m_targetPosition);
-//				m_SaveMoveSpeed = m_moveSpeed;
-//			}
-//		}
-//	}
-//	else
-//	{
-//		//数秒間隔で向かうベクトルを変える
-//		if (m_angleChangeTimeFlag == false)
-//		{
-//			m_direction = SetDirection();
-//			m_angleChangeTimeFlag = true;
-//		}
-//		//ランダムな方向に移動
-//		m_moveSpeed = m_direction * m_status.defaultSpeed;
-//		m_SaveMoveSpeed = m_moveSpeed;
-//	}
-//
-//	//壁にぶつかったら反転
-//	if (IsBumpedForest() == true)
-//	{
-//		m_direction *= -1.0f;
-//		m_moveSpeed = m_direction * m_status.defaultSpeed;
-//		m_SaveMoveSpeed = m_moveSpeed;
-//		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-//		return;
-//	}
-//
-//
-//	//プレイヤーとの距離が近くないなら移動する
-//	if (IsFindPlayer(m_stayDistance) != true)
-//	{
-//		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-//	}
-//	else
-//	{
-//		//範囲内にいるので移動しない
-//		m_moveSpeed = Vector3::Zero;
-//	}
-//}
 
 void TurtleShell::DecideNextAction()
 {
@@ -369,58 +290,6 @@ bool TurtleShell::Difence()
 	return false;
 }
 
-//Vector3 TurtleShell::SetDirection()
-//{
-//
-//	Vector3 randomPos = g_vec3Zero;
-//	randomPos.y = 0.0f;
-//	float X = (rand() % (2 - (-2) + 1)) + (-2);
-//	float Z = (rand() % (2 - (-2) + 1)) + (-2);
-//	randomPos.x += X;
-//	randomPos.z += Z;
-//	randomPos.Normalize();
-//
-//	return randomPos;
-//}
-//
-//bool TurtleShell::IsBumpedForest()
-//{
-//	Vector3 pos1 = m_position;
-//	Vector3 pos2 = m_position;
-//	pos1.Normalize();
-//	pos2 /**=10.0f*/+= pos1 * 30.0f;
-//
-//	SphereCollider m_sphereCollider;
-//	m_sphereCollider.Create(1.0f);
-//
-//	btTransform start, end;
-//	start.setIdentity();
-//	end.setIdentity();
-//	//始点はエネミーの座標。
-//	start.setOrigin(btVector3(m_position.x, m_position.y, m_position.z));
-//	//終点はプレイヤーの座標。
-//	end.setOrigin(btVector3(
-//		pos2.x, pos2.y, pos2.z));
-//
-//	//壁の判定を返す
-//	IsForestResult callback_Forest;
-//	//コライダーを始点から終点まで動かして。
-//	//壁と衝突するかどうかを調べる。
-//	PhysicsWorld::GetInstance()->ConvexSweepTest(
-//		(const btConvexShape*)m_sphereCollider.GetBody(),
-//		start, end, callback_Forest);
-//	//森に衝突した
-//	if (callback_Forest.isHit == true)
-//	{
-//		return true;
-//	}
-//	else
-//	{
-//		//衝突しなかった
-//		return false;
-//	}
-//}
-
 void TurtleShell::CreateCollision()
 {
 	auto HeadCollision = NewGO<CollisionObject>(0, "monsterattack");
@@ -495,6 +364,7 @@ void TurtleShell::Damage(int attack)
 	{
 		m_status.hp = 0;
 		SetNextAnimationState(enAnimationState_Die);
+		Dead();
 		return;
 	}
 
@@ -518,11 +388,6 @@ bool TurtleShell::RotationOnly()
 {
 	if (m_enAnimationState == enAnimationState_Difence)
 	{
-		//xかzの移動速度があったら(スティックの入力があったら)。
-		if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
-		{
-			m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
-		}
 		return true;
 	}
 

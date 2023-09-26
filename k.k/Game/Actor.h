@@ -87,6 +87,10 @@ public:
 	/// <returns></returns>
 	virtual bool isRotationEntable() const = 0;
 
+	/// <summary>
+	/// キャラ切り替え直後の無敵時間かどうか
+	/// </summary>
+	bool IsInvincible();
 
 	//敵のダメージ判定用コンボステート
 	enum EnComboState
@@ -224,6 +228,22 @@ public:
 		return m_dieToChangeFlag;
 	}
 
+	void SetInvicibleTimeFlag(bool flag)
+	{
+		m_invincibleTimeFlag = flag;
+	}
+
+	const bool GetInvincibleTimeFlag()
+	{
+		return m_invincibleTimeFlag;
+	}
+
+	void SetChangeCharacterInvincbleFlag(bool flag)
+	{
+		m_changeCharacterInvincbleFlag = flag;
+	}
+
+
 	
 protected:
 
@@ -262,21 +282,11 @@ protected:
 		m_recoveryMpFlag = flag;
 	}
 
-	void SetInvicibleTimeFlag(bool flag)
-	{
-		m_invincibleTimeFlag = flag;
-	}
-
-	const bool GetInvincibleTimeFlag()
-	{
-		return m_invincibleTimeFlag;
-	}
-
 	/// <summary>
 	/// 移動時の回転
 	/// </summary>
 	/// <returns></returns>
-	Quaternion Rotation();
+	Quaternion Rotation(float rotSpeed, float rotOnlySpeed);
 
 	enum EnDashInvicibleState
 	{
@@ -314,44 +324,47 @@ protected:
 	
 protected:
 
-	Status m_status;
-	//Player* m_player = nullptr;
-	AIActor* m_atttackAIActor = nullptr;		//攻撃してきたAIActor(モンスター)
+	Status							m_status;
+	AIActor*						m_atttackAIActor = nullptr;							//攻撃してきたAIActor(モンスター)
 	
-	EnComboState m_enNowComboState = enNowCombo_None;		//現在のコンボ
-	EnComboState m_enDamagedComboState = enDamageCombo_None;		//ダメージを受けた時のコンボ
-	EnDashInvicibleState m_enDashInvicibleState = enDashInvicibleState_None;	//ダッシュしたときの無敵時間のためのステート
+	EnComboState					m_enNowComboState = enNowCombo_None;				//現在のコンボ
+	EnComboState					m_enDamagedComboState = enDamageCombo_None;			//ダメージを受けた時のコンボ
+	EnDashInvicibleState			m_enDashInvicibleState = enDashInvicibleState_None;	//ダッシュしたときの無敵時間のためのステート
 
-	Vector3 m_forward = {0.0f,0.0f,1.0f};				//前方向
-	Vector3 m_position = Vector3::Zero;				//自身の座標
-	Vector3 m_moveSpeed = Vector3::Zero;			//移動方向
+	Vector3							m_forward = { 0.0f,0.0f,1.0f };						//前方向
+	Vector3							m_position = Vector3::Zero;							//自身の座標
+	Vector3							m_moveSpeed = Vector3::Zero;						//移動方向
 
-	Vector3 m_SaveMoveSpeed = Vector3::Zero;		//回転のみ使用する時に使う
+	Vector3							m_SaveMoveSpeed = Vector3::Zero;					//回転のみ使用する時に使う
+	Vector3							m_rotMove = g_vec3Zero;								//回転の向き
 
-	Quaternion m_rotation = Quaternion::Identity;
-	Vector3 m_scale = Vector3::One;
+	Quaternion						m_rotation = Quaternion::Identity;
+	Vector3							m_scale = Vector3::One;
 
-	int m_skillAttackPower = 0;
+	int								m_skillAttackPower = 0;
 
-	bool m_dashFlag = false;		//ダッシュするかのフラグ
+	bool							m_dashFlag = false;									//ダッシュするかのフラグ
 
 	//enumにするかも
-	bool m_dieFlag = false;			//やられたらtrueにする
-	bool m_dieToChangeFlag = false;		//やられてからキャラクター切り替えに移るためのフラグ
+	bool							m_dieFlag = false;									//やられたらtrueにする
+	bool							m_dieToChangeFlag = false;							//やられてからキャラクター切り替えに移るためのフラグ
 
-	bool m_recoveryMpFlag = false;	//スキルを打ち終わったあとにtrueにする。打つ前はfalse
+	bool							m_recoveryMpFlag = false;							//スキルを打ち終わったあとにtrueにする。打つ前はfalse
 
-	bool m_createAttackCollisionFlag = false;		//攻撃時に当たり判定を生成するかのフラグ
+	bool							m_createAttackCollisionFlag = false;				//攻撃時に当たり判定を生成するかのフラグ
 
-	bool m_invincibleTimeFlag = false;			//無敵時間であるかのフラグ
-	const float m_invincbleTime = 2.0f;
-	float m_invincbleTimer = 0.0f;
+	bool							m_invincibleTimeFlag = false;						//無敵時間であるかのフラグ
+	const float						m_invincbleTime = 2.0f;
+	float							m_invincbleTimer = 0.0f;
 
-	const float m_invincbleDashTime = 0.3f;		//無敵状態ダッシュの時間
-	float m_invincbledDashTimer = 0.0f;
+	const float						m_invincbleDashTime = 0.3f;							//無敵状態ダッシュの時間
+	float							m_invincbledDashTimer = 0.0f;
 
-	bool m_modelDrawFlag = false;				//モデルを描画するかのフラグ
+	bool							m_modelDrawFlag = false;							//モデルを描画するかのフラグ
 
+	bool							m_changeCharacterInvincbleFlag = false;				//キャラを切り替えた直後の無敵時間のフラグ
+	const float						m_changeCharaInvisibleTime = 1.0f;
+	float							m_changeCharaInvisibleTimer = 0.0f;
 
 };
 

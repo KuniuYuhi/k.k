@@ -1,6 +1,8 @@
 #pragma once
 #include "AIActor.h"
 
+class Lich;
+
 class MobMonster:public AIActor
 {
 public:
@@ -25,6 +27,17 @@ public:
 	virtual bool IsBumpedForest(float pos2Length);
 
 	/// <summary>
+	/// モンスターにぶつかったか
+	/// </summary>
+	/// <returns></returns>
+	bool IsBumpedMonster();
+
+	/// <summary>
+	/// すれ違う
+	/// </summary>
+	void Pass();
+
+	/// <summary>
 	/// 特定のアニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
@@ -46,6 +59,15 @@ public:
 	/// 被ダメージ時処理
 	/// </summary>
 	virtual void Damage(int attack) = 0;
+
+	/// <summary>
+	/// やられたときの処理
+	/// </summary>
+	virtual void Dead();
+
+	Quaternion Rotation(float rotSpeed, float rotOnlySpeed);
+
+	void CreateHitEffect();
 
 protected:
 
@@ -71,6 +93,9 @@ protected:
 	virtual bool RotationOnly();
 
 
+	Lich* m_lich = nullptr;
+
+	Vector3 m_passPower = g_vec3One;									//はじくときの力
 
 	Vector3 m_direction = Vector3::Zero;
 

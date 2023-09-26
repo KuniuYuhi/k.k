@@ -239,8 +239,10 @@
     <ClCompile Include="CactusStateRun.cpp" />
     <ClCompile Include="CactusStateVictory.cpp" />
     <ClCompile Include="DamageFont.cpp" />
+    <ClCompile Include="DarkBall.cpp" />
     <ClCompile Include="DarkMeteorite.cpp" />
     <ClCompile Include="DarkWall.cpp" />
+    <ClCompile Include="InitEffect.cpp" />
     <ClCompile Include="EntryBoss.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="FireBall.cpp" />
@@ -277,6 +279,7 @@
     <ClCompile Include="LichStateVictory.cpp" />
     <ClCompile Include="LichStateWalk.cpp" />
     <ClCompile Include="LichStateWarp.cpp" />
+    <ClCompile Include="MagicBall.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MushroomStateAppear.cpp" />
     <ClCompile Include="Meteo.cpp" />
@@ -352,8 +355,10 @@
     <ClInclude Include="CactusStateRun.h" />
     <ClInclude Include="CactusStateVictory.h" />
     <ClInclude Include="DamageFont.h" />
+    <ClInclude Include="DarkBall.h" />
     <ClInclude Include="DarkMeteorite.h" />
     <ClInclude Include="DarkWall.h" />
+    <ClInclude Include="InitEffect.h" />
     <ClInclude Include="EntryBoss.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="FireBall.h" />
@@ -397,6 +402,7 @@
     <ClInclude Include="LichStateVictory.h" />
     <ClInclude Include="LichStateWalk.h" />
     <ClInclude Include="LichStateWarp.h" />
+    <ClInclude Include="MagicBall.h" />
     <ClInclude Include="MushroomStateAppear.h" />
     <ClInclude Include="Meteo.h" />
     <ClInclude Include="MobMonster.h" />

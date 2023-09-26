@@ -270,7 +270,6 @@ float4 PSToonMain(SPSIn psIn) : SV_Target0
 
 	//トゥーンマップの計算。ディレクションライトのみ
 	float4 Toon=CalcToonMap(psIn,directionLight.direction);
-
 	albedoColor*=Toon;
 
 	//輪郭線の計算
@@ -521,10 +520,13 @@ float4 CalcToonMap(SPSIn psIn,float3 lightDirection)
 {
 	//ハーフランバート拡散照明による
 	float p=dot(psIn.normal*-1.0f,lightDirection.xyz);
-	p=p*0.5f+0.5f;
-	p*=p;
-
-	float4 Color=g_toonMap.Sample(g_sampler,float2(p,0.0f));
+	p=saturate(p*0.5f+0.5f);
+	//ｐが0.3から0.7以内の値ならグラデーションになるようにする。
+	//0が黒
+	//1が白
+	p = saturate(smoothstep(0.3, 0.7, p));
+	//ランプテクスチャからサンプリング
+	float4 Color=g_toonMap.Sample(g_sampler,float2(p,0.5f));
 
 	return Color;
 }

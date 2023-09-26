@@ -18,7 +18,7 @@ namespace {
 	const Vector3 BOSS_HP_FRONT_POS = { -489.0f,450.0f,0.0f };
 	const Vector3 BOSS_HP_BACK_POS = { 0.0f,450.0f,0.0f };
 
-	const Vector2 BSS_HP_FONT_POS = { -200.0f, 476.0f };
+	const Vector2 BSS_HP_FONT_POS = { -200.0f, 486.0f };
 
 	/// <summary>
 	/// プレイヤー側
@@ -44,8 +44,8 @@ namespace {
 	const Vector3 MAIN_MP_FRONT_BAR = { -168.5f, -394.0f, 0.0f };
 	const Vector3 MAIN_MP_BACK_BAR = { 73.0f, -394.0f, 0.0f };
 
-	const Vector2 HP_FONT_POS = { -164.0f,-443.0f };
-	const Vector2 MP_FONT_POS = { -164.0f, -369.0f };
+	const Vector2 HP_FONT_POS = { -164.0f,-425.0f };
+	const Vector2 MP_FONT_POS = { -164.0f, -354.0f };
 
 	const Vector3 SUB_HP_FRONT_BAR = { -771.0f, -233.0f, 0.0f };
 	const Vector3 SUB_HP_BACK_BAR = { -651.0f, -233.0f, 0.0f };
@@ -153,13 +153,13 @@ void GameUI::UpdateMainStatus()
 	//HPフォント
 	int HpFont = m_player->GetNowActorStatus().hp;
 	wchar_t HP[255];
-	swprintf_s(HP, 255, L"H P            %3d", HpFont);
+	swprintf_s(HP, 255, L"HP      %3d", HpFont);
 	m_playerUI.m_hpFont.SetText(HP);
 
 	//HPフォント
 	int MpFont = m_player->GetNowActorStatus().mp;
 	wchar_t MP[255];
-	swprintf_s(MP, 255, L"M P           %3d", MpFont);
+	swprintf_s(MP, 255, L"MP     %3d", MpFont);
 	m_playerUI.m_mpFont.SetText(MP);
 
 	//更新
@@ -594,7 +594,7 @@ void GameUI::InitPlayerUI()
 void GameUI::InitMonsterUI()
 {
 	m_monsterUI.m_hpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_monsterUI.m_hpFont.SetScale(1.3f);
+	m_monsterUI.m_hpFont.SetScale(1.1f);
 	m_monsterUI.m_hpFont.SetShadowParam(true, 1.8f, g_vec4Black);
 	m_monsterUI.m_hpFont.SetPosition(BSS_HP_FONT_POS);
 

@@ -191,7 +191,7 @@ private:
 	void ManageState();
 
 
-	Lich* m_lich = nullptr;
+	//Lich* m_lich = nullptr;
 	ITurtleShellState* m_state = nullptr;
 
 	Animation m_animation;	// アニメーション

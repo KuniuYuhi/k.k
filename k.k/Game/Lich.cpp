@@ -8,6 +8,7 @@
 #include "LichStateDie.h"
 #include "Game.h"
 #include "DarkWall.h"
+#include "DarkBall.h"
 #include "LichStateDamage.h"
 #include "LichStateDarkMeteorite_Start.h"
 #include "LichStateDarkMeteorite_Main.h"
@@ -39,7 +40,13 @@ namespace {
 	const float ADD_CREATE_DARK_BALL_1_Y = 30.0f;
 	const float ADD_CREATE_DARK_BALL_2_Y = -30.0f;
 
-	const float HULF_HP_ATK_INTERVAL = 3;
+	const float HULF_HP_ATK_INTERVAL = 3;						//HPが半分になった時の攻撃間隔時間
+
+	const char* DARL_BALL_LIGHT = "darkball_light";
+	const char* DARL_BALL_LEFT = "darkball_left";
+
+	const float ROT_SPEED = 1.9f;
+	const float ROT_ONLY_SPEED = 1.8f;
 
 	//ステータス
 	int MAXHP = 1000;
@@ -107,6 +114,9 @@ bool Lich::Start()
 	m_lichAction = new LichAction(this);
 	//todo 優先度設定する
 	m_lichAction->SettingPriority();
+	
+	//
+	//m_monsters.emplace_back(this);
 
 	return true;
 }
@@ -139,7 +149,7 @@ void Lich::InitModel()
 	m_animationClip[enAnimClip_Angry].SetLoopFlag(false);
 
 
-	m_modelRender.Init("Assets/modelData/character/Lich/Lich.tkm",
+	m_modelRender.Init("Assets/modelData/character/Lich/Lich_real.tkm",
 		m_animationClip,
 		enAnimClip_Num,
 		enModelUpAxisZ
@@ -159,15 +169,13 @@ void Lich::InitModel()
 		50.0f,
 		m_position
 	);
-
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
 
 	//ダークウォールに使うボーンID取得
-	m_darkWallBoonId = m_modelRender.FindBoneID(L"Index_Proximal_L");
-
+	m_darkWallBoonId = m_modelRender.FindBoneID(L"Staff");
 }
 
 void Lich::Update()
@@ -191,7 +199,7 @@ void Lich::Update()
 	CalcAngryTime();
 
 	Move();
-	Rotation();
+	Rotation(ROT_SPEED, ROT_ONLY_SPEED);
 
 	DecideNextAction();
 
@@ -200,8 +208,6 @@ void Lich::Update()
 
 	SetTransFormModel(m_modelRender);
 	m_modelRender.Update();
-
-	m_oldMoveSpeed = m_moveSpeed;
 }
 
 bool Lich::IsStopProcessing()
@@ -265,7 +271,6 @@ void Lich::Move()
 		m_moveSpeed = Vector3::Zero;
 		return;
 	}
-
 	//攻撃中なら移動しない
 	if (IsAttackEntable() != true)
 	{
@@ -305,7 +310,11 @@ void Lich::Damage(int attack)
 		if (Isflinch() == true)
 		{
 			//技の途中かもしれない
-			m_CreateDarkWallFlag = false;
+			if (m_darkWall != nullptr)
+			{
+				DeleteGO(m_darkWall);
+			}
+			//被ダメージアニメーションステートに遷移
 			SetNextAnimationState(enAnimationState_Damage);
 		}
 		//HPを減らす
@@ -333,7 +342,11 @@ void Lich::Damage(int attack)
 		m_dieFlag = true;
 		m_status.hp = 0;
 		//技の途中でやられたかもしれない
-		m_CreateDarkWallFlag = false;
+		if (m_darkWall != nullptr)
+		{
+			DeleteGO(m_darkWall);
+		}
+
 		//やられステート
 		SetNextAnimationState(enAnimationState_Die);
 		m_modelRender.SetAnimationSpeed(0.8f);
@@ -367,6 +380,7 @@ bool Lich::Isflinch()
 
 bool Lich::IsDistanceToPlayer()
 {
+	//自身からターゲットに向かうベクトルを求める
 	Vector3 diff = m_targetPosition - m_position;
 	//プレイヤーとの距離
 	if (diff.Length() < m_distanceToPlayer)
@@ -374,12 +388,8 @@ bool Lich::IsDistanceToPlayer()
 		//距離内にいる
 		return true;
 	}
-	else
-	{
-		//距離内にいない
-		return false;
-	}
-	
+	//距離内にいない
+	return false;
 }
 
 bool Lich::CalcAngryTime()
@@ -421,14 +431,8 @@ bool Lich::RotationOnly()
 	//特定のアニメーションが再生中のとき
 	if (isRotationEntable() != true)
 	{
-		//xかzの移動速度があったら(スティックの入力があったら)。
-		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
-		{
-			m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
-		}
 		return true;
 	}
-
 	return false;
 }
 
@@ -452,10 +456,16 @@ void Lich::DecideNextAction()
 	//攻撃可能なら
 	if (m_attackFlag == false)
 	{
-		//次の行動を選ぶ
-		m_lichAction->NextAction();
+		SetTargetPosition();
+		m_toPlayerDir =  m_targetPosition - m_position;
+		//プレイヤーが視野角内にいるなら
+		if (IsInFieldOfView(m_toPlayerDir, m_forward, 10.0f))
+		{
+			//次の行動を選ぶ
+			m_lichAction->NextAction();
 
-		m_attackFlag = true;
+			m_attackFlag = true;
+		}
 	}
 }
 
@@ -613,17 +623,13 @@ void Lich::OnProcessAttack_1StateTransition()
 
 void Lich::OnProcessAttack_2StateTransition()
 {
-	//ダークウォールの生成
-	if (m_CreateDarkWallFlag == true)
-	{
-		CreateDarkWall();
-	}
-
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//攻撃パターンをなし状態にする
-		//m_enAttackPatternState = enAttackPattern_None;
+		if (m_darkWall != nullptr)
+		{
+			DeleteGO(m_darkWall);
+		}
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}
@@ -634,8 +640,6 @@ void Lich::OnProcessDieStateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//
-		//m_game->SetClearCameraState(Game::enClearCameraState_Player);
 		DeleteGO(this);
 	}
 }
@@ -828,36 +832,39 @@ void Lich::OnProcessenWarpStepEnd()
 
 void Lich::CreateDarkWall()
 {
-	DarkWall* darkball = NewGO<DarkWall>(0, "darkwall");
-	darkball->SetLich(this);
+	m_darkWall = NewGO<DarkWall>(0, "darkwall");
+	m_darkWall->SetLich(this);
+
+	/*DarkWall* darkball = NewGO<DarkWall>(0, "darkwall");
+	darkball->SetLich(this);*/
 }
 
 void Lich::CreateDarkBall(bool AddBallFlag)
 {
-	FireBall* fireball = NewGO<FireBall>(0, "darkball");
-	fireball->SetLich(this);
-	fireball->SetLichAtk(m_status.atk);
-	fireball->Setting(m_position, m_rotation);
-	
+	DarkBall* darkBall = NewGO<DarkBall>(0, "darkball");
+	darkBall->SetLich(this);
+	darkBall->SetAtk(m_status.atk);
+	darkBall->Setting(m_position, m_rotation);
+	//更にダークボールを生成しないなら
 	if (AddBallFlag != true)
 	{
 		return;
 	}
 
 	//あと二つ生成する
-	AddCreateDarkBall(ADD_CREATE_DARK_BALL_1_Y);
-	AddCreateDarkBall(ADD_CREATE_DARK_BALL_2_Y);
+	AddCreateDarkBall(m_darkBall_left, DARL_BALL_LEFT,ADD_CREATE_DARK_BALL_1_Y);
+	AddCreateDarkBall(m_darkBall_light, DARL_BALL_LIGHT,ADD_CREATE_DARK_BALL_2_Y);
 }
 
-void Lich::AddCreateDarkBall(float degY)
+void Lich::AddCreateDarkBall(DarkBall* darkBall, const char* name, float degY)
 {
 	Quaternion right = m_rotation;
 	right.AddRotationDegY(degY);
-
-	FireBall* fireball1 = NewGO<FireBall>(0, "darkball");
-	fireball1->SetLich(this);
-	fireball1->SetLichAtk(m_status.atk);
-	fireball1->Setting(m_position, right);
+	//todo 名前変える
+	darkBall = NewGO<DarkBall>(0, name);
+	darkBall->SetLich(this);
+	darkBall->SetAtk(m_status.atk);
+	darkBall->Setting(m_position, right);
 }
 
 void Lich::CreateDarkMeteorite(bool lastMeteoFlag)
@@ -865,7 +872,7 @@ void Lich::CreateDarkMeteorite(bool lastMeteoFlag)
 	//大きなメテオを作成
 	m_darkMeteorite = NewGO<DarkMeteorite>(0, "darkmeteorite");
 	Vector3 pos = m_position;
-	pos.y += 410.0f;
+	pos.y += 840.0f;
 	m_darkMeteorite->SetPosition(pos);
 	m_darkMeteorite->SetRotation(m_rotation);
 	m_darkMeteorite->SetmLastBigMeteoShotFlag(lastMeteoFlag);
@@ -881,6 +888,19 @@ void Lich::DeleteDarkMeteo()
 	}
 }
 
+void Lich::CreateSummon()
+{
+	//モンスターを召喚する
+	m_summon = NewGO<Summon>(0, "summon");
+	m_summon->SetLich(this);
+	//最初の召喚だけ
+	if (m_firstSummonFlag == true)
+	{
+		m_summon->SetFirstSummonFlag(m_firstSummonFlag);
+		m_firstSummonFlag = false;
+	}
+}
+
 bool Lich::IsCollisionDetection()
 {
 	//無敵時間の間は処理をしない
@@ -888,17 +908,7 @@ bool Lich::IsCollisionDetection()
 	{
 		return true;
 	}
-	////被ダメージ時、デス時は処理をしない
-	//if (isAnimationEntable() != true)
-	//{
-	//	return;
-	//}
-	////攻撃中は処理をしない
-	//if (IsAttackEntable() != true)
-	//{
-	//	return;
-	//}
-
+	
 	return false;
 }
 
@@ -948,12 +958,15 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	//ダークウォール生成タイミング
 	if (wcscmp(eventName, L"Create_DarkWall") == 0)
 	{
-		m_CreateDarkWallFlag = true;
+		CreateDarkWall();
 	}
 	//ダークウォール生成終わり
 	if (wcscmp(eventName, L"CreateEnd_DarkWall") == 0)
 	{
-		m_CreateDarkWallFlag = false;
+		if (m_darkWall != nullptr)
+		{
+			DeleteGO(m_darkWall);
+		}
 	}
 
 	//メテオ生成タイミング
@@ -966,15 +979,8 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 
 	if (wcscmp(eventName, L"Summon") == 0)
 	{
-		//モンスターを召喚する
-		Summon* summon = NewGO<Summon>(0, "summon");
-		summon->SetLich(this);
-		//最初の召喚だけ
-		if (m_firstSummonFlag == true)
-		{
-			summon->SetFirstSummonFlag(m_firstSummonFlag);
-			m_firstSummonFlag = false;
-		}
+		//モンスターの召喚
+		m_summon->SetSummonStartFlag(true);
 	}
 }
 

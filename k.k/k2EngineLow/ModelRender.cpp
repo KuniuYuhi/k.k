@@ -35,12 +35,16 @@ namespace nsK2EngineLow {
 		{
 			m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GetToonTextrue();
 			m_modelInitData.m_psEntryPointFunc = "PSToonMain";
+			//UVサンプラをクランプにする
+			//クランプ＝UV座標が１を超えたときに手前の色をサンプリングするようにする
+			m_modelInitData.addressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+			m_modelInitData.addressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 		}
 		//輪郭線を描画するなら
 		if (outline == true)
 		{
 			//輪郭線
-		//拡張SRVにZPrepassで作成された深度テクスチャを設定する
+			//拡張SRVにZPrepassで作成された深度テクスチャを設定する
 			m_modelInitData.m_expandShaderResoruceView[2] =
 				&g_renderingEngine->GetZPrepassDepthTexture();
 		}

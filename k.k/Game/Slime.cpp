@@ -10,6 +10,7 @@
 #include "SlimeStateAppear.h"
 
 #include "Lich.h"
+#include "InitEffect.h"
 
 namespace {
 	const float ANGLE = 45.0f;				//視野角
@@ -19,6 +20,7 @@ namespace {
 	const float ATTACK_INTAERVALE_TIME = 2.0f;			//攻撃する間隔
 	const float ANGLE_RANGE = 2.0f;						//移動するアングルの範囲
 	const float POS2_LENGTH = 30.0f;
+	const float ROT_SPEED = 4.0f;
 
 	//ステータス
 	int MAXHP = 150;
@@ -166,7 +168,7 @@ void Slime::Update()
 	AngleChangeTimeIntarval(m_angleChangeTime);
 
 	Move(m_charaCon);
-	Rotation();
+	Rotation(ROT_SPEED, ROT_SPEED);
 
 	//攻撃
 	Attack();
@@ -265,6 +267,7 @@ void Slime::Damage(int attack)
 		//やられアニメーションステート
 		m_status.hp = 0;
 		SetNextAnimationState(enAnimationState_Die);
+		Dead();
 		return;
 	}
 	//被ダメージアニメーションステート

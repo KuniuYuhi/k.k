@@ -16,6 +16,11 @@ public:
 
 	void CalcDamageTime();
 
+	/// <summary>
+	/// フレイムピラーがダメージを与えられるようになったときに呼ぶ
+	/// </summary>
+	void StartFlamePillar();
+
 	void Render(RenderContext& rc);
 
 	void SetPosition(Vector3 postion)
@@ -52,10 +57,21 @@ public:
 		m_canDamageFlag = flag;
 	}
 
+	/// <summary>
+	/// フレイムピラーの炎を出し始めるかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetStartFlamePllarFlag(bool flag)
+	{
+		m_startFlamePllarFlag = flag;
+	}
+
 private:
 	Wizard* m_wizard = nullptr;
 
 	ModelRender m_model;
+	EffectEmitter* m_circleEffect;
+	EffectEmitter* m_flamePillarEffect;
 
 	Vector3 m_position = Vector3::Zero;
 	Quaternion m_rotation = Quaternion::Identity;
@@ -74,6 +90,8 @@ private:
 	bool m_canDamageFlag = false;			//ダメージを与えられるか	
 	const float m_canDamageTime = 1.0f;
 	float m_canDamageTimer = 0.0f;
+
+	bool m_startFlamePllarFlag = false;
 
 };
 

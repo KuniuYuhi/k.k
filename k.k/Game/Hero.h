@@ -236,38 +236,42 @@ private:
 
 
 
-	ModelRender m_modelRender;
+	EffectEmitter*							m_dashEffect;					//ダッシュエフェクト
+	EffectEmitter*							m_swordStormEffect;				//ソードストームエフェクト
 
-	Animation m_animation;	// アニメーション
-	AnimationClip m_animationClip[enAnimClip_Num];	// アニメーションクリップ 
+	ModelRender								m_modelRender;
 
-	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
+	Animation								m_animation;	// アニメーション
+	AnimationClip							m_animationClip[enAnimClip_Num];	// アニメーションクリップ 
 
-	EnAttackPattern m_enAttackPatternState = enAttackPattern_None;	//現在の攻撃タイミングを知るためのステート
+	EnAnimationState						m_enAnimationState = enAninationState_Idle;	//アニメーションステート
 
-	Player* m_player = nullptr;
+	EnAttackPattern							m_enAttackPatternState = enAttackPattern_None;	//現在の攻撃タイミングを知るためのステート
 
-	IHeroState* m_state = nullptr;					//ステートクラス
+	Player*									m_player = nullptr;
 
-	Vector3 m_dashForward = g_vec3Zero;
+	IHeroState*								m_state = nullptr;					//ステートクラス
 
-	const int m_skillMp = 30;	//スキル発動に必要なMP
-	const int m_skillPowerUpMp = 80;		//パワーアップに必要な
+	Vector3									m_dashForward = g_vec3Zero;
 
-	bool m_powerUpTimeFlag = false;
-	const float m_powerUpTime = 15.0f;				//パワーアップする時間
-	float m_powerUpTimer = 0.0f;					//パワーアップの時間を計るタイマー
-	const int m_powerUpPower = 10;					//パワーアップした時の上がる攻撃力
+	const int								m_skillMp = 30;	//スキル発動に必要なMP
+	const int								m_skillPowerUpMp = 80;		//パワーアップに必要なMP
 
-	int m_swordBoonId = -1;		//剣のボーンID取得用変数
-	int m_skillBoonId = -1;		//スキル使用時のボーン取得用変数
+	bool									m_powerUpTimeFlag = false;
+	const float								m_powerUpTime = 15.0f;				//パワーアップする時間
+	float									m_powerUpTimer = 0.0f;					//パワーアップの時間を計るタイマー
+	const int								m_powerUpPower = 10;					//パワーアップした時の上がる攻撃力
 
-	bool m_createSkillCollisionFlag = false;		//スキル使用時に当たり判定を生成するかのフラグ
-	float m_ChargeTimer = 0.0f;
-	const float m_MaxChargeTime = 3.0f;				//スキル１の溜めの最大時間
+	int										m_swordBoonId = -1;		//剣のボーンID取得用変数
+	int										m_skillBoonId = -1;		//スキル使用時のボーン取得用変数
 
+	bool									m_createSkillCollisionFlag = false;		//スキル使用時に当たり判定を生成するかのフラグ
+	float									m_ChargeTimer = 0.0f;
+	const float								m_MaxChargeTime = 3.0f;				//スキル１の溜めの最大時間
 
-	float m_dashTimer = 1.0f;
+	float									m_dashTimer = 1.0f;
+
+	bool									m_dashEffectFlag = false;
 
 };
 

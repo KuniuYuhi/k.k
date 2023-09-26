@@ -22,6 +22,7 @@ namespace {
 	const float ATTACK_INTAERVALE_TIME = 1.7f;			//攻撃する間隔
 	const float ANGLE_RANGE = 2.0f;						//移動するアングルの範囲
 	const float POS2_LENGTH = 30.0f;
+	const float ROT_SPEED = 4.0f;						//回転速度
 
 	//ステータス
 	int MAXHP = 120;
@@ -81,28 +82,6 @@ bool Cactus::Start()
 	return true;
 }
 
-//衝突したときに呼ばれる関数オブジェクト(壁用)
-//struct IsForestResult :public btCollisionWorld::ConvexResultCallback
-//{
-//	bool isHit = false;						//衝突フラグ。
-//	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
-//	{
-//		//地面とぶつかってなかったら。
-//		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
-//			//衝突したのは壁ではない。
-//			isHit = false;
-//			return 0.0f;
-//		}
-//		else
-//		{
-//			//地面とぶつかったら。
-//		//フラグをtrueに。
-//			isHit = true;
-//			return 0.0f;
-//		}
-//	}
-//};
-
 void Cactus::InitModel()
 {
 	m_animationClip[enAnimClip_Idle].Load("Assets/animData/character/Cactus/Idle.tka");
@@ -132,11 +111,7 @@ void Cactus::InitModel()
 		enAnimClip_Num,
 		enModelUpAxisZ
 	);
-	//モデルの静的オブジェクト作成
-	//m_monsterStaticObject.CreateFromModel(m_modelRender.GetModel(), m_modelRender.GetModel().GetWorldMatrix());
-	////コリジョン属性を付ける
-	//m_monsterStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Monster);
-
+	
 	m_charaCon.Init(
 		20.0f,
 		5.0f,
@@ -179,7 +154,7 @@ void Cactus::Update()
 	AngleChangeTimeIntarval(m_angleChangeTime);
 
 	Move(m_charaCon);
-	Rotation();
+	Rotation(ROT_SPEED, ROT_SPEED);
 
 	Attack();
 
@@ -293,26 +268,13 @@ void Cactus::Damage(int attack)
 	{
 		m_status.hp = 0;
 		SetNextAnimationState(enAnimationState_Die);
+		Dead();
 		return;
 	}
 
 	//もし防御中なら
 
 	SetNextAnimationState(enAnimationState_Damage);
-}
-
-bool Cactus::RotationOnly()
-{
-	if (isRotationEntable() != true)
-	{
-		//xかzの移動速度があったら(スティックの入力があったら)。
-		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
-		{
-			m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
-			return true;
-		}
-	}
-	return false;
 }
 
 void Cactus::ManageState()

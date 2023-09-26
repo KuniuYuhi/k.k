@@ -26,10 +26,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	Fade*m_fade = NewGO<Fade>(5, "fade");
 
 
-
-
-	Title* title = NewGO<Title>(0, "game");
-	//Game* game = NewGO<Game>(0, "game");
+	//Title* title = NewGO<Title>(0, "game");
+	Game* game = NewGO<Game>(0, "game");
 
 	// ここからゲームループ。
 	while (DispatchWindowMessage() && g_gameLoop.m_isLoop == true)

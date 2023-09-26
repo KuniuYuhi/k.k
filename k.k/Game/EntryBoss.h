@@ -11,6 +11,11 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
+
+	void MamageState();
+
+	void Animation();
 
 	void positionUp();
 	/// <summary>
@@ -27,6 +32,9 @@ public:
 
 	void FireMove();
 
+	/// <summary>
+	/// 登場ムービーが終わってからの処理
+	/// </summary>
 	void CompleteTime();
 
 	/// <summary>
@@ -64,15 +72,29 @@ public:
 	// アニメーションクリップの番号を表す列挙型。
 	enum EnAnimationClip {
 		enAnimClip_Idle,			// 0 : 待機アニメーション
-		enAnimClip_Victory,
+		enAnimClip_FogRemoval,
 		enAnimClip_Num,				// 7 :アニメーションクリップの数
 	};
 
 	//アニメーションステート
 	enum EnAnimationState {
 		enAninationState_Idle,
-		enAnimationState_Victory
+		enAnimationState_FogRemoval
 	};
+
+	void SetNextAnimationState(EnAnimationState NextAnimationState)
+	{
+		m_enAnimationState = NextAnimationState;
+	}
+
+	/// <summary>
+	/// 遷移処理を実行
+	/// </summary>
+	void OnProcessCommonStateTransition();
+	/// <summary>
+	/// 遷移処理を実行
+	/// </summary>
+	void OnProcessFogRemovalStateTransition();
 
 	enum EnLichName
 	{
@@ -94,6 +116,8 @@ private:
 
 
 	Game* m_game = nullptr;
+	EffectEmitter* m_CircleEffect = nullptr;
+	EffectEmitter* m_FogRemovalEffect = nullptr;
 
 	ModelRender m_model;
 	Vector3 m_position = g_vec3Zero;
@@ -111,9 +135,8 @@ private:
 	
 	LichCharInfo m_lichCharInfo[END];				//線形補間で使う始点と終点
 
-	//std::vector<SpriteRender> m_lichSprite;		//LICHの文字の画像を一文字ずつ格納
-
 	bool m_completeFlag = false;
+	bool m_positionUpFlag = false;
 	
 	float m_time = 0.0f;
 

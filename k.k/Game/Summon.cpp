@@ -8,6 +8,8 @@
 #include "Mushroom.h"
 #include "Cactus.h"
 
+#include "InitEffect.h"
+
 namespace {
 	const float PI = 3.14f;
 
@@ -26,14 +28,9 @@ Summon::~Summon()
 bool Summon::Start()
 {
 	m_lichPosition = m_lich->GetPosition();
-	//格納できるサイズを決める
+	//格納できるサイズ上限を決める
 	m_summonPositions.reserve(SUMMON_POS_MAX_SIZE);
 
-	return true;
-}
-
-void Summon::Update()
-{
 	//m_createMonsters←状況によって変えたい
 
 	//召喚する座標を決める
@@ -43,9 +40,23 @@ void Summon::Update()
 		m_createMonsters
 	);
 
+	SetCircleEffect();
+
+	return true;
+}
+
+void Summon::Update()
+{
+	//召喚フラグが立っていないならこの先処理しない
+	if (m_isSummonStartFlag != true)
+	{
+		return;
+	}
+
+	//召喚処理
 	//格納された座標からモンスターを召喚する
 	SetSummonMonsterPos();
-
+	//召喚が終わったので削除
 	DeleteGO(this);
 }
 
@@ -53,7 +64,7 @@ void Summon::CalcCirclePoints(Vector3 center, float radius, int numPoints)
 {
 	//todo ボスの向きによってかえる
 	//角度
-	float en = -180.0f;
+	float en = 360.0f;
 	en /= numPoints;
 
 	for (int i = 1; i <= numPoints; i++)
@@ -137,5 +148,26 @@ void Summon::SummonMonster(Vector3 summonPosition)
 		break;
 	}
 
+	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
+	effectEmitter->Init(InitEffect::enEffect_Mob_Summon_Right);
+	effectEmitter->Play();
+	effectEmitter->SetPosition(summonPosition);
+	effectEmitter->SetScale({ 15.0f,15.0f,15.0f });
+	effectEmitter->Update();
 
+}
+
+void Summon::SetCircleEffect()
+{
+	for (auto pos : m_summonPositions)
+	{
+		Vector3 Pos = pos;
+		Pos.y += 5.0f;
+		EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
+		effectEmitter->Init(InitEffect::enEffect_Mob_Summon_Circle);
+		effectEmitter->Play();
+		effectEmitter->SetPosition(Pos);
+		effectEmitter->SetScale({ 15.0f,15.0f,15.0f });
+		effectEmitter->Update();
+	}
 }
