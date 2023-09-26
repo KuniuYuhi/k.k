@@ -1,6 +1,8 @@
 #pragma once
 #include "AIActor.h"
 
+class Lich;
+
 class MobMonster:public AIActor
 {
 public:
@@ -63,6 +65,8 @@ public:
 	/// </summary>
 	virtual void Dead();
 
+	Quaternion Rotation(float rotSpeed, float rotOnlySpeed);
+
 	void CreateHitEffect();
 
 protected:
@@ -89,7 +93,9 @@ protected:
 	virtual bool RotationOnly();
 
 
-	Vector3 m_passPower = { 50.0f,0.0f,50.0f };
+	Lich* m_lich = nullptr;
+
+	Vector3 m_passPower = g_vec3One;									//‚Í‚¶‚­‚Æ‚«‚Ì—Í
 
 	Vector3 m_direction = Vector3::Zero;
 
