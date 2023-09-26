@@ -8,6 +8,8 @@ namespace {
     const float RADIUS = 45.0f;
     const float Y_UP = 60.0f;
 
+    const float EXPLOSION_SIZE = 9.0f;
+
 }
 
 DarkBall::DarkBall()
@@ -90,6 +92,7 @@ void DarkBall::SettingCollision()
 
     //ìñÇΩÇËîªíËçÏê¨
     m_BallCollision = NewGO<CollisionObject>(0, "darkball");
+    m_BallCollision->SetCreatorName(GetName());
     m_BallCollision->CreateSphere(
         m_collisionPosition,
         Quaternion::Identity,
@@ -111,7 +114,7 @@ void DarkBall::Explosion()
     EffectEmitter* explosionEffect = NewGO<EffectEmitter>(0);
     explosionEffect->Init(InitEffect::enEffect_DarkBall_Explosion);
     explosionEffect->Play();
-    explosionEffect->SetScale({ 9.0f,9.0f,9.0f });
+    explosionEffect->SetScale(g_vec3One * EXPLOSION_SIZE);
     explosionEffect->SetPosition(m_collisionPosition);
     explosionEffect->Update();
 
