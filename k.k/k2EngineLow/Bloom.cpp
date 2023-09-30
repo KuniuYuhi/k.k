@@ -25,10 +25,10 @@ namespace nsK2EngineLow {
 		rc.WaitUntilFinishDrawingToRenderTarget(m_luminanceRenderTarget);
 
 		//ガウシアンブラーを実行する
-		m_gaussianBlur[0].ExecuteOnGPU(rc, 5);
-		m_gaussianBlur[1].ExecuteOnGPU(rc, 5);
-		m_gaussianBlur[2].ExecuteOnGPU(rc, 5);
-		m_gaussianBlur[3].ExecuteOnGPU(rc, 5);
+		m_gaussianBlur[0].ExecuteOnGPU(rc, 8);
+		m_gaussianBlur[1].ExecuteOnGPU(rc, 8);
+		m_gaussianBlur[2].ExecuteOnGPU(rc, 8);
+		m_gaussianBlur[3].ExecuteOnGPU(rc, 8);
 
 		//ボケ画像をメインレンダリングターゲットに加算合成
 		//レンダリングターゲットとして利用できるまで待つ
