@@ -71,9 +71,6 @@ struct HemiSphereLight
 ////////////////////////////////////////////////
 // 定数バッファ。
 ////////////////////////////////////////////////
-
-
-
 //モデル用の定数バッファ
 cbuffer ModelCb : register(b0){
 	float4x4 mWorld;
@@ -348,6 +345,7 @@ float3 CalcLigFromDrectionLight(SPSIn psIn,float3 normal)
 	float3 specDirection=CalcPhongSpecular(
 		directionLight.direction,directionLight.color,psIn.worldPos,normal,psIn.uv);
 
+	//リムライトを使用するなら
 	//サーフェイスの法線と光の入射方向に依存するリムの強さを求める
 	float power1=1.0f-max(0.0f,dot(directionLight.direction,normal));
 	//サーフェイスの法線と視線の方向に依存するリムの強さを求める
@@ -355,12 +353,12 @@ float3 CalcLigFromDrectionLight(SPSIn psIn,float3 normal)
 	//最終的なリムの強さを求める
 	float limPower=power1*power2;
 	//強さを指数関数的にする
-	limPower=pow(limPower,1.2f);
+	limPower=pow(limPower,1.0f);
 	//リムライトのカラーを計算する
 	float3 limColor=limPower*directionLight.color;
 
 	//最終的な光
-	return diffDirection+specDirection;//+limColor;
+	return diffDirection+specDirection/*+limColor*/;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -510,6 +508,9 @@ float3 CalcNormalMap(SPSIn psIn)
 		+psIn.biNormal*localNormal.y
 		+normal*localNormal.z;
 		
+	
+	normal=normalize(normal);
+
 	return normal;
 }
 
@@ -524,7 +525,7 @@ float4 CalcToonMap(SPSIn psIn,float3 lightDirection)
 	//ｐが0.3から0.7以内の値ならグラデーションになるようにする。
 	//0が黒
 	//1が白
-	p = saturate(smoothstep(0.3, 0.7, p));
+	p = saturate(smoothstep(0.3, 0.55, p));
 	//ランプテクスチャからサンプリング
 	float4 Color=g_toonMap.Sample(g_sampler,float2(p,0.5f));
 
