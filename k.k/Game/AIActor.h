@@ -24,16 +24,15 @@ public:
 	/// <param name="scale"></param>
 	/// <param name="rotation"></param>
 	void SetTransForm(Vector3 position, Quaternion rotation, Vector3 scale = Vector3::One);
-
+	
 	/// <summary>
 	/// 移動処理
 	/// </summary>
-	/// <param name="status">ステータス</param>
+	/// <param name="status">自身のステータス</param>
 	/// <param name="targetposition">向かいたいターゲットの座標</param>
-	/// <returns>moveSpeed</returns>
-	Vector3 CalcVelocity(Status status,Vector3 targetposition);
-
-	//ターゲットに向かうベクトル
+	/// <param name="dashFlag">ダッシュフラグ。trueでダッシュ。主にプレイヤーを追いかけるときに使う</param>
+	/// <returns></returns>
+	Vector3 CalcVelocity(Status status,Vector3 targetposition, bool dashFlag = false);
 
 	/// <summary>
 	/// 視野角判定
@@ -137,7 +136,9 @@ public:
 	/// </summary>
 	virtual void HitFlamePillar(bool damageFlag = false);
 
-
+	/// <summary>
+	/// ヒットエフェクト生成
+	/// </summary>
 	virtual void CreateHitEffect();
 
 
@@ -150,11 +151,18 @@ public:
 		return m_status;
 	}
 
+	/// <summary>
+	/// 座標を設定
+	/// </summary>
+	/// <param name="position"></param>
 	void SetPosition(Vector3 position)
 	{
 		m_position = position;
 	}
-
+	/// <summary>
+	/// 回転を設定
+	/// </summary>
+	/// <param name="rotation"></param>
 	void SetRotation(Quaternion rotation)
 	{
 		m_rotation = rotation;
@@ -168,7 +176,6 @@ public:
 	{
 		return m_position;
 	}
-
 	/// <summary>
 	/// 拡大率の取得
 	/// </summary>
@@ -177,7 +184,6 @@ public:
 	{
 		return m_scale;
 	}
-
 	/// <summary>
 	/// 回転の取得
 	/// </summary>
@@ -186,17 +192,27 @@ public:
 	{
 		return m_rotation;
 	}
-
+	/// <summary>
+	/// 前方向を取得
+	/// </summary>
+	/// <returns></returns>
 	const Vector3& GetForward() const
 	{
 		return m_forward;
 	}
 
+	/// <summary>
+	/// 勝利フラグの設定
+	/// </summary>
+	/// <param name="flag"></param>
 	void SetWinFlag(bool flag)
 	{
 		m_winFlag = flag;
 	}
-
+	/// <summary>
+	/// 勝利フラグの取得
+	/// </summary>
+	/// <returns></returns>
 	const bool& GetWinFlag() const
 	{
 		return m_winFlag;
