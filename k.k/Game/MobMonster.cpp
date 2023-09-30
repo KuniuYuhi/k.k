@@ -85,7 +85,7 @@ void MobMonster::Move(CharacterController& charaCon)
 			toPlayerDir.Normalize();
 			//’Ç‚¢‚©‚¯‚é
 			m_direction = toPlayerDir;
-			m_moveSpeed = CalcVelocity(m_status, m_direction*(-1.0f));
+			m_moveSpeed = CalcVelocity(m_status, m_direction*(-1.0f),true);
 			//m_moveSpeed = m_direction * m_status.defaultSpeed;
 			m_SaveMoveSpeed = m_moveSpeed;
 		}
@@ -94,7 +94,7 @@ void MobMonster::Move(CharacterController& charaCon)
 			//‹–ìŠp“à‚É‚Í‚¢‚È‚¢‚ªUŒ‚‰Â”\‹——£‚É‚¢‚é‚È‚ç
 			if (IsFindPlayer(FIND_DISTANCE) == true)
 			{
-				m_moveSpeed = CalcVelocity(m_status, m_targetPosition);
+				m_moveSpeed = CalcVelocity(m_status, m_targetPosition,true);
 				m_SaveMoveSpeed = m_moveSpeed;
 			}
 		}
@@ -132,13 +132,9 @@ void MobMonster::Move(CharacterController& charaCon)
 	{
 		//’e‚«ˆ—
 		IsBumpedMonster();
+		//‚Í‚¶‚«ƒpƒ[‚ğ¬‚³‚­‚·‚é
+		SubPassPower();
 
-		if (m_passPower.Length() < 10.0f) {
-			m_passPower *= 0.99f;
-		}
-		else {
-			m_passPower = Vector3::Zero;
-		}
 		//‚Í‚¶‚­—Í‚ğ‡‚í‚¹‚é
 		m_moveSpeed += m_passPower;
 
@@ -246,18 +242,20 @@ bool MobMonster::IsBumpedMonster()
 	Vector3 diff = lichPos - m_position;
 	if (diff.Length() <= 80.0f)
 	{
+		Vector3 direction;
 		//todo Œü‚©‚¤À•W‚ğ­‚µ‚¸‚ç‚·
-		
+		direction = SetDirection(m_angleRange);
 
 		diff.Normalize();
-		m_passPower += diff * 100.0f;
+		m_passPower += direction * 400.0f;
+		m_passPower += diff * 30.0f;
 	}
 
 	m_passPower.y = 0.0f;
 	return false;
 }
 
-void MobMonster::Pass()
+void MobMonster::SubPassPower()
 {
 	if (m_passPower.Length() < 10.0f) {
 		m_passPower *= 0.99f;
