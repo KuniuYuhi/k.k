@@ -35,7 +35,8 @@ namespace nsK2EngineLow {
 			EnModelUpAxis enModelUpAxis = enModelUpAxisZ,
 			bool shadow=true,
 			bool toon=true,
-			bool outline=true
+			bool outline=true,
+			bool limRight=false
 		);
 
 		/// <summary>
