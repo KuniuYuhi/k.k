@@ -16,12 +16,13 @@
 #include "InitEffect.h"
 
 namespace {
-	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(1.0f, 1.0f, 1.0f);
+	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.6f, 0.6f, 0.6f);
 
 	const Vector3 SPOT_LIGHT_COLOR = Vector3(40.0f, 10.0f, 10.0f);
 
 	const Vector3 BOSS_CREATE_POSITION = Vector3(0.0f, 0.0f, 900.0f);
 
+	const float AMBIENT_COLOR = 0.8f;
 
 	const float SECOND = 60.0f;
 }
@@ -45,36 +46,15 @@ Game::~Game()
 
 bool Game::Start()
 {
-
 	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
 	directionLightDir.Normalize();
 	Vector3 directionLightColor = DIRECTION_RIGHT_COLOR;
 	//ディレクションライト
 	g_renderingEngine->SetDerectionLight(0, directionLightDir, directionLightColor);
 	//環境光
-	g_renderingEngine->SetAmbient(Vector3(0.5f, 0.5f, 0.5f));
-
+	g_renderingEngine->SetAmbient(g_vec3One * AMBIENT_COLOR);
+	//半球ライト
 	g_renderingEngine->UseHemiLight();
-
-	//ポイントライト
-	/*g_renderingEngine->SetPointLight(
-		Vector3(200.0f, 50.0f, 200.0f),
-		Vector3(15.0f, 10.0f, 12.0f),
-		Vector3(500.0f, 3.0f, 0.0f)
-	);*/
-	//スポットライト
-	spPosition.y = 4.0f;
-	spPosition.z = 100.0f;
-	spDirection = Vector3(1.0f, -1.0f, 1.0f);
-	spDirection.Normalize();
-
-	/*g_renderingEngine->SetSpotLight(
-		spPosition,
-		SPOT_LIGHT_COLOR,
-		Vector3(200.0f, 3.0f, 0.0f),
-		spDirection,
-		Vector3(90.0f, 40.0f, 0.0f)
-	);*/
 
 	//レベル2D
 	//level2DSp.Init(
@@ -124,11 +104,8 @@ bool Game::Start()
 }
 
 void Game::Update()
-{
-	
+{	
 	ManageState();
-
-
 
 	Spotmove();
 }
@@ -395,6 +372,7 @@ void Game::OnProcessAppearanceBossTransition()
 		m_entryBoss = NewGO<EntryBoss>(0, "entryboss");
 		m_entryBoss->SetPosition(BOSS_CREATE_POSITION);
 		m_entryBoss->SetGame(this);
+		m_entryBoss->SetSkyCube(m_skyCube);
 	}
 	//ボスの登場ムービーが終わったら
 	if (m_bossMovieEndFlag == true)
