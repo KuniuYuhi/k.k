@@ -48,7 +48,16 @@ bool BossStage1::Start()
 				m_wallPhysicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Wall);
 
 				//êX
-				m_forest.InitShadow("Assets/modelData/BackGround/Trees.tkm");
+				m_forest.Init(
+					"Assets/modelData/BackGround/Trees.tkm",
+					0,
+					0,
+					enModelUpAxisZ,
+					true,
+					true,
+					false,
+					false
+				);
 				return true;
 
 

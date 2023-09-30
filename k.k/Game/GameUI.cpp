@@ -6,7 +6,7 @@
 
 namespace {
 
-	const Vector3 TIMER_POS = { 0.0f,510.0f,0.0f };
+	const Vector3 TIMER_POS = { -50.0f,522.0f,0.0f };
 	const Vector2 TIMER_OFFSET = { 50.0f,-20.0f };
 
 	/// <summary>

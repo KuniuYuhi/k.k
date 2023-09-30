@@ -19,8 +19,10 @@
 //todo ダッシュ時攻撃アニメーション変更
 
 namespace {
-	const float ROT_SPEED = 2.0f;
-	const float ROT_ONLY_SPEED = 2.2f;
+	const float ADD_SCALE = 1.2f;
+
+	const float ROT_SPEED = 20.0f;
+	const float ROT_ONLY_SPEED = 20.0f;
 
 	const float SWORD_EFFECT_SIZE = 10.0f;
 	const Vector3 DASH_EFFECT_SIZE = { 10.0f,20.0f,8.0f };
@@ -103,9 +105,7 @@ void Hero::InitModel()
 		enAnimClip_Num,
 		enModelUpAxisZ
 	);
-
-	//m_modelRender.SetPosition(50.0f, 0.0f, 50.0f);
-	m_scale = { 1.2f,1.2f,1.2f };
+	m_scale = g_vec3One * ADD_SCALE;
 	m_modelRender.SetScale(m_scale);
 	m_modelRender.Update();
 
@@ -117,10 +117,6 @@ void Hero::InitModel()
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
-
-
-	
-
 }
 
 void Hero::Update()
@@ -136,26 +132,36 @@ void Hero::Update()
 		return;
 	}
 
-
-
+	//MPの回復
 	RecoveryMP();
-	Move();
-	Attack();
-	ManageState();
-	PlayAnimation();
 
+	//行動しないフラグがfalseでないと行動できない
+	if (m_player->GetmDontActionFlag() != true)
+	{
+		//移動処理
+		Move();
+		//攻撃
+		Attack();
+	}
+	
+	//状態管理
+	ManageState();
+	//アニメーション
+	PlayAnimation();
+	//パワーアップしているときのタイマーの計算
 	PowerUpTimer();
 
+	//通常攻撃の当たり判定の生成
 	if (m_createAttackCollisionFlag == true)
 	{
 		CreateCollision();
 	}
-
+	//スキルの当たり判定の生成
 	if (m_createSkillCollisionFlag == true)
 	{
 		CreateSkillCollision();
 	}
-
+	//無敵時間の計算
 	CalcInvincibleTime();
 
 	//無敵時間でないなら当たり判定の処理を行う
@@ -239,8 +245,6 @@ void Hero::Attack()
 	//1コンボ
 	if (g_pad[0]->IsTrigger(enButtonB)&& m_enAttackPatternState==enAttackPattern_None)
 	{
-		
-		
 		m_enAttackPatternState = enAttackPattern_1;
 		SetNowComboState(enNowCombo_1);
 		SetNextAnimationState(enAnimationState_Attack_1);
@@ -268,20 +272,24 @@ void Hero::Attack()
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// スキル
 	/////////////////////////////////////////////////////////////////////////////////////////
-
-
 	//まずはチャージ
 	if (m_enAttackPatternState == enAttackPattern_None ||
 		m_enAttackPatternState == enAnimationState_Attack_Skill_Charge)
 	{
 		//MPがスキルのMPより多かったら
-		if (g_pad[0]->IsPress(enButtonX)&&m_status.mp>=m_skillMp)
+		if (g_pad[0]->IsTrigger(enButtonX)&&m_status.mp>=m_skillMp)
 		{
-			
 			m_enAttackPatternState = enAttackPattern_Skill_Charge;
 			SetNextAnimationState(enAnimationState_Attack_Skill_Charge);
 			//MP回復状態を止める
 			SetRecoveryMpFlag(false);
+			//チャージエフェクト生成
+			m_swordStormChargeEffect = NewGO<EffectEmitter>(0);
+			m_swordStormChargeEffect->Init(InitEffect::enEffect_SwordStorm_Charge);
+			m_swordStormChargeEffect->Play();
+			m_swordStormChargeEffect->SetPosition(m_position);
+			m_swordStormChargeEffect->SetScale(g_vec3One * 15.0f);
+			m_swordStormChargeEffect->Update();
 			return;
 		}
 		
@@ -291,7 +299,7 @@ void Hero::Attack()
 	if (m_enAttackPatternState == enAttackPattern_None)
 	{
 		//MPがパワーアップのMPより多かったら
-		if (g_pad[0]->IsPress(enButtonY) && m_status.mp >= m_skillPowerUpMp)
+		if (g_pad[0]->IsTrigger(enButtonY) && m_status.mp >= m_skillPowerUpMp)
 		{
 			m_enAttackPatternState = enAttackPattern_Skill_PowerUp;
 			SetNextAnimationState(enAnimationState_PowerUp);
@@ -353,6 +361,10 @@ void Hero::Damage(int attack)
 		{
 			m_swordStormEffect->Stop();
 		}
+		if (m_swordStormChargeEffect != nullptr)
+		{
+			m_swordStormChargeEffect->Stop();
+		}
 	}
 	//HPが0より大きいなら
 	if (m_status.hp > 0)
@@ -366,6 +378,8 @@ void Hero::Damage(int attack)
 	{
 		//やられたのでdieFlagをtrueにする
 		SetDieFlag(true);
+		//
+		//m_player->SetGameEndFlag();
 		m_status.hp = 0;
 
 		//フレームレートを落とす
@@ -611,7 +625,9 @@ void Hero::OnProcessAttack_Skill_ChargeStateTransition()
 		//ステートをメインに遷移
 		m_enAttackPatternState = enAttackPattern_Skill_Main;
 		SetNextAnimationState(enAnimationState_Attack_Skill_Main);
-		//エフェクト再生
+		//チャージエフェクト消す
+		m_swordStormChargeEffect->Stop();
+		//ストームエフェクト再生
 		m_swordStormEffect = NewGO<EffectEmitter>(0);
 		m_swordStormEffect->Init(InitEffect::enEffect_SwordStorm);
 		m_swordStormEffect->Play();

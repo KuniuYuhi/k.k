@@ -33,9 +33,9 @@ public:
 	bool IsBumpedMonster();
 
 	/// <summary>
-	/// すれ違う
+	/// はじきパワーを小さくする
 	/// </summary>
-	void Pass();
+	void SubPassPower();
 
 	/// <summary>
 	/// 特定のアニメーションが再生中か
@@ -65,8 +65,17 @@ public:
 	/// </summary>
 	virtual void Dead();
 
+	/// <summary>
+	/// 回転処理
+	/// </summary>
+	/// <param name="rotSpeed">回転する速度(移動)</param>
+	/// <param name="rotOnlySpeed">回転する速度(移動しない時)</param>
+	/// <returns></returns>
 	Quaternion Rotation(float rotSpeed, float rotOnlySpeed);
 
+	/// <summary>
+	/// ヒットエフェクト生成
+	/// </summary>
 	void CreateHitEffect();
 
 protected:
@@ -93,24 +102,24 @@ protected:
 	virtual bool RotationOnly();
 
 
-	Lich* m_lich = nullptr;
+	Lich*					m_lich = nullptr;
 
-	Vector3 m_passPower = g_vec3One;									//はじくときの力
+	Vector3					m_passPower = g_vec3One;		//はじくときの力
 
-	Vector3 m_direction = Vector3::Zero;
+	Vector3					m_direction = Vector3::Zero;
 
-	float					m_angleChangeTime = 0.0f;					//向かうベクトルを計算するタイマー
+	float					m_angleChangeTime = 0.0f;		//向かうベクトルを計算するタイマー
 
-	float				m_distanceToPlayer = 0.0f;				//プレイヤーとの距離
-	float				m_attackRange = 0.0f;						//攻撃できる範囲
-	float				m_stayRange = 0.0f;						//移動しない範囲
+	float					m_distanceToPlayer = 0.0f;		//プレイヤーとの距離
+	float					m_attackRange = 0.0f;			//攻撃できる範囲
+	float					m_stayRange = 0.0f;				//移動しない範囲
 
-	float					m_ramdomAngle = 0.0f;						//
+	float					m_ramdomAngle = 0.0f;			//ランダムなアングル。移動方向を決めるときに使う
 
-	float				m_attackIntervalTime = 0.0f;				//攻撃した後のインターバル
+	float					m_attackIntervalTime = 0.0f;	//攻撃した後のインターバル
 
-	int				m_angleRange = 2;					//移動するアングルの範囲
+	int						m_angleRange = 2;				//移動するアングルの範囲
 
-	float				m_pos2Length = 0.0;				//壁と判
+	float					m_pos2Length = 0.0;				//壁と判
 };
 

@@ -220,45 +220,64 @@ public:
 		return m_ChangCharacterForGameUIFlag;
 	}
 
+	/// <summary>
+	/// 行動しないフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetDontActionFlag(bool flag)
+	{
+		m_dontActionFlag = flag;
+	}
+	/// <summary>
+	/// 行動しないフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetmDontActionFlag() const
+	{
+		return m_dontActionFlag;
+	}
+
 private:
-	Game* m_game = nullptr;
-	Hero* m_hero = nullptr;
-	Wizard* m_wizard = nullptr;
+	Game*						m_game = nullptr;
+	Hero*						m_hero = nullptr;
+	Wizard*						m_wizard = nullptr;
 
-	FontRender m_mpFont;
-	FontRender m_hpFont;
+	FontRender					m_mpFont;
+	FontRender					m_hpFont;
 
-	//キャラコンこれ使う
-	CharacterController m_charaCon;
+	CharacterController			m_charaCon;
 
-	RigidBody rigitBody;
+	//RigidBody					rigitBody;
 
-	Actor* actor[enCharacter_num];	//キャラクターの数分のアクター
-	Actor* m_nowActor = nullptr;	// 現在のアクター
-	Actor* m_subActor = nullptr;    // サブのアクター
+	Actor*						actor[enCharacter_num];							//キャラクターの数分のアクター
+	Actor*						m_nowActor = nullptr;							//現在のアクター
+	Actor*						m_subActor = nullptr;							//サブのアクター
 
 
-	EnCharacters m_enActiveCharacter= enHero;
+	EnCharacters				m_enActiveCharacter= enHero;
 
-	Vector3 m_position = Vector3::Zero;		//現在のキャラクターの座標
+	Vector3						m_position = Vector3::Zero;						//現在のキャラクターの座標
 
-	Vector3 m_moveSpeed = Vector3::Zero;
+	Vector3						m_moveSpeed = Vector3::Zero;
 
-	const float m_dieToChangeTime = 1.0f;
+	const float					m_dieToChangeTime = 1.0f;
 
-	float m_dieToChangeTimer = 0.0f;
+	float						m_dieToChangeTimer = 0.0f;
 
-	bool m_informGameFlag = false;
+	bool						m_informGameFlag = false;
 
-	bool m_ChangCharacterFlag = false;			//キャラ切り替えフラグ
-	bool m_ChangCharacterForGameUIFlag = false;			//キャラ切り替えフラグ。gameUI用
+	bool						m_ChangCharacterFlag = false;					//キャラ切り替えフラグ
+	bool						m_ChangCharacterForGameUIFlag = false;			//キャラ切り替えフラグ。gameUI用
 
-	const float m_ChangeCharacterTime = 3.0f;
-	float m_ChangeCharacterTimer = 3.0f;		//キャラ切り替えのクールタイム
+	const float					m_ChangeCharacterTime = 3.0f;
+	float						m_ChangeCharacterTimer = 3.0f;					//キャラ切り替えのクールタイム
 	
 
-	bool m_gameEndFlag = false;		//勝ち負け関わらずバトルが終わったときにtrueにする
-	bool m_VictoryAnimFlag = false;			//勝利アニメーション再生フラグ
-	bool m_idleAnimFlag = false;			//アイドルアニメーション再生フラグ
+	bool						m_gameEndFlag = false;							//勝ち負け関わらずバトルが終わったときにtrueにする
+	bool						m_VictoryAnimFlag = false;						//勝利アニメーション再生フラグ
+	bool						m_idleAnimFlag = false;							//アイドルアニメーション再生フラグ
+
+	bool						m_dontActionFlag = true;						//行動しないフラグ。trueで行動しない
+
 };
 

@@ -88,6 +88,15 @@ namespace nsK2EngineLow {
 		{
 			m_luminance = lum;
 		}
+		/// <summary>
+		/// –¾‚é‚³‚ðŽæ“¾
+		/// </summary>
+		/// <returns></returns>
+		const float GetLuminance() const
+		{
+			return m_luminance;
+		}
+
 		const wchar_t* GetTextureFilePath()
 		{
 			return m_textureFilePaths[m_type];

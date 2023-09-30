@@ -23,8 +23,8 @@
 #include "WIzardStateWarp.h"
 
 namespace {
-	const float ROT_SPEED = 2.0f;
-	const float ROT_ONLY_SPEED = 2.2f;
+	const float ROT_SPEED = 9.8f;
+	const float ROT_ONLY_SPEED = 9.8f;
 
 	int MAXHP = 150;
 	int MAXMP = 200;

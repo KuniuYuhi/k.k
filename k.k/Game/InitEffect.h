@@ -32,6 +32,7 @@ public:
 		enEffect_FlamePillar,									//フレイムピラー
 		enEffect_FlamePillar_Circle,							//フレイムピラーの魔法陣
 		enEffect_SwordStorm,									//ソードストーム
+		enEffect_SwordStorm_Charge,								//ソードストームのチャージ
 		
 
 	};

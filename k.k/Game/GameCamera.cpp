@@ -43,7 +43,6 @@ GameCamera::~GameCamera()
 bool GameCamera::Start()
 {
 	m_game = FindGO<Game>("game");
-
 	m_player = FindGO<Player>("player");
 
 	m_toCameraPosForBoss.Set(0.0f, 300.0f, 600.0f);
@@ -71,12 +70,24 @@ bool GameCamera::Start()
 
 void GameCamera::Update()
 {
-	//ChaseCamera();
-
 	ManageState();
 
-	
-	
+	CalcDirectionLight();
+}
+
+void GameCamera::CalcDirectionLight()
+{
+	Vector3 pos1 = m_target;
+	pos1.y = 0.0f;
+	Vector3 pos2 = m_toCameraPos;
+	pos2.y = pos1.y + 460.0f;
+
+	Vector3 diff = pos1 - pos2;
+
+	diff.Normalize();
+
+	//xyŽ²‚¾‚¯“®‚©‚·
+	g_renderingEngine->SetDirLightDirection(diff);
 }
 
 void GameCamera::ClearCameraForPlayer()

@@ -4,7 +4,7 @@
 namespace nsK2EngineLow {
 
 	void ModelRender::Init(const char* tkmFilepath,AnimationClip* animationClips,
-		int numAnimationClips, EnModelUpAxis enModelUpAxis, bool shadow, bool toon,bool outline)
+		int numAnimationClips, EnModelUpAxis enModelUpAxis, bool shadow, bool toon,bool outline, bool limRight)
 	{
 		//tkmファイルパスを設定
 		m_modelInitData.m_tkmFilePath = tkmFilepath;
@@ -49,8 +49,6 @@ namespace nsK2EngineLow {
 				&g_renderingEngine->GetZPrepassDepthTexture();
 		}
 		
-
-
 		//ディレクションライトの情報を作成
 		MakeDirectionData();
 
@@ -146,8 +144,6 @@ namespace nsK2EngineLow {
 			//スケルトンを更新する
 			m_skeleton.Update(m_model.GetWorldMatrix());
 		}
-
-		
 
 		//シャドウモデルが初期化されていたら
 		if (m_shadowModel.IsInited())

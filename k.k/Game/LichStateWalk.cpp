@@ -9,5 +9,5 @@ void LichStateWalk::ManageState()
 
 void LichStateWalk::PlayAnimation()
 {
-	m_lich->GetModelRender().PlayAnimation(Lich::enAnimClip_Walk,0.3f);
+	m_lich->GetModelRender().PlayAnimation(Lich::enAnimClip_Walk,0.8f);
 }

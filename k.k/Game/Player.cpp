@@ -76,6 +76,11 @@ void Player::Update()
 	{
 		return;
 	}
+	//行動可能にする
+	if (m_dontActionFlag != false)
+	{
+		SetDontActionFlag(false);
+	}
 
 	//現在のキャラクターがやられたら強制的に切り替え
 	if (ForcedChange() == false)
@@ -89,27 +94,17 @@ void Player::Update()
 		
 	}
 
-	//
+	//キャラ切り替え後のクールタイムの計算
 	ChangeCharacterTime();
 
 	//現在のキャラクターがやられていないなら先の処理しない
 	if (m_nowActor->GetDieFlag() != true)
 	{
-		/*if (g_pad[0]->IsTrigger(enButtonStart))
-		{
-			Vector3 a = { 50.0f,0.0f,20.0f };
-			rigitBody.AddForce(a, m_position);
-		}*/
 		//移動処理
 		m_moveSpeed = m_nowActor->calcVelocity(m_nowActor->GetStatus());
 		m_moveSpeed.y = 0.0f;
 		
 		CalcPosition(m_moveSpeed,1.0f/60.0f);
-
-		/*rigitBody.SetPositionAndRotation(
-			m_position,
-			m_nowActor->GetRotation()
-		);*/
 	}
 }
 

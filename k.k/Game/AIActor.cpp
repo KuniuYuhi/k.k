@@ -22,7 +22,7 @@ void AIActor::SetTransForm(Vector3 position, Quaternion rotation, Vector3 scale)
 	m_scale = scale;
 }
 
-Vector3 AIActor::CalcVelocity(Status status,Vector3 targetposition)
+Vector3 AIActor::CalcVelocity(Status status,Vector3 targetposition,bool dashFlag)
 {
 	Vector3 moveSpeed = Vector3::Zero;
 
@@ -31,22 +31,24 @@ Vector3 AIActor::CalcVelocity(Status status,Vector3 targetposition)
 	diff.y = 0.0f;
 	//正規化
 	diff.Normalize();
-	//速度を設定
-	moveSpeed = diff * status.defaultSpeed;
+
+	//ダッシュフラグがtrueなら
+	if (dashFlag == true)
+	{
+		//速度を設定
+		moveSpeed = diff * (status.defaultSpeed * 1.5f);
+	}
+	else
+	{
+		//速度を設定
+		moveSpeed = diff * status.defaultSpeed;
+	}
+
+	
 	//前方向を設定
 	m_forward = diff;
 	//値をセーブしておく
 	m_SaveMoveSpeed = moveSpeed;
-
-	//特定のアニメーションが再生中のとき
-	/*if (isAnimationEntable() != true)
-	{
-		return moveSpeed = Vector3::Zero;
-	}
-	else
-	{
-		return moveSpeed;
-	}*/
 
 	return moveSpeed;
 }

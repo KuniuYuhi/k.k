@@ -13,14 +13,14 @@
 #include "InitEffect.h"
 
 namespace {
-	const float ANGLE = 45.0f;				//視野角
-	const float DISTANCE_TO_PLAYER = 600.0f;			//プレイヤーとの距離
+	const float ANGLE = 70.0f;				//視野角
+	const float DISTANCE_TO_PLAYER = 750.0f;			//プレイヤーとの距離
 	const float ATTACK_RANGE = 50.0f;					//攻撃できる距離
 	const float STAY_RANGR = 45.0f;						//停止する距離
 	const float ATTACK_INTAERVALE_TIME = 2.0f;			//攻撃する間隔
 	const float ANGLE_RANGE = 2.0f;						//移動するアングルの範囲
 	const float POS2_LENGTH = 30.0f;
-	const float ROT_SPEED = 4.0f;
+	const float ROT_SPEED = 4.5f;
 
 	//ステータス
 	int MAXHP = 150;

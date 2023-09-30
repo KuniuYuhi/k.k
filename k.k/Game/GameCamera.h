@@ -17,8 +17,16 @@ public:
 	bool Start();
 	void Update();
 
-	void ClearCameraForPlayer();
+	void CalcDirectionLight();
 
+
+	/// <summary>
+	/// ゲームクリア時にプレイヤーを見るカメラ
+	/// </summary>
+	void ClearCameraForPlayer();
+	/// <summary>
+	/// ゲームクリア時にBOSSを見るカメラ
+	/// </summary>
 	void ClearCameraForBoss();
 
 	/// <summary>
