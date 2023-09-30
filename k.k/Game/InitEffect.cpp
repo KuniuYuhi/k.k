@@ -51,6 +51,8 @@ void InitEffect::InitEFK()
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_DarkWall, u"Assets/effect/sprite/DarkWall.efk");
 	//ソードストームのエフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_SwordStorm, u"Assets/effect/sprite/SwordStorm.efk");
+	//ソードストームのチャージエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_SwordStorm_Charge, u"Assets/effect/sprite/SwordStorm_Charge.efk");
 
 
 }
