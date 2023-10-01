@@ -97,6 +97,7 @@ void GameCamera::ClearCameraForPlayer()
 
 	m_target = m_player->GetPosition();
 	Vector3 forward = m_player->GetForward();
+	//forward *= -1.0f;
 	forward.Normalize();
 	//ƒvƒŒƒCƒ„[‚ğŒ©‚é
 	GameClearCamera(
