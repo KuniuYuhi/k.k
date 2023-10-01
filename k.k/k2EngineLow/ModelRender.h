@@ -30,13 +30,13 @@ namespace nsK2EngineLow {
 		/// <param name="enModelUpAxis">モデルの上方向</param>
 		void Init(
 			const char* tkmFilepath, 
+			const wchar_t* lampTextureFIlePath,
 			AnimationClip* animationClips = nullptr, 
 			int numAnimationClips=0,
 			EnModelUpAxis enModelUpAxis = enModelUpAxisZ,
 			bool shadow=true,
 			bool toon=true,
-			bool outline=true,
-			bool limRight=false
+			bool outline=true
 		);
 
 		/// <summary>
@@ -303,7 +303,7 @@ namespace nsK2EngineLow {
 		Model						m_frowardRenderModel;					 // フォワードレンダリングの描画パスで描画されるモデル
 		ModelInitData				m_modelInitData;						//モデルを初期化するための情報を設定するクラス
 		ModelInitDataFR             m_modelInitDataFR;
-
+		Texture						m_lampTextrue;							//ランプテクスチャ
 	};
 }
 
