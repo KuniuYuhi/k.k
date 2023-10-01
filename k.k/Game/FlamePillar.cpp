@@ -26,9 +26,6 @@ FlamePillar::~FlamePillar()
 
 bool FlamePillar::Start()
 {
-    m_model.Init("Assets/modelData/character/Wizard/Effect/FireBall.tkm");
-
-
     m_position = m_wizard->GetPosition();
     m_rotation = m_wizard->GetRotation();
 
@@ -36,14 +33,6 @@ bool FlamePillar::Start()
     m_rotation.Apply(AddPos);
     //生成する座標の決定
     m_position += AddPos * m_distance;
-
-    m_model.SetTransform(
-        m_position,
-        m_rotation,
-        g_vec3One
-    );
-    
-    m_model.Update();
 
     Vector3 effectPos = m_position;
     effectPos.y += 5.0f;
@@ -129,9 +118,4 @@ void FlamePillar::StartFlamePillar()
 
     //フレイムピラーを出したのでフラグをfalseにする
     m_startFlamePllarFlag = false;
-}
-
-void FlamePillar::Render(RenderContext& rc)
-{
-    //m_model.Draw(rc);
 }

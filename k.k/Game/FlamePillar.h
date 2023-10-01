@@ -21,8 +21,6 @@ public:
 	/// </summary>
 	void StartFlamePillar();
 
-	void Render(RenderContext& rc);
-
 	void SetPosition(Vector3 postion)
 	{
 		m_position = postion;
@@ -69,7 +67,6 @@ public:
 private:
 	Wizard* m_wizard = nullptr;
 
-	ModelRender m_model;
 	EffectEmitter* m_circleEffect;
 	EffectEmitter* m_flamePillarEffect;
 
