@@ -35,7 +35,7 @@ bool BossStage1::Start()
 				BGPhysicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Ground);
 
 				//ï«
-				m_wall.InitShadow("Assets/modelData/BackGround/wall.tkm");
+				m_wall.InitShadow("Assets/modelData/BackGround/wall2.tkm");
 				m_wall.SetPosition(objData.position);
 				m_wall.SetRotation(objData.rotation);
 				m_wall.SetScale(objData.scale);
@@ -49,13 +49,13 @@ bool BossStage1::Start()
 
 				//êX
 				m_forest.Init(
-					"Assets/modelData/BackGround/Trees.tkm",
+					"Assets/modelData/BackGround/Tree2.tkm",
+					L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 					0,
 					0,
 					enModelUpAxisZ,
 					true,
 					true,
-					false,
 					false
 				);
 				return true;
