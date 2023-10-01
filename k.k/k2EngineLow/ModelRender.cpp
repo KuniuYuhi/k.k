@@ -3,8 +3,8 @@
 
 namespace nsK2EngineLow {
 
-	void ModelRender::Init(const char* tkmFilepath,AnimationClip* animationClips,
-		int numAnimationClips, EnModelUpAxis enModelUpAxis, bool shadow, bool toon,bool outline, bool limRight)
+	void ModelRender::Init(const char* tkmFilepath, const wchar_t* lampTextureFIlePath, AnimationClip* animationClips,
+		int numAnimationClips, EnModelUpAxis enModelUpAxis, bool shadow, bool toon,bool outline)
 	{
 		//tkmファイルパスを設定
 		m_modelInitData.m_tkmFilePath = tkmFilepath;
@@ -33,8 +33,11 @@ namespace nsK2EngineLow {
 		//トゥーンシェーダーを使用するなら
 		if (toon == true)
 		{
-			m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GetToonTextrue();
+			//拡張SRVにランプテクスチャを設定する
+			m_lampTextrue.InitFromDDSFile(lampTextureFIlePath);
+			m_modelInitData.m_expandShaderResoruceView[0] = &m_lampTextrue;
 			m_modelInitData.m_psEntryPointFunc = "PSToonMain";
+
 			//UVサンプラをクランプにする
 			//クランプ＝UV座標が１を超えたときに手前の色をサンプリングするようにする
 			m_modelInitData.addressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;

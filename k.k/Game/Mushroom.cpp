@@ -103,6 +103,7 @@ void Mushroom::InitModel()
 
 	m_modelRender.Init(
 		"Assets/modelData/character/Mushroom/Mushroom.tkm",
+		L"Assets/shader/ToonTextrue/lamp_Mushroom.DDS",
 		m_animationClip,
 		enAnimClip_Num,
 		enModelUpAxisZ

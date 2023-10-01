@@ -97,7 +97,14 @@ struct IsWallResult :public btCollisionWorld::ConvexResultCallback
 
 bool DarkMeteorite::Start()
 {
-	m_model.Init("Assets/modelData/character/Lich/Effect/Meteo.tkm", nullptr, 0, enModelUpAxisZ, false, false, false);
+	m_model.Init(
+		"Assets/modelData/character/Lich/Effect/Meteo.tkm", 
+		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
+		nullptr, 
+		0, enModelUpAxisZ, 
+		false, 
+		false 
+		);
 
 	m_model.SetTransform(m_position, m_rotation, g_vec3One);
 	m_model.Update();

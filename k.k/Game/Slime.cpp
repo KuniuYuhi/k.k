@@ -103,6 +103,7 @@ void Slime::InitModel()
 
 	m_modelRender.Init(
 		"Assets/modelData/character/Slime/slime.tkm",
+		L"Assets/shader/ToonTextrue/lamp_Slime.DDS",
 		m_animationClip, 
 		enAnimClip_Num,
 		enModelUpAxisZ

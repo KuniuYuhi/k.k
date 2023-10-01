@@ -45,7 +45,7 @@ namespace {
 	const char* DARL_BALL_LIGHT = "darkball_light";
 	const char* DARL_BALL_LEFT = "darkball_left";
 
-	const float ROT_SPEED = 1.9f;
+	const float ROT_SPEED = 5.0f;
 	const float ROT_ONLY_SPEED = 1.8f;
 
 	//ステータス
@@ -150,6 +150,7 @@ void Lich::InitModel()
 
 
 	m_modelRender.Init("Assets/modelData/character/Lich/Lich_real.tkm",
+		L"Assets/shader/ToonTextrue/lamp_Lich.DDS",
 		m_animationClip,
 		enAnimClip_Num,
 		enModelUpAxisZ

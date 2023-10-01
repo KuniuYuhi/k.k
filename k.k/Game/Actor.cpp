@@ -85,12 +85,14 @@ Vector3 Actor::calcVelocity(Status status)
 	//前方向の取得
 	if (isRotationEntable() != false)
 	{
-		//x,yどちらかの入力があったら
-		if (fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f)
-		{
-			m_forward = moveSpeed;
-			m_forward.Normalize();
-		}
+		
+	}
+
+	//x,yどちらかの入力があったら
+	if (fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f)
+	{
+		m_forward = moveSpeed;
+		m_forward.Normalize();
 	}
 
 	//値をセーブしておく
@@ -290,14 +292,15 @@ Quaternion Actor::Rotation(float rotSpeed,float rotOnlySpeed)
 		//xかzの移動速度があったら(スティックの入力があったら)。
 		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
 		{
-			m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotOnlySpeed, m_rotMove, m_SaveMoveSpeed);
-			m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
+			//m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotOnlySpeed, m_rotMove, m_SaveMoveSpeed);
+			m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
 
-			Vector3 forward;
+			/*Vector3 forward;
 			m_rotation.Apply(forward);
-			m_forward = forward;
+			Vector3 diff = forward - m_position;
+			m_forward = diff;
 			m_forward.y = 0.0f;
-			m_forward.Normalize();
+			m_forward.Normalize();*/
 		}
 
 		
@@ -309,14 +312,15 @@ Quaternion Actor::Rotation(float rotSpeed,float rotOnlySpeed)
 	//xかzの移動速度があったら(スティックの入力があったら)。
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotSpeed, m_rotMove, m_SaveMoveSpeed);
-		m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
+		//m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotSpeed, m_rotMove, m_SaveMoveSpeed);
+		m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
 
-		Vector3 forward;
+		/*Vector3 forward;
 		m_rotation.Apply(forward);
-		m_forward = forward;
+		Vector3 diff = forward - m_position;
+		m_forward = diff;
 		m_forward.y = 0.0f;
-		m_forward.Normalize();
+		m_forward.Normalize();*/
 	}
 
 	

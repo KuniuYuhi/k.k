@@ -100,11 +100,18 @@ void Player::Update()
 	//現在のキャラクターがやられていないなら先の処理しない
 	if (m_nowActor->GetDieFlag() != true)
 	{
+
 		//移動処理
 		m_moveSpeed = m_nowActor->calcVelocity(m_nowActor->GetStatus());
 		m_moveSpeed.y = 0.0f;
+
+		CalcPosition(m_moveSpeed, 1.0f / 60.0f);
+
+		if (m_nowActor->isAnimationEntable() != false)
+		{
+			
+		}
 		
-		CalcPosition(m_moveSpeed,1.0f/60.0f);
 	}
 }
 

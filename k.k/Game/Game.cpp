@@ -20,9 +20,11 @@ namespace {
 
 	const Vector3 SPOT_LIGHT_COLOR = Vector3(40.0f, 10.0f, 10.0f);
 
-	const Vector3 BOSS_CREATE_POSITION = Vector3(0.0f, 0.0f, 900.0f);
+	//ボスとプレイヤーの生成する座標
+	const Vector3 BOSS_CREATE_POSITION = Vector3(0.0f, 0.0f, 600.0f);
+	const Vector3 PLAYER_CREATE_POSITION = Vector3(0.0f, 0.0f, -400.0f);
 
-	const float AMBIENT_COLOR = 0.8f;
+	const float AMBIENT_COLOR = 0.7f;
 
 	const float SECOND = 60.0f;
 }
@@ -86,7 +88,7 @@ bool Game::Start()
 
 	m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
 	m_player = NewGO<Player>(0, "player");
-	m_player->SetPosition({ 0.0f,0.0f,-500.0f });
+	m_player->SetPosition(PLAYER_CREATE_POSITION);
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
 	//ボスの生成。非アクティブにする

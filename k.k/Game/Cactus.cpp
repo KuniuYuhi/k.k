@@ -107,6 +107,7 @@ void Cactus::InitModel()
 
 	m_modelRender.Init(
 		"Assets/modelData/character/Cactus/Cactus.tkm",
+		L"Assets/shader/ToonTextrue/lamp_Cactus.DDS",
 		m_animationClip,
 		enAnimClip_Num,
 		enModelUpAxisZ

@@ -107,6 +107,7 @@ void Wizard::InitModel()
 
 	m_modelRender.Init(
 		"Assets/modelData/character/Wizard/Wizard_red.tkm",
+		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 		m_animationClip,
 		enAnimClip_Num,
 		enModelUpAxisZ
