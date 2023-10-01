@@ -44,7 +44,7 @@ namespace {
 	const float CIRICLE_EFFECT_SIZE = 15.0f;
 
 	//環境光の初期カラーと最終的なカラー
-	const float START_AMBIENT_COLOR = 0.8f;
+	const float START_AMBIENT_COLOR = 0.6f;
 	const float END_AMBIENT_COLOR = 0.1f;
 
 	//ポイントライト
@@ -52,7 +52,7 @@ namespace {
 	const Vector3 POINT_LIGHT_COLOR = { 14.0f, 7.0f, 12.0f };
 	const Vector3 POINT_LIGHT_RANGE = { 1500.0f, 4.0f, 0.0f };
 
-	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.8f, 0.8f, 0.8f);
+	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.7f, 0.7f, 0.7f);
 
 }
 
@@ -96,6 +96,7 @@ bool EntryBoss::Start()
 
 	m_model.Init(
 		"Assets/modelData/character/Lich/Lich_real.tkm",
+		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 		m_animationClip,
 		enAnimClip_Num,
 		enModelUpAxisZ

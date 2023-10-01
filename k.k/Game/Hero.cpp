@@ -101,6 +101,7 @@ void Hero::InitModel()
 
 	m_modelRender.Init(
 		"Assets/modelData/character/Player/Hero.tkm",
+		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 		m_animationClip,
 		enAnimClip_Num,
 		enModelUpAxisZ
@@ -212,8 +213,10 @@ void Hero::Move()
 	
 	Rotation(ROT_SPEED, ROT_ONLY_SPEED);
 
+	//ダッシュフラグがtrueのとき
 	if (m_dashEffectFlag ==true)
 	{
+		//エフェクトTR更新
 		m_dashEffect->SetPosition(m_position);
 		m_dashEffect->SetRotation(m_rotation);
 		m_dashEffect->Update();
@@ -364,6 +367,10 @@ void Hero::Damage(int attack)
 		if (m_swordStormChargeEffect != nullptr)
 		{
 			m_swordStormChargeEffect->Stop();
+		}
+		if (m_dashEffect != nullptr)
+		{
+			m_dashEffect->Stop();
 		}
 	}
 	//HPが0より大きいなら

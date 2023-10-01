@@ -132,6 +132,7 @@ void TurtleShell::InitModel()
 
 	m_modelRender.Init(
 		"Assets/modelData/character/TurtleShell/TurtleShell.tkm",
+		L"Assets/shader/ToonTextrue/lamp_TurltleShell.DDS",
 		m_animationClip,
 		enAnimClip_Num,
 		enModelUpAxisZ
