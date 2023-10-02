@@ -18,7 +18,7 @@ public:
 	/// </summary>
 	/// <param name="range"></param>
 	/// <returns></returns>
-	Vector3 SetDirection(int range);
+	Vector3 SetRamdomDirection(int range);
 
 	/// <summary>
 	/// 壁(森)にぶつかったか
@@ -71,7 +71,7 @@ public:
 	/// <param name="rotSpeed">回転する速度(移動)</param>
 	/// <param name="rotOnlySpeed">回転する速度(移動しない時)</param>
 	/// <returns></returns>
-	Quaternion Rotation(float rotSpeed, float rotOnlySpeed);
+	//Quaternion Rotation(float rotSpeed, float rotOnlySpeed);
 
 	/// <summary>
 	/// ヒットエフェクト生成
@@ -106,7 +106,7 @@ protected:
 
 	Vector3					m_passPower = g_vec3One;		//はじくときの力
 
-	Vector3					m_direction = Vector3::Zero;
+	Vector3					m_direction = Vector3::Zero;	//移動する方向ベクトル
 
 	float					m_angleChangeTime = 0.0f;		//向かうベクトルを計算するタイマー
 
@@ -121,5 +121,7 @@ protected:
 	int						m_angleRange = 2;				//移動するアングルの範囲
 
 	float					m_pos2Length = 0.0;				//壁と判
+
+	bool                    m_chasePlayerFlag = false;		//プレイヤーを追いかけるかのフラグ
 };
 
