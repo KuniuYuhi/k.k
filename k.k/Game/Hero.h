@@ -223,6 +223,9 @@ private:
 	void SetIdleAnimationState()
 	{
 		SetNextAnimationState(enAninationState_Idle);
+		//ˆÚ“®‚µ‚È‚¢‚æ‚¤‚É‚·‚é‚Ì‚ÅAmoveSpeed,SaveMoveSpeed‚ğ0‚É‚·‚é
+		m_moveSpeed = g_vec3Zero;
+		m_SaveMoveSpeed = m_moveSpeed;
 	}
 
 private:
