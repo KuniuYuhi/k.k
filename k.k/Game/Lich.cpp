@@ -45,8 +45,8 @@ namespace {
 	const char* DARL_BALL_LIGHT = "darkball_light";
 	const char* DARL_BALL_LEFT = "darkball_left";
 
-	const float ROT_SPEED = 5.0f;
-	const float ROT_ONLY_SPEED = 1.8f;
+	const float ROT_SPEED = 8.0f;
+	const float ROT_ONLY_SPEED = 5.0f;
 
 	//ステータス
 	int MAXHP = 1000;
@@ -117,6 +117,8 @@ bool Lich::Start()
 	
 	//
 	//m_monsters.emplace_back(this);
+
+	//m_lichAction->NextAction();
 
 	return true;
 }
