@@ -61,6 +61,7 @@ bool AIActor::IsInFieldOfView(Vector3 toPlayerDir, Vector3 forward, float angle)
 	//forward.Normalize();
 	//ターゲットに向かうベクトルと前方向の内積を計算する
 	float t = toPlayerDir.Dot(forward);
+	//todo
 	//内積の結果をacos関数に渡して、m_enemyFowradとtoPlayerDirのなす角度を求める。
 	float calcangle = acos(t);
 	//視野角判定
@@ -306,10 +307,7 @@ bool AIActor::IsFindPlayer(float distance)
 	diff.y = 0.0f;
 	//ベクトルをセーブ
 	m_toTarget = diff;
-	//前方向を保存
-	/*m_forward = diff;
-	m_forward.Normalize();*/
-
+	
 	//計算したベクトルが上限の距離より小さかったら
 	if (diff.Length() < distance)
 	{
@@ -318,9 +316,6 @@ bool AIActor::IsFindPlayer(float distance)
 	}
 	else
 	{
-		//diff.Normalize();
-		////前方向を保存
-		//m_forward = diff;
 		//見つからなかった
 		m_targetPosition = Vector3::Zero;
 		return false;
@@ -342,9 +337,10 @@ Quaternion AIActor::Rotation(float rotSpeed,float rotOnlySpeed)
 		}
 
 		//前方向を設定
-		m_forward = Vector3::AxisZ;
-		m_rotation.Apply(m_forward);
-
+		/*m_forward = Vector3::AxisZ;
+		m_rotation.Apply(m_forward);*/
+		m_forward = m_rotMove;
+		m_forward.Normalize();
 		return m_rotation;
 	}
 
@@ -356,7 +352,9 @@ Quaternion AIActor::Rotation(float rotSpeed,float rotOnlySpeed)
 		m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
 	}
 	//前方向を設定
-	m_forward = Vector3::AxisZ;
-	m_rotation.Apply(m_forward);
+	/*m_forward = Vector3::AxisZ;
+	m_rotation.Apply(m_forward);*/
+	m_forward = m_rotMove;
+	m_forward.Normalize();
 	return m_rotation;
 }
