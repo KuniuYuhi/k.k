@@ -3,6 +3,8 @@
 #include "InitEffect.h"
 #include "Lich.h"
 
+//todo　新しい弾き処理
+
 namespace {
 	const float DEAD_EFFECT_SIZE = 2.0f;
 	const float HIT_EFFECT_SIZE = 15.0f;
@@ -82,47 +84,53 @@ void MobMonster::Move(CharacterController& charaCon)
 		//視野角内にターゲットがいたら
 		if (IsInFieldOfView(toPlayerDir, m_forward, m_angle) == true)
 		{
-			toPlayerDir.Normalize();
-			//追いかける
-			m_direction = toPlayerDir;
-			m_moveSpeed = CalcVelocity(m_status, m_direction*(-1.0f),true);
-			//m_moveSpeed = m_direction * m_status.defaultSpeed;
-			m_SaveMoveSpeed = m_moveSpeed;
+			m_chasePlayerFlag = true;
+			m_direction = m_targetPosition;
+			//toPlayerDir.Normalize();
+			////追いかける
+			//m_direction = toPlayerDir;
+			/*m_moveSpeed = CalcVelocity(m_status, m_direction*(-1.0f),true);
+			m_SaveMoveSpeed = m_moveSpeed;*/
 		}
 		else
 		{
 			//視野角内にはいないが攻撃可能距離にいるなら
 			if (IsFindPlayer(FIND_DISTANCE) == true)
 			{
-				m_moveSpeed = CalcVelocity(m_status, m_targetPosition,true);
-				m_SaveMoveSpeed = m_moveSpeed;
+				m_chasePlayerFlag = true;
+				m_direction = m_targetPosition;
+				/*m_moveSpeed = CalcVelocity(m_status, m_targetPosition,true);
+				m_SaveMoveSpeed = m_moveSpeed;*/
 			}
 		}
 	}
 	else
 	{
+		//ランダムな方向に移動
+		m_chasePlayerFlag = false;
 		//数秒間隔で向かうベクトルを変える
 		if (m_angleChangeTimeFlag == false)
 		{
-			m_direction = SetDirection(m_angleRange);
+			m_direction = SetRamdomDirection(m_angleRange);
+
+			m_direction = m_position + (m_direction * 1000.0f);
+
 			m_angleChangeTimeFlag = true;
 		}
-		//ランダムな方向に移動
-		m_moveSpeed = m_direction * m_status.defaultSpeed;
-		m_SaveMoveSpeed = m_moveSpeed;
-		m_forward = m_moveSpeed;
+		
+		/*m_moveSpeed = m_direction * m_status.defaultSpeed;
+		m_SaveMoveSpeed = m_moveSpeed;*/
 	}
 
 	//壁にぶつかったら反転
 	if (IsBumpedForest(m_pos2Length) == true)
 	{
+		//移動する方向を反転する
 		m_direction *= -1.0f;
-		m_moveSpeed = m_direction * m_status.defaultSpeed;
+		/*m_moveSpeed = m_direction * m_status.defaultSpeed;
 		m_SaveMoveSpeed = m_moveSpeed;
 
-		m_position = charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-		//前方向を決める
-		m_forward = m_moveSpeed;
+		m_position = charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);*/
 		return;
 	}
 
@@ -130,15 +138,15 @@ void MobMonster::Move(CharacterController& charaCon)
 	//プレイヤーとの距離が近くないなら移動する
 	if (IsFindPlayer(m_stayRange) != true)
 	{
+		//移動速度の計算
+		m_moveSpeed = CalcVelocity(m_status, m_direction, m_chasePlayerFlag);
+		m_SaveMoveSpeed = m_moveSpeed;
 		//弾き処理
-		IsBumpedMonster();
+		//IsBumpedMonster();
 		//はじきパワーを小さくする
 		SubPassPower();
-
 		//はじく力を合わせる
-		m_moveSpeed += m_passPower;
-
-		m_forward = m_moveSpeed;
+		//m_moveSpeed += m_passPower;
 		//座標を移動
 		m_position = charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	}
@@ -149,7 +157,7 @@ void MobMonster::Move(CharacterController& charaCon)
 	}
 }
 
-Vector3 MobMonster::SetDirection(int range)
+Vector3 MobMonster::SetRamdomDirection(int range)
 {
 	Vector3 randomPos = g_vec3Zero;
 	randomPos.y = 0.0f;
@@ -164,14 +172,15 @@ Vector3 MobMonster::SetDirection(int range)
 
 bool MobMonster::IsBumpedForest(float pos2Length)
 {
+	//todo
 	Vector3 forward = m_forward;
 	forward.Normalize();
-	float t = forward.Dot(g_vec3Zero);
+	/*float t = forward.Dot(g_vec3Zero);
 
 	Vector3 diff1 = m_position - forward;
 	Vector3 diff2 = m_position - g_vec3Zero;
 	diff1.Normalize();
-	diff2.Normalize();
+	diff2.Normalize();*/
 
 	/*if (diff1.Dot(diff2) >= 1.0f)
 	{
@@ -184,8 +193,11 @@ bool MobMonster::IsBumpedForest(float pos2Length)
 		return false;
 	}
 
-	Vector3 pos1 = m_position;
-	pos1 += forward * pos2Length;
+	Vector3 endPos;
+	endPos = m_direction;
+	endPos.Normalize();
+	endPos *= pos2Length;
+	endPos += m_position;
 
 	SphereCollider m_sphereCollider;
 	m_sphereCollider.Create(1.0f);
@@ -194,10 +206,10 @@ bool MobMonster::IsBumpedForest(float pos2Length)
 	start.setIdentity();
 	end.setIdentity();
 	//始点はエネミーの座標。
-	start.setOrigin(btVector3(m_position.x, m_position.y, m_position.z));
+	start.setOrigin(btVector3(m_position.x, 0.0f, m_position.z));
 	//終点はプレイヤーの座標。
 	end.setOrigin(btVector3(
-		pos1.x, pos1.y, pos1.z));
+		endPos.x, 0.0f, endPos.z));
 
 	//壁の判定を返す
 	IsForestResult callback_Forest;
@@ -244,7 +256,7 @@ bool MobMonster::IsBumpedMonster()
 	{
 		Vector3 direction;
 		//todo 向かう座標を少しずらす
-		direction = SetDirection(m_angleRange);
+		direction = SetRamdomDirection(m_angleRange);
 
 		diff.Normalize();
 		m_passPower += direction * 400.0f;
@@ -275,28 +287,48 @@ void MobMonster::Dead()
 	deadEffect->Update();
 }
 
-Quaternion MobMonster::Rotation(float rotSpeed, float rotOnlySpeed)
-{
-	if (RotationOnly() == true)
-	{
-		//xかzの移動速度があったら(スティックの入力があったら)。
-		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
-		{
-			m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotOnlySpeed, m_rotMove, m_SaveMoveSpeed);
-			m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
-		}
-		return m_rotation;
-	}
-
-	//xかzの移動速度があったら
-	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
-	{
-		//緩やかに回転させる
-		m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotSpeed, m_rotMove, m_moveSpeed);
-		m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
-	}
-	return m_rotation;
-}
+//Quaternion MobMonster::Rotation(float rotSpeed, float rotOnlySpeed)
+//{
+//	if (RotationOnly() == true)
+//	{
+//		//xかzの移動速度があったら(スティックの入力があったら)。
+//		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
+//		{
+//			m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotOnlySpeed, m_rotMove, m_SaveMoveSpeed);
+//			m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
+//
+//			//前方向を設定
+//			//m_forward = m_rotMove;
+//			
+//		}
+//		//前方向を設定
+//		m_forward = m_rotMove;
+//		m_forward.Normalize();
+//		//m_rotation.Apply(m_forward);
+//
+//		//Vector3 diff = m_direction-
+//
+//		return m_rotation;
+//	}
+//
+//	//xかzの移動速度があったら
+//	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+//	{
+//		//緩やかに回転させる
+//		m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotSpeed, m_rotMove, m_moveSpeed);
+//		m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
+//
+//		
+//		//m_forward.Normalize();
+//	}
+//	//前方向を設定
+//	m_forward = m_rotMove;
+//	m_forward.Normalize();
+//	/*m_forward = Vector3::AxisZ;
+//	m_rotation.Apply(m_forward);*/
+//
+//	return m_rotation;
+//}
 
 void MobMonster::CreateHitEffect()
 {

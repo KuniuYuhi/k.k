@@ -16,13 +16,13 @@
 
 namespace {
 	const float ANGLE = 80.0f;				//視野角
-	const float DISTANCE_TO_PLAYER = 1000.0f;			//プレイヤーとの距離
+	const float DISTANCE_TO_PLAYER = 200.0f;			//プレイヤーとの距離
 	const float ATTACK_RANGE = 50.0f;					//攻撃できる距離
 	const float STAY_RANGR = 45.0f;						//停止する距離
 	const float ATTACK_INTAERVALE_TIME = 1.7f;			//攻撃する間隔
 	const float ANGLE_RANGE = 2.0f;						//移動するアングルの範囲
 	const float POS2_LENGTH = 30.0f;
-	const float ROT_SPEED = 4.6f;						//回転速度
+	const float ROT_SPEED = 7.5f;						//回転速度
 
 	//ステータス
 	int MAXHP = 120;
@@ -119,6 +119,13 @@ void Cactus::InitModel()
 		m_position
 	);
 
+	//アニメーションイベント用の関数を設定する。
+	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+		});
+
+	m_attackBoonId = m_modelRender.FindBoneID(L"cactus_head");
+
 	//座標の設定
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
@@ -169,13 +176,6 @@ void Cactus::Update()
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
-
-	//アニメーションイベント用の関数を設定する。
-	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
-		OnAnimationEvent(clipName, eventName);
-		});
-
-	m_attackBoonId = m_modelRender.FindBoneID(L"cactus_head");
 }
 
 void Cactus::Attack()

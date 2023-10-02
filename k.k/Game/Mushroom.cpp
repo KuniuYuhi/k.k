@@ -20,7 +20,7 @@ namespace {
 	const float ATTACK_INTAERVALE_TIME = 1.5f;			//攻撃する間隔
 	const float ANGLE_RANGE = 2.0f;						//移動するアングルの範囲
 	const float POS2_LENGTH = 27.0f;
-	const float ROT_SPEED = 4.7f;
+	const float ROT_SPEED = 8.0f;
 
 	//ステータス
 	int MAXHP = 100;

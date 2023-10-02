@@ -224,8 +224,8 @@ private:
 
 
 	float m_TimeLimit = 300.0f;			//制限時間三分
-	float m_minute = 3.0f;
-	float m_second = 0.0f;
+	float m_minute = 3.0f;				//分
+	float m_second = 0.0f;				//秒
 
 
 	bool m_DeathBossFlag = false;				//ボスがやられたのフラグ

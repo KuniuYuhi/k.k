@@ -281,10 +281,10 @@ protected:
 
 	float						m_angle = 0.0f;							//視野角
 
-	bool						m_winFlag = false;
+	bool						m_winFlag = false;						//勝ったかのフラグ
 
-	float						m_angleChangeTimer = 0.0f;
-	bool						m_angleChangeTimeFlag = false;
+	float						m_angleChangeTimer = 0.0f;				//移動する方向をかえるタイミングを計算するタイマー
+	bool						m_angleChangeTimeFlag = false;			//移動する方向をかえるかのフラグ
 
 	bool						m_elaseListFlag = false;				//自身をリストから削除したかのフラグ
 
