@@ -93,6 +93,15 @@ public:
 		m_chaseFlag = flag;
 	}
 
+	/// <summary>
+	/// ゲームが終わる時に自信を消すときに設定する
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetGameEndFlag(bool flag)
+	{
+		m_gameEndFlag = flag;
+	}
+
 private:
 
 	enum EnShotState
@@ -153,6 +162,8 @@ private:
 	const int m_bigMeteoAttack = 80;
 
 	bool m_chaseFlag = true;					//プレイヤーを追いかけるかのフラグ。trueで追いかける
+
+	bool m_gameEndFlag = false;
 
 };
 

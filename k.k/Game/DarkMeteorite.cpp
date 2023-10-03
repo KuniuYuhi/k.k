@@ -39,13 +39,18 @@ DarkMeteorite::~DarkMeteorite()
 		m_windEffect->Stop();
 	}
 
-	if (m_meteos.size() != 0)
+	if (m_gameEndFlag == true)
 	{
-		QueryGOs<Meteo>("meteo", [&](Meteo* meteo_) {
-			DeleteGO(meteo_);
-			return true;
-			});
+		if (m_meteos.size() != 0)
+		{
+			QueryGOs<Meteo>("meteo", [&](Meteo* meteo_) {
+				DeleteGO(meteo_);
+				return true;
+				});
+		}
 	}
+
+	
 }
 
 //衝突したときに呼ばれる関数オブジェクト(地面用)
@@ -206,6 +211,7 @@ void DarkMeteorite::Shot()
 		{
 			//それ以外ならダークメテオ終わり
 			m_shotEndFlag = true;
+			//m_enShotState = enShotState_End;
 
 		}
 	}
@@ -389,7 +395,7 @@ void DarkMeteorite::move()
 			m_isBigMeteoYDownFlag = true;
 			//地面についた
 			//全ての玉を撃ち終わった
-			m_shotEndFlag = true;
+			//m_shotEndFlag = true;
 			m_moveSpeed.y = 0.0f;
 
 			m_windEffect = NewGO<EffectEmitter>(0);
