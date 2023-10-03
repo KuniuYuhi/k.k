@@ -76,7 +76,7 @@ void MobMonster::Move(CharacterController& charaCon)
 	{
 		return;
 	}
-
+	
 	//視界にターゲットを見つけたら
 	if (IsFindPlayer(m_distanceToPlayer) == true)
 	{

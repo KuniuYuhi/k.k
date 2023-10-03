@@ -335,7 +335,6 @@ Quaternion AIActor::Rotation(float rotSpeed,float rotOnlySpeed)
 			m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotOnlySpeed, m_rotMove, m_SaveMoveSpeed);
 			m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
 		}
-
 		//‘O•ûŒü‚ğİ’è
 		/*m_forward = Vector3::AxisZ;
 		m_rotation.Apply(m_forward);*/
