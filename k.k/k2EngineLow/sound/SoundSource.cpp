@@ -14,6 +14,8 @@ namespace nsK2EngineLow {
 	}
 	SoundSource::~SoundSource()
 	{
+		//ƒŠƒXƒg‚©‚çíœ
+		g_soundManager->EraseSoundSourceList(this);
 		Release();
 	}
 	void SoundSource::InitCommon()
