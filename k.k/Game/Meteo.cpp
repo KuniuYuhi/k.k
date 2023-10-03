@@ -10,6 +10,20 @@ namespace {
 
 	const float DOWN = -20.0f;
 	const float DELETE_DOWN = -70.0f;
+
+	const float METEO_COLLISION_SIZE = 30.0f;
+	const float METEO_EFFECT_SIZE = 8.0f;
+
+	const float ADD_TIMER = 0.0065f;
+
+	const float MUL_EXPLOSION_SCALE = 2.4f;
+
+	const float EXPLOSION_COLLISION_SIZE = 330.0f;
+
+	const float EXPLOSION_Y_POS = 20.0f;
+
+
+	const float GROUND_CHECK_COLLISION_SIZE = 5.0f;
 }
 
 Meteo::Meteo()
@@ -55,9 +69,6 @@ struct IsGroundResult :public btCollisionWorld::ConvexResultCallback
 
 bool Meteo::Start()
 {
-	//m_model.Init("Assets/modelData/character/Lich/Effect/Meteo.tkm", nullptr, 0, enModelUpAxisZ, false, false, false);
-
-	
 	m_movePos = m_position;
 	//始点を決める
 	m_startPosition = m_position;
@@ -68,14 +79,10 @@ bool Meteo::Start()
 
 	m_scale = SCALE;
 
-	//m_model.SetTransform(m_position, m_rotation, m_scale);
-	//m_model.Update();
-
-
 	m_meteoEffect = NewGO<EffectEmitter>(0);
 	m_meteoEffect->Init(InitEffect::enEffect_Meteo);
 	m_meteoEffect->Play();
-	m_meteoEffect->SetScale({ 8.0f,8.0f,8.0f });
+	m_meteoEffect->SetScale(g_vec3One * METEO_EFFECT_SIZE);
 	m_meteoEffect->SetPosition(m_position);
 	m_meteoEffect->Update();
 
@@ -85,56 +92,21 @@ bool Meteo::Start()
 	m_collision->CreateSphere(
 		m_position,
 		m_rotation,
-		30.0f
+		METEO_COLLISION_SIZE
 	);
 	m_collision->SetIsEnableAutoDelete(false);
 	m_collision->SetPosition(m_position);
 	m_collision->Update();
+
+	//ステート設定
+	m_state = enMoveState;
 
     return true;
 }
 
 void Meteo::Update()
 {
-	//爆発してからの処理
-	if (GetExplosionFlag() == true)
-	{
-		CalcDeleteTime();
-		return;
-	}
-	
-	//爆発するまでの処理
-	if(IsGroundCheck(DOWN)==true || m_movePos.y <= 0.0f)
-	{
-		//地面についた
-		//爆発用当たり判定の生成
-		CreateExplosionCollision();
-		//爆発した
-		SetExplosionFlag(true);
-	}
-	else
-	{
-		//地面につくまで
-		//移動処理
-		Move();
-	}
-
-	if (m_explosionEffectFlag != true && m_collision->IsDead() != true)
-	{
-		if (IsGroundCheck(DELETE_DOWN)|| m_movePos.y <= 60.0f )
-		{
-			m_collision->Dead();
-			
-			//爆発エフェクトの生成
-			while (m_ExplosionEffect == nullptr)
-			{
-				//爆発する
-				m_explosionEffectFlag = true;
-				Explosion();
-			}
-
-		}
-	}
+	ManageState();
 }
 
 int Meteo::CalcDamageToDistance(const Vector3 targetPosition)
@@ -144,7 +116,7 @@ int Meteo::CalcDamageToDistance(const Vector3 targetPosition)
 	diff.y = 0.0f;
 	float length = diff.Length();
 
-	//100ごとにダメージを減らす
+	//200ごとにダメージを減らす
 	float reduce = length / 200.0f;
 
 	int attack = m_attack; 
@@ -167,19 +139,19 @@ void Meteo::Move()
 	CenterToEnd.Lerp(m_timer, m_centerPosition, m_targetPosition);
 	//線形補間した２つのベクトルを更に線形補間
 	m_movePos.Lerp(m_timer, StartToCenter, CenterToEnd);
-	//
-	m_timer += 0.01f*0.65f;
+	
+	m_timer += ADD_TIMER;
 
 	
-
+	//todo たまにエラー
 	//設定と更新
 	//爆発していない間メテオの当たり判定の座標を更新する
-	if (m_explosionEffectFlag != true|| m_collision->IsDead()!=true)
+	if (m_explosionEffectFlag != true)
 	{
-		m_collision->SetPosition(m_movePos);
-		m_collision->Update();
+		
 	}
-	
+	m_collision->SetPosition(m_movePos);
+	m_collision->Update();
 
 	m_meteoEffect->SetPosition(m_movePos);
 	m_meteoEffect->Update();
@@ -194,18 +166,15 @@ void Meteo::CreateExplosionCollision()
 	explosionCollision->CreateSphere(
 		m_position,
 		m_rotation,
-		330.0f
+		EXPLOSION_COLLISION_SIZE
 	);
 	explosionCollision->SetPosition(m_position);
-
-	
-
 }
 
 bool Meteo::IsGroundCheck(const float downValue)
 {
 	BoxCollider m_boxCollider;
-	m_boxCollider.Create(Vector3(5.0f, 5.0f, 5.0f));
+	m_boxCollider.Create(g_vec3One * GROUND_CHECK_COLLISION_SIZE);
 	btTransform start, end;
 	start.setIdentity();
 	end.setIdentity();
@@ -242,9 +211,60 @@ void Meteo::Explosion()
 	m_ExplosionEffect->Update();
 }
 
-void Meteo::Render(RenderContext& rc)
+void Meteo::ManageState()
 {
-	//m_model.Draw(rc);
+	switch (m_state)
+	{
+	case Meteo::enMoveState:
+		OnProcessMoveTransition();
+		break;
+	case Meteo::enExplosionState:
+		OnProcessExplosionTransition();
+		break;
+	default:
+		break;
+	}
+}
+
+void Meteo::OnProcessMoveTransition()
+{
+	//地面に着いたら
+	if (IsGroundCheck(DOWN) == true || m_movePos.y <= EXPLOSION_Y_POS)
+	{
+		//地面についた
+		//爆発用当たり判定の生成
+		CreateExplosionCollision();
+		//爆発した
+		SetExplosionFlag(true);
+
+		//メテオ本体の当たり判定削除
+		//m_collision->Dead();
+		DeleteGO(m_collision);
+
+		//爆発エフェクトの生成
+		while (m_ExplosionEffect == nullptr)
+		{
+			//爆発する
+			m_explosionEffectFlag = true;
+			Explosion();
+		}
+
+		//次のステートに遷移
+		m_state = enExplosionState;
+		return;
+	}
+	//移動処理
+	Move();
+}
+
+void Meteo::OnProcessExplosionTransition()
+{
+	//爆発してからの処理
+	if (GetExplosionFlag() == true)
+	{
+		CalcDeleteTime();
+	}
+
 }
 
 void Meteo::CalcDeleteTime()
@@ -257,7 +277,7 @@ void Meteo::CalcDeleteTime()
 	{
 		m_explosionEndTimer += g_gameTime->GetFrameDeltaTime();
 
-		m_ExplosionEffect->SetScale(m_scale * (m_explosionEndTimer*2.4f));
+		m_ExplosionEffect->SetScale(m_scale * (m_explosionEndTimer * MUL_EXPLOSION_SCALE));
 		m_ExplosionEffect->Update();
 	}	
 }
