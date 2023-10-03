@@ -663,6 +663,7 @@ void Lich::OnProcessDarkMeteorite_StartStateTransition()
 	//アニメーション中に勝敗が決まったら
 	if (IsStopProcessing() == true)
 	{
+		m_darkMeteorite->SetGameEndFlag(true);
 		DeleteGO(m_darkMeteorite);
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
@@ -684,7 +685,7 @@ void Lich::OnProcessDarkMeteorite_StartStateTransition()
 		if (m_modelRender.IsPlayingAnimation() == false)
 		{
 			//一度だけダークメテオを生成
-			CreateDarkMeteorite(true);
+			CreateDarkMeteorite(false);
 			m_createDarkMeteoriteFlag = true;
 		}
 	}
@@ -705,7 +706,8 @@ void Lich::OnProcessDarkMeteorite_MainStateTransition()
 	//メテオを全て生成したら
 	if (m_darkMeteorite->GetShotEndFlag() == true)
 	{
-		//DeleteGO(m_darkMeteorite);
+		//if(m_darkMeteorite)
+		DeleteGO(m_darkMeteorite);
 		//エンドに移る
 		SetNextAnimationState(enAnimationState_Attack_DarkMeteorite_end);
 	}
@@ -887,6 +889,7 @@ void Lich::DeleteDarkMeteo()
 	m_darkMeteorite = FindGO<DarkMeteorite>("darkmeteorite");
 	if (m_darkMeteorite != nullptr)
 	{
+		m_darkMeteorite->SetGameEndFlag(true);
 		DeleteGO(m_darkMeteorite);
 	}
 }
