@@ -21,6 +21,7 @@ namespace nsK2EngineLow {
 		PhysicsWorld::DeleteInstance();
 		EffectEngine::DeleteInstance();
 
+		delete g_soundManager;
 		delete g_soundEngine;
 	}
 	void K2EngineLow::Init(HWND hwnd, UINT frameBufferWidth, UINT frameBufferHeight)
@@ -48,6 +49,8 @@ namespace nsK2EngineLow {
 		g_renderingEngine = new RenderingEngine;
 		g_renderingEngine->Init();
 		g_collisionObjectManager = new CollisionObjectManager;
+		//サウンドマネージャーの作成
+		g_soundManager = new SoundManager();
 
 #ifdef K2_DEBUG
 		if (m_graphicsEngine) {

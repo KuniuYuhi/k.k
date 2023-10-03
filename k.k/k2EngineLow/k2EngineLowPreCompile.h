@@ -120,3 +120,5 @@ static const int MAX_BONE = 512;	// ƒ{[ƒ“‚ÌÅ‘å”B
 #include "Light.h"
 #include "SkyCube.h"
 #include "CollisionObject.h"
+
+#include "SoundManager.h"
