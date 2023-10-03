@@ -359,6 +359,8 @@ void Hero::Damage(int attack)
 		SetRecoveryMpFlag(true);
 		//スキル使用時にダメージを受けたかもしれない
 		m_createSkillCollisionFlag = false;
+		//ダッシュ状態をfalseにする
+		m_dashEffectFlag = false;
 		//エフェクトの停止
 		if (m_swordStormEffect != nullptr)
 		{
