@@ -170,9 +170,11 @@ void Meteo::Move()
 	//
 	m_timer += 0.01f*0.65f;
 
+	
+
 	//設定と更新
 	//爆発していない間メテオの当たり判定の座標を更新する
-	if (m_explosionEffectFlag != true)
+	if (m_explosionEffectFlag != true|| m_collision->IsDead()!=true)
 	{
 		m_collision->SetPosition(m_movePos);
 		m_collision->Update();

@@ -7,6 +7,9 @@
 // K2EngineLowのグローバルアクセスポイント。
 K2EngineLow* g_k2EngineLow = nullptr;
 
+//サウンドマネージャーのグローバルアクセスポイント
+//SoundManager* g_soundManager = nullptr;
+
 
 /// <summary>
 /// メイン関数
@@ -14,7 +17,7 @@ K2EngineLow* g_k2EngineLow = nullptr;
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
 	// ゲームの初期化。
-	InitGame(hInstance, hPrevInstance, lpCmdLine, nCmdShow, TEXT("Game"));
+	InitGame(hInstance, hPrevInstance, lpCmdLine, nCmdShow, TEXT("FantasyBattle"));
 	
 	// k2EngineLowの初期化。
 	g_k2EngineLow = new K2EngineLow();
@@ -22,12 +25,16 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	g_camera3D->SetPosition({ 0.0f, 100.0f, -200.0f });
 	g_camera3D->SetTarget({ 0.0f, 50.0f, 0.0f });
 
+	//SoundManagerの初期化
+	/*g_soundManager = new SoundManager();
+	g_soundManager->SetSoundFile();*/
+
 	//フェードクラスの初期化
 	Fade*m_fade = NewGO<Fade>(5, "fade");
 
 
-	//Title* title = NewGO<Title>(0, "game");
-	Game* game = NewGO<Game>(0, "game");
+	Title* title = NewGO<Title>(0, "game");
+	//Game* game = NewGO<Game>(0, "game");
 
 	// ここからゲームループ。
 	while (DispatchWindowMessage() && g_gameLoop.m_isLoop == true)
@@ -48,6 +55,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		g_k2EngineLow->EndFrame();
 	}
 
+	//delete g_soundManager;
 	delete g_k2EngineLow;
 
 	return 0;

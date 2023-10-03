@@ -122,6 +122,25 @@ namespace nsK2EngineLow {
 		{
 			return m_isLoop;
 		}
+
+		/// <summary>
+		/// 番号を設定
+		/// </summary>
+		/// <param name="number"></param>
+		void SetNumber(const int number)
+		{
+			m_number = number;
+		}
+		/// <summary>
+		/// 番号を取得
+		/// </summary>
+		/// <returns></returns>
+		const int& GetNumber() const
+		{
+			return m_number;
+		}
+
+
 		/// <summary>
 		/// ボイスの周波数調整比。
 		/// 詳細はIXAudio2SourceVoiceのSetFrequencyRatioを参照してください。
@@ -189,5 +208,7 @@ namespace nsK2EngineLow {
 		X3DAUDIO_DSP_SETTINGS			m_dspSettings;
 		bool							m_isSetPositionFirst = true;	//一番最初のsetPosition?
 		bool							m_isAvailable = false;			//インスタンスが利用可能？
+
+		int								m_number = 0;					//サウンドソースの番号
 	};
 }

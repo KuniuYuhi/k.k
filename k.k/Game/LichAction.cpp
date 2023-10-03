@@ -31,7 +31,7 @@ int LichAction::NextAction()
 
 	CalcEvalSummon(enAttack_Summon);
 
-	//CalcEvalDarkMeteorite(enAttack_DarkMeteorite);
+	CalcEvalDarkMeteorite(enAttack_DarkMeteorite);
 
 	CalcEvalAngryMode(enAttack_AngryMode);
 
@@ -214,7 +214,7 @@ void LichAction::CalcEvalDarkMeteorite(EnActionNumber m_enActionNumber)
 	}
 
 	//todo ðŒ
-	m_action[m_enActionNumber].m_eval += 5;
+	m_action[m_enActionNumber].m_eval += 20;
 	
 	if (m_lich->IsFindPlayer(m_lich->GetInfoAboutAttack().m_Attack_1Distance) == true)
 	{

@@ -350,6 +350,8 @@ void Game::OnProcessAppearanceBossTransition()
 			DeleteGO(m_entryBoss);
 			//ボスのアクティブ化
 			m_lich->Activate(); 
+			//BGMの再生
+			g_soundManager->InitAndPlaySoundSource(enSoundName_BattleBGM, false, true);
 			//ステートを切り替える
 			SetNextGameState(enGameState_Game);
 			break;
