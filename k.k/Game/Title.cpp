@@ -34,6 +34,7 @@ Title::Title()
 
 Title::~Title()
 {
+    g_soundManager->StopSound(enSoundName_TitleBGM);
 }
 
 bool Title::Start()
@@ -78,12 +79,13 @@ void Title::SelectMode()
     {
         if (g_pad[0]->IsTrigger(enButtonA))
         {
+            g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
             m_pushAButtonFlag = true;
             return;
         }
 
     }
-    //ボタンが押されていなかったら先の処理をしない
+    //Aボタンが押されていなかったら先の処理をしない
     if (m_pushAButtonFlag != true)
     {
         return;
@@ -188,6 +190,7 @@ void Title::MoveCursor()
 
     if (g_pad[0]->IsTrigger(enButtonDown))
     {
+        g_soundManager->InitAndPlaySoundSource(enSoundName_Select);
         m_selectCursor++;
         //一番下に移動したら
         if (m_selectCursor > enMode_GameEnd)
@@ -199,6 +202,7 @@ void Title::MoveCursor()
     }
     else if (g_pad[0]->IsTrigger(enButtonUp))
     {
+        g_soundManager->InitAndPlaySoundSource(enSoundName_Select);
         m_selectCursor--;
         //一番上に移動したら
         if (m_selectCursor < enMode_GoToPlay)
@@ -218,8 +222,10 @@ void Title::GoToPlayMode()
         Game* game = NewGO<Game>(0, "game");
         DeleteGO(this);
     }
+
     if (g_pad[0]->IsTrigger(enButtonA))
     {
+        //g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
         //フェード開始
         m_fade->StartFadeIn(2.0f);
     }
@@ -229,6 +235,7 @@ void Title::HowToPlayMode()
 {
     if (g_pad[0]->IsTrigger(enButtonA))
     {
+        g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
         //モード決定
         m_SelectModeFlag = !m_SelectModeFlag;
         //遊び方の表示
@@ -240,6 +247,7 @@ void Title::ActionMode()
 {
     if (g_pad[0]->IsTrigger(enButtonA))
     {
+        g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
         //モード決定
         m_SelectModeFlag = !m_SelectModeFlag;
         //操作説明の表示
@@ -273,6 +281,8 @@ void Title::ShineStar()
             m_scaleTimer = 0.0f;
             //タイマーに掛ける値を変える
             m_mulTimerValue = 16.0f;
+            //キラーン音再生
+            g_soundManager->InitAndPlaySoundSource(enSoundName_StarShine);
         }
 
         break;
@@ -289,6 +299,8 @@ void Title::ShineStar()
     case Title::enStarStep_End:
         //全体のステップ終わり
         m_step = enStep_End;
+        //BGM再生
+        g_soundManager->InitAndPlaySoundSource(enSoundName_TitleBGM,false,true);
         break;
     default:
         break;
