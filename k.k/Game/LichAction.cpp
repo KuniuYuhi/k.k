@@ -214,7 +214,7 @@ void LichAction::CalcEvalDarkMeteorite(EnActionNumber m_enActionNumber)
 	}
 
 	//todo ðŒ
-	m_action[m_enActionNumber].m_eval += 100;
+	m_action[m_enActionNumber].m_eval += 10;
 	
 	if (m_lich->IsFindPlayer(m_lich->GetInfoAboutAttack().m_Attack_1Distance) == true)
 	{

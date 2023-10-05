@@ -80,7 +80,7 @@ private:
 	Vector3 m_lichPosition = g_vec3Zero;
 
 	//¶¬‚·‚éƒ‚ƒ“ƒXƒ^[‚Ì”
-	int m_createMonsters = 0;
+	int m_createMonsters = 6;
 
 	int m_divMonster = 4;
 
