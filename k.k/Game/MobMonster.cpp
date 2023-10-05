@@ -279,6 +279,8 @@ void MobMonster::SubPassPower()
 
 void MobMonster::Dead()
 {
+	g_soundManager->InitAndPlaySoundSource(enSoundName_Mob_Die, g_soundManager->GetSEVolume());
+
 	EffectEmitter* deadEffect = NewGO<EffectEmitter>(0);
 	deadEffect->Init(InitEffect::enEffect_Mob_Dead);
 	deadEffect->Play();
