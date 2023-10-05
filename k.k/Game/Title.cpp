@@ -26,6 +26,8 @@ namespace {
 
     const float STAR_MAX_SCALE = 2.0f;
 
+    const float DEFAULT_TITLE_BGM = 2.5f;
+
 }
 
 Title::Title()
@@ -51,6 +53,21 @@ void Title::Update()
     StepManage();
 
     CalcAlphaAButtonText();
+
+
+
+    if (g_pad[0]->IsTrigger(enButtonY))
+    {
+    }
+    if (g_pad[0]->IsTrigger(enButtonB))
+    {
+       /* g_soundManager->SetSoundVolume(1.1f, flag);
+        g_soundManager->GetSoundSource(enSoundName_TitleBGM)->SetVolume(g_soundManager->GetDefaultBGVolume());*/
+    }
+
+
+   
+
 }
 
 void Title::StepManage()
@@ -190,7 +207,7 @@ void Title::MoveCursor()
 
     if (g_pad[0]->IsTrigger(enButtonDown))
     {
-        g_soundManager->InitAndPlaySoundSource(enSoundName_Select);
+        g_soundManager->InitAndPlaySoundSource(enSoundName_Select,g_soundManager->GetSEVolume());
         m_selectCursor++;
         //一番下に移動したら
         if (m_selectCursor > enMode_GameEnd)
@@ -202,7 +219,7 @@ void Title::MoveCursor()
     }
     else if (g_pad[0]->IsTrigger(enButtonUp))
     {
-        g_soundManager->InitAndPlaySoundSource(enSoundName_Select);
+        g_soundManager->InitAndPlaySoundSource(enSoundName_Select, g_soundManager->GetSEVolume());
         m_selectCursor--;
         //一番上に移動したら
         if (m_selectCursor < enMode_GoToPlay)
@@ -214,10 +231,42 @@ void Title::MoveCursor()
     }
 }
 
+void Title::CalcMuteBGMVolume()
+{
+    if (m_goToGameFlag != true)
+    {
+        return;
+    }
+
+    if (m_muteBGMFlag == true)
+    {
+        return;
+    }
+
+    if (m_goToGameFlag == true)
+    {
+        if (m_bgmVolume > 0.0f)
+        {
+            m_bgmVolume = Math::Lerp(g_gameTime->GetFrameDeltaTime() * 5.0f, m_bgmVolume, -0.1f);
+        }
+        else
+        {
+            m_muteBGMFlag = true;
+            return;
+        }
+
+        //BGMを小さくしていく
+        g_soundManager->GetSoundSource(enSoundName_TitleBGM)->SetVolume(m_bgmVolume);
+    }
+}
+
 void Title::GoToPlayMode()
 {
+    //バトルに入ることが決まったら
+    CalcMuteBGMVolume();
+
     //フェードが終わったら消す
-    if (m_fade->GetCurrentAlpha() >= 1.0f)
+    if (m_fade->GetCurrentAlpha() >= 1.0f && m_muteBGMFlag == true)
     {
         Game* game = NewGO<Game>(0, "game");
         DeleteGO(this);
@@ -225,6 +274,10 @@ void Title::GoToPlayMode()
 
     if (g_pad[0]->IsTrigger(enButtonA))
     {
+        m_goToGameFlag = true;
+
+        m_bgmVolume = g_soundManager->GetBGMVolume();
+
         //g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
         //フェード開始
         m_fade->StartFadeIn(2.0f);
@@ -235,7 +288,7 @@ void Title::HowToPlayMode()
 {
     if (g_pad[0]->IsTrigger(enButtonA))
     {
-        g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
+        g_soundManager->InitAndPlaySoundSource(enSoundName_Decision, g_soundManager->GetSEVolume());
         //モード決定
         m_SelectModeFlag = !m_SelectModeFlag;
         //遊び方の表示
@@ -247,7 +300,7 @@ void Title::ActionMode()
 {
     if (g_pad[0]->IsTrigger(enButtonA))
     {
-        g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
+        g_soundManager->InitAndPlaySoundSource(enSoundName_Decision, g_soundManager->GetSEVolume());
         //モード決定
         m_SelectModeFlag = !m_SelectModeFlag;
         //操作説明の表示
@@ -282,7 +335,7 @@ void Title::ShineStar()
             //タイマーに掛ける値を変える
             m_mulTimerValue = 16.0f;
             //キラーン音再生
-            g_soundManager->InitAndPlaySoundSource(enSoundName_StarShine);
+            g_soundManager->InitAndPlaySoundSource(enSoundName_StarShine,g_soundManager->GetSEVolume());
         }
 
         break;
@@ -300,7 +353,7 @@ void Title::ShineStar()
         //全体のステップ終わり
         m_step = enStep_End;
         //BGM再生
-        g_soundManager->InitAndPlaySoundSource(enSoundName_TitleBGM,false,true);
+        g_soundManager->InitAndPlaySoundSource(enSoundName_TitleBGM, g_soundManager->GetBGMVolume(), false, true, true);
         break;
     default:
         break;

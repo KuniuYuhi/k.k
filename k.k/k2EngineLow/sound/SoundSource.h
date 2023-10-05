@@ -28,7 +28,7 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="number">g_soundEngine->ResistWaveFileBankで登録した波形データの番号。</param>
 		/// <param name="is3DSound">3Dサウンドならtrue。</param>
-		void Init(const int number, bool is3DSound = false);
+		void Init(const int number, bool is3DSound = false,bool bgmFlag = false);
 		/// <summary>
 		/// 開放。デストラクタから自動的に呼ばれます。明示的に開放を行いたい場合は使用して下さい。
 		/// </summary>
@@ -73,6 +73,12 @@ namespace nsK2EngineLow {
 		void SetVolume(float vol)
 		{
 			m_sourceVoice->SetVolume(vol);
+			if (isSetDefaultVolume)
+			{
+				m_defaultVolume = vol;
+				isSetDefaultVolume = false;
+			}
+
 		}
 		/// <summary>
 		/// ボリュームを取得。
@@ -122,6 +128,14 @@ namespace nsK2EngineLow {
 		{
 			return m_isLoop;
 		}
+		/// <summary>
+		/// BGMフラグを取得
+		/// </summary>
+		/// <returns></returns>
+		bool GetBGMFlag() const
+		{
+			return m_bgmFlag;
+		}
 
 		/// <summary>
 		/// 番号を設定
@@ -138,6 +152,15 @@ namespace nsK2EngineLow {
 		const int& GetNumber() const
 		{
 			return m_number;
+		}
+
+		/// <summary>
+		/// デフォルトの音量を取得
+		/// </summary>
+		/// <returns></returns>
+		const float& GetDefaultVolume() const
+		{
+			return m_defaultVolume;
 		}
 
 
@@ -193,7 +216,7 @@ namespace nsK2EngineLow {
 		void Update() override;
 	private:
 		std::shared_ptr<WaveFile>		m_waveFile;						//波形データ。
-		IXAudio2SourceVoice* m_sourceVoice = nullptr;		//ソースボイス。
+		IXAudio2SourceVoice*			m_sourceVoice = nullptr;		//ソースボイス。
 		bool							m_isLoop = false;				//ループフラグ。
 		bool							m_isPlaying = false;			//再生中フラグ。
 		unsigned int					m_currentBufferingSize = 0;		//現在のバッファリングのサイズ。
@@ -202,7 +225,7 @@ namespace nsK2EngineLow {
 		bool							m_is3DSound = false;			//3Dサウンド？
 		Vector3							m_position = Vector3::Zero;		//音源の座標。3Dサウンドの時に必要。
 		Vector3							m_lastFramePosition = Vector3::Zero;//音源の1フレーム前の座標。3Dサウンドの時に必要。
-		Vector3							m_velocity = Vector3::Zero;		//速度。3Dサウンドの時に必要・
+		Vector3							m_velocity = Vector3::Zero;		//速度。3Dサウンドの時に必要。
 		FLOAT32							m_emitterAzimuths[INPUTCHANNELS];
 		FLOAT32							m_matrixCoefficients[INPUTCHANNELS * OUTPUTCHANNELS];
 		X3DAUDIO_DSP_SETTINGS			m_dspSettings;
@@ -210,5 +233,8 @@ namespace nsK2EngineLow {
 		bool							m_isAvailable = false;			//インスタンスが利用可能？
 
 		int								m_number = 0;					//サウンドソースの番号
+		bool							isSetDefaultVolume = true;		//デフォルトの音量を設定したかのフラグ
+		float							m_defaultVolume = 0.0f;			//デフォルトの音量
+		bool							m_bgmFlag = false;				//BGMフラグ
 	};
 }

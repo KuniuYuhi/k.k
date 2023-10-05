@@ -50,6 +50,9 @@ bool DarkBall::Start()
     m_darkBallEffect->SetPosition(m_collisionPosition);
     m_darkBallEffect->SetRotation(m_rotation);
     m_darkBallEffect->Update();
+
+    g_soundManager->InitAndPlaySoundSource(enSoundName_Boss_DarkBall, g_soundManager->GetSEVolume());
+
 	return true;
 }
 

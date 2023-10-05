@@ -114,7 +114,8 @@ void FlamePillar::StartFlamePillar()
     m_flamePillarEffect->SetScale(g_vec3One * CIRCLE_SIZE);
     m_flamePillarEffect->SetPosition(m_position);
     m_flamePillarEffect->Update();
-
+    //音再生
+    g_soundManager->InitAndPlaySoundSource(enSoundName_FlamePillar, g_soundManager->GetSEVolume());
 
     //フレイムピラーを出したのでフラグをfalseにする
     m_startFlamePllarFlag = false;

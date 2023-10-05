@@ -62,6 +62,10 @@ EntryBoss::EntryBoss()
 
 EntryBoss::~EntryBoss()
 {
+	//‰¹‚Ì’âŽ~
+	g_soundManager->StopSound(enSoundName_FogRemoval);
+	g_soundManager->StopSound(enSoundName_Gogogo);
+
 	//ƒGƒtƒFƒNƒg‚Ì’âŽ~
 	if (m_CircleEffect != nullptr)
 	{
@@ -154,6 +158,9 @@ bool EntryBoss::Start()
 	g_renderingEngine->SetAmbient(g_vec3One);
 	//‰Šú‚ÌŠÂ‹«Œõ‚ÌƒJƒ‰[‚ðÝ’è
 	m_ambientColor = START_AMBIENT_COLOR;
+
+	//ƒSƒSƒSƒSƒSƒSƒS‚ÌÄ¶
+	g_soundManager->InitAndPlaySoundSource(enSoundName_Gogogo, g_soundManager->GetSEVolume());
 
 	return true;
 }
@@ -417,6 +424,9 @@ void EntryBoss::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNa
 		m_FogRemovalEffect->SetPosition(m_position);
 		m_FogRemovalEffect->SetScale({ 15.0f,40.0f,15.0f });
 		m_FogRemovalEffect->Update();
+
+		//–¶•¥‚¢‰¹Ä¶
+		g_soundManager->InitAndPlaySoundSource(enSoundName_FogRemoval, g_soundManager->GetSEVolume());
 
 		//ƒ|ƒCƒ“ƒgƒ‰ƒCƒg‚ðÁ‚·
 		g_renderingEngine->UnUsePointLight();

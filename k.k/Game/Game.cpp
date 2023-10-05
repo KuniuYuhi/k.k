@@ -27,6 +27,8 @@ namespace {
 	const float AMBIENT_COLOR = 0.7f;
 
 	const float SECOND = 60.0f;
+
+	const float DEFAULT_BATTLE_BGM = 2.0f;
 }
 
 Game::Game()
@@ -35,6 +37,8 @@ Game::Game()
 
 Game::~Game()
 {
+	g_soundManager->StopAllSound();
+
 	DeleteGO(m_skyCube);
 	DeleteGO(m_bossStage1);
 	
@@ -108,8 +112,6 @@ bool Game::Start()
 void Game::Update()
 {	
 	ManageState();
-
-	Spotmove();
 }
 
 bool Game::Fadecomplete()
@@ -149,9 +151,11 @@ void Game::GoResult(EnOutCome outcome)
 		switch (outcome)
 		{
 		case Game::enOutCome_Win:
+			g_soundManager->InitAndPlaySoundSource(enSoundName_GameClear);
 			m_result->SetOutcome(ResultSeen::enOutcome_Win);
 			break;
 		case Game::enOutCome_Lose:
+			g_soundManager->InitAndPlaySoundSource(enSoundName_GameOver);
 			m_result->SetOutcome(ResultSeen::enOutcome_Lose);
 			break;
 		default:
@@ -164,47 +168,6 @@ void Game::GoResult(EnOutCome outcome)
 	{
 		DeleteGO(this);
 	}
-}
-
-void Game::Spotmove()
-{
-	/*spDirection.x -= g_pad[0]->GetLStickXF()*0.5f;
-	spDirection.Normalize();
-	g_renderingEngine->SetDirLightDirection(spDirection);*/
-
-
-	//左のアナログスティックで動かす
-	spPosition.x -= g_pad[0]->GetLStickXF();
-	if (g_pad[0]->IsPress(enButtonB))
-	{
-		//Bボタンが一緒に押されていたらY軸方向に動かす
-		spPosition.y += g_pad[0]->GetLStickYF();
-	}
-	else
-	{
-		//Z方向に動かす
-		spPosition.z -= g_pad[0]->GetLStickYF();
-	}
-
-	// step-4 コントローラー右スティックでスポットライトを回転させる
-	   //Y軸回りのクォータニオンを計算する
-	Quaternion qRotY;
-	qRotY.SetRotationY(g_pad[0]->GetRStickXF() * 0.01f);
-	//計算したクォータニオンでライトの方向を回す
-	qRotY.Apply(spDirection);
-
-	//X軸回りのクォータニオンを計算する
-	Vector3 rotAxis;
-	rotAxis.Cross(g_vec3AxisY, spDirection);
-	Quaternion qRotX;
-	qRotX.SetRotation(rotAxis, g_pad[0]->GetRStickYF() * 0.01f);
-	//計算したクォータニオンでライトの方向を回す
-	qRotX.Apply(spDirection);
-
-	spDirection.Normalize();
-	/*g_renderingEngine->SetSpotLightPosition(spPosition);
-	g_renderingEngine->SetSpotLightDirection(spDirection);*/
-	
 }
 
 bool Game::CalcTimeLimit()
@@ -233,6 +196,27 @@ bool Game::CalcTimeLimit()
 		m_second -= g_gameTime->GetFrameDeltaTime();
 	}
 	return false;
+}
+
+void Game::CalcMuteBGM()
+{
+	if (m_muteBGMFlag != false)
+	{
+		return;
+	}
+
+	m_bgmVolume = Math::Lerp(g_gameTime->GetFrameDeltaTime() * 5.0f, m_bgmVolume, 0.0f);
+
+	if (m_bgmVolume < 0.1f)
+	{
+		m_muteBGMFlag = true;
+		g_soundManager->StopSound(enSoundName_BattleBGM);
+		return;
+	}
+	else
+	{
+		g_soundManager->GetSoundSource(enSoundName_BattleBGM)->SetVolume(m_bgmVolume);
+	}
 }
 
 bool Game::IsBossMovieSkipTime()
@@ -350,8 +334,7 @@ void Game::OnProcessAppearanceBossTransition()
 			DeleteGO(m_entryBoss);
 			//ボスのアクティブ化
 			m_lich->Activate(); 
-			//BGMの再生
-			g_soundManager->InitAndPlaySoundSource(enSoundName_BattleBGM, false, true);
+		
 			//ステートを切り替える
 			SetNextGameState(enGameState_Game);
 			break;
@@ -401,15 +384,18 @@ void Game::OnProcessGameTransition()
 
 	//ゲームクリア
 	//ボスがやられたら
+	//やられた瞬間の処理
 	if (m_DeathBossFlag == true)
 	{
 		DeleteGO(m_gameUI);
 		//ステートを切り替える
 		SetNextGameState(enGameState_GameClear);
-		//
+		//カメラをリッチに向ける
 		m_gameCamera->SetLich(m_lich);
 		//カメラをリセットする
 		m_gameCamera->CameraRefresh();
+		//BGMを消し始める
+		m_bgmVolume = g_soundManager->GetBGMVolume();
 		return;
 	}
 	//ゲームオーバー
@@ -419,9 +405,11 @@ void Game::OnProcessGameTransition()
 		DeleteGO(m_gameUI);
 		//ステートを切り替える
 		SetNextGameState(enGameState_GameOver);
+		//BGMを消し始める
+		m_muteBGMFlag = true;
+		//BGMを消す
+		g_soundManager->StopSound(enSoundName_BattleBGM);
 	}
-
-
 
 	//画面を明るくする
 	if (m_fade->IsFade() == false && m_enFadeState == enFadeState_BossToPlayer)
@@ -435,6 +423,8 @@ void Game::OnProcessGameTransition()
 		m_fade->StartFadeOut(3.0f);
 		//フェードステートをなしにする
 		m_enFadeState = enFadeState_None;
+		//BGMの再生
+		g_soundManager->InitAndPlaySoundSource(enSoundName_BattleBGM, DEFAULT_BATTLE_BGM, false, true, true);
 	}
 }
 
@@ -446,6 +436,10 @@ void Game::OnProcessGameOverTransition()
 
 void Game::OnProcessGameClearTransition()
 {
+	//BGMを小さくする
+	CalcMuteBGM();
+
+
 	if (m_displayResultFlag == true)
 	{
 		GoResult(enOutCome_Win);

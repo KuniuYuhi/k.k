@@ -317,6 +317,8 @@ void Lich::Damage(int attack)
 			{
 				DeleteGO(m_darkWall);
 			}
+			//クリティカルヒット音再生
+			g_soundManager->InitAndPlaySoundSource(enSoundName_CriticalHit);
 			//被ダメージアニメーションステートに遷移
 			SetNextAnimationState(enAnimationState_Damage);
 		}
@@ -417,6 +419,8 @@ bool Lich::CalcAngryTime()
 		m_angryModeCount = 0;
 		//怒りモードから戻るときにプレイヤーから一番遠いところにワープする
 		SetNextAnimationState(enAnimationState_Warp);
+		//ワープ音再生
+		g_soundManager->InitAndPlaySoundSource(enSoundName_Boss_Warp, g_soundManager->GetSEVolume());
 		//無敵時間にする
 		SetInvincibleFlag(true);
 		return false;

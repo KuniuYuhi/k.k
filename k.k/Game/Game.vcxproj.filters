@@ -322,6 +322,7 @@
     <ClCompile Include="DarkBall.cpp">
       <Filter>Lich</Filter>
     </ClCompile>
+    <ClCompile Include="SoundFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -636,5 +637,6 @@
     <ClInclude Include="DarkBall.h">
       <Filter>Lich</Filter>
     </ClInclude>
+    <ClInclude Include="SoundFile.h" />
   </ItemGroup>
 </Project>

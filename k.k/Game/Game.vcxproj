@@ -302,6 +302,7 @@
     <ClCompile Include="SlimeStateIdle.cpp" />
     <ClCompile Include="SlimeStateVictory.cpp" />
     <ClCompile Include="SlimeStateWalk.cpp" />
+    <ClCompile Include="SoundFile.cpp" />
     <ClCompile Include="Status.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -424,6 +425,7 @@
     <ClInclude Include="SlimeStateIdle.h" />
     <ClInclude Include="SlimeStateVictory.h" />
     <ClInclude Include="SlimeStateWalk.h" />
+    <ClInclude Include="SoundFile.h" />
     <ClInclude Include="Status.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Summon.h" />

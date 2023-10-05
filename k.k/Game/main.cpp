@@ -3,13 +3,10 @@
 #include "Game.h"
 #include "Title.h"
 #include "Fade.h"
+#include "SoundFile.h"
 
 // K2EngineLowのグローバルアクセスポイント。
 K2EngineLow* g_k2EngineLow = nullptr;
-
-//サウンドマネージャーのグローバルアクセスポイント
-//SoundManager* g_soundManager = nullptr;
-
 
 /// <summary>
 /// メイン関数
@@ -25,9 +22,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	g_camera3D->SetPosition({ 0.0f, 100.0f, -200.0f });
 	g_camera3D->SetTarget({ 0.0f, 50.0f, 0.0f });
 
-	//SoundManagerの初期化
-	/*g_soundManager = new SoundManager();
-	g_soundManager->SetSoundFile();*/
+	//
+	SoundFile* soundFile = new SoundFile();
+	delete soundFile;
+
 
 	//フェードクラスの初期化
 	Fade*m_fade = NewGO<Fade>(5, "fade");
@@ -55,7 +53,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		g_k2EngineLow->EndFrame();
 	}
 
-	//delete g_soundManager;
 	delete g_k2EngineLow;
 
 	return 0;
