@@ -208,6 +208,7 @@ void Wizard::Attack()
 		m_enAttackPatternState = enAttackPattern_1;
 		SetNowComboState(enNowCombo_1);
 		SetNextAnimationState(enAnimationState_Attack_1);
+		//g_soundManager->InitAndPlaySoundSource(enSoundName_Wand_Hit,g_soundManager->GetSEVolume());
 		return;
 	}
 	//2コンボ受付タイム
@@ -669,6 +670,7 @@ void Wizard::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
 	if (wcscmp(eventName, L"Attack1_Collision_Start") == 0)
 	{
+		g_soundManager->InitAndPlaySoundSource(enSoundName_Wand_Hit, g_soundManager->GetSEVolume());
 		m_createAttackCollisionFlag = true;
 	}
 	if (wcscmp(eventName, L"Attack1_Collision_End") == 0)
@@ -693,6 +695,7 @@ void Wizard::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	}
 	if (wcscmp(eventName, L"Attack4_CollisionStart") == 0)
 	{
+		g_soundManager->InitAndPlaySoundSource(enSoundName_Wand_Hit, g_soundManager->GetSEVolume());
 		m_createAttackCollisionFlag = true;
 	}
 	if (wcscmp(eventName, L"Attack4_CollisionEnd") == 0)
