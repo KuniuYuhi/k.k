@@ -31,9 +31,9 @@ public:
 
 	void InitSkyCube();
 
-	void Spotmove();
-
 	bool CalcTimeLimit();
+
+	void CalcMuteBGM();
 
 
 
@@ -190,60 +190,58 @@ private:
 		enFadeState_BossToPlayer,
 
 	};
-	EnFadeState m_enFadeState = enFadeState_None;
+	EnFadeState					m_enFadeState = enFadeState_None;
 
-	EnClearCameraState m_clearCameraState = enClearCameraState_None;
+	EnClearCameraState			m_clearCameraState = enClearCameraState_None;
 
-	Fade* m_fade = nullptr;
-	Player* m_player = nullptr;
-	Lich* m_lich = nullptr;
-	BossStage1* m_bossStage1 = nullptr;
-	GameCamera* m_gameCamera = nullptr;
-	ResultSeen* m_result = nullptr;
-	SkyCube* m_skyCube = nullptr;
-	const Vector3 m_skyPos = { 0.0f,-700.0f,0.0f };
+	Fade*						m_fade = nullptr;
+	Player*						m_player = nullptr;
+	Lich*						m_lich = nullptr;
+	BossStage1*					m_bossStage1 = nullptr;
+	GameCamera*					m_gameCamera = nullptr;
+	ResultSeen*					m_result = nullptr;
+	SkyCube*					m_skyCube = nullptr;
+	const Vector3				m_skyPos = { 0.0f,-700.0f,0.0f };
 
-	GameUI* m_gameUI = nullptr;
-	EntryBoss* m_entryBoss = nullptr;
-	BattleStart* m_battleStart = nullptr;
+	GameUI*						m_gameUI = nullptr;
+	EntryBoss*					m_entryBoss = nullptr;
+	BattleStart*				m_battleStart = nullptr;
 
-	ModelRender model;
+	ModelRender					model;
 
 
 	//Level2DRender level2DSp;
 
-	//spotLight
-	Vector3 spPosition = Vector3::Zero;
-	Vector3 spDirection = Vector3::Zero;
+	Vector3						m_position = Vector3(0.0f,0.0f,0.0f);
+	Quaternion					m_rotation = Quaternion::Identity;
+	Vector3						m_scale = Vector3::One;
 
-	Vector3 m_position = Vector3(0.0f,0.0f,0.0f);
-	Quaternion m_rotation = Quaternion::Identity;
-	Vector3 m_scale = Vector3::One;
-
-	EnGameState m_enGameState = enGameState_GameStart;
+	EnGameState					m_enGameState = enGameState_GameStart;
 
 
-	float m_TimeLimit = 300.0f;			//制限時間三分
-	float m_minute = 3.0f;				//分
-	float m_second = 0.0f;				//秒
+	float						m_TimeLimit = 300.0f;							//制限時間三分
+	float						m_minute = 3.0f;								//分
+	float						m_second = 0.0f;								//秒
 
 
-	bool m_DeathBossFlag = false;				//ボスがやられたのフラグ
-	bool m_ChaseBossFlag = false;				//ボスを見るかのフラグ
+	bool						m_DeathBossFlag = false;						//ボスがやられたのフラグ
+	bool						m_ChaseBossFlag = false;						//ボスを見るかのフラグ
 
-	bool m_playerAnnihilationFlag = false;
+	bool						m_playerAnnihilationFlag = false;
 
+	bool						m_bossMovieEndFlag = false;						//ボスの登場ムービーが終わったら
 
-	bool m_bossMovieEndFlag = false;			//ボスの登場ムービーが終わったら
-
-	bool m_displayResultFlag = false;
+	bool						m_displayResultFlag = false;
 	
-	const float m_fadeTime = 3.0f;
-	const float m_cameraZoomOutTime = 2.0f;
-	float m_cameraZoomOutTimer = 0.0f;
+	const float					m_fadeTime = 3.0f;
+	const float					m_cameraZoomOutTime = 2.0f;
+	float						m_cameraZoomOutTimer = 0.0f;
 
-	const float m_bossMovieSkipTime = 1.0f;
-	float m_bossMovieSkipTimer = 0.0f;
+	const float					m_bossMovieSkipTime = 1.0f;
+	float						m_bossMovieSkipTimer = 0.0f;
+
+	bool						m_muteBGMFlag = false;							//BGMをミュートするかのフラグ
+	float						m_bgmVolume = 0.0f;								//BGMの音量
 
 };
 
