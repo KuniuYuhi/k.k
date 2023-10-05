@@ -204,6 +204,7 @@ void Hero::Move()
 				m_dashEffect->SetRotation(m_rotation);
 				m_dashEffect->Update();
 				m_dashEffectFlag = true;
+				g_soundManager->InitAndPlaySoundSource(enSoundName_Dash,g_soundManager->GetSEVolume());
 			}	
 		}
 	}
@@ -248,6 +249,7 @@ void Hero::Attack()
 	//1コンボ
 	if (g_pad[0]->IsTrigger(enButtonB)&& m_enAttackPatternState==enAttackPattern_None)
 	{
+		g_soundManager->InitAndPlaySoundSource(enSoundName_Sword_Hit,g_soundManager->GetSEVolume());
 		m_enAttackPatternState = enAttackPattern_1;
 		SetNowComboState(enNowCombo_1);
 		SetNextAnimationState(enAnimationState_Attack_1);
@@ -293,6 +295,10 @@ void Hero::Attack()
 			m_swordStormChargeEffect->SetPosition(m_position);
 			m_swordStormChargeEffect->SetScale(g_vec3One * 15.0f);
 			m_swordStormChargeEffect->Update();
+			//チャージ音再生
+			g_soundManager->InitAndPlaySoundSource(
+				enSoundName_SwordStorm_Charge, g_soundManager->GetSEVolume(), false, true
+			);
 			return;
 		}
 		
@@ -374,6 +380,8 @@ void Hero::Damage(int attack)
 		{
 			m_dashEffect->Stop();
 		}
+		g_soundManager->StopSound(enSoundName_SwordStorm_Charge);
+		g_soundManager->StopSound(enSoundName_SwordStorm_Storm);
 	}
 	//HPが0より大きいなら
 	if (m_status.hp > 0)
@@ -644,6 +652,11 @@ void Hero::OnProcessAttack_Skill_ChargeStateTransition()
 		m_swordStormEffect->SetScale(g_vec3One * SWORD_EFFECT_SIZE);
 		m_swordStormEffect->Update();
 
+		g_soundManager->StopSound(enSoundName_SwordStorm_Charge);
+		//ストーム音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordStorm_Storm, g_soundManager->GetSEVolume());
+
 	}
 
 }
@@ -659,6 +672,8 @@ void Hero::OnProcessAttack_Skill_MainStateTransition()
 		m_createSkillCollisionFlag = false;
 		//エフェクトの停止
 		m_swordStormEffect->Stop();
+		//音停止
+		g_soundManager->StopSound(enSoundName_SwordStorm_Storm);
 		//チャージ時間をリセット
 		m_ChargeTimer = 0.0f;
 		//スキルを打ち終わったのでMP回復フラグをtrueにする
@@ -754,6 +769,7 @@ void Hero::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 			m_enAttackPatternState = enAttackPattern_2;
 			SetNowComboState(enNowCombo_2);
 			SetNextAnimationState(enAnimationState_Attack_2);
+			g_soundManager->InitAndPlaySoundSource(enSoundName_Sword_Hit, g_soundManager->GetSEVolume());
 		}
 	}
 
@@ -777,6 +793,7 @@ void Hero::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 			m_enAttackPatternState = enAttackPattern_3;
 			SetNowComboState(enNowCombo_3);
 			SetNextAnimationState(enAnimationState_Attack_3);
+			g_soundManager->InitAndPlaySoundSource(enSoundName_Sword_Hit, g_soundManager->GetSEVolume());
 		}
 		
 	}
