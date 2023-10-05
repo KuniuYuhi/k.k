@@ -23,6 +23,8 @@ public:
 
 	void MoveCursor();
 
+	void CalcMuteBGMVolume();
+
 
 	void GoToPlayMode();
 	void HowToPlayMode();
@@ -81,53 +83,59 @@ public:
 
 private:
 
-	SpriteRender m_titleNameRender;
-	SpriteRender m_backRender;
-	SpriteRender m_starRender;
-	SpriteRender m_pushAButtonTextRender;
-	SpriteRender m_goToPlayTextRender;
-	SpriteRender m_howToPlayTextRender;
-	SpriteRender m_actionTextRender;
-	SpriteRender m_gameEndTextRender;
-	SpriteRender m_cursorRender;
-	SpriteRender m_howToPlayRender;
-	SpriteRender m_actionRender;
+	SpriteRender			m_titleNameRender;
+	SpriteRender			m_backRender;
+	SpriteRender			m_starRender;
+	SpriteRender			m_pushAButtonTextRender;
+	SpriteRender			m_goToPlayTextRender;
+	SpriteRender			m_howToPlayTextRender;
+	SpriteRender			m_actionTextRender;
+	SpriteRender			m_gameEndTextRender;
+	SpriteRender			m_cursorRender;
+	SpriteRender			m_howToPlayRender;
+	SpriteRender			m_actionRender;
 
-	Fade* m_fade = nullptr;
+	Fade*					m_fade = nullptr;
 
-	EnTitleAnimStep m_step = enStep1_TitleTextAlpha;
-	EnStarScaleState m_starScaleStep = enStarStep1_ScaleUp;
-
-
-	Vector3 m_gTPScale = g_vec3One;
-	Vector3 m_hTPScale = g_vec3One;
-	Vector3 m_actionScale = g_vec3One;
-	Vector3 m_gameEndScale = g_vec3One;
+	EnTitleAnimStep			m_step = enStep1_TitleTextAlpha;
+	EnStarScaleState		m_starScaleStep = enStarStep1_ScaleUp;
 
 
-	float m_wipeSize = 860.0f;
+	Vector3					m_gTPScale = g_vec3One;
+	Vector3					m_hTPScale = g_vec3One;
+	Vector3					m_actionScale = g_vec3One;
+	Vector3					m_gameEndScale = g_vec3One;
 
-	bool m_pushAButtonFlag = false;
 
-	bool m_calcAlphaEndFlag = false;
-	float m_alphaTimer = 0.0f;
-	Vector4 m_color = g_vec4Clear;
+	float					m_wipeSize = 860.0f;
 
-	Vector4 m_AButtonColor = g_vec4Clear;
-	float m_alphaAButtonTimer = 0.0f;
-	bool m_Flag = false;
+	bool					m_pushAButtonFlag = false;
+
+	bool					m_calcAlphaEndFlag = false;
+	float					m_alphaTimer = 0.0f;
+	Vector4					m_color = g_vec4Clear;
+
+	Vector4					m_AButtonColor = g_vec4Clear;
+	float					m_alphaAButtonTimer = 0.0f;
+	bool					m_Flag = false;
 	
-	float m_mulScale = 0.0f;
-	Quaternion m_starRotation = g_quatIdentity;
-	float m_scaleTimer = 0.0f;
-	float m_mulTimerValue = 5.0f;
+	float					m_mulScale = 0.0f;
+	Quaternion				m_starRotation = g_quatIdentity;
+	float					m_scaleTimer = 0.0f;
+	float					m_mulTimerValue = 5.0f;
 
-	int m_selectCursor = 0;
+	int						m_selectCursor = 0;
 
-	bool m_SelectModeFlag = false;				//モードを決めているかのフラグ
+	bool					m_SelectModeFlag = false;				//モードを決めているかのフラグ
 
-	bool m_drawHowToPlayFlag = false;
-	bool m_drawActionFlag = false;
+	bool					m_drawHowToPlayFlag = false;
+	bool					m_drawActionFlag = false;
+
+	bool					m_goToGameFlag = false;				//ゲームが始まるかのフラグ
+
+	bool					m_muteBGMFlag = false;
+
+	float					m_bgmVolume = 0.0f;
 
 
 
