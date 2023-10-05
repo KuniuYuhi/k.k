@@ -67,6 +67,9 @@ void BattleStart::CalcAlpha()
 
     if (m_alpha > 1.0f)
     {
+        //不透明になった
+        //バトルスタートの音再生
+        g_soundManager->InitAndPlaySoundSource(enSoundName_BattleStart, g_soundManager->GetBGMVolume());
         m_calcAlphaEndFlag = true;
         m_alpha = 1.0f;
     }
