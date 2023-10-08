@@ -45,6 +45,8 @@ TurtleShell::TurtleShell()
 	m_angleRange = ANGLE_RANGE;
 
 	m_pos2Length = POS2_LENGTH;
+
+	m_scale *= 1.3f;
 }
 
 TurtleShell::~TurtleShell()
@@ -55,29 +57,6 @@ TurtleShell::~TurtleShell()
 	//	m_lich->RemoveAIActorFromList(this);
 	//}
 }
-
-//衝突したときに呼ばれる関数オブジェクト(壁用)
-//struct IsForestResult :public btCollisionWorld::ConvexResultCallback
-//{
-//	bool isHit = false;						//衝突フラグ。
-//	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
-//	{
-//		//地面とぶつかってなかったら。
-//		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
-//			//衝突したのは壁ではない。
-//			isHit = false;
-//			return 0.0f;
-//		}
-//		else
-//		{
-//			//地面とぶつかったら。
-//		//フラグをtrueに。
-//			isHit = true;
-//			return 0.0f;
-//		}
-//
-//	}
-//};
 
 bool TurtleShell::Start()
 {
@@ -139,8 +118,8 @@ void TurtleShell::InitModel()
 	);
 	
 	m_charaCon.Init(
-		22.0f,
-		4.0f,
+		23.6f,
+		5.0f,
 		m_position
 	);
 
