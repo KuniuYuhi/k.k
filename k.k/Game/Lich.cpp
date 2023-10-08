@@ -115,11 +115,6 @@ bool Lich::Start()
 	//todo 優先度設定する
 	m_lichAction->SettingPriority();
 	
-	//
-	//m_monsters.emplace_back(this);
-
-	//m_lichAction->NextAction();
-
 	return true;
 }
 
@@ -258,16 +253,14 @@ void Lich::Move()
 {
 	//プレイヤーの座標を取得
 	SetTargetPosition();
-
 	//移動処理
 	m_moveSpeed = CalcVelocity(m_status, m_targetPosition);
-
 	//被ダメージ時は処理をしない
 	if (isAnimationEntable() != true)
 	{
 		return;
 	}
-	//怒りモードでないなら抜け出す
+	//怒りモードでないなら処理しない
 	if (m_enSpecialActionState != enSpecialActionState_AngryMode)
 	{
 		//移動しないようにする
@@ -293,11 +286,11 @@ void Lich::Move()
 		//移動する
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	}
-	else
-	{
-		//移動しないようにする
-		m_moveSpeed = Vector3::Zero;
-	}
+	//else
+	//{
+	//	//移動しないようにする
+	//	m_moveSpeed = Vector3::Zero;
+	//}
 }
 
 void Lich::Damage(int attack)
@@ -309,8 +302,8 @@ void Lich::Damage(int attack)
 
 	if (m_status.hp > 0)
 	{
-		//一定確率で怯む
-		if (Isflinch() == true)
+		//一定確率で怯む。怒りモードの時はひるまない
+		if (m_enAnimationState != enAnimationState_Angry && Isflinch() == true)
 		{
 			//技の途中かもしれない
 			if (m_darkWall != nullptr)
@@ -322,9 +315,9 @@ void Lich::Damage(int attack)
 			//被ダメージアニメーションステートに遷移
 			SetNextAnimationState(enAnimationState_Damage);
 		}
+
 		//HPを減らす
 		m_status.hp -= attack;
-
 		//HPが半分になったら
 		if (m_status.hp <= m_status.maxHp / 2)
 		{
@@ -370,6 +363,13 @@ void Lich::CreateDamageFont(int damage)
 
 bool Lich::Isflinch()
 {
+	//怒りモードの時はひるまない
+	if (m_enSpecialActionState == enSpecialActionState_AngryMode)
+	{
+		//怯まない
+		return false;
+	}
+
 	int value = rand() % 10;
 	if (value > 7)
 	{
@@ -621,8 +621,6 @@ void Lich::OnProcessAttack_1StateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//攻撃パターンをなし状態にする
-		//m_enAttackPatternState = enAttackPattern_None;
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}
@@ -656,7 +654,6 @@ void Lich::OnProcessDamageStateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}
@@ -689,7 +686,7 @@ void Lich::OnProcessDarkMeteorite_StartStateTransition()
 		if (m_modelRender.IsPlayingAnimation() == false)
 		{
 			//一度だけダークメテオを生成
-			CreateDarkMeteorite(false);
+			CreateDarkMeteorite(true);
 			m_createDarkMeteoriteFlag = true;
 		}
 	}
@@ -710,7 +707,6 @@ void Lich::OnProcessDarkMeteorite_MainStateTransition()
 	//メテオを全て生成したら
 	if (m_darkMeteorite->GetShotEndFlag() == true)
 	{
-		//if(m_darkMeteorite)
 		DeleteGO(m_darkMeteorite);
 		//エンドに移る
 		SetNextAnimationState(enAnimationState_Attack_DarkMeteorite_end);
@@ -748,7 +744,7 @@ void Lich::OnProcessSummonStateTransition()
 
 void Lich::OnProcessVictoryStateTransition()
 {
-	//アニメーシがループするので特に処理しない
+	//アニメーションがループするので特に処理しない
 }
 
 void Lich::OnProcessAngryStateTransition()
@@ -756,6 +752,7 @@ void Lich::OnProcessAngryStateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		g_soundManager->StopSound(enSoundName_Boss_Angry);
 		//怒りモードに移行
 		SetSpecialActionState(enSpecialActionState_AngryMode);
 		//共通の状態遷移処理に移行
@@ -781,7 +778,6 @@ void Lich::OnProcessWarpStateTransition()
 	case Lich::enWarpStep_End:
 		OnProcessenWarpStepEnd();
 		break;
-
 	default:
 		break;
 	}
@@ -793,7 +789,7 @@ void Lich::OnProcessenWarpStepUp()
 	Vector3 Up = WARP_UP;
 	//ワープする前に上に上昇する
 	m_position = m_charaCon.Execute(Up, 1.0f / 30.0f);
-
+	//上のほうに行ったら
 	if (m_position.y >= 2500.0f)
 	{
 		//次のステップに進む
@@ -810,7 +806,7 @@ void Lich::OnProcessenWarpStepWarp()
 
 void Lich::OnProcessenWarpSteDown()
 {
-	//
+	//地上についたら
 	if (m_charaCon.IsOnGround()==true)
 	{
 		m_position.y = 0.0f;
@@ -838,14 +834,10 @@ void Lich::OnProcessenWarpStepEnd()
 	m_enWarpStep = enWarpStep_Up;
 }
 
-
 void Lich::CreateDarkWall()
 {
 	m_darkWall = NewGO<DarkWall>(0, "darkwall");
 	m_darkWall->SetLich(this);
-
-	/*DarkWall* darkball = NewGO<DarkWall>(0, "darkwall");
-	darkball->SetLich(this);*/
 }
 
 void Lich::CreateDarkBall(bool AddBallFlag)
@@ -903,6 +895,8 @@ void Lich::CreateSummon()
 	//モンスターを召喚する
 	m_summon = NewGO<Summon>(0, "summon");
 	m_summon->SetLich(this);
+	//召喚前の詠唱音再生
+	//g_soundManager->InitAndPlaySoundSource(enSoundName_Boss_Summon_charge, g_soundManager->GetSEVolume());
 	//最初の召喚だけ
 	if (m_firstSummonFlag == true)
 	{
@@ -968,6 +962,7 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	//ダークウォール生成タイミング
 	if (wcscmp(eventName, L"Create_DarkWall") == 0)
 	{
+
 		CreateDarkWall();
 	}
 	//ダークウォール生成終わり
@@ -990,7 +985,16 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	if (wcscmp(eventName, L"Summon") == 0)
 	{
 		//モンスターの召喚
+		//詠唱の音を消して召喚の音を再生する
+		//g_soundManager->StopSound(enSoundName_Boss_Summon_charge);
+		g_soundManager->InitAndPlaySoundSource(enSoundName_Boss_Summon_start, g_soundManager->GetSEVolume());
+		//召喚始め
 		m_summon->SetSummonStartFlag(true);
+	}
+
+	if (wcscmp(eventName, L"AngrySound") == 0)
+	{
+		g_soundManager->InitAndPlaySoundSource(enSoundName_Boss_Angry, g_soundManager->GetSEVolume());
 	}
 }
 
