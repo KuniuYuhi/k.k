@@ -6,7 +6,7 @@
 
 namespace {
 
-	const Vector3 TIMER_POS = { -50.0f,522.0f,0.0f };
+	const Vector3 TIMER_POS = { -34.0f,522.0f,0.0f };
 	const Vector2 TIMER_OFFSET = { 50.0f,-20.0f };
 
 	/// <summary>
@@ -584,9 +584,9 @@ void GameUI::InitPlayerUI()
 		m_playerUI.m_SkillFireBallRender, SKILL_2__POS, Vector3(0.7f, 0.7f, 0.7f), g_quatIdentity);
 
 	//êßå¿éûä‘ÇÃòg
-	m_playerUI.m_TimeFlameRender.Init("Assets/sprite/InGame/Character/TimeFlame.DDS", 251, 124);
+	m_playerUI.m_TimeFlameRender.Init("Assets/sprite/InGame/Character/TimeFlame2.DDS", 500, 124);
 	SettingSpriteRender(
-		m_playerUI.m_TimeFlameRender, TIME_FLAME_POS, Vector3(0.6f, 0.6f, 0.6f), g_quatIdentity);
+		m_playerUI.m_TimeFlameRender, TIME_FLAME_POS, Vector3(0.6f, 0.5f, 0.6f), g_quatIdentity);
 
 
 }
