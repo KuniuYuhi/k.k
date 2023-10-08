@@ -224,6 +224,11 @@ void AIActor::CreateHitEffect()
 {
 }
 
+void AIActor::PlayAttackSound()
+{
+	g_soundManager->InitAndPlaySoundSource(enSoundName_Attack1, g_soundManager->GetSEVolume());
+}
+
 bool AIActor::AttackInterval(const float attackintarvaltime)
 {
 	//UŒ‚‚µ‚½‚ç

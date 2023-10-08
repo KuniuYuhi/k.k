@@ -141,6 +141,10 @@ public:
 	/// </summary>
 	virtual void CreateHitEffect();
 
+	/// <summary>
+	/// 攻撃時の音を再生
+	/// </summary>
+	virtual void PlayAttackSound();
 
 	/// <summary>
 	/// ステータスの取得
