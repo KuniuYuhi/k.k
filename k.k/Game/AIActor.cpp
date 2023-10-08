@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "AIActor.h"
+#include "FireBall.h"
+#include "FlamePillar.h"
 
 AIActor::AIActor()
 {
@@ -147,10 +149,14 @@ void AIActor::DamageCollision(CharacterController& characon)
 		if (collision->IsHit(characon) == true)
 		{
 			FireBall* fireball = FindGO<FireBall>("fireball");
-			m_damage = fireball->GetAtk();
-			HitFireBall();
-			//ぶつかったのでファイヤーボールを消すフラグを立てる
-			fireball->SetHitFlag(true);
+			if (fireball != nullptr)
+			{
+				m_damage = fireball->GetAtk();
+				HitFireBall();
+				//ぶつかったのでファイヤーボールを消すフラグを立てる
+				fireball->SetHitFlag(true);
+			}
+			
 			return;
 		}
 	}

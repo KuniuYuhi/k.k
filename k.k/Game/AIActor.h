@@ -1,8 +1,6 @@
 #pragma once
 #include "Status.h"
 #include "Player.h"
-#include "FireBall.h"
-#include "FlamePillar.h"
 #include "DamageFont.h"
 
 class AIActor:public IGameObject
