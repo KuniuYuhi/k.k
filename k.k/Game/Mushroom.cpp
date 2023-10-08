@@ -14,7 +14,7 @@
 
 namespace {
 	const float ANGLE = 60.0f;				//Ž‹–ìŠp
-	const float DISTANCE_TO_PLAYER = 800.0f;			//ƒvƒŒƒCƒ„[‚Æ‚Ì‹——£
+	const float DISTANCE_TO_PLAYER = 300.0f;			//ƒvƒŒƒCƒ„[‚Æ‚Ì‹——£
 	const float ATTACK_RANGE = 45.0f;					//UŒ‚‚Å‚«‚é‹——£
 	const float STAY_RANGR = 45.0f;						//’âŽ~‚·‚é‹——£
 	const float ATTACK_INTAERVALE_TIME = 1.5f;			//UŒ‚‚·‚éŠÔŠu
@@ -43,6 +43,8 @@ Mushroom::Mushroom()
 	m_angleRange = ANGLE_RANGE;
 
 	m_pos2Length = POS2_LENGTH;
+
+	m_scale *= 1.3f;
 }
 
 Mushroom::~Mushroom()
@@ -114,8 +116,8 @@ void Mushroom::InitModel()
 	//m_monsterStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Monster);
 
 	m_charaCon.Init(
-		20.0f,
-		5.0f,
+		22.0f,
+		6.0f,
 		m_position
 	);
 
