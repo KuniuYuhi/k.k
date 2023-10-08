@@ -281,6 +281,11 @@ void Slime::ManageState()
 	m_state->ManageState();
 }
 
+void Slime::PlayAttackSound()
+{
+	g_soundManager->InitAndPlaySoundSource(enSoundName_Slime_Attack, g_soundManager->GetSEVolume());
+}
+
 void Slime::PlayAnimation()
 {
 	m_state->PlayAnimation();
