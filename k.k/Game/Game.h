@@ -21,22 +21,6 @@ public:
 	bool Start();
 	void Update();
 	
-	/// <summary>
-	/// フェード
-	/// </summary>
-	/// <returns></returns>
-	bool Fadecomplete();
-
-	void CreateBoss();
-
-	void InitSkyCube();
-
-	bool CalcTimeLimit();
-
-	void CalcMuteBGM();
-
-
-
 	const Vector3 GetPosition() const
 	{
 		return m_position;
@@ -88,17 +72,6 @@ public:
 		enGameState_GameOver_TimeUp,
 		enGameState_GameClear
 	};
-
-	/// <summary>
-	/// ステートの管理
-	/// </summary>
-	void ManageState();
-
-	void OnProcessGameStartTransition();
-	void OnProcessAppearanceBossTransition();
-	void OnProcessGameTransition();
-	void OnProcessGameOverTransition();
-	void OnProcessGameClearTransition();
 
 	/// <summary>
 	/// 次のゲームステートを設定
@@ -183,6 +156,43 @@ public:
 
 private:
 
+	/// <summary>
+	/// フェード
+	/// </summary>
+	/// <returns></returns>
+	bool Fadecomplete();
+
+	void CreateBoss();
+
+	void InitSkyCube();
+
+	bool CalcTimeLimit();
+
+	void CalcMuteBGM();
+
+	/// <summary>
+	/// ステートの管理
+	/// </summary>
+	void ManageState();
+	//ゲームの流れ
+	void OnProcessGameStartTransition();
+	void OnProcessAppearanceBossTransition();
+	void OnProcessGameTransition();
+	void OnProcessGameOverTransition();
+	void OnProcessGameClearTransition();
+
+	enum EnGameStep
+	{
+		enGameStep_FadeOut,
+		enGameStep_FadeNone,
+		enGameStep_Battle
+	};
+	EnGameStep					m_enGameStep = enGameStep_FadeOut;
+
+	void OnProcessGame_FadeOutTransition();
+	void OnProcessGame_FadeNoneTransition();
+	void OnProcessGame_BattleTransition();
+
 	enum EnFadeState
 	{
 		enFadeState_None,
@@ -191,6 +201,9 @@ private:
 
 	};
 	EnFadeState					m_enFadeState = enFadeState_None;
+
+
+	
 
 	EnClearCameraState			m_clearCameraState = enClearCameraState_None;
 
@@ -242,6 +255,8 @@ private:
 
 	bool						m_muteBGMFlag = false;							//BGMをミュートするかのフラグ
 	float						m_bgmVolume = 0.0f;								//BGMの音量
+
+	bool						m_battleBGMFlag = false;
 
 };
 

@@ -372,59 +372,19 @@ void Game::OnProcessAppearanceBossTransition()
 
 void Game::OnProcessGameTransition()
 {
-	//制限時間の処理
-	if (CalcTimeLimit() == true)
+	switch (m_enGameStep)
 	{
-		//タイムアップ
-		DeleteGO(m_gameUI);
-		//ステートを切り替える
-		SetNextGameState(enGameState_GameOver_TimeUp);
-	}
-
-
-	//ゲームクリア
-	//ボスがやられたら
-	//やられた瞬間の処理
-	if (m_DeathBossFlag == true)
-	{
-		DeleteGO(m_gameUI);
-		//ステートを切り替える
-		SetNextGameState(enGameState_GameClear);
-		//カメラをリッチに向ける
-		m_gameCamera->SetLich(m_lich);
-		//カメラをリセットする
-		m_gameCamera->CameraRefresh();
-		//BGMを消し始める
-		m_bgmVolume = g_soundManager->GetBGMVolume();
-		return;
-	}
-	//ゲームオーバー
-	//キャラクターが全滅したら
-	if (m_playerAnnihilationFlag == true)
-	{
-		DeleteGO(m_gameUI);
-		//ステートを切り替える
-		SetNextGameState(enGameState_GameOver);
-		//BGMを消し始める
-		m_muteBGMFlag = true;
-		//BGMを消す
-		g_soundManager->StopSound(enSoundName_BattleBGM);
-	}
-
-	//画面を明るくする
-	if (m_fade->IsFade() == false && m_enFadeState == enFadeState_BossToPlayer)
-	{
-		//UI生成
-		m_gameUI = NewGO<GameUI>(0, "gameUI");
-		m_gameUI->GetGame(this);
-		m_gameUI->GetPlayer(m_player);
-		m_gameUI->GetLich(m_lich);
-		//このステートに入ってフェードアウトするとき
-		m_fade->StartFadeOut(3.0f);
-		//フェードステートをなしにする
-		m_enFadeState = enFadeState_None;
-		//BGMの再生
-		g_soundManager->InitAndPlaySoundSource(enSoundName_BattleBGM, DEFAULT_BATTLE_BGM, false, true, true);
+	case Game::enGameStep_FadeOut:
+		OnProcessGame_FadeOutTransition();
+		break;
+	case Game::enGameStep_FadeNone:
+		OnProcessGame_FadeNoneTransition();
+		break;
+	case Game::enGameStep_Battle:
+		OnProcessGame_BattleTransition();
+		break;
+	default:
+		break;
 	}
 }
 
@@ -458,4 +418,76 @@ void Game::OnProcessGameClearTransition()
 		m_displayResultFlag = true;
 	}
 
+}
+
+void Game::OnProcessGame_FadeOutTransition()
+{
+	//フェード状態がなしならフェードアウトする
+	if (m_fade->IsFade() == false && m_enFadeState == enFadeState_BossToPlayer)
+	{
+		//UI生成
+		m_gameUI = NewGO<GameUI>(0, "gameUI");
+		m_gameUI->GetGame(this);
+		m_gameUI->GetPlayer(m_player);
+		m_gameUI->GetLich(m_lich);
+		//このステートに入ってフェードアウトするとき
+		m_fade->StartFadeOut(3.0f);
+		//フェードステートをなしにする
+		m_enFadeState = enFadeState_None;
+		//次のステップに進む
+		m_enGameStep = enGameStep_FadeNone;
+	}
+}
+
+void Game::OnProcessGame_FadeNoneTransition()
+{
+	if (m_fade->IsFade() == false)
+	{
+		//BGMの音量を上げる
+		//BGMの再生
+		g_soundManager->InitAndPlaySoundSource(enSoundName_BattleBGM, DEFAULT_BATTLE_BGM, false, true, true);
+		//次のステップに進む
+		m_enGameStep = enGameStep_Battle;
+	}
+}
+
+void Game::OnProcessGame_BattleTransition()
+{
+	//制限時間の処理
+	if (CalcTimeLimit() == true)
+	{
+		//タイムアップ
+		DeleteGO(m_gameUI);
+		//ステートを切り替える
+		SetNextGameState(enGameState_GameOver_TimeUp);
+	}
+
+	//ゲームクリア
+	//ボスがやられたら
+	//やられた瞬間の処理
+	if (m_DeathBossFlag == true)
+	{
+		DeleteGO(m_gameUI);
+		//ステートを切り替える
+		SetNextGameState(enGameState_GameClear);
+		//カメラをリッチに向ける
+		m_gameCamera->SetLich(m_lich);
+		//カメラをリセットする
+		m_gameCamera->CameraRefresh();
+		//BGMを消し始める
+		m_bgmVolume = g_soundManager->GetBGMVolume();
+		return;
+	}
+	//ゲームオーバー
+	//キャラクターが全滅したら
+	if (m_playerAnnihilationFlag == true)
+	{
+		DeleteGO(m_gameUI);
+		//ステートを切り替える
+		SetNextGameState(enGameState_GameOver);
+		//BGMを消し始める
+		m_muteBGMFlag = true;
+		//BGMを消す
+		g_soundManager->StopSound(enSoundName_BattleBGM);
+	}
 }
