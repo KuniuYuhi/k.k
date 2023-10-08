@@ -686,7 +686,7 @@ void Lich::OnProcessDarkMeteorite_StartStateTransition()
 		if (m_modelRender.IsPlayingAnimation() == false)
 		{
 			//一度だけダークメテオを生成
-			CreateDarkMeteorite(true);
+			CreateDarkMeteorite(m_halfHpFlag);
 			m_createDarkMeteoriteFlag = true;
 		}
 	}
