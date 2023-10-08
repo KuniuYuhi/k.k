@@ -9,8 +9,8 @@ namespace {
 
 	const float MAX_CAMERA_TOP = -0.1f;
 	const float MAX_CAMERA_UNDER = 0.8f;
-
-	const float TARGETPOS_YUP = 140.0f;
+	//140.0f
+	const float TARGETPOS_YUP = 150.0f;
 	const float TARGETPOS_GAMESTART_YUP = 38.0f;
 
 	const float STARTCAMERA_YUP = 60.0f;
