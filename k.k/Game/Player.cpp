@@ -180,6 +180,8 @@ void Player::ChangeCharacter(EnCharacters nextCharacter)
 	//現在のキャラクターを魔法使いに変更する
 	m_enActiveCharacter = nextCharacter;
 
+	//切り替え音再生
+	g_soundManager->InitAndPlaySoundSource(enSoundName_ChangeCharacter, g_soundManager->GetSEVolume());
 }
 
 bool Player::ForcedChange()

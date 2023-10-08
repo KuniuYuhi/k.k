@@ -34,28 +34,6 @@ struct IsForestResult :public btCollisionWorld::ConvexResultCallback
 	}
 };
 
-//衝突したときに呼ばれる関数オブジェクト(壁用)
-//struct IsMonsterResult :public btCollisionWorld::ConvexResultCallback
-//{
-//	bool isHit = false;						//衝突フラグ。
-//	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
-//	{
-//		//地面とぶつかってなかったら。
-//		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Monster) {
-//			//衝突したのは壁ではない。
-//			isHit = false;
-//			return 0.0f;
-//		}
-//		else
-//		{
-//			//地面とぶつかったら。
-//		//フラグをtrueに。
-//			isHit = true;
-//			return 0.0f;
-//		}
-//	}
-//};
-
 bool MobMonster::RotationOnly()
 {
 	if (isRotationEntable() != true)
@@ -341,3 +319,5 @@ void MobMonster::CreateHitEffect()
 	hitEffect->SetScale(g_vec3One * HIT_EFFECT_SIZE);
 	hitEffect->Update();
 }
+
+

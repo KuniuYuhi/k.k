@@ -32,7 +32,7 @@ void SoundFile::SetSoundFile()
 	g_soundEngine->ResistWaveFileBank(enSoundName_Gogogo, "Assets/sound/SE/inGame/gogogo.wav");
 
 	//バトルスタート
-	g_soundEngine->ResistWaveFileBank(enSoundName_BattleStart, "Assets/sound/SE/inGame/BattleStart.wav");
+	g_soundEngine->ResistWaveFileBank(enSoundName_BattleStart, "Assets/sound/SE/inGame/BattleStart2.wav");
 
 
 	//決定音
@@ -40,6 +40,9 @@ void SoundFile::SetSoundFile()
 	//選択音
 	g_soundEngine->ResistWaveFileBank(enSoundName_Select, "Assets/sound/SE/outGame/Select.wav");
 
+
+	//キャラ切り替え
+	g_soundEngine->ResistWaveFileBank(enSoundName_ChangeCharacter, "Assets/sound/SE/player/ChangeCharacter.wav");
 	//ダッシュ
 	g_soundEngine->ResistWaveFileBank(enSoundName_Dash, "Assets/sound/SE/player/Dash.wav");
 	//ソードヒット
@@ -56,6 +59,9 @@ void SoundFile::SetSoundFile()
 	g_soundEngine->ResistWaveFileBank(enSoundName_FlamePillar, "Assets/sound/SE/player/FlamePillar.wav");
 	//ファイヤーボール発生
 	g_soundEngine->ResistWaveFileBank(enSoundName_FireBall_Start, "Assets/sound/SE/player/FireBall_Start.wav");
+	//ファイヤーボール爆発
+	g_soundEngine->ResistWaveFileBank(enSoundName_FireBall_Explosion, "Assets/sound/SE/player/FireBall_Explosion.wav");
+
 
 
 
@@ -64,12 +70,20 @@ void SoundFile::SetSoundFile()
 	g_soundEngine->ResistWaveFileBank(enSoundName_Mob_Die, "Assets/sound/SE/monster/Mob_Die.wav");
 	//モンスターの攻撃音１
 	g_soundEngine->ResistWaveFileBank(enSoundName_Attack1, "Assets/sound/SE/monster/Attack1.wav");
+	//スライムの攻撃音
+	g_soundEngine->ResistWaveFileBank(enSoundName_Slime_Attack, "Assets/sound/SE/monster/Slime_Attack.wav");
+	//カクタスの攻撃音１
+	g_soundEngine->ResistWaveFileBank(enSoundName_Cactus_Attack1, "Assets/sound/SE/monster/Cactus_Attack1.wav");
 	//ボスのワープ
 	g_soundEngine->ResistWaveFileBank(enSoundName_Boss_Warp, "Assets/sound/SE/monster/Warp.wav");
+	//ボスの怒りモード
+	g_soundEngine->ResistWaveFileBank(enSoundName_Boss_Angry, "Assets/sound/SE/monster/Angry.wav");
 	//ダークボールの発生
 	g_soundEngine->ResistWaveFileBank(enSoundName_Boss_DarkBall, "Assets/sound/SE/monster/DarkBall_Start.wav");
-	//
-	//g_soundEngine->ResistWaveFileBank(enSoundName_Boss_DarkBall_Explosion, "Assets/sound/SE/monster/DarkBall_Start.wav");
+	//ダークボールの爆発
+	g_soundEngine->ResistWaveFileBank(enSoundName_Boss_DarkBall_Explosion, "Assets/sound/SE/monster/DarkBall_Explosion.wav");
+	//メテオ撃つ
+	g_soundEngine->ResistWaveFileBank(enSoundName_Boss_Meteo_Shot, "Assets/sound/SE/monster/Shot_Meteo.wav");
 	//メテオの爆発
 	g_soundEngine->ResistWaveFileBank(enSoundName_Boss_Meteo_Explosion, "Assets/sound/SE/monster/Meteo_Explosion.wav");
 	//召喚前の詠唱

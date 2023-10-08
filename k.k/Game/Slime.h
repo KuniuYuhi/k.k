@@ -133,8 +133,6 @@ public:
 	/// <param name="nextState"></param>
 	void SetNextAnimationState(EnAnimationState nextState);
 
-	//void Dead();
-
 private:
 	/// <summary>
 	/// モデルの初期化
@@ -151,7 +149,13 @@ private:
 	/// </summary>
 	void ManageState();
 
-	//Lich* m_lich = nullptr;
+	/// <summary>
+	/// 攻撃時の音を再生
+	/// </summary>
+	void PlayAttackSound();
+
+
+	
 	ISlimeState* m_state = nullptr;
 
 	Animation m_animation;	// アニメーション

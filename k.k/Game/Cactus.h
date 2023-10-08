@@ -165,28 +165,33 @@ private:
 	/// </summary>
 	void ManageState();
 
+	/// <summary>
+	/// 攻撃時の音を再生
+	/// </summary>
+	void PlayAttackSound();
+
+
 	enum EnAttackName
 	{
 		enAttackName_1,
 		enAttackName_2
 	};
+	EnAttackName m_enAttackName;
 
-	//Lich* m_lich = nullptr;
-	ICactusState* m_state = nullptr;
 
-	Animation m_animation;	// アニメーション
-	AnimationClip m_animationClip[enAnimClip_Num];	// アニメーションクリップ 
+	ICactusState*					m_state = nullptr;
 
-	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
+	Animation						m_animation;										//アニメーション
+	AnimationClip					m_animationClip[enAnimClip_Num];					//アニメーションクリップ 
 
-	ModelRender m_modelRender;
+	EnAnimationState				m_enAnimationState = enAninationState_Idle;			//アニメーションステート
 
-	CharacterController m_charaCon;
+	ModelRender						m_modelRender;
 
-	//Vector3 m_direction = Vector3::Zero;
+	CharacterController				m_charaCon;
 
-	int m_attackBoonId = -1;					//攻撃で使うボーンID
+	int								m_attackBoonId = -1;								//攻撃で使うボーンID
 
-	bool m_createAttackCollisionFlag = false;
+	bool							m_createAttackCollisionFlag = false;
 };
 

@@ -88,7 +88,6 @@ int LichAction::NextAction()
 		m_lich->SetInvincibleFlag(true);
 		//ステートセット
 		m_lich->SetNextAnimationState(Lich::enAnimationState_Angry);
-
 		break;
 
 	default:

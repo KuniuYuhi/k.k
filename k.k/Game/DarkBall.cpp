@@ -113,6 +113,8 @@ void DarkBall::Explosion()
 {
     m_darkBallEffect->Stop();
 
+    g_soundManager->InitAndPlaySoundSource(enSoundName_Boss_DarkBall_Explosion, g_soundManager->GetSEVolume());
+
     //”š”­
     EffectEmitter* explosionEffect = NewGO<EffectEmitter>(0);
     explosionEffect->Init(InitEffect::enEffect_DarkBall_Explosion);

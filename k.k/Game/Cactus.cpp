@@ -45,6 +45,8 @@ Cactus::Cactus()
 	m_angleRange = ANGLE_RANGE;
 
 	m_pos2Length = POS2_LENGTH;
+
+	m_scale *= 1.3f;
 }
 
 Cactus::~Cactus()
@@ -114,8 +116,8 @@ void Cactus::InitModel()
 	);
 	
 	m_charaCon.Init(
-		20.0f,
-		5.0f,
+		22.0f,
+		6.5f,
 		m_position
 	);
 
@@ -208,16 +210,18 @@ void Cactus::Attack()
 			switch (i)
 			{
 			case enAttackName_1:
-				//UŒ‚
+				//UŒ‚1
 				SetNextAnimationState(enAnimationState_Attack_1);
 				//UŒ‚‚µ‚½‚Ì‚Åƒtƒ‰ƒO‚ðtrue‚É‚µ‚ÄƒCƒ“ƒ^[ƒoƒ‹‚É“ü‚é
 				m_attackFlag = true;
+				m_enAttackName = enAttackName_1;
 				break;
 			case enAttackName_2:
-				//UŒ‚
+				//UŒ‚2
 				SetNextAnimationState(enAnimationState_Attack_2);
 				//UŒ‚‚µ‚½‚Ì‚Åƒtƒ‰ƒO‚ðtrue‚É‚µ‚ÄƒCƒ“ƒ^[ƒoƒ‹‚É“ü‚é
 				m_attackFlag = true;
+				m_enAttackName = enAttackName_2;
 				break;
 			default:
 				break;
@@ -281,6 +285,21 @@ void Cactus::Damage(int attack)
 void Cactus::ManageState()
 {
 	m_state->ManageState();
+}
+
+void Cactus::PlayAttackSound()
+{
+	switch (m_enAttackName)
+	{
+	case Cactus::enAttackName_1:
+		g_soundManager->InitAndPlaySoundSource(enSoundName_Cactus_Attack1, g_soundManager->GetSEVolume());
+		break;
+	case Cactus::enAttackName_2:
+		g_soundManager->InitAndPlaySoundSource(enSoundName_Cactus_Attack1, g_soundManager->GetSEVolume());
+		break;
+	default:
+		break;
+	}
 }
 
 void Cactus::PlayAnimation()

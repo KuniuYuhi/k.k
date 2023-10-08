@@ -6,8 +6,8 @@
 #include "InitEffect.h"
 
 namespace {
-	const int MAX_LENGTH = 50;
-	const int MIN_LENGTH = -50;
+	const int MAX_LENGTH = 10;
+	const int MIN_LENGTH = -10;
 
 	const float BIGMETEO_SPEED = 200.0f;
 
@@ -18,6 +18,10 @@ namespace {
 
 	const float BIGMETEO_GROUND_CHECK_Y_UP = -100.0f;
 	const float BIGMETEO_GROUND_CHECK_Y_DOWN = -130.0f;
+
+	const float WIND_SCALE = 30.0f;
+
+	const float DARKMETEO_SHOT_TIMER = 5.0f;
 }
 
 DarkMeteorite::DarkMeteorite()
@@ -157,7 +161,7 @@ void DarkMeteorite::SizeUp()
 	}
 }
 
-void DarkMeteorite::Shot()
+void DarkMeteorite::ShotMeteo()
 {
 	//ショットフラグが立っていないなら処理しない
 	if (m_ShotStartFlag != true)
@@ -166,7 +170,7 @@ void DarkMeteorite::Shot()
 	}
 
 	//タイマーが生成時間に達していないなら抜け出す
-	if (CreateTimer() != true)
+	if (CreateMeteoTimer() != true)
 	{
 		return;
 	}
@@ -187,6 +191,14 @@ void DarkMeteorite::Shot()
 				CreateMeteo(HitPosition);
 				//カウンターを増やす
 				m_meteoCounter++;
+
+				//もし最後のメテオなら
+				if (m_meteoCounter >= m_createMeteoCount)
+				{
+					//ダークメテオを落とす時のために次のタイマーを長くする
+					m_createTime = DARKMETEO_SHOT_TIMER;
+				}
+
 				break;
 			}
 		}	
@@ -262,9 +274,11 @@ void DarkMeteorite::CreateMeteo(Vector3 targetposition)
 	meteo->SetTargetPosition(targetposition);
 	//リストに追加。
 	m_meteos.emplace_back(meteo);
+	//メテオを撃つ音再生
+	g_soundManager->InitAndPlaySoundSource(enSoundName_Boss_Meteo_Shot, g_soundManager->GetSEVolume());
 }
 
-bool DarkMeteorite::CreateTimer()
+bool DarkMeteorite::CreateMeteoTimer()
 {
 	if (m_createTime < m_createTimer)
 	{
@@ -308,8 +322,13 @@ bool DarkMeteorite::IsHitGround(Vector3 targetposition,float up, float down)
 	}
 }
 
-bool DarkMeteorite::IsHitWall(Vector3 pos1, Vector3 pos2)
+bool DarkMeteorite::IsHitWall()
 {
+	Vector3 addPos = m_moveSpeed;
+	addPos.Normalize();
+	Vector3 pos2 = m_position;
+	pos2.Add(addPos * 3.0f);
+
 	BoxCollider m_boxCollider;
 	m_boxCollider.Create(Vector3(1.0f, 1.0f, 1.0f));
 
@@ -317,7 +336,7 @@ bool DarkMeteorite::IsHitWall(Vector3 pos1, Vector3 pos2)
 	start.setIdentity();
 	end.setIdentity();
 	//始点はエネミーの座標。
-	start.setOrigin(btVector3(pos1.x, 0.0f, pos1.z));
+	start.setOrigin(btVector3(m_position.x, 0.0f, m_position.z));
 	//終点はプレイヤーの座標。
 	end.setOrigin(btVector3(pos2.x, 0.0f, pos2.z));
 
@@ -348,10 +367,10 @@ void DarkMeteorite::ShotManageState()
 		//一定のサイズになったら処理をしない
 		SizeUp();
 		//メテオを撃つ処理
-		Shot();
+		ShotMeteo();
 		break;
 	case DarkMeteorite::enShotState_BigMeteo:
-		move();
+		DarkMeteoMoveManageState();
 		break;
 	default:
 		DeleteGO(this);
@@ -359,80 +378,150 @@ void DarkMeteorite::ShotManageState()
 	}
 }
 
-void DarkMeteorite::Render(RenderContext& rc)
+void DarkMeteorite::DarkMeteoMoveManageState()
 {
-	m_model.Draw(rc);
+	switch (m_darkMeteoMoveState)
+	{
+	case DarkMeteorite::enDarkMeteoMoveState_fall:
+		OnProcessFallStateTransition();
+		break;
+	case DarkMeteorite::enDarkMeteoMoveState_Chase:
+		OnProcessChaseStateTransition();
+		break;
+	case DarkMeteorite::enDarkMeteoMoveState_straight:
+		OnProcessStraightStateTransition();
+		break;
+	default:
+		break;
+	}
 }
 
-void DarkMeteorite::move()
+void DarkMeteorite::OnProcessFallStateTransition()
 {
-	if (m_bigMeteoMoveCount > 0 && m_chaseFlag!=false)
-	{
-		//ターゲットの向かうベクトルを計算
-		m_targetPosition = m_player->GetPosition();
-		m_moveSpeed = m_targetPosition - m_position;
-		//カウントを減らす
-		m_bigMeteoMoveCount-=g_gameTime->GetFrameDeltaTime();
-	}
-	
+	//ターゲットの向かうベクトルを計算
+	SetToTargetDirection();
 	//正規化
 	m_moveSpeed.Normalize();
 	//回転
 	m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
-
+	//速度をかける
 	m_moveSpeed *= BIGMETEO_SPEED;
-
-	//地面につくまでの処理
-	if (m_isBigMeteoYDownFlag == false)
+	//地面についていないなら
+	if (IsHitGround(m_position, BIGMETEO_GROUND_CHECK_Y_UP, BIGMETEO_GROUND_CHECK_Y_DOWN) != true)
 	{
-		//地面についていない間斜め下に移動
-		if (IsHitGround(m_position, BIGMETEO_GROUND_CHECK_Y_UP, BIGMETEO_GROUND_CHECK_Y_DOWN) != true)
-		{
-			m_moveSpeed.y = Y_DOWN;
-		}
-		else
-		{
-			m_isBigMeteoYDownFlag = true;
-			//地面についた
-			//全ての玉を撃ち終わった
-			//m_shotEndFlag = true;
-			m_moveSpeed.y = 0.0f;
-
-			m_windEffect = NewGO<EffectEmitter>(0);
-			m_windEffect->Init(InitEffect::enEffect_DarkMeteorite_Wind);
-			m_windEffect->Play();
-			m_windEffect->SetPosition(m_position);
-			m_windEffect->SetScale({ 30.0f,30.0f,30.0f });
-			m_windEffect->Update();
-		}
+		//地面につくまでの処理
+		//斜め下に移動
+		m_moveSpeed.y = Y_DOWN;
 	}
-	//地面についてからの処理
 	else
 	{
-		//壁との衝突判定
-		//todo たまに消えないので制限時間を求める
+		//地面についた
+		//全ての玉を撃ち終わった
+		//m_shotEndFlag = true;
 		m_moveSpeed.y = 0.0f;
-		Vector3 addPos = m_moveSpeed;
-		addPos.Normalize();
-		Vector3 pos2 = m_position;
-		pos2.Add(addPos * 3.0f);
-		if (IsHitWall(m_position, pos2) == true)
-		{
-			//爆発
-			//処理終わり
-			m_shotEndFlag = true;
-			m_enShotState = enShotState_End;
-		}
-		
-	}
-	
-	m_position += m_moveSpeed * g_gameTime->GetFrameDeltaTime()*1.5f;
+		//風エフェクト生成
+		m_windEffect = NewGO<EffectEmitter>(0);
+		m_windEffect->Init(InitEffect::enEffect_DarkMeteorite_Wind);
+		m_windEffect->Play();
+		m_windEffect->SetPosition(m_position);
+		m_windEffect->SetScale(g_vec3One * WIND_SCALE);
+		m_windEffect->Update();
 
+		//次のステートに遷移
+		m_darkMeteoMoveState = enDarkMeteoMoveState_Chase;
+	}
+
+	m_position += m_moveSpeed * g_gameTime->GetFrameDeltaTime() * 1.5f;
 	m_model.SetPosition(m_position);
-	
 	m_collision->SetPosition(m_position);
 	m_collision->Update();
+	m_darkMeteoriteEffect->SetPosition(m_position);
+	m_darkMeteoriteEffect->Update();
+}
 
+void DarkMeteorite::OnProcessChaseStateTransition()
+{
+	//ターゲットの向かうベクトルを計算
+	SetToTargetDirection();
+	//正規化
+	m_moveSpeed.Normalize();
+	//回転
+	m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
+	//速度をかける
+	m_moveSpeed *= BIGMETEO_SPEED;
+	//壁との衝突判定
+	//todo たまに消えないので制限時間を求める
+	m_moveSpeed.y = 0.0f;
+	//壁にぶつかったか判定
+	if (IsHitWall() == true)
+	{
+		//ぶつかったので爆発
+		//処理終わり
+		m_shotEndFlag = true;
+		//ダークメテオの移動ステートの処理をしないようにする
+		m_darkMeteoMoveState = enDarkMeteoMoveState_None;
+		//ショットステート
+		m_enShotState = enShotState_End;
+		return;
+	}
+
+	//プレイヤーとの距離が近かったら処理をやめる
+	if (IsNearDistanceToPlayer() == true)
+	{
+		//次のステートに遷移
+		m_darkMeteoMoveState = enDarkMeteoMoveState_straight;
+		return;
+	}
+
+	SetTRS();
+}
+
+void DarkMeteorite::OnProcessStraightStateTransition()
+{
+	//壁との衝突判定
+	//todo たまに消えないので制限時間を求める
+	m_moveSpeed.y = 0.0f;
+	//壁にぶつかったか判定
+	if (IsHitWall() == true)
+	{
+		//ぶつかったので爆発
+		//処理終わり
+		m_shotEndFlag = true;
+		//ダークメテオの移動ステートの処理をしないようにする
+		m_darkMeteoMoveState = enDarkMeteoMoveState_None;
+		//ショットステート
+		m_enShotState = enShotState_End;
+		return;
+	}
+
+	SetTRS();
+}
+
+void DarkMeteorite::SetToTargetDirection()
+{
+	//ターゲットの向かうベクトルを計算
+	m_targetPosition = m_player->GetPosition();
+	m_moveSpeed = m_targetPosition - m_position;
+}
+
+bool DarkMeteorite::IsNearDistanceToPlayer()
+{
+	//プレイヤーに当たったかの判定
+	Vector3 diff = m_position - m_player->GetPosition();
+	if (diff.Length() < 150.0f)
+	{
+		return true;
+	}
+	return false;
+}
+
+void DarkMeteorite::SetTRS()
+{
+	m_position += m_moveSpeed * g_gameTime->GetFrameDeltaTime() * 1.5f;
+	m_model.SetPosition(m_position);
+	m_model.SetRotation(m_rotation);
+	m_collision->SetPosition(m_position);
+	m_collision->Update();
 	m_darkMeteoriteEffect->SetPosition(m_position);
 	m_darkMeteoriteEffect->Update();
 
@@ -444,5 +533,9 @@ void DarkMeteorite::move()
 		m_windEffect->SetRotation(m_rotation);
 		m_windEffect->Update();
 	}
-	
+}
+
+void DarkMeteorite::Render(RenderContext& rc)
+{
+	m_model.Draw(rc);
 }

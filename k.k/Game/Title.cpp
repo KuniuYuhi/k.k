@@ -272,13 +272,13 @@ void Title::GoToPlayMode()
         DeleteGO(this);
     }
 
-    if (g_pad[0]->IsTrigger(enButtonA))
+    if (g_pad[0]->IsTrigger(enButtonA)&& m_goToGameFlag != true)
     {
         m_goToGameFlag = true;
 
         m_bgmVolume = g_soundManager->GetBGMVolume();
 
-        //g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
+        g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
         //フェード開始
         m_fade->StartFadeIn(2.0f);
     }

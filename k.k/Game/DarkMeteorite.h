@@ -14,25 +14,84 @@ public:
 	void Update();
 	void Render(RenderContext& rc);
 
-	void move();
-
+	/// <summary>
+	/// サイズアップ
+	/// </summary>
 	void SizeUp();
 
-	void Shot();
+	/// <summary>
+	/// メテオを撃つ処理
+	/// </summary>
+	void ShotMeteo();
 
+	/// <summary>
+	/// メテオのターゲット座標を設定
+	/// </summary>
+	/// <returns></returns>
 	Vector3 SetMeteoTargetPosition();
 
+	/// <summary>
+	///	本体の当たり判定生成
+	/// </summary>
 	void CreateCollision();
 
+	/// <summary>
+	/// メテオの生成
+	/// </summary>
+	/// <param name="targetposition">ターゲット座標</param>
 	void CreateMeteo(Vector3 targetposition);
 
-	bool CreateTimer();
+	/// <summary>
+	/// メテオを生成するタイマー
+	/// </summary>
+	/// <returns></returns>
+	bool CreateMeteoTimer();
 
+	/// <summary>
+	/// 地面にヒットしたかの判定
+	/// </summary>
+	/// <param name="targetposition">ヒットしたかの判定したい座標</param>
+	/// <param name="up">targetpositionのY座標をどれだけ上げるか</param>
+	/// <param name="down">targetpositionのY座標をどれだけ下げるか</param>
+	/// <returns></returns>
 	bool IsHitGround(Vector3 targetposition,float up,float down);
 
-	bool IsHitWall(Vector3 pos1, Vector3 pos2);
+	/// <summary>
+	/// 壁にヒットしたかの判定
+	/// </summary>
+	/// <param name="pos1">始点</param>
+	/// <param name="pos2">終点</param>
+	/// <returns></returns>
+	bool IsHitWall();
 
+	/// <summary>
+	/// ショットステート管理
+	/// </summary>
 	void ShotManageState();
+
+	/// <summary>
+	/// ダークメテオの移動ステート管理
+	/// </summary>
+	void DarkMeteoMoveManageState();
+
+	void OnProcessFallStateTransition();
+	void OnProcessChaseStateTransition();
+	void OnProcessStraightStateTransition();
+
+	/// <summary>
+	/// ターゲットに向かうベクトルを設定
+	/// </summary>
+	void SetToTargetDirection();
+
+	/// <summary>
+	/// プレイヤーまでの距離が近いか。trueで近い
+	/// </summary>
+	bool IsNearDistanceToPlayer();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void SetTRS();
 
 	void SetLich(Lich* lich)
 	{
@@ -104,66 +163,68 @@ public:
 
 private:
 
+	//ショットステート
 	enum EnShotState
 	{
 		enShotState_Meteo,
 		enShotState_BigMeteo,
 		enShotState_End
 	};
-	EnShotState m_enShotState = enShotState_Meteo;
+	EnShotState						m_enShotState = enShotState_Meteo;
+
+	//ダークメテオの移動ステート
+	enum EnDarkMeteoMoveState
+	{
+		enDarkMeteoMoveState_None,
+		enDarkMeteoMoveState_fall,
+		enDarkMeteoMoveState_Chase,
+		enDarkMeteoMoveState_straight
+	};
+	EnDarkMeteoMoveState			m_darkMeteoMoveState = enDarkMeteoMoveState_fall;
+
+	Player*							m_player = nullptr;
+	Lich*							m_lich = nullptr;
+	EffectEmitter*					m_darkMeteoriteEffect;
+	EffectEmitter*					m_windEffect;
+
+	std::vector<Meteo*>				m_meteos;								//生成したメテオを格納するリスト
+
+	ModelRender						m_model;
+
+	CollisionObject*				m_collision = nullptr;
+
+	Vector3							m_targetPosition = g_vec3Zero;
+	Vector3							m_position = g_vec3Zero;
+	Quaternion						m_rotation = g_quatIdentity;
+	Vector3							m_scale = g_vec3One;
+	Vector3							m_moveSpeed = g_vec3Zero;
+
+	const Vector3					m_maxScale = { 15.0f,15.0f,15.0f };
+
+	bool							m_sizeUpFlag = false;
+
+	bool							m_ShotStartFlag = false;
+
+	bool							m_shotEndFlag = false;
+
+	float							m_createTime = 1.0f;
+	float							m_createTimer = 0.0f;
+
+	const int						m_createMeteoCount = 5;					//メテオを生成する数
+	int								m_meteoCounter = 0;
+
+	bool							m_lastBigMeteoShotFlag = false;
+
+	bool							m_isBigMeteoYDownFlag = false;			//ビッグメテオのY座標を下げるか
+
+	float							m_bigMeteoMoveCount = 4.0f;				//ビッグメテオがプレイヤーに向かうベクトルに移動する回数
 
 
-	Player* m_player = nullptr;
-	Lich* m_lich = nullptr;
-	EffectEmitter* m_darkMeteoriteEffect;
-	EffectEmitter* m_windEffect;
+	const int						m_bigMeteoAttack = 80;
 
-	std::vector<Meteo*> m_meteos;		//生成したメテオを格納するリスト
+	bool							m_chaseFlag = true;						//プレイヤーを追いかけるかのフラグ。trueで追いかける
 
-	ModelRender m_model;
-
-	CollisionObject* m_collision = nullptr;
-
-	Vector3 m_targetPosition = g_vec3Zero;
-	Vector3 m_position = g_vec3Zero;
-	Quaternion m_rotation = g_quatIdentity;
-	Vector3 m_scale = g_vec3One;
-	Vector3 m_moveSpeed = g_vec3Zero;
-
-	//RigidBody m_rigidBody;		//剛体。
-	//BoxCollider	m_boxCollider;
-
-	const Vector3 m_maxScale = { 15.0f,15.0f,15.0f };
-
-	bool m_sizeUpFlag = false;
-
-	bool m_ShotStartFlag = false;
-
-	bool m_shotEndFlag = false;
-
-	//メテオを生成する範囲
-	const float m_maxLength = 600.0f;
-
-	//
-	const float m_createTime = 1.0f;
-	float m_createTimer = 0.0f;
-
-	//メテオを生成する数
-	const int m_createMeteoCount = 5;
-	int m_meteoCounter = 0;
-
-	bool m_lastBigMeteoShotFlag = false;
-
-	bool m_isBigMeteoYDownFlag = false;			//ビッグメテオのY座標を下げるか
-
-	float m_bigMeteoMoveCount = 7.0f;				//ビッグメテオがプレイヤーに向かうベクトルに移動する回数
-
-
-	const int m_bigMeteoAttack = 80;
-
-	bool m_chaseFlag = true;					//プレイヤーを追いかけるかのフラグ。trueで追いかける
-
-	bool m_gameEndFlag = false;
+	bool							m_gameEndFlag = false;
 
 };
 
