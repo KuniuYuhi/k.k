@@ -209,7 +209,7 @@ void LichAction::CalcEvalDarkMeteorite(EnActionNumber m_enActionNumber)
 	//前の行動が召喚ならこの行動の評価値を上げる
 	if (m_oldActionNumber == enAttack_Summon)
 	{
-		m_action[m_enActionNumber].m_eval += 30;
+		m_action[m_enActionNumber].m_eval += 40;
 	}
 
 	//todo 条件

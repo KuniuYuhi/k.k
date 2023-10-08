@@ -13,7 +13,7 @@ namespace {
 
 	const float METEO_COLLISION_SIZE = 30.0f;
 	const float METEO_EFFECT_SIZE = 8.0f;
-
+	//0.0065f
 	const float ADD_TIMER = 0.0065f;
 
 	const float MUL_EXPLOSION_SCALE = 2.4f;
@@ -23,7 +23,7 @@ namespace {
 	const float EXPLOSION_Y_POS = 20.0f;
 
 
-	const float GROUND_CHECK_COLLISION_SIZE = 5.0f;
+	const float GROUND_CHECK_COLLISION_SIZE = 4.0f;
 }
 
 Meteo::Meteo()
