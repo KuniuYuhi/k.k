@@ -21,7 +21,8 @@ BattleStart::~BattleStart()
 bool BattleStart::Start()
 {
     InitSprite();
-
+    //バトルスタートの音再生
+    g_soundManager->InitAndPlaySoundSource(enSoundName_BattleStart, g_soundManager->GetBGMVolume());
     return true;
 }
 
@@ -41,10 +42,6 @@ void BattleStart::Update()
 
         m_timer += g_gameTime->GetFrameDeltaTime() * 0.4f;
     }
-   
-
-
-   
 }
 
 void BattleStart::Render(RenderContext& rc)
@@ -68,8 +65,6 @@ void BattleStart::CalcAlpha()
     if (m_alpha > 1.0f)
     {
         //不透明になった
-        //バトルスタートの音再生
-        g_soundManager->InitAndPlaySoundSource(enSoundName_BattleStart, g_soundManager->GetBGMVolume());
         m_calcAlphaEndFlag = true;
         m_alpha = 1.0f;
     }
