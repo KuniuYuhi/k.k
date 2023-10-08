@@ -226,13 +226,15 @@ void Actor::DamageCollision(CharacterController& characon)
 		if (collision->IsHit(characon) == true)
 		{
 			m_atttackAIActor = FindGO<AIActor>(collision->GetCreatorName());
+			//ヒット音を再生
+			m_atttackAIActor->PlayAttackSound();
 			Damage(m_atttackAIActor->GetStatus().atk);
 			CreateDamageFont(m_atttackAIActor->GetStatus().atk);
 			return;
 		}
 	}
 
-	//モンスターの攻撃の当たり判定
+	//ダークメテオの攻撃の当たり判定
 	const auto& DarkMeteoCollisions = g_collisionObjectManager->FindCollisionObjects("bigmeteo");
 	//コリジョンの配列をfor文で回す
 	for (auto collision : DarkMeteoCollisions)
