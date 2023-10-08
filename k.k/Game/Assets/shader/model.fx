@@ -525,7 +525,7 @@ float4 CalcToonMap(SPSIn psIn,float3 lightDirection)
 	//ｐが0.3から0.7以内の値ならグラデーションになるようにする。
 	//0が黒
 	//1が白
-	p = saturate(smoothstep(0.3, 0.55, p));
+	p = saturate(smoothstep(0.3, 0.45, p));
 	//ランプテクスチャからサンプリング
 	float4 Color=g_toonMap.Sample(g_sampler,float2(p,0.5f));
 
