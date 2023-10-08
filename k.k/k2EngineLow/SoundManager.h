@@ -41,11 +41,14 @@ namespace nsK2EngineLow {
 
 		//モンスター側
 		enSoundName_Boss_Warp,					//ボスのワープ
-		enSoundName_Attack1,					//モブモンスターの攻撃１
+		enSoundName_Attack1,					//基本モブモンスターの攻撃１
+		enSoundName_Slime_Attack,				//スライムの攻撃
+		enSoundName_Cactus_Attack1,				//カクタスの攻撃1
 		enSoundName_Mob_Die,					//モブモンスターの死亡
 		enSoundName_Boss_DarkWall,				//ダークウォール
 		enSoundName_Boss_DarkBall,				//ダークボールの発生
 		enSoundName_Boss_DarkBall_Explosion,	//ダークボールの爆発
+		enSoundName_Boss_Meteo_Shot,			//メテオを撃つ
 		enSoundName_Boss_Meteo_Fly,				//メテオが空中にいるとき
 		enSoundName_Boss_Meteo_Explosion,		//メテオの爆発
 		enSoundName_Boss_DarkMeteo,				//ダークメテオ
@@ -157,7 +160,7 @@ namespace nsK2EngineLow {
 	private:
 		std::vector<SoundSource*> m_soundSourceList;
 
-		const float m_defaultSEVolume = 5.0f;
+		const float m_defaultSEVolume = 4.0f;
 		const float m_defaultBGMVolume = 2.5f;
 
 		float m_seVolume = m_defaultSEVolume;
