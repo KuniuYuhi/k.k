@@ -178,7 +178,7 @@ SPSIn VSMain(SVSIn vsIn)
 /// <summary>
 /// スキンありメッシュの頂点シェーダーのエントリー関数。
 /// </summary>
-SPSIn VSSkinMain( SVSIn vsIn ) 
+SPSIn VSMainSkin( SVSIn vsIn ) 
 {
 	return VSMainCore(vsIn, true);
 }

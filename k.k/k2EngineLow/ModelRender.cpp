@@ -155,7 +155,7 @@ namespace nsK2EngineLow {
 			//スケルトンを指定する
 			m_modelInitData.m_skeleton = &m_skeleton;
 			//スキンがある用の頂点シェーダーを設定する。
-			m_modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
+			m_modelInitData.m_vsSkinEntryPointFunc = "VSMainSkin";
 		}
 	}
 
