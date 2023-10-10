@@ -5,9 +5,6 @@ namespace nsK2EngineLow {
 
 	void RenderingEngine::Init()
 	{
-		//視点の位置を設定する
-		//SetEyePos(g_camera3D->GetPosition());
-
 		InitZPrepassRenderTarget();
 		InitRenderTargets();
 
@@ -17,7 +14,8 @@ namespace nsK2EngineLow {
 		m_postEffect.Init(m_mainRenderTarget);
 		InitCopyToFrameBufferSprite();
 		m_sceneLight.Init();
-		//SetToonTextureDDS();
+		InitDefferedLighting_Sprite();
+		
 	}
 
 	void RenderingEngine::InitRenderTargets()
@@ -90,15 +88,15 @@ namespace nsK2EngineLow {
 		//	DXGI_FORMAT_R8G8B8A8_UNORM,
 		//	DXGI_FORMAT_UNKNOWN
 		//);
-		//// ワールド座標のレンダリングターゲット
-		//m_gBuffer[enGBufferWorldPos].Create(
-		//	frameBuffer_w,
-		//	frameBuffer_h,
-		//	1,
-		//	1,
-		//	DXGI_FORMAT_R32G32B32A32_FLOAT,
-		//	DXGI_FORMAT_UNKNOWN
-		//);
+		// ワールド座標のレンダリングターゲット
+		/*m_gBuffer[enGBufferWorldPos].Create(
+			frameBuffer_w,
+			frameBuffer_h,
+			1,
+			1,
+			DXGI_FORMAT_R32G32B32A32_FLOAT,
+			DXGI_FORMAT_UNKNOWN
+		);*/
 
 	}
 
@@ -185,7 +183,8 @@ namespace nsK2EngineLow {
 		// レンダリングターゲットをG-Bufferに変更
 		RenderTarget* rts[enGBufferNum] = {
 			&m_gBuffer[enGBufferAlbedoDepth],         // 0番目のレンダリングターゲット
-			&m_gBuffer[enGBufferNormal]              // 1番目のレンダリングターゲット
+			&m_gBuffer[enGBufferNormal]             // 1番目のレンダリングターゲット
+			//& m_gBuffer[enGBufferWorldPos]              // 1番目のレンダリングターゲット
 		};
 
 		//まず、レンダリングターゲットとして設定できるようになるまで待つ
@@ -195,13 +194,18 @@ namespace nsK2EngineLow {
 		//レンダーターゲットをクリア
 		rc.ClearRenderTargetViews(ARRAYSIZE(rts), rts);
 		//
-		for (auto& modelObj : m_modelList)
+		for (auto& modelObj : m_gBufferModelList)
 		{
 			modelObj->OnRenderToGBuffer(rc);
 		}
 
 		//レンダリングターゲットへの書き込み待ち
 		rc.WaitUntilFinishDrawingToRenderTargets(ARRAYSIZE(rts), rts);
+
+		//レンダリング先をフレームバッファーに戻してスプライトをレンダリングする
+		//g_graphicsEngine->ChangeRenderTargetToFrameBuffer(rc);
+
+		m_diferredLightingSprite.Draw(rc);
 	}
 
 	void RenderingEngine::ForwardRendering(RenderContext& rc)
@@ -276,6 +280,7 @@ namespace nsK2EngineLow {
 		//m_shadow.ShadowSpriteRender(rc);
 
 		m_modelList.clear();
+		m_gBufferModelList.clear();
 		m_spriteList.clear();
 		m_fontList.clear();
 		m_zprepassModelList.clear();
