@@ -17,6 +17,8 @@
 #include "InitEffect.h"
 
 //todo ダッシュ時攻撃アニメーション変更
+//ダッシュエフェクトのあとスキルでエラー
+//スキルで敵倒した時エフェクトの削除
 
 namespace {
 	const float ADD_SCALE = 1.2f;
@@ -29,7 +31,7 @@ namespace {
 
 	int MAXHP = 200;
 	int MAXMP = 100;
-	int ATK = 50;
+	int ATK = 40;
 	float SPEED = 200.0f;
 	const char* NAME = "Hero";
 

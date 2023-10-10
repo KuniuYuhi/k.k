@@ -193,7 +193,7 @@ void DarkMeteorite::ShotMeteo()
 				m_meteoCounter++;
 
 				//もし最後のメテオなら
-				if (m_meteoCounter >= m_createMeteoCount)
+				if (m_meteoCounter >= m_createMeteoCount&& m_lastBigMeteoShotFlag == true)
 				{
 					//ダークメテオを落とす時のために次のタイマーを長くする
 					m_createTime = DARKMETEO_SHOT_TIMER;
@@ -237,10 +237,11 @@ Vector3 DarkMeteorite::SetMeteoTargetPosition()
 	//ターゲットを決めてメテオを生成
 	//現在のフレームのターゲットの座標を取得
 	m_targetPosition = m_player->GetPosition();
-
+	/*Vector3 forward = m_player->GetForward();
+	forward.Normalize();
+	forward *= 100.0f;
+	*/
 	Vector3 createPositon = m_targetPosition;
-	/*float X = rand() % 601 - 300;
-	float Z = rand() % 601 - 300;*/
 	float X = (rand() % (MAX_LENGTH - (MIN_LENGTH) + 1)) + (MIN_LENGTH);
 	float Z = (rand() % (MAX_LENGTH - (MIN_LENGTH) + 1)) + (MIN_LENGTH);
 	createPositon.x += X;

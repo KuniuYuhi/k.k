@@ -9,7 +9,7 @@ namespace {
 
 	const float MAX_CAMERA_TOP = -0.1f;
 	const float MAX_CAMERA_UNDER = 0.8f;
-	//140.0f
+	//150.0f
 	const float TARGETPOS_YUP = 150.0f;
 	const float TARGETPOS_GAMESTART_YUP = 38.0f;
 
@@ -47,7 +47,7 @@ bool GameCamera::Start()
 
 	m_toCameraPosForBoss.Set(0.0f, 300.0f, 600.0f);
 	//注視点から視点までのベクトルを設定。300,400
-	m_toCameraPos.Set(0.0f, 50.0f, 460.0f);
+	m_toCameraPos.Set(0.0f, 50.0f, -460.0f);
 	//カメラをプレイヤーの後ろにするときに使う
 	m_position = m_toCameraPos;
 
@@ -80,7 +80,7 @@ void GameCamera::CalcDirectionLight()
 	Vector3 pos1 = m_target;
 	pos1.y = 0.0f;
 	Vector3 pos2 = m_toCameraPos;
-	pos2.y = pos1.y + 460.0f;
+	pos2.y = pos1.y + 800.0f;
 
 	Vector3 diff = pos1 - pos2;
 
@@ -147,7 +147,7 @@ void GameCamera::SetBattleStartCamera()
 	Vector3 newCameraPos = CameraPosXZ + CameraPosY;
 
 	//カメラの座標を設定
-	m_toCameraPos.Set(newCameraPos);
+	//m_toCameraPos.Set(newCameraPos);
 
 	Vector3 finalCameraPos = newCameraPos + m_target;
 
@@ -190,7 +190,6 @@ void GameCamera::ChaseCamera(bool Reversesflag)
 {
 	//注視点の計算
 	m_target = m_player->GetPosition();
-
 	m_target.y += TARGETPOS_YUP;
 	//m_target.x -= 35.0f;
 

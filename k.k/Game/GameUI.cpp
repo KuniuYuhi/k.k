@@ -34,7 +34,7 @@ namespace {
 	const Vector3 SUB_ICON_SCALE = { 0.65f, 0.65f, 0.65f };
 
 	const Vector3 CHARA_CHANGE_ICON_POS = { -490.0f,-467.0f,0.0f };
-	const Vector3 CHARA_CHANGE_ICON_FONT_POS = { -527.0f,-451.0f,0.0f };
+	const Vector3 CHARA_CHANGE_ICON_FONT_POS = { -546.0f,-433.0f,0.0f };
 
 	const Vector3 MAIN_STATUS_BAR = { 36.0f, -432.0f, 0.0f };
 	const Vector3 SUB_STATUS_BAR = { -682.0f, -215.0f, 0.0f };

@@ -135,6 +135,7 @@ public:
 	bool isAnimationEntable() const
 	{
 		return m_enAnimationState != enAnimationState_Damage &&
+			m_enAnimationState != enAnimationState_Angry &&
 			m_enAnimationState != enAnimationState_Die;
 	}
 
