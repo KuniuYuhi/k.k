@@ -22,6 +22,13 @@ namespace nsK2EngineLow {
 	public:
 		
 		/// <summary>
+		/// G-Buffer描画パスから呼ばれる処理。
+		/// </summary>
+		void OnRenderToGBuffer(RenderContext& rc);
+
+
+
+		/// <summary>
 		/// 通常の初期化
 		/// </summary>
 		/// <param name="tkmFilepath">tkmファイルパス</param>
@@ -37,17 +44,6 @@ namespace nsK2EngineLow {
 			bool shadow=true,
 			bool toon=true,
 			bool outline=true
-		);
-
-		/// <summary>
-		/// ZPrepass描画用のモデルを初期化。
-		/// </summary>
-		/// <param name="renderingEngine"></param>
-		/// <param name="tkmFilePath"></param>
-		void InitModelOnZprepass(
-			/*RenderingEngine& renderingEngine,*/
-			const char* tkmFilePath,
-			EnModelUpAxis modelUpAxis
 		);
 
 		/// <summary>
@@ -82,6 +78,7 @@ namespace nsK2EngineLow {
 		void Draw(RenderContext& rc)
 		{
 			g_renderingEngine->AddModelList(this);
+			g_renderingEngine->AddGBufferModelList(this);
 			g_renderingEngine->Add3DModelToZPrepass(this);
 		}
 
@@ -280,6 +277,57 @@ namespace nsK2EngineLow {
 		);
 
 		/// <summary>
+		/// ZPrepass描画用のモデルを初期化。
+		/// </summary>
+		/// <param name="renderingEngine"></param>
+		/// <param name="tkmFilePath"></param>
+		void InitModelOnZprepass(
+			/*RenderingEngine& renderingEngine,*/
+			const char* tkmFilePath,
+			EnModelUpAxis modelUpAxis
+		);
+		/// <summary>
+		/// 半透明オブジェクト描画パスで使用されるモデルを初期化。
+		/// </summary>
+		/// <param name="renderingEngine"></param>
+		/// <param name="tkmFilePath"></param>
+		/// <param name="enModelUpAxis"></param>
+		/// <param name="isShadowReciever"></param>
+		void InitModelOnTranslucent(
+			RenderingEngine& renderingEngine,
+			const char* tkmFilePath,
+			EnModelUpAxis enModelUpAxis,
+			bool isShadowReciever
+		);
+		/// <summary>
+		/// GBuffer描画用のモデルを初期化。
+		/// </summary>
+		/// <param name="renderingEngine">レンダリングエンジン</param>
+		/// <param name="tkmFilePath">tkmファイルパス</param>
+		void InitModelOnRenderGBuffer(
+			RenderingEngine& renderingEngine,
+			const char* tkmFilePath,
+			EnModelUpAxis enModelUpAxis,
+			bool isShadowReciever);
+		/// <summary>
+		/// シャドウマップ描画用のモデルを初期化。
+		/// </summary>
+		/// <param name="renderingEngine">レンダリングエンジン</param>
+		/// <param name="tkmFilePath">tkmファイルパス</param>
+		/// <param name="modelUpAxis">モデルの上軸</param>
+		void InitModelOnShadowMap(
+			RenderingEngine& renderingEngine,
+			const char* tkmFilePath,
+			EnModelUpAxis modelUpAxis,
+			bool isFrontCullingOnDrawShadowMap
+		);
+
+		/// <summary>
+		/// 各種モデルの頂点シェーダーのエントリーポイントを設定。
+		/// </summary>
+		void SetupVertexShaderEntryPointFunc(ModelInitData& modelInitData);
+
+		/// <summary>
 	   /// 共通の初期化処理(今はデファードレンダリングのみ)
 	   /// </summary>
 	   /// <param name="renderingEngine">レンダリングエンジン</param>
@@ -299,7 +347,8 @@ namespace nsK2EngineLow {
 
 		Model						m_model;								//モデルクラス
 		Model						m_shadowModel;
-		Model m_zprepassModel;                  // ZPrepassで描画されるモデル
+		Model						m_zprepassModel;                  // ZPrepassで描画されるモデル
+		Model						m_renderToGBufferModel;				// RenderToGBufferで描画されるモデル
 		Model						m_frowardRenderModel;					 // フォワードレンダリングの描画パスで描画されるモデル
 		ModelInitData				m_modelInitData;						//モデルを初期化するための情報を設定するクラス
 		ModelInitDataFR             m_modelInitDataFR;

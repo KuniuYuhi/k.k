@@ -13,6 +13,16 @@ namespace nsK2EngineLow {
 	class RenderingEngine
 	{
 	public:
+		//// ディファードライティング用の定数バッファ
+		//struct SDeferredLightingCB
+		//{
+		//	Light m_light;              // ライト
+		//	Matrix mlvp[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP]; // ライトビュープロジェクション行列。
+		//	float m_iblLuminance;       // IBLの明るさ。
+		//	int m_isIBL;                // IBLを行う。
+		//	int m_isEnableRaytracing;   // レイトレが行われている。
+		//};
+
 		/// <summary>
 		/// レンダーターゲットやライトの初期化
 		/// </summary>
@@ -35,6 +45,15 @@ namespace nsK2EngineLow {
 		void AddModelList(ModelRender* modelRender)
 		{
 			m_modelList.emplace_back(modelRender);
+		}
+
+		/// <summary>
+		/// Gbufferモデル
+		/// </summary>
+		/// <param name="modelRender"></param>
+		void AddGBufferModelList(ModelRender* modelRender)
+		{
+			m_gBufferModelList.emplace_back(modelRender);
 		}
 
 		/// <summary>
@@ -543,6 +562,26 @@ namespace nsK2EngineLow {
 		
 
 	private:
+		// GBufferの定義
+		enum EnGBuffer
+		{
+			enGBufferAlbedoDepth,           // アルベドと深度値。αに深度値が記憶されています。
+			enGBufferNormal,                // 法線
+			//enGBufferMetaricShadowSmooth,   // メタリック、影パラメータ、スムース。
+			//enGBufferWorldPos,				// ワールド座標
+			// メタリックがr、影パラメータがg、スムースがa。gは未使用。
+			enGBufferNum,                   // G-Bufferの数
+		};
+
+		/// <summary>
+		/// G-Bufferを初期化
+		/// </summary>
+		void InitGBuffer();
+		/// <summary>
+		/// ディファードライティングで使用するスプライトを初期化。
+		/// </summary>
+		void InitDefferedLighting_Sprite();
+
 		/// <summary>
 		/// モデルを描画する
 		/// </summary>
@@ -568,6 +607,18 @@ namespace nsK2EngineLow {
 		void ZPrepass(RenderContext& rc);
 
 		/// <summary>
+		/// G-Bufferへの描画
+		/// </summary>
+		/// <param name="rc">レンダリングコンテキスト。</param>
+		void RenderToGBuffer(RenderContext& rc);
+
+		/// <summary>
+	   /// フォワードレンダリング
+	   /// </summary>
+	   /// <param name="rc">レンダリングコンテキスト</param>
+		void ForwardRendering(RenderContext& rc);
+
+		/// <summary>
 	   /// ZPrepass用のレンダリングターゲットを初期化
 	   /// </summary>
 		void InitZPrepassRenderTarget();
@@ -575,16 +626,20 @@ namespace nsK2EngineLow {
 		std::vector<ModelRender*>		m_modelList;	//モデルリスト
 		std::vector<SpriteRender*>		m_spriteList;	//スプライトリスト
 		std::vector<FontRender*>		m_fontList;		//スプライトリスト
-		std::vector< ModelRender* >			m_zprepassModelList;         // ZPrepassの描画パスで描画されるモデルのリスト
+		std::vector< ModelRender* >		m_zprepassModelList;  // ZPrepassの描画パスで描画されるモデルのリスト 
+		std::vector<ModelRender*>		m_gBufferModelList;	//モデルリスト
 
 		RenderTarget m_zprepassRenderTarget;			//ZPrepass描画用のレンダリングターゲット
 
 		Sprite						m_copyToFrameBufferSprite;	//テクスチャを貼り付けるためのスプライトを初期化
 		SceneLight						m_sceneLight;	//シーンライト
+		//SDeferredLightingCB m_deferredLightingCB;                       // ディファードライティング用の定数バッファ
+		Sprite m_diferredLightingSprite;                                // ディファードライティングを行うためのスプライト
 		RenderTarget					m_mainRenderTarget;	//レンダリングターゲット
 		PostEffect						m_postEffect;		//ポストエフェクト
 		Shadow							m_shadow;
 		Texture							m_toontexture;
+		RenderTarget					m_gBuffer[enGBufferNum];
 	};
 }
 
