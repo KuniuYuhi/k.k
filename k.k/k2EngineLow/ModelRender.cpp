@@ -13,22 +13,28 @@ namespace nsK2EngineLow {
 		//モデルの上方向を設定
 		m_modelInitData.m_modelUpAxis = enModelUpAxis;
 		//ノンスキンメッシュ用の頂点シェーダーのエントリーポイントを指定する。
-		m_modelInitData.m_vsEntryPointFunc = "VSMain";
+		//m_modelInitData.m_vsEntryPointFunc = "VSMain";
+		
 		//スケルトンを初期化
 		InitSkeleton(tkmFilepath);
 		//アニメーションの初期化
 		InitAnimation(animationClips, numAnimationClips, enModelUpAxis);
+
+		SetupVertexShaderEntryPointFunc(m_modelInitData);
+
+		//GBuffer描画用のモデルを初期化
+		InitModelOnRenderGBuffer(*g_renderingEngine, tkmFilepath, enModelUpAxis, shadow);
 		//ZPrepass描画用のモデルを初期化。
 		InitModelOnZprepass(tkmFilepath, enModelUpAxis);
 
-		//アニメーションが設定されているなら
-		if (animationClips != nullptr)
-		{
-			//スケルトンを指定する
-			m_modelInitData.m_skeleton = &m_skeleton;
-			//スキンがある用の頂点シェーダーを設定する。
-			m_modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
-		}
+		////アニメーションが設定されているなら
+		//if (animationClips != nullptr)
+		//{
+		//	//スケルトンを指定する
+		//	m_modelInitData.m_skeleton = &m_skeleton;
+		//	//スキンがある用の頂点シェーダーを設定する。
+		//	m_modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
+		//}
 
 		//トゥーンシェーダーを使用するなら
 		if (toon == true)
@@ -97,6 +103,66 @@ namespace nsK2EngineLow {
 		m_zprepassModel.Init(modelInitData);
 	}
 
+	void ModelRender::InitModelOnTranslucent(RenderingEngine& renderingEngine, const char* tkmFilePath, EnModelUpAxis enModelUpAxis, bool isShadowReciever)
+	{
+	}
+
+	void ModelRender::InitModelOnRenderGBuffer(
+		RenderingEngine& renderingEngine, 
+		const char* tkmFilePath, 
+		EnModelUpAxis enModelUpAxis, 
+		bool isShadowReciever)
+	{
+		ModelInitData modelInitData;
+		modelInitData.m_fxFilePath = "Assets/shader/RenderToGBufferFor3DModel.fx";
+
+		// 頂点シェーダーのエントリーポイントをセットアップ。
+		//ノンスキンメッシュ用の頂点シェーダーのエントリーポイントを指定する。
+		modelInitData.m_vsEntryPointFunc = "VSMain";
+		//アニメーションが設定されているなら
+		if (m_animationClips != nullptr)
+		{
+			//スケルトンを指定する
+			modelInitData.m_skeleton = &m_skeleton;
+			//スキンがある用の頂点シェーダーを設定する。
+			modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
+		}
+
+		if (m_animationClips != nullptr) {
+			//スケルトンを指定する。
+			modelInitData.m_skeleton = &m_skeleton;
+		}
+		if (isShadowReciever) {
+			modelInitData.m_psEntryPointFunc = "PSMainShadowReciever";
+		}
+		//モデルの上方向を指定。
+		modelInitData.m_modelUpAxis = enModelUpAxis;
+
+		modelInitData.m_tkmFilePath = tkmFilePath;
+		modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		modelInitData.m_colorBufferFormat[1] = DXGI_FORMAT_R8G8B8A8_SNORM;
+		//modelInitData.m_colorBufferFormat[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		m_renderToGBufferModel.Init(modelInitData);
+	}
+
+	void ModelRender::InitModelOnShadowMap(RenderingEngine& renderingEngine, const char* tkmFilePath, EnModelUpAxis modelUpAxis, bool isFrontCullingOnDrawShadowMap)
+	{
+	}
+
+	void ModelRender::SetupVertexShaderEntryPointFunc(ModelInitData& modelInitData)
+	{
+		//ノンスキンメッシュ用の頂点シェーダーのエントリーポイントを指定する。
+		m_modelInitData.m_vsEntryPointFunc = "VSMain";
+		//アニメーションが設定されているなら
+		if (m_animationClips != nullptr)
+		{
+			//スケルトンを指定する
+			m_modelInitData.m_skeleton = &m_skeleton;
+			//スキンがある用の頂点シェーダーを設定する。
+			m_modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
+		}
+	}
+
 	//使ってない
 	//引数のモデルをフォワードレンダリングの描画パスで描画
 	void ModelRender::InitForwardRendering(RenderingEngine& renderingEngine, ModelInitData& modelInitData)
@@ -141,13 +207,17 @@ namespace nsK2EngineLow {
 		//ZPrepassモデルのワールド行列の更新(座標、回転、大きさ)
 		m_zprepassModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 
+		//Gbuffer用のモデルが初期化されていたら
+		if (m_renderToGBufferModel.IsInited())
+		{
+			m_renderToGBufferModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+		}
 		//スケルトンが初期化されていたら
 		if (m_skeleton.IsInited())
 		{
 			//スケルトンを更新する
 			m_skeleton.Update(m_model.GetWorldMatrix());
 		}
-
 		//シャドウモデルが初期化されていたら
 		if (m_shadowModel.IsInited())
 		{
@@ -204,5 +274,13 @@ namespace nsK2EngineLow {
 		m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight());
 	}
 
+
+
+	void ModelRender::OnRenderToGBuffer(RenderContext& rc)
+	{
+		if (m_renderToGBufferModel.IsInited()) {
+			m_renderToGBufferModel.Draw(rc, 1);
+		}
+	}
 
 }
