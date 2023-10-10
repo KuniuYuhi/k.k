@@ -23,6 +23,15 @@ namespace nsK2EngineLow {
 		//	int m_isEnableRaytracing;   // レイトレが行われている。
 		//};
 
+
+
+		  /// <summary>
+		/// イベント。
+		/// </summary>
+		enum EnEvent {
+			enEventReInitIBLTexture,    // IBLテクスチャが再初期化された。
+		};
+
 		/// <summary>
 		/// レンダーターゲットやライトの初期化
 		/// </summary>
@@ -37,6 +46,15 @@ namespace nsK2EngineLow {
 		/// テクスチャを貼り付けるためのスプライトの初期化
 		/// </summary>
 		void InitCopyToFrameBufferSprite();
+
+		/// <summary>
+		/// 描画オブジェクトを追加。
+		/// </summary>
+		/// <param name="renderObject"></param>
+		void AddRenderObject(IRenderer* renderObject)
+		{
+			m_renderObjects.push_back(renderObject);
+		}
 
 		/// <summary>
 		/// モデルレンダークラスをリストに追加する
@@ -81,7 +99,31 @@ namespace nsK2EngineLow {
 		/// <param name="camera">カメラ</param>
 		void ShadowModelRendering(RenderContext& rc, Camera& camera);
 
+		/// <summary>
+		/// イベントリスナーを追加。
+		/// </summary>
+		void AddEventListener(
+			void* pListenerObj,
+			std::function<void(EnEvent enEvent)> listenerFunc
+		)
+		{
+			m_eventListeners.push_back({ pListenerObj, listenerFunc });
+		}
+		/// <summary>
+		/// イベントリスナーを削除。
+		/// </summary>
+		void RemoveEventListener(void* pListenerObj)
+		{
 
+			auto it = std::find_if(
+				m_eventListeners.begin(),
+				m_eventListeners.end(),
+				[&](const SEventListenerData& listenerData) {return listenerData.pListenerObj == pListenerObj; }
+			);
+			if (it != m_eventListeners.end()) {
+				m_eventListeners.erase(it);
+			}
+		}
 
 		/// <summary>
 		/// 描画処理を実行
@@ -601,6 +643,12 @@ namespace nsK2EngineLow {
 		void FontRendering(RenderContext& rc);
 
 		/// <summary>
+		/// シャドウマップに描画
+		/// </summary>
+		/// <param name="rc">レンダリングコンテキスト</param>
+		void RenderToShadowMap(RenderContext& rc);
+
+		/// <summary>
 		/// ZPrepass
 		/// </summary>
 		/// <param name="rc">レンダリングコンテキスト</param>
@@ -617,6 +665,12 @@ namespace nsK2EngineLow {
 	   /// </summary>
 	   /// <param name="rc">レンダリングコンテキスト</param>
 		void ForwardRendering(RenderContext& rc);
+
+		/// <summary>
+		/// 2D描画
+		/// </summary>
+		/// <param name="rc">レンダリングコンテキスト</param>
+		void Render2D(RenderContext& rc);
 
 		/// <summary>
 	   /// ZPrepass用のレンダリングターゲットを初期化
@@ -640,6 +694,19 @@ namespace nsK2EngineLow {
 		Shadow							m_shadow;
 		Texture							m_toontexture;
 		RenderTarget					m_gBuffer[enGBufferNum];
+		std::vector< IRenderer* > m_renderObjects;                      // 描画オブジェクトのリスト。
+
+
+
+		/// <summary>
+	   /// イベントリスナーのデータ。
+	   /// </summary>
+		struct SEventListenerData {
+			void* pListenerObj;     // リスナーオブジェクト
+			std::function<void(EnEvent enEvent)> listenerFunc;
+		};
+
+		std::list< SEventListenerData > m_eventListeners;
 	};
 }
 

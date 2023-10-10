@@ -160,8 +160,18 @@ namespace nsK2EngineLow {
 		}
 	}
 
+	void RenderingEngine::RenderToShadowMap(RenderContext& rc)
+	{
+		BeginGPUEvent("RenderToShadowMap");
+
+		m_shadow.Render(rc);
+
+		EndGPUEvent();
+	}
+
 	void RenderingEngine::ZPrepass(RenderContext& rc)
 	{
+		BeginGPUEvent("ZPrepass");
 		// まず、レンダリングターゲットとして設定できるようになるまで待つ
 		rc.WaitUntilToPossibleSetRenderTarget(m_zprepassRenderTarget);
 
@@ -176,10 +186,12 @@ namespace nsK2EngineLow {
 		}
 
 		rc.WaitUntilFinishDrawingToRenderTarget(m_zprepassRenderTarget);
+		EndGPUEvent();
 	}
 
 	void RenderingEngine::RenderToGBuffer(RenderContext& rc)
 	{
+		BeginGPUEvent("RenderToGBuffer");
 		// レンダリングターゲットをG-Bufferに変更
 		RenderTarget* rts[enGBufferNum] = {
 			&m_gBuffer[enGBufferAlbedoDepth],         // 0番目のレンダリングターゲット
@@ -202,14 +214,14 @@ namespace nsK2EngineLow {
 		//レンダリングターゲットへの書き込み待ち
 		rc.WaitUntilFinishDrawingToRenderTargets(ARRAYSIZE(rts), rts);
 
-		//レンダリング先をフレームバッファーに戻してスプライトをレンダリングする
-		//g_graphicsEngine->ChangeRenderTargetToFrameBuffer(rc);
-
 		m_diferredLightingSprite.Draw(rc);
+
+		EndGPUEvent();
 	}
 
 	void RenderingEngine::ForwardRendering(RenderContext& rc)
 	{
+		BeginGPUEvent("ForwardRendering");
 		//レンダリングターゲットをm_mainRenderTargetに変更する
 		rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);
 		//レンダリングターゲットとビューポートを設定する
@@ -222,6 +234,17 @@ namespace nsK2EngineLow {
 
 		//レンダリングターゲット書き込み終了待ち
 		rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
+		EndGPUEvent();
+	}
+
+	void RenderingEngine::Render2D(RenderContext& rc)
+	{
+		BeginGPUEvent("Render2D");
+		//スプライトを描画
+		SpriteRendering(rc);
+		//フォントを描画
+		FontRendering(rc);
+		EndGPUEvent();
 	}
 
 	void RenderingEngine::InitZPrepassRenderTarget()
@@ -251,7 +274,7 @@ namespace nsK2EngineLow {
 		SetEyePos(g_camera3D->GetPosition());
 
 		//シャドウマップ描画用のモデルを描画
-		m_shadow.Render(rc);
+		RenderToShadowMap(rc);
 		//ライトビュープロジェクション行列を設定
 		SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
 		//ZPrepassモデルを描画
@@ -277,8 +300,7 @@ namespace nsK2EngineLow {
 		//フォントを描画
 		FontRendering(rc);
 
-		//m_shadow.ShadowSpriteRender(rc);
-
+		
 		m_modelList.clear();
 		m_gBufferModelList.clear();
 		m_spriteList.clear();
