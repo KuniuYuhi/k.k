@@ -1,33 +1,19 @@
 #pragma once
 
+//todo たまに.objのエラー
+//#include "IRenderer.h"
+
 namespace nsK2EngineLow {
 
-	/// <summary>
-   /// フォワードレンダリング用のモデル初期化構造体。
-   /// </summary>
-   /// <remark>
-   /// ModelInitDataを継承しています。
-   /// フォワードレンダリングのために必要なデフォルト設定をコンストラクタで行ってくれます。
-   /// </remark>
-	struct ModelInitDataFR :public ModelInitData
-	{
-		ModelInitDataFR()
-		{
-			m_colorBufferFormat[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		}
-	};
+	class RenderingEngine;
 
-	class ModelRender
+	/// <summary>
+	/// スキンモデルレンダー。
+	/// </summary>
+	class ModelRender:public IRenderer
 	{
 	public:
 		
-		/// <summary>
-		/// G-Buffer描画パスから呼ばれる処理。
-		/// </summary>
-		void OnRenderToGBuffer(RenderContext& rc);
-
-
-
 		/// <summary>
 		/// 通常の初期化
 		/// </summary>
@@ -256,6 +242,16 @@ namespace nsK2EngineLow {
 		/// </summary>
 		void MakeDirectionData();
 
+
+
+
+
+
+		/// <summary>
+		/// G-Buffer描画パスから呼ばれる処理。
+		/// </summary>
+		void OnRenderToGBuffer(RenderContext& rc) override;
+
 	// メンバ変数
 	private:
 		/// <summary>
@@ -351,7 +347,6 @@ namespace nsK2EngineLow {
 		Model						m_renderToGBufferModel;				// RenderToGBufferで描画されるモデル
 		Model						m_frowardRenderModel;					 // フォワードレンダリングの描画パスで描画されるモデル
 		ModelInitData				m_modelInitData;						//モデルを初期化するための情報を設定するクラス
-		ModelInitDataFR             m_modelInitDataFR;
 		Texture						m_lampTextrue;							//ランプテクスチャ
 	};
 }

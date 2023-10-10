@@ -12,8 +12,6 @@ namespace nsK2EngineLow {
 		m_modelInitData.m_fxFilePath = "Assets/shader/model.fx";
 		//モデルの上方向を設定
 		m_modelInitData.m_modelUpAxis = enModelUpAxis;
-		//ノンスキンメッシュ用の頂点シェーダーのエントリーポイントを指定する。
-		//m_modelInitData.m_vsEntryPointFunc = "VSMain";
 		
 		//スケルトンを初期化
 		InitSkeleton(tkmFilepath);
@@ -26,15 +24,6 @@ namespace nsK2EngineLow {
 		InitModelOnRenderGBuffer(*g_renderingEngine, tkmFilepath, enModelUpAxis, shadow);
 		//ZPrepass描画用のモデルを初期化。
 		InitModelOnZprepass(tkmFilepath, enModelUpAxis);
-
-		////アニメーションが設定されているなら
-		//if (animationClips != nullptr)
-		//{
-		//	//スケルトンを指定する
-		//	m_modelInitData.m_skeleton = &m_skeleton;
-		//	//スキンがある用の頂点シェーダーを設定する。
-		//	m_modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
-		//}
 
 		//トゥーンシェーダーを使用するなら
 		if (toon == true)
