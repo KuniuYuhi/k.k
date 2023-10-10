@@ -125,13 +125,9 @@ namespace nsK2EngineLow {
 			//スケルトンを指定する
 			modelInitData.m_skeleton = &m_skeleton;
 			//スキンがある用の頂点シェーダーを設定する。
-			modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
+			modelInitData.m_vsSkinEntryPointFunc = "VSMainSkin";
 		}
 
-		if (m_animationClips != nullptr) {
-			//スケルトンを指定する。
-			modelInitData.m_skeleton = &m_skeleton;
-		}
 		if (isShadowReciever) {
 			modelInitData.m_psEntryPointFunc = "PSMainShadowReciever";
 		}
@@ -141,7 +137,7 @@ namespace nsK2EngineLow {
 		modelInitData.m_tkmFilePath = tkmFilePath;
 		modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		modelInitData.m_colorBufferFormat[1] = DXGI_FORMAT_R8G8B8A8_SNORM;
-		//modelInitData.m_colorBufferFormat[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		modelInitData.m_colorBufferFormat[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		m_renderToGBufferModel.Init(modelInitData);
 	}
 
@@ -182,6 +178,8 @@ namespace nsK2EngineLow {
 
 		//ライトカメラのビュープロジェクション行列を設定する
 		g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
+
+		InitModelOnRenderGBuffer(*g_renderingEngine, tkmFilepath, enModelUpAxisY, true);
 
 		/*m_modelInitData.m_expandConstantBuffer = (void*)&g_renderingEngine->GetLightCamera().GetProjectionMatrix();
 		m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetLightCamera().GetProjectionMatrix());*/
