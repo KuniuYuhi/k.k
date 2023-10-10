@@ -5,14 +5,19 @@ namespace nsK2EngineLow {
 
 	void RenderingEngine::Init()
 	{
-		
+		//視点の位置を設定する
+		//SetEyePos(g_camera3D->GetPosition());
+
 		InitZPrepassRenderTarget();
 		InitRenderTargets();
+
+		InitGBuffer();
+
 		m_shadow.Init();
 		m_postEffect.Init(m_mainRenderTarget);
 		InitCopyToFrameBufferSprite();
 		m_sceneLight.Init();
-		SetToonTextureDDS();
+		//SetToonTextureDDS();
 	}
 
 	void RenderingEngine::InitRenderTargets()
@@ -49,6 +54,76 @@ namespace nsK2EngineLow {
 	{
 		const wchar_t* toontexture = L"Assets/shader/ToonTextrue/lamp_glay.DDS";
 		m_toontexture.InitFromDDSFile(toontexture);
+	}
+
+	void RenderingEngine::InitGBuffer()
+	{
+		int frameBuffer_w = g_graphicsEngine->GetFrameBufferWidth();
+		int frameBuffer_h = g_graphicsEngine->GetFrameBufferHeight();
+
+		// アルベドカラーを出力用のレンダリングターゲットを初期化する
+		float clearColor[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+		m_gBuffer[enGBufferAlbedoDepth].Create(
+			frameBuffer_w,
+			frameBuffer_h,
+			1,
+			1,
+			DXGI_FORMAT_R32G32B32A32_FLOAT,
+			DXGI_FORMAT_D32_FLOAT,
+			clearColor
+		);
+		// 法線出力用のレンダリングターゲットを初期化する
+		m_gBuffer[enGBufferNormal].Create(
+			frameBuffer_w,
+			frameBuffer_h,
+			1,
+			1,
+			DXGI_FORMAT_R8G8B8A8_SNORM,
+			DXGI_FORMAT_UNKNOWN
+		);
+		//// メタリック、影パラメータ、スムース出力用のレンダリングターゲットを初期化する    
+		//m_gBuffer[enGBufferMetaricShadowSmooth].Create(
+		//	frameBuffer_w,
+		//	frameBuffer_h,
+		//	1,
+		//	1,
+		//	DXGI_FORMAT_R8G8B8A8_UNORM,
+		//	DXGI_FORMAT_UNKNOWN
+		//);
+		//// ワールド座標のレンダリングターゲット
+		//m_gBuffer[enGBufferWorldPos].Create(
+		//	frameBuffer_w,
+		//	frameBuffer_h,
+		//	1,
+		//	1,
+		//	DXGI_FORMAT_R32G32B32A32_FLOAT,
+		//	DXGI_FORMAT_UNKNOWN
+		//);
+
+	}
+
+	void RenderingEngine::InitDefferedLighting_Sprite()
+	{
+		//ディファードライティングを行うためのスプライトを初期化
+		SpriteInitData spriteInitData;
+
+		// 画面全体にレンダリングするので幅と高さはフレームバッファーの幅と高さと同じ
+		spriteInitData.m_width = g_graphicsEngine->GetFrameBufferWidth();
+		spriteInitData.m_height = g_graphicsEngine->GetFrameBufferHeight();
+
+		//ディファードライティングで使用するテクスチャを設定
+		int texNo = 0;
+		for (auto& gBuffer : m_gBuffer)
+		{
+			spriteInitData.m_textures[texNo++] = &gBuffer.GetRenderTargetTexture();
+		}
+
+		spriteInitData.m_fxFilePath= "Assets/shader/DeferredLighting.fx";
+		spriteInitData.m_expandConstantBuffer = &GetSceneLight();
+		spriteInitData.m_expandConstantBufferSize = sizeof(GetSceneLight());
+
+		//初期化データを使ってスプライトを作成
+		m_diferredLightingSprite.Init(spriteInitData);
 	}
 
 	//モデルリストに格納されているモデルを描画する
@@ -105,6 +180,46 @@ namespace nsK2EngineLow {
 		rc.WaitUntilFinishDrawingToRenderTarget(m_zprepassRenderTarget);
 	}
 
+	void RenderingEngine::RenderToGBuffer(RenderContext& rc)
+	{
+		// レンダリングターゲットをG-Bufferに変更
+		RenderTarget* rts[enGBufferNum] = {
+			&m_gBuffer[enGBufferAlbedoDepth],         // 0番目のレンダリングターゲット
+			&m_gBuffer[enGBufferNormal]              // 1番目のレンダリングターゲット
+		};
+
+		//まず、レンダリングターゲットとして設定できるようになるまで待つ
+		rc.WaitUntilToPossibleSetRenderTargets(ARRAYSIZE(rts), rts);
+		//レンダーターゲットを設定
+		rc.SetRenderTargets(ARRAYSIZE(rts), rts);
+		//レンダーターゲットをクリア
+		rc.ClearRenderTargetViews(ARRAYSIZE(rts), rts);
+		//
+		for (auto& modelObj : m_modelList)
+		{
+			modelObj->OnRenderToGBuffer(rc);
+		}
+
+		//レンダリングターゲットへの書き込み待ち
+		rc.WaitUntilFinishDrawingToRenderTargets(ARRAYSIZE(rts), rts);
+	}
+
+	void RenderingEngine::ForwardRendering(RenderContext& rc)
+	{
+		//レンダリングターゲットをm_mainRenderTargetに変更する
+		rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);
+		//レンダリングターゲットとビューポートを設定する
+		rc.SetRenderTargetAndViewport(m_mainRenderTarget);
+		//レンダリングターゲットをクリア
+		rc.ClearRenderTargetView(m_mainRenderTarget);
+
+		//モデルを描画
+		ModelRendering(rc);
+
+		//レンダリングターゲット書き込み終了待ち
+		rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
+	}
+
 	void RenderingEngine::InitZPrepassRenderTarget()
 	{
 		float clearColor[] = { 1.0f,1.0f,1.0f,1.0f };
@@ -119,32 +234,29 @@ namespace nsK2EngineLow {
 		);
 	}
 
-	
-
 	void RenderingEngine::Execute(RenderContext& rc)
 	{
+		//シャドウマップへの描画
+		//ZPrepass
+		//GBufferへの描画
+		//フォワードレンダリング←ライティングも行う
+		//ポストエフェクト
+		//メインレンダリングターゲットの絵をフレームバッファーにコピー
+
 		//視点の位置を設定する
 		SetEyePos(g_camera3D->GetPosition());
 
 		//シャドウマップ描画用のモデルを描画
 		m_shadow.Render(rc);
-
+		//ライトビュープロジェクション行列を設定
 		SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
-
+		//ZPrepassモデルを描画
 		ZPrepass(rc);
+		//Gbuffer
+		RenderToGBuffer(rc);
+		//フォワードレンダリング
+		ForwardRendering(rc);
 
-		//レンダリングターゲットをm_mainRenderTargetに変更する
-		rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);
-		//レンダリングターゲットとビューポートを設定する
-		rc.SetRenderTargetAndViewport(m_mainRenderTarget);
-		//レンダリングターゲットをクリア
-		rc.ClearRenderTargetView(m_mainRenderTarget);
-
-		//モデルを描画
-		ModelRendering(rc);
-
-		//レンダリングターゲット書き込み終了待ち
-		rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
 		//輝度抽出とガウシアンブラー実行
 		//ボケ画像をメインレンダリングターゲットに加算合成
 		m_postEffect.Render(rc, m_mainRenderTarget);
