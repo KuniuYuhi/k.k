@@ -44,6 +44,7 @@ namespace {
 	const float CIRICLE_EFFECT_SIZE = 15.0f;
 
 	//環境光の初期カラーと最終的なカラー
+	//0.6
 	const float START_AMBIENT_COLOR = 0.6f;
 	const float END_AMBIENT_COLOR = 0.1f;
 
