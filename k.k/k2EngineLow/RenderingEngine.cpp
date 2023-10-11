@@ -127,16 +127,16 @@ namespace nsK2EngineLow {
 	//モデルリストに格納されているモデルを描画する
 	void RenderingEngine::ModelRendering(RenderContext& rc)
 	{
-		for (auto& modelObj : m_modelList)
+		for (auto& modelObj : m_renderObjects)
 		{
-			modelObj->OnRenderModel(rc);
+			modelObj->OnForwardRender(rc);
 		}
 	}
 
 	//モデルリストの格納されているモデルのシャドウマップ描画用のモデルを描画する
 	void RenderingEngine::ShadowModelRendering(RenderContext& rc, Camera& camera)
 	{
-		for (auto& modelObj : m_modelList)
+		for (auto& modelObj : m_renderObjects)
 		{
 			modelObj->OnRenderShadowModel(rc, camera);
 		}
@@ -145,18 +145,18 @@ namespace nsK2EngineLow {
 	//スプライトリストに格納されているスプライトを描画する
 	void RenderingEngine::SpriteRendering(RenderContext& rc)
 	{
-		for (auto& spriteObj : m_spriteList)
+		for (auto& spriteObj : m_renderObjects)
 		{
-			spriteObj->OnRenderSprite(rc);
+			spriteObj->OnRender2D(rc);
 		}
 	}
 
 	//フォントリストに格納されているフォントを描画する
 	void RenderingEngine::FontRendering(RenderContext& rc)
 	{
-		for (auto& fontObj : m_fontList)
+		for (auto& fontObj : m_renderObjects)
 		{
-			fontObj->OnRenderFont(rc);
+			fontObj->OnRender2D(rc);
 		}
 	}
 
@@ -181,7 +181,7 @@ namespace nsK2EngineLow {
 		// レンダリングターゲットをクリア
 		rc.ClearRenderTargetView(m_zprepassRenderTarget);
 
-		for (auto& renderObj : m_zprepassModelList) {
+		for (auto& renderObj : m_renderObjects) {
 			renderObj->OnZPrepass(rc);
 		}
 
@@ -206,7 +206,7 @@ namespace nsK2EngineLow {
 		//レンダーターゲットをクリア
 		rc.ClearRenderTargetViews(ARRAYSIZE(rts), rts);
 		//
-		for (auto& modelObj : m_gBufferModelList)
+		for (auto& modelObj : m_renderObjects)
 		{
 			modelObj->OnRenderToGBuffer(rc);
 		}
@@ -300,12 +300,14 @@ namespace nsK2EngineLow {
 		//フォントを描画
 		FontRendering(rc);
 
-		
-		m_modelList.clear();
+		// 登録されている描画オブジェクトをクリア
+		m_renderObjects.clear();
+
+		/*m_modelList.clear();
 		m_gBufferModelList.clear();
 		m_spriteList.clear();
 		m_fontList.clear();
-		m_zprepassModelList.clear();
+		m_zprepassModelList.clear();*/
 	}
 
 }
