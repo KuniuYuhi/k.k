@@ -78,6 +78,12 @@ namespace nsK2EngineLow {
 		{
 			return false;
 		}
+
+
+		virtual void OnRenderShadowModel(RenderContext& rc, Camera& camera)
+		{
+
+		}
 	};
 
 }
