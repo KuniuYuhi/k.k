@@ -1,7 +1,6 @@
 #pragma once
 
 namespace nsK2EngineLow {
-
 	struct SpriteCB
 	{
 		Vector2 RoundWipeStartPosition = Vector2(0.0f, 0.0f);		//円形ワイプを行う始点
@@ -13,8 +12,10 @@ namespace nsK2EngineLow {
 		bool RoundWipe = false;					//円形ワイプを使用するかどうか
 		bool WipeWithDirection = false;			//方向を指定するリニアワイプをするかどうか
 	};
-
-	class SpriteRender
+	/// <summary>
+	/// スプライトレンダラー。
+	/// </summary>
+	class SpriteRender:public IRenderer
 	{
 	public:
 
@@ -31,7 +32,6 @@ namespace nsK2EngineLow {
 			const float height,
 			AlphaBlendMode alphaBlendMode = AlphaBlendMode_Trans
 		);
-
 		/// <summary>
 		/// 座標の設定(zは0.0fにする)
 		/// </summary>
@@ -325,6 +325,15 @@ namespace nsK2EngineLow {
 		}
 
 	private:
+		/// <summary>
+		/// 2D描画パスから呼ばれる処理。
+		/// </summary>
+		/// <param name="rc"></param>
+		void OnRender2D(RenderContext& rc) override
+		{
+			m_sprite.Draw(rc);
+		}
+
 		SpriteCB	m_spriteCB;
 		Sprite		m_sprite;								//Spriteクラス
 
