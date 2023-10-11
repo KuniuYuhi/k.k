@@ -63,9 +63,10 @@ namespace nsK2EngineLow {
 		/// <param name="rc"></param>
 		void Draw(RenderContext& rc)
 		{
-			g_renderingEngine->AddModelList(this);
+			g_renderingEngine->AddRenderObject(this);
+			/*g_renderingEngine->AddModelList(this);
 			g_renderingEngine->AddGBufferModelList(this);
-			g_renderingEngine->Add3DModelToZPrepass(this);
+			g_renderingEngine->Add3DModelToZPrepass(this);*/
 		}
 
 		/// <summary>
@@ -74,26 +75,7 @@ namespace nsK2EngineLow {
 		/// <param name="rc"></param>
 		void OnRenderModel(RenderContext& rc)
 		{
-			m_model.Draw(rc);
-		}
-
-		/// <summary>
-		/// ZPrepassモデルを描画する
-		/// </summary>
-		/// <param name="rc"></param>
-		void OnZPrepass(RenderContext& rc)
-		{
-			m_zprepassModel.Draw(rc);
-		}
-
-		/// <summary>
-		/// シャドウマップ描画用のモデルを描画する
-		/// </summary>
-		/// <param name="rc"></param>
-		/// <param name="lightCamera"></param>
-		void OnRenderShadowModel(RenderContext& rc, Camera& lightCamera)
-		{
-			m_shadowModel.Draw(rc, lightCamera);
+			m_frowardRenderModel.Draw(rc);
 		}
 
 		/// <summary>
@@ -102,7 +84,7 @@ namespace nsK2EngineLow {
 		/// <returns>モデル</returns>
 		Model& GetModel()
 		{
-			return m_model;
+			return m_frowardRenderModel;
 		}
 
 		/// <summary>
@@ -240,20 +222,43 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// ディレクションライトの情報を作成
 		/// </summary>
-		void MakeDirectionData();
+		void MakeDirectionData(ModelInitData& modelInitData);
 
 
 
 
 
-
+	// メンバ変数
+	private:
+		/// <summary>
+		/// ZPrepassモデルを描画する
+		/// </summary>
+		/// <param name="rc"></param>
+		void OnZPrepass(RenderContext& rc) override;
 		/// <summary>
 		/// G-Buffer描画パスから呼ばれる処理。
 		/// </summary>
 		void OnRenderToGBuffer(RenderContext& rc) override;
+		/// <summary>
+		/// フォワードレンダーパスから呼ばれる処理。
+		/// </summary>
+		void OnForwardRender(RenderContext& rc) override;
+		/// <summary>
+		/// 半透明オブジェクト描画パスから呼ばれる処理。
+		/// </summary>
+		/// <param name="rc"></param>
+		void OnTlanslucentRender(RenderContext& rc) override;
+		/// <summary>
+		/// シャドウマップ描画用のモデルを描画する
+		/// </summary>
+		/// <param name="rc"></param>
+		/// <param name="lightCamera"></param>
+		void OnRenderShadowModel(RenderContext& rc, Camera& lightCamera)
+		{
+			m_shadowModel.Draw(rc, lightCamera);
+		}
+		
 
-	// メンバ変数
-	private:
 		/// <summary>
 		/// スケルトンの初期化。
 		/// </summary>
@@ -318,6 +323,8 @@ namespace nsK2EngineLow {
 			bool isFrontCullingOnDrawShadowMap
 		);
 
+
+
 		/// <summary>
 		/// 各種モデルの頂点シェーダーのエントリーポイントを設定。
 		/// </summary>
@@ -346,6 +353,7 @@ namespace nsK2EngineLow {
 		Model						m_zprepassModel;                  // ZPrepassで描画されるモデル
 		Model						m_renderToGBufferModel;				// RenderToGBufferで描画されるモデル
 		Model						m_frowardRenderModel;					 // フォワードレンダリングの描画パスで描画されるモデル
+		Model						m_translucentModel;					// 半透明モデル。
 		ModelInitData				m_modelInitData;						//モデルを初期化するための情報を設定するクラス
 		Texture						m_lampTextrue;							//ランプテクスチャ
 	};

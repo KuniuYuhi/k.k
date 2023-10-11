@@ -47,11 +47,11 @@ namespace nsK2EngineLow {
 				&g_renderingEngine->GetZPrepassDepthTexture();
 		}
 		
-		//ディレクションライトの情報を作成
-		MakeDirectionData();
+		//ライトの情報を作成
+		MakeDirectionData(m_modelInitData);
 
 		//作成した初期化データを元にモデルを初期化する
-		m_model.Init(m_modelInitData);
+		m_frowardRenderModel.Init(m_modelInitData);
 
 		//シャドウマップ描画用のモデルの初期化
 		if (shadow == true)
@@ -72,21 +72,8 @@ namespace nsK2EngineLow {
 		modelInitData.m_fxFilePath = "Assets/shader/ZPrepass.fx";
 		modelInitData.m_modelUpAxis = modelUpAxis;
 
-		//スキンなし
-		modelInitData.m_vsEntryPointFunc = "VSMain";
+		SetupVertexShaderEntryPointFunc(modelInitData);
 
-		if (m_animationClips != nullptr) {
-			// アニメーションあり。
-			modelInitData.m_vsSkinEntryPointFunc = "VSMainSkin";
-		}
-
-		// 頂点の事前計算処理を使う。
-		//modelInitData.m_computedAnimationVertexBuffer = &m_computeAnimationVertexBuffer;
-
-		if (m_animationClips != nullptr) {
-			//スケルトンを指定する。
-			modelInitData.m_skeleton = &m_skeleton;
-		}
 		modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 
 		m_zprepassModel.Init(modelInitData);
@@ -107,16 +94,8 @@ namespace nsK2EngineLow {
 
 		// 頂点シェーダーのエントリーポイントをセットアップ。
 		//ノンスキンメッシュ用の頂点シェーダーのエントリーポイントを指定する。
-		modelInitData.m_vsEntryPointFunc = "VSMain";
-		//アニメーションが設定されているなら
-		if (m_animationClips != nullptr)
-		{
-			//スケルトンを指定する
-			modelInitData.m_skeleton = &m_skeleton;
-			//スキンがある用の頂点シェーダーを設定する。
-			modelInitData.m_vsSkinEntryPointFunc = "VSMainSkin";
-		}
-
+		SetupVertexShaderEntryPointFunc(modelInitData);
+		//シャドウレシーバーなら
 		if (isShadowReciever) {
 			modelInitData.m_psEntryPointFunc = "PSMainShadowReciever";
 		}
@@ -137,14 +116,14 @@ namespace nsK2EngineLow {
 	void ModelRender::SetupVertexShaderEntryPointFunc(ModelInitData& modelInitData)
 	{
 		//ノンスキンメッシュ用の頂点シェーダーのエントリーポイントを指定する。
-		m_modelInitData.m_vsEntryPointFunc = "VSMain";
+		modelInitData.m_vsEntryPointFunc = "VSMain";
 		//アニメーションが設定されているなら
 		if (m_animationClips != nullptr)
 		{
 			//スケルトンを指定する
-			m_modelInitData.m_skeleton = &m_skeleton;
+			modelInitData.m_skeleton = &m_skeleton;
 			//スキンがある用の頂点シェーダーを設定する。
-			m_modelInitData.m_vsSkinEntryPointFunc = "VSMainSkin";
+			modelInitData.m_vsSkinEntryPointFunc = "VSMainSkin";
 		}
 	}
 
@@ -162,35 +141,36 @@ namespace nsK2EngineLow {
 	{
 		m_modelInitData.m_tkmFilePath = tkmFilepath;
 		m_modelInitData.m_fxFilePath = "Assets/shader/ShadowReciever.fx";
-
+		//モデルの上方向を設定
+		m_modelInitData.m_modelUpAxis = enModelUpAxisZ;
 		m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GatShadowMapTexture();
 
 		//ライトカメラのビュープロジェクション行列を設定する
 		g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
 
-		InitModelOnRenderGBuffer(*g_renderingEngine, tkmFilepath, enModelUpAxisY, true);
+		InitModelOnRenderGBuffer(*g_renderingEngine, tkmFilepath, enModelUpAxisZ, true);
 
 		/*m_modelInitData.m_expandConstantBuffer = (void*)&g_renderingEngine->GetLightCamera().GetProjectionMatrix();
 		m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetLightCamera().GetProjectionMatrix());*/
 
-		MakeDirectionData();
+		MakeDirectionData(m_modelInitData);
 
-		m_model.Init(m_modelInitData);
+		m_frowardRenderModel.Init(m_modelInitData);
 	}
 
 	void ModelRender::InitSkyCube(ModelInitData& initData)
 	{
 		initData.m_colorBufferFormat[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		m_model.Init(initData);
+		m_frowardRenderModel.Init(initData);
 
-		m_model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+		m_frowardRenderModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 	}
 
 	//モデルの情報を更新
 	void ModelRender::Update()
 	{
 		//モデルのワールド行列の更新(座標、回転、大きさ)
-		m_model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+		m_frowardRenderModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 		//ZPrepassモデルのワールド行列の更新(座標、回転、大きさ)
 		m_zprepassModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 
@@ -203,7 +183,7 @@ namespace nsK2EngineLow {
 		if (m_skeleton.IsInited())
 		{
 			//スケルトンを更新する
-			m_skeleton.Update(m_model.GetWorldMatrix());
+			m_skeleton.Update(m_frowardRenderModel.GetWorldMatrix());
 		}
 		//シャドウモデルが初期化されていたら
 		if (m_shadowModel.IsInited())
@@ -253,20 +233,39 @@ namespace nsK2EngineLow {
 		}
 	}
 
-	//ディレクションライトの情報をディスクリプタヒープに定数バッファーとして
+	//ライトの情報をディスクリプタヒープに定数バッファーとして
 	//登録するためにモデルの初期化情報として渡す
-	void ModelRender::MakeDirectionData()
+	void ModelRender::MakeDirectionData(ModelInitData& modelInitData)
 	{
-		m_modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight();
-		m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight());
+		modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight();
+		modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight());
 	}
 
 
+
+	void ModelRender::OnZPrepass(RenderContext& rc)
+	{
+		m_zprepassModel.Draw(rc, 1);
+	}
 
 	void ModelRender::OnRenderToGBuffer(RenderContext& rc)
 	{
 		if (m_renderToGBufferModel.IsInited()) {
 			m_renderToGBufferModel.Draw(rc, 1);
+		}
+	}
+
+	void ModelRender::OnForwardRender(RenderContext& rc)
+	{
+		if (m_frowardRenderModel.IsInited()) {
+			m_frowardRenderModel.Draw(rc, 1);
+		}
+	}
+
+	void ModelRender::OnTlanslucentRender(RenderContext& rc)
+	{
+		if (m_translucentModel.IsInited()) {
+			m_translucentModel.Draw(rc, 1);
 		}
 	}
 
