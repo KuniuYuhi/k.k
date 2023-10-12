@@ -11,6 +11,7 @@ namespace nsK2EngineLow {
 		InitGBuffer();
 
 		m_shadow.Init();
+
 		m_postEffect.Init(m_mainRenderTarget);
 		InitCopyToFrameBufferSprite();
 		m_sceneLight.Init();
@@ -163,8 +164,23 @@ namespace nsK2EngineLow {
 	void RenderingEngine::RenderToShadowMap(RenderContext& rc)
 	{
 		BeginGPUEvent("RenderToShadowMap");
-
 		m_shadow.Render(rc);
+		//int ligNo = 0;
+		//for (auto& shadowMapRender : m_shadowMapRenders)
+		//{
+		//	shadowMapRender.Render(
+		//		rc,
+		//		ligNo,
+		//		//これから！！
+		//		//配列
+		//		m_deferredLightingCB.m_light.directionalLight.lightDirection,
+		//		m_renderObjects,
+		//		
+		//	);
+		//	
+		//	ligNo++;
+		//}
+
 
 		EndGPUEvent();
 	}
@@ -243,7 +259,7 @@ namespace nsK2EngineLow {
 		//スプライトを描画
 		SpriteRendering(rc);
 		//フォントを描画
-		FontRendering(rc);
+		//FontRendering(rc);
 		EndGPUEvent();
 	}
 
@@ -298,7 +314,7 @@ namespace nsK2EngineLow {
 		//スプライトを描画
 		SpriteRendering(rc);
 		//フォントを描画
-		FontRendering(rc);
+		//FontRendering(rc);
 
 		// 登録されている描画オブジェクトをクリア
 		m_renderObjects.clear();

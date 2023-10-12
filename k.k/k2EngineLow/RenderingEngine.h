@@ -1,5 +1,6 @@
 #pragma once
 
+#include "MyRenderer.h"
 #include "PostEffect.h"
 #include "Light.h"
 #include "Shadow.h"
@@ -13,15 +14,15 @@ namespace nsK2EngineLow {
 	class RenderingEngine
 	{
 	public:
-		//// ディファードライティング用の定数バッファ
-		//struct SDeferredLightingCB
-		//{
-		//	Light m_light;              // ライト
-		//	Matrix mlvp[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP]; // ライトビュープロジェクション行列。
-		//	float m_iblLuminance;       // IBLの明るさ。
-		//	int m_isIBL;                // IBLを行う。
-		//	int m_isEnableRaytracing;   // レイトレが行われている。
-		//};
+		// ディファードライティング用の定数バッファ
+		struct SDeferredLightingCB
+		{
+			Light m_light;              // ライト
+			Matrix mlvp[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP]; // ライトビュープロジェクション行列。
+			float m_iblLuminance;       // IBLの明るさ。
+			int m_isIBL;                // IBLを行う。
+			int m_isEnableRaytracing;   // レイトレが行われている。
+		};
 
 
 
@@ -193,6 +194,21 @@ namespace nsK2EngineLow {
 		{
 			return m_shadow.GetShadowMapTextrue();
 		}
+
+		/// <summary>
+		/// シャドウマップテクスチャにクエリを行う。
+		/// </summary>
+		/// <param name="queryFunc">クエリ関数</param>
+		/*void QueryShadowMapTexture(std::function< void(Texture& shadowMap) > queryFunc)
+		{
+			for (int i = 0; i < MAX_DIRECTIONAL_LIGHT; i++)
+			{
+				for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
+				{
+					queryFunc(m_shadowMapRenders[i].GetShadowMap());
+				}
+			}
+		}*/
 
 		/// <summary>
 		/// ライトカメラを取得
@@ -687,11 +703,12 @@ namespace nsK2EngineLow {
 
 		Sprite						m_copyToFrameBufferSprite;	//テクスチャを貼り付けるためのスプライトを初期化
 		SceneLight						m_sceneLight;	//シーンライト
-		//SDeferredLightingCB m_deferredLightingCB;                       // ディファードライティング用の定数バッファ
+		SDeferredLightingCB m_deferredLightingCB;                       // ディファードライティング用の定数バッファ
 		Sprite m_diferredLightingSprite;                                // ディファードライティングを行うためのスプライト
 		RenderTarget					m_mainRenderTarget;	//レンダリングターゲット
 		PostEffect						m_postEffect;		//ポストエフェクト
 		Shadow							m_shadow;
+		Shadow							m_shadowMapRenders[MAX_DIRECTIONAL_LIGHT];
 		Texture							m_toontexture;
 		RenderTarget					m_gBuffer[enGBufferNum];
 		std::vector< IRenderer* > m_renderObjects;                      // 描画オブジェクトのリスト。
