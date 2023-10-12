@@ -16,8 +16,8 @@ namespace nsK2EngineLow {
 		virtual void OnRenderShadowMap(
 			RenderContext& rc,
 			int ligNo,
-			int shadowMapNo,
-			const Matrix& lvpMatrix
+			int shadowMapNo//,
+			//const Matrix& lvpMatrix
 		)
 		{
 
@@ -80,7 +80,23 @@ namespace nsK2EngineLow {
 		}
 
 
-		virtual void OnRenderShadowModel(RenderContext& rc, Camera& camera)
+		/// <summary>
+		/// シャドウマップへの描画パスから呼ばれる処理。
+		/// </summary>
+		/// <param name="rc">レンダリングコンテキスト</param>
+		/// <param name="ligNo">ライト番号</param>
+		/// <param name="shadowMapNo">シャドウマップ番号</param>
+		/// <param name="lvpMatrix">ライトビュープロジェクション行列</param>
+		virtual void OnRenderShadowMap(
+			RenderContext& rc,
+			int ligNo,
+			int shadowMapNo,
+			const Matrix& lvpMatrix)
+		{
+
+		};
+		//後に消す
+		virtual void OnRenderShadowModel(RenderContext& rc, Camera& lightCamera)
 		{
 
 		}
