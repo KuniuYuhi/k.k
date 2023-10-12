@@ -33,7 +33,7 @@ struct SVSIn
 // グローバル変数。
 ////////////////////////////////////////////////
 StructuredBuffer<float4x4> g_boneMatrix         : register(t3);	    //ボーン配列
-StructuredBuffer<float4x4> g_worldMatrixArray   : register(t10);	//ワールド行列の配列。インスタンシング描画の際に有効。
+//StructuredBuffer<float4x4> g_worldMatrixArray   : register(t10);	//ワールド行列の配列。インスタンシング描画の際に有効。
 
 ///////////////////////////////////////
 // 関数宣言
@@ -86,13 +86,7 @@ SPSIn VSMain(SVSIn vsIn)
 {
     return VSMainCore(vsIn, mWorld, false);
 }
-/// <summary>
-/// スキンなしメッシュ用の頂点シェーダーのエントリー関数(インスタンシング描画用)。使わない
-/// </summary>
-SPSIn VSMainInstancing(SVSIn vsIn, uint instanceID : SV_InstanceID)
-{
-    return VSMainCore(vsIn, g_worldMatrixArray[instanceID], false);
-}
+
 /// <summary>
 /// スキンありメッシュの頂点シェーダーのエントリー関数。使う
 /// </summary>
@@ -100,15 +94,7 @@ SPSIn VSMainSkin(SVSIn vsIn)
 {
     return VSMainCore(vsIn, CalcSkinMatrix(vsIn), false);
 }
-/// <summary>
-/// スキンありメッシュの頂点シェーダーのエントリー関数(インスタンシング描画用。使わない
-/// </summary>
-SPSIn VSMainSkinInstancing(SVSIn vsIn, uint instanceID : SV_InstanceID)
-{
-    float4x4 mWorldLocal = CalcSkinMatrix(vsIn);
-    mWorldLocal = mul(g_worldMatrixArray[instanceID], mWorldLocal);
-    return VSMainCore(vsIn, mWorldLocal, false);
-}
+
 /// <summary>
 /// 事前計算済みの頂点バッファを使う頂点シェーダーのエントリー関数。使わない
 /// スキンメッシュ用
