@@ -347,8 +347,7 @@ void GameUI::TimerUIUpdate()
 
 void GameUI::DrawPlayerUI(RenderContext& rc)
 {
-	m_playerUI.m_hpFont.Draw(rc);
-	m_playerUI.m_mpFont.Draw(rc);
+	
 	//メインHP
 	m_playerUI.m_MainHpBackRender.Draw(rc);
 	m_playerUI.m_MainHpFrontRender.Draw(rc);
@@ -430,8 +429,7 @@ void GameUI::DrawMonsterUI(RenderContext& rc)
 		return;
 	}
 
-	m_monsterUI.m_hpFont.Draw(rc);
-	m_monsterUI.m_AccumulationDamageFont.Draw(rc);
+	
 
 	//アイコン
 	m_monsterUI.m_IconRender.Draw(rc);
@@ -450,6 +448,12 @@ void GameUI::Render(RenderContext& rc)
 	DrawMonsterUI(rc);
 
 	m_TimerFont.Draw(rc);
+
+	m_monsterUI.m_hpFont.Draw(rc);
+	m_monsterUI.m_AccumulationDamageFont.Draw(rc);
+
+	m_playerUI.m_hpFont.Draw(rc);
+	m_playerUI.m_mpFont.Draw(rc);
 }
 
 void GameUI::InitPlayerUI()

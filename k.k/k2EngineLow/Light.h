@@ -1,4 +1,7 @@
 #pragma once
+
+#include "MyRenderer.h"
+
 namespace nsK2EngineLow {
 
 	const int MAM_DIRECTIONAL_LIGHT = 4;   //ディレクションライトの最大数

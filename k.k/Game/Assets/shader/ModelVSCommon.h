@@ -1,11 +1,11 @@
-//���f���̒��_�V�F�[�_�[�֌W�̋��ʃw�b�_�[
+//モデルの頂点シェーダー関係の共通ヘッダー
 
 
 
 ///////////////////////////////////////
-// �萔�o�b�t�@�B
+// 定数バッファ。
 ///////////////////////////////////////
-// ���f���p�̒萔�o�b�t�@�[
+// モデル用の定数バッファー
 cbuffer ModelCb : register(b0)
 {
     float4x4 mWorld;
@@ -14,37 +14,37 @@ cbuffer ModelCb : register(b0)
 };
 
 ////////////////////////////////////////////////
-// �\����
+// 構造体
 ////////////////////////////////////////////////
 
-// ���_�V�F�[�_�[�ւ̓���
+// 頂点シェーダーへの入力
 struct SVSIn
 {
-    float4 pos : POSITION;          //���_���W�B
-    float3 normal : NORMAL;         //�@���B
-    float2 uv : TEXCOORD0;          //UV���W�B
-    float3 tangent : TANGENT;      //�ڃx�N�g���B
-    float3 biNormal : BINORMAL;     //�]�x�N�g���B
+    float4 pos : POSITION;          //頂点座標。
+    float3 normal : NORMAL;         //法線。
+    float2 uv : TEXCOORD0;          //UV座標。
+    float3 tangent : TANGENT;      //接ベクトル。
+    float3 biNormal : BINORMAL;     //従ベクトル。
     int4  Indices : BLENDINDICES0;
     float4 Weights : BLENDWEIGHT0;
 };
 
 ////////////////////////////////////////////////
-// �O���[�o���ϐ��B
+// グローバル変数。
 ////////////////////////////////////////////////
-StructuredBuffer<float4x4> g_boneMatrix         : register(t3);	    //�{�[���s��B
-StructuredBuffer<float4x4> g_worldMatrixArray   : register(t10);	//���[���h�s��̔z��B�C���X�^���V���O�`��̍ۂɗL���B
+StructuredBuffer<float4x4> g_boneMatrix         : register(t3);	    //ボーン配列
+//StructuredBuffer<float4x4> g_worldMatrixArray   : register(t10);	//ワールド行列の配列。インスタンシング描画の際に有効。
 
 ///////////////////////////////////////
-// �֐��錾
+// 関数宣言
 ///////////////////////////////////////
 SPSIn VSMainCore(SVSIn vsIn, float4x4 mWorldLocal, uniform bool isUsePreComputedVertexBuffer);
 
 ////////////////////////////////////////////////
-// �֐���`�B
+// 関数定義。
 ////////////////////////////////////////////////
 /// <summary>
-//�X�L���s����v�Z����B
+//スキン行列を計算する。
 /// </summary>
 float4x4 CalcSkinMatrix(SVSIn skinVert)
 {
@@ -62,11 +62,11 @@ float4x4 CalcSkinMatrix(SVSIn skinVert)
     return skinning;
 }
 /// <summary>
-/// ���[���h��Ԃ̒��_���W���v�Z����B
+/// ワールド空間の頂点座標を計算する。
 /// </summary>
-/// <param name="vertexPos">���_���W</param>
-/// <param name="mWorld">���[���h�s��</param>
-/// <param name="isUsePreComputedVertexBuffer">���O�v�Z�ς݂̒��_�o�b�t�@�𗘗p���Ă���H</param>
+/// <param name="vertexPos">頂点座標</param>
+/// <param name="mWorld">ワールド行列</param>
+/// <param name="isUsePreComputedVertexBuffer">事前計算済みの頂点バッファを利用している？</param>
 float4 CalcVertexPositionInWorldSpace(float4 vertexPos, float4x4 mWorld, uniform bool isUsePreComputedVertexBuffer)
 {
     float4 pos;
@@ -74,68 +74,54 @@ float4 CalcVertexPositionInWorldSpace(float4 vertexPos, float4x4 mWorld, uniform
         pos = vertexPos;
     }
     else {
-        pos = mul(mWorld, vertexPos);  // ���f���̒��_�����[���h���W�n�ɕϊ�
+        pos = mul(mWorld, vertexPos);  // モデルの頂点をワールド座標系に変換
     }
 
     return pos;
 }
 /// <summary>
-/// �X�L���Ȃ����b�V���p�̒��_�V�F�[�_�[�̃G���g���[�֐��B
+/// スキンなしメッシュ用の頂点シェーダーのエントリー関数。使う
 /// </summary>
 SPSIn VSMain(SVSIn vsIn)
 {
     return VSMainCore(vsIn, mWorld, false);
 }
+
 /// <summary>
-/// �X�L���Ȃ����b�V���p�̒��_�V�F�[�_�[�̃G���g���[�֐�(�C���X�^���V���O�`��p)�B
-/// </summary>
-SPSIn VSMainInstancing(SVSIn vsIn, uint instanceID : SV_InstanceID)
-{
-    return VSMainCore(vsIn, g_worldMatrixArray[instanceID], false);
-}
-/// <summary>
-/// �X�L�����胁�b�V���̒��_�V�F�[�_�[�̃G���g���[�֐��B
+/// スキンありメッシュの頂点シェーダーのエントリー関数。使う
 /// </summary>
 SPSIn VSMainSkin(SVSIn vsIn)
 {
     return VSMainCore(vsIn, CalcSkinMatrix(vsIn), false);
 }
+
 /// <summary>
-/// �X�L�����胁�b�V���̒��_�V�F�[�_�[�̃G���g���[�֐�(�C���X�^���V���O�`��p�B
-/// </summary>
-SPSIn VSMainSkinInstancing(SVSIn vsIn, uint instanceID : SV_InstanceID)
-{
-    float4x4 mWorldLocal = CalcSkinMatrix(vsIn);
-    mWorldLocal = mul(g_worldMatrixArray[instanceID], mWorldLocal);
-    return VSMainCore(vsIn, mWorldLocal, false);
-}
-/// <summary>
-/// ���O�v�Z�ς݂̒��_�o�b�t�@���g�����_�V�F�[�_�[�̃G���g���[�֐��B
-/// �X�L�����b�V���p
+/// 事前計算済みの頂点バッファを使う頂点シェーダーのエントリー関数。使わない
+/// スキンメッシュ用
 /// </summary>
 SPSIn VSMainSkinUsePreComputedVertexBuffer(SVSIn vsIn)
 {
     return VSMainCore(vsIn, (float4x4)0, true);
 }
 /// <summary>
-/// ���O�v�Z�ς݂̒��_�o�b�t�@���g�����_�V�F�[�_�[�̃G���g���[�֐��B
-/// �X�L���Ȃ����b�V���p
+/// 事前計算済みの頂点バッファを使う頂点シェーダーのエントリー関数。使わない
+/// スキンなしメッシュ用
 /// </summary>
 SPSIn VSMainUsePreComputedVertexBuffer(SVSIn vsIn)
 {
     return VSMainCore(vsIn, (float4x4)0, true);
 }
 /// <summary>
-/// ���[���h�X�y�[�X�̖@���A�ڃx�N�g���A�]�x�N�g�����v�Z����B
+/// ワールドスペースの法線、接ベクトル、従ベクトルを計算する。
 /// </summary>
-/// <param name="oNormal">�@���̏o�͐�</param>
-/// <param name="oTangent">�ڃx�N�g���̏o�͐�</param>
-/// <param name="oBiNormal">�]�x�N�g���̏o�͐�</param>
-/// <param name="mWorld">���[���h�s��</param>
-/// <param name="iNormal">�@��</param>
-/// <param name="iTanget">�ڃx�N�g��</param>
-/// <param name="iBiNormal">�]�x�N�g��</param>
-/// <param name="isUsePreComputedVertexBuffer">���O�v�Z�ςݒ��_�o�b�t�@�𗘗p����H/param>
+/// <param name="oNormal">法線の出力先</param>
+/// <param name="oTangent">接ベクトルの出力先</param>
+/// <param name="oBiNormal">従ベクトルの出力先</param>
+/// <param name="mWorld">ワールド行列</param>
+/// <param name="iNormal">法線</param>
+/// <param name="iTanget">接ベクトル</param>
+/// <param name="iBiNormal">従ベクトル</param>
+/// <param name="isUsePreComputedVertexBuffer">事前計算済み頂点バッファを利用する？/param>
 void CalcVertexNormalTangentBiNormalInWorldSpace(
     out float3 oNormal,
     out float3 oTangent,
@@ -148,7 +134,7 @@ void CalcVertexNormalTangentBiNormalInWorldSpace(
 )
 {
     if (isUsePreComputedVertexBuffer) {
-        // ���O�v�Z�ςݒ��_�o�b�t�@�𗘗p����B
+        // 事前計算済み頂点バッファを利用する
         oNormal = iNormal;
         oTangent = iTangent;
         oBiNormal = iBiNormal;

@@ -85,6 +85,7 @@ const UINT UI_SPACE_WIDTH = 1920;	// UI空間の幅。
 const UINT UI_SPACE_HEIGHT = 1080;	// UI空間の高さ。
 static const int MAX_BONE = 512;	// ボーンの最大数。
 
+
 #define USE_FPS_LIMITTER	// 有効でFPSに上限を設ける。
 
 #include "btBulletDynamicsCommon.h"
@@ -111,6 +112,8 @@ static const int MAX_BONE = 512;	// ボーンの最大数。
 #include "graphics/effect/EffectEngine.h"
 #include "sound/SoundSource.h"
 #include "graphics/effect/EffectEmitter.h"
+
+#include "IRenderer.h"
 
 #include "RenderingEngine.h"
 

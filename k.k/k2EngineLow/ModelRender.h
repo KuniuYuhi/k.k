@@ -1,33 +1,19 @@
 #pragma once
 
+//todo たまに.objのエラー
+#include "MyRenderer.h"
+
 namespace nsK2EngineLow {
 
-	/// <summary>
-   /// フォワードレンダリング用のモデル初期化構造体。
-   /// </summary>
-   /// <remark>
-   /// ModelInitDataを継承しています。
-   /// フォワードレンダリングのために必要なデフォルト設定をコンストラクタで行ってくれます。
-   /// </remark>
-	struct ModelInitDataFR :public ModelInitData
-	{
-		ModelInitDataFR()
-		{
-			m_colorBufferFormat[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		}
-	};
+	class RenderingEngine;
 
-	class ModelRender
+	/// <summary>
+	/// スキンモデルレンダー。
+	/// </summary>
+	class ModelRender:public IRenderer
 	{
 	public:
 		
-		/// <summary>
-		/// G-Buffer描画パスから呼ばれる処理。
-		/// </summary>
-		void OnRenderToGBuffer(RenderContext& rc);
-
-
-
 		/// <summary>
 		/// 通常の初期化
 		/// </summary>
@@ -77,9 +63,10 @@ namespace nsK2EngineLow {
 		/// <param name="rc"></param>
 		void Draw(RenderContext& rc)
 		{
-			g_renderingEngine->AddModelList(this);
+			g_renderingEngine->AddRenderObject(this);
+			/*g_renderingEngine->AddModelList(this);
 			g_renderingEngine->AddGBufferModelList(this);
-			g_renderingEngine->Add3DModelToZPrepass(this);
+			g_renderingEngine->Add3DModelToZPrepass(this);*/
 		}
 
 		/// <summary>
@@ -88,26 +75,7 @@ namespace nsK2EngineLow {
 		/// <param name="rc"></param>
 		void OnRenderModel(RenderContext& rc)
 		{
-			m_model.Draw(rc);
-		}
-
-		/// <summary>
-		/// ZPrepassモデルを描画する
-		/// </summary>
-		/// <param name="rc"></param>
-		void OnZPrepass(RenderContext& rc)
-		{
-			m_zprepassModel.Draw(rc);
-		}
-
-		/// <summary>
-		/// シャドウマップ描画用のモデルを描画する
-		/// </summary>
-		/// <param name="rc"></param>
-		/// <param name="lightCamera"></param>
-		void OnRenderShadowModel(RenderContext& rc, Camera& lightCamera)
-		{
-			m_shadowModel.Draw(rc, lightCamera);
+			m_frowardRenderModel.Draw(rc);
 		}
 
 		/// <summary>
@@ -116,7 +84,7 @@ namespace nsK2EngineLow {
 		/// <returns>モデル</returns>
 		Model& GetModel()
 		{
-			return m_model;
+			return m_frowardRenderModel;
 		}
 
 		/// <summary>
@@ -194,6 +162,11 @@ namespace nsK2EngineLow {
 		/// 更新処理
 		/// </summary>
 		void Update();
+		/// <summary>
+		/// 各種モデルのワールド行列を更新する。
+		/// </summary>
+		void UpdateWorldMatrixInModes();
+
 
 		/// <summary>
 		/// ボーンの名前からボーン番号を検索
@@ -254,10 +227,55 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// ディレクションライトの情報を作成
 		/// </summary>
-		void MakeDirectionData();
+		void MakeDirectionData(ModelInitData& modelInitData);
+
+
+
+
 
 	// メンバ変数
 	private:
+		/// <summary>
+		/// ZPrepassモデルを描画する
+		/// </summary>
+		/// <param name="rc"></param>
+		void OnZPrepass(RenderContext& rc) override;
+		/// <summary>
+		/// G-Buffer描画パスから呼ばれる処理。
+		/// </summary>
+		void OnRenderToGBuffer(RenderContext& rc) override;
+		/// <summary>
+		/// フォワードレンダーパスから呼ばれる処理。
+		/// </summary>
+		void OnForwardRender(RenderContext& rc) override;
+		/// <summary>
+		/// 半透明オブジェクト描画パスから呼ばれる処理。
+		/// </summary>
+		/// <param name="rc"></param>
+		void OnTlanslucentRender(RenderContext& rc) override;
+		/// <summary>
+		/// シャドウマップ描画用のモデルを描画する
+		/// </summary>
+		/// <param name="rc"></param>
+		/// <param name="lightCamera"></param>
+		void OnRenderShadowModel(RenderContext& rc, Camera& lightCamera)
+		{
+			m_shadowModel.Draw(rc, lightCamera);
+		}
+		/// <summary>
+		/// シャドウマップへの描画パスから呼ばれる処理。
+		/// </summary>
+		/// <param name="rc">レンダリングコンテキスト</param>
+		/// <param name="ligNo">ライト番号</param>
+		/// <param name="shadowMapNo">シャドウマップ番号</param>
+		/// <param name="lvpMatrix">ライトビュープロジェクション行列</param>
+		void OnRenderShadowMap(
+			RenderContext& rc,
+			int ligNo,
+			int shadowMapNo,
+			const Matrix& lvpMatrix) override;
+		
+
 		/// <summary>
 		/// スケルトンの初期化。
 		/// </summary>
@@ -322,6 +340,8 @@ namespace nsK2EngineLow {
 			bool isFrontCullingOnDrawShadowMap
 		);
 
+
+
 		/// <summary>
 		/// 各種モデルの頂点シェーダーのエントリーポイントを設定。
 		/// </summary>
@@ -350,9 +370,16 @@ namespace nsK2EngineLow {
 		Model						m_zprepassModel;                  // ZPrepassで描画されるモデル
 		Model						m_renderToGBufferModel;				// RenderToGBufferで描画されるモデル
 		Model						m_frowardRenderModel;					 // フォワードレンダリングの描画パスで描画されるモデル
+		Model						m_translucentModel;					// 半透明モデル。
 		ModelInitData				m_modelInitData;						//モデルを初期化するための情報を設定するクラス
-		ModelInitDataFR             m_modelInitDataFR;
 		Texture						m_lampTextrue;							//ランプテクスチャ
+
+
+		Model						m_shadowModels[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP];	// シャドウマップに描画するモデル
+		ConstantBuffer				m_drawShadowMapCameraParamCB[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP];// シャドウマップ作成時に必要なカメラパラメータ用の定数バッファ。
+		bool						m_isShadowCaster = true;			// シャドウキャスターフラグ
+
+
 	};
 }
 
