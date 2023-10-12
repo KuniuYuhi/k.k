@@ -7,6 +7,15 @@ namespace nsK2EngineLow {
 		void Init();
 		void Render(RenderContext& rc);
 
+		/*void Render(
+			RenderContext& rc,
+			int ligNo,
+			Vector3& lightDirection,
+			std::vector< IRenderer* >& renderObjects,
+			const Vector3& sceneMaxPosition,
+			const Vector3& sceneMinPosition
+		);*/
+
 		void ShadowSpriteRender(RenderContext& rc);
 
 		Texture& GetShadowMapTextrue()
@@ -50,7 +59,7 @@ namespace nsK2EngineLow {
 		Camera m_lightCamera;
 
 		Vector3 m_lightCameraPosition = Vector3(0.0f, 1200.0f, 0.0f);	//カメラの座標(座標からターゲットに向かって影が落とされる)
-
+		std::vector< IRenderer* > m_renderers;              // シャドウマップへのレンダラーの配列。
 		Sprite shadowSprite;
 
 		float m_clearColor[4] = { 1.0f,1.0f,1.0f,1.0f };

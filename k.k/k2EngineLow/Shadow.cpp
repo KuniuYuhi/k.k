@@ -17,20 +17,74 @@ namespace nsK2EngineLow {
 	{
 		InitRenderTarget();
 		InitLightCamera();
-		//InitShadowSprite();
 	}
 
 	void Shadow::Render(RenderContext& rc)
 	{
-		UpDateLightCamera();
-
 		rc.WaitUntilToPossibleSetRenderTarget(m_shadowMap);
 		rc.SetRenderTargetAndViewport(m_shadowMap);
 		rc.ClearRenderTargetView(m_shadowMap);
+		int shadowMapNo = 0;
 		//影モデルを描画
 		g_renderingEngine->ShadowModelRendering(rc, m_lightCamera);
+		//書き込み完了待ち
 		rc.WaitUntilFinishDrawingToRenderTarget(m_shadowMap);
 	}
+
+	//void Shadow::Render(
+	//	RenderContext& rc,
+	//	int ligNo,
+	//	Vector3& lightDirection,
+	//	std::vector< IRenderer* >& renderObjects,
+	//	const Vector3& sceneMaxPosition,
+	//	const Vector3& sceneMinPosition
+	//)
+	//{
+	//	if (lightDirection.LengthSq() < 0.001f) {
+	//		return;
+	//	}
+	//	//int shadowMapNo = 0;
+	//	//for (auto& shadowMap : m_shadowMaps) {
+	//	//	rc.WaitUntilToPossibleSetRenderTarget(shadowMap);
+	//	//	rc.SetRenderTargetAndViewport(shadowMap);
+	//	//	rc.ClearRenderTargetView(shadowMap);
+
+	//	//	for (auto& renderer : renderObjects) {
+	//	//		renderer->OnRenderShadowMap(
+	//	//			rc,
+	//	//			ligNo,
+	//	//			shadowMapNo,
+	//	//			m_cascadeShadowMapMatrix.GetLightViewProjectionCropMatrix(shadowMapNo)
+	//	//		);
+	//	//	}
+
+	//	//	//描画が終わったらクリア
+	//	//	m_renderers.clear();
+
+	//	//	// 書き込み完了待ち
+	//	//	rc.WaitUntilFinishDrawingToRenderTarget(shadowMap);
+	//	//	shadowMapNo++;
+	//	//}
+
+	//	//レンダリングエンジンの方でやる
+	//	UpDateLightCamera();
+
+	//	rc.WaitUntilToPossibleSetRenderTarget(m_shadowMap);
+	//	rc.SetRenderTargetAndViewport(m_shadowMap);
+	//	rc.ClearRenderTargetView(m_shadowMap);
+	//	int shadowMapNo = 0;
+	//	//影モデルを描画
+	//	g_renderingEngine->ShadowModelRendering(rc, m_lightCamera);
+	//	//for (auto& renderer : renderObjects) {
+	//	//	renderer->OnRenderShadowMap(
+	//	//		rc,
+	//	//		ligNo,
+	//	//		shadowMapNo
+	//	//		//m_cascadeShadowMapMatrix.GetLightViewProjectionCropMatrix(shadowMapNo)
+	//	//	);
+	//	//}
+	//	rc.WaitUntilFinishDrawingToRenderTarget(m_shadowMap);
+	//}
 
 	void Shadow::ShadowSpriteRender(RenderContext& rc)
 	{
