@@ -1,7 +1,7 @@
 #pragma once
 
 //todo たまに.objのエラー
-//#include "IRenderer.h"
+#include "MyRenderer.h"
 
 namespace nsK2EngineLow {
 
@@ -162,6 +162,11 @@ namespace nsK2EngineLow {
 		/// 更新処理
 		/// </summary>
 		void Update();
+		/// <summary>
+		/// 各種モデルのワールド行列を更新する。
+		/// </summary>
+		void UpdateWorldMatrixInModes();
+
 
 		/// <summary>
 		/// ボーンの名前からボーン番号を検索
@@ -257,6 +262,18 @@ namespace nsK2EngineLow {
 		{
 			m_shadowModel.Draw(rc, lightCamera);
 		}
+		/// <summary>
+		/// シャドウマップへの描画パスから呼ばれる処理。
+		/// </summary>
+		/// <param name="rc">レンダリングコンテキスト</param>
+		/// <param name="ligNo">ライト番号</param>
+		/// <param name="shadowMapNo">シャドウマップ番号</param>
+		/// <param name="lvpMatrix">ライトビュープロジェクション行列</param>
+		void OnRenderShadowMap(
+			RenderContext& rc,
+			int ligNo,
+			int shadowMapNo,
+			const Matrix& lvpMatrix) override;
 		
 
 		/// <summary>
@@ -356,6 +373,13 @@ namespace nsK2EngineLow {
 		Model						m_translucentModel;					// 半透明モデル。
 		ModelInitData				m_modelInitData;						//モデルを初期化するための情報を設定するクラス
 		Texture						m_lampTextrue;							//ランプテクスチャ
+
+
+		Model						m_shadowModels[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP];	// シャドウマップに描画するモデル
+		ConstantBuffer				m_drawShadowMapCameraParamCB[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP];// シャドウマップ作成時に必要なカメラパラメータ用の定数バッファ。
+		bool						m_isShadowCaster = true;			// シャドウキャスターフラグ
+
+
 	};
 }
 

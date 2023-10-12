@@ -109,8 +109,33 @@ namespace nsK2EngineLow {
 		m_renderToGBufferModel.Init(modelInitData);
 	}
 
-	void ModelRender::InitModelOnShadowMap(RenderingEngine& renderingEngine, const char* tkmFilePath, EnModelUpAxis modelUpAxis, bool isFrontCullingOnDrawShadowMap)
+	void ModelRender::InitModelOnShadowMap(
+		RenderingEngine& renderingEngine, 
+		const char* tkmFilePath, 
+		EnModelUpAxis modelUpAxis, 
+		bool isFrontCullingOnDrawShadowMap)
 	{
+		ModelInitData modelInitData;
+		modelInitData.m_tkmFilePath = tkmFilePath;
+		modelInitData.m_modelUpAxis = modelUpAxis;
+		modelInitData.m_cullMode = 
+			isFrontCullingOnDrawShadowMap ? D3D12_CULL_MODE_FRONT : D3D12_CULL_MODE_BACK;
+		// 頂点シェーダーのエントリーポイントをセットアップ。
+		SetupVertexShaderEntryPointFunc(modelInitData);
+		//fxファイル指定。todo このファイル作る！！！
+		modelInitData.m_fxFilePath = "Assets/shader/DrawShadowMap.fx";
+
+
+		for (int ligNo = 0; ligNo < MAX_DIRECTIONAL_LIGHT; ligNo++)
+		{
+			//shadowModelArrayが変わるとm_shadowModelsも変わる
+			ConstantBuffer* cameraParamCBArray = m_drawShadowMapCameraParamCB[ligNo];
+			Model* shadowModelArray = m_shadowModels[ligNo];
+			for (int shadowMapNo = 0; shadowMapNo < NUM_SHADOW_MAP; shadowMapNo++)
+			{
+				shadowModelArray[shadowMapNo].Init(modelInitData);
+			}
+		}
 	}
 
 	void ModelRender::SetupVertexShaderEntryPointFunc(ModelInitData& modelInitData)
@@ -169,6 +194,22 @@ namespace nsK2EngineLow {
 	//モデルの情報を更新
 	void ModelRender::Update()
 	{
+		//各種モデルのワールド座標を更新
+		UpdateWorldMatrixInModes();
+
+		//スケルトンが初期化されていたら
+		if (m_skeleton.IsInited())
+		{
+			//スケルトンを更新する
+			m_skeleton.Update(m_frowardRenderModel.GetWorldMatrix());
+		}
+
+		//アニメーションを進める
+		m_animation.Progress(g_gameTime->GetFrameDeltaTime() * m_animationSpeed);
+	}
+
+	void ModelRender::UpdateWorldMatrixInModes()
+	{
 		//モデルのワールド行列の更新(座標、回転、大きさ)
 		m_frowardRenderModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 		//ZPrepassモデルのワールド行列の更新(座標、回転、大きさ)
@@ -179,20 +220,35 @@ namespace nsK2EngineLow {
 		{
 			m_renderToGBufferModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 		}
-		//スケルトンが初期化されていたら
-		if (m_skeleton.IsInited())
-		{
-			//スケルトンを更新する
-			m_skeleton.Update(m_frowardRenderModel.GetWorldMatrix());
-		}
 		//シャドウモデルが初期化されていたら
 		if (m_shadowModel.IsInited())
 		{
 			m_shadowModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 		}
+		////シャドウマップ描画モデル
+		//for (auto& models : m_shadowModels) {
+		//	for (auto& model : models) {
+		//		model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+		//	}
+		//}
+	}
 
-		//アニメーションを進める
-		m_animation.Progress(g_gameTime->GetFrameDeltaTime() * m_animationSpeed);
+	void ModelRender::OnRenderShadowMap(
+		RenderContext& rc, 
+		int ligNo, int shadowMapNo, const Matrix& lvpMatrix)
+	{
+		if (m_isShadowCaster) {
+			Vector4 cameraParam;
+			cameraParam.x = g_camera3D->GetNear();
+			cameraParam.y = g_camera3D->GetFar();
+			m_drawShadowMapCameraParamCB[ligNo][shadowMapNo].CopyToVRAM(cameraParam);
+			m_shadowModels[ligNo][shadowMapNo].Draw(
+				rc,
+				g_matIdentity,
+				lvpMatrix,
+				1
+			);
+		}
 	}
 
 	void ModelRender::InitSkeleton(const char* filePath)
