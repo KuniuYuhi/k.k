@@ -530,6 +530,7 @@
     <ClInclude Include="SkyCube.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="IRenderer.h" />
+    <ClInclude Include="MyRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphics">
