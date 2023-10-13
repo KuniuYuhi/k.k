@@ -38,7 +38,7 @@ SPSIn VSMainCore(SVSIn vsIn, float4x4 mWorldLocal, uniform bool isUsePreComputed
 float4 PSMain(SPSIn psIn) : SV_Target0
 {
     //シャドウマップにZ値を書き込む
-    //return float4(psIn.pos.z, psIn.pos.z, psIn.pos.z, 1.0f);
+    return float4(psIn.pos.z, psIn.pos.z, psIn.pos.z, 1.0f);
 
     float depth = psIn.pos.z ;
     float pos = exp(INFINITY * depth);
