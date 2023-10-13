@@ -15,6 +15,22 @@ namespace nsK2EngineLow {
 		//SHADOW_MAP_AREA_FAR,		//遠影範囲のシャドウマップ。
 		NUM_SHADOW_MAP
 	};
+
+
+
+	// シャドウで利用するカラーバッファのフォーマット。
+	// レンダリングターゲットのフォーマット。
+	struct RenderTargetFormat {
+		DXGI_FORMAT colorBufferFormat;	// カラーバッファのフォーマット。
+		DXGI_FORMAT depthBufferFormat;	// 深度バッファのフォーマット。
+	};
+
+
+	// ハードシャドウ用のシャドウマップのフォーマット。
+	const RenderTargetFormat g_hardShadowMapFormat = {
+		DXGI_FORMAT_R32_FLOAT,		// カラーバッファ
+		DXGI_FORMAT_D32_FLOAT		// 深度バッファ。
+	};
 }
 
 
