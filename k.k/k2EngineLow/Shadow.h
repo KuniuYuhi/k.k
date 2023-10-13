@@ -5,22 +5,22 @@ namespace nsK2EngineLow {
 	{
 	public:
 		void Init();
-		void Render(RenderContext& rc);
+		//void Render(RenderContext& rc);
 
-		/*void Render(
+		void Render(
 			RenderContext& rc,
 			int ligNo,
 			Vector3& lightDirection,
-			std::vector< IRenderer* >& renderObjects,
-			const Vector3& sceneMaxPosition,
-			const Vector3& sceneMinPosition
-		);*/
+			std::vector< IRenderer* >& renderObjects
+		);
 
 		void ShadowSpriteRender(RenderContext& rc);
 
 		Texture& GetShadowMapTextrue()
 		{
-			return m_shadowMap.GetRenderTargetTexture();
+			return m_shadowMaps[0].GetRenderTargetTexture();
+
+			//return m_shadowMap.GetRenderTargetTexture();
 		}
 
 		Camera& GetLightCamera()
@@ -56,6 +56,7 @@ namespace nsK2EngineLow {
 
 	private:
 		RenderTarget m_shadowMap;
+		RenderTarget m_shadowMaps[NUM_SHADOW_MAP];          // シャドウマップ
 		Camera m_lightCamera;
 
 		Vector3 m_lightCameraPosition = Vector3(0.0f, 1200.0f, 0.0f);	//カメラの座標(座標からターゲットに向かって影が落とされる)

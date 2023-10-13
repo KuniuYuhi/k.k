@@ -19,72 +19,53 @@ namespace nsK2EngineLow {
 		InitLightCamera();
 	}
 
-	void Shadow::Render(RenderContext& rc)
-	{
-		rc.WaitUntilToPossibleSetRenderTarget(m_shadowMap);
-		rc.SetRenderTargetAndViewport(m_shadowMap);
-		rc.ClearRenderTargetView(m_shadowMap);
-		int shadowMapNo = 0;
-		//影モデルを描画
-		g_renderingEngine->ShadowModelRendering(rc, m_lightCamera);
-		//書き込み完了待ち
-		rc.WaitUntilFinishDrawingToRenderTarget(m_shadowMap);
-	}
-
-	//void Shadow::Render(
-	//	RenderContext& rc,
-	//	int ligNo,
-	//	Vector3& lightDirection,
-	//	std::vector< IRenderer* >& renderObjects,
-	//	const Vector3& sceneMaxPosition,
-	//	const Vector3& sceneMinPosition
-	//)
+	//void Shadow::Render(RenderContext& rc)
 	//{
-	//	if (lightDirection.LengthSq() < 0.001f) {
-	//		return;
-	//	}
-	//	//int shadowMapNo = 0;
-	//	//for (auto& shadowMap : m_shadowMaps) {
-	//	//	rc.WaitUntilToPossibleSetRenderTarget(shadowMap);
-	//	//	rc.SetRenderTargetAndViewport(shadowMap);
-	//	//	rc.ClearRenderTargetView(shadowMap);
-
-	//	//	for (auto& renderer : renderObjects) {
-	//	//		renderer->OnRenderShadowMap(
-	//	//			rc,
-	//	//			ligNo,
-	//	//			shadowMapNo,
-	//	//			m_cascadeShadowMapMatrix.GetLightViewProjectionCropMatrix(shadowMapNo)
-	//	//		);
-	//	//	}
-
-	//	//	//描画が終わったらクリア
-	//	//	m_renderers.clear();
-
-	//	//	// 書き込み完了待ち
-	//	//	rc.WaitUntilFinishDrawingToRenderTarget(shadowMap);
-	//	//	shadowMapNo++;
-	//	//}
-
-	//	//レンダリングエンジンの方でやる
-	//	UpDateLightCamera();
-
 	//	rc.WaitUntilToPossibleSetRenderTarget(m_shadowMap);
 	//	rc.SetRenderTargetAndViewport(m_shadowMap);
 	//	rc.ClearRenderTargetView(m_shadowMap);
 	//	int shadowMapNo = 0;
 	//	//影モデルを描画
 	//	g_renderingEngine->ShadowModelRendering(rc, m_lightCamera);
-	//	//for (auto& renderer : renderObjects) {
-	//	//	renderer->OnRenderShadowMap(
-	//	//		rc,
-	//	//		ligNo,
-	//	//		shadowMapNo
-	//	//		//m_cascadeShadowMapMatrix.GetLightViewProjectionCropMatrix(shadowMapNo)
-	//	//	);
-	//	//}
+	//	//書き込み完了待ち
 	//	rc.WaitUntilFinishDrawingToRenderTarget(m_shadowMap);
 	//}
+
+	void Shadow::Render(
+		RenderContext& rc,
+		int ligNo,
+		Vector3& lightDirection,
+		std::vector< IRenderer* >& renderObjects
+	)
+	{
+		// ライトの最大の高さをレンダラーのAABBから計算する。
+
+		int shadowMapNo = 0;
+		for (auto& shadowMap : m_shadowMaps) {
+			rc.WaitUntilToPossibleSetRenderTarget(shadowMap);
+			rc.SetRenderTargetAndViewport(shadowMap);
+			rc.ClearRenderTargetView(shadowMap);
+
+			for (auto& renderer : renderObjects) {
+				renderer->OnRenderShadowMap(
+					rc,
+					ligNo,
+					shadowMapNo,
+					m_lightCamera
+				);
+			}
+
+			//描画が終わったらクリア
+			//m_renderers.clear();
+
+			// 書き込み完了待ち
+			rc.WaitUntilFinishDrawingToRenderTarget(shadowMap);
+			shadowMapNo++;
+		}
+
+		//レンダリングエンジンの方でやる
+		UpDateLightCamera();
+	}
 
 	void Shadow::ShadowSpriteRender(RenderContext& rc)
 	{
@@ -100,7 +81,7 @@ namespace nsK2EngineLow {
 	void Shadow::InitRenderTarget()
 	{
 		//シャドウマップ描画用のレンダリングターゲット
-		m_shadowMap.Create(
+		/*m_shadowMap.Create(
 			ShadowConst::RENDER_TARGET_WIDTH,
 			ShadowConst::RENDER_TARGET_HEIGHT,
 			1,
@@ -108,7 +89,27 @@ namespace nsK2EngineLow {
 			DXGI_FORMAT_R32_FLOAT,
 			DXGI_FORMAT_D32_FLOAT,
 			m_clearColor
+		);*/
+
+		float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		DXGI_FORMAT colorFormat;
+		DXGI_FORMAT depthFormat;
+
+		colorFormat = g_hardShadowMapFormat.colorBufferFormat;
+		depthFormat = g_hardShadowMapFormat.depthBufferFormat;
+
+		//近景用のシャドウマップ
+		m_shadowMaps[0].Create(
+			2048,
+			2048,
+			1,
+			1,
+			colorFormat,
+			depthFormat,
+			clearColor
 		);
+
 	}
 
 	void Shadow::InitLightCamera()
