@@ -7,14 +7,15 @@ namespace nsK2EngineLow {
 	{
 		InitZPrepassRenderTarget();
 		InitRenderTargets();
-
 		InitGBuffer();
-
-		m_shadow.Init();
+		m_sceneLight.Init();
+		InitShadowMapRender();
+		
 
 		m_postEffect.Init(m_mainRenderTarget);
+
 		InitCopyToFrameBufferSprite();
-		m_sceneLight.Init();
+		
 		InitDefferedLighting_Sprite();
 		
 	}
@@ -164,24 +165,20 @@ namespace nsK2EngineLow {
 	void RenderingEngine::RenderToShadowMap(RenderContext& rc)
 	{
 		BeginGPUEvent("RenderToShadowMap");
-		m_shadow.Render(rc);
-		//int ligNo = 0;
-		//for (auto& shadowMapRender : m_shadowMapRenders)
-		//{
-		//	shadowMapRender.Render(
-		//		rc,
-		//		ligNo,
-		//		//これから！！
-		//		//配列
-		//		m_deferredLightingCB.m_light.directionalLight.lightDirection,
-		//		m_renderObjects,
-		//		
-		//	);
-		//	
-		//	ligNo++;
-		//}
-
-
+		//m_shadow.Render(rc);
+		int ligNo = 0;
+		//中身がなくなる
+		for (auto& shadowMapRender : m_shadowMapRenders)
+		{
+			shadowMapRender.Render(
+				rc,
+				ligNo,
+				m_deferredLightingCB.m_light.directionalLight.lightDirection,
+				m_renderObjects
+			);
+			
+			ligNo++;
+		}
 		EndGPUEvent();
 	}
 
@@ -275,6 +272,16 @@ namespace nsK2EngineLow {
 			DXGI_FORMAT_D32_FLOAT,
 			clearColor
 		);
+	}
+
+	void RenderingEngine::InitShadowMapRender()
+	{
+		//m_shadow.Init();
+		//シャドウマップ描画用のレンダリングターゲット初期化
+		for (auto& shadowMapRender : m_shadowMapRenders) {
+			shadowMapRender.Init();
+		}
+
 	}
 
 	void RenderingEngine::Execute(RenderContext& rc)

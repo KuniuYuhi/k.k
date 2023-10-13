@@ -192,7 +192,7 @@ namespace nsK2EngineLow {
 		/// <returns>シャドウマップのテクスチャ</returns>
 		Texture& GatShadowMapTexture()
 		{
-			return m_shadow.GetShadowMapTextrue();
+			return m_shadowMapRenders[0].GetShadowMapTextrue();
 		}
 
 		/// <summary>
@@ -689,9 +689,14 @@ namespace nsK2EngineLow {
 		void Render2D(RenderContext& rc);
 
 		/// <summary>
-	   /// ZPrepass用のレンダリングターゲットを初期化
-	   /// </summary>
+		/// ZPrepass用のレンダリングターゲットを初期化
+		/// </summary>
 		void InitZPrepassRenderTarget();
+
+		/// <summary>
+		/// シャドウマップへの描画処理を初期化
+		/// </summary>
+		void InitShadowMapRender();
 
 		std::vector<ModelRender*>		m_modelList;	//モデルリスト
 		std::vector<SpriteRender*>		m_spriteList;	//スプライトリスト
