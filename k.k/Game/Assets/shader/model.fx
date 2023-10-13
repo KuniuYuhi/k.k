@@ -16,6 +16,7 @@ struct SPSIn{
 	float3 normalInView :TEXCOORD2;		//カメラ空間の法線
 	float4 posInProj : TEXCOORD3;		//スクリーン座標
 	float3 depth : TEXCOORD4;
+	float4 posInLVP : TEXCOORD5; //ライトビュースクリーン空間でのピクセルの座標
 };
 
 ///////////////////////////////////////
@@ -65,12 +66,13 @@ struct HemiSphereLight
 
 //ライトの定数バッファー
 cbuffer LightCB:register(b1){
-	DirectionLight directionLight;      //ディレクションライト
-	PointLight pointLight;				//ポイントライト
-	SpotLight spotLight;				//スポットライト
-	HemiSphereLight hemiSphereLight;	//半球ライト
-	float3 ambient;			//環境光
-	float3 eyepos;			//視点の位置
+	DirectionLight		directionLight;      //ディレクションライト
+	PointLight			pointLight;			//ポイントライト
+	SpotLight			spotLight;			//スポットライト
+	HemiSphereLight		hemiSphereLight;	//半球ライト
+	float3				ambient;			//環境光
+	float3				eyepos;				//視点の位置
+	float4x4			mLVP;				//ライトビュープロジェクション行列
 }
 
 
@@ -106,10 +108,10 @@ SPSIn VSMainCore(
 	uniform bool isUsePreComputedVertexBuffer)
 {
 	SPSIn psIn;
-	float4x4 m;
+	//float4x4 m;
 	 // 頂点座標をワールド座標系に変換する。
     psIn.pos = CalcVertexPositionInWorldSpace(vsIn.pos, mWorldLocal, isUsePreComputedVertexBuffer);
-
+	float4 worldPos = psIn.pos;
 	psIn.worldPos = psIn.pos;
 	psIn.pos = mul(mView, psIn.pos);
 	psIn.pos = mul(mProj, psIn.pos);
@@ -140,6 +142,9 @@ SPSIn VSMainCore(
 	//頂点の正規化スクリーン座標系の座標をピクセルシェーダーに渡す
 	psIn.posInProj=psIn.pos;
 	psIn.posInProj/=psIn.posInProj.w;
+	
+	//ライトビュースクリーン空間の座標を計算する
+	psIn.posInLVP = mul(mLVP, worldPos);
 
 	return psIn;
 }
@@ -150,30 +155,30 @@ SPSIn VSMainCore(
 float4 PSMain( SPSIn psIn ) : SV_Target0
 {
 	//法線マップを計算
-	float3 normal=CalcNormalMap(psIn);
+	float3 normal = CalcNormalMap(psIn);
 
 	//ディレクションライトによるライティングの計算
-	float3 directionLig=CalcLigFromDrectionLight(psIn,normal);
+	float3 directionLig = CalcLigFromDrectionLight(psIn, normal);
 	
 	//ポイントライトによるライティングの計算
-	float3 pointLig={0.0f,0.0f,0.0f};
-	if(pointLight.isUse==true)
+	float3 pointLig = { 0.0f, 0.0f, 0.0f };
+	if (pointLight.isUse == true)
 	{
-		pointLig=CalcLigFromPointLight(psIn,normal);
+		pointLig = CalcLigFromPointLight(psIn, normal);
 	}
 
 	//スポットライトによるライティングの計算
-	float3 spotLig={0.0f,0.0f,0.0f};
-	if(spotLight.isUse==true)
+	float3 spotLig = { 0.0f, 0.0f, 0.0f };
+	if (spotLight.isUse == true)
 	{
-		spotLig=CalcLigFromSpotLight(psIn,normal);
+		spotLig = CalcLigFromSpotLight(psIn, normal);
 	}
 
 	//半球ライトによるライティングの計算
-	float3 hemiLig={0.0f,0.0f,0.0f};
-	if(hemiSphereLight.isUse==true)
+	float3 hemiLig = { 0.0f, 0.0f, 0.0f };
+	if (hemiSphereLight.isUse == true)
 	{
-		hemiLig=CalcLigFromhemiSphereLight(psIn);
+		hemiLig = CalcLigFromhemiSphereLight(psIn);
 	}
 
 	//ディレクションライトと環境光をたす				
@@ -181,12 +186,40 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 
 	float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
 
-	albedoColor.xyz*=lig;
+	albedoColor.xyz *= lig;
 
 	//輪郭線の計算
-	albedoColor=CalcOutLine(psIn,albedoColor);
+	albedoColor = CalcOutLine(psIn, albedoColor);
 
+	//
+	//for (int ligNo = 0; ligNo < 1; ligNo++)
+	//{
+	//	// 影の落ち具合を計算する。
+	//	float shadow = 0.0f;
+		
+	//	 //ライトビュースクリーン空間からUV座標空間に変換している
+	//	float2 shadowMapUV = psIn.posInLVP.xy / psIn.posInLVP.w;
+	//	shadowMapUV *= float2(0.5f, -0.5f);
+	//	shadowMapUV += 0.5f;
 
+ //   //ライトビュースクリーン空間でのZ値を計算する
+	//	float zInLVP = psIn.posInLVP.z / psIn.posInLVP.w;
+
+	//	if (shadowMapUV.x > 0.0f && shadowMapUV.x < 1.0f
+ //       && shadowMapUV.y > 0.0f && shadowMapUV.y < 1.0f)
+	//	{
+ //       //計算したUV座標を使って、シャドウマップから深度値をサンプリング
+	//		float zInShadowMap = g_shadowMap.Sample(g_sampler, shadowMapUV).r;
+	//		if (zInLVP > zInShadowMap)
+	//		{
+ //           //遮蔽されている
+	//			albedoColor.xyz *= 0.6f;
+	//		}
+	//	}
+
+		
+	//}
+	
 	return albedoColor;
 }
 
