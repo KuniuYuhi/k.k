@@ -273,7 +273,8 @@ namespace nsK2EngineLow {
 			RenderContext& rc,
 			int ligNo,
 			int shadowMapNo,
-			const Matrix& lvpMatrix) override;
+			Camera& lightCamera
+		) override;
 		
 
 		/// <summary>
@@ -337,7 +338,7 @@ namespace nsK2EngineLow {
 			RenderingEngine& renderingEngine,
 			const char* tkmFilePath,
 			EnModelUpAxis modelUpAxis,
-			bool isFrontCullingOnDrawShadowMap
+			bool isFrontCullingOnDrawShadowMap=false
 		);
 
 

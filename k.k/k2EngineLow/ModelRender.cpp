@@ -6,6 +6,7 @@ namespace nsK2EngineLow {
 	void ModelRender::Init(const char* tkmFilepath, const wchar_t* lampTextureFIlePath, AnimationClip* animationClips,
 		int numAnimationClips, EnModelUpAxis enModelUpAxis, bool shadow, bool toon,bool outline)
 	{
+		ModelInitData modelInitData;
 		//tkmファイルパスを設定
 		m_modelInitData.m_tkmFilePath = tkmFilepath;
 		//シェーダーのファイルパスを設定
@@ -56,11 +57,14 @@ namespace nsK2EngineLow {
 		//シャドウマップ描画用のモデルの初期化
 		if (shadow == true)
 		{
+			InitModelOnShadowMap(
+				*g_renderingEngine, tkmFilepath, enModelUpAxis
+			);
 			//シャドウマップ描画用の頂点シェーダーを設定する
-			m_modelInitData.m_psEntryPointFunc = "PSShadowMapMain";
-			m_modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32_FLOAT;
-			//シャドウモデルを初期化
-			m_shadowModel.Init(m_modelInitData);
+			//m_modelInitData.m_psEntryPointFunc = "PSShadowMapMain";
+			//m_modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32_FLOAT;
+			////シャドウモデルを初期化
+			//m_shadowModel.Init(m_modelInitData);
 		}
 	}
 
@@ -122,8 +126,13 @@ namespace nsK2EngineLow {
 			isFrontCullingOnDrawShadowMap ? D3D12_CULL_MODE_FRONT : D3D12_CULL_MODE_BACK;
 		// 頂点シェーダーのエントリーポイントをセットアップ。
 		SetupVertexShaderEntryPointFunc(modelInitData);
-		//fxファイル指定。todo このファイル作る！！！
 		modelInitData.m_fxFilePath = "Assets/shader/DrawShadowMap.fx";
+
+		modelInitData.m_colorBufferFormat[0] = g_hardShadowMapFormat.colorBufferFormat;
+
+
+
+
 
 
 		for (int ligNo = 0; ligNo < MAX_DIRECTIONAL_LIGHT; ligNo++)
@@ -133,6 +142,7 @@ namespace nsK2EngineLow {
 			Model* shadowModelArray = m_shadowModels[ligNo];
 			for (int shadowMapNo = 0; shadowMapNo < NUM_SHADOW_MAP; shadowMapNo++)
 			{
+				//m_shadowModels[ligNo][shadowMapNo].Init(modelInitData);
 				shadowModelArray[shadowMapNo].Init(modelInitData);
 			}
 		}
@@ -164,11 +174,12 @@ namespace nsK2EngineLow {
 	//影を受けるモデルの初期化
 	void ModelRender::InitShadow(const char* tkmFilepath)
 	{
-		m_modelInitData.m_tkmFilePath = tkmFilepath;
-		m_modelInitData.m_fxFilePath = "Assets/shader/ShadowReciever.fx";
+		ModelInitData modelInitData;
+		modelInitData.m_tkmFilePath = tkmFilepath;
+		modelInitData.m_fxFilePath = "Assets/shader/ShadowReciever.fx";
 		//モデルの上方向を設定
-		m_modelInitData.m_modelUpAxis = enModelUpAxisZ;
-		m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GatShadowMapTexture();
+		modelInitData.m_modelUpAxis = enModelUpAxisZ;
+		modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GatShadowMapTexture();
 
 		//ライトカメラのビュープロジェクション行列を設定する
 		g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
@@ -178,9 +189,9 @@ namespace nsK2EngineLow {
 		/*m_modelInitData.m_expandConstantBuffer = (void*)&g_renderingEngine->GetLightCamera().GetProjectionMatrix();
 		m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetLightCamera().GetProjectionMatrix());*/
 
-		MakeDirectionData(m_modelInitData);
+		MakeDirectionData(modelInitData);
 
-		m_frowardRenderModel.Init(m_modelInitData);
+		m_frowardRenderModel.Init(modelInitData);
 	}
 
 	void ModelRender::InitSkyCube(ModelInitData& initData)
@@ -221,33 +232,33 @@ namespace nsK2EngineLow {
 			m_renderToGBufferModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 		}
 		//シャドウモデルが初期化されていたら
-		if (m_shadowModel.IsInited())
+	/*	if (m_shadowModel.IsInited())
 		{
 			m_shadowModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+		}*/
+		//シャドウマップ描画モデル
+		//ファイル情報入ってない
+		for (auto& models : m_shadowModels) {
+			for (auto& model : models) {
+				model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+			}
 		}
-		////シャドウマップ描画モデル
-		//for (auto& models : m_shadowModels) {
-		//	for (auto& model : models) {
-		//		model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
-		//	}
-		//}
 	}
 
 	void ModelRender::OnRenderShadowMap(
 		RenderContext& rc, 
-		int ligNo, int shadowMapNo, const Matrix& lvpMatrix)
+		int ligNo, int shadowMapNo, Camera& lightCamera)
 	{
+		Vector4 cameraParam;
+		cameraParam.x = g_camera3D->GetNear();
+		cameraParam.y = g_camera3D->GetFar();
+		m_drawShadowMapCameraParamCB[ligNo][shadowMapNo].CopyToVRAM(cameraParam);
+		m_shadowModels[ligNo][shadowMapNo].Draw(
+			rc,
+			lightCamera
+		);
 		if (m_isShadowCaster) {
-			Vector4 cameraParam;
-			cameraParam.x = g_camera3D->GetNear();
-			cameraParam.y = g_camera3D->GetFar();
-			m_drawShadowMapCameraParamCB[ligNo][shadowMapNo].CopyToVRAM(cameraParam);
-			m_shadowModels[ligNo][shadowMapNo].Draw(
-				rc,
-				g_matIdentity,
-				lvpMatrix,
-				1
-			);
+			
 		}
 	}
 
