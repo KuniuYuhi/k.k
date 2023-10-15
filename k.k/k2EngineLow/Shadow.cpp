@@ -33,7 +33,6 @@ namespace nsK2EngineLow {
 
 	void Shadow::Render(
 		RenderContext& rc,
-		int ligNo,
 		Vector3& lightDirection,
 		std::vector< IRenderer* >& renderObjects
 	)
@@ -49,7 +48,6 @@ namespace nsK2EngineLow {
 			for (auto& renderer : renderObjects) {
 				renderer->OnRenderShadowMap(
 					rc,
-					ligNo,
 					shadowMapNo,
 					m_lightCamera
 				);
