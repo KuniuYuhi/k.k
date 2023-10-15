@@ -3,64 +3,29 @@
 
 namespace nsK2EngineLow {
 
-	void ModelRender::Init(const char* tkmFilepath, const wchar_t* lampTextureFIlePath, AnimationClip* animationClips,
-		int numAnimationClips, EnModelUpAxis enModelUpAxis, bool shadow, bool toon,bool outline)
+	void ModelRender::Init(const char* tkmFilePath, const wchar_t* lampTextureFIlePath, AnimationClip* animationClips,
+		int numAnimationClips, EnModelUpAxis enModelUpAxis, bool isShadowCaster, bool isToon,bool isOutline)
 	{
-		//tkmファイルパスを設定
-		m_modelInitData.m_tkmFilePath = tkmFilepath;
-		//シェーダーのファイルパスを設定
-		m_modelInitData.m_fxFilePath = "Assets/shader/model.fx";
-		//モデルの上方向を設定
-		m_modelInitData.m_modelUpAxis = enModelUpAxis;
-		
 		//スケルトンを初期化
-		InitSkeleton(tkmFilepath);
+		InitSkeleton(tkmFilePath);
 		//アニメーションの初期化
 		InitAnimation(animationClips, numAnimationClips, enModelUpAxis);
 
-		SetupVertexShaderEntryPointFunc(m_modelInitData);
+		//フォワードレンダリング用のモデルを初期化
+		InitModelOnfrowardRender(
+			*g_renderingEngine, tkmFilePath, lampTextureFIlePath, enModelUpAxis, isShadowCaster,isToon,isOutline);
 
 		//GBuffer描画用のモデルを初期化
-		InitModelOnRenderGBuffer(*g_renderingEngine, tkmFilepath, enModelUpAxis, shadow);
+		InitModelOnRenderGBuffer(*g_renderingEngine, tkmFilePath, enModelUpAxis, isShadowCaster);
 		//ZPrepass描画用のモデルを初期化。
-		InitModelOnZprepass(tkmFilepath, enModelUpAxis);
-
-		//トゥーンシェーダーを使用するなら
-		if (toon == true)
-		{
-			//拡張SRVにランプテクスチャを設定する
-			m_lampTextrue.InitFromDDSFile(lampTextureFIlePath);
-			m_modelInitData.m_expandShaderResoruceView[0] = &m_lampTextrue;
-			m_modelInitData.m_psEntryPointFunc = "PSToonMain";
-
-			//UVサンプラをクランプにする
-			//クランプ＝UV座標が１を超えたときに手前の色をサンプリングするようにする
-			m_modelInitData.addressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-			m_modelInitData.addressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-		}
-		//輪郭線を描画するなら
-		if (outline == true)
-		{
-			//輪郭線
-			//拡張SRVにZPrepassで作成された深度テクスチャを設定する
-			m_modelInitData.m_expandShaderResoruceView[2] =
-				&g_renderingEngine->GetZPrepassDepthTexture();
-		}
-		
-		//ライトの情報を作成
-		MakeDirectionData(m_modelInitData);
-
-		//作成した初期化データを元にモデルを初期化する
-		m_frowardRenderModel.Init(m_modelInitData);
+		InitModelOnZprepass(tkmFilePath, enModelUpAxis);
 
 		//シャドウマップ描画用のモデルの初期化
-		if (shadow == true)
+		if (isShadowCaster == true)
 		{
-			//シャドウマップ描画用の頂点シェーダーを設定する
-			m_modelInitData.m_psEntryPointFunc = "PSShadowMapMain";
-			m_modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32_FLOAT;
-			//シャドウモデルを初期化
-			m_shadowModel.Init(m_modelInitData);
+			InitModelOnShadowMap(
+				*g_renderingEngine, tkmFilePath, enModelUpAxis
+			);
 		}
 	}
 
@@ -79,8 +44,60 @@ namespace nsK2EngineLow {
 		m_zprepassModel.Init(modelInitData);
 	}
 
-	void ModelRender::InitModelOnTranslucent(RenderingEngine& renderingEngine, const char* tkmFilePath, EnModelUpAxis enModelUpAxis, bool isShadowReciever)
+	void ModelRender::InitModelOnfrowardRender(
+		RenderingEngine& renderingEngine, 
+		const char* tkmFilePath, 
+		const wchar_t* lampTextureFIlePath,
+		EnModelUpAxis enModelUpAxis, 
+		bool isShadowCaster, bool isToon, bool isOutline)
 	{
+		ModelInitData modelInitData;
+		//tkmファイルパスを設定
+		modelInitData.m_tkmFilePath = tkmFilePath;
+		//シェーダーのファイルパスを設定
+		modelInitData.m_fxFilePath = "Assets/shader/model.fx";
+		//モデルの上方向を設定
+		modelInitData.m_modelUpAxis = enModelUpAxis;
+
+		SetupVertexShaderEntryPointFunc(modelInitData);
+		
+		int expandSRVNo = 0;
+		g_renderingEngine->QueryShadowMapTexture([&](Texture& shadowMap) {
+			//シャドウマップを拡張SRVに設定する
+			modelInitData.m_expandShaderResoruceView[expandSRVNo] = &g_renderingEngine->GatShadowMapTexture();
+			expandSRVNo++;
+			});
+		//トゥーンシェーダーを使用するなら
+		if (isToon == true)
+		{
+			//拡張SRVにランプテクスチャを設定する
+			m_lampTextrue.InitFromDDSFile(lampTextureFIlePath);
+			modelInitData.m_expandShaderResoruceView[expandSRVNo] =
+				&m_lampTextrue;
+			//modelInitData.m_psEntryPointFunc = "PSToonMain";
+			expandSRVNo++;
+			//UVサンプラをクランプにする
+			//クランプ＝UV座標が１を超えたときに手前の色をサンプリングするようにする
+			modelInitData.addressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+			modelInitData.addressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+		}
+		//輪郭線を描画するなら
+		if (isOutline == true)
+		{
+			//輪郭線
+			//拡張SRVにZPrepassで作成された深度テクスチャを設定する
+			modelInitData.m_expandShaderResoruceView[expandSRVNo] =
+				&g_renderingEngine->GetZPrepassDepthTexture();
+			expandSRVNo++;
+		}
+
+		SetupPixelShaderEntryPointFuncToFrowardModel(modelInitData, isShadowCaster, isToon);
+
+		//ライトの情報を作成
+		MakeDirectionData(modelInitData);
+
+		//作成した初期化データを元にモデルを初期化する
+		m_frowardRenderModel.Init(modelInitData);
 	}
 
 	void ModelRender::InitModelOnRenderGBuffer(
@@ -122,19 +139,16 @@ namespace nsK2EngineLow {
 			isFrontCullingOnDrawShadowMap ? D3D12_CULL_MODE_FRONT : D3D12_CULL_MODE_BACK;
 		// 頂点シェーダーのエントリーポイントをセットアップ。
 		SetupVertexShaderEntryPointFunc(modelInitData);
-		//fxファイル指定。todo このファイル作る！！！
 		modelInitData.m_fxFilePath = "Assets/shader/DrawShadowMap.fx";
+		//ハードシャドウ用のカラーバッファーフォーマット
+		modelInitData.m_colorBufferFormat[0] = g_hardShadowMapFormat.colorBufferFormat;
 
-
-		for (int ligNo = 0; ligNo < MAX_DIRECTIONAL_LIGHT; ligNo++)
+		//shadowModelArrayが変わるとm_shadowModelsも変わる
+		ConstantBuffer* cameraParamCBArray = m_drawShadowMapCameraParamCB;
+		Model* shadowModelArray = m_shadowModels;
+		for (int shadowMapNo = 0; shadowMapNo < NUM_SHADOW_MAP; shadowMapNo++)
 		{
-			//shadowModelArrayが変わるとm_shadowModelsも変わる
-			ConstantBuffer* cameraParamCBArray = m_drawShadowMapCameraParamCB[ligNo];
-			Model* shadowModelArray = m_shadowModels[ligNo];
-			for (int shadowMapNo = 0; shadowMapNo < NUM_SHADOW_MAP; shadowMapNo++)
-			{
-				shadowModelArray[shadowMapNo].Init(modelInitData);
-			}
+			shadowModelArray[shadowMapNo].Init(modelInitData);
 		}
 	}
 
@@ -152,6 +166,29 @@ namespace nsK2EngineLow {
 		}
 	}
 
+	void ModelRender::SetupPixelShaderEntryPointFuncToFrowardModel(
+		ModelInitData& modelInitData, bool isShadowCaster, bool isToon)
+	{
+		//シャドウキャスターかつトゥーンシェーディングするなら
+		if (isShadowCaster == true&& isToon == true)
+		{
+			modelInitData.m_psEntryPointFunc = "PSShadowCasterToonMain";
+		}
+		else if(isShadowCaster)
+		{
+			modelInitData.m_psEntryPointFunc = "PSShadowCasterMain";
+		}
+		else if(isToon)
+		{
+			modelInitData.m_psEntryPointFunc = "PSToonMain";
+		}
+		else
+		{
+			modelInitData.m_psEntryPointFunc = "PSMain";
+		}
+		
+	}
+
 	//使ってない
 	//引数のモデルをフォワードレンダリングの描画パスで描画
 	void ModelRender::InitForwardRendering(RenderingEngine& renderingEngine, ModelInitData& modelInitData)
@@ -159,28 +196,6 @@ namespace nsK2EngineLow {
 		m_frowardRenderModel.Init(modelInitData);
 
 		InitCommon(renderingEngine, modelInitData.m_fxFilePath);
-	}
-
-	//影を受けるモデルの初期化
-	void ModelRender::InitShadow(const char* tkmFilepath)
-	{
-		m_modelInitData.m_tkmFilePath = tkmFilepath;
-		m_modelInitData.m_fxFilePath = "Assets/shader/ShadowReciever.fx";
-		//モデルの上方向を設定
-		m_modelInitData.m_modelUpAxis = enModelUpAxisZ;
-		m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GatShadowMapTexture();
-
-		//ライトカメラのビュープロジェクション行列を設定する
-		g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
-
-		InitModelOnRenderGBuffer(*g_renderingEngine, tkmFilepath, enModelUpAxisZ, true);
-
-		/*m_modelInitData.m_expandConstantBuffer = (void*)&g_renderingEngine->GetLightCamera().GetProjectionMatrix();
-		m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetLightCamera().GetProjectionMatrix());*/
-
-		MakeDirectionData(m_modelInitData);
-
-		m_frowardRenderModel.Init(m_modelInitData);
 	}
 
 	void ModelRender::InitSkyCube(ModelInitData& initData)
@@ -196,6 +211,9 @@ namespace nsK2EngineLow {
 	{
 		//各種モデルのワールド座標を更新
 		UpdateWorldMatrixInModes();
+
+		//ライトカメラのビュープロジェクション行列を設定する
+		//g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
 
 		//スケルトンが初期化されていたら
 		if (m_skeleton.IsInited())
@@ -220,34 +238,27 @@ namespace nsK2EngineLow {
 		{
 			m_renderToGBufferModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 		}
-		//シャドウモデルが初期化されていたら
-		if (m_shadowModel.IsInited())
-		{
-			m_shadowModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+		//シャドウマップ描画モデル
+		//ファイル情報入ってない
+		for (auto& model : m_shadowModels) {
+			model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 		}
-		////シャドウマップ描画モデル
-		//for (auto& models : m_shadowModels) {
-		//	for (auto& model : models) {
-		//		model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
-		//	}
-		//}
 	}
 
 	void ModelRender::OnRenderShadowMap(
 		RenderContext& rc, 
-		int ligNo, int shadowMapNo, const Matrix& lvpMatrix)
+		int shadowMapNo, Camera& lightCamera)
 	{
+		Vector4 cameraParam;
+		cameraParam.x = g_camera3D->GetNear();
+		cameraParam.y = g_camera3D->GetFar();
+		m_drawShadowMapCameraParamCB[shadowMapNo].CopyToVRAM(cameraParam);
+		m_shadowModels[shadowMapNo].Draw(
+			rc,
+			lightCamera
+		);
 		if (m_isShadowCaster) {
-			Vector4 cameraParam;
-			cameraParam.x = g_camera3D->GetNear();
-			cameraParam.y = g_camera3D->GetFar();
-			m_drawShadowMapCameraParamCB[ligNo][shadowMapNo].CopyToVRAM(cameraParam);
-			m_shadowModels[ligNo][shadowMapNo].Draw(
-				rc,
-				g_matIdentity,
-				lvpMatrix,
-				1
-			);
+			
 		}
 	}
 

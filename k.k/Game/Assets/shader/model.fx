@@ -16,12 +16,23 @@ struct SPSIn{
 	float3 normalInView :TEXCOORD2;		//カメラ空間の法線
 	float4 posInProj : TEXCOORD3;		//スクリーン座標
 	float3 depth : TEXCOORD4;
+	float4 posInLVP : TEXCOORD5; //ライトビュースクリーン空間でのピクセルの座標
 };
 
 ///////////////////////////////////////
 // 頂点シェーダーの共通処理をインクルードする。
 ///////////////////////////////////////
 #include "ModelVSCommon.h"
+
+///////////////////////////////////////
+// シェーダーリソース
+///////////////////////////////////////
+#include "Model_srv_uav_register.h"
+
+///////////////////////////////////////
+// シャドウイング。サンプラステートの宣言
+///////////////////////////////////////
+#include "Shadowing.h"
 
 //ディレクションライト構造体
 struct DirectionLight
@@ -65,25 +76,14 @@ struct HemiSphereLight
 
 //ライトの定数バッファー
 cbuffer LightCB:register(b1){
-	DirectionLight directionLight;      //ディレクションライト
-	PointLight pointLight;				//ポイントライト
-	SpotLight spotLight;				//スポットライト
-	HemiSphereLight hemiSphereLight;	//半球ライト
-	float3 ambient;			//環境光
-	float3 eyepos;			//視点の位置
+	DirectionLight		directionLight;      //ディレクションライト
+	PointLight			pointLight;			//ポイントライト
+	SpotLight			spotLight;			//スポットライト
+	HemiSphereLight		hemiSphereLight;	//半球ライト
+	float3				ambient;			//環境光
+	float3				eyepos;				//視点の位置
+	float4x4			mLVP;				//ライトビュープロジェクション行列
 }
-
-
-////////////////////////////////////////////////
-// グローバル変数。
-////////////////////////////////////////////////
-Texture2D<float4> g_albedo : register(t0);				//アルベドマップ
-Texture2D<float4>g_normalMap : register(t1);			//法線マップ
-Texture2D<float4>g_specularMap : register(t2);			//スペキュラマップ
-
-Texture2D<float4>g_toonMap : register(t10);				//トゥーンマップ
-Texture2D<float4>g_depthTexture : register(t12);		//深度テクスチャにアクセス
-sampler g_sampler : register(s0);	//サンプラステート。
 
 ////////////////////////////////////////////////
 // 関数定義。
@@ -105,17 +105,14 @@ SPSIn VSMainCore(
 	SVSIn vsIn, float4x4 mWorldLocal, 
 	uniform bool isUsePreComputedVertexBuffer)
 {
-	SPSIn psIn;
-	float4x4 m;
+	SPSIn psIn = (SPSIn)0;
+	//float4x4 m;
 	 // 頂点座標をワールド座標系に変換する。
     psIn.pos = CalcVertexPositionInWorldSpace(vsIn.pos, mWorldLocal, isUsePreComputedVertexBuffer);
-
+	float4 worldPos = psIn.pos;
 	psIn.worldPos = psIn.pos;
 	psIn.pos = mul(mView, psIn.pos);
 	psIn.pos = mul(mProj, psIn.pos);
-	//法線
-	//psIn.normal=mul(m,vsIn.normal);
-	//psIn.normal=normalize(psIn.normal);
 
 	// ワールド空間の法線、接ベクトル、従ベクトルを計算する。
 	CalcVertexNormalTangentBiNormalInWorldSpace(
@@ -131,9 +128,6 @@ SPSIn VSMainCore(
 
 	//カメラ空間の法線を求める
 	psIn.normalInView=mul(mView,psIn.normal);
-	//接ベクトルと従ベクトルをワールド空間に変換する
-	//psIn.tangent=normalize(mul(mWorld,vsIn.tangent));
-	//psIn.biNormal=normalize(mul(mWorld,vsIn.biNormal));
 
 	psIn.uv = vsIn.uv;
 
@@ -147,38 +141,38 @@ SPSIn VSMainCore(
 /// <summary>
 /// ピクセルシェーダーのエントリー関数。
 /// </summary>
-float4 PSMain( SPSIn psIn ) : SV_Target0
+float4 PSMainCore( SPSIn psIn ,int isToon, int isShadowCaster) : SV_Target0
 {
 	//法線マップを計算
-	float3 normal=CalcNormalMap(psIn);
+	float3 normal = CalcNormalMap(psIn);
 
 	//ディレクションライトによるライティングの計算
-	float3 directionLig=CalcLigFromDrectionLight(psIn,normal);
+	float3 directionLig = CalcLigFromDrectionLight(psIn, normal);
 	
 	//ポイントライトによるライティングの計算
-	float3 pointLig={0.0f,0.0f,0.0f};
-	if(pointLight.isUse==true)
+	float3 pointLig = { 0.0f, 0.0f, 0.0f };
+	if (pointLight.isUse == true)
 	{
-		pointLig=CalcLigFromPointLight(psIn,normal);
+		pointLig = CalcLigFromPointLight(psIn, normal);
 	}
 
 	//スポットライトによるライティングの計算
-	float3 spotLig={0.0f,0.0f,0.0f};
-	if(spotLight.isUse==true)
+	float3 spotLig = { 0.0f, 0.0f, 0.0f };
+	if (spotLight.isUse == true)
 	{
-		spotLig=CalcLigFromSpotLight(psIn,normal);
+		spotLig = CalcLigFromSpotLight(psIn, normal);
 	}
 
 	//半球ライトによるライティングの計算
-	float3 hemiLig={0.0f,0.0f,0.0f};
-	if(hemiSphereLight.isUse==true)
+	float3 hemiLig = { 0.0f, 0.0f, 0.0f };
+	if (hemiSphereLight.isUse == true)
 	{
-		hemiLig=CalcLigFromhemiSphereLight(psIn);
+		hemiLig = CalcLigFromhemiSphereLight(psIn);
 	}
 
 	//ディレクションライトと環境光をたす				
 	float3 lig = directionLig + pointLig + spotLig + hemiLig + ambient;
-
+	//アルベドカラーをサンプリング
 	float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
 
 	albedoColor.xyz*=lig;
@@ -186,65 +180,27 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 	//輪郭線の計算
 	albedoColor=CalcOutLine(psIn,albedoColor);
 
-
-	return albedoColor;
-}
-
-//トゥーンマップのピクセルシェーダー
-float4 PSToonMain(SPSIn psIn) : SV_Target0
-{
-	//法線マップを計算
-	float3 normal=CalcNormalMap(psIn);
-
-	//ディレクションライトによるライティングの計算
-	float3 directionLig=CalcLigFromDrectionLight(psIn,normal);
+	//トゥーン調にするか
+	if(isToon)
+	{
+		//トゥーンマップの計算。ディレクションライトのみ
+		float4 Toon=CalcToonMap(psIn,directionLight.direction);
+		albedoColor*=Toon;
+	}
 	
-	//ポイントライトによるライティングの計算
-	float3 pointLig={0.0f,0.0f,0.0f};
-	if(pointLight.isUse==true)
-	{
-		pointLig=CalcLigFromPointLight(psIn,normal);
-	}
+	//シャドウキャスターなら
+    if (!isShadowCaster)
+    {
+        float shadow = 0.0f;
+		//自身に影を生成
+        shadow = CalcShadowRate(
+		g_shadowMap, mLVP, psIn.worldPos, 0
+	);
 
-	//スポットライトによるライティングの計算
-	float3 spotLig={0.0f,0.0f,0.0f};
-	if(spotLight.isUse==true)
-	{
-		spotLig=CalcLigFromSpotLight(psIn,normal);
-	}
-
-	//半球ライトによるライティングの計算
-	float3 hemiLig={0.0f,0.0f,0.0f};
-	if(hemiSphereLight.isUse==true)
-	{
-		hemiLig=CalcLigFromhemiSphereLight(psIn);
-	}
-
-	//ディレクションライトと環境光をたす				
-	float3 lig = directionLig + pointLig + spotLig + hemiLig + ambient;
-
-	float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
-
-	albedoColor.xyz*=lig;
-
-	//トゥーンマップの計算。ディレクションライトのみ
-	float4 Toon=CalcToonMap(psIn,directionLight.direction);
-	albedoColor*=Toon;
-
-	//輪郭線の計算
-	albedoColor=CalcOutLine(psIn,albedoColor);
-
-
+        albedoColor.xyz *= (1.0f - shadow);
+    }
+	
 	return albedoColor;
-}
-
-/// <summary>
-/// シャドウマップ描画用のピクセルシェーダー
-/// </summary>
-float4 PSShadowMapMain(SPSIn psIn) : SV_Target0
-{
-    //シャドウマップにZ値を書き込む
-    return float4(psIn.pos.z, psIn.pos.z, psIn.pos.z, 1.0f);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -535,4 +491,28 @@ float4 CalcOutLine(SPSIn psIn,float4 color)
 
 
 	return color;
+}
+
+//普通のピクセルシェーダーの処理
+float4 PSMain(SPSIn psIn) : SV_Target0
+{
+	return PSMainCore(psIn,0, 0);
+}
+
+//シャドウキャスター用のピクセルシェーダーの処理
+float4 PSShadowCasterMain(SPSIn psIn) : SV_Target0
+{
+    return PSMainCore(psIn, 0, 1);
+}
+
+//普通のトゥーンシェーディングのピクセルシェーダーの処理
+float4 PSToonMain(SPSIn psIn) : SV_Target0
+{
+	return PSMainCore(psIn,1, 0);
+}
+
+//シャドウキャスター用のトゥーンシェーディングのピクセルシェーダーの処理
+float4 PSShadowCasterToonMain(SPSIn psIn) : SV_Target0
+{
+    return PSMainCore(psIn, 0, 1);
 }

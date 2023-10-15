@@ -4,8 +4,7 @@
 
 namespace nsK2EngineLow {
 
-	const int MAM_DIRECTIONAL_LIGHT = 4;   //ディレクションライトの最大数
-
+	
 	/// <summary>
 	/// ディレクションライト構造体
 	/// </summary>
@@ -75,7 +74,7 @@ namespace nsK2EngineLow {
 		float				pad1;					//パティング１
 		Vector3				cameraEyePos;			//カメラの座標
 		float				pad2;
-		Matrix				mLVP;					//ライトビュープロジェクション行列
+		Matrix				mLVP[NUM_SHADOW_MAP];					//ライトビュープロジェクション行列
 	};
 
 
@@ -94,7 +93,11 @@ namespace nsK2EngineLow {
 		/// <param name="LVP">ライトビュープロジェクション行列</param>
 		void SetmLVP(Matrix LVP)
 		{
-			m_light.mLVP = LVP;
+			for (int mapNo = 0; mapNo < NUM_SHADOW_MAP; mapNo++)
+			{
+				m_light.mLVP[mapNo] = LVP;
+			}
+			
 		}
 		//////////////////////////////////////////////////////////////////////
 		///ディレクションライトの関数

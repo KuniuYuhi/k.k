@@ -5,28 +5,45 @@ namespace nsK2EngineLow {
 	{
 	public:
 		void Init();
-		void Render(RenderContext& rc);
+		//void Render(RenderContext& rc);
 
-		/*void Render(
+		void Render(
 			RenderContext& rc,
-			int ligNo,
 			Vector3& lightDirection,
-			std::vector< IRenderer* >& renderObjects,
-			const Vector3& sceneMaxPosition,
-			const Vector3& sceneMinPosition
-		);*/
+			std::vector< IRenderer* >& renderObjects
+		);
 
 		void ShadowSpriteRender(RenderContext& rc);
 
 		Texture& GetShadowMapTextrue()
 		{
-			return m_shadowMap.GetRenderTargetTexture();
+			return m_shadowMaps[0].GetRenderTargetTexture();
+
+			//return m_shadowMap.GetRenderTargetTexture();
+		}
+
+		/// <summary>
+		/// シャドウマップを取得
+		/// </summary>
+		/// <param name="areaNo">エリア番号</param>
+		/// <returns></returns>
+		Texture& GetShadowMap(int areaNo)
+		{
+			/*if (m_isSoftShadow) {
+				return m_blur[areaNo].GetBokeTexture();
+			}*/
+			return m_shadowMaps[areaNo].GetRenderTargetTexture();
 		}
 
 		Camera& GetLightCamera()
 		{
 			return m_lightCamera;
 		}
+		/// <summary>
+		/// ライトの座標更新
+		/// </summary>
+		void UpDateLightCamera();
+
 
 	private:
 		/// <summary>
@@ -44,10 +61,7 @@ namespace nsK2EngineLow {
 		/// </summary>
 		void InitShadowSprite();
 
-		/// <summary>
-		/// ライトの座標更新
-		/// </summary>
-		void UpDateLightCamera();
+		
 
 		RenderTarget& GetShadowMap()
 		{
@@ -56,9 +70,10 @@ namespace nsK2EngineLow {
 
 	private:
 		RenderTarget m_shadowMap;
+		RenderTarget m_shadowMaps[NUM_SHADOW_MAP];          // シャドウマップ
 		Camera m_lightCamera;
 
-		Vector3 m_lightCameraPosition = Vector3(0.0f, 1200.0f, 0.0f);	//カメラの座標(座標からターゲットに向かって影が落とされる)
+		Vector3 m_lightCameraPosition = Vector3(500.0f, 1200.0f, 0.0f);	//カメラの座標(座標からターゲットに向かって影が落とされる)
 		std::vector< IRenderer* > m_renderers;              // シャドウマップへのレンダラーの配列。
 		Sprite shadowSprite;
 

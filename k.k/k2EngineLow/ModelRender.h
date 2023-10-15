@@ -22,14 +22,14 @@ namespace nsK2EngineLow {
 		/// <param name="numAnimationClips">アニメーションクリップの数</param>
 		/// <param name="enModelUpAxis">モデルの上方向</param>
 		void Init(
-			const char* tkmFilepath, 
+			const char* tkmFilePath,
 			const wchar_t* lampTextureFIlePath,
 			AnimationClip* animationClips = nullptr, 
 			int numAnimationClips=0,
 			EnModelUpAxis enModelUpAxis = enModelUpAxisZ,
-			bool shadow=true,
-			bool toon=true,
-			bool outline=true
+			bool isShadowCaster = true,
+			bool isToon = true,
+			bool isOutline = true
 		);
 
 		/// <summary>
@@ -42,14 +42,6 @@ namespace nsK2EngineLow {
 	   /// <param name="renderingEngine">レンダリングエンジン</param>
 	   /// <param name="modelInitData"></param>
 		void InitForwardRendering(RenderingEngine& renderingEngine, ModelInitData& modelInitData);
-
-		/// <summary>
-		/// 影を受けるモデルの初期化
-		/// </summary>
-		/// <param name="tkmFilepath">tkmファイルパス</param>
-		void InitShadow(
-			const char* tkmFilepath
-		);
 
 		/// <summary>
 		/// スカイキューブを初期化する
@@ -271,9 +263,9 @@ namespace nsK2EngineLow {
 		/// <param name="lvpMatrix">ライトビュープロジェクション行列</param>
 		void OnRenderShadowMap(
 			RenderContext& rc,
-			int ligNo,
 			int shadowMapNo,
-			const Matrix& lvpMatrix) override;
+			Camera& lightCamera
+		) override;
 		
 
 		/// <summary>
@@ -311,11 +303,12 @@ namespace nsK2EngineLow {
 		/// <param name="tkmFilePath"></param>
 		/// <param name="enModelUpAxis"></param>
 		/// <param name="isShadowReciever"></param>
-		void InitModelOnTranslucent(
+		void InitModelOnfrowardRender(
 			RenderingEngine& renderingEngine,
 			const char* tkmFilePath,
+			const wchar_t* lampTextureFIlePath,
 			EnModelUpAxis enModelUpAxis,
-			bool isShadowReciever
+			bool isShadowCaster, bool isToon, bool isOutline
 		);
 		/// <summary>
 		/// GBuffer描画用のモデルを初期化。
@@ -337,7 +330,7 @@ namespace nsK2EngineLow {
 			RenderingEngine& renderingEngine,
 			const char* tkmFilePath,
 			EnModelUpAxis modelUpAxis,
-			bool isFrontCullingOnDrawShadowMap
+			bool isFrontCullingOnDrawShadowMap=false
 		);
 
 
@@ -345,7 +338,17 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// 各種モデルの頂点シェーダーのエントリーポイントを設定。
 		/// </summary>
-		void SetupVertexShaderEntryPointFunc(ModelInitData& modelInitData);
+		void SetupVertexShaderEntryPointFunc(
+			ModelInitData& modelInitData);
+
+		/// <summary>
+		/// フォワードレンダリング用モデルのピクセルシェーダーのエントリーポイントを設定。
+		/// </summary>
+		void SetupPixelShaderEntryPointFuncToFrowardModel(
+			ModelInitData& modelInitData,
+			bool isShadowCaster,
+			bool isToon
+		);
 
 		/// <summary>
 	   /// 共通の初期化処理(今はデファードレンダリングのみ)
@@ -375,8 +378,8 @@ namespace nsK2EngineLow {
 		Texture						m_lampTextrue;							//ランプテクスチャ
 
 
-		Model						m_shadowModels[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP];	// シャドウマップに描画するモデル
-		ConstantBuffer				m_drawShadowMapCameraParamCB[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP];// シャドウマップ作成時に必要なカメラパラメータ用の定数バッファ。
+		Model						m_shadowModels[NUM_SHADOW_MAP];	// シャドウマップに描画するモデル
+		ConstantBuffer				m_drawShadowMapCameraParamCB[NUM_SHADOW_MAP];// シャドウマップ作成時に必要なカメラパラメータ用の定数バッファ。
 		bool						m_isShadowCaster = true;			// シャドウキャスターフラグ
 
 

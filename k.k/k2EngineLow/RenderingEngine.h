@@ -18,7 +18,7 @@ namespace nsK2EngineLow {
 		struct SDeferredLightingCB
 		{
 			Light m_light;              // ライト
-			Matrix mlvp[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP]; // ライトビュープロジェクション行列。
+			Matrix mlvp[NUM_SHADOW_MAP]; // ライトビュープロジェクション行列。
 			float m_iblLuminance;       // IBLの明るさ。
 			int m_isIBL;                // IBLを行う。
 			int m_isEnableRaytracing;   // レイトレが行われている。
@@ -192,23 +192,20 @@ namespace nsK2EngineLow {
 		/// <returns>シャドウマップのテクスチャ</returns>
 		Texture& GatShadowMapTexture()
 		{
-			return m_shadow.GetShadowMapTextrue();
+			return m_shadowMapRenders.GetShadowMapTextrue();
 		}
 
 		/// <summary>
 		/// シャドウマップテクスチャにクエリを行う。
 		/// </summary>
 		/// <param name="queryFunc">クエリ関数</param>
-		/*void QueryShadowMapTexture(std::function< void(Texture& shadowMap) > queryFunc)
+		void QueryShadowMapTexture(std::function< void(Texture& shadowMap) > queryFunc)
 		{
-			for (int i = 0; i < MAX_DIRECTIONAL_LIGHT; i++)
+			for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
 			{
-				for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
-				{
-					queryFunc(m_shadowMapRenders[i].GetShadowMap());
-				}
+				queryFunc(m_shadowMapRenders.GetShadowMap(areaNo));
 			}
-		}*/
+		}
 
 		/// <summary>
 		/// ライトカメラを取得
@@ -216,7 +213,15 @@ namespace nsK2EngineLow {
 		/// <returns>ライトカメラ</returns>
 		Camera& GetLightCamera()
 		{
-			return m_shadow.GetLightCamera();
+			return m_shadowMapRenders.GetLightCamera();
+		}
+
+		/// <summary>
+		/// ライトカメラの更新
+		/// </summary>
+		void LightCameraUpDate()
+		{
+			m_shadowMapRenders.UpDateLightCamera();
 		}
 
 		/////////////////////////////////////////////////////
@@ -689,9 +694,14 @@ namespace nsK2EngineLow {
 		void Render2D(RenderContext& rc);
 
 		/// <summary>
-	   /// ZPrepass用のレンダリングターゲットを初期化
-	   /// </summary>
+		/// ZPrepass用のレンダリングターゲットを初期化
+		/// </summary>
 		void InitZPrepassRenderTarget();
+
+		/// <summary>
+		/// シャドウマップへの描画処理を初期化
+		/// </summary>
+		void InitShadowMapRender();
 
 		std::vector<ModelRender*>		m_modelList;	//モデルリスト
 		std::vector<SpriteRender*>		m_spriteList;	//スプライトリスト
@@ -707,8 +717,7 @@ namespace nsK2EngineLow {
 		Sprite m_diferredLightingSprite;                                // ディファードライティングを行うためのスプライト
 		RenderTarget					m_mainRenderTarget;	//レンダリングターゲット
 		PostEffect						m_postEffect;		//ポストエフェクト
-		Shadow							m_shadow;
-		Shadow							m_shadowMapRenders[MAX_DIRECTIONAL_LIGHT];
+		Shadow							m_shadowMapRenders;
 		Texture							m_toontexture;
 		RenderTarget					m_gBuffer[enGBufferNum];
 		std::vector< IRenderer* > m_renderObjects;                      // 描画オブジェクトのリスト。
