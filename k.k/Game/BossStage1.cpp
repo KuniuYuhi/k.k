@@ -22,7 +22,8 @@ bool BossStage1::Start()
 		{
 			if (objData.EqualObjectName(L"grass") == true) {
 				//’n–Ê
-				backGround.InitShadow("Assets/modelData/BackGround/ground.tkm");
+				backGround.Init("Assets/modelData/BackGround/ground.tkm", 0, 0, 0, enModelUpAxisZ, false,false,false);
+				//backGround.InitShadow("Assets/modelData/BackGround/ground.tkm");
 				backGround.SetPosition(objData.position);
 				backGround.SetRotation(objData.rotation);
 				backGround.SetScale(objData.scale);
@@ -35,7 +36,8 @@ bool BossStage1::Start()
 				BGPhysicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Ground);
 
 				//•Ç
-				m_wall.InitShadow("Assets/modelData/BackGround/wall2.tkm");
+				m_wall.Init("Assets/modelData/BackGround/wall2.tkm", 0, 0, 0, enModelUpAxisZ, false, false,false);
+				//m_wall.InitShadow("Assets/modelData/BackGround/wall2.tkm");
 				m_wall.SetPosition(objData.position);
 				m_wall.SetRotation(objData.rotation);
 				m_wall.SetScale(objData.scale);
