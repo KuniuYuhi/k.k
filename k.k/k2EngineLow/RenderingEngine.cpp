@@ -165,20 +165,11 @@ namespace nsK2EngineLow {
 	void RenderingEngine::RenderToShadowMap(RenderContext& rc)
 	{
 		BeginGPUEvent("RenderToShadowMap");
-		//m_shadow.Render(rc);
-		int ligNo = 0;
-		//中身がなくなる
-		for (auto& shadowMapRender : m_shadowMapRenders)
-		{
-			shadowMapRender.Render(
-				rc,
-				ligNo,
-				m_deferredLightingCB.m_light.directionalLight.lightDirection,
-				m_renderObjects
-			);
-			
-			ligNo++;
-		}
+		m_shadowMapRenders.Render(
+			rc,
+			m_deferredLightingCB.m_light.directionalLight.lightDirection,
+			m_renderObjects
+		);
 		EndGPUEvent();
 	}
 
@@ -278,9 +269,7 @@ namespace nsK2EngineLow {
 	{
 		//m_shadow.Init();
 		//シャドウマップ描画用のレンダリングターゲット初期化
-		for (auto& shadowMapRender : m_shadowMapRenders) {
-			shadowMapRender.Init();
-		}
+		m_shadowMapRenders.Init();
 
 	}
 
@@ -293,13 +282,16 @@ namespace nsK2EngineLow {
 		//ポストエフェクト
 		//メインレンダリングターゲットの絵をフレームバッファーにコピー
 
-		//視点の位置を設定する
+		//視点の位置を設定する	
 		SetEyePos(g_camera3D->GetPosition());
 
 		//シャドウマップ描画用のモデルを描画
 		RenderToShadowMap(rc);
+
+		LightCameraUpDate();
 		//ライトビュープロジェクション行列を設定
-		SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
+		SetmLVP(GetLightCamera().GetViewProjectionMatrix());
+
 		//ZPrepassモデルを描画
 		ZPrepass(rc);
 		//Gbuffer
