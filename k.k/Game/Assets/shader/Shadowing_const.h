@@ -1,9 +1,9 @@
-//ƒVƒƒƒhƒEƒCƒ“ƒOŠÖŒW‚Ì’è”‚ð‚Ü‚Æ‚ß‚½ƒwƒbƒ_[ƒtƒ@ƒCƒ‹B
+//ï¿½Vï¿½ï¿½ï¿½hï¿½Eï¿½Cï¿½ï¿½ï¿½Oï¿½ÖŒWï¿½Ì’è”ï¿½ï¿½ï¿½Ü‚Æ‚ß‚ï¿½ï¿½wï¿½bï¿½_ï¿½[ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½B
 
 #ifndef _SHADOWING_CONST_H_
 #define _SHADOWING_CONST_H_
 
-static const int NUM_SHADW_MAP = 1;//ƒJƒXƒP[ƒhƒVƒƒƒhƒE‚È‚ç3–‡
-static const int NUM_DIRECTIONAL_LIGHT = 1;     // ƒfƒBƒŒƒNƒVƒ‡ƒ“ƒ‰ƒCƒg‚Ì–{”
+static const int NUM_SHADOW_MAP = 1;//ï¿½Jï¿½Xï¿½Pï¿½[ï¿½hï¿½Vï¿½ï¿½ï¿½hï¿½Eï¿½È‚ï¿½3ï¿½ï¿½
+static const int NUM_DIRECTIONAL_LIGHT = 1;     // ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½gï¿½Ì–{ï¿½ï¿½
 
 #endif // !_SHADOWING_CONST_H_
