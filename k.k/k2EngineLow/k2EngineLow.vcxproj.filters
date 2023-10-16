@@ -240,6 +240,7 @@
     <ClCompile Include="CollisionObject.cpp" />
     <ClCompile Include="SkyCube.cpp" />
     <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="CascadeShadowMapMatrix.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="k2EngineLowPreCompile.h" />
@@ -531,6 +532,7 @@
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="IRenderer.h" />
     <ClInclude Include="MyRenderer.h" />
+    <ClInclude Include="CascadeShadowMapMatrix.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphics">
