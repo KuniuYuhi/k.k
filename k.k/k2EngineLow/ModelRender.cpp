@@ -19,14 +19,10 @@ namespace nsK2EngineLow {
 		InitModelOnRenderGBuffer(*g_renderingEngine, tkmFilePath, enModelUpAxis, isShadowCaster);
 		//ZPrepass描画用のモデルを初期化。
 		InitModelOnZprepass(tkmFilePath, enModelUpAxis);
-
 		//シャドウマップ描画用のモデルの初期化
-		if (isShadowCaster == true)
-		{
-			InitModelOnShadowMap(
-				*g_renderingEngine, tkmFilePath, enModelUpAxis
-			);
-		}
+		InitModelOnShadowMap(
+			*g_renderingEngine, tkmFilePath, enModelUpAxis
+		);
 	}
 
 	//ZPrepassモデルの初期化
@@ -64,7 +60,7 @@ namespace nsK2EngineLow {
 		int expandSRVNo = 0;
 		g_renderingEngine->QueryShadowMapTexture([&](Texture& shadowMap) {
 			//シャドウマップを拡張SRVに設定する
-			modelInitData.m_expandShaderResoruceView[expandSRVNo] = &g_renderingEngine->GatShadowMapTexture();
+			modelInitData.m_expandShaderResoruceView[expandSRVNo] = &shadowMap;
 			expandSRVNo++;
 			});
 		//トゥーンシェーダーを使用するなら
@@ -74,7 +70,6 @@ namespace nsK2EngineLow {
 			m_lampTextrue.InitFromDDSFile(lampTextureFIlePath);
 			modelInitData.m_expandShaderResoruceView[expandSRVNo] =
 				&m_lampTextrue;
-			//modelInitData.m_psEntryPointFunc = "PSToonMain";
 			expandSRVNo++;
 			//UVサンプラをクランプにする
 			//クランプ＝UV座標が１を超えたときに手前の色をサンプリングするようにする

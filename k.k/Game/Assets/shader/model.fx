@@ -191,11 +191,13 @@ float4 PSMainCore( SPSIn psIn ,int isToon, int isShadowCaster) : SV_Target0
 	//シャドウキャスターなら
     if (!isShadowCaster)
     {
+		//影生成用のパラメータ。
+    	float shadowParam = 1.0f;
         float shadow = 0.0f;
 		//自身に影を生成
         shadow = CalcShadowRate(
 		g_shadowMap, mLVP, psIn.worldPos, 0
-	);
+		)*shadowParam;
 
         albedoColor.xyz *= (1.0f - shadow);
     }
@@ -443,7 +445,7 @@ float4 CalcToonMap(SPSIn psIn,float3 lightDirection)
 	//ｐが0.3から0.7以内の値ならグラデーションになるようにする。
 	//0が黒
 	//1が白
-	p = saturate(smoothstep(0.3, 0.45, p));
+	p = saturate(smoothstep(0.3, 0.35, p));
 	//ランプテクスチャからサンプリング
 	float4 Color=g_toonMap.Sample(g_sampler,float2(p,0.5f));
 
@@ -514,5 +516,5 @@ float4 PSToonMain(SPSIn psIn) : SV_Target0
 //シャドウキャスター用のトゥーンシェーディングのピクセルシェーダーの処理
 float4 PSShadowCasterToonMain(SPSIn psIn) : SV_Target0
 {
-    return PSMainCore(psIn, 0, 1);
+    return PSMainCore(psIn, 1, 1);
 }

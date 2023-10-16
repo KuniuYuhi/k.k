@@ -29,6 +29,7 @@ namespace nsK2EngineLow {
 		/// <returns></returns>
 		Texture& GetShadowMap(int areaNo)
 		{
+			return m_blur[areaNo].GetBokeTexture();
 			/*if (m_isSoftShadow) {
 				return m_blur[areaNo].GetBokeTexture();
 			}*/
@@ -70,7 +71,8 @@ namespace nsK2EngineLow {
 
 	private:
 		RenderTarget m_shadowMap;
-		RenderTarget m_shadowMaps[NUM_SHADOW_MAP];          // シャドウマップ
+		RenderTarget m_shadowMaps[NUM_SHADOW_MAP];		//シャドウマップ
+		GaussianBlur m_blur[NUM_SHADOW_MAP];			//シャドウマップにブラーをかける処理
 		Camera m_lightCamera;
 
 		Vector3 m_lightCameraPosition = Vector3(500.0f, 1200.0f, 0.0f);	//カメラの座標(座標からターゲットに向かって影が落とされる)
