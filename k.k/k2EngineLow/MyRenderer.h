@@ -28,7 +28,7 @@ namespace nsK2EngineLow {
 
 	// ハードシャドウ用のシャドウマップのフォーマット。
 	const RenderTargetFormat g_hardShadowMapFormat = {
-		DXGI_FORMAT_R32_FLOAT,		// カラーバッファ
+		DXGI_FORMAT_R32G32_FLOAT,		// カラーバッファ
 		DXGI_FORMAT_D32_FLOAT		// 深度バッファ。
 	};
 }
