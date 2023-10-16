@@ -58,11 +58,6 @@ namespace nsK2EngineLow {
 		SetupVertexShaderEntryPointFunc(modelInitData);
 		
 		int expandSRVNo = 0;
-		g_renderingEngine->QueryShadowMapTexture([&](Texture& shadowMap) {
-			//シャドウマップを拡張SRVに設定する
-			modelInitData.m_expandShaderResoruceView[expandSRVNo] = &shadowMap;
-			expandSRVNo++;
-			});
 		//トゥーンシェーダーを使用するなら
 		if (isToon == true)
 		{
@@ -70,12 +65,12 @@ namespace nsK2EngineLow {
 			m_lampTextrue.InitFromDDSFile(lampTextureFIlePath);
 			modelInitData.m_expandShaderResoruceView[expandSRVNo] =
 				&m_lampTextrue;
-			expandSRVNo++;
 			//UVサンプラをクランプにする
 			//クランプ＝UV座標が１を超えたときに手前の色をサンプリングするようにする
 			modelInitData.addressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 			modelInitData.addressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 		}
+		expandSRVNo++;
 		//輪郭線を描画するなら
 		if (isOutline == true)
 		{
@@ -83,9 +78,14 @@ namespace nsK2EngineLow {
 			//拡張SRVにZPrepassで作成された深度テクスチャを設定する
 			modelInitData.m_expandShaderResoruceView[expandSRVNo] =
 				&g_renderingEngine->GetZPrepassDepthTexture();
-			expandSRVNo++;
 		}
-
+		expandSRVNo++;
+		g_renderingEngine->QueryShadowMapTexture([&](Texture& shadowMap) {
+			//シャドウマップを拡張SRVに設定する
+			modelInitData.m_expandShaderResoruceView[expandSRVNo] = &shadowMap;
+			expandSRVNo++;
+			});
+		
 		SetupPixelShaderEntryPointFuncToFrowardModel(modelInitData, isShadowCaster, isToon);
 
 		//ライトの情報を作成
@@ -242,7 +242,7 @@ namespace nsK2EngineLow {
 
 	void ModelRender::OnRenderShadowMap(
 		RenderContext& rc, 
-		int shadowMapNo, Camera& lightCamera)
+		int shadowMapNo, Camera& lightCamera, const Matrix& lvpMatrix)
 	{
 		Vector4 cameraParam;
 		cameraParam.x = g_camera3D->GetNear();
@@ -250,11 +250,19 @@ namespace nsK2EngineLow {
 		m_drawShadowMapCameraParamCB[shadowMapNo].CopyToVRAM(cameraParam);
 		m_shadowModels[shadowMapNo].Draw(
 			rc,
-			lightCamera
+			g_matIdentity,
+			lvpMatrix,
+			1
 		);
-		if (m_isShadowCaster) {
+
+		/*m_shadowModels[shadowMapNo].Draw(
+			rc,
+			lightCamera
+		);*/
+
+		//if (m_isShadowCaster) {
 			
-		}
+		//}
 	}
 
 	void ModelRender::InitSkeleton(const char* filePath)
