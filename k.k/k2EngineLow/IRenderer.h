@@ -16,7 +16,8 @@ namespace nsK2EngineLow {
 		virtual void OnRenderShadowMap(
 			RenderContext& rc,
 			int shadowMapNo,
-			Camera& lightCamera
+			Camera& lightCamera,
+			const Matrix& lvpMatrix
 		)
 		{
 
