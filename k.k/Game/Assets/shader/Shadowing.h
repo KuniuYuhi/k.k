@@ -12,6 +12,7 @@ static const int INFINITY = 40.0f;
 ///////////////////////////////////////
 #include "Sampler.h"
 
+
 // チェビシェフの不等式を利用して、影になる可能性を計算する。
 float Chebyshev(float2 moments, float depth)
 {
@@ -38,7 +39,7 @@ float Chebyshev(float2 moments, float depth)
 
 float CalcShadowRate(
     Texture2D<float4> shadowMap[NUM_SHADOW_MAP],
-    float4x4 mlvp,
+    float4x4 mlvp[NUM_SHADOW_MAP],
     float3 worldPos,
     int isSoftShadow
 )
@@ -48,7 +49,7 @@ float CalcShadowRate(
     for (int cascadeIndex = 0; cascadeIndex < NUM_SHADOW_MAP; cascadeIndex++)
     {
         //ライトビュースクリーン空間の座標を計算する
-        float4 posInLVP = mul( mlvp, float4( worldPos, 1.0f ));
+        float4 posInLVP = mul( mlvp[cascadeIndex], float4( worldPos, 1.0f ));
         //Zの値を見て、このピクセルがこのシャドウマップに含まれているか判定
         float2 shadowMapUV=posInLVP.xy/posInLVP.w;
         float zInLVP=posInLVP.z/posInLVP.w;
