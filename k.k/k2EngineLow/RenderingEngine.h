@@ -187,15 +187,6 @@ namespace nsK2EngineLow {
 		/////////////////////////////////////////////////////
 
 		/// <summary>
-		/// シャドウマップのテクスチャを取得
-		/// </summary>
-		/// <returns>シャドウマップのテクスチャ</returns>
-		Texture& GatShadowMapTexture()
-		{
-			return m_shadowMapRenders.GetShadowMapTextrue();
-		}
-
-		/// <summary>
 		/// シャドウマップテクスチャにクエリを行う。
 		/// </summary>
 		/// <param name="queryFunc">クエリ関数</param>

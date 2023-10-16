@@ -5,6 +5,9 @@
 #include "Fade.h"
 #include "SoundFile.h"
 
+
+#include "CascadModel.h"
+
 // K2EngineLowのグローバルアクセスポイント。
 K2EngineLow* g_k2EngineLow = nullptr;
 
@@ -28,10 +31,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 	//フェードクラスの初期化
-	Fade*m_fade = NewGO<Fade>(5, "fade");
+	//Fade*m_fade = NewGO<Fade>(5, "fade");
 
+	CascadModel* CCModel = NewGO<CascadModel>(0, "cascadeModel");
 
-	Title* title = NewGO<Title>(0, "game");
+	//Title* title = NewGO<Title>(0, "game");
 	//Game* game = NewGO<Game>(0, "game");
 
 	// ここからゲームループ。

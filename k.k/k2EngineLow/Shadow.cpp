@@ -25,7 +25,14 @@ namespace nsK2EngineLow {
 		std::vector< IRenderer* >& renderObjects
 	)
 	{
+		/*if (lightDirection.LengthSq() < 0.001f) {
+			return;
+		}*/
 		// ライトの最大の高さをレンダラーのAABBから計算する。
+		m_cascadeShadowMapMatrix.CalcLightViewProjectionCropMatrix(
+			lightDirection,
+			m_cascadeAreaRateArray
+		);
 
 		int shadowMapNo = 0;
 		for (auto& shadowMap : m_shadowMaps) {
@@ -37,7 +44,8 @@ namespace nsK2EngineLow {
 				renderer->OnRenderShadowMap(
 					rc,
 					shadowMapNo,
-					m_lightCamera
+					m_lightCamera,
+					m_cascadeShadowMapMatrix.GetLightViewProjectionCropMatrix(shadowMapNo)
 				);
 			}
 
@@ -59,7 +67,7 @@ namespace nsK2EngineLow {
 		UpDateLightCamera();
 	}
 
-	void Shadow::ShadowSpriteRender(RenderContext& rc)
+	/*void Shadow::ShadowSpriteRender(RenderContext& rc)
 	{
 		shadowSprite.Update(
 			{ FRAME_BUFFER_W / -2.0f,FRAME_BUFFER_H / 2.0f,0.0f },
@@ -68,6 +76,20 @@ namespace nsK2EngineLow {
 			{ 0.0f,1.0f }
 		);
 		shadowSprite.Draw(rc);
+	}*/
+
+	void Shadow::SetCascadeNearAreaRates(
+		float nearArea, float middleArea, float farArea)
+	{
+		// 中距離エリアの範囲が近距離エリアの範囲より小さくなっていると
+			// 計算上不都合が起きるので、補正。
+		middleArea = max(nearArea + 0.01f, middleArea);
+		// 遠い距離エリアの範囲が中距離エリアの範囲より小さくなっていると
+		// 計算上不都合が起きるので、補正。
+		farArea = max(middleArea + 0.01f, farArea);
+		m_cascadeAreaRateArray[SHADOW_MAP_AREA_NEAR] = nearArea;
+		m_cascadeAreaRateArray[SHADOW_MAP_AREA_MIDDLE] = middleArea;
+		m_cascadeAreaRateArray[SHADOW_MAP_AREA_FAR] = farArea;
 	}
 
 	void Shadow::InitRenderTarget()
@@ -80,7 +102,7 @@ namespace nsK2EngineLow {
 		colorFormat = g_hardShadowMapFormat.colorBufferFormat;
 		depthFormat = g_hardShadowMapFormat.depthBufferFormat;
 
-		//近景用のシャドウマップ
+		//近影用のシャドウマップ
 		m_shadowMaps[0].Create(
 			2048,
 			2048,
@@ -90,9 +112,31 @@ namespace nsK2EngineLow {
 			depthFormat,
 			clearColor
 		);
+		//中影用のシャドウマップ
+		m_shadowMaps[1].Create(
+			1024,
+			1024,
+			1,
+			1,
+			colorFormat,
+			depthFormat,
+			clearColor
+		);
+		//遠影用のシャドウマップ
+		m_shadowMaps[2].Create(
+			512,
+			512,
+			1,
+			1,
+			colorFormat,
+			depthFormat,
+			clearColor
+		);
 
 		//シャドウマップをぼかすためのオブジェクトの初期化
 		m_blur[0].Init(&m_shadowMaps[0].GetRenderTargetTexture());
+		m_blur[1].Init(&m_shadowMaps[1].GetRenderTargetTexture());
+		m_blur[2].Init(&m_shadowMaps[2].GetRenderTargetTexture());
 
 	}
 
@@ -115,17 +159,6 @@ namespace nsK2EngineLow {
 		//ライトビュープロジェクション行列を計算している
 		m_lightCamera.Update();
 
-	}
-
-	void Shadow::InitShadowSprite()
-	{
-		SpriteInitData spriteInitData;
-		spriteInitData.m_textures[0] = &m_shadowMap.GetRenderTargetTexture();
-		spriteInitData.m_fxFilePath = "Assets/shader/sprite.fx";
-		spriteInitData.m_width = 512;
-		spriteInitData.m_height = 512;
-
-		shadowSprite.Init(spriteInitData);
 	}
 
 	void Shadow::UpDateLightCamera()

@@ -165,11 +165,13 @@ namespace nsK2EngineLow {
 	void RenderingEngine::RenderToShadowMap(RenderContext& rc)
 	{
 		BeginGPUEvent("RenderToShadowMap");
+		
 		m_shadowMapRenders.Render(
 			rc,
 			m_deferredLightingCB.m_light.directionalLight.lightDirection,
 			m_renderObjects
 		);
+
 		EndGPUEvent();
 	}
 
@@ -267,7 +269,6 @@ namespace nsK2EngineLow {
 
 	void RenderingEngine::InitShadowMapRender()
 	{
-		//m_shadow.Init();
 		//シャドウマップ描画用のレンダリングターゲット初期化
 		m_shadowMapRenders.Init();
 

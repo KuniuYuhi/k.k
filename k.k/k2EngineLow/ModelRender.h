@@ -264,7 +264,8 @@ namespace nsK2EngineLow {
 		void OnRenderShadowMap(
 			RenderContext& rc,
 			int shadowMapNo,
-			Camera& lightCamera
+			Camera& lightCamera,
+			const Matrix& lvpMatrix
 		) override;
 		
 

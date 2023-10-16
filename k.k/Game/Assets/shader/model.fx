@@ -82,7 +82,7 @@ cbuffer LightCB:register(b1){
 	HemiSphereLight		hemiSphereLight;	//半球ライト
 	float3				ambient;			//環境光
 	float3				eyepos;				//視点の位置
-	float4x4			mLVP;				//ライトビュープロジェクション行列
+    float4x4			mLVP[NUM_SHADOW_MAP]; //ライトビュープロジェクション行列
 }
 
 ////////////////////////////////////////////////
@@ -143,6 +143,9 @@ SPSIn VSMainCore(
 /// </summary>
 float4 PSMainCore( SPSIn psIn ,int isToon, int isShadowCaster) : SV_Target0
 {
+	//シャドウマップにアクセスできる変数を宣言
+	
+	
 	//法線マップを計算
 	float3 normal = CalcNormalMap(psIn);
 
