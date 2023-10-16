@@ -323,6 +323,7 @@
       <Filter>Lich</Filter>
     </ClCompile>
     <ClCompile Include="SoundFile.cpp" />
+    <ClCompile Include="CascadModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -638,5 +639,6 @@
       <Filter>Lich</Filter>
     </ClInclude>
     <ClInclude Include="SoundFile.h" />
+    <ClInclude Include="CascadModel.h" />
   </ItemGroup>
 </Project>
