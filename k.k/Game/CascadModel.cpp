@@ -31,6 +31,10 @@ void CascadModel::Update()
 {
 	MoveCamera();
 
+
+
+
+
 }
 
 void CascadModel::Render(RenderContext& rc)
