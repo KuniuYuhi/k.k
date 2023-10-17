@@ -80,6 +80,23 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
+		/// 行列を設定。
+		/// </summary>
+		/// <param name="mairix">行列。</param>
+		void SetWorldMatrix(const Matrix& matrix)
+		{
+			Vector3 position;
+			position.x = matrix.m[3][0];
+			position.y = matrix.m[3][1];
+			position.z = matrix.m[3][2];
+			SetPosition(position);
+			Quaternion rotation;
+			rotation.SetRotation(matrix);
+			SetRotation(rotation);
+		}
+
+
+		/// <summary>
 		/// 座標、回転、拡大をすべて設定
 		/// </summary>
 		/// <param name="pos">座標の設定</param>
