@@ -5,7 +5,7 @@
 
 namespace {
 	//スカイキューブの初期の明るさ
-	const float START_SKY_CUBE_LMINANCE = 0.9f;
+	const float START_SKY_CUBE_LMINANCE = 1.07f;
 	const float END_SKY_CUBE_LMINANCE = 0.2f;
 
 	//モデルのサイズ
