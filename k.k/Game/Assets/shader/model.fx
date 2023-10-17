@@ -144,6 +144,10 @@ SPSIn VSMainCore(
 float4 PSMainCore( SPSIn psIn ,int isToon, int isShadowCaster) : SV_Target0
 {
 	//シャドウマップにアクセスできる変数を宣言
+    Texture2D<float4> shadowMapArray[3];
+    shadowMapArray[0] = g_shadowMap_0;
+    shadowMapArray[1] = g_shadowMap_1;
+    shadowMapArray[2] = g_shadowMap_2;
 	
 	
 	//法線マップを計算
@@ -199,7 +203,7 @@ float4 PSMainCore( SPSIn psIn ,int isToon, int isShadowCaster) : SV_Target0
         float shadow = 0.0f;
 		//自身に影を生成
         shadow = CalcShadowRate(
-		g_shadowMap, mLVP, psIn.worldPos, 0
+		shadowMapArray, mLVP, psIn.worldPos, 0
 		)*shadowParam;
 
         albedoColor.xyz *= (1.0f - shadow);

@@ -207,9 +207,6 @@ namespace nsK2EngineLow {
 		//各種モデルのワールド座標を更新
 		UpdateWorldMatrixInModes();
 
-		//ライトカメラのビュープロジェクション行列を設定する
-		//g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
-
 		//スケルトンが初期化されていたら
 		if (m_skeleton.IsInited())
 		{

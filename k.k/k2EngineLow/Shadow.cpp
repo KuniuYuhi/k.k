@@ -25,9 +25,9 @@ namespace nsK2EngineLow {
 		std::vector< IRenderer* >& renderObjects
 	)
 	{
-		/*if (lightDirection.LengthSq() < 0.001f) {
+		if (lightDirection.LengthSq() < 0.001f) {
 			return;
-		}*/
+		}
 		// ƒ‰ƒCƒg‚ÌÅ‘å‚Ì‚‚³‚ðƒŒƒ“ƒ_ƒ‰[‚ÌAABB‚©‚çŒvŽZ‚·‚éB
 		m_cascadeShadowMapMatrix.CalcLightViewProjectionCropMatrix(
 			lightDirection,
@@ -150,6 +150,8 @@ namespace nsK2EngineLow {
 		m_lightCamera.SetUp(1, 0, 0);
 		//‰æŠp
 		m_lightCamera.SetViewAngle(Math::DegToRad(ShadowConst::LIGHT_CAMERA_ANGLE));
+
+		m_lightCamera.SetFar(10000.0f);
 
 		//‰e‚ª“®‚©‚È‚¢‚æ‚¤‚É‚·‚é‚½‚ß‚ÉƒJƒƒ‰‚ð•½s“Š‰e‚É‚·‚é
 		m_lightCamera.SetUpdateProjMatrixFunc(Camera::enUpdateProjMatrixFunc_Ortho);
