@@ -283,6 +283,9 @@ namespace nsK2EngineLow {
 		//ポストエフェクト
 		//メインレンダリングターゲットの絵をフレームバッファーにコピー
 
+		// シーンライトのデータをコピー。
+		m_deferredLightingCB.m_light = m_sceneLight.GetSceneLight();
+
 		//視点の位置を設定する	
 		SetEyePos(g_camera3D->GetPosition());
 
