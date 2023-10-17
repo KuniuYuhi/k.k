@@ -34,6 +34,32 @@ void nsK2EngineLow::CascadeShadowMapMatrix::CalcLightViewProjectionCropMatrix(
 		maxFar
 	);
 
+	// ライトカメラを計算する
+	//Camera lightCamera;
+	//Vector3 lightPos;
+	//float distLig = g_camera3D->GetFar() * 0.1f;
+	//lightPos = lightDirection * -distLig;    // ライトまでの距離は外から指定できるようにする
+	//lightCamera.SetPosition(lightPos);
+	//lightCamera.SetTarget(0.0f, 0.0f, 0.0f);
+	//// 上方向を設定
+	//if (fabsf(lightDirection.y) > 0.9999f)
+	//{
+	//	// ほぼ真上、真下を向いている
+	//	lightCamera.SetUp(g_vec3AxisX);
+	//}
+	//else
+	//{
+	//	lightCamera.SetUp(g_vec3AxisY);
+	//}
+	//lightCamera.SetUpdateProjMatrixFunc(Camera::enUpdateProjMatrixFunc_Ortho);
+	//lightCamera.SetWidth(5000.0f);
+	//lightCamera.SetHeight(5000.0f);
+	//lightCamera.SetNear(1.0f);
+	//lightCamera.SetFar(g_camera3D->GetFar());
+	//lightCamera.Update();
+
+	//const auto& lvpMatrix = lightCamera.GetViewProjectionMatrix();
+
 	// 分割エリアの最大深度値を定義する
 	float cascadeAreaTbl[NUM_SHADOW_MAP] = {
 		maxFar * cascadeAreaRateTbl[SHADOW_MAP_AREA_NEAR],		//近影を映す最大深度値
