@@ -30,6 +30,8 @@ SPSIn VSMainCore(SVSIn vsIn, float4x4 mWorldLocal, uniform bool isUsePreComputed
     psIn.pos = mul(mView, psIn.pos);
     psIn.pos = mul(mProj, psIn.pos);
 
+    psIn.depth = 0.0f;
+    
     return psIn;
 }
 /// <summary>
