@@ -1,4 +1,7 @@
 #pragma once
+
+class Player;
+
 class CascadModel:public IGameObject
 {
 public:
@@ -8,8 +11,6 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
-
-	void UpDateWeapon();
 
 	void MoveCamera();
 
@@ -39,10 +40,10 @@ private:
 	ModelRender tea;
 	ModelRender bg;
 
+	Player* m_player = nullptr;
 
 	Animation	m_animation;				// アニメーション
 	AnimationClip	m_animationClip[enAnimClip_Num];// アニメーションクリップ 
-	ModelRender Player;
 
 	ModelRender Sword;
 	int m_swordBoonId = -1;
