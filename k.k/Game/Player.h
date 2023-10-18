@@ -6,6 +6,8 @@ class Wizard;
 class Actor;
 class Game;
 
+class Brave;
+
 class Player:public IGameObject
 {
 public:
@@ -13,6 +15,7 @@ public:
 	enum EnCharacters {
 		enHero,
 		enWizard,
+		enBrave,
 		enCharacter_num
 	};
 
@@ -241,6 +244,7 @@ private:
 	Game*						m_game = nullptr;
 	Hero*						m_hero = nullptr;
 	Wizard*						m_wizard = nullptr;
+	Brave*						m_brave = nullptr;
 
 	FontRender					m_mpFont;
 	FontRender					m_hpFont;
