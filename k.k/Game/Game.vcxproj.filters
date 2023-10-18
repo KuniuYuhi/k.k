@@ -28,6 +28,9 @@
     <Filter Include="MobMonster\TurtleShell">
       <UniqueIdentifier>{eaba4644-52df-49e7-ab11-46b649af7b1e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Brave">
+      <UniqueIdentifier>{cb6cd09f-fc8e-4001-a80a-8ce928ff27df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -324,6 +327,11 @@
     </ClCompile>
     <ClCompile Include="SoundFile.cpp" />
     <ClCompile Include="CascadModel.cpp" />
+    <ClCompile Include="Brave.cpp">
+      <Filter>Brave</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateIdle.cpp" />
+    <ClCompile Include="BraveStateSprint.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -640,5 +648,13 @@
     </ClInclude>
     <ClInclude Include="SoundFile.h" />
     <ClInclude Include="CascadModel.h" />
+    <ClInclude Include="Brave.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="IBraveState.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateIdle.h" />
+    <ClInclude Include="BraveStateSprint.h" />
   </ItemGroup>
 </Project>

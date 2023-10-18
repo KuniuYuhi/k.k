@@ -227,6 +227,9 @@
     <ClCompile Include="AIActor.cpp" />
     <ClCompile Include="BattleStart.cpp" />
     <ClCompile Include="BossStage1.cpp" />
+    <ClCompile Include="Brave.cpp" />
+    <ClCompile Include="BraveStateIdle.cpp" />
+    <ClCompile Include="BraveStateSprint.cpp" />
     <ClCompile Include="Cactus.cpp" />
     <ClCompile Include="CactusStateAppear.cpp" />
     <ClCompile Include="CactusStateAttack_1.cpp" />
@@ -345,6 +348,9 @@
     <ClInclude Include="AIActor.h" />
     <ClInclude Include="BattleStart.h" />
     <ClInclude Include="BossStage1.h" />
+    <ClInclude Include="Brave.h" />
+    <ClInclude Include="BraveStateIdle.h" />
+    <ClInclude Include="BraveStateSprint.h" />
     <ClInclude Include="Cactus.h" />
     <ClInclude Include="CactusStateAppear.h" />
     <ClInclude Include="CactusStateAttack_1.h" />
@@ -361,6 +367,7 @@
     <ClInclude Include="DarkBall.h" />
     <ClInclude Include="DarkMeteorite.h" />
     <ClInclude Include="DarkWall.h" />
+    <ClInclude Include="IBraveState.h" />
     <ClInclude Include="InitEffect.h" />
     <ClInclude Include="EntryBoss.h" />
     <ClInclude Include="Fade.h" />
