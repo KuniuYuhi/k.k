@@ -63,6 +63,7 @@ void Player::Update()
 	}*/
 
 	//ゲームが始まるまでは移動しない
+	//todo もっと分かりやすくできる
 	/*if (m_game->GetNowGameState() != Game::enGameState_Game)
 	{
 		return;
@@ -247,7 +248,6 @@ bool Player::IsAnnihilation()
 
 void Player::CalcPosition(Vector3 moveSpeed,float deltaTime)
 {
-	m_position = m_charaCon.Execute(moveSpeed, deltaTime);
 }
 
 int Player::GetAtk()
@@ -279,10 +279,10 @@ bool Player::IsWinnerDecision()
 {
 	//勝利
 	//ボスが死んだら処理しない
-	if (GameClear() == true)
+	/*if (GameClear() == true)
 	{
 		return true;
-	}
+	}*/
 	//敗北
 	//キャラクターが全滅していたら処理しない
 	if (GameOver() == true)

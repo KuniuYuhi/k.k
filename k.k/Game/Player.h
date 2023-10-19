@@ -75,22 +75,17 @@ public:
 	}
 
 	/// <summary>
-	/// 座標の取得
+	/// 座標の取得。現在のアクターの座標
 	/// </summary>
 	/// <returns></returns>
 	const Vector3& GetPosition() const
 	{
-		return m_position;
+		return m_nowActor->GetPosition();
 	}
 
 	const Vector3& GetMoveSpeed() const
 	{
 		return m_moveSpeed;
-	}
-
-	CharacterController& GetCharacterController()
-	{
-		return m_charaCon;
 	}
 
 	/// <summary>
@@ -248,8 +243,6 @@ private:
 
 	FontRender					m_mpFont;
 	FontRender					m_hpFont;
-
-	CharacterController			m_charaCon;
 
 	//RigidBody					rigitBody;
 
