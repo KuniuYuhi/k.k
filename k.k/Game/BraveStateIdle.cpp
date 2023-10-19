@@ -4,18 +4,7 @@
 
 void BraveStateIdle::ManageState()
 {
-	if (fabsf(m_brave->GetMoveSpeed().x) >= 0.001f || 
-		fabsf(m_brave->GetMoveSpeed().z) >= 0.001f
-		)
-	{
-		//‘–‚é
-		m_brave->SetNextAnimationState(Brave::enAninationState_Sprint);
-	}
-	else
-	{
-		//•à‚­
-		m_brave->SetNextAnimationState(Brave::enAninationState_Idle);
-	}
+	m_brave->ProcessCommonStateTransition();
 }
 
 void BraveStateIdle::PlayAnimation()
