@@ -66,6 +66,10 @@ public:
 	/// <param name="Speed">前進する速さ</param>
 	void CalcAttackDirection(float Speed);
 
+	void ChangeWeapon();
+
+
+
 	/// <summary>
 	/// キャラクターがチェンジ可能か
 	/// </summary>

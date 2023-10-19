@@ -73,6 +73,8 @@ bool Brave::Start()
 
 void Brave::Update()
 {
+	//武器切り替え中は行動しない
+
 	//行動不可能な状態でないなら
 	if (IsInaction() != true)
 	{
@@ -213,11 +215,11 @@ const bool& Brave::IsInaction() const
 	{
 		return true;
 	}
-
-	/*if (m_player->IsWinnerDecision() == true)
+	//プレイヤークラスの関数の動けない条件がtrueなら
+	if (m_player->IsInaction() == true)
 	{
 		return true;
-	}*/
+	}
 
 	//ここまできたら行動可能
 	return false;
@@ -507,8 +509,8 @@ void Brave::InitModel()
 		enAnimClip_Num,
 		enModelUpAxisZ
 	);
-	/*m_position = { 0.0f,0.0f,200.0f };
-	m_modelRender.SetPosition(m_position);*/
+	
+	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 
 	m_charaCenterBoonId = m_modelRender.FindBoneID(L"root");
