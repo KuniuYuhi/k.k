@@ -1,4 +1,7 @@
 #pragma once
+
+class Player;
+
 class CascadModel:public IGameObject
 {
 public:
@@ -14,10 +17,5 @@ public:
 private:
 	ModelRender tea;
 	ModelRender bg;
-
-	
-
-
-
 };
 

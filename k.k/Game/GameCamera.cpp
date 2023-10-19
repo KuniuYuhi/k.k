@@ -64,13 +64,22 @@ bool GameCamera::Start()
 		1.0f				//カメラに設定される球体コリジョンの半径。第３引数がtrueの時に有効になる。
 	);
 
+	
 
 	return true;
 }
 
 void GameCamera::Update()
 {
-	ManageState();
+	if (m_game != nullptr)
+	{
+		ManageState();
+	}
+	else
+	{
+		OnProcessGameTransition();
+	}
+	
 
 	CalcDirectionLight();
 }
@@ -190,7 +199,7 @@ void GameCamera::ChaseCamera(bool Reversesflag)
 {
 	//注視点の計算
 	m_target = m_player->GetPosition();
-	m_target.y += TARGETPOS_YUP;
+	m_target.y = TARGETPOS_YUP;
 	//m_target.x -= 35.0f;
 
 	Vector3 toCameraPosOld = m_toCameraPos;

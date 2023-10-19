@@ -6,6 +6,8 @@ class Wizard;
 class Actor;
 class Game;
 
+class Brave;
+
 class Player:public IGameObject
 {
 public:
@@ -13,6 +15,7 @@ public:
 	enum EnCharacters {
 		enHero,
 		enWizard,
+		enBrave,
 		enCharacter_num
 	};
 
@@ -72,22 +75,17 @@ public:
 	}
 
 	/// <summary>
-	/// 座標の取得
+	/// 座標の取得。現在のアクターの座標
 	/// </summary>
 	/// <returns></returns>
 	const Vector3& GetPosition() const
 	{
-		return m_position;
+		return m_nowActor->GetPosition();
 	}
 
 	const Vector3& GetMoveSpeed() const
 	{
 		return m_moveSpeed;
-	}
-
-	CharacterController& GetCharacterController()
-	{
-		return m_charaCon;
 	}
 
 	/// <summary>
@@ -241,11 +239,10 @@ private:
 	Game*						m_game = nullptr;
 	Hero*						m_hero = nullptr;
 	Wizard*						m_wizard = nullptr;
+	Brave*						m_brave = nullptr;
 
 	FontRender					m_mpFont;
 	FontRender					m_hpFont;
-
-	CharacterController			m_charaCon;
 
 	//RigidBody					rigitBody;
 

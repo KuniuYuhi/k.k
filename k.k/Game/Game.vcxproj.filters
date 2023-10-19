@@ -28,6 +28,9 @@
     <Filter Include="MobMonster\TurtleShell">
       <UniqueIdentifier>{eaba4644-52df-49e7-ab11-46b649af7b1e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Brave">
+      <UniqueIdentifier>{cb6cd09f-fc8e-4001-a80a-8ce928ff27df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -324,6 +327,51 @@
     </ClCompile>
     <ClCompile Include="SoundFile.cpp" />
     <ClCompile Include="CascadModel.cpp" />
+    <ClCompile Include="Brave.cpp">
+      <Filter>Brave</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateIdle.cpp">
+      <Filter>Brave</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateSprint.cpp">
+      <Filter>Brave</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateAttack_1.cpp">
+      <Filter>Brave</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateAttack_2.cpp">
+      <Filter>Brave</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateAttack_3.cpp">
+      <Filter>Brave</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateDefend.cpp">
+      <Filter>Brave</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateSkill_Main.cpp">
+      <Filter>Brave</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateSkill_Start.cpp">
+      <Filter>Brave</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateChangeSwordShield.cpp">
+      <Filter>Brave</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateDefendHit.cpp">
+      <Filter>Brave</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateDie.cpp">
+      <Filter>Brave</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateHit.cpp">
+      <Filter>Brave</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateWin_Main.cpp">
+      <Filter>Brave</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateWin_Start.cpp">
+      <Filter>Brave</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -640,5 +688,53 @@
     </ClInclude>
     <ClInclude Include="SoundFile.h" />
     <ClInclude Include="CascadModel.h" />
+    <ClInclude Include="Brave.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="IBraveState.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateIdle.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateSprint.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateAttack_1.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateAttack_2.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateAttack_3.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateDefend.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateSkill_Main.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateSkill_Start.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateWin_Start.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateChangeSwordShield.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateDefendHit.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateDie.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateHit.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateWin_Main.h">
+      <Filter>Brave</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

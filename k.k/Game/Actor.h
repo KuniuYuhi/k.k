@@ -76,7 +76,7 @@ public:
 	virtual bool isAnimationEntable() const = 0;
 
 	/// <summary>
-	/// 
+	/// 当たり判定可能なアニメーションか
 	/// </summary>
 	/// <returns></returns>
 	virtual bool isCollisionEntable() const = 0;
@@ -179,10 +179,18 @@ public:
 	{
 		return m_status;
 	}
-
+	/// <summary>
+	/// 前方向の取得
+	/// </summary>
+	/// <returns></returns>
 	const Vector3& GetForward() const
 	{
 		return m_forward;
+	}
+
+	const Vector3& GetMoveSpeed() const
+	{
+		return m_moveSpeed;
 	}
 
 	/// <summary>

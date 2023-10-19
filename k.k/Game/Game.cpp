@@ -137,7 +137,7 @@ void Game::InitSkyCube()
 	m_skyCube = NewGO<SkyCube>(0, "skycube");
 	m_skyCube->SetScale(800.0f);
 	m_skyCube->SetPosition(m_skyPos);
-	m_skyCube->SetLuminance(0.9f);
+	m_skyCube->SetLuminance(1.07f);
 	m_skyCube->SetType(enSkyCubeType_DayToon_3);
 
 	m_skyCube->Update();
@@ -426,10 +426,10 @@ void Game::OnProcessGame_FadeOutTransition()
 	if (m_fade->IsFade() == false && m_enFadeState == enFadeState_BossToPlayer)
 	{
 		//UI生成
-		m_gameUI = NewGO<GameUI>(0, "gameUI");
+		/*m_gameUI = NewGO<GameUI>(0, "gameUI");
 		m_gameUI->GetGame(this);
 		m_gameUI->GetPlayer(m_player);
-		m_gameUI->GetLich(m_lich);
+		m_gameUI->GetLich(m_lich);*/
 		//このステートに入ってフェードアウトするとき
 		m_fade->StartFadeOut(3.0f);
 		//フェードステートをなしにする

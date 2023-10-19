@@ -5,7 +5,8 @@
 #include "Actor.h"
 #include "Game.h"
 
-//todo ここで当たり判定するのもありかも
+#include "Brave.h"
+
 //todo 重力
 Player::Player()
 {
@@ -22,16 +23,18 @@ bool Player::Start()
 	m_game = FindGO<Game>("game");
 
 
-	m_hero = NewGO<Hero>(0, "hero");
-	m_wizard = NewGO<Wizard>(0, "wizard");
+	//m_hero = NewGO<Hero>(0, "hero");
+	//m_wizard = NewGO<Wizard>(0, "wizard");
 
+	m_brave = NewGO<Brave>(0, "brave");
 
 	actor[enHero] = m_hero;
 	actor[enWizard] = m_wizard;
 
+	actor[enBrave] = m_brave;
 	
 	//初期キャラクターをヒーローに設定
-	m_enActiveCharacter = enHero;
+	m_enActiveCharacter = enBrave;
 	//サブのキャラクターをウィザードに設定
 	m_subActor = actor[enWizard];
 
@@ -45,19 +48,7 @@ bool Player::Start()
 	m_position = m_nowActor->GetPosition();
 
 	//キャラコンの設定
-	m_charaCon.Init(12.0f, 33.0f, m_position);
-
-
-	/*RigidBodyInitData rbid;
-	rbid.collider = m_charaCon.GetCollider();
-	rbid.mass = 20.0f;
-	rbid.pos = m_position;
-	rbid.restitution = 200.0f;
-	rbid.rot = m_nowActor->GetRotation();
-
-	rigitBody.Init(rbid);
-	rigitBody.SetLinearFactor(1.0f, 0.0f, 1.0f);
-	rigitBody.SetAngularFactor(0.0f, 1.0f, 0.0f);*/
+	//m_charaCon.Init(12.0f, 33.0f, m_position);
 
 
 	return true;
@@ -66,16 +57,17 @@ bool Player::Start()
 void Player::Update()
 {
 	//勝敗が決まったら
-	if (IsWinnerDecision() == true)
+	/*if (IsWinnerDecision() == true)
 	{
 		return;
-	}
+	}*/
 
 	//ゲームが始まるまでは移動しない
-	if (m_game->GetNowGameState() != Game::enGameState_Game)
+	//todo もっと分かりやすくできる
+	/*if (m_game->GetNowGameState() != Game::enGameState_Game)
 	{
 		return;
-	}
+	}*/
 	//行動可能にする
 	if (m_dontActionFlag != false)
 	{
@@ -83,35 +75,27 @@ void Player::Update()
 	}
 
 	//現在のキャラクターがやられたら強制的に切り替え
-	if (ForcedChange() == false)
-	{
-		//フラグがfalseなら
-		if (m_ChangCharacterFlag == false)
-		{
-			//キャラ切り替え
-			Change();
-		}
-		
-	}
+	//if (ForcedChange() == false)
+	//{
+	//	//フラグがfalseなら
+	//	if (m_ChangCharacterFlag == false)
+	//	{
+	//		//キャラ切り替え
+	//		Change();
+	//	}
+	//	
+	//}
 
-	//キャラ切り替え後のクールタイムの計算
-	ChangeCharacterTime();
+	////キャラ切り替え後のクールタイムの計算
+	//ChangeCharacterTime();
 
 	//現在のキャラクターがやられていないなら先の処理しない
 	if (m_nowActor->GetDieFlag() != true)
 	{
-
 		//移動処理
-		m_moveSpeed = m_nowActor->calcVelocity(m_nowActor->GetStatus());
-		m_moveSpeed.y = 0.0f;
-
-		CalcPosition(m_moveSpeed, 1.0f / 60.0f);
-
-		if (m_nowActor->isAnimationEntable() != false)
-		{
-			
-		}
-		
+		//m_moveSpeed = m_nowActor->calcVelocity(m_nowActor->GetStatus());
+		//m_moveSpeed.y = 0.0f;
+		//CalcPosition(m_moveSpeed, 1.0f / 60.0f);
 	}
 }
 
@@ -264,7 +248,6 @@ bool Player::IsAnnihilation()
 
 void Player::CalcPosition(Vector3 moveSpeed,float deltaTime)
 {
-	m_position = m_charaCon.Execute(moveSpeed, deltaTime);
 }
 
 int Player::GetAtk()
@@ -296,10 +279,10 @@ bool Player::IsWinnerDecision()
 {
 	//勝利
 	//ボスが死んだら処理しない
-	if (GameClear() == true)
+	/*if (GameClear() == true)
 	{
 		return true;
-	}
+	}*/
 	//敗北
 	//キャラクターが全滅していたら処理しない
 	if (GameOver() == true)

@@ -159,7 +159,7 @@ void Wizard::Update()
 	//–³“GŽžŠÔ‚Å‚È‚¢‚È‚ç“–‚½‚è”»’è‚Ìˆ—‚ðs‚¤
 	if (CalcInvicibleDash() == false)
 	{
-		DamageCollision(m_player->GetCharacterController());
+		//DamageCollision(m_player->GetCharacterController());
 	}
 
 	SetTransFormModel(m_modelRender);

@@ -11,16 +11,18 @@ CascadModel::~CascadModel()
 
 bool CascadModel::Start()
 {
+	g_renderingEngine->SetAmbient(g_vec3One * 1.1f);
+
 	//シャドウキャスター
 	tea.Init("Assets/modelData/cascadeShadowModel/testModel.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 		0, 0, enModelUpAxisZ, true, true, true);
 
-	//シャドウレシーバー
+	////シャドウレシーバー
 	bg.Init("Assets/modelData/cascadeShadowModel/bg/bg.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 		0, 0, enModelUpAxisZ, false, false, false);
-
+	//カスケードシャドウ用カメラ
 	g_camera3D->SetPosition(0, 100.0f, 350.0f);
 	g_camera3D->SetTarget(0, 0.0f, 0);
 
@@ -30,10 +32,6 @@ bool CascadModel::Start()
 void CascadModel::Update()
 {
 	MoveCamera();
-
-
-
-
 
 }
 
