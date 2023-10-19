@@ -68,6 +68,10 @@ public:
 		bool reversalFlag = false
 	);
 
+	/// <summary>
+	/// カメラのズーム処理
+	/// </summary>
+	void ZoomCamera();
 
 
 	void ManageState();
@@ -111,6 +115,7 @@ private:
 	Vector3				m_target = Vector3::Zero;		//カメラ注視点
 	Quaternion			m_rotation = Quaternion::Identity;	//回転
 
+	Vector3				m_finalCameraPos = g_vec3Zero;
 
 	bool flag = false;
 

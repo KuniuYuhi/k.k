@@ -10,7 +10,7 @@ namespace {
 	const float MAX_CAMERA_TOP = -0.1f;
 	const float MAX_CAMERA_UNDER = 0.8f;
 	//150.0f
-	const float TARGETPOS_YUP = 150.0f;
+	const float TARGETPOS_YUP = 100.0f;
 	const float TARGETPOS_GAMESTART_YUP = 38.0f;
 
 	const float STARTCAMERA_YUP = 60.0f;
@@ -30,6 +30,11 @@ namespace {
 
 	const float BOSS_CAMERA_X = 400.0f;
 	const float BOSS_CAMERA_Y = 500.0f;
+
+
+	const Vector3 DEFAULT_TOCAMERAPOS = { 0.0f, 100.0f, -350.0f };
+	const Vector3 MAX_ZOOM_TOCAMERAPOS = { 0.0f,0.0f,-50.0f };
+
 }
 
 GameCamera::GameCamera()
@@ -47,7 +52,7 @@ bool GameCamera::Start()
 
 	m_toCameraPosForBoss.Set(0.0f, 300.0f, 600.0f);
 	//注視点から視点までのベクトルを設定。300,400
-	m_toCameraPos.Set(0.0f, 50.0f, -460.0f);
+	m_toCameraPos.Set(DEFAULT_TOCAMERAPOS);
 	//カメラをプレイヤーの後ろにするときに使う
 	m_position = m_toCameraPos;
 
@@ -232,17 +237,17 @@ void GameCamera::ChaseCamera(bool Reversesflag)
 		m_toCameraPos = toCameraPosOld;
 	}
 
-	Vector3 finalCameraPos;
+	//Vector3 finalCameraPos;
 	//カメラの位置の衝突解決する
 	m_cameraCollisionSolver.Execute(
-		finalCameraPos,
+		m_finalCameraPos,
 		m_target + m_toCameraPos,
 		m_target
 	);
 
 	//視点と注視点を設定
 	m_springCamera.SetTarget(m_target);
-	m_springCamera.SetPosition(finalCameraPos);
+	m_springCamera.SetPosition(m_finalCameraPos);
 
 	//カメラの更新。
 	m_springCamera.Update();
@@ -319,6 +324,33 @@ void GameCamera::GameClearCamera(Vector3 targetPos, Vector3 forward, float X, fl
 	m_springCamera.Update();
 }
 
+void GameCamera::ZoomCamera()
+{
+	//LB押していないなら処理しない
+	if (g_pad[0]->IsPress(enButtonLB1) != true)
+	{
+		return;
+	}
+	//ズームイン
+	if (g_pad[0]->IsPress(enButtonUp))
+	{
+		m_toCameraPos.Lerp(g_gameTime->GetFrameDeltaTime()*2.0f, m_toCameraPos, MAX_ZOOM_TOCAMERAPOS);
+		return;
+	}
+	//ズームアウト
+	if (g_pad[0]->IsPress(enButtonDown))
+	{
+		m_toCameraPos.Lerp(g_gameTime->GetFrameDeltaTime()*2.0f, m_toCameraPos, DEFAULT_TOCAMERAPOS);
+		return;
+	}
+	//todo デフォルトに戻す
+	/*if (g_pad[0]->IsPress(EnButton::))
+	{
+
+	}*/
+
+}
+
 void GameCamera::ManageState()
 {
 	//ゲームのステートによってカメラを切り替える
@@ -381,6 +413,9 @@ void GameCamera::OnProcessGameTransition()
 	
 	//プレイヤーを追う
 	ChaseCamera();
+
+	ZoomCamera();
+
 }
 
 void GameCamera::OnProcessGameOverTransition()
