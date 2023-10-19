@@ -179,7 +179,10 @@ public:
 	{
 		return m_status;
 	}
-
+	/// <summary>
+	/// ‘O•ûŒü‚ÌŽæ“¾
+	/// </summary>
+	/// <returns></returns>
 	const Vector3& GetForward() const
 	{
 		return m_forward;
