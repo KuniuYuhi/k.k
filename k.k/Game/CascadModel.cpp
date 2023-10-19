@@ -1,8 +1,5 @@
 #include "stdafx.h"
 #include "CascadModel.h"
-#include "Brave.h"
-
-#include "Player.h"
 
 CascadModel::CascadModel()
 {
@@ -10,12 +7,11 @@ CascadModel::CascadModel()
 
 CascadModel::~CascadModel()
 {
-	DeleteGO(m_player);
 }
 
 bool CascadModel::Start()
 {
-	g_renderingEngine->SetAmbient(g_vec3One * 1.3f);
+	g_renderingEngine->SetAmbient(g_vec3One * 1.1f);
 
 	//シャドウキャスター
 	tea.Init("Assets/modelData/cascadeShadowModel/testModel.tkm",
@@ -26,20 +22,16 @@ bool CascadModel::Start()
 	bg.Init("Assets/modelData/cascadeShadowModel/bg/bg.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 		0, 0, enModelUpAxisZ, false, false, false);
-
+	//カスケードシャドウ用カメラ
 	g_camera3D->SetPosition(0, 100.0f, 350.0f);
 	g_camera3D->SetTarget(0, 0.0f, 0);
-
-	m_player = NewGO<Player>(0, "player");
-	
-	
 
 	return true;
 }
 
 void CascadModel::Update()
 {
-	//MoveCamera();
+	MoveCamera();
 
 }
 
