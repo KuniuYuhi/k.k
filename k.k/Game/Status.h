@@ -11,7 +11,14 @@ struct Status
 	float defaultSpeed = 0.0f;
 	const char* characterName = nullptr;
 
-
+	/// <summary>
+	/// 全てのステータスの初期化
+	/// </summary>
+	/// <param name="MaxHp"></param>
+	/// <param name="MaxMp"></param>
+	/// <param name="Atk"></param>
+	/// <param name="Speed"></param>
+	/// <param name="name"></param>
 	void InitStatus(int MaxHp,int MaxMp,int Atk, float Speed,const char* name)
 	{
 		maxHp = MaxHp;
@@ -23,6 +30,32 @@ struct Status
 		defaultSpeed = Speed;
 		dashSpeed = defaultSpeed;
 		characterName = name;
+	}
+	/// <summary>
+	/// HPの設定
+	/// </summary>
+	/// <param name="setHp"></param>
+	void SetHp(const int setHp)
+	{
+		hp = setHp;
+	}
+	/// <summary>
+	/// HPの増減の計算。0以下になったら0になる。最大HPより大きくならない
+	/// </summary>
+	/// <param name="value">計算する値</param>
+	/// <param name="UpOrDownFlag">足すか引くかのフラグ。trueで足す、falseで引く</param>
+	void CalcHp(int value, bool UpOrDownFlag)
+	{
+		if (UpOrDownFlag == true)
+		{
+			//足し算
+			AddHp(value);
+		}
+		else
+		{
+			//引き算
+			SubHp(value);
+		}
 	}
 
 	//csvは使わない
@@ -36,4 +69,29 @@ void Init(const std::string& name);
 
 private:
 	void LoadCSV(const std::string& name);
+
+	/// <summary>
+	/// HPを足す
+	/// </summary>
+	/// <param name="addHp"></param>
+	void AddHp(int addHp)
+	{
+		hp += addHp;
+		if (hp >= maxHp)
+		{
+			hp = maxHp;
+		}
+	}
+	/// <summary>
+	/// HPを引く
+	/// </summary>
+	/// <param name="subHp"></param>
+	void SubHp(int subHp)
+	{
+		hp -= subHp;
+		if (hp <= 0)
+		{
+			hp = 0;
+		}
+	}
 };
