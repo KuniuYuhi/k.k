@@ -17,6 +17,11 @@
 
 #include "Player.h"
 
+#include "SwordShield.h"
+#include "BigSword.h"
+
+
+
 //todo
 //攻撃力は武器
 
@@ -68,6 +73,15 @@ bool Brave::Start()
 	//キャラコンの設定
 	m_charaCon.Init(12.0f, 33.0f, m_position);
 
+
+	//武器の生成
+
+	m_mainWeapon = NewGO<BigSword>(0, "bigsword");
+	m_subWeapon = NewGO<SwordShield>(0,"swordshield");
+
+	m_weapon[enWeapon_Main] = m_mainWeapon;
+	m_weapon[enWeapon_Sub] = m_subWeapon;
+
 	return true;
 }
 
@@ -80,7 +94,8 @@ void Brave::Update()
 	{
 		//MPの回復
 		RecoveryMP();
-
+		//武器の切り替え処理
+		ChangeWeapon();
 		//移動処理
 		Move();
 		//回転処理
@@ -95,10 +110,6 @@ void Brave::Update()
 	ManageState();
 	PlayAnimation();
 	
-
-	UpdateWeapons();
-	
-
 	m_modelRender.Update();
 	
 }
@@ -131,7 +142,6 @@ void Brave::ProcessAttack()
 	{
 		return;
 	}
-
 	//通常攻撃
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
@@ -143,7 +153,6 @@ void Brave::ProcessAttack()
 		}
 		return;
 	}
-
 	//スキル
 	if (g_pad[0]->IsTrigger(enButtonB))
 	{
@@ -178,6 +187,9 @@ void Brave::Damage(int damage)
 		//ガード中なら
 		if (m_enAnimationState == enAnimationState_Defend)
 		{
+			//todo 盾にヒットしたなら
+			 
+			
 			//ダメージを1/3に減らす
 			damage /= 3;
 			//どれだけダメージを減らしても１以下にはならない
@@ -234,6 +246,21 @@ void Brave::CalcAttackDirection(float Speed)
 	MoveSpeed.y = 0.0f;
 	m_position = m_charaCon.Execute(MoveSpeed, 1.0f / 60.0f);
 	m_modelRender.SetPosition(m_position);
+}
+
+void Brave::ChangeWeapon()
+{
+	//アクションフラグがtrueなら攻撃処理をしない
+	if (GetIsActionFlag() == true)
+	{
+		return;
+	}
+	//武器の切り替え
+	if (g_pad[0]->IsTrigger(enButtonY) == true)
+	{
+		SetIsActionFlag(true);
+		SetNextAnimationState(enAnimationState_ChangeSwordShield);
+	}
 }
 
 void Brave::ProcessSwordShieldSkill(bool UpOrDownFlag)
@@ -366,6 +393,18 @@ void Brave::ProcessCommonStateTransition()
 	}
 }
 
+void Brave::ProcessCommonWeaponChangeStateTransition()
+{
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//切り替えアニメーションが終わったのでアクションフラグをfalseにする
+		SetIsActionFlag(false);
+		//ステート共通の状態遷移処理に遷移
+		ProcessCommonStateTransition();
+	}
+}
+
 void Brave::ProcessNormalAttackStateTransition()
 {
 	//アニメーションの再生が終わったら
@@ -456,20 +495,18 @@ bool Brave::RotationOnly()
 	return false;
 }
 
-void Brave::UpdateWeapons()
-{
-	Matrix swordMt = m_modelRender.GetBone(m_swordBoonId)->GetWorldMatrix();
-	Sword.SetWorldMatrix(swordMt);
-
-	Matrix shieldMt = m_modelRender.GetBone(m_shieldBoonId)->GetWorldMatrix();
-	Shield.SetWorldMatrix(shieldMt);
-
-	Sword.Update();
-	Shield.Update();
-}
-
 void Brave::InitModel()
 {
+	////////////////////////////////////////////////////////////////////
+	//武器それぞれの固有のアニメーションクリップ
+	////////////////////////////////////////////////////////////////////
+	m_animationClip[enAnimClip_Defend].Load("Assets/animData/character/Player/NewHero/Defend.tka");
+	m_animationClip[enAnimClip_Defend].SetLoopFlag(true);
+	m_animationClip[enAnimClip_DefendHit].Load("Assets/animData/character/Player/NewHero/DefendHit.tka");
+	m_animationClip[enAnimClip_DefendHit].SetLoopFlag(false);
+
+
+
 	m_animationClip[enAnimClip_Idle].Load("Assets/animData/character/Player/NewHero/Idle.tka");
 	m_animationClip[enAnimClip_Idle].SetLoopFlag(true);
 	m_animationClip[enAnimClip_Sprint].Load("Assets/animData/character/Player/NewHero/Sprint.tka");
@@ -480,10 +517,6 @@ void Brave::InitModel()
 	m_animationClip[enAnimClip_KnockBack].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Hit].Load("Assets/animData/character/Player/NewHero/Hit.tka");
 	m_animationClip[enAnimClip_Hit].SetLoopFlag(false);
-	m_animationClip[enAnimClip_Defend].Load("Assets/animData/character/Player/NewHero/Defend.tka");
-	m_animationClip[enAnimClip_Defend].SetLoopFlag(true);
-	m_animationClip[enAnimClip_DefendHit].Load("Assets/animData/character/Player/NewHero/DefendHit.tka");
-	m_animationClip[enAnimClip_DefendHit].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Die].Load("Assets/animData/character/Player/NewHero/Die.tka");
 	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
 	m_animationClip[enAnimClip_ChangeSwordShield].Load("Assets/animData/character/Player/NewHero/ChangeSwordShield.tka");
@@ -515,21 +548,6 @@ void Brave::InitModel()
 
 	m_charaCenterBoonId = m_modelRender.FindBoneID(L"root");
 
-	Sword.Init("Assets/modelData/character/Player/NewHero/OneHandSword.tkm",
-		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
-		0,
-		0,
-		enModelUpAxisZ);
-	m_swordBoonId = m_modelRender.FindBoneID(L"weaponShield_r");
-
-	Shield.Init("Assets/modelData/character/Player/NewHero/Shield.tkm",
-		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
-		0,
-		0,
-		enModelUpAxisZ);
-	m_shieldBoonId = m_modelRender.FindBoneID(L"weaponShield_l");
-
-
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
@@ -539,8 +557,6 @@ void Brave::InitModel()
 void Brave::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
-	Sword.Draw(rc);
-	Shield.Draw(rc);
 }
 
 void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
@@ -564,6 +580,20 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	{
 		SetDashAttackFlag(false);
 	}
+
+	//武器入れ替え
+	if (wcscmp(eventName, L"ArmedSwordShield") == 0)
+	{
+		m_mainWeapon->ReverseWeaponState();
+		m_subWeapon->ReverseWeaponState();
+		IWeapon* w = nullptr;
+
+		w = m_mainWeapon;
+		m_mainWeapon = m_subWeapon;
+		m_subWeapon = w;
+
+	}
+
 	////////////////////////////////////////////////////////////
 	// 剣盾の処理
 	////////////////////////////////////////////////////////////

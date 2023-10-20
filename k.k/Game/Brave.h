@@ -1,8 +1,12 @@
 #pragma once
 #include "Actor.h"
+#include "IWeapon.h"
 
 class Player;
 class IBraveState;
+class IWeapon;
+
+class SwordShield;
 
 /// <summary>
 /// 勇者クラス
@@ -10,6 +14,13 @@ class IBraveState;
 class Brave:public Actor
 {
 public:
+
+	enum EnWepons
+	{
+		enWeapon_Main,
+		enWeapon_Sub,
+		enWeapon_num
+	};
 
 	/// <summary>
 	/// アクションする時に使うフラグをまとめている
@@ -66,6 +77,9 @@ public:
 	/// <param name="Speed">前進する速さ</param>
 	void CalcAttackDirection(float Speed);
 
+	/// <summary>
+	///	武器の切り替え処理
+	/// </summary>
 	void ChangeWeapon();
 
 
@@ -93,7 +107,8 @@ public:
 			m_enAnimationState != enAnimationState_Defend &&
 			m_enAnimationState != enAnimationState_Hit &&
 			m_enAnimationState != enAnimationState_Defend &&
-			m_enAnimationState != enAnimationState_Die;
+			m_enAnimationState != enAnimationState_Die &&
+			m_enAnimationState != enAnimationState_ChangeSwordShield;
 	}
 
 	/// <summary>
@@ -208,6 +223,10 @@ public:
 	/// ステート共通の状態遷移処理
 	/// </summary>
 	void ProcessCommonStateTransition();
+	/// <summary>
+	/// ステート共通の武器切り替え処理
+	/// </summary>
+	void ProcessCommonWeaponChangeStateTransition();
 	/// <summary>
 	/// 通常攻撃ステートの状態遷移処理
 	/// </summary>
@@ -336,14 +355,15 @@ private:
 	/// </summary>
 	bool RotationOnly();
 
-
-	void UpdateWeapons();
-
-
 private:
+
+	IWeapon* m_weapon[enWeapon_num];	//武器の数
+	IWeapon* m_mainWeapon = nullptr;	//メイン武器
+	IWeapon* m_subWeapon = nullptr;		//サブ武器
 
 	Player* m_player = nullptr;
 	IBraveState* m_BraveState = nullptr;
+	SwordShield* m_swordShield = nullptr;
 
 	EnAnimationState m_enAnimationState = enAninationState_Idle;			//アニメーションステート
 	EnAttackPattern m_attackPatternState = enAttackPattern_None;
