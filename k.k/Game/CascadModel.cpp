@@ -11,7 +11,7 @@ CascadModel::~CascadModel()
 
 bool CascadModel::Start()
 {
-	g_renderingEngine->SetAmbient(g_vec3One * 1.1f);
+	//g_renderingEngine->SetAmbient(g_vec3One * 1.1f);
 
 	//シャドウキャスター
 	tea.Init("Assets/modelData/cascadeShadowModel/testModel.tkm",
