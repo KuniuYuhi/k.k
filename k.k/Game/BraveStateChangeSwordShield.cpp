@@ -4,7 +4,7 @@
 
 void BraveStateChangeSwordShield::ManageState()
 {
-
+	m_brave->ProcessCommonWeaponChangeStateTransition();
 }
 
 void BraveStateChangeSwordShield::PlayAnimation()
