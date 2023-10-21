@@ -23,8 +23,8 @@ bool SwordShield::Start()
 	InitModel();
 
 	//‘•”õ
-	SetWeaponState(enWeaponState_Stowed);
-	SetStowedFlag(true);
+	SetWeaponState(enWeaponState_Armed);
+	SetStowedFlag(false);
 
 	return true;
 }
@@ -111,10 +111,6 @@ void SwordShield::MoveStowed()
 	m_shieldMatrix =
 		m_brave->GetModelRender().GetBone(m_stowedShieldBoonId)->GetWorldMatrix();
 	m_modelShield.SetWorldMatrix(m_shieldMatrix);*/
-}
-
-void SwordShield::SetBraveAnimationClip(ModelRender* modelrender)
-{
 }
 
 void SwordShield::Render(RenderContext& rc)

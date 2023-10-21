@@ -34,12 +34,6 @@ private:
 	/// </summary>
 	void MoveStowed() override;
 
-	/// <summary>
-	/// 勇者(プレイヤー)のアニメーションクリップを自身の武器のものに変更
-	/// </summary>
-	/// <param name="modelrender"></param>
-	void SetBraveAnimationClip(ModelRender* modelrender) override;
-
 private:
 	ModelRender m_modelSword;		//剣モデル
 	ModelRender m_modelShield;		//盾モデル
@@ -56,5 +50,7 @@ private:
 	//武器をしまった時のボーンID
 	int m_stowedSwordBoonId = -1;
 	int m_stowedShieldBoonId = -1;
+
+
 };
 
