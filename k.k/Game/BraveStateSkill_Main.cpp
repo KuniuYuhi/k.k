@@ -9,5 +9,8 @@ void BraveStateSkill_Main::ManageState()
 
 void BraveStateSkill_Main::PlayAnimation()
 {
-	m_brave->GetModelRender().PlayAnimation(Brave::enAnimClip_Skill_Main, 0.2f);
+	m_brave->GetModelRender().PlayAnimation(
+		Brave::enAnimClip_Skill_Main + m_brave->GetCurrentMainWeaponAnimationStartIndexNo(),
+		0.2f
+	);
 }

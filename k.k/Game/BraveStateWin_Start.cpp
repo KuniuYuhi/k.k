@@ -8,5 +8,8 @@ void BraveStateWin_Start::ManageState()
 
 void BraveStateWin_Start::PlayAnimation()
 {
-	m_brave->GetModelRender().PlayAnimation(Brave::enAnimClip_Win_Start, 0.2f);
+	m_brave->GetModelRender().PlayAnimation(
+		Brave::enAnimClip_Win_Start + m_brave->GetCurrentMainWeaponAnimationStartIndexNo(),
+		0.2f
+	);
 }

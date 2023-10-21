@@ -15,5 +15,9 @@ void BraveStateDefend::ManageState()
 
 void BraveStateDefend::PlayAnimation()
 {
-	m_brave->GetModelRender().PlayAnimation(Brave::enAnimClip_Defend, 0.2f);
+	m_brave->GetModelRender().PlayAnimation(
+		Brave::enAnimClip_Defend + m_brave->GetCurrentMainWeaponAnimationStartIndexNo(),
+		0.2f
+	);
+
 }

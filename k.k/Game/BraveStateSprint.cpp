@@ -9,5 +9,8 @@ void BraveStateSprint::ManageState()
 
 void BraveStateSprint::PlayAnimation()
 {
-	m_brave->GetModelRender().PlayAnimation(Brave::enAnimClip_Sprint, 0.3f);
+	m_brave->GetModelRender().PlayAnimation(
+		Brave::enAnimClip_Sprint + m_brave->GetCurrentMainWeaponAnimationStartIndexNo(), 
+		0.3f
+	);
 }
