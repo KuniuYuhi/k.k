@@ -13,7 +13,7 @@ namespace nsK2EngineLow {
         /// </summary>
         /// <param name="lightDirection">ƒ‰ƒCƒg‚Ì•ûŒü</param>
         void CalcLightViewProjectionCropMatrix(
-            Vector3 lightDirection,
+            Camera& lightCamera,
             float cascadeAreaRateTbl[NUM_SHADOW_MAP]
         );
         /// <summary>
