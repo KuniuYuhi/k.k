@@ -164,6 +164,7 @@ namespace nsK2EngineLow {
 		{
 			return m_tkaFile->GetNumAnimationEvent();
 		}
+
 	private:
 		using KeyframePtr = std::unique_ptr<KeyFrame>;
 		std::wstring m_clipName;										//!<アニメーションクリップの名前。
