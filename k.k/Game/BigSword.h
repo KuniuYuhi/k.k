@@ -34,13 +34,6 @@ private:
 	/// </summary>
 	void MoveStowed() override;
 
-	/// <summary>
-	/// 勇者(プレイヤー)のアニメーションクリップを自身の武器のものに変更
-	/// </summary>
-	/// <param name="modelrender"></param>
-	void SetBraveAnimationClip(ModelRender* modelrender) override;
-
-
 private:
 	ModelRender m_modelBigSword;		//剣モデル
 

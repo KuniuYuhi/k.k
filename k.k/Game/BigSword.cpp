@@ -23,8 +23,8 @@ bool BigSword::Start()
 	InitModel();
 
 	//装備
-	SetWeaponState(enWeaponState_Armed);
-
+	SetWeaponState(enWeaponState_Stowed);
+	SetStowedFlag(true);
 
 	return true;
 }
@@ -53,7 +53,7 @@ void BigSword::InitModel()
 
 	//剣と盾の座標に対応するボーンIDを取得
 	//装備状態の時のボーンID
-	m_armedSwordBoonId = m_brave->GetModelRender().FindBoneID(L"weaponShield_r");
+	m_armedSwordBoonId = m_brave->GetModelRender().FindBoneID(L"weaponShield_l");
 }
 
 void BigSword::MoveWeapon()
@@ -85,10 +85,6 @@ void BigSword::MoveStowed()
 {
 	m_swordPos = STOWEDS_POSITION;
 	m_modelBigSword.SetPosition(m_swordPos);
-}
-
-void BigSword::SetBraveAnimationClip(ModelRender* modelrender)
-{
 }
 
 void BigSword::Render(RenderContext& rc)
