@@ -168,7 +168,7 @@ namespace nsK2EngineLow {
 		
 		m_shadowMapRenders.Render(
 			rc,
-			m_deferredLightingCB.m_light.directionalLight.lightDirection,
+			GetLightCamera()/*m_deferredLightingCB.m_light.directionalLight.lightDirection*/,
 			m_renderObjects
 		);
 
