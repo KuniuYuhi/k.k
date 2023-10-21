@@ -33,6 +33,15 @@ public:
 		bool isComboReceptionFlag = false;	//コンボ受付可能フラグ
 	};
 
+	/// <summary>
+	/// 使用する武器の構造体
+	/// </summary>
+	struct UseWeapon
+	{
+		IWeapon* weapon = nullptr;	//武器オブジェクトの変数
+		int weaponAnimationStartIndexNo = 0;	//武器のアニメーションクリップの最初の番号
+	};
+
 	Brave();
 	~Brave();
 
@@ -157,7 +166,6 @@ public:
 	enum EnAnimationClip {
 		enAnimClip_Idle,
 		enAnimClip_Sprint,
-		enAnimClip_DashForward,
 		enAnimClip_KnockBack,
 		enAnimClip_Hit,
 		enAnimClip_Defend,
@@ -171,7 +179,6 @@ public:
 		enAnimClip_attack3,
 		enAnimClip_Skill_Start,
 		enAnimClip_Skill_Main,
-
 		enAnimClip_Num
 	};
 
@@ -334,6 +341,15 @@ public:
 		return m_normalAttackSpeed;
 	}
 
+	/// <summary>
+	/// メイン武器のアニメーションクリップの最初の番号を取得
+	/// </summary>
+	/// <returns></returns>
+	const int& GetCurrentMainWeaponAnimationStartIndexNo() const
+	{
+		return m_currentAnimationStartIndexNo;
+	}
+
 private:
 	/// <summary>
 	/// アニメーションの再生
@@ -355,7 +371,35 @@ private:
 	/// </summary>
 	bool RotationOnly();
 
+	/// <summary>
+	/// メイン武器とサブ武器を入れ替える
+	/// </summary>
+	void ReverseWeapon();
+
+	/// <summary>
+	/// UseWeapon構造体の中身を入れ替える
+	/// </summary>
+	void ChangeUseWeapon();
+
 private:
+	/// <summary>
+	/// 武器それぞれのアニメーションクリップグループ
+	/// </summary>
+	enum AnimationClipGroup {
+		AnimationClipGroup_OneHandedSword,	// 片手剣を装備中のアニメーションクリップグループ
+		AnimationClipGroup_TwoHandedSword,	// 両手剣を装備中のアニメーションクリップグループ
+		AnimationClipGroup_Num,
+	};
+	//片手剣の最初のアニメーションクリップの番号
+	const int OneHandSwordAnimationStartIndexNo = AnimationClipGroup_OneHandedSword;
+	//両手剣の最初のアニメーションクリップの番号
+	const int TwoHandSwordAnimationStartIndexNo = enAnimClip_Num * AnimationClipGroup_TwoHandedSword;
+	// const int ThreeHandSwordAnimationStartIndexNo = enAnimClip_Num * 2;
+
+	//現在の武器のアニメーションの最初の番号
+	int m_currentAnimationStartIndexNo = OneHandSwordAnimationStartIndexNo;
+
+	UseWeapon m_useWeapon[enWeapon_num];	//使う武器
 
 	IWeapon* m_weapon[enWeapon_num];	//武器の数
 	IWeapon* m_mainWeapon = nullptr;	//メイン武器
@@ -368,35 +412,19 @@ private:
 	EnAnimationState m_enAnimationState = enAninationState_Idle;			//アニメーションステート
 	EnAttackPattern m_attackPatternState = enAttackPattern_None;
 	CharacterController m_charaCon;
-
-	Animation	m_animation;				// アニメーション
-	AnimationClip	m_animationClip[enAnimClip_Num];// アニメーションクリップ 
-
+	
+	AnimationClip	m_animationClip[enAnimClip_Num * AnimationClipGroup_Num];// アニメーションクリップ 
+	
 	ModelRender m_modelRender;
 
 	InfoAboutActionFlag m_infoAboutActionFlag;
 
 	int m_charaCenterBoonId = -1;
 
-	//bool m_dashAttackFlag = false;		//攻撃時に前進するかのフラグ
-
-	//bool m_isActionFlag = false;			//攻撃や防御などのアクションを起こしたかのフラグ
-	//bool m_nextComboFlag = false;		//次のコンボ攻撃をするかのフラグ
-
-	//bool m_isComboReceptionFlag = false;	//コンボ受付可能フラグ
-
 	float m_mulYPos = 0.0f;
 
 	const float m_normalAttackSpeed = 160.0f;
 
-	//なくなる
-	ModelRender Sword;
-	int m_swordBoonId = -1;
-
-	ModelRender Shield;
-	int m_shieldBoonId = -1;
-
-	int m_playAnimCount = 0;
 
 };
 
