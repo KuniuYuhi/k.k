@@ -25,6 +25,7 @@ namespace nsK2EngineLow {
 				);
 			}
 		}
+	
 	private:
 		using TResourcePtr = std::unique_ptr<TResource>;
 		std::map<std::string, TResourcePtr> m_resourceMap;

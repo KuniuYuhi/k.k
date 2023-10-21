@@ -226,6 +226,7 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="AIActor.cpp" />
     <ClCompile Include="BattleStart.cpp" />
+    <ClCompile Include="BigSword.cpp" />
     <ClCompile Include="BossStage1.cpp" />
     <ClCompile Include="Brave.cpp" />
     <ClCompile Include="BraveStateAttack_1.cpp" />
@@ -280,6 +281,7 @@
     <ClCompile Include="HeroStateDash.cpp" />
     <ClCompile Include="HeroStateVictory.cpp" />
     <ClCompile Include="HeroStateWalk.cpp" />
+    <ClCompile Include="IWeapon.cpp" />
     <ClCompile Include="Lich.cpp" />
     <ClCompile Include="LichAction.cpp" />
     <ClCompile Include="LichStateAngry.cpp" />
@@ -326,6 +328,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Summon.cpp" />
+    <ClCompile Include="SwordShield.cpp" />
     <ClCompile Include="system\system.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="TurtleShell.cpp" />
@@ -359,6 +362,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="AIActor.h" />
     <ClInclude Include="BattleStart.h" />
+    <ClInclude Include="BigSword.h" />
     <ClInclude Include="BossStage1.h" />
     <ClInclude Include="Brave.h" />
     <ClInclude Include="BraveStateAttack_1.h" />
@@ -420,6 +424,7 @@
     <ClInclude Include="IMushroomState.h" />
     <ClInclude Include="ISlimeState.h" />
     <ClInclude Include="ITurtleShellState.h" />
+    <ClInclude Include="IWeapon.h" />
     <ClInclude Include="IWizardState.h" />
     <ClInclude Include="Lich.h" />
     <ClInclude Include="LichAction.h" />
@@ -462,6 +467,7 @@
     <ClInclude Include="Status.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Summon.h" />
+    <ClInclude Include="SwordShield.h" />
     <ClInclude Include="system\system.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="TurtleShell.h" />

@@ -24,13 +24,11 @@ static const int INFINITY = 40.0f;
 // モデル用の頂点シェーダーのエントリーポイント
 SPSIn VSMainCore(SVSIn vsIn, float4x4 mWorldLocal, uniform bool isUsePreComputedVertexBuffer)
 {
-    SPSIn psIn;
+    SPSIn psIn = (SPSIn) 0;
 
     psIn.pos = CalcVertexPositionInWorldSpace(vsIn.pos, mWorldLocal, isUsePreComputedVertexBuffer);
     psIn.pos = mul(mView, psIn.pos);
     psIn.pos = mul(mProj, psIn.pos);
-
-    psIn.depth = 0.0f;
     
     return psIn;
 }
@@ -39,10 +37,12 @@ SPSIn VSMainCore(SVSIn vsIn, float4x4 mWorldLocal, uniform bool isUsePreComputed
 /// </summary>
 float4 PSMain(SPSIn psIn) : SV_Target0
 {
+    SVSIn svIn = (SVSIn) 0;
+    
     //シャドウマップにZ値を書き込む
     //return float4(psIn.pos.z, psIn.pos.z, psIn.pos.z, 1.0f);
 
     float depth = psIn.pos.z ;
     float pos = exp(INFINITY * depth);
-    return float4(pos, pos*pos, 0.0f, 1.0f);
+    return float4(depth, pos * pos, 0.0f, 1.0f);
 }

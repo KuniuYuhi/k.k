@@ -21,16 +21,13 @@ namespace nsK2EngineLow {
 
 	void Shadow::Render(
 		RenderContext& rc,
-		Vector3& lightDirection,
+		Camera& lightCamera,
 		std::vector< IRenderer* >& renderObjects
 	)
 	{
-		if (lightDirection.LengthSq() < 0.001f) {
-			return;
-		}
 		// ライトの最大の高さをレンダラーのAABBから計算する。
 		m_cascadeShadowMapMatrix.CalcLightViewProjectionCropMatrix(
-			lightDirection,
+			lightCamera,
 			m_cascadeAreaRateArray
 		);
 
@@ -58,10 +55,10 @@ namespace nsK2EngineLow {
 		}
 
 		//ブラーを実行する
-		for (auto& blur : m_blur)
+		/*for (auto& blur : m_blur)
 		{
 			blur.ExecuteOnGPU(rc, 1.0f);
-		}
+		}*/
 
 		//レンダリングエンジンの方でやる
 		UpDateLightCamera();

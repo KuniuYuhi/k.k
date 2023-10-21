@@ -21,9 +21,14 @@ public:
 
 	Player();
 	~Player();
-
 	bool Start();
 	void Update();
+
+	/// <summary>
+	/// 行動不可能かどうかの判定可能
+	/// </summary>
+	/// <returns>trueで不可能、falseで可能</returns>
+	bool IsInaction();
 
 	/// <summary>
 	/// 勝敗が決定したか

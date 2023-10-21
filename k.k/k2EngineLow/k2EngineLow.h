@@ -115,6 +115,7 @@ namespace nsK2EngineLow {
 		{
 			m_tkaFileBank.Regist(filePath, tkaFile);
 		}
+		
 		/// <summary>
 		/// シェーダーファイルバンクからシェーダーを取得。
 		/// </summary>

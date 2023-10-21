@@ -10,7 +10,7 @@ namespace nsK2EngineLow {
 
 		void Render(
 			RenderContext& rc,
-			Vector3& lightDirection,
+			Camera& lightCamera,
 			std::vector< IRenderer* >& renderObjects
 		);
 
@@ -52,7 +52,7 @@ namespace nsK2EngineLow {
 		/// <returns></returns>
 		Texture& GetShadowMap(int areaNo)
 		{
-			return m_blur[areaNo].GetBokeTexture();
+			//return m_blur[areaNo].GetBokeTexture();
 			/*if (m_isSoftShadow) {
 				return m_blur[areaNo].GetBokeTexture();
 			}*/
@@ -91,7 +91,7 @@ namespace nsK2EngineLow {
 		RenderTarget m_shadowMaps[NUM_SHADOW_MAP];		//シャドウマップ
 		GaussianBlur m_blur[NUM_SHADOW_MAP];			//シャドウマップにブラーをかける処理
 		Camera m_lightCamera;
-		float m_cascadeAreaRateArray[NUM_SHADOW_MAP] = { 0.05f,0.3f, 1.0f };//近影、中影、遠影の範囲。いじっていい
+		float m_cascadeAreaRateArray[NUM_SHADOW_MAP] = { 500.0f,2000.0f, g_camera3D->GetFar()};//近影、中影、遠影の範囲。いじっていい
 		Vector3 m_lightCameraPosition = Vector3(500.0f, 1200.0f, 0.0f);	//カメラの座標(座標からターゲットに向かって影が落とされる)
 		std::vector< IRenderer* > m_renderers;              // シャドウマップへのレンダラーの配列。
 		Sprite shadowSprite;

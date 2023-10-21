@@ -2,70 +2,11 @@
 #include "CascadeShadowMapMatrix.h"
 
 void nsK2EngineLow::CascadeShadowMapMatrix::CalcLightViewProjectionCropMatrix(
-	Vector3 lightDirection, 
+	Camera& lightCamera,
 	float cascadeAreaRateTbl[NUM_SHADOW_MAP]
 )
 {
-	// 最大ファーは150m
-	float maxFar = 
-		g_camera3D->GetFar() * cascadeAreaRateTbl[NUM_SHADOW_MAP - 1];
-	//ビュー行列を計算する。
-	Matrix viewMatrix;
-	Vector3 lightTarget = g_camera3D->GetPosition();
-	Vector3 lightPos = lightTarget;
-
-	// ライトの高さは50m決め打ち。
-	float lightMaxHeight = 5000.0f;
-	lightPos += (lightDirection) * (lightMaxHeight / lightDirection.y);
-	//上方向を設定
-	if (fabsf(lightDirection.y) > 0.9999f) {
-		//ほぼ真上、真下を向いている
-		viewMatrix.MakeLookAt(lightPos, lightTarget, g_vec3AxisX);
-	}
-	else {
-		viewMatrix.MakeLookAt(lightPos, lightTarget, g_vec3AxisY);
-	}
-
-	Matrix projMatrix;
-	projMatrix.MakeOrthoProjectionMatrix(
-		5000.0f,
-		5000.0f,
-		1.0f,
-		maxFar
-	);
-
-	// ライトカメラを計算する
-	//Camera lightCamera;
-	//Vector3 lightPos;
-	//float distLig = g_camera3D->GetFar() * 0.1f;
-	//lightPos = lightDirection * -distLig;    // ライトまでの距離は外から指定できるようにする
-	//lightCamera.SetPosition(lightPos);
-	//lightCamera.SetTarget(0.0f, 0.0f, 0.0f);
-	//// 上方向を設定
-	//if (fabsf(lightDirection.y) > 0.9999f)
-	//{
-	//	// ほぼ真上、真下を向いている
-	//	lightCamera.SetUp(g_vec3AxisX);
-	//}
-	//else
-	//{
-	//	lightCamera.SetUp(g_vec3AxisY);
-	//}
-	//lightCamera.SetUpdateProjMatrixFunc(Camera::enUpdateProjMatrixFunc_Ortho);
-	//lightCamera.SetWidth(5000.0f);
-	//lightCamera.SetHeight(5000.0f);
-	//lightCamera.SetNear(1.0f);
-	//lightCamera.SetFar(g_camera3D->GetFar());
-	//lightCamera.Update();
-
-	//const auto& lvpMatrix = lightCamera.GetViewProjectionMatrix();
-
-	// 分割エリアの最大深度値を定義する
-	float cascadeAreaTbl[NUM_SHADOW_MAP] = {
-		maxFar * cascadeAreaRateTbl[SHADOW_MAP_AREA_NEAR],		//近影を映す最大深度値
-		maxFar * cascadeAreaRateTbl[SHADOW_MAP_AREA_MIDDLE],	//中影を映す最大深度値
-		maxFar * cascadeAreaRateTbl[SHADOW_MAP_AREA_FAR],		//遠影を映す最大深度値
-	};
+	const auto& lvpMatrix = lightCamera.GetViewProjectionMatrix();
 
 	//カメラの前方向、上方向、右方向を求める	
 	//前方向と右方向は既に計算済みなので、それを引っ張ってくる
@@ -90,7 +31,7 @@ void nsK2EngineLow::CascadeShadowMapMatrix::CalcLightViewProjectionCropMatrix(
 		float nearX = nearY * g_camera3D->GetAspect();
 
 		// エリアの遠平面の中心からの上面、下面までの距離を求める
-		float farY = tanf(g_camera3D->GetViewAngle() * 0.5f) * cascadeAreaTbl[areaNo];
+		float farY = tanf(g_camera3D->GetViewAngle() * 0.5f) * cascadeAreaRateTbl[areaNo];
 
 		// エリアの遠平面の中心からの右面、左面までの距離を求める
 		float farX = farY * g_camera3D->GetAspect();
@@ -99,7 +40,7 @@ void nsK2EngineLow::CascadeShadowMapMatrix::CalcLightViewProjectionCropMatrix(
 		Vector3 nearPos = g_camera3D->GetPosition() + cameraForward * nearDepth;
 
 		// エリアの遠平面の中心座標を求める
-		Vector3 farPos = g_camera3D->GetPosition() + cameraForward * cascadeAreaTbl[areaNo];
+		Vector3 farPos = g_camera3D->GetPosition() + cameraForward * cascadeAreaRateTbl[areaNo];
 
 		// 8頂点を求める
 		Vector3 vertex[8];
@@ -128,17 +69,8 @@ void nsK2EngineLow::CascadeShadowMapMatrix::CalcLightViewProjectionCropMatrix(
 		// 遠平面の左下の頂点
 		vertex[7] += farPos + cameraUp * -farY + cameraRight * -farX;
 
-		// 8頂点をカメラ空間に変換して、近平面と遠平面を求める。
-		float nearZ = FLT_MAX, farZ = -FLT_MAX;
-		for (auto v : vertex) {
-			viewMatrix.Apply(v);
-			nearZ = max(0.0f, min(v.z, nearZ));
-			farZ = max(v.z, farZ);
-		}
-
 		// 8頂点をライトビュープロジェクション空間に変換して、
 		// 8頂点の最大値、最小値を求める
-		Matrix lvpMatrix = viewMatrix * projMatrix;
 		Vector3 vMax, vMin;
 		vMax = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
 		vMin = { FLT_MAX,  FLT_MAX,  FLT_MAX };
@@ -167,7 +99,7 @@ void nsK2EngineLow::CascadeShadowMapMatrix::CalcLightViewProjectionCropMatrix(
 		m_lvpcMatrix[areaNo] = lvpMatrix * clopMatrix;
 
 		// 次のエリアの近平面までの距離を代入する
-		nearDepth = cascadeAreaTbl[areaNo];
+		nearDepth = cascadeAreaRateTbl[areaNo];
 	}
 
 

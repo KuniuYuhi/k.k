@@ -17,7 +17,10 @@ void BraveStateAttack_1::ManageState()
 
 void BraveStateAttack_1::PlayAnimation()
 {
-	m_brave->GetModelRender().PlayAnimation(Brave::enAnimClip_attack1, 0.2f);
+	m_brave->GetModelRender().PlayAnimation(
+		Brave::enAnimClip_attack1 + m_brave->GetCurrentMainWeaponAnimationStartIndexNo(),
+		0.2f
+	);
 }
 
 

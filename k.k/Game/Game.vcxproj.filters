@@ -31,6 +31,9 @@
     <Filter Include="Brave">
       <UniqueIdentifier>{cb6cd09f-fc8e-4001-a80a-8ce928ff27df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Weapons">
+      <UniqueIdentifier>{d8445f81-0a79-4ad9-9f94-409a2b4e6cdc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -372,6 +375,13 @@
     <ClCompile Include="BraveStateWin_Start.cpp">
       <Filter>Brave</Filter>
     </ClCompile>
+    <ClCompile Include="IWeapon.cpp">
+      <Filter>Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="SwordShield.cpp">
+      <Filter>Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="BigSword.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -736,5 +746,12 @@
     <ClInclude Include="BraveStateWin_Main.h">
       <Filter>Brave</Filter>
     </ClInclude>
+    <ClInclude Include="IWeapon.h">
+      <Filter>Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="SwordShield.h">
+      <Filter>Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="BigSword.h" />
   </ItemGroup>
 </Project>

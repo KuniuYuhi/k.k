@@ -20,12 +20,8 @@ Player::~Player()
 
 bool Player::Start()
 {
+	//ゲームクラスと勇者クラスのインスタンスを検索
 	m_game = FindGO<Game>("game");
-
-
-	//m_hero = NewGO<Hero>(0, "hero");
-	//m_wizard = NewGO<Wizard>(0, "wizard");
-
 	m_brave = NewGO<Brave>(0, "brave");
 
 	actor[enHero] = m_hero;
@@ -47,56 +43,50 @@ bool Player::Start()
 	//座標の設定
 	m_position = m_nowActor->GetPosition();
 
-	//キャラコンの設定
-	//m_charaCon.Init(12.0f, 33.0f, m_position);
-
-
 	return true;
 }
 
 void Player::Update()
 {
 	//勝敗が決まったら
-	/*if (IsWinnerDecision() == true)
+	if (IsWinnerDecision() == true)
 	{
 		return;
-	}*/
+	}
 
 	//ゲームが始まるまでは移動しない
 	//todo もっと分かりやすくできる
-	/*if (m_game->GetNowGameState() != Game::enGameState_Game)
+	if (m_game->GetNowGameState() != Game::enGameState_Game)
 	{
 		return;
-	}*/
+	}
 	//行動可能にする
 	if (m_dontActionFlag != false)
 	{
 		SetDontActionFlag(false);
 	}
+}
 
-	//現在のキャラクターがやられたら強制的に切り替え
-	//if (ForcedChange() == false)
-	//{
-	//	//フラグがfalseなら
-	//	if (m_ChangCharacterFlag == false)
-	//	{
-	//		//キャラ切り替え
-	//		Change();
-	//	}
-	//	
-	//}
-
-	////キャラ切り替え後のクールタイムの計算
-	//ChangeCharacterTime();
-
-	//現在のキャラクターがやられていないなら先の処理しない
-	if (m_nowActor->GetDieFlag() != true)
+bool Player::IsInaction()
+{
+	//////////////////////////////////////////////////
+	// 行動出来なくなる条件
+	////////////////////////////////////////////////// 
+	//ゲーム中でないなら
+	if (m_game->IsMatchGameState(Game::enGameState_Game) != true)
 	{
-		//移動処理
-		//m_moveSpeed = m_nowActor->calcVelocity(m_nowActor->GetStatus());
-		//m_moveSpeed.y = 0.0f;
-		//CalcPosition(m_moveSpeed, 1.0f / 60.0f);
+		return true;
 	}
+	//勝敗が決まったら
+	if (IsWinnerDecision() == true)
+	{
+		return true;
+	}
+
+	//////////////////////////////////////////////////
+	// 行動できる
+	//////////////////////////////////////////////////
+	return false;
 }
 
 void Player::Change()
@@ -158,9 +148,6 @@ void Player::ChangeCharacter(EnCharacters nextCharacter)
 	//キャラを切り替えたので無敵時間フラグをtrueにする
 	m_nowActor->SetChangeCharacterInvincbleFlag(true);
 
-	//m_charaCon.SetRadius(50.0f);
-	//キャラコンの座標
-	//m_nowActor->SetCharaConPosition(m_nowActor->GetPosition());
 	//現在のキャラクターを魔法使いに変更する
 	m_enActiveCharacter = nextCharacter;
 

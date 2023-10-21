@@ -17,6 +17,10 @@ namespace nsK2EngineLow {
 
 		//GBuffer描画用のモデルを初期化
 		InitModelOnRenderGBuffer(*g_renderingEngine, tkmFilePath, enModelUpAxis, isShadowCaster);
+		/*if (isOutline == true)
+		{
+			
+		}*/
 		//ZPrepass描画用のモデルを初期化。
 		InitModelOnZprepass(tkmFilePath, enModelUpAxis);
 		//シャドウマップ描画用のモデルの初期化

@@ -154,6 +154,21 @@ public:
 		return m_second;
 	}
 
+	/// <summary>
+	/// ゲームの現在のステートと検索したいステートが同じか判定
+	/// </summary>
+	/// <param name="searchGameState">検索したいゲームステート</param>
+	/// <returns>trueで同じ、falseで違う</returns>
+	bool IsMatchGameState(EnGameState searchGameState)
+	{
+		if (GetNowGameState() == searchGameState)
+		{
+			return true;
+		}
+		return false;
+	}
+
+
 private:
 
 	/// <summary>
