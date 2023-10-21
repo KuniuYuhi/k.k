@@ -47,11 +47,6 @@ public:
 	//todo 武器固有の処理
 
 
-	/// <summary>
-	/// 勇者(プレイヤー)のアニメーションクリップを自身の武器のものに変更
-	/// </summary>
-	/// <param name="modelrender"></param>
-	virtual void SetBraveAnimationClip(ModelRender* modelrender) = 0;
 
 	///////////////////////////////////////////////////////////////////////////
 	///その他の関数
@@ -147,6 +142,8 @@ protected:
 	Vector3 m_position = g_vec3Zero;	//自身の座標
 
 	bool m_stowedFlag = false;		//収納状態フラグ。処理しないようにするためのフラグ
+
+
 
 	//派生クラスで必要なもの
 	//ワールド座標
