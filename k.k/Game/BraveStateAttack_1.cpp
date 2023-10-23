@@ -4,11 +4,11 @@
 
 void BraveStateAttack_1::ManageState()
 {
-	//前進する攻撃フラグが立っている間は処理
-	if (m_brave->GetDashAttackFlag() == true)
+	//前進するフラグが立っている間は処理
+	if (m_brave->GetMoveForwardFlag() == true)
 	{
 		//向いている方向に移動
-		m_brave->CalcAttackDirection(m_brave->GetNormalAttackSpeed());
+		m_brave->MoveForward(m_brave->GetNormalAttackSpeed());
 	}
 
 	m_brave->ProcessNormalAttackStateTransition();
