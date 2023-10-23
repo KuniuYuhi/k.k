@@ -35,21 +35,18 @@ public:
 		m_position = position;
 	}
 
+	///////////////////////////////////////////////////////////////
+	//仮想関数、純粋仮想関数
+	///////////////////////////////////////////////////////////////
+
+	/// <summary>
+	/// 勝利時のアニメーションステートを設定
+	/// </summary>
 	virtual void SetVictoryAnimationState() = 0;
-
+	/// <summary>
+	/// 待機状態アニメーションステートを設定
+	/// </summary>
 	virtual void SetIdleAnimationState() = 0;
-
-	/// <summary>
-	/// 移動処理
-	/// </summary>
-	/// <param name="status">ステータス</param>
-	/// <returns>moveSpeed</returns>
-	Vector3 calcVelocity(Status status);
-
-	/// <summary>
-	/// 無敵時間の計算
-	/// </summary>
-	bool CalcInvincibleTime();
 
 	/// <summary>
 	/// コリジョンオブジェクトに当たった時の処理
@@ -68,24 +65,68 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	virtual bool isAnimationSwappable() const = 0;
-
 	/// <summary>
 	/// 特定のアニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
 	virtual bool isAnimationEntable() const = 0;
-
 	/// <summary>
 	/// 当たり判定可能なアニメーションか
 	/// </summary>
 	/// <returns></returns>
 	virtual bool isCollisionEntable() const = 0;
-
 	/// <summary>
 	/// 回転可能なアニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
 	virtual bool isRotationEntable() const = 0;
+
+protected:
+	/// <summary>
+	/// モデルの初期化
+	/// </summary>
+	virtual void InitModel() = 0;
+
+	/// <summary>
+	/// アニメーションを再生
+	/// </summary>
+	virtual void PlayAnimation() = 0;
+
+	/// <summary>
+	/// ステート管理
+	/// </summary>
+	virtual void ManageState() = 0;
+
+	/// <summary>
+	/// スキルの使用時などの移動はしないが回転はしたいときに使う
+	/// </summary>
+	virtual bool RotationOnly() = 0;
+
+	/// <summary>
+	/// 前進するフラグの取得
+	/// </summary>
+	/// <returns></returns>
+	virtual const bool& GetMoveForwardFlag() const
+	{
+		return false;
+	}
+
+public:
+	///////////////////////////////////////////////////////////////
+	//その他の関数
+	///////////////////////////////////////////////////////////////
+
+	/// <summary>
+	/// 移動処理
+	/// </summary>
+	/// <param name="status">ステータス</param>
+	/// <returns>moveSpeed</returns>
+	Vector3 calcVelocity(Status status);
+
+	/// <summary>
+	/// 無敵時間の計算
+	/// </summary>
+	bool CalcInvincibleTime();
 
 	/// <summary>
 	/// キャラ切り替え直後の無敵時間かどうか
@@ -251,29 +292,7 @@ public:
 		m_changeCharacterInvincbleFlag = flag;
 	}
 
-
-	
 protected:
-
-	/// <summary>
-	/// モデルの初期化
-	/// </summary>
-	virtual void InitModel() = 0;
-
-	/// <summary>
-	/// アニメーションを再生
-	/// </summary>
-	virtual void PlayAnimation() = 0;
-
-	/// <summary>
-	/// ステート管理
-	/// </summary>
-	virtual void ManageState() = 0;
-
-	/// <summary>
-	/// スキルの使用時などの移動はしないが回転はしたいときに使う
-	/// </summary>
-	virtual bool RotationOnly() = 0;
 
 	/// <summary>
 	/// MPの回復

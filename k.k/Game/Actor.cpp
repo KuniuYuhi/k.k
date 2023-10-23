@@ -82,19 +82,22 @@ Vector3 Actor::calcVelocity(Status status)
 
 	moveSpeed += right + forward;
 	moveSpeed.y = 0.0f;
-	//前方向の取得
-	if (isRotationEntable() != false)
-	{
-		
-	}
 
+	//前方向の取得
 	//x,yどちらかの入力があったら
 	if (fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f)
 	{
-		m_forward = moveSpeed;
-		m_forward.Normalize();
+		if (isRotationEntable() == false)
+		{
+			//前進フラグがtrueでないなら
+			if (GetMoveForwardFlag() == false)
+			{
+				m_forward = moveSpeed;
+				m_forward.Normalize();
+			}
+		}	
 	}
-
+	
 	//値をセーブしておく
 	m_SaveMoveSpeed = moveSpeed;
 
@@ -304,10 +307,6 @@ Quaternion Actor::Rotation(float rotSpeed,float rotOnlySpeed)
 			m_forward.y = 0.0f;
 			m_forward.Normalize();*/
 		}
-
-		
-		
-
 		return m_rotation;
 	}
 
@@ -324,9 +323,6 @@ Quaternion Actor::Rotation(float rotSpeed,float rotOnlySpeed)
 		m_forward.y = 0.0f;
 		m_forward.Normalize();*/
 	}
-
-	
-
 	return m_rotation;
 }
 
