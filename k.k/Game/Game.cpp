@@ -99,7 +99,7 @@ bool Game::Start()
 	CreateBoss();
 
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	//‰æ–Ê‚ð–¾‚é‚­‚·‚é
 	m_fade->StartFadeOut(2.0f);

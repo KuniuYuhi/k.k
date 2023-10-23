@@ -31,6 +31,7 @@ public:
 		bool moveforwardFlag = false;	//前進攻撃フラグ
 		bool nextComboFlag = false;		//次のコンボ攻撃をするかのフラグ
 		bool isComboReceptionFlag = false;	//コンボ受付可能フラグ
+		bool isCollisionPossibleFlag = false;	//当たり判定が有効かの判定フラグ。
 	};
 
 	/// <summary>
@@ -264,10 +265,11 @@ public:
 	/// <param name="flag"></param>
 	void SetAllInfoAboutActionFlag(bool flag)
 	{
-		m_infoAboutActionFlag.isActionFlag = false;
-		m_infoAboutActionFlag.moveforwardFlag = false;
-		m_infoAboutActionFlag.nextComboFlag = false;
-		m_infoAboutActionFlag.isComboReceptionFlag = false;
+		m_infoAboutActionFlag.isActionFlag = flag;
+		m_infoAboutActionFlag.moveforwardFlag = flag;
+		m_infoAboutActionFlag.nextComboFlag = flag;
+		m_infoAboutActionFlag.isComboReceptionFlag = flag;
+		m_infoAboutActionFlag.isCollisionPossibleFlag = flag;
 	}
 	/// <summary>
 	/// アクションフラグの設定
@@ -333,8 +335,22 @@ public:
 	{
 		return m_infoAboutActionFlag.isComboReceptionFlag;
 	}
-
-
+	/// <summary>
+	/// 当たり判定有効化フラグの設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetIsCollisionPossibleFlag(bool flag)
+	{
+		m_infoAboutActionFlag.isCollisionPossibleFlag = flag;
+	}
+	/// <summary>
+	/// 当たり判定有効化フラグの取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetIsCollisionPossibleFlag() const
+	{
+		return m_infoAboutActionFlag.isCollisionPossibleFlag;
+	}
 	/// <summary>
 	/// 前進する攻撃のスピードの取得
 	/// </summary>
