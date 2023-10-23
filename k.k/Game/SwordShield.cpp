@@ -25,6 +25,8 @@ bool SwordShield::Start()
 	//‘•”õ
 	SetWeaponState(enWeaponState_Armed);
 	SetStowedFlag(false);
+	//–hŒäƒ^ƒCƒv‚Ìİ’è
+	SetEnDefendTipe(enDefendTipe_Defence);
 
 	return true;
 }
