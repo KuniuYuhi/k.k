@@ -278,15 +278,13 @@ bool Actor::IsInvincible()
 
 bool Actor::IsComboStateSame()
 {
-	//現在のコンボステートとダメージを受けた時のコンボステートが違うなら
+	//プレイヤーのコンボ状態と
+	// 敵が攻撃を受けた時のコンボ状態が違うなら
 	if (GetNowComboState() != GetDamagedComboState())
 	{
-		//違う
 		return true;
 	}
-	else
-		//同じ
-		return false;
+	return false;
 }
 
 Quaternion Actor::Rotation(float rotSpeed,float rotOnlySpeed)

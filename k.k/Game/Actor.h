@@ -147,13 +147,13 @@ public:
 	/// 現在のコンボステートとダメージを受けた時のコンボステートが違うか
 	/// </summary>
 	/// <returns></returns>
-	bool IsComboStateSame();
+	 bool IsComboStateSame();
 
 	/// <summary>
 	/// 現在のコンボ状態を設定
 	/// </summary>
 	/// <param name="nowcombostate"></param>
-	void SetNowComboState(EnComboState nowcombostate)
+	 void SetNowComboState(EnComboState nowcombostate)
 	{
 		m_enNowComboState = nowcombostate;
 	}
@@ -163,7 +163,7 @@ public:
 	/// またはアニメーションが終わったら設定する。
 	/// </summary>
 	/// <param name="oldcombostate"></param>
-	void SetDamagedComboState(EnComboState damagedcombostate)
+	 void SetDamagedComboState(EnComboState damagedcombostate)
 	{
 		m_enDamagedComboState = damagedcombostate;
 	}
@@ -172,7 +172,7 @@ public:
 	///	現在のコンボ状態を取得
 	/// </summary>
 	/// <returns></returns>
-	EnComboState GetNowComboState() const
+	 const EnComboState& GetNowComboState() const
 	{
 		return m_enNowComboState;
 	}
@@ -180,10 +180,19 @@ public:
 	/// ダメージを受けた時のコンボ状態を取得
 	/// </summary>
 	/// <returns></returns>
-	EnComboState GetDamagedComboState() const
+	 EnComboState GetDamagedComboState() const
 	{
 		return m_enDamagedComboState;
 	}
+	 /// <summary>
+	 /// コンボが終わったときやコンボが中断されたときに呼び出す
+	 /// </summary>
+	 void SetComboStateNone()
+	 {
+		 //コンボが終わったら
+		 SetNowComboState(enNowCombo_None);
+		 SetDamagedComboState(enDamageCombo_None);
+	 }
 
 	/// <summary>
 	/// 座標の取得
