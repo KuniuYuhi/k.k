@@ -25,6 +25,8 @@ bool BigSword::Start()
 	//‘•”õ
 	SetWeaponState(enWeaponState_Stowed);
 	SetStowedFlag(true);
+	//–hŒäƒ^ƒCƒv‚Ìİ’è
+	SetEnDefendTipe(enDefendTipe_avoid);
 
 	return true;
 }

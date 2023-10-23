@@ -18,6 +18,14 @@ public:
 	/// </summary>
 	void MoveWeapon() override;
 
+	/// <summary>
+	/// 攻撃やスキル時のジャンプの速度の取得
+	/// </summary>
+	/// <returns></returns>
+	float GetJampSpeed()
+	{
+		return m_jampSpeed;
+	}
 
 private:
 	/// <summary>
@@ -43,6 +51,8 @@ private:
 
 	//武器を持たせる時のボーンID
 	int m_armedSwordBoonId = -1;
+
+	const float m_jampSpeed = 30000.0f;
 
 };
 
