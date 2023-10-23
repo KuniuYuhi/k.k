@@ -27,6 +27,7 @@
 //両手剣のアニメーション遅く
 //攻撃の合間に回転一旦ok
 //3劇目前進する
+//現在の敵に教えるためのコンボの設定
 
 namespace {
 	const float ADD_SCALE = 1.2f;
@@ -99,8 +100,6 @@ bool Brave::Start()
 
 void Brave::Update()
 {
-	//武器切り替え中は行動しない
-
 	//行動不可能な状態でないなら
 	if (IsInaction() != true)
 	{
@@ -391,6 +390,31 @@ void Brave::ProcessComboAttack()
 		static_cast<EnAttackPattern>(m_attackPatternState + 1);
 	//通常攻撃ステート設定
 	SetNextAnimationState(m_attackPatternState);
+
+	switch (m_attackPatternState)
+	{
+	case Brave::enAttackPattern_None:
+		//敵のためのコンボステートを設定
+		SetNowComboState(enNowCombo_None);
+		break;
+	case Brave::enAttackPattern_1:
+		//敵のためのコンボステートを設定
+		SetNowComboState(enNowCombo_1);
+		break;
+	case Brave::enAttackPattern_2:
+		//敵のためのコンボステートを設定
+		SetNowComboState(enNowCombo_2);
+		break;
+	case Brave::enAttackPattern_3:
+		//敵のためのコンボステートを設定
+		SetNowComboState(enNowCombo_3);
+		break;
+	case Brave::enAttackPattern_End:
+		break;
+	default:
+		break;
+	}
+	
 	//アクションフラグをセット
 	SetIsActionFlag(true);
 }
@@ -439,6 +463,8 @@ void Brave::ProcessNormalAttackStateTransition()
 			m_attackPatternState = enAttackPattern_None;
 			//攻撃アニメーションが終わったのでアクションフラグをfalseにする
 			SetIsActionFlag(false);
+			//コンボ状態をリセット
+			SetComboStateNone();
 			//ステート共通の状態遷移処理に遷移
 			ProcessCommonStateTransition();
 		}
@@ -498,7 +524,8 @@ void Brave::ProcessHitStateTransition()
 		//アクション中にダメージ受けたかもしれないので
 		// アクションフラグ関係を全てfalseにする
 		SetAllInfoAboutActionFlag(false);
-
+		//コンボ状態をリセット
+		SetComboStateNone();
 		//ステート共通の状態遷移処理に遷移
 		ProcessCommonStateTransition();
 	}
@@ -516,14 +543,12 @@ void Brave::ProcessDefendStateTransition()
 		//アクション中にダメージ受けたかもしれないので
 		// アクションフラグ関係を全てfalseにする
 		SetAllInfoAboutActionFlag(false);
-
+		//コンボ状態をリセット
+		SetComboStateNone();
 		//ステート共通の状態遷移処理に遷移
 		ProcessCommonStateTransition();
 	}
 }
-
-
-
 
 bool Brave::RotationOnly()
 {
@@ -655,6 +680,17 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	if (wcscmp(eventName, L"ArmedSwordShield") == 0)
 	{
 		ReverseWeapon();
+	}
+
+	//当たり判定の有効化
+	if (wcscmp(eventName, L"CollisionStart") == 0)
+	{
+		SetIsCollisionPossibleFlag(true);
+	}
+	//当たり判定の無効化
+	if (wcscmp(eventName, L"CollisionEnd") == 0)
+	{
+		SetIsCollisionPossibleFlag(false);
 	}
 
 	////////////////////////////////////////////////////////////
