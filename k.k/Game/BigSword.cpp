@@ -5,6 +5,8 @@
 namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
+
+	const Vector3 BIG_SWORD_COLLISION_SIZE = { 18.0f,100.0f,8.0f };
 }
 
 BigSword::BigSword()
@@ -13,6 +15,7 @@ BigSword::BigSword()
 
 BigSword::~BigSword()
 {
+	DeleteGO(m_bigSwordCollision);
 }
 
 bool BigSword::Start()
@@ -21,6 +24,7 @@ bool BigSword::Start()
 	m_brave = FindGO<Brave>("brave");
 
 	InitModel();
+	InitCollision();
 
 	//装備
 	SetWeaponState(enWeaponState_Stowed);
@@ -42,6 +46,7 @@ void BigSword::Update()
 	MoveWeapon();
 
 	m_modelBigSword.Update();
+	m_bigSwordCollision->Update();
 }
 
 void BigSword::InitModel()
@@ -56,6 +61,18 @@ void BigSword::InitModel()
 	//剣と盾の座標に対応するボーンIDを取得
 	//装備状態の時のボーンID
 	m_armedSwordBoonId = m_brave->GetModelRender().FindBoneID(L"weaponShield_l");
+}
+
+void BigSword::InitCollision()
+{
+	m_bigSwordCollision = NewGO<CollisionObject>(0, "Attack");
+	m_bigSwordCollision->CreateBox(
+		STOWEDS_POSITION,
+		Quaternion(0.0f, 90.0f, 180.0f, 1.0f),
+		BIG_SWORD_COLLISION_SIZE
+	);
+	m_bigSwordCollision->SetIsEnableAutoDelete(false);
+	m_bigSwordCollision->SetIsEnable(false);
 }
 
 void BigSword::MoveWeapon()
@@ -81,12 +98,35 @@ void BigSword::MoveArmed()
 	m_swordMatrix =
 		m_brave->GetModelRender().GetBone(m_armedSwordBoonId)->GetWorldMatrix();
 	m_modelBigSword.SetWorldMatrix(m_swordMatrix);
+
+	
+	//当たり判定の有効化無効化の処理
+	if (m_brave->GetIsCollisionPossibleFlag() == true)
+	{
+		m_bigSwordCollision->SetIsEnable(true);
+	}
+	else if (m_bigSwordCollision->IsEnable() != false)
+	{
+		m_bigSwordCollision->SetIsEnable(false);
+	}
+
+	Matrix collisionMatrix = m_swordMatrix;
+
+	//collisionMatrix.
+
+	m_bigSwordCollision->SetWorldMatrix(m_swordMatrix);
+
 }
 
 void BigSword::MoveStowed()
 {
 	m_swordPos = STOWEDS_POSITION;
 	m_modelBigSword.SetPosition(m_swordPos);
+	//当たり判定の座標の設定
+	m_bigSwordCollision->SetPosition(m_swordPos);
+	//当たり判定の無効化
+	m_bigSwordCollision->SetIsEnable(false);
+	SetStowedFlag(true);
 }
 
 void BigSword::Render(RenderContext& rc)

@@ -32,7 +32,10 @@ private:
 	/// ƒ‚ƒfƒ‹‚Ì‰Šú‰»
 	/// </summary>
 	void InitModel() override;
-
+	/// <summary>
+	/// “–‚½‚è”»’è‚Ì¶¬
+	/// </summary>
+	void InitCollision() override;
 	/// <summary>
 	/// •Ší‚ğ‘•”õ‚µ‚Ä‚¢‚é‚ÌˆÚ“®ˆ—
 	/// </summary>
@@ -44,6 +47,8 @@ private:
 
 private:
 	ModelRender m_modelBigSword;		//Œ•ƒ‚ƒfƒ‹
+
+	CollisionObject* m_bigSwordCollision;	//—¼èŒ•‚Ì“–‚½‚è”»’è
 
 	Vector3 m_swordPos = g_vec3Zero;
 
