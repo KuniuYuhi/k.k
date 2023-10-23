@@ -5,6 +5,9 @@
 namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
+
+	const Vector3 SWORD_COLLISION_SIZE = { 12.0f,100.0f,5.0f };
+	const Vector3 SHIELD_COLLISION_SIZE = { 22.0f,40.0f,16.0f };
 }
 
 SwordShield::SwordShield()
@@ -21,6 +24,7 @@ bool SwordShield::Start()
 	m_brave = FindGO<Brave>("brave");
 
 	InitModel();
+	InitCollision();
 
 	//装備
 	SetWeaponState(enWeaponState_Armed);
@@ -43,6 +47,8 @@ void SwordShield::Update()
 
 	m_modelSword.Update();
 	m_modelShield.Update();
+	m_swordCollision->Update();
+	m_shieldCollision->Update();
 }
 
 void SwordShield::InitModel()
@@ -67,6 +73,28 @@ void SwordShield::InitModel()
 	//収納状態の時のボーンID
 	m_stowedSwordBoonId = m_brave->GetModelRender().FindBoneID(L"weaponPosition_r");
 	m_stowedShieldBoonId= m_brave->GetModelRender().FindBoneID(L"weaponPosition_l");
+}
+
+void SwordShield::InitCollision()
+{
+	//剣の当たり判定
+	m_swordCollision = NewGO<CollisionObject>(0, "Attack");
+	m_swordCollision->CreateBox(
+		STOWEDS_POSITION,
+		Quaternion(0.0f, 90.0f, 180.0f, 1.0f),
+		SWORD_COLLISION_SIZE
+	);
+	m_swordCollision->SetIsEnableAutoDelete(false);
+	m_swordCollision->SetIsEnable(false);
+	//盾の当たり判定
+	m_shieldCollision = NewGO<CollisionObject>(0, "defence");
+	m_shieldCollision->CreateBox(
+		STOWEDS_POSITION,
+		Quaternion(0.0f, 90.0f, 180.0f, 1.0f),
+		SHIELD_COLLISION_SIZE
+	);
+	m_shieldCollision->SetIsEnableAutoDelete(false);
+	m_shieldCollision->SetIsEnable(false);
 }
 
 void SwordShield::MoveWeapon()
@@ -95,6 +123,19 @@ void SwordShield::MoveArmed()
 	m_shieldMatrix =
 		m_brave->GetModelRender().GetBone(m_armedShieldBoonId)->GetWorldMatrix();
 	m_modelShield.SetWorldMatrix(m_shieldMatrix);
+
+	//当たり判定の有効化無効化の処理
+	if (m_brave->GetIsCollisionPossibleFlag() == true)
+	{
+		m_swordCollision->SetIsEnable(true);
+	}
+	else if (m_swordCollision->IsEnable() != false)
+	{
+		m_swordCollision->SetIsEnable(false);
+	}
+
+	m_swordCollision->SetWorldMatrix(m_swordMatrix);
+	m_shieldCollision->SetWorldMatrix(m_shieldMatrix);
 }
 
 void SwordShield::MoveStowed()
@@ -104,15 +145,13 @@ void SwordShield::MoveStowed()
 
 	m_modelSword.SetPosition(m_swordPos);
 	m_modelShield.SetPosition(m_shieldPos);
-
+	//当たり判定の座標の設定
+	m_swordCollision->SetPosition(m_swordPos);
+	m_shieldCollision->SetPosition(m_shieldPos);
+	//当たり判定の無効化
+	m_swordCollision->SetIsEnable(false);
+	m_shieldCollision->SetIsEnable(false);
 	SetStowedFlag(true);
-	//剣と盾のワールド座標を設定
-	/*m_swordMatrix =
-		m_brave->GetModelRender().GetBone(m_stowedSwordBoonId)->GetWorldMatrix();
-	m_modelSword.SetWorldMatrix(m_swordMatrix);
-	m_shieldMatrix =
-		m_brave->GetModelRender().GetBone(m_stowedShieldBoonId)->GetWorldMatrix();
-	m_modelShield.SetWorldMatrix(m_shieldMatrix);*/
 }
 
 void SwordShield::Render(RenderContext& rc)
