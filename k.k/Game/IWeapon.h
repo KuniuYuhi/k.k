@@ -23,6 +23,15 @@ public:
 		enWeaponState_Armed,		//装備している状態
 		enWeaponState_None,			//何も装備していない
 	};
+	/// <summary>
+	/// 武器の防御のタイプ。
+	/// </summary>
+	enum EnDefendTipe
+	{
+		enDefendTipe_Defence,	//盾などで防ぐタイプ
+		enDefendTipe_avoid,		//回避タイプ
+		enDefendTipe_None
+	};
 
 	////////////////////////////////////////////////////////////////////////
 	///仮想関数、純粋仮想関数
@@ -31,6 +40,10 @@ public:
 	/// モデルの初期化
 	/// </summary>
 	virtual void InitModel() = 0;
+	/// <summary>
+	/// 当たり判定の生成
+	/// </summary>
+	virtual void InitCollision() = 0;
 	/// <summary>
 	/// 武器の移動処理
 	/// </summary>
@@ -46,7 +59,14 @@ public:
 
 	//todo 武器固有の処理
 
-
+	/// <summary>
+	/// 攻撃やスキル時のジャンプの速度の取得
+	/// </summary>
+	/// <returns></returns>
+	virtual float GetJampSpeed()
+	{
+		return 0;
+	}
 
 	///////////////////////////////////////////////////////////////////////////
 	///その他の関数
@@ -132,17 +152,38 @@ public:
 		return m_stowedFlag;
 	}
 
+	/// <summary>
+	/// 武器の防御タイプを取得
+	/// </summary>
+	/// <returns></returns>
+	const EnDefendTipe& GetEnDefendTipe() const
+	{
+		return m_enDefendTipe;
+	}
+
+protected:
+
+	/// <summary>
+	/// 武器の防御タイプを取得
+	/// </summary>
+	/// <returns></returns>
+	void SetEnDefendTipe(EnDefendTipe defendTipe)
+	{
+		m_enDefendTipe = defendTipe;
+	}
+
 protected:
 	Brave* m_brave = nullptr;
 
 	EnWeaponState m_enWeaponState = enWeaponState_None;
+
+	EnDefendTipe m_enDefendTipe = enDefendTipe_None;
 
 	int m_power = 0;		//武器の攻撃力
 
 	Vector3 m_position = g_vec3Zero;	//自身の座標
 
 	bool m_stowedFlag = false;		//収納状態フラグ。処理しないようにするためのフラグ
-
 
 
 	//派生クラスで必要なもの

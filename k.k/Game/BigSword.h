@@ -18,13 +18,24 @@ public:
 	/// </summary>
 	void MoveWeapon() override;
 
+	/// <summary>
+	/// 攻撃やスキル時のジャンプの速度の取得
+	/// </summary>
+	/// <returns></returns>
+	float GetJampSpeed()
+	{
+		return m_jampSpeed;
+	}
 
 private:
 	/// <summary>
 	/// モデルの初期化
 	/// </summary>
 	void InitModel() override;
-
+	/// <summary>
+	/// 当たり判定の生成
+	/// </summary>
+	void InitCollision() override;
 	/// <summary>
 	/// 武器を装備している時の移動処理
 	/// </summary>
@@ -37,12 +48,16 @@ private:
 private:
 	ModelRender m_modelBigSword;		//剣モデル
 
+	CollisionObject* m_bigSwordCollision;	//両手剣の当たり判定
+
 	Vector3 m_swordPos = g_vec3Zero;
 
 	Matrix m_swordMatrix = g_matIdentity;
 
 	//武器を持たせる時のボーンID
 	int m_armedSwordBoonId = -1;
+
+	const float m_jampSpeed = 30000.0f;
 
 };
 

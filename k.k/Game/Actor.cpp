@@ -82,19 +82,22 @@ Vector3 Actor::calcVelocity(Status status)
 
 	moveSpeed += right + forward;
 	moveSpeed.y = 0.0f;
-	//前方向の取得
-	if (isRotationEntable() != false)
-	{
-		
-	}
 
+	//前方向の取得
 	//x,yどちらかの入力があったら
 	if (fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f)
 	{
-		m_forward = moveSpeed;
-		m_forward.Normalize();
+		if (isRotationEntable() == false)
+		{
+			//前進フラグがtrueでないなら
+			if (GetMoveForwardFlag() == false)
+			{
+				m_forward = moveSpeed;
+				m_forward.Normalize();
+			}
+		}	
 	}
-
+	
 	//値をセーブしておく
 	m_SaveMoveSpeed = moveSpeed;
 
@@ -275,15 +278,13 @@ bool Actor::IsInvincible()
 
 bool Actor::IsComboStateSame()
 {
-	//現在のコンボステートとダメージを受けた時のコンボステートが違うなら
+	//プレイヤーのコンボ状態と
+	// 敵が攻撃を受けた時のコンボ状態が違うなら
 	if (GetNowComboState() != GetDamagedComboState())
 	{
-		//違う
 		return true;
 	}
-	else
-		//同じ
-		return false;
+	return false;
 }
 
 Quaternion Actor::Rotation(float rotSpeed,float rotOnlySpeed)
@@ -304,10 +305,6 @@ Quaternion Actor::Rotation(float rotSpeed,float rotOnlySpeed)
 			m_forward.y = 0.0f;
 			m_forward.Normalize();*/
 		}
-
-		
-		
-
 		return m_rotation;
 	}
 
@@ -324,9 +321,6 @@ Quaternion Actor::Rotation(float rotSpeed,float rotOnlySpeed)
 		m_forward.y = 0.0f;
 		m_forward.Normalize();*/
 	}
-
-	
-
 	return m_rotation;
 }
 

@@ -4,6 +4,13 @@
 
 void BraveStateAttack_3::ManageState()
 {
+	//前進するフラグが立っている間は処理
+	if (m_brave->GetMoveForwardFlag() == true)
+	{
+		//向いている方向に移動
+		m_brave->MoveForward(m_brave->GetNormalAttackSpeed());
+	}
+
 	m_brave->ProcessNormalAttackStateTransition();
 }
 

@@ -24,6 +24,10 @@
 
 //todo
 //攻撃力は武器
+//両手剣のアニメーション遅く
+//攻撃の合間に回転一旦ok
+//3劇目前進する
+//現在の敵に教えるためのコンボの設定
 
 namespace {
 	const float ADD_SCALE = 1.2f;
@@ -66,7 +70,7 @@ bool Brave::Start()
 
 	InitModel();
 
-	//m_modelRender.SetAnimationSpeed(0.4f);
+	//m_modelRender.SetAnimationSpeed(0.5f);
 
 	//キャラコンの設定
 	m_charaCon.Init(12.0f, 33.0f, m_position);
@@ -96,8 +100,6 @@ bool Brave::Start()
 
 void Brave::Update()
 {
-	//武器切り替え中は行動しない
-
 	//行動不可能な状態でないなら
 	if (IsInaction() != true)
 	{
@@ -113,35 +115,36 @@ void Brave::Update()
 		ProcessAttack();
 		//防御処理
 		ProcessDefend();
+
+		//当たり判定
+		DamageCollision(m_charaCon);
 	}
 	
 
 	ManageState();
 	PlayAnimation();
 	
+	SetTransFormModel(m_modelRender);
+
 	m_modelRender.Update();
 	
 }
 
 void Brave::Move()
 {
-	if (isAnimationEntable() != true)
-	{
-		return;
-	}
 	//todo 移動しない時せ-ぶするやつの計算
 	m_moveSpeed = calcVelocity(GetStatus());
 	m_moveSpeed.y = 0.0f;
 
 	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-
-	m_modelRender.SetPosition(m_position);
+	
+	//m_modelRender.SetPosition(m_position);
 }
 
 void Brave::ProcessRotation()
 {
 	Rotation(ROT_SPEED, ROT_ONLY_SPEED);
-	m_modelRender.SetRotation(m_rotation);
+	//m_modelRender.SetRotation(m_rotation);
 }
 
 void Brave::ProcessAttack()
@@ -180,6 +183,7 @@ void Brave::ProcessDefend()
 		return;
 	}
 	//防御
+
 	if (g_pad[0]->IsTrigger(enButtonY) == true)
 	{
 		//アクションフラグをセット
@@ -246,8 +250,9 @@ const bool& Brave::IsInaction() const
 	return false;
 }
 
-void Brave::CalcAttackDirection(float Speed)
+void Brave::MoveForward(float Speed)
 {
+	//to前方向の取得を止めれば移動方向を固定できる
 	//攻撃する方向
 	Vector3 attackDirection = m_forward;
 	//移動する速度
@@ -280,13 +285,15 @@ void Brave::ProcessSwordShieldSkill(bool UpOrDownFlag)
 	if (UpOrDownFlag == true)
 	{
 		//Up処理
-		mulYPos += g_gameTime->GetFrameDeltaTime() * 1000.0f;
+		mulYPos += 
+			g_gameTime->GetFrameDeltaTime() * m_useWeapon[enWeapon_Main].weapon->GetJampSpeed();
 		Y.y += mulYPos;
 	}
 	else
 	{
 		//Down処理
-		mulYPos += g_gameTime->GetFrameDeltaTime() * 1300.0f;
+		mulYPos += 
+			g_gameTime->GetFrameDeltaTime() * m_useWeapon[enWeapon_Main].weapon->GetJampSpeed() * 1.5f;
 		Y.y -= mulYPos;
 	}
 	
@@ -383,6 +390,31 @@ void Brave::ProcessComboAttack()
 		static_cast<EnAttackPattern>(m_attackPatternState + 1);
 	//通常攻撃ステート設定
 	SetNextAnimationState(m_attackPatternState);
+
+	switch (m_attackPatternState)
+	{
+	case Brave::enAttackPattern_None:
+		//敵のためのコンボステートを設定
+		SetNowComboState(enNowCombo_None);
+		break;
+	case Brave::enAttackPattern_1:
+		//敵のためのコンボステートを設定
+		SetNowComboState(enNowCombo_1);
+		break;
+	case Brave::enAttackPattern_2:
+		//敵のためのコンボステートを設定
+		SetNowComboState(enNowCombo_2);
+		break;
+	case Brave::enAttackPattern_3:
+		//敵のためのコンボステートを設定
+		SetNowComboState(enNowCombo_3);
+		break;
+	case Brave::enAttackPattern_End:
+		break;
+	default:
+		break;
+	}
+	
 	//アクションフラグをセット
 	SetIsActionFlag(true);
 }
@@ -427,15 +459,24 @@ void Brave::ProcessNormalAttackStateTransition()
 		if (GetNextComboFlagFlag() == false ||
 			m_attackPatternState >= enAttackPattern_3)
 		{
+			m_position.y = 0.0f;
 			m_attackPatternState = enAttackPattern_None;
 			//攻撃アニメーションが終わったのでアクションフラグをfalseにする
 			SetIsActionFlag(false);
+			//コンボ状態をリセット
+			SetComboStateNone();
 			//ステート共通の状態遷移処理に遷移
 			ProcessCommonStateTransition();
 		}
 		//次のコンボの攻撃ステート設定
 		else
 		{
+			//次のコンボに移る前に回転する
+			if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
+			{
+				m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
+			}
+
 			//次のコンボの処理
 			ProcessComboAttack();
 		}
@@ -483,7 +524,8 @@ void Brave::ProcessHitStateTransition()
 		//アクション中にダメージ受けたかもしれないので
 		// アクションフラグ関係を全てfalseにする
 		SetAllInfoAboutActionFlag(false);
-
+		//コンボ状態をリセット
+		SetComboStateNone();
 		//ステート共通の状態遷移処理に遷移
 		ProcessCommonStateTransition();
 	}
@@ -494,14 +536,26 @@ void Brave::ProcessDieStateTransition()
 
 }
 
-
+void Brave::ProcessDefendStateTransition()
+{
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//アクション中にダメージ受けたかもしれないので
+		// アクションフラグ関係を全てfalseにする
+		SetAllInfoAboutActionFlag(false);
+		//コンボ状態をリセット
+		SetComboStateNone();
+		//ステート共通の状態遷移処理に遷移
+		ProcessCommonStateTransition();
+	}
+}
 
 bool Brave::RotationOnly()
 {
 	//回転可能なアニメーションなら
-	if (isRotationEntable() == true)
+	if (isRotationEntable() == true &&
+		m_useWeapon[enWeapon_Main].weapon->GetEnDefendTipe()==IWeapon::enDefendTipe_Defence)
 	{
-		m_SaveMoveSpeed = calcVelocity(GetStatus());
 		return true;
 	}
 
@@ -610,22 +664,33 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	{
 		SetIsComboReceptionFlagFlag(true);
 	}
-	//前進する攻撃の始まり
-	if (wcscmp(eventName, L"DashAttackStart") == 0)
+	//前進する始まり
+	if (wcscmp(eventName, L"MoveForwardStart") == 0)
 	{
-		SetDashAttackFlag(true);
+		SetMoveforwardFlag(true);
 	}
 
-	//前進する攻撃の終わり
-	if (wcscmp(eventName, L"DashAttackEnd") == 0)
+	//前進する終わり
+	if (wcscmp(eventName, L"MoveForwardEnd") == 0)
 	{
-		SetDashAttackFlag(false);
+		SetMoveforwardFlag(false);
 	}
 
 	//武器入れ替え
 	if (wcscmp(eventName, L"ArmedSwordShield") == 0)
 	{
 		ReverseWeapon();
+	}
+
+	//当たり判定の有効化
+	if (wcscmp(eventName, L"CollisionStart") == 0)
+	{
+		SetIsCollisionPossibleFlag(true);
+	}
+	//当たり判定の無効化
+	if (wcscmp(eventName, L"CollisionEnd") == 0)
+	{
+		SetIsCollisionPossibleFlag(false);
 	}
 
 	////////////////////////////////////////////////////////////

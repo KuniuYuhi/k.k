@@ -21,5 +21,15 @@ public:
 	/// アニメーションの再生
 	/// </summary>
 	void PlayAnimation();
+
+private:
+	/// <summary>
+	/// 盾などで防ぐときの処理
+	/// </summary>
+	void ProcessDefence();
+	/// <summary>
+	/// 回避するときの処理
+	/// </summary>
+	void ProcessAvoid();
 };
 

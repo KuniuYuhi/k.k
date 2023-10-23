@@ -28,9 +28,10 @@ public:
 	struct InfoAboutActionFlag
 	{
 		bool isActionFlag = false;		//アクションフラグ
-		bool dashAttackFlag = false;	//前進攻撃フラグ
+		bool moveforwardFlag = false;	//前進攻撃フラグ
 		bool nextComboFlag = false;		//次のコンボ攻撃をするかのフラグ
 		bool isComboReceptionFlag = false;	//コンボ受付可能フラグ
+		bool isCollisionPossibleFlag = false;	//当たり判定が有効かの判定フラグ。
 	};
 
 	/// <summary>
@@ -84,7 +85,7 @@ public:
 	/// 攻撃時に前進する時に使う
 	/// </summary>
 	/// <param name="Speed">前進する速さ</param>
-	void CalcAttackDirection(float Speed);
+	void MoveForward(float Speed);
 
 	/// <summary>
 	///	武器の切り替え処理
@@ -115,7 +116,6 @@ public:
 			m_enAnimationState != enAnimationState_Skill_Main &&
 			m_enAnimationState != enAnimationState_Defend &&
 			m_enAnimationState != enAnimationState_Hit &&
-			m_enAnimationState != enAnimationState_Defend &&
 			m_enAnimationState != enAnimationState_Die &&
 			m_enAnimationState != enAnimationState_ChangeSwordShield;
 	}
@@ -254,6 +254,10 @@ public:
 	/// やられた時のステートの状態遷移処理
 	/// </summary>
 	void ProcessDieStateTransition();
+	/// <summary>
+	/// 防御、回避のステートの状態遷移処理
+	/// </summary>
+	void ProcessDefendStateTransition();
 
 	/// <summary>
 	/// アクションフラグ構造体の全てのフラグを設定
@@ -261,10 +265,11 @@ public:
 	/// <param name="flag"></param>
 	void SetAllInfoAboutActionFlag(bool flag)
 	{
-		m_infoAboutActionFlag.isActionFlag = false;
-		m_infoAboutActionFlag.dashAttackFlag = false;
-		m_infoAboutActionFlag.nextComboFlag = false;
-		m_infoAboutActionFlag.isComboReceptionFlag = false;
+		m_infoAboutActionFlag.isActionFlag = flag;
+		m_infoAboutActionFlag.moveforwardFlag = flag;
+		m_infoAboutActionFlag.nextComboFlag = flag;
+		m_infoAboutActionFlag.isComboReceptionFlag = flag;
+		m_infoAboutActionFlag.isCollisionPossibleFlag = flag;
 	}
 	/// <summary>
 	/// アクションフラグの設定
@@ -283,20 +288,20 @@ public:
 		return m_infoAboutActionFlag.isActionFlag;
 	}
 	/// <summary>
-	/// 前進する攻撃フラグを設定
+	/// 前進するフラグを設定
 	/// </summary>
 	/// <param name="flag"></param>
-	void SetDashAttackFlag(bool flag)
+	void SetMoveforwardFlag(bool flag)
 	{
-		m_infoAboutActionFlag.dashAttackFlag = flag;
+		m_infoAboutActionFlag.moveforwardFlag = flag;
 	}
 	/// <summary>
 	/// 前進する攻撃フラグを取得
 	/// </summary>
 	/// <returns></returns>
-	const bool& GetDashAttackFlag() const
+	const bool& GetMoveForwardFlag() const
 	{
-		return m_infoAboutActionFlag.dashAttackFlag;
+		return m_infoAboutActionFlag.moveforwardFlag;
 	}
 	/// <summary>
 	/// 次のコンボ攻撃をするかのフラグを設定
@@ -330,8 +335,22 @@ public:
 	{
 		return m_infoAboutActionFlag.isComboReceptionFlag;
 	}
-
-
+	/// <summary>
+	/// 当たり判定有効化フラグの設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetIsCollisionPossibleFlag(bool flag)
+	{
+		m_infoAboutActionFlag.isCollisionPossibleFlag = flag;
+	}
+	/// <summary>
+	/// 当たり判定有効化フラグの取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetIsCollisionPossibleFlag() const
+	{
+		return m_infoAboutActionFlag.isCollisionPossibleFlag;
+	}
 	/// <summary>
 	/// 前進する攻撃のスピードの取得
 	/// </summary>
@@ -339,6 +358,14 @@ public:
 	float GetNormalAttackSpeed()
 	{
 		return m_normalAttackSpeed;
+	}
+	/// <summary>
+	/// 回避するときのスピードの取得
+	/// </summary>
+	/// <returns></returns>
+	const float& GetAvoidSpeed() const
+	{
+		return m_avoidSpeed;
 	}
 
 	/// <summary>
@@ -348,6 +375,15 @@ public:
 	const int& GetCurrentMainWeaponAnimationStartIndexNo() const
 	{
 		return m_currentAnimationStartIndexNo;
+	}
+
+	/// <summary>
+	/// メイン武器の防御タイプを取得
+	/// </summary>
+	/// <returns></returns>
+	const int& GetMainWeaponDefendTipe() const
+	{
+		return m_useWeapon[enWeapon_Main].weapon->GetEnDefendTipe();
 	}
 
 private:
@@ -424,6 +460,8 @@ private:
 	float m_mulYPos = 0.0f;
 
 	const float m_normalAttackSpeed = 160.0f;
+
+	const float m_avoidSpeed = 230.0f;
 
 
 };
