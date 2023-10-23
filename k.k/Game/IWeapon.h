@@ -41,6 +41,10 @@ public:
 	/// </summary>
 	virtual void InitModel() = 0;
 	/// <summary>
+	/// “–‚½‚è”»’è‚Ì¶¬
+	/// </summary>
+	virtual void InitCollision() = 0;
+	/// <summary>
 	/// •Ší‚ÌˆÚ“®ˆ—
 	/// </summary>
 	virtual void MoveWeapon() = 0;
