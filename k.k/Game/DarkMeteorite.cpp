@@ -22,6 +22,8 @@ namespace {
 	const float WIND_SCALE = 30.0f;
 
 	const float DARKMETEO_SHOT_TIMER = 5.0f;
+
+	const float NEAR_LENGTH = 150.0f;
 }
 
 DarkMeteorite::DarkMeteorite()
@@ -161,7 +163,7 @@ void DarkMeteorite::SizeUp()
 	}
 }
 
-void DarkMeteorite::ShotMeteo()
+void DarkMeteorite::ProcessShot()
 {
 	//ショットフラグが立っていないなら処理しない
 	if (m_ShotStartFlag != true)
@@ -178,27 +180,10 @@ void DarkMeteorite::ShotMeteo()
 	//生成する数
 	if (m_meteoCounter < m_createMeteoCount)
 	{
-		//
 		while (true)
 		{
-			//メテオが衝突する座標
-			Vector3 HitPosition = g_vec3Zero;
-			HitPosition = SetMeteoTargetPosition();
-			//衝突する座標が地面なら
-			if (IsHitGround(HitPosition, GROUND_CHECK_Y_UP, GROUND_CHECK_Y_DOWN) == true)
+			if (ShotMeteo() == true)
 			{
-				//メテオを生成する
-				CreateMeteo(HitPosition);
-				//カウンターを増やす
-				m_meteoCounter++;
-
-				//もし最後のメテオなら
-				if (m_meteoCounter >= m_createMeteoCount&& m_lastBigMeteoShotFlag == true)
-				{
-					//ダークメテオを落とす時のために次のタイマーを長くする
-					m_createTime = DARKMETEO_SHOT_TIMER;
-				}
-
 				break;
 			}
 		}	
@@ -221,12 +206,36 @@ void DarkMeteorite::ShotMeteo()
 		}
 		else
 		{
-			//それ以外ならダークメテオ終わり
+			//それ以外ならダークメテオアクションの終わり
 			m_shotEndFlag = true;
 			//m_enShotState = enShotState_End;
 
 		}
 	}
+}
+
+bool DarkMeteorite::ShotMeteo()
+{
+	//メテオが衝突する座標
+	Vector3 HitPosition = g_vec3Zero;
+	HitPosition = SetMeteoTargetPosition();
+	//衝突する座標が地面なら
+	if (IsHitGround(HitPosition, GROUND_CHECK_Y_UP, GROUND_CHECK_Y_DOWN) == true)
+	{
+		//メテオを生成する
+		CreateMeteo(HitPosition);
+		//カウンターを増やす
+		m_meteoCounter++;
+
+		//もし最後のメテオなら
+		if (m_meteoCounter >= m_createMeteoCount && m_lastBigMeteoShotFlag == true)
+		{
+			//ダークメテオを落とす時のために次のタイマーを長くする
+			m_createTime = DARKMETEO_SHOT_TIMER;
+		}
+		return true;
+	}
+	return false;
 }
 
 Vector3 DarkMeteorite::SetMeteoTargetPosition()
@@ -368,7 +377,7 @@ void DarkMeteorite::ShotManageState()
 		//一定のサイズになったら処理をしない
 		SizeUp();
 		//メテオを撃つ処理
-		ShotMeteo();
+		ProcessShot();
 		break;
 	case DarkMeteorite::enShotState_BigMeteo:
 		DarkMeteoMoveManageState();
@@ -509,7 +518,7 @@ bool DarkMeteorite::IsNearDistanceToPlayer()
 {
 	//プレイヤーに当たったかの判定
 	Vector3 diff = m_position - m_player->GetPosition();
-	if (diff.Length() < 150.0f)
+	if (diff.Length() < NEAR_LENGTH)
 	{
 		return true;
 	}
