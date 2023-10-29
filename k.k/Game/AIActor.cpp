@@ -59,11 +59,8 @@ bool AIActor::IsInFieldOfView(Vector3 toPlayerDir, Vector3 forward, float angle)
 {
 	//ベクトル正規化
 	toPlayerDir.Normalize();
-	//前方向を正規化
-	//forward.Normalize();
 	//ターゲットに向かうベクトルと前方向の内積を計算する
 	float t = toPlayerDir.Dot(forward);
-	//todo
 	//内積の結果をacos関数に渡して、m_enemyFowradとtoPlayerDirのなす角度を求める。
 	float calcangle = acos(t);
 	//視野角判定
@@ -206,7 +203,7 @@ void AIActor::HitNormalAttack()
 
 void AIActor::HitHeroSkillAttack()
 {
-	m_damage = m_player->GetSkillAtk();
+	m_damage = m_player->GetAtk();
 	//ダメージを受ける
 	Damage(m_damage);
 	CreateDamageFont(m_damage);

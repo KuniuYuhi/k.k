@@ -10,6 +10,16 @@ public:
 	virtual ~AIActor();
 
 	/// <summary>
+	/// 勝敗ステート
+	/// </summary>
+	enum EnOutCome
+	{
+		enOutCome_Win,
+		enOutCome_Lose,
+		enOutCome_None
+	};
+
+	/// <summary>
 	/// モデルの座標、回転、サイズの設定
 	/// </summary>
 	/// <param name="modelRender"></param>
@@ -220,6 +230,23 @@ public:
 		return m_winFlag;
 	}
 
+	/// <summary>
+	/// 勝敗ステートの設定
+	/// </summary>
+	/// <param name="outCome"></param>
+	void SetEnOutCome(EnOutCome outCome)
+	{
+		m_enOutCome = outCome;
+	}
+	/// <summary>
+	/// 勝敗ステートの取得
+	/// </summary>
+	/// <returns></returns>
+	const EnOutCome& GetEnOutCome() const
+	{
+		return m_enOutCome;
+	}
+
 protected:
 
 	/// <summary>
@@ -269,6 +296,8 @@ protected:
 
 	Quaternion					m_rotation = Quaternion::Identity;
 	Vector3						m_scale = Vector3::One;
+
+	EnOutCome					m_enOutCome = enOutCome_None;
 
 	int							m_damage = 0;							//受けたダメージを代入する
 
