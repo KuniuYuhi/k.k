@@ -53,21 +53,6 @@ void Title::Update()
     StepManage();
 
     CalcAlphaAButtonText();
-
-
-
-    if (g_pad[0]->IsTrigger(enButtonY))
-    {
-    }
-    if (g_pad[0]->IsTrigger(enButtonB))
-    {
-       /* g_soundManager->SetSoundVolume(1.1f, flag);
-        g_soundManager->GetSoundSource(enSoundName_TitleBGM)->SetVolume(g_soundManager->GetDefaultBGVolume());*/
-    }
-
-
-   
-
 }
 
 void Title::StepManage()

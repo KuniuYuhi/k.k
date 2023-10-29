@@ -20,9 +20,14 @@ public:
 	void SizeUp();
 
 	/// <summary>
-	/// メテオを撃つ処理
+	/// 撃つことに関する処理
 	/// </summary>
-	void ShotMeteo();
+	void ProcessShot();
+	/// <summary>
+	/// メテオを撃つ瞬間の処理
+	/// </summary>
+	/// <returns>メテオを生成したらtrue</returns>
+	bool ShotMeteo();
 
 	/// <summary>
 	/// メテオのターゲット座標を設定

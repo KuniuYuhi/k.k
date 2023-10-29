@@ -21,10 +21,23 @@ public:
 	bool Start();
 	void Update();
 	
-	const Vector3 GetPosition() const
-	{
-		return m_position;
-	}
+	/// <summary>
+	/// ゲームの勝敗が決まったら
+	/// </summary>
+	/// <returns></returns>
+	bool IsOutcome();
+	/// <summary>
+	/// 勝利時の処理
+	/// </summary>
+	void ProcessWin();
+	/// <summary>
+	/// 負けの処理
+	/// </summary>
+	void ProcessLose();
+	/// <summary>
+	/// タイムアップで負けた時の処理
+	/// </summary>
+	void ProcessLoseTimeUp();
 
 	/// <summary>
 	/// ボスがやられたかのフラグを設定
@@ -50,16 +63,36 @@ public:
 	/// <returns></returns>
 	bool IsBossMovieSkipTime();
 
+	/// <summary>
+	/// 勝敗ステート
+	/// </summary>
 	enum EnOutCome
 	{
-		enOutCome_Win,
-		enOutCome_Lose
+		enOutCome_Player_Win,
+		enOutCome_Player_Lose,
+		enOutCome_None
 	};
 	/// <summary>
 	/// リザルト画面遷移処理
 	/// </summary>
 	/// <param name="outcome">勝敗ステート</param>
 	void GoResult(EnOutCome outcome);
+	/// <summary>
+	/// 勝敗ステートの設定
+	/// </summary>
+	/// <param name="outCome"></param>
+	void SetEnOutCome(EnOutCome outCome)
+	{
+		m_enOutCome = outCome;
+	}
+	/// <summary>
+	/// 勝敗ステートの取得
+	/// </summary>
+	/// <returns></returns>
+	const EnOutCome& GetEnOutCome() const
+	{
+		return m_enOutCome;
+	}
 
 	enum EnGameState
 	{
@@ -126,29 +159,44 @@ public:
 		return m_DeathBossFlag;
 	}
 
-	enum EnClearCameraState
+	/// <summary>
+	/// ゲームが終わった時のカメラを向ける相手
+	/// </summary>
+	enum EnGameEndCameraState
 	{
 		enClearCameraState_None,
-		enClearCameraState_Lich,
-		enClearCameraState_Player
+		enClearCameraState_Lich,	//リッチ
+		enClearCameraState_Player	//勇者
 	};
-
-	void SetClearCameraState(EnClearCameraState nextClearCameraState)
+	/// <summary>
+	/// ゲームエンドカメラを設定
+	/// </summary>
+	/// <param name="nextClearCameraState"></param>
+	void SetClearCameraState(EnGameEndCameraState nextClearCameraState)
 	{
 		m_clearCameraState = nextClearCameraState;
 	}
-
-	EnClearCameraState GetClearCameraState()
+	/// <summary>
+	/// ゲームエンドカメラを取得
+	/// </summary>
+	/// <returns></returns>
+	EnGameEndCameraState GetClearCameraState()
 	{
 		return m_clearCameraState;
 	}
 
-
+	/// <summary>
+	/// 制限時間の分の取得
+	/// </summary>
+	/// <returns></returns>
 	const float& GetMinute() const
 	{
 		return m_minute;
 	}
-
+	/// <summary>
+	/// 制限時間の秒の取得
+	/// </summary>
+	/// <returns></returns>
 	const float& GetSecond() const
 	{
 		return m_second;
@@ -176,13 +224,22 @@ private:
 	/// </summary>
 	/// <returns></returns>
 	bool Fadecomplete();
-
+	/// <summary>
+	/// ボスの生成
+	/// </summary>
 	void CreateBoss();
-
+	/// <summary>
+	/// スカイキューブの初期化
+	/// </summary>
 	void InitSkyCube();
-
+	/// <summary>
+	/// 制限時間の計算
+	/// </summary>
+	/// <returns></returns>
 	bool CalcTimeLimit();
-
+	/// <summary>
+	/// BGMを少しずつ小さくする
+	/// </summary>
 	void CalcMuteBGM();
 
 	/// <summary>
@@ -202,7 +259,7 @@ private:
 		enGameStep_FadeNone,
 		enGameStep_Battle
 	};
-	EnGameStep					m_enGameStep = enGameStep_FadeOut;
+	
 
 	void OnProcessGame_FadeOutTransition();
 	void OnProcessGame_FadeNoneTransition();
@@ -215,12 +272,13 @@ private:
 		enFadeState_BossToPlayer,
 
 	};
+
+
 	EnFadeState					m_enFadeState = enFadeState_None;
 
+	EnGameStep					m_enGameStep = enGameStep_FadeOut;
 
-	
-
-	EnClearCameraState			m_clearCameraState = enClearCameraState_None;
+	EnGameEndCameraState		m_clearCameraState = enClearCameraState_None;
 
 	Fade*						m_fade = nullptr;
 	Player*						m_player = nullptr;
@@ -246,6 +304,7 @@ private:
 
 	EnGameState					m_enGameState = enGameState_GameStart;
 
+	EnOutCome					m_enOutCome = enOutCome_None;
 
 	float						m_TimeLimit = 300.0f;							//制限時間三分
 	float						m_minute = 3.0f;								//分

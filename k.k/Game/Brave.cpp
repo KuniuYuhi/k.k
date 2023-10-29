@@ -25,9 +25,6 @@
 //todo
 //攻撃力は武器
 //両手剣のアニメーション遅く
-//攻撃の合間に回転一旦ok
-//3劇目前進する
-//現在の敵に教えるためのコンボの設定
 
 namespace {
 	const float ADD_SCALE = 1.2f;
@@ -53,6 +50,8 @@ Brave::Brave()
 
 Brave::~Brave()
 {
+	DeleteGO(m_subWeapon);
+	DeleteGO(m_mainWeapon);
 }
 
 bool Brave::Start()
@@ -77,7 +76,6 @@ bool Brave::Start()
 
 
 	//武器の生成
-
 	m_subWeapon = NewGO<BigSword>(0, "bigsword");
 	m_mainWeapon = NewGO<SwordShield>(0,"swordshield");
 
@@ -132,19 +130,15 @@ void Brave::Update()
 
 void Brave::Move()
 {
-	//todo 移動しない時せ-ぶするやつの計算
 	m_moveSpeed = calcVelocity(GetStatus());
 	m_moveSpeed.y = 0.0f;
 
 	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-	
-	//m_modelRender.SetPosition(m_position);
 }
 
 void Brave::ProcessRotation()
 {
 	Rotation(ROT_SPEED, ROT_ONLY_SPEED);
-	//m_modelRender.SetRotation(m_rotation);
 }
 
 void Brave::ProcessAttack()
@@ -235,17 +229,16 @@ void Brave::Damage(int damage)
 const bool& Brave::IsInaction() const
 {
 	//行動出来なくなる条件
-	//やられたなら
-	if (GetDieFlag() == true)
-	{
-		return true;
-	}
 	//プレイヤークラスの関数の動けない条件がtrueなら
 	if (m_player->IsInaction() == true)
 	{
 		return true;
 	}
-
+	//やられたなら
+	if (GetDieFlag() == true)
+	{
+		return true;
+	}
 	//ここまできたら行動可能
 	return false;
 }
@@ -276,6 +269,11 @@ void Brave::ChangeWeapon()
 		SetIsActionFlag(true);
 		SetNextAnimationState(enAnimationState_ChangeSwordShield);
 	}
+}
+
+void Brave::ProcessWin()
+{
+	SetNextAnimationState(enAnimationState_Win_Start);
 }
 
 void Brave::ProcessSwordShieldSkill(bool UpOrDownFlag)
@@ -533,7 +531,11 @@ void Brave::ProcessHitStateTransition()
 
 void Brave::ProcessDieStateTransition()
 {
-
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//やられたのでdieFlagをtrueにする
+		SetDieFlag(true);
+	}
 }
 
 void Brave::ProcessDefendStateTransition()

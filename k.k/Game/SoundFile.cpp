@@ -29,7 +29,7 @@ void SoundFile::SetSoundFile()
 	//–¶•¥‚¢
 	g_soundEngine->ResistWaveFileBank(enSoundName_FogRemoval, "Assets/sound/SE/inGame/FogRemoval.wav");
 	//ƒSƒSƒSƒSƒSƒSƒS
-	g_soundEngine->ResistWaveFileBank(enSoundName_Gogogo, "Assets/sound/SE/inGame/gogogo.wav");
+	g_soundEngine->ResistWaveFileBank(enSoundName_Gogogo, "Assets/sound/SE/inGame/gogogo_2.wav");
 
 	//ƒoƒgƒ‹ƒXƒ^[ƒg
 	g_soundEngine->ResistWaveFileBank(enSoundName_BattleStart, "Assets/sound/SE/inGame/BattleStart2.wav");

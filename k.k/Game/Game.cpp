@@ -29,6 +29,8 @@ namespace {
 	const float SECOND = 60.0f;
 
 	const float DEFAULT_BATTLE_BGM = 2.0f;
+
+	const float MUTE_SPEED = 5.0f;
 }
 
 Game::Game()
@@ -92,14 +94,13 @@ bool Game::Start()
 
 	m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
 	m_player = NewGO<Player>(0, "player");
-	m_player->SetPosition(PLAYER_CREATE_POSITION);
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
 	//ボスの生成。非アクティブにする
 	CreateBoss();
 
 	//当たり判定の可視化
-	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	//画面を明るくする
 	m_fade->StartFadeOut(2.0f);
@@ -150,11 +151,11 @@ void Game::GoResult(EnOutCome outcome)
 		m_result = NewGO<ResultSeen>(0, "result");
 		switch (outcome)
 		{
-		case Game::enOutCome_Win:
+		case Game::enOutCome_Player_Win:
 			g_soundManager->InitAndPlaySoundSource(enSoundName_GameClear);
 			m_result->SetOutcome(ResultSeen::enOutcome_Win);
 			break;
-		case Game::enOutCome_Lose:
+		case Game::enOutCome_Player_Lose:
 			g_soundManager->InitAndPlaySoundSource(enSoundName_GameOver);
 			m_result->SetOutcome(ResultSeen::enOutcome_Lose);
 			break;
@@ -200,16 +201,16 @@ bool Game::CalcTimeLimit()
 
 void Game::CalcMuteBGM()
 {
-	if (m_muteBGMFlag != false)
+	if (m_muteBGMFlag != true)
 	{
 		return;
 	}
 
-	m_bgmVolume = Math::Lerp(g_gameTime->GetFrameDeltaTime() * 5.0f, m_bgmVolume, 0.0f);
+	m_bgmVolume = Math::Lerp(g_gameTime->GetFrameDeltaTime() * MUTE_SPEED, m_bgmVolume, 0.0f);
 
 	if (m_bgmVolume < 0.1f)
 	{
-		m_muteBGMFlag = true;
+		m_muteBGMFlag = false;
 		g_soundManager->StopSound(enSoundName_BattleBGM);
 		return;
 	}
@@ -243,6 +244,9 @@ bool Game::IsBossMovieSkipTime()
 
 void Game::ManageState()
 {
+	//フラグが立っていたらBGMを小さくする
+	CalcMuteBGM();
+
 	switch (m_enGameState)
 	{
 	case enGameState_Fade:
@@ -391,18 +395,14 @@ void Game::OnProcessGameTransition()
 void Game::OnProcessGameOverTransition()
 {
 	//ゲーム画面からリザルト画面に遷移するまでの処理
-	GoResult(enOutCome_Lose);
+	GoResult(m_enOutCome);
 }
 
 void Game::OnProcessGameClearTransition()
 {
-	//BGMを小さくする
-	CalcMuteBGM();
-
-
 	if (m_displayResultFlag == true)
 	{
-		GoResult(enOutCome_Win);
+		GoResult(m_enOutCome);
 		return;
 	}
 	//リザルト画面がない間
@@ -453,41 +453,72 @@ void Game::OnProcessGame_FadeNoneTransition()
 
 void Game::OnProcessGame_BattleTransition()
 {
-	//制限時間の処理
-	if (CalcTimeLimit() == true)
+	CalcTimeLimit();
+
+	IsOutcome();
+}
+
+bool Game::IsOutcome()
+{
+	//プレイヤーがやられたら
+	if (m_player->IsDeadPlayer() == true)
 	{
-		//タイムアップ
-		DeleteGO(m_gameUI);
-		//ステートを切り替える
-		SetNextGameState(enGameState_GameOver_TimeUp);
+		//負けの処理
+		SetEnOutCome(enOutCome_Player_Lose);
+		ProcessLose();
+		return true;
 	}
 
-	//ゲームクリア
 	//ボスがやられたら
-	//やられた瞬間の処理
-	if (m_DeathBossFlag == true)
+	if (m_lich->GetDieFlag() == true)
 	{
-		DeleteGO(m_gameUI);
-		//ステートを切り替える
-		SetNextGameState(enGameState_GameClear);
-		//カメラをリッチに向ける
-		m_gameCamera->SetLich(m_lich);
-		//カメラをリセットする
-		m_gameCamera->CameraRefresh();
-		//BGMを消し始める
-		m_bgmVolume = g_soundManager->GetBGMVolume();
-		return;
+		//勝ちの処理
+		SetEnOutCome(enOutCome_Player_Win);
+		ProcessWin();
+		return true;
 	}
-	//ゲームオーバー
-	//キャラクターが全滅したら
-	if (m_playerAnnihilationFlag == true)
+
+	//制限時間に達したら
+	if (IsTimeUp() == true)
 	{
-		DeleteGO(m_gameUI);
-		//ステートを切り替える
-		SetNextGameState(enGameState_GameOver);
-		//BGMを消し始める
-		m_muteBGMFlag = true;
-		//BGMを消す
-		g_soundManager->StopSound(enSoundName_BattleBGM);
+		//負けの処理
+		SetEnOutCome(enOutCome_Player_Lose);
+		ProcessLoseTimeUp();
+		return true;
 	}
+
+
+	return false;
+}
+
+void Game::ProcessWin()
+{
+	DeleteGO(m_gameUI);
+	//ステートを切り替える
+	SetNextGameState(enGameState_GameClear);
+	//カメラをリッチに向ける
+	m_gameCamera->SetLich(m_lich);
+	//カメラをリセットする
+	m_gameCamera->CameraRefresh();
+	//BGMを消し始める
+	m_muteBGMFlag = true;
+	m_bgmVolume = g_soundManager->GetBGMVolume();
+}
+
+void Game::ProcessLose()
+{
+	DeleteGO(m_gameUI);
+	//ステートを切り替える
+	SetNextGameState(enGameState_GameOver);
+	//BGMを消し始める
+	m_muteBGMFlag = true;
+	m_bgmVolume = g_soundManager->GetBGMVolume();
+}
+
+void Game::ProcessLoseTimeUp()
+{
+	//タイムアップ
+	DeleteGO(m_gameUI);
+	//ステートを切り替える
+	SetNextGameState(enGameState_GameOver_TimeUp);
 }

@@ -40,7 +40,6 @@ namespace {
 
 Hero::Hero()
 {
-	m_skillAttackPower = SKILL_ATTACK_POWER;
 }
 
 Hero::~Hero()
@@ -423,7 +422,6 @@ void Hero::PowerUpTimer()
 		m_powerUpTimeFlag = false;
 		//攻撃力を戻す
 		m_status.atk = m_status.defaultAtk;
-		m_skillAttackPower = SKILL_ATTACK_POWER;
 	}
 	else
 	{
@@ -450,7 +448,7 @@ bool Hero::CalcDash()
 	forward *= speed;
 
 	//新しい座標にする
-	m_player->CalcPosition(forward, 1.0f);
+	//m_player->CalcPosition(forward, 1.0f);
 	m_position = m_player->GetPosition();
 
 	forward.Normalize();
@@ -702,8 +700,6 @@ void Hero::OnProcessDieStateTransition()
 	{
 		//フレームレートを戻す
 		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 60);
-		//アニメーションが終わったのでキャラクターを切り替えるフラグをtrueにする
-		SetDieToChangeFlag(true);
 	}
 }
 
@@ -735,7 +731,6 @@ void Hero::OnProcessPowerUpStateTransition()
 		m_powerUpTimeFlag = true;
 		//攻撃力を上げる
 		m_status.atk += m_powerUpPower;
-		m_skillAttackPower += m_powerUpPower;
 		//スキルを打ち終わったのでMP回復フラグをtrueにする
 		SetRecoveryMpFlag(true);
 		//攻撃パターンをなし状態にする

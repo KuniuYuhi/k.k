@@ -4,7 +4,7 @@ struct Status
 	int maxHp = 0;
 	int hp = 0;
 	int maxMp = 0;
-	float mp = 0;
+	int mp = 0;
 	int defaultAtk = 0;
 	int atk = 0;
 	float dashSpeed = 0.0f;

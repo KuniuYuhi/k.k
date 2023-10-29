@@ -46,6 +46,11 @@ public:
 	void CompleteTime();
 
 	/// <summary>
+	/// 効果音を徐々に小さくする
+	/// </summary>
+	void CalcMuteGogogoSE();
+
+	/// <summary>
 	/// スプライトの座標、サイズ、回転を設定
 	/// </summary>
 	/// <param name="spriterender">スプライトレンダー</param>
@@ -167,6 +172,10 @@ private:
 	float                       m_ambientColor = 0.0f;
 
 	float						m_lightTimer = 0.0f;
+
+	float						m_gogogoVolume = 0.0f;
+
+	bool						m_muteFlag = false;
 
 	bool						m_SlowlyDarkScreenEndFlag = false;				//画面を暗くしたかのフラグ
 	bool						m_SlowlyBrightScreenEndFlag = false;			//画面を明るくしたかのフラグ

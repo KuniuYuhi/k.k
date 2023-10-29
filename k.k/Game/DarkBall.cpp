@@ -10,6 +10,8 @@ namespace {
 
     const float EXPLOSION_SIZE = 9.0f;
 
+    const float DARK_BALL_SIZE = 12.0f;
+
 }
 
 DarkBall::DarkBall()
@@ -46,7 +48,7 @@ bool DarkBall::Start()
     m_darkBallEffect = NewGO<EffectEmitter>(0,"DarkBall");
     m_darkBallEffect->Init(InitEffect::enEffect_DarkBall);
     m_darkBallEffect->Play();
-    m_darkBallEffect->SetScale({ 12.0f,12.0f,12.0f });
+    m_darkBallEffect->SetScale(g_vec3One * DARK_BALL_SIZE);
     m_darkBallEffect->SetPosition(m_collisionPosition);
     m_darkBallEffect->SetRotation(m_rotation);
     m_darkBallEffect->Update();

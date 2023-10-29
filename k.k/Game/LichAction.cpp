@@ -3,8 +3,6 @@
 #include "Lich.h"
 #include "Player.h"
 
-//todo なかなか近づいて来ないとワープ
-
 //行動の優先度つける
 void LichAction::SettingPriority()
 {
@@ -18,11 +16,6 @@ void LichAction::SettingPriority()
 
 int LichAction::NextAction()
 {
-	//評価値初期化
-	/*for (int i=0;i< m_actionAmount;i++)
-	{
-		m_action[i].m_eval = 0;
-	}*/
 	CalcEvalIdle(enAttack_None);
 
 	CalcEvalAttack1(enAttack_1);
@@ -104,7 +97,6 @@ int LichAction::CalcMaxEvalNumber()
 	int NextActionNomber = 0;
 
 	//一番高い評価値を探す
-	//todo ネスト気になる
 	for (int i = 0; i < m_actionAmount; i++)
 	{
 		if (MaxEval < m_action[i].m_eval)

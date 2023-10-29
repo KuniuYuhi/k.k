@@ -448,6 +448,27 @@ public:
 		return m_timeUpEndFlag;
 	}
 
+	/// <summary>
+	/// 死亡フラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetDieFlag(bool flag)
+	{
+		m_dieFlag = flag;
+	}
+	/// <summary>
+	/// 死亡フラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetDieFlag() const
+	{
+		return m_dieFlag;
+	}
+
+private:
+
+	bool RotationOnly();
+
 	enum EnWarpStep
 	{
 		enWarpStep_Up,
@@ -460,11 +481,6 @@ public:
 	void OnProcessenWarpStepWarp();
 	void OnProcessenWarpSteDown();
 	void OnProcessenWarpStepEnd();
-
-
-private:
-
-	bool RotationOnly();
 
 	std::vector<Vector3>			m_warpPositions;										//ワープ先の座標のリスト
 	std::vector<AIActor*>			m_monsters;												//召喚したモンスターの情報を格納するリスト
@@ -510,8 +526,7 @@ private:
 	bool							m_halfHpFlag = false;									//攻撃がより攻撃的になる
 
 	bool							m_dieFlag = false;										//死んだフラグ
-	bool							m_winFlag = false;										//勝利フラグ
-
+	
 	bool							m_invincibleFlag = false;								//無敵状態フラグ
 	
 	bool							m_timeUpEndFlag = false;								//タイムアップでゲームが終わったかのフラグ
@@ -523,5 +538,7 @@ private:
 	const float						m_angryLimitTime = 20.0f;
 	float							m_angryLimitTimer = 0.0f;
 	int								m_angryModeCount = 0;									//怒りモードになる指標となるカウント
+
+
 };
 

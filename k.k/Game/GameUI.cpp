@@ -106,19 +106,11 @@ void GameUI::Update()
 
 void GameUI::PlayerUIUpdate()
 {
-	if (ChangeCharacterIcon() == true)
-	{
-		return;
-	}
-
 	TimerUIUpdate();
 
 	UpdateMainStatus();
-	UpdateSubStatus();
 
 	UpdateCharaIcon();
-
-	CalcChangeCharaIconCoolTime();
 }
 
 void GameUI::UpdateMainStatus()
@@ -167,108 +159,12 @@ void GameUI::UpdateMainStatus()
 	m_playerUI.m_MainMpFrontRender.Update();
 }
 
-void GameUI::UpdateSubStatus()
-{
-	//HPバーの減っていく割合。
-	Vector3 HpScale = Vector3::One;
-	HpScale = CalcGaugeScale(m_player->GetSubActorStatus().maxHp, m_player->GetSubActorStatus().hp);
-	m_playerUI.m_SubHpFrontRender.SetScale(HpScale);
-
-	//MPバーの減っていく割合。
-	Vector3 MpScale = Vector3::One;
-	MpScale = CalcGaugeScale(m_player->GetSubActorStatus().maxMp, m_player->GetSubActorStatus().mp);
-	m_playerUI.m_SubMpFrontRender.SetScale(MpScale);
-
-	//更新
-	m_playerUI.m_SubHpFrontRender.Update();
-	m_playerUI.m_SubMpFrontRender.Update();
-}
-
-bool GameUI::ChangeCharacterIcon()
-{
-	//1になったら終わり
-	if (m_charaIconChangeTimer >= 1.0f)
-	{
-		m_player->SetChangCharacterFlagForGameUI(false);
-		m_charaIconChangeTimer = 0.0f;
-		return false;
-	}
-
-	//キャラが切り替わったら
-	if (m_player->GetChangCharacterFlagForGameUI() != true)
-	{
-		return false;
-	}
-
-	m_charaIconChangeTimer += g_gameTime->GetFrameDeltaTime()*4.7f;
-	if (m_charaIconChangeTimer > 1.0f)
-	{
-		m_charaIconChangeTimer = 1.0f;
-	}
-
-	//メインからサブ
-	Vector3 Mpos1;
-	Mpos1.Lerp(m_charaIconChangeTimer, MAIN_ICON_POS, ICON_LERP_CENTER_POS);
-	Vector3 Mpos2;
-	Mpos2.Lerp(m_charaIconChangeTimer, ICON_LERP_CENTER_POS, SUB_ICON_POS);
-	Vector3 MainToSub;
-	MainToSub.Lerp(m_charaIconChangeTimer, Mpos1, Mpos2);
-	//アイコンのスケール
-	Vector3 scaleDown;
-	scaleDown.Lerp(m_charaIconChangeTimer, g_vec3One, SUB_ICON_SCALE);
-
-	//サブからメイン
-	Vector3 Spos1;
-	Spos1.Lerp(m_charaIconChangeTimer, SUB_ICON_POS, ICON_LERP_CENTER_POS);
-	Vector3 Spos2;
-	Spos2.Lerp(m_charaIconChangeTimer, ICON_LERP_CENTER_POS, MAIN_ICON_POS);
-	Vector3 SubToMain;
-	SubToMain.Lerp(m_charaIconChangeTimer, SUB_ICON_POS, MAIN_ICON_POS);
-	//アイコンのスケール
-	Vector3 scaleUp;
-	scaleUp.Lerp(m_charaIconChangeTimer, SUB_ICON_SCALE, g_vec3One);
-
-	if (m_player->GetActiveCharacter() != Player::enHero)
-	{
-		m_playerUI.m_MainIconRender.SetScale(scaleDown);
-		m_playerUI.m_MainIconRender.SetPosition(MainToSub);
-	}
-	else
-	{
-		m_playerUI.m_SubIconRender.SetScale(scaleDown);
-		m_playerUI.m_SubIconRender.SetPosition(MainToSub);
-	}
-
-	if (m_player->GetActiveCharacter() == Player::enHero)
-	{
-		m_playerUI.m_MainIconRender.SetScale(scaleUp);
-		m_playerUI.m_MainIconRender.SetPosition(SubToMain);
-	}
-	else
-	{
-		m_playerUI.m_SubIconRender.SetScale(scaleUp);
-		m_playerUI.m_SubIconRender.SetPosition(SubToMain);
-	}
-
-	m_playerUI.m_MainIconRender.Update();
-	m_playerUI.m_SubIconRender.Update();
-
-	return true;
-}
-
 void GameUI::UpdateCharaIcon()
 {
 	//やられたキャラのアイコンをグレースケールにする
 	if (m_player->GetNowActorDieFlag()==true)
 	{
-		if (m_player->GetActiveCharacter() == Player::enHero)
-		{
-			m_playerUI.m_MainIconRender.SetGrayScale(true);
-		}
-		else
-		{
-			m_playerUI.m_SubIconRender.SetGrayScale(true);
-		}
+		m_playerUI.m_MainIconRender.SetGrayScale(true);
 	}
 }
 
@@ -277,28 +173,6 @@ Vector3 GameUI::CalcGaugeScale(float Maxvalue, float value)
 	Vector3 scale = g_vec3One;
 	scale.x = value / Maxvalue;
 	return scale;
-}
-
-void GameUI::CalcChangeCharaIconCoolTime()
-{
-	//
-	if (m_player->GetChangCharacterFlag() != true)
-	{
-		m_coolTimeDrawFlag = false;
-		return;
-	}
-	//キャラが切り替わったら
-	float timer = m_player->GetChangeCharacterTimer();
-	if (timer <= 0.0f)
-	{
-		m_coolTimeDrawFlag = false;
-		return;
-	}
-
-	wchar_t CoolTime[255];
-	swprintf_s(CoolTime, 255, L"%1.1f", timer);
-	m_playerUI.m_ChangeCharacterCoolTimeFont.SetText(CoolTime);
-	m_coolTimeDrawFlag = true;
 }
 
 void GameUI::MonsterUIUpdate()
@@ -363,16 +237,6 @@ void GameUI::DrawPlayerUI(RenderContext& rc)
 
 	//キャラチェンジのアイコン
 	m_playerUI.m_ChangeCharacterIconRender.Draw(rc);
-	//キャラチェンジのクールタイムの間の黒いやつ
-	if (m_player->GetChangCharacterFlag() == true)
-	{
-		m_playerUI.m_ChangeCharacterIconBlackRender.Draw(rc);
-		if (m_coolTimeDrawFlag == true)
-		{
-			m_playerUI.m_ChangeCharacterCoolTimeFont.Draw(rc);
-		}
-		
-	}
 
 	//メインステータスバー
 	m_playerUI.m_MainStatusBarRender.Draw(rc);
@@ -397,20 +261,6 @@ void GameUI::DrawPlayerUI(RenderContext& rc)
 	m_playerUI.m_MainIconRender.Draw(rc);
 	//サブアイコン
 	m_playerUI.m_SubIconRender.Draw(rc);
-
-	//キャラによって切り替える
-	if (m_player->GetActiveCharacter() == Player::enHero)
-	{
-		//ヒーローのスキル
-		m_playerUI.m_SkillRotarySlashRender.Draw(rc);
-		m_playerUI.m_SkillPowerUpRender.Draw(rc);
-	}
-	else
-	{
-		//ウィザードのスキル
-		m_playerUI.m_SkillFlamePillarRender.Draw(rc);
-		m_playerUI.m_SkillFireBallRender.Draw(rc);
-	}
 	
 	//Xボタン
 	m_playerUI.m_SkillButtonXRender.Draw(rc);
@@ -483,12 +333,7 @@ void GameUI::InitPlayerUI()
 	m_playerUI.m_ChangeCharacterIconBlackRender.Init("Assets/sprite/InGame/Character/CharaChangeIcon_Black.DDS", 140, 140);
 	SettingSpriteRender(
 		m_playerUI.m_ChangeCharacterIconBlackRender, CHARA_CHANGE_ICON_POS, g_vec3One, g_quatIdentity);
-	//キャラチェンジのクールタイム
-	m_playerUI.m_ChangeCharacterCoolTimeFont.SetColor(g_vec4White);
-	m_playerUI.m_ChangeCharacterCoolTimeFont.SetPosition(CHARA_CHANGE_ICON_FONT_POS);
-	m_playerUI.m_ChangeCharacterCoolTimeFont.SetScale(1.0f);
-	m_playerUI.m_ChangeCharacterCoolTimeFont.SetShadowParam(true, 1.0f, g_vec4Black);
-
+	
 	//アイコンベース
 	m_playerUI.m_MainIconBaseRender.Init("Assets/sprite/InGame/Character/Icon_Base_Main.DDS", 250, 250);
 	SettingSpriteRender(
@@ -568,24 +413,6 @@ void GameUI::InitPlayerUI()
 	m_playerUI.m_SkillButtonYRender.Init("Assets/sprite/InGame/Character/SkillButtonY.DDS", 100, 90);
 	SettingSpriteRender(
 		m_playerUI.m_SkillButtonYRender, SKILL_2_Y_POS, Vector3(0.7f, 0.7f, 0.7f), g_quatIdentity);
-
-	//ヒーローのスキル１　回転斬り
-	m_playerUI.m_SkillRotarySlashRender.Init("Assets/sprite/InGame/Character/Icon_RotarySlash.DDS", 224, 224);
-	SettingSpriteRender(
-		m_playerUI.m_SkillRotarySlashRender, SKILL_1__POS, Vector3(0.7f, 0.7f, 0.7f), g_quatIdentity);
-	//ヒーローのスキル２　パワーアップ
-	m_playerUI.m_SkillPowerUpRender.Init("Assets/sprite/InGame/Character/Icon_PowerUp.DDS", 262, 262);
-	SettingSpriteRender(
-		m_playerUI.m_SkillPowerUpRender, SKILL_2__POS, Vector3(0.7f, 0.7f, 0.7f), g_quatIdentity);
-
-	//ウィザードのスキル１　フレイムピラー
-	m_playerUI.m_SkillFlamePillarRender.Init("Assets/sprite/InGame/Character/Icon_Flamepillar.DDS", 224, 224);
-	SettingSpriteRender(
-		m_playerUI.m_SkillFlamePillarRender, SKILL_1__POS, Vector3(0.7f, 0.7f, 0.7f), g_quatIdentity);
-	//ウィザードのスキル２　ファイヤーボール
-	m_playerUI.m_SkillFireBallRender.Init("Assets/sprite/InGame/Character/Icon_FireBall.DDS", 224, 224);
-	SettingSpriteRender(
-		m_playerUI.m_SkillFireBallRender, SKILL_2__POS, Vector3(0.7f, 0.7f, 0.7f), g_quatIdentity);
 
 	//制限時間の枠
 	m_playerUI.m_TimeFlameRender.Init("Assets/sprite/InGame/Character/TimeFlame2.DDS", 500, 124);

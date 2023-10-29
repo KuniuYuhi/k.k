@@ -135,52 +135,27 @@ void Slime::InitModel()
 
 void Slime::Update()
 {
-	if (m_lich != nullptr)
+	if (IsStopProcessing() != true)
 	{
-		//勝利したら
-		if (m_lich->GetWinFlag() == true)
+		AttackInterval(m_attackIntervalTime);
+
+		DamageCollision(m_charaCon);
+
+		AngleChangeTimeIntarval(m_angleChangeTime);
+
+		Move(m_charaCon);
+		Rotation(ROT_SPEED, ROT_SPEED);
+		//攻撃
+		Attack();
+
+		if (m_createAttackCollisionFlag == true)
 		{
-			SetWinFlag(true);
-			//攻撃中でなければ
-			SetNextAnimationState(enAnimationState_Victory);
-		}
-		//タイムアップフラグがtrueなら
-		if (m_lich->GetTimeUpEndFlag() == true)
-		{
-			//敵の勝利
-			SetWinFlag(true);
-			SetNextAnimationState(enAninationState_Idle);
+			CreateCollision();
 		}
 	}
-	
-	if (IsStopProcessing()==true)
-	{
-		//これより下の処理をしない
-		ManageState();
-		PlayAnimation();
-		m_modelRender.Update();
-		return;
-	}
-
-	AttackInterval(m_attackIntervalTime);
-
-	DamageCollision(m_charaCon);
-
-	AngleChangeTimeIntarval(m_angleChangeTime);
-
-	Move(m_charaCon);
-	Rotation(ROT_SPEED, ROT_SPEED);
-
-	//攻撃
-	Attack();
 
 	ManageState();
 	PlayAnimation();
-
-	if (m_createAttackCollisionFlag == true)
-	{
-		CreateCollision();
-	}
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
@@ -225,11 +200,32 @@ void Slime::Attack()
 
 bool Slime::IsStopProcessing()
 {
-	//勝利したら
-	if (GetWinFlag() == true)
+	//勝敗が決まったら
+	if (m_enOutCome != enOutCome_None)
 	{
 		return true;
 	}
+
+	//勝利したら
+	if (m_lich != nullptr)
+	{
+		if (m_lich->GetEnOutCome() == enOutCome_Win)
+		{
+			//勝敗ステートの設定
+			SetEnOutCome(enOutCome_Win);
+			SetWinFlag(true);
+			//攻撃中でなければ
+			SetNextAnimationState(enAnimationState_Victory);
+			return true;
+		}
+		//負けた時
+		if (m_lich->GetEnOutCome() == enOutCome_Lose)
+		{
+			SetNextAnimationState(enAninationState_Idle);
+			return true;
+		}
+	}
+
 	//召喚された時のアニメーションステートなら	
 	if (m_enAnimationState == enAnimationState_Appear)
 	{

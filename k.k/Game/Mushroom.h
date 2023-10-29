@@ -170,8 +170,6 @@ private:
 
 	CharacterController m_charaCon;
 
-	//Vector3 m_direction = Vector3::Zero;
-
 	int m_attackBoonId = -1;					//UŒ‚‚Åg‚¤ƒ{[ƒ“ID
 
 	bool m_createAttackCollisionFlag = false;

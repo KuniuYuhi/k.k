@@ -135,48 +135,52 @@ void Mushroom::InitModel()
 
 void Mushroom::Update()
 {
-	if (m_lich != nullptr)
-	{
-		if (m_lich->GetWinFlag() == true)
-		{
-			SetWinFlag(true);
-			//攻撃中でなければ
-			SetNextAnimationState(enAnimationState_Victory);
-		}
-		if (m_lich->GetTimeUpEndFlag() == true)
-		{
-			SetWinFlag(true);
-			SetNextAnimationState(enAninationState_Idle);
-		}
-	}
-
-	if (IsStopProcessing() == true)
+	/*if (IsStopProcessing() == true)
 	{
 		ManageState();
 		PlayAnimation();
 		m_modelRender.Update();
 		return;
+	}*/
+
+	if (IsStopProcessing() != true)
+	{
+		AttackInterval(m_attackIntervalTime);
+
+		DamageCollision(m_charaCon);
+
+		AngleChangeTimeIntarval(m_angleChangeTime);
+
+		Move(m_charaCon);
+		Rotation(ROT_SPEED, ROT_SPEED);
+		//攻撃
+		Attack();
+
+		if (m_createAttackCollisionFlag == true)
+		{
+			CreateCollision();
+		}
 	}
 
-	AttackInterval(m_attackIntervalTime);
+	//AttackInterval(m_attackIntervalTime);
 
-	DamageCollision(m_charaCon);
+	//DamageCollision(m_charaCon);
 
-	AngleChangeTimeIntarval(m_angleChangeTime);
+	//AngleChangeTimeIntarval(m_angleChangeTime);
 
-	Move(m_charaCon);
-	Rotation(ROT_SPEED, ROT_SPEED);
+	//Move(m_charaCon);
+	//Rotation(ROT_SPEED, ROT_SPEED);
 
-	//攻撃
-	Attack();
+	////攻撃
+	//Attack();
 
 	ManageState();
 	PlayAnimation();
 
-	if (m_createAttackCollisionFlag == true)
+	/*if (m_createAttackCollisionFlag == true)
 	{
 		CreateCollision();
-	}
+	}*/
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
@@ -247,11 +251,32 @@ void Mushroom::CreateCollision()
 
 bool Mushroom::IsStopProcessing()
 {
-	//勝利したら
-	if (GetWinFlag() == true)
+	//勝敗が決まったら
+	if (m_enOutCome != enOutCome_None)
 	{
 		return true;
 	}
+
+	//勝利したら
+	if (m_lich != nullptr)
+	{
+		if (m_lich->GetEnOutCome() == enOutCome_Win)
+		{
+			//勝敗ステートの設定
+			SetEnOutCome(enOutCome_Win);
+			SetWinFlag(true);
+			//攻撃中でなければ
+			SetNextAnimationState(enAnimationState_Victory);
+			return true;
+		}
+		//負けた時
+		if (m_lich->GetEnOutCome() == enOutCome_Lose)
+		{
+			SetNextAnimationState(enAninationState_Idle);
+			return true;
+		}
+	}
+
 	//召喚された時のアニメーションステートなら	
 	if (m_enAnimationState == enAnimationState_Appear)
 	{

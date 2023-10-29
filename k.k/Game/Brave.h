@@ -50,10 +50,78 @@ public:
 	void Update();
 	void Render(RenderContext& rc);
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
+
+	//////////////////////////////////////////////////////////////
+	// 仮想関数、純粋仮想関数
+	//////////////////////////////////////////////////////////////
+
+	/// <summary>
+	/// ダメージを受けた時の処理
+	/// </summary>
+	/// <param name="damage">受けるダメージ</param>
+	void Damage(int damage) override;
+	/// <summary>
+	/// 特定のアニメーションが再生中か
+	/// </summary>
+	/// <returns></returns>
+	bool isAnimationEntable() const override
+	{
+		return m_enAnimationState != enAnimationState_Attack_1 &&
+			m_enAnimationState != enAnimationState_Attack_2 &&
+			m_enAnimationState != enAnimationState_Attack_3 &&
+			m_enAnimationState != enAnimationState_Skill_start &&
+			m_enAnimationState != enAnimationState_Skill_Main &&
+			m_enAnimationState != enAnimationState_Defend &&
+			m_enAnimationState != enAnimationState_Hit &&
+			m_enAnimationState != enAnimationState_Die &&
+			m_enAnimationState != enAnimationState_ChangeSwordShield;
+	}
+	/// <summary>
+	/// 当たり判定可能なアニメーションか
+	/// </summary>
+	/// <returns></returns>
+	bool isCollisionEntable() const override
+	{
+		return m_enAnimationState != enAnimationState_Hit &&
+			m_enAnimationState != enAnimationState_Defend;
+	}
+	/// <summary>
+	/// 回転可能なアニメーションが再生中か
+	/// </summary>
+	/// <returns></returns>
+	bool isRotationEntable() const override
+	{
+		return m_enAnimationState == enAnimationState_Defend;
+	}
+
+	/// <summary>
+	/// 勝利時の処理
+	/// </summary>
+	void ProcessWin() override;
+
+private:
 	/// <summary>
 	/// モデルの初期化
 	/// </summary>
-	void InitModel();
+	void InitModel() override;
+	/// <summary>
+	/// アニメーションの再生
+	/// </summary>
+	void PlayAnimation() override;
+	/// <summary>
+	/// ステート管理
+	/// </summary>
+	void ManageState() override;
+	/// <summary>
+	/// スキルの使用時などの移動はしないが回転はしたいときに使う
+	/// </summary>
+	bool RotationOnly() override;
+
+	//////////////////////////////////////////////////////////////
+	// その他の関数
+	//////////////////////////////////////////////////////////////
+
+public:
 	/// <summary>
 	/// 移動処理
 	/// </summary>
@@ -70,11 +138,7 @@ public:
 	/// 防御処理
 	/// </summary>
 	void ProcessDefend();
-	/// <summary>
-	/// ダメージを受けた時の処理
-	/// </summary>
-	/// <param name="damage">受けるダメージ</param>
-	void Damage(int damage);
+	
 	/// <summary>
 	/// 行動不可能かどうかの判定可能
 	/// </summary>
@@ -91,71 +155,6 @@ public:
 	///	武器の切り替え処理
 	/// </summary>
 	void ChangeWeapon();
-
-
-
-	/// <summary>
-	/// キャラクターがチェンジ可能か
-	/// </summary>
-	/// <returns></returns>
-	bool isAnimationSwappable() const
-	{
-		return true;
-	}
-
-	/// <summary>
-	/// 特定のアニメーションが再生中か
-	/// </summary>
-	/// <returns></returns>
-	bool isAnimationEntable() const
-	{
-		return m_enAnimationState != enAnimationState_Attack_1 &&
-			m_enAnimationState != enAnimationState_Attack_2 &&
-			m_enAnimationState != enAnimationState_Attack_3 &&
-			m_enAnimationState != enAnimationState_Skill_start &&
-			m_enAnimationState != enAnimationState_Skill_Main &&
-			m_enAnimationState != enAnimationState_Defend &&
-			m_enAnimationState != enAnimationState_Hit &&
-			m_enAnimationState != enAnimationState_Die &&
-			m_enAnimationState != enAnimationState_ChangeSwordShield;
-	}
-
-	/// <summary>
-	/// 当たり判定可能なアニメーションか
-	/// </summary>
-	/// <returns></returns>
-	bool isCollisionEntable() const
-	{
-		return m_enAnimationState != enAnimationState_Hit &&
-			m_enAnimationState != enAnimationState_Defend;
-	}
-
-	/// <summary>
-	/// 回転可能なアニメーションが再生中か
-	/// </summary>
-	/// <returns></returns>
-	bool isRotationEntable() const
-	{
-		return m_enAnimationState == enAnimationState_Defend;
-	}
-
-	/// <summary>
-	/// 勝利ステートを設定する
-	/// </summary>
-	void SetVictoryAnimationState()
-	{
-
-	}
-	/// <summary>
-	/// アイドルステートを設定する
-	/// </summary>
-	void SetIdleAnimationState()
-	{
-
-	}
-
-	
-
 	/// <summary>
 	/// 武器が剣盾の時のスキルの処理
 	/// </summary>
@@ -388,24 +387,9 @@ public:
 
 private:
 	/// <summary>
-	/// アニメーションの再生
-	/// </summary>
-	void PlayAnimation();
-	/// <summary>
-	/// ステート管理
-	/// </summary>
-	void ManageState();
-	
-	/// <summary>
 	/// コンボ攻撃のコンボの処理
 	/// </summary>
 	void ProcessComboAttack();
-
-
-	/// <summary>
-	/// スキルの使用時などの移動はしないが回転はしたいときに使う
-	/// </summary>
-	bool RotationOnly();
 
 	/// <summary>
 	/// メイン武器とサブ武器を入れ替える
@@ -435,33 +419,33 @@ private:
 	//現在の武器のアニメーションの最初の番号
 	int m_currentAnimationStartIndexNo = OneHandSwordAnimationStartIndexNo;
 
-	UseWeapon m_useWeapon[enWeapon_num];	//使う武器
+	UseWeapon					m_useWeapon[enWeapon_num];	//使う武器
 
-	IWeapon* m_weapon[enWeapon_num];	//武器の数
-	IWeapon* m_mainWeapon = nullptr;	//メイン武器
-	IWeapon* m_subWeapon = nullptr;		//サブ武器
+	IWeapon*					m_weapon[enWeapon_num];	//武器の数
+	IWeapon*					m_mainWeapon = nullptr;	//メイン武器
+	IWeapon*					m_subWeapon = nullptr;		//サブ武器
 
-	Player* m_player = nullptr;
-	IBraveState* m_BraveState = nullptr;
-	SwordShield* m_swordShield = nullptr;
+	Player*						m_player = nullptr;
+	IBraveState*				m_BraveState = nullptr;
+	SwordShield*				m_swordShield = nullptr;
 
-	EnAnimationState m_enAnimationState = enAninationState_Idle;			//アニメーションステート
-	EnAttackPattern m_attackPatternState = enAttackPattern_None;
-	CharacterController m_charaCon;
+	EnAnimationState			m_enAnimationState = enAninationState_Idle;			//アニメーションステート
+	EnAttackPattern				m_attackPatternState = enAttackPattern_None;
+	CharacterController			m_charaCon;
 	
-	AnimationClip	m_animationClip[enAnimClip_Num * AnimationClipGroup_Num];// アニメーションクリップ 
+	AnimationClip				m_animationClip[enAnimClip_Num * AnimationClipGroup_Num];// アニメーションクリップ 
 	
-	ModelRender m_modelRender;
+	ModelRender					m_modelRender;
 
-	InfoAboutActionFlag m_infoAboutActionFlag;
+	InfoAboutActionFlag			m_infoAboutActionFlag;
 
-	int m_charaCenterBoonId = -1;
+	int							m_charaCenterBoonId = -1;
 
-	float m_mulYPos = 0.0f;
+	float						m_mulYPos = 0.0f;
 
-	const float m_normalAttackSpeed = 160.0f;
+	const float					m_normalAttackSpeed = 160.0f;
 
-	const float m_avoidSpeed = 230.0f;
+	const float					m_avoidSpeed = 230.0f;
 
 
 };
