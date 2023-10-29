@@ -16,6 +16,8 @@ SwordShield::SwordShield()
 
 SwordShield::~SwordShield()
 {
+	DeleteGO(m_swordCollision);
+	DeleteGO(m_shieldCollision);
 }
 
 bool SwordShield::Start()
