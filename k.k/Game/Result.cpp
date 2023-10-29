@@ -67,7 +67,6 @@ void ResultSeen::ManageState()
 
 void ResultSeen::WinState()
 {
-	//
 	if (m_resultEndFlag == true)
 	{
 		ResultEnd();

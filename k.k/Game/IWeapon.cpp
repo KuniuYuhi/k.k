@@ -14,7 +14,6 @@ void IWeapon::ReverseWeaponState()
 	//現在の武器の状態ステートが装備状態なら収納状態ステートに変更する
 	if (m_enWeaponState == enWeaponState_Armed)
 	{
-		//todo 当たり判定のふぁｌせ
 		m_enWeaponState = enWeaponState_Stowed;
 	}
 	//現在の武器の状態ステートが収納状態なら装備状態ステートに変更する
