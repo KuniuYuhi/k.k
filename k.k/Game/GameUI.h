@@ -23,19 +23,11 @@ public:
 	/// </summary>
 	void PlayerUIUpdate();
 	/// <summary>
-	/// メインキャラのステータスの更新
+	/// メインキャラのステータスの更新処理
 	/// </summary>
 	void UpdateMainStatus();
 	/// <summary>
-	/// サブキャラのステータスの更新
-	/// </summary>
-	void UpdateSubStatus();
-	/// <summary>
-	/// キャラアイコンの切り替え
-	/// </summary>
-	bool ChangeCharacterIcon();
-	/// <summary>
-	/// 
+	/// キャラアイコンの更新処理
 	/// </summary>
 	void UpdateCharaIcon();
 	/// <summary>
@@ -45,9 +37,6 @@ public:
 	/// <param name="value">計算したい値</param>
 	/// <returns>サイズ</returns>
 	Vector3 CalcGaugeScale(float Maxvalue, float value);
-
-	void CalcChangeCharaIconCoolTime();
-
 
 	/// <summary>
 	/// モンスターのUIの処理
@@ -64,7 +53,7 @@ public:
 	void DrawMonsterUI(RenderContext& rc);
 
 	/// <summary>
-	/// 
+	/// プレイヤーインスタンスの取得
 	/// </summary>
 	/// <param name="player"></param>
 	void GetPlayer(Player* player)
@@ -72,7 +61,7 @@ public:
 		m_player = player;
 	}
 	/// <summary>
-	/// 
+	/// リッチ(ボス)のインスタンスの取得
 	/// </summary>
 	/// <param name="lich"></param>
 	void GetLich(Lich* lich)
@@ -80,7 +69,7 @@ public:
 		m_lich = lich;
 	}
 	/// <summary>
-	/// 
+	/// ゲームインスタンスの取得
 	/// </summary>
 	/// <param name="game"></param>
 	void GetGame(Game* game)
@@ -150,16 +139,9 @@ private:
 		SpriteRender m_SkillButtonXRender;
 		SpriteRender m_SkillButtonYRender;
 
-		SpriteRender m_SkillPowerUpRender;
-		SpriteRender m_SkillRotarySlashRender;
-
-		SpriteRender m_SkillFireBallRender;
-		SpriteRender m_SkillFlamePillarRender;
-
 		SpriteRender m_ChangeCharacterIconRender;
 		SpriteRender m_ChangeCharacterIconBlackRender;
-		FontRender m_ChangeCharacterCoolTimeFont;
-
+		
 		SpriteRender m_TimeFlameRender;
 
 	};
