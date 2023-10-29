@@ -400,7 +400,7 @@ void Wizard::CalcWarp()
 	 
 	
 	//新しい座標にする
-	m_player->CalcPosition(direction,1.0f);
+	//m_player->CalcPosition(direction,1.0f);
 	m_position = m_player->GetPosition();
 	//更新
 	SetTransFormModel(m_modelRender);
@@ -614,8 +614,6 @@ void Wizard::OnProcessDieStateTransition()
 	{
 		//フレームレートを戻す
 		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 60);
-		//アニメーションが終わったのでキャラクターを切り替えるフラグをtrueにする
-		SetDieToChangeFlag(true);
 	}
 }
 
