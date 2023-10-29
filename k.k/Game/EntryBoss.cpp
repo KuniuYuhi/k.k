@@ -55,6 +55,7 @@ namespace {
 
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.7f, 0.7f, 0.7f);
 
+	const float MUTE_SPEED = 15.0f;
 }
 
 EntryBoss::EntryBoss()
@@ -191,8 +192,8 @@ void EntryBoss::Update()
 	//霧払いエフェクトがnullptyでないなら
 	if (m_FogRemovalEffect != nullptr)
 	{
+		CalcMuteGogogoSE();
 		SlowlyBrightScreen();
-
 		//霧払いエフェクトがおわったら
 		if (m_FogRemovalEffect->IsPlay() == false)
 		{
@@ -371,6 +372,28 @@ void EntryBoss::CompleteTime()
 	}
 }
 
+void EntryBoss::CalcMuteGogogoSE()
+{
+	if (m_muteFlag != true)
+	{
+		return;
+	}
+	//音を線形補間で小さくしていく
+	m_gogogoVolume = Math::Lerp(
+		g_gameTime->GetFrameDeltaTime() * MUTE_SPEED, m_gogogoVolume, 0.1f);
+
+	if (m_gogogoVolume <= 0.1f)
+	{
+		g_soundManager->StopSound(enSoundName_Gogogo);
+		m_muteFlag = false;
+	}
+	else
+	{
+		//ボリュームを設定
+		g_soundManager->GetSoundSource(enSoundName_Gogogo)->SetVolume(m_gogogoVolume);
+	}
+}
+
 void EntryBoss::MamageState()
 {
 	switch (m_enAnimationState)
@@ -428,7 +451,9 @@ void EntryBoss::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNa
 
 		//霧払い音再生
 		g_soundManager->InitAndPlaySoundSource(enSoundName_FogRemoval, g_soundManager->GetSEVolume());
-
+		//gogogo音を小さくしていく
+		m_muteFlag = true;
+		m_gogogoVolume = g_soundManager->GetDefaultSEVolume();
 		//ポイントライトを消す
 		g_renderingEngine->UnUsePointLight();
 	}
