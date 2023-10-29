@@ -144,17 +144,6 @@ void Actor::DamageCollision(CharacterController& characon)
 		return;
 	}
 
-	if (IsInvincible() == true)
-	{
-		return;
-	}
-
-	//キャラ切り替え直後なら処理しない
-	if (GetInvincibleTimeFlag() == true)
-	{
-		return;
-	}
-
 	//ダークボールの当たり判定
 	const auto& DarkBallCollisions = g_collisionObjectManager->FindCollisionObjects("darkball");
 	//コリジョンの配列をfor文で回す
@@ -251,27 +240,6 @@ void Actor::DamageCollision(CharacterController& characon)
 			darkMeteo->SetChaseFlag(true);
 			return;
 		}
-	}
-
-}
-
-bool Actor::IsInvincible()
-{
-	if (m_changeCharacterInvincbleFlag != true)
-	{
-		return false;
-	}
-
-	if (m_changeCharaInvisibleTime < m_changeCharaInvisibleTimer)
-	{
-		SetChangeCharacterInvincbleFlag(false);
-		m_changeCharaInvisibleTimer = 0.0f;
-		return false;
-	}
-	else
-	{
-		m_changeCharaInvisibleTimer += g_gameTime->GetFrameDeltaTime();
-		return true;
 	}
 
 }

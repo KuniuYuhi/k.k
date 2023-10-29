@@ -2,7 +2,6 @@
 #include "Status.h"
 #include "DamageFont.h"
 
-//class Player;
 class AIActor;
 
 class Actor:public IGameObject
@@ -40,15 +39,6 @@ public:
 	///////////////////////////////////////////////////////////////
 
 	/// <summary>
-	/// 勝利時のアニメーションステートを設定
-	/// </summary>
-	virtual void SetVictoryAnimationState() = 0;
-	/// <summary>
-	/// 待機状態アニメーションステートを設定
-	/// </summary>
-	virtual void SetIdleAnimationState() = 0;
-
-	/// <summary>
 	/// コリジョンオブジェクトに当たった時の処理
 	/// </summary>
 	/// <param name="characon"></param>
@@ -59,12 +49,6 @@ public:
 	/// </summary>
 	/// <param name="attack">相手の攻撃力</param>
 	virtual void Damage(int attack) = 0;
-
-	/// <summary>
-	/// キャラクターがチェンジ可能か
-	/// </summary>
-	/// <returns></returns>
-	virtual bool isAnimationSwappable() const = 0;
 	/// <summary>
 	/// 特定のアニメーションが再生中か
 	/// </summary>
@@ -80,6 +64,10 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	virtual bool isRotationEntable() const = 0;
+	/// <summary>
+	/// 勝利時の処理
+	/// </summary>
+	virtual void ProcessWin() = 0;
 
 protected:
 	/// <summary>
@@ -127,11 +115,6 @@ public:
 	/// 無敵時間の計算
 	/// </summary>
 	bool CalcInvincibleTime();
-
-	/// <summary>
-	/// キャラ切り替え直後の無敵時間かどうか
-	/// </summary>
-	bool IsInvincible();
 
 	//敵のダメージ判定用コンボステート
 	enum EnComboState
@@ -202,7 +185,6 @@ public:
 	{
 		return m_position;
 	}
-
 	/// <summary>
 	/// 拡大率の取得
 	/// </summary>
@@ -211,7 +193,6 @@ public:
 	{
 		return m_scale;
 	}
-
 	/// <summary>
 	/// 回転の取得
 	/// </summary>
@@ -220,7 +201,6 @@ public:
 	{
 		return m_rotation;
 	}
-
 	/// <summary>
 	/// ステータスの取得
 	/// </summary>
@@ -237,19 +217,13 @@ public:
 	{
 		return m_forward;
 	}
-
+	/// <summary>
+	/// moveSpeedの取得
+	/// </summary>
+	/// <returns></returns>
 	const Vector3& GetMoveSpeed() const
 	{
 		return m_moveSpeed;
-	}
-
-	/// <summary>
-	/// スキルの攻撃力の取得
-	/// </summary>
-	/// <returns></returns>
-	const int GetSkillAttackPower() const
-	{
-		return m_skillAttackPower;
 	}
 
 	/// <summary>
@@ -270,35 +244,20 @@ public:
 	}
 
 	/// <summary>
-	/// 自身がやられてキャラクターを切り替えるかのフラグを設定
+	/// 無敵状態フラグを設定
 	/// </summary>
 	/// <param name="flag"></param>
-	void SetDieToChangeFlag(bool flag)
-	{
-		m_dieToChangeFlag = flag;
-	}
-	/// <summary>
-	/// 自身がやられてキャラクターを切り替えるかのフラグを取得
-	/// </summary>
-	/// <returns></returns>
-	const bool GetDieToChangeFlag() const
-	{
-		return m_dieToChangeFlag;
-	}
-
 	void SetInvicibleTimeFlag(bool flag)
 	{
 		m_invincibleTimeFlag = flag;
 	}
-
+	/// <summary>
+	/// 無敵状態フラグを取得
+	/// </summary>
+	/// <returns></returns>
 	const bool GetInvincibleTimeFlag()
 	{
 		return m_invincibleTimeFlag;
-	}
-
-	void SetChangeCharacterInvincbleFlag(bool flag)
-	{
-		m_changeCharacterInvincbleFlag = flag;
 	}
 
 protected:
@@ -308,7 +267,6 @@ protected:
 	/// m_recoveryMpFlagがtrueの時に処理を実行
 	/// </summary>
 	void RecoveryMP();
-
 	/// <summary>
 	/// MPを回復するかのフラグを設定する
 	/// </summary>
@@ -317,13 +275,15 @@ protected:
 	{
 		m_recoveryMpFlag = flag;
 	}
-
 	/// <summary>
 	/// 移動時の回転
 	/// </summary>
 	/// <returns></returns>
 	Quaternion Rotation(float rotSpeed, float rotOnlySpeed);
 
+	/// <summary>
+	/// ダッシュ回避ステート
+	/// </summary>
 	enum EnDashInvicibleState
 	{
 		enDashInvicibleState_None,
@@ -332,15 +292,18 @@ protected:
 	};
 
 	/// <summary>
-	/// ダッシュした瞬間のステートの設定
+	/// ダッシュ回避ステートの設定
 	/// </summary>
 	/// <param name="enDashInvicibleState"></param>
 	void SetInvicibleDashState(EnDashInvicibleState enDashInvicibleState)
 	{
 		m_enDashInvicibleState = enDashInvicibleState;
 	}
-
-	const EnDashInvicibleState GetInvicibleDashState() const
+	/// <summary>
+	/// ダッシュ回避ステートの取得
+	/// </summary>
+	/// <returns></returns>
+	const EnDashInvicibleState& GetInvicibleDashState() const
 	{
 		return m_enDashInvicibleState;
 	}
@@ -377,14 +340,10 @@ protected:
 	Quaternion						m_rotation = Quaternion::Identity;
 	Vector3							m_scale = Vector3::One;
 
-	int								m_skillAttackPower = 0;
-
 	bool							m_dashFlag = false;									//ダッシュするかのフラグ
 
-	//enumにするかも
 	bool							m_dieFlag = false;									//やられたらtrueにする
-	bool							m_dieToChangeFlag = false;							//やられてからキャラクター切り替えに移るためのフラグ
-
+	
 	bool							m_recoveryMpFlag = false;							//スキルを打ち終わったあとにtrueにする。打つ前はfalse
 
 	bool							m_createAttackCollisionFlag = false;				//攻撃時に当たり判定を生成するかのフラグ
