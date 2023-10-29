@@ -66,11 +66,6 @@ namespace nsK2EngineLow {
 		~SoundManager();
 
 		/// <summary>
-		/// サウンドファイルを読み込む
-		/// </summary>
-		void SetSoundFile();
-
-		/// <summary>
 		/// サウンドソースを読み込み、再生
 		/// </summary>
 		/// <param name="soundName">読み込みたいサウンドソースのenumの型</param>
