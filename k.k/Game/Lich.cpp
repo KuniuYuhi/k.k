@@ -22,8 +22,6 @@
 #include "LichStateAngry.h"
 #include "LichStateWarp.h"
 
-//todo ターゲットがしばらく近くにいたら逃げる
-
 namespace {
 	const float SCALE_UP = 4.0f;									//キャラクターのサイズ
 	const Vector3 FIRST_POSITION = Vector3(0.0f, 0.0f, -250.0f);	//最初の座標
@@ -49,7 +47,7 @@ namespace {
 	const float ROT_ONLY_SPEED = 5.0f;
 
 	//ステータス
-	int MAXHP = 1000;
+	int MAXHP = 500;
 	int MAXMP = 500;
 	int ATK = 20;
 	float SPEED = 160.0f;
@@ -199,7 +197,7 @@ void Lich::Update()
 	Move();
 	Rotation(ROT_SPEED, ROT_ONLY_SPEED);
 
-	//DecideNextAction();
+	DecideNextAction();
 
 	ManageState();
 	PlayAnimation();
@@ -210,41 +208,35 @@ void Lich::Update()
 
 bool Lich::IsStopProcessing()
 {
-	//タイムアップしたら
-	if (m_game->IsTimeUp() == true)
+	//勝敗が決まったら
+	if (m_enOutCome != enOutCome_None)
 	{
-		SetNextAnimationState(enAninationState_Idle);
-		//タイムアップで終わったのでフラグをtrueにする
-		m_timeUpEndFlag = true;
+		return true;
+	}
+
+	switch (m_game->GetEnOutCome())
+	{
+		//負けた
+	case Game::enOutCome_Player_Win:
+		//勝敗ステートの設定
+		SetEnOutCome(enOutCome_Lose);
+		return true;
+		break;
+
+		//勝った
+	case Game::enOutCome_Player_Lose:
+		//勝敗ステートの設定
+		SetEnOutCome(enOutCome_Win);
 		//ダークメテオの削除
 		DeleteDarkMeteo();
+		//勝利アニメーション再生
+		SetNextAnimationState(enAnimationState_Victory);
 		return true;
+		break;
+	default:
+		break;
 	}
-	//プレイヤーが全滅したら勝利アニメーション設定
-	if (m_player->IsAnnihilation() == true && m_enAnimationState != enAnimationState_Victory)
-	{
-		SetWinFlag(true);
-		//攻撃中じゃないなら
-		if (IsAttackEntable() == true)
-		{
-			SetNextAnimationState(enAnimationState_Victory);
-		}
-		//ダークメテオの削除
-		DeleteDarkMeteo();
-		return true;
-	}
-	//勝ったフラグがtrueなら
-	if (GetWinFlag() == true)
-	{
-		//ダークメテオの削除
-		DeleteDarkMeteo();
-		return true;
-	}
-	//自身がやられたら
-	if (m_dieFlag == true)
-	{
-		return true;
-	}
+
 	//全て違うなら
 	return false;
 }
@@ -935,8 +927,8 @@ void Lich::HitHeroSkillAttack()
 	if (m_damageFlag == false)
 	{
 		m_damageFlag = true;
-		Damage(m_player->GetSkillAtk());
-		CreateDamageFont(m_player->GetSkillAtk());
+		Damage(m_player->GetAtk());
+		CreateDamageFont(m_player->GetAtk());
 	}
 }
 
