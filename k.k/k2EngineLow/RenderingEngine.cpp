@@ -316,17 +316,9 @@ namespace nsK2EngineLow {
 
 		//スプライトを描画
 		SpriteRendering(rc);
-		//フォントを描画
-		//FontRendering(rc);
 
 		// 登録されている描画オブジェクトをクリア
 		m_renderObjects.clear();
-
-		/*m_modelList.clear();
-		m_gBufferModelList.clear();
-		m_spriteList.clear();
-		m_fontList.clear();
-		m_zprepassModelList.clear();*/
 	}
 
 }
