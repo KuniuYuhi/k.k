@@ -28,6 +28,31 @@ void Actor::SetTransForm(Vector3 position, Quaternion rotation,Vector3 scale)
 	m_scale = scale;
 }
 
+bool Actor::IsFlashing()
+{
+	//無敵時間か
+	if (m_invincibleTimeFlag == true)
+	{
+		//モデルのdrawフラグがtrueなら表示(false)。
+		if (m_modelDrawFlag == true)
+		{
+			m_modelDrawFlag = false;
+			return false;
+		}
+		else
+		{
+			//モデルのdrawフラグがfalseなので非表示(true)。
+			m_modelDrawFlag = !m_modelDrawFlag;
+			return true;
+		}
+	}
+	else
+	{
+		//無敵時間でないなら表示
+		return false;
+	}	
+}
+
 void Actor::RecoveryMP()
 {
 	//MP回復状態なら
@@ -124,7 +149,7 @@ bool Actor::CalcInvincibleTime()
 	if (m_invincbleTime < m_invincbleTimer)
 	{
 		m_invincbleTimer = 0.0f;
-		//フラグを
+		//フラグを下げる。
 		m_invincibleTimeFlag = false;
 		return false;
 	}
@@ -138,8 +163,13 @@ bool Actor::CalcInvincibleTime()
 
 void Actor::DamageCollision(CharacterController& characon)
 {
-	//抜け出す処理
-	if (isCollisionEntable() != true)
+	//無敵時間なら処理しない
+	if (GetInvincibleTimeFlag() == true)
+	{
+		return;
+	}
+	//当たり判定しないアニメーションなら処理しない
+	if (isCollisionEntable() == true)
 	{
 		return;
 	}
@@ -152,8 +182,8 @@ void Actor::DamageCollision(CharacterController& characon)
 		//自身のキャラコンと衝突したら
 		if (collision->IsHit(characon) == true)
 		{
-			//DarkBall* darkball = FindGO<DarkBall>("darkball");
-			MagicBall* darkball = FindGO<MagicBall>(collision->GetCreatorName());
+			//todo 常に真ん中で判定をとってしまう
+			DarkBall* darkball = FindGO<DarkBall>("darkball");
 			//ぶつかったのでフラグを立てる
 			darkball->SetHitFlag(true);
 			Damage(darkball->GetAtk());
