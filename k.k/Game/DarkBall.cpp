@@ -40,7 +40,6 @@ bool DarkBall::Start()
     //‘¬“x‚ðŒˆ‚ß‚é
     m_moveSpeed *= SPEED;
 
-
     //“–‚½‚è”»’è‚ÌÝ’è
     SettingCollision();
 
@@ -65,7 +64,6 @@ void DarkBall::Update()
         Explosion();
     }
 
-
     CalcMoveTime(m_moveLimitTimer);
 
     Move();
@@ -76,7 +74,6 @@ void DarkBall::Move()
 {
     MoveStraight();
   
-   
     //“–‚½‚è”»’è‚ÌˆÚ“®
     m_collisionPosition = m_position;
     m_collisionPosition.y += Y_UP;
@@ -87,7 +84,6 @@ void DarkBall::Move()
     //“–‚½‚è”»’è‚ÌˆÚ“®
     m_BallCollision->SetPosition(m_collisionPosition);
     m_BallCollision->Update();
-
 }
 
 void DarkBall::SettingCollision()
