@@ -22,9 +22,7 @@
 
 
 
-//todo
-//攻撃力は武器
-//両手剣のアニメーション遅く
+
 
 namespace {
 	const float ADD_SCALE = 1.2f;
@@ -69,11 +67,8 @@ bool Brave::Start()
 
 	InitModel();
 
-	//m_modelRender.SetAnimationSpeed(0.5f);
-
 	//キャラコンの設定
 	m_charaCon.Init(12.0f, 33.0f, m_position);
-
 
 	//武器の生成
 	m_subWeapon = NewGO<BigSword>(0, "bigsword");
@@ -113,7 +108,8 @@ void Brave::Update()
 		ProcessAttack();
 		//防御処理
 		ProcessDefend();
-
+		//無敵時間の計算
+		CalcInvincibleTime();
 		//当たり判定
 		DamageCollision(m_charaCon);
 	}
@@ -194,9 +190,6 @@ void Brave::Damage(int damage)
 		//ガード中なら
 		if (m_enAnimationState == enAnimationState_Defend)
 		{
-			//todo 盾にヒットしたなら
-			 
-			
 			//ダメージを1/3に減らす
 			damage /= 3;
 			//どれだけダメージを減らしても１以下にはならない
@@ -212,13 +205,16 @@ void Brave::Damage(int damage)
 
 		m_status.CalcHp(damage, false);
 
-		
+		//ダメージを受けたので無敵時間に入る
+		SetInvicibleTimeFlag(true);
 	}
 	//HPが0以下なら
 	if (GetStatus().hp <= 0)
 	{
 		//やられたのでdieFlagをtrueにする
 		SetDieFlag(true);
+		//点滅しないようにする
+		SetInvicibleTimeFlag(false);
 		//HPを0に固定する
 		m_status.SetHp(0);
 		//死亡ステートに遷移
@@ -245,7 +241,6 @@ const bool& Brave::IsInaction() const
 
 void Brave::MoveForward(float Speed)
 {
-	//to前方向の取得を止めれば移動方向を固定できる
 	//攻撃する方向
 	Vector3 attackDirection = m_forward;
 	//移動する速度
@@ -388,23 +383,19 @@ void Brave::ProcessComboAttack()
 		static_cast<EnAttackPattern>(m_attackPatternState + 1);
 	//通常攻撃ステート設定
 	SetNextAnimationState(m_attackPatternState);
-
+	//敵のためのコンボステートを設定
 	switch (m_attackPatternState)
 	{
 	case Brave::enAttackPattern_None:
-		//敵のためのコンボステートを設定
 		SetNowComboState(enNowCombo_None);
 		break;
 	case Brave::enAttackPattern_1:
-		//敵のためのコンボステートを設定
 		SetNowComboState(enNowCombo_1);
 		break;
 	case Brave::enAttackPattern_2:
-		//敵のためのコンボステートを設定
 		SetNowComboState(enNowCombo_2);
 		break;
 	case Brave::enAttackPattern_3:
-		//敵のためのコンボステートを設定
 		SetNowComboState(enNowCombo_3);
 		break;
 	case Brave::enAttackPattern_End:
@@ -653,7 +644,10 @@ void Brave::InitModel()
 
 void Brave::Render(RenderContext& rc)
 {
-	m_modelRender.Draw(rc);
+	if (IsFlashing() != true)
+	{
+		m_modelRender.Draw(rc);
+	}
 }
 
 void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
@@ -715,6 +709,22 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		ProcessSwordShieldSkill(false);
 	}
 
-	
+
 }
 
+bool Brave::isCollisionEntable() const
+{
+	//もし片手剣なら
+	if (m_useWeapon[enWeapon_Main].weapon->GetName() == "swordshield")
+	{
+		return m_enAnimationState == enAnimationState_Hit ||
+			m_enAnimationState == enAnimationState_DefendHit;
+	}
+	//それ以外なら
+	else
+	{
+		return m_enAnimationState == enAnimationState_Hit ||
+			m_enAnimationState == enAnimationState_Defend ||
+			m_enAnimationState == enAnimationState_DefendHit;
+	}
+}
