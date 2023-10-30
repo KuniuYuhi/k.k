@@ -53,6 +53,13 @@ void SwordShield::Update()
 	m_shieldCollision->Update();
 }
 
+bool SwordShield::IsHitShieldCollision()
+{
+
+
+	return false;
+}
+
 void SwordShield::InitModel()
 {
 	//剣モデルの初期化
@@ -72,9 +79,6 @@ void SwordShield::InitModel()
 	//装備状態の時のボーンID
 	m_armedSwordBoonId = m_brave->GetModelRender().FindBoneID(L"weaponShield_r");
 	m_armedShieldBoonId = m_brave->GetModelRender().FindBoneID(L"weaponShield_l");
-	//収納状態の時のボーンID
-	m_stowedSwordBoonId = m_brave->GetModelRender().FindBoneID(L"weaponPosition_r");
-	m_stowedShieldBoonId= m_brave->GetModelRender().FindBoneID(L"weaponPosition_l");
 }
 
 void SwordShield::InitCollision()

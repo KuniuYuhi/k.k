@@ -27,6 +27,12 @@ public:
 		return m_jampSpeed;
 	}
 
+	/// <summary>
+	/// 盾の当たり判定がヒットしたか
+	/// </summary>
+	/// <returns>ヒットしたらtrue、ヒットしなかったらfalse</returns>
+	bool IsHitShieldCollision();
+
 private:
 	/// <summary>
 	/// モデルの初期化
