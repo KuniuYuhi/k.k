@@ -29,7 +29,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	SoundFile* soundFile = new SoundFile();
 	delete soundFile;
 
-
 	//フェードクラスの初期化
 	Fade*m_fade = NewGO<Fade>(5, "fade");
 

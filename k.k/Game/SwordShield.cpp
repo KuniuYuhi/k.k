@@ -39,7 +39,7 @@ bool SwordShield::Start()
 
 void SwordShield::Update()
 {
-
+	//û”[ó‘Ô‚È‚ç
 	if (GetStowedFlag() == true)
 	{
 		return;

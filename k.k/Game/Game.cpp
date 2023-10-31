@@ -15,6 +15,11 @@
 #include "SkyCube.h"
 #include "InitEffect.h"
 
+
+
+
+#include "ManagerPreCompile.h"
+
 namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.6f, 0.6f, 0.6f);
 
@@ -107,6 +112,11 @@ bool Game::Start()
 	//ゲームステートをスタートにする
 	m_enGameState = enGameState_GameStart;
 
+	
+
+
+
+
 	return true;
 }
 
@@ -140,7 +150,6 @@ void Game::InitSkyCube()
 	m_skyCube->SetPosition(m_skyPos);
 	m_skyCube->SetLuminance(1.07f);
 	m_skyCube->SetType(enSkyCubeType_DayToon_3);
-
 	m_skyCube->Update();
 }
 

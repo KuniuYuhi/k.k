@@ -268,6 +268,9 @@ void Brave::ChangeWeapon()
 
 void Brave::ProcessWin()
 {
+	//点滅しないようにする
+	SetInvicibleTimeFlag(false);
+	//勝利スタートのステート
 	SetNextAnimationState(enAnimationState_Win_Start);
 }
 
@@ -465,7 +468,6 @@ void Brave::ProcessNormalAttackStateTransition()
 			{
 				m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
 			}
-
 			//次のコンボの処理
 			ProcessComboAttack();
 		}
