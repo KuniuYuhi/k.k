@@ -10,8 +10,8 @@ private:
 	~GameManager();
 public:
 	/// <summary>
-		/// インスタンスの作成。
-		/// </summary>
+	/// インスタンスの作成。
+	/// </summary>
 	static void CreateInstance()
 	{
 		m_instance = new GameManager;
@@ -22,6 +22,7 @@ public:
 	static void DeleteInstance()
 	{
 		delete m_instance;
+		m_instance = nullptr;
 	}
 	/// <summary>
 	/// インスタンスを取得。
@@ -31,9 +32,14 @@ public:
 	{
 		return m_instance;
 	}
+
+
+
+
+
 public:
 	//ゲームのシーン
-	enum EnSeen
+	enum EnSeenState
 	{
 		enSeen_Tittle,
 		enSeen_Battle,
@@ -45,7 +51,11 @@ public:
 
 
 
+
+
 	static GameManager* m_instance;		//唯一のインスタンスのアドレスを記録する変数。
-	//extern GameManager* g_soundManager;
+
+
+
 };
 
