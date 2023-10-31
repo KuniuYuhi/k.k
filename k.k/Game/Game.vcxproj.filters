@@ -384,6 +384,9 @@
     <ClCompile Include="BigSword.cpp">
       <Filter>Weapons</Filter>
     </ClCompile>
+    <ClCompile Include="ManagerPreCompile.cpp" />
+    <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="WeaponManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -757,5 +760,9 @@
     <ClInclude Include="BigSword.h">
       <Filter>Weapons</Filter>
     </ClInclude>
+    <ClInclude Include="ManagerPreCompile.h" />
+    <ClInclude Include="EventManager.h" />
+    <ClInclude Include="WeaponManager.h" />
+    <ClInclude Include="MyWeapon.h" />
   </ItemGroup>
 </Project>
