@@ -123,17 +123,17 @@ T* WeaponManager::CreateWeapon(EnWeaponType weaponTipe)
 			NewGO<SwordShield>(0, "swordshield");
 		return m_weaponMap[enWeaponType_SwordShield];
 		break;
-	case enWeaponType_OneHandSword:
-		m_weaponMap[enWeaponType_OneHandSword] =
+	case enWeaponType_TwoHandSword:
+		m_weaponMap[enWeaponType_TwoHandSword] =
 			NewGO<BigSword>(0, "bigsword");
-		return m_weaponMap[enWeaponType_OneHandSword];
+		return m_weaponMap[enWeaponType_TwoHandSword];
 		break;
-	case enWeaponType_Bow:
+	/*case enWeaponType_Bow:
 		return nullptr;
 		break;
 	case enWeaponType_DoubleSwords:
 		return nullptr;
-		break;
+		break;*/
 	default:
 		return nullptr;
 		break;
