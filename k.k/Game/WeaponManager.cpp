@@ -19,11 +19,11 @@ WeaponManager::WeaponManager()
 
 WeaponManager::~WeaponManager()
 {
-	//m_weaponInstance = nullptr;
+	m_weaponInstance = nullptr;
 }
 
 void WeaponManager::AddToWeaponMap()
 {
 	m_weaponMap[enWeaponType_SwordShield] = m_swordShield;
-	m_weaponMap[enWeaponType_OneHandSword] = m_bigSword;
+	m_weaponMap[enWeaponType_TwoHandSword] = m_bigSword;
 }
