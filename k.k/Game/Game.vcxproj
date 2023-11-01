@@ -314,6 +314,7 @@
     <ClCompile Include="MushroomStateWalk.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Result.cpp" />
+    <ClCompile Include="SelectWeapon.cpp" />
     <ClCompile Include="Slime.cpp" />
     <ClCompile Include="SlimeStateAppear.cpp" />
     <ClCompile Include="SlimeStateAttack.cpp" />
@@ -461,6 +462,7 @@
     <ClInclude Include="MyWeapon.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Result.h" />
+    <ClInclude Include="SelectWeapon.h" />
     <ClInclude Include="Slime.h" />
     <ClInclude Include="SlimeStateAppear.h" />
     <ClInclude Include="SlimeStateAttack.h" />
