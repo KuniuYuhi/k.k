@@ -9,7 +9,6 @@ namespace nsK2EngineLow
 
 	SoundManager::SoundManager()
 	{
-		//SetSoundFile();
 	}
 
 	SoundManager::~SoundManager()

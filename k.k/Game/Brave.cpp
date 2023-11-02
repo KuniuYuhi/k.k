@@ -21,7 +21,7 @@
 #include "BigSword.h"
 
 
-
+//todo たまにダークボールの当たった時の爆発がない
 
 
 namespace {
