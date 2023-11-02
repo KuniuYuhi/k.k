@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "SelectWeapon.h"
-
+#include "ManagerPreCompile.h"
 #include "Fade.h"
+#include "Game.h"
+
+//todo フォント配列にしたらエラー
 
 namespace {
 	const Vector3 WEAPON_POSITION = { 370.0f,150.0f,0.0f };
@@ -24,10 +27,14 @@ SelectWeapon::SelectWeapon()
 
 SelectWeapon::~SelectWeapon()
 {
+	WeaponManager::DeleteInstance();
 }
 
 bool SelectWeapon::Start()
 {
+	//ウェポンマネージャー作成
+	WeaponManager::CreateInstance();
+
 	//環境光の設定
 	g_renderingEngine->SetAmbient({1.0f,1.0f,0.8f});
 	//武器部屋の初期化
@@ -39,10 +46,10 @@ bool SelectWeapon::Start()
 	//カメラの初期化
 	InitCamera();
 
-	fade = FindGO<Fade>("fade");
-	if (fade->IsFade() != true)
+	m_fade = FindGO<Fade>("fade");
+	if (m_fade->IsFade() != true)
 	{
-		fade->StartFadeOut(10.0f);
+		m_fade->StartFadeOut(10.0f);
 	}
 
 	return true;
@@ -50,6 +57,21 @@ bool SelectWeapon::Start()
 
 void SelectWeapon::Update()
 {
+	
+
+	if (m_goToGameFlag == true)
+	{
+		//フェードが終わったら消す
+		if (m_fade->GetCurrentAlpha() >= 1.0f)
+		{
+			Game* game = NewGO<Game>(0, "game");
+			DeleteGO(this);
+		}
+		return;
+	}
+
+	GoToPlayMode();
+
 	ProcessSelectWeapon();
 
 	RotationWeapon();
@@ -61,24 +83,13 @@ void SelectWeapon::Render(RenderContext& rc)
 {
 	m_weaponRoomModel.Draw(rc);
 
-	m_weaponModel[m_nowSelectWeaponNumber].Draw(rc);
+	m_weaponInfo[m_nowSelectWeaponNumber].m_weaponModel.Draw(rc);
+
 
 	//フォント
-	/*for (int num = 0; num < enWeaponType_Num; num++)
-	{
-		m_weaponNameFont[num].Draw(rc);
-	}*/
-	m_weaponNameFont[m_nowSelectWeaponNumber].Draw(rc);
+	//m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.Draw(rc);
 
 	//m_font.Draw(rc);
-
-	//m_weaponNameFont[enWeaponType_SwordShield].Draw(rc);
-
-	/*for (auto font : m_weaponNameFont)
-	{
-		font->Draw(rc);
-	}*/
-
 }
 
 void SelectWeapon::InitWeaponRoom()
@@ -97,25 +108,25 @@ void SelectWeapon::InitWeaponRoom()
 void SelectWeapon::InitWeapon()
 {
 	//武器のモデルの初期化
-	m_weaponModel[enWeaponType_SwordShield].Init(
+	m_weaponInfo[enWeaponType_SwordShield].m_weaponModel.Init(
 		"Assets/modelData/SelectWeaponBg/SwordShield.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 		0, 0, enModelUpAxisZ, false, true, true
 	);
-	m_weaponModel[enWeaponType_TwoHandSword].Init(
+
+	m_weaponInfo[enWeaponType_TwoHandSword].m_weaponModel.Init(
 		"Assets/modelData/SelectWeaponBg/TwoHandSword.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 		0, 0, enModelUpAxisZ, false, true, true
 	);
-
 	//更新処理
 	for (int num = 0; num < enWeaponType_Num; num++)
 	{
-		m_weaponModel[num].SetTransform(
+		m_weaponInfo[num].m_weaponModel.SetTransform(
 			m_weaponPosition, m_rotation, m_scaleWeapon
 		);
 
-		m_weaponModel[num].Update();
+		m_weaponInfo[num].m_weaponModel.Update();
 	}
 }
 
@@ -127,30 +138,15 @@ void SelectWeapon::InitWeaponName()
 	wchar_t BS[255];
 	swprintf_s(BS, 255, L"グレイトソード");
 	
-	//フォントによって違うところでだけ設定
-	m_weaponNameFont[enWeaponType_SwordShield].SetPosition(
+	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetPosition(
 		m_namePosForSelectMainWeapon[enWeaponType_SwordShield]);
-	m_weaponNameFont[enWeaponType_SwordShield].SetText(
-		SS);
-	m_weaponNameFont[enWeaponType_SwordShield].SetColor(g_vec4White);
-	m_weaponNameFont[enWeaponType_SwordShield].SetScale(FONT_SCALE);
-	m_weaponNameFont[enWeaponType_SwordShield].SetShadowParam(true, 2.0f, g_vec4Black);
-	
+	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetColor(g_vec4White);
+	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetText(SS);
+	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetShadowParam(
+		true, 2.0f, g_vec4Black
+	);
 
-	m_weaponNameFont[enWeaponType_TwoHandSword].SetPosition(
-		m_namePosForSelectMainWeapon[enWeaponType_TwoHandSword]);
-	m_weaponNameFont[enWeaponType_TwoHandSword].SetText(
-		BS);
-	m_weaponNameFont[enWeaponType_TwoHandSword].SetColor(g_vec4White);
-	m_weaponNameFont[enWeaponType_TwoHandSword].SetScale(FONT_SCALE);
-	m_weaponNameFont[enWeaponType_TwoHandSword].SetShadowParam(true, 2.0f, g_vec4Black);
-	
-	/*for (int num = 0; num < enWeaponType_Num; num++)
-	{
-		m_weaponNameFont[num].SetColor(g_vec4White);
-		m_weaponNameFont[num].SetScale(FONT_SCALE);
-		m_weaponNameFont[num].SetShadowParam(true, 2.0f, g_vec4Black);
-	}*/
+
 
 	m_font.SetPosition(
 		m_namePosForSelectMainWeapon[enWeaponType_SwordShield]);
@@ -191,8 +187,8 @@ void SelectWeapon::InitCamera()
 void SelectWeapon::RotationWeapon()
 {
 	m_rotation.AddRotationDegY(ROTATION_SPEED);
-	m_weaponModel[m_nowSelectWeaponNumber].SetRotation(m_rotation);
-	m_weaponModel[m_nowSelectWeaponNumber].Update();
+	m_weaponInfo[m_nowSelectWeaponNumber].m_weaponModel.SetRotation(m_rotation);
+	m_weaponInfo[m_nowSelectWeaponNumber].m_weaponModel.Update();
 }
 
 void SelectWeapon::ProcessSelectWeapon()
@@ -203,6 +199,15 @@ void SelectWeapon::ProcessSelectWeapon()
 
 void SelectWeapon::ProcessChoice()
 {
+	/*if (g_pad[0]->IsTrigger(enButtonA))
+	{
+		EnWeaponType weaponNum;
+		weaponNum = static_cast<EnWeaponType>(m_nowSelectWeaponNumber);
+
+		WeaponManager::SetMainWeapon(weaponNum);
+		return;
+	}*/
+
 	if (g_pad[0]->IsTrigger(enButtonDown) == true)
 	{
 		m_nowSelectWeaponNumber++;
@@ -223,4 +228,16 @@ void SelectWeapon::SelectWeaponManageState()
 void SelectWeapon::ProcessWeaponName()
 {
 
+}
+
+void SelectWeapon::GoToPlayMode()
+{
+	if (g_pad[0]->IsTrigger(enButtonA) && m_goToGameFlag != true)
+	{
+		m_goToGameFlag = true;
+
+		//g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
+		//フェード開始
+		m_fade->StartFadeIn(2.0f);
+	}
 }

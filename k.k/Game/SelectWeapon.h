@@ -67,6 +67,7 @@ private:
 	/// </summary>
 	void ProcessWeaponName();
 
+	void GoToPlayMode();
 
 private:
 
@@ -83,28 +84,22 @@ private:
 
 	struct WeaponInfo
 	{
-		ModelRender m_weaponModel;
+		ModelRender m_weaponModel;//•Ší‚Ìƒ‚ƒfƒ‹‚ğŠi”[‚·‚é”z—ñ
 		FontRender m_weaponNameFont;
+		bool m_isSelect = false;		//‘I‚Î‚ê‚½‚©
 	};
 
 	WeaponInfo m_weaponInfo[enWeaponType_Num];
 
-
-	ModelRender			m_weaponModel[enWeaponType_Num];		//•Ší‚Ìƒ‚ƒfƒ‹‚ğŠi”[‚·‚é”z—ñ
-
+	
 	int					m_notChoseWeapon = enWeaponType_Num;	//‘I‚Î‚ê‚Ä‚¢‚È‚¢•Ší‚Ìí—Ş
 
-	FontRender			m_weaponNameFont[enWeaponType_Num];
-
+	
 	FontRender			m_font;
 
 	
 
-
-
-
-
-	Fade*				fade = nullptr;
+	Fade*				m_fade = nullptr;
 
 	EnWeaponType		m_enWeaponTipes[enWeaponType_Num];		//•Ší‚Ìí—Ş‚ğŠi”[‚·‚é”z—ñ
 
@@ -122,6 +117,11 @@ private:
 	Vector3				m_positionRoom = g_vec3Zero;
 
 	int					m_nowSelectWeaponNumber = 0;
+
+
+
+
+	bool				m_goToGameFlag = false;
 
 	//const wchar_t m_weaponName[enWeaponType_Num];		//•Ší‚Ì–¼‘O‚ğŠi”[‚·‚é”z—ñ
 
