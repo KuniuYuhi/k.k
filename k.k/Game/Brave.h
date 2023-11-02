@@ -72,6 +72,7 @@ public:
 			m_enAnimationState != enAnimationState_Skill_start &&
 			m_enAnimationState != enAnimationState_Skill_Main &&
 			m_enAnimationState != enAnimationState_Defend &&
+			m_enAnimationState != enAnimationState_DefendHit &&
 			m_enAnimationState != enAnimationState_Hit &&
 			m_enAnimationState != enAnimationState_Die &&
 			m_enAnimationState != enAnimationState_ChangeSwordShield;
@@ -386,16 +387,20 @@ private:
 	/// コンボ攻撃のコンボの処理
 	/// </summary>
 	void ProcessComboAttack();
-
 	/// <summary>
 	/// メイン武器とサブ武器を入れ替える
 	/// </summary>
 	void ReverseWeapon();
-
 	/// <summary>
 	/// UseWeapon構造体の中身を入れ替える
 	/// </summary>
 	void ChangeUseWeapon();
+
+	/// <summary>
+	/// 防御中にヒットしたか
+	/// </summary>
+	/// <returns>ヒットならtrue、ヒットしていないならfalse</returns>
+	bool IsDefendHit();
 
 private:
 	/// <summary>
