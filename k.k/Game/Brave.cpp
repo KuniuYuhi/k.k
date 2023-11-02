@@ -22,7 +22,7 @@
 
 
 //todo たまにダークボールの当たった時の爆発がない
-//todo スキル使用時fpsが低いと地面との判定を取ってくれない
+//todotototototototo スキル使用時fpsが低いと地面との判定を取ってくれない
 
 //todo ジャストガードでカウンター(パリィ)
 //もしくはガード中に敵の攻撃に合わせてボタンを押して反撃。敵は怯む
@@ -746,10 +746,11 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		SetInvicibleFlag(false);
 	}
 
-	////スキル使用時の攻撃処理
+	//スキル使用時の攻撃処理
 	if (wcscmp(eventName, L"SkillAttack") == 0)
 	{
-		int a = 0;
+		//メイン武器のスキル攻撃処理
+		m_useWeapon[enWeapon_Main].weapon->ProcessSkillAttack();
 	}
 	//スキルのジャンプ処理
 	if (wcscmp(eventName, L"Jamp") == 0)
