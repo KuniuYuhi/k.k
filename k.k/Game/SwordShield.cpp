@@ -9,6 +9,10 @@ namespace {
 
 	const Vector3 SWORD_COLLISION_SIZE = { 12.0f,100.0f,5.0f };
 	const Vector3 SHIELD_COLLISION_SIZE = { 22.0f,40.0f,16.0f };
+
+	const float SKILL_RADIUS = 60.0f;
+
+	const float ADD_FORWARD = 30.0f;
 }
 
 SwordShield::SwordShield()
@@ -34,6 +38,8 @@ bool SwordShield::Start()
 	SetStowedFlag(false);
 	//防御タイプの設定
 	SetEnDefendTipe(enDefendTipe_Defence);
+
+
 
 	return true;
 }
@@ -128,6 +134,28 @@ bool SwordShield::IsHitCollision()
 	}
 
 	return false;
+}
+
+void SwordShield::ProcessSkillAttack()
+{
+	//当たり判定を生成する座標を設定
+	m_skillAttackPosition = g_vec3Zero;
+	//剣のワールド座標をベクトルに乗算
+	m_swordMatrix.Apply(m_skillAttackPosition);
+	m_skillAttackPosition.y = 0.0f;
+	Vector3 forward;
+	forward = m_brave->GetForward();
+	forward *= ADD_FORWARD;
+	//前方向分を足す
+	m_skillAttackPosition += forward;
+
+	//スキル攻撃時の当たり判定の生成
+	auto skillCollision = NewGO<CollisionObject>(0, "skillAttack");
+	skillCollision->CreateSphere(
+		m_skillAttackPosition,
+		g_quatIdentity,
+		SKILL_RADIUS
+	);
 }
 
 void SwordShield::InitModel()

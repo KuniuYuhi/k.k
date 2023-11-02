@@ -33,6 +33,12 @@ public:
 	/// <returns>ヒットしたらtrue、ヒットしなかったらfalse</returns>
 	bool IsHitCollision();
 
+	/// <summary>
+	/// スキル攻撃処理
+	/// </summary>
+	void ProcessSkillAttack();
+	
+
 private:
 	/// <summary>
 	/// モデルの初期化
@@ -63,6 +69,8 @@ private:
 
 	Matrix m_swordMatrix = g_matIdentity;
 	Matrix m_shieldMatrix = g_matIdentity;
+
+	Vector3 m_skillAttackPosition = g_vec3Zero;
 
 	const float m_jampSpeed = 3000.0f;
 
