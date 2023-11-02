@@ -244,7 +244,7 @@ public:
 	}
 
 	/// <summary>
-	/// 無敵状態フラグを設定
+	/// 無敵時間フラグを設定
 	/// </summary>
 	/// <param name="flag"></param>
 	void SetInvicibleTimeFlag(bool flag)
@@ -252,12 +252,29 @@ public:
 		m_invincibleTimeFlag = flag;
 	}
 	/// <summary>
+	/// 無敵時間フラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetInvincibleTimeFlag()
+	{
+		return m_invincibleTimeFlag;
+	}
+
+	/// <summary>
+	/// 無敵状態フラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetInvicibleFlag(bool flag)
+	{
+		m_invicibleFlag = flag;
+	}
+	/// <summary>
 	/// 無敵状態フラグを取得
 	/// </summary>
 	/// <returns></returns>
-	const bool GetInvincibleTimeFlag()
+	const bool& GetInvicibleFlag() const
 	{
-		return m_invincibleTimeFlag;
+		return m_invicibleFlag;
 	}
 
 protected:
@@ -288,7 +305,7 @@ protected:
 	Quaternion Rotation(float rotSpeed, float rotOnlySpeed);
 
 	/// <summary>
-	/// ダッシュ回避ステート
+	/// ダッシュ回避ステート 使わなくなるかも
 	/// </summary>
 	enum EnDashInvicibleState
 	{
@@ -326,6 +343,11 @@ protected:
 	/// <param name="damage"></param>
 	void CreateDamageFont(int damage);
 	
+	/// <summary>
+	/// 当たり判定をとるか
+	/// </summary>
+	/// <returns>当たり判定をとるときはtrue、とらないときはfalse</returns>
+	bool IsDecisionCollision();
 	
 protected:
 
@@ -354,7 +376,9 @@ protected:
 
 	bool							m_createAttackCollisionFlag = false;				//攻撃時に当たり判定を生成するかのフラグ
 
-	bool							m_invincibleTimeFlag = false;						//無敵時間であるかのフラグ
+	bool							m_invicibleFlag = false;							//無敵状態フラグ(アクション時に無敵状態にしたいとき使う)
+
+	bool							m_invincibleTimeFlag = false;						//無敵時間であるかのフラグ(ダメージを受けた後などに使う)
 	const float						m_invincbleTime = 1.5f;
 	float							m_invincbleTimer = 0.0f;
 
@@ -366,6 +390,8 @@ protected:
 	bool							m_changeCharacterInvincbleFlag = false;				//キャラを切り替えた直後の無敵時間のフラグ
 	const float						m_changeCharaInvisibleTime = 1.0f;
 	float							m_changeCharaInvisibleTimer = 0.0f;
+
+	int								m_hitDamage = 0;									//攻撃されたときのダメージを記憶
 
 };
 

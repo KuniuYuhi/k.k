@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Actor.h"
-#include "FireBall.h"
 #include "DarkWall.h"
 #include "DarkBall.h"
 #include "Meteo.h"
@@ -163,13 +162,8 @@ bool Actor::CalcInvincibleTime()
 
 void Actor::DamageCollision(CharacterController& characon)
 {
-	//無敵時間なら処理しない
-	if (GetInvincibleTimeFlag() == true)
-	{
-		return;
-	}
-	//当たり判定しないアニメーションなら処理しない
-	if (isCollisionEntable() == true)
+	//当たり判定をとるか
+	if (IsDecisionCollision() == false)
 	{
 		return;
 	}
@@ -187,7 +181,7 @@ void Actor::DamageCollision(CharacterController& characon)
 			//ぶつかったのでフラグを立てる
 			darkball->SetHitFlag(true);
 			Damage(darkball->GetAtk());
-			CreateDamageFont(darkball->GetAtk());
+			CreateDamageFont(m_hitDamage);
 			return;
 		}
 	}
@@ -202,7 +196,7 @@ void Actor::DamageCollision(CharacterController& characon)
 		{
 			DarkWall* darkwall = FindGO<DarkWall>("darkwall");
 			Damage(darkwall->GetAtk());
-			CreateDamageFont(darkwall->GetAtk());
+			CreateDamageFont(m_hitDamage);
 			return;
 		}
 	}
@@ -217,7 +211,7 @@ void Actor::DamageCollision(CharacterController& characon)
 		{
 			Meteo* meteo = FindGO<Meteo>("meteo");
 			Damage(meteo->GetAtk());
-			CreateDamageFont(meteo->GetAtk());
+			CreateDamageFont(m_hitDamage);
 			//メテオに当たったので強制的に爆発させる
 			meteo->Explosion();
 			return;
@@ -234,7 +228,7 @@ void Actor::DamageCollision(CharacterController& characon)
 			Meteo* meteo = FindGO<Meteo>("meteo");
 			int damage = meteo->CalcDamageToDistance(m_position);
 			Damage(damage);
-			CreateDamageFont(damage);
+			CreateDamageFont(m_hitDamage);
 			return;
 		}
 	}
@@ -251,7 +245,7 @@ void Actor::DamageCollision(CharacterController& characon)
 			//ヒット音を再生
 			m_atttackAIActor->PlayAttackSound();
 			Damage(m_atttackAIActor->GetStatus().atk);
-			CreateDamageFont(m_atttackAIActor->GetStatus().atk);
+			CreateDamageFont(m_hitDamage);
 			return;
 		}
 	}
@@ -266,7 +260,7 @@ void Actor::DamageCollision(CharacterController& characon)
 		{
 			DarkMeteorite* darkMeteo = FindGO<DarkMeteorite>("darkmeteorite");
 			Damage(darkMeteo->GetAtk());
-			CreateDamageFont(darkMeteo->GetAtk());
+			CreateDamageFont(m_hitDamage);
 			darkMeteo->SetChaseFlag(true);
 			return;
 		}
@@ -357,4 +351,26 @@ void Actor::CreateDamageFont(int damage)
 		damage,
 		m_position
 	);
+}
+
+bool Actor::IsDecisionCollision()
+{
+	//無敵状態なら処理しない
+	if (GetInvicibleFlag() == true)
+	{
+		return false;
+	}
+
+	//無敵時間なら処理しない
+	if (GetInvincibleTimeFlag() == true)
+	{
+		return false;
+	}
+	//当たり判定しないアニメーションなら処理しない
+	if (isCollisionEntable() == true)
+	{
+		return false;
+	}
+	//判定をとる
+	return true;
 }
