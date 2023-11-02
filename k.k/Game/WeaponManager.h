@@ -8,6 +8,10 @@ class BigSword;
 /*
 *@brief 武器の管理 
 */
+namespace nsK2EngineLow {
+
+}
+
 class WeaponManager:public Noncopyable
 {
 private:
@@ -66,33 +70,33 @@ public:
 	/// メイン武器の種類を設定
 	/// </summary>
 	/// <param name="mainWeaponTipe"></param>
-	void SetMainWeapon(EnWeaponType mainWeaponTipe)
+	static void SetMainWeapon(EnWeaponType mainWeaponTipe)
 	{
-		m_mainWeapon = mainWeaponTipe;
+		m_selectMainWeapon = mainWeaponTipe;
 	}
 	/// <summary>
 	/// サブ武器の種類を設定
 	/// </summary>
 	/// <param name="subWeaponTipe"></param>
-	void SetSubWeapon(EnWeaponType subWeaponTipe)
+	static void SetSubWeapon(EnWeaponType subWeaponTipe)
 	{
-		m_subWeapon = subWeaponTipe;
+		m_selectSubWeapon = subWeaponTipe;
 	}
 	/// <summary>
 	/// メイン武器の種類の取得
 	/// </summary>
 	/// <returns></returns>
-	const EnWeaponType& GetMainWeapon() const
+	static const EnWeaponType& GetMainWeapon()
 	{
-		return m_mainWeapon;
+		return m_selectMainWeapon;
 	}
 	/// <summary>
 	/// サブ武器の種類の取得
 	/// </summary>
 	/// <returns></returns>
-	const EnWeaponType& GetSubWeapon() const
+	static const EnWeaponType& GetSubWeapon()
 	{
-		return m_subWeapon;
+		return m_selectSubWeapon;
 	}
 
 public:
@@ -104,9 +108,8 @@ public:
 	SwordShield* m_swordShield = nullptr;
 	BigSword* m_bigSword = nullptr;
 	
-	EnWeaponType m_weapons[enWeaponType_Num];
-	EnWeaponType m_mainWeapon;					//メイン武器(一つめの選択)
-	EnWeaponType m_subWeapon;					//サブ武器(二つめの選択)
+	static EnWeaponType m_selectMainWeapon;					//メイン武器(一つめの選択)
+	static EnWeaponType m_selectSubWeapon;					//サブ武器(二つめの選択)
 	
 
 	static WeaponManager* m_weaponInstance;		//唯一のインスタンスのアドレスを記録する変数。

@@ -3,6 +3,8 @@
 #include "SwordShield.h"
 #include "BigSword.h"
 
+namespace nsK2EngineLow {
+}
 WeaponManager* WeaponManager::m_weaponInstance = nullptr;
 
 WeaponManager::WeaponManager()
