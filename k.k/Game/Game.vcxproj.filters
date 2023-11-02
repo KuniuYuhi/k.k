@@ -34,6 +34,9 @@
     <Filter Include="Weapons">
       <UniqueIdentifier>{d8445f81-0a79-4ad9-9f94-409a2b4e6cdc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{9f0853ec-296c-4466-874e-f835c5ab2ee1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -278,7 +281,6 @@
     <ClCompile Include="CactusStateVictory.cpp">
       <Filter>MobMonster\Cactus</Filter>
     </ClCompile>
-    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="LichStateVictory.cpp">
       <Filter>Lich</Filter>
     </ClCompile>
@@ -384,6 +386,17 @@
     <ClCompile Include="BigSword.cpp">
       <Filter>Weapons</Filter>
     </ClCompile>
+    <ClCompile Include="ManagerPreCompile.cpp" />
+    <ClCompile Include="EventManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectWeapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -648,7 +661,6 @@
     <ClInclude Include="ICactusState.h">
       <Filter>MobMonster\Cactus</Filter>
     </ClInclude>
-    <ClInclude Include="GameManager.h" />
     <ClInclude Include="LichStateVictory.h">
       <Filter>Lich</Filter>
     </ClInclude>
@@ -757,5 +769,17 @@
     <ClInclude Include="BigSword.h">
       <Filter>Weapons</Filter>
     </ClInclude>
+    <ClInclude Include="ManagerPreCompile.h" />
+    <ClInclude Include="MyWeapon.h" />
+    <ClInclude Include="EventManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectWeapon.h" />
   </ItemGroup>
 </Project>

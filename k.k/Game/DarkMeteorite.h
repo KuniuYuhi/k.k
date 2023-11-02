@@ -204,7 +204,7 @@ private:
 	Vector3							m_scale = g_vec3One;
 	Vector3							m_moveSpeed = g_vec3Zero;
 
-	const Vector3					m_maxScale = { 15.0f,15.0f,15.0f };
+	const Vector3					m_maxScale = { 10.0f,10.0f,10.0f };
 
 	bool							m_sizeUpFlag = false;
 

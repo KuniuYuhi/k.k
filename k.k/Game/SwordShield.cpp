@@ -39,7 +39,7 @@ bool SwordShield::Start()
 
 void SwordShield::Update()
 {
-
+	//Žû”[ó‘Ô‚È‚ç
 	if (GetStowedFlag() == true)
 	{
 		return;
@@ -51,6 +51,13 @@ void SwordShield::Update()
 	m_modelShield.Update();
 	m_swordCollision->Update();
 	m_shieldCollision->Update();
+}
+
+bool SwordShield::IsHitShieldCollision()
+{
+
+
+	return false;
 }
 
 void SwordShield::InitModel()
@@ -72,9 +79,6 @@ void SwordShield::InitModel()
 	//‘•”õó‘Ô‚ÌŽž‚Ìƒ{[ƒ“ID
 	m_armedSwordBoonId = m_brave->GetModelRender().FindBoneID(L"weaponShield_r");
 	m_armedShieldBoonId = m_brave->GetModelRender().FindBoneID(L"weaponShield_l");
-	//Žû”[ó‘Ô‚ÌŽž‚Ìƒ{[ƒ“ID
-	m_stowedSwordBoonId = m_brave->GetModelRender().FindBoneID(L"weaponPosition_r");
-	m_stowedShieldBoonId= m_brave->GetModelRender().FindBoneID(L"weaponPosition_l");
 }
 
 void SwordShield::InitCollision()

@@ -6,6 +6,8 @@
 #include "InitEffect.h"
 
 namespace {
+	const float CREATE_POS_ADD_Y = 600.0f;
+
 	const int MAX_LENGTH = 10;
 	const int MIN_LENGTH = -10;
 
@@ -24,6 +26,8 @@ namespace {
 	const float DARKMETEO_SHOT_TIMER = 5.0f;
 
 	const float NEAR_LENGTH = 150.0f;
+
+	const float MULL_FORWARD_POS = 180.0f;
 }
 
 DarkMeteorite::DarkMeteorite()
@@ -108,6 +112,9 @@ struct IsWallResult :public btCollisionWorld::ConvexResultCallback
 
 bool DarkMeteorite::Start()
 {
+	//　乱数を初期化。
+	srand((unsigned)time(NULL));
+
 	m_model.Init(
 		"Assets/modelData/character/Lich/Effect/Meteo.tkm", 
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
@@ -116,6 +123,8 @@ bool DarkMeteorite::Start()
 		false, 
 		false 
 		);
+
+	m_position.y += CREATE_POS_ADD_Y;
 
 	m_model.SetTransform(m_position, m_rotation, g_vec3One);
 	m_model.Update();
@@ -150,7 +159,7 @@ void DarkMeteorite::SizeUp()
 		return;
 	}
 
-	m_scale *= 1.0f + g_gameTime->GetFrameDeltaTime() * 1.5f;
+	m_scale *= 1.0f + g_gameTime->GetFrameDeltaTime() * 1.2f;
 	m_model.SetScale(m_scale);
 	Vector3 effectScale = m_scale * 1.8f;
 	m_darkMeteoriteEffect->SetScale(effectScale);
@@ -240,16 +249,13 @@ bool DarkMeteorite::ShotMeteo()
 
 Vector3 DarkMeteorite::SetMeteoTargetPosition()
 {
-	//　乱数を初期化。
-	srand((unsigned)time(NULL));
-
 	//ターゲットを決めてメテオを生成
 	//現在のフレームのターゲットの座標を取得
 	m_targetPosition = m_player->GetPosition();
-	/*Vector3 forward = m_player->GetForward();
+	Vector3 forward = m_player->GetForward();
 	forward.Normalize();
-	forward *= 100.0f;
-	*/
+	forward *= MULL_FORWARD_POS;
+	m_targetPosition += forward;
 	Vector3 createPositon = m_targetPosition;
 	float X = (rand() % (MAX_LENGTH - (MIN_LENGTH) + 1)) + (MIN_LENGTH);
 	float Z = (rand() % (MAX_LENGTH - (MIN_LENGTH) + 1)) + (MIN_LENGTH);
@@ -427,7 +433,6 @@ void DarkMeteorite::OnProcessFallStateTransition()
 	{
 		//地面についた
 		//全ての玉を撃ち終わった
-		//m_shotEndFlag = true;
 		m_moveSpeed.y = 0.0f;
 		//風エフェクト生成
 		m_windEffect = NewGO<EffectEmitter>(0);
@@ -460,7 +465,6 @@ void DarkMeteorite::OnProcessChaseStateTransition()
 	//速度をかける
 	m_moveSpeed *= BIGMETEO_SPEED;
 	//壁との衝突判定
-	//todo たまに消えないので制限時間を求める
 	m_moveSpeed.y = 0.0f;
 	//壁にぶつかったか判定
 	if (IsHitWall() == true)
@@ -489,7 +493,6 @@ void DarkMeteorite::OnProcessChaseStateTransition()
 void DarkMeteorite::OnProcessStraightStateTransition()
 {
 	//壁との衝突判定
-	//todo たまに消えないので制限時間を求める
 	m_moveSpeed.y = 0.0f;
 	//壁にぶつかったか判定
 	if (IsHitWall() == true)
@@ -547,5 +550,5 @@ void DarkMeteorite::SetTRS()
 
 void DarkMeteorite::Render(RenderContext& rc)
 {
-	m_model.Draw(rc);
+	//m_model.Draw(rc);
 }

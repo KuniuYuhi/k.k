@@ -169,40 +169,12 @@ bool EntryBoss::Start()
 
 void EntryBoss::Update()
 {
-	//画面を徐々に暗くする
+	//画面を徐々に暗くする。暗くなったら処理が止まる
 	slowlyDarkScreen();
 
-	//登場ムービー処理がおわったら
-	if (m_completeFlag == true)
-	{
-		//しばらく静止してから終わる
-		CompleteTime();
-	}
-	else
-	{
-		//ボスの座標を上げる
-		positionUp();
-		//0になるちょと前から画像動かす
-		if (m_GoTextFlag == true)
-		{
-			SpriteMove();
-		}
-	}
+	ManageState();
 
-	//霧払いエフェクトがnullptyでないなら
-	if (m_FogRemovalEffect != nullptr)
-	{
-		CalcMuteGogogoSE();
-		SlowlyBrightScreen();
-		//霧払いエフェクトがおわったら
-		if (m_FogRemovalEffect->IsPlay() == false)
-		{
-			//やること終わり
-			m_completeFlag = true;
-		}
-	}
-
-	MamageState();
+	MamageActionBossState();
 	Animation();
 	m_model.Update();
 }
@@ -394,7 +366,72 @@ void EntryBoss::CalcMuteGogogoSE()
 	}
 }
 
-void EntryBoss::MamageState()
+void EntryBoss::ManageState()
+{
+	switch (m_enWholeState)
+	{
+	case EntryBoss::enWholeState_RiseBoss:
+		OnProcessRiseBossTransition();
+		break;
+	case EntryBoss::enWholeState_FogRemoval:
+		OnProcessFogRemovalTransition();
+		break;
+	case EntryBoss::enWholeState_Complete:
+		OnProcessCompleteTransition();
+		break;
+	default:
+		break;
+	}
+}
+
+void EntryBoss::OnProcessRiseBossTransition()
+{
+	//文字が全て出て、BOSSのテキスト画像フラグがtrue
+	// になったら次のステートに遷移
+	if (m_drawBOSSTextFlag == true)
+	{
+		m_enWholeState = enWholeState_FogRemoval;
+		return;
+	}
+
+	//ボスの座標を上げる
+	positionUp();
+	//LICHのテキスト画像の表示タイミング
+	if (m_GoTextFlag == true)
+	{
+		SpriteMove();
+	}
+}
+
+void EntryBoss::OnProcessFogRemovalTransition()
+{
+	//霧払いエフェクトがnullptyでないなら
+	if (m_FogRemovalEffect != nullptr)
+	{
+		//ゴゴゴゴゴゴ音を徐々に小さくする
+		CalcMuteGogogoSE();
+		//画面を徐々に明るくする
+		SlowlyBrightScreen();
+		//霧払いエフェクトがおわったら
+		if (m_FogRemovalEffect->IsPlay() == false)
+		{
+			//やること終わり
+			//最後のステートに遷移
+			m_enWholeState = enWholeState_Complete;
+			return;
+
+			m_completeFlag = true;
+		}
+	}
+}
+
+void EntryBoss::OnProcessCompleteTransition()
+{
+	//しばらく静止してから終わる
+	CompleteTime();
+}
+
+void EntryBoss::MamageActionBossState()
 {
 	switch (m_enAnimationState)
 	{

@@ -259,6 +259,7 @@
     <ClCompile Include="DarkBall.cpp" />
     <ClCompile Include="DarkMeteorite.cpp" />
     <ClCompile Include="DarkWall.cpp" />
+    <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="InitEffect.cpp" />
     <ClCompile Include="EntryBoss.cpp" />
     <ClCompile Include="Fade.cpp" />
@@ -299,6 +300,7 @@
     <ClCompile Include="LichStateWarp.cpp" />
     <ClCompile Include="MagicBall.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ManagerPreCompile.cpp" />
     <ClCompile Include="MushroomStateAppear.cpp" />
     <ClCompile Include="Meteo.cpp" />
     <ClCompile Include="MobMonster.cpp" />
@@ -312,6 +314,7 @@
     <ClCompile Include="MushroomStateWalk.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Result.cpp" />
+    <ClCompile Include="SelectWeapon.cpp" />
     <ClCompile Include="Slime.cpp" />
     <ClCompile Include="SlimeStateAppear.cpp" />
     <ClCompile Include="SlimeStateAttack.cpp" />
@@ -342,6 +345,7 @@
     <ClCompile Include="TurtleShellStateIdle.cpp" />
     <ClCompile Include="TurtleShellStateVictory.cpp" />
     <ClCompile Include="TurtleShellStateWalk.cpp" />
+    <ClCompile Include="WeaponManager.cpp" />
     <ClCompile Include="Wizard.cpp" />
     <ClCompile Include="WizardStateAttack_1.cpp" />
     <ClCompile Include="WizardStateAttack_2_main.cpp" />
@@ -395,6 +399,7 @@
     <ClInclude Include="DarkBall.h" />
     <ClInclude Include="DarkMeteorite.h" />
     <ClInclude Include="DarkWall.h" />
+    <ClInclude Include="EventManager.h" />
     <ClInclude Include="IBraveState.h" />
     <ClInclude Include="InitEffect.h" />
     <ClInclude Include="EntryBoss.h" />
@@ -442,6 +447,7 @@
     <ClInclude Include="LichStateWalk.h" />
     <ClInclude Include="LichStateWarp.h" />
     <ClInclude Include="MagicBall.h" />
+    <ClInclude Include="ManagerPreCompile.h" />
     <ClInclude Include="MushroomStateAppear.h" />
     <ClInclude Include="Meteo.h" />
     <ClInclude Include="MobMonster.h" />
@@ -453,8 +459,10 @@
     <ClInclude Include="MushroomStateIdle.h" />
     <ClInclude Include="MushroomStateVictory.h" />
     <ClInclude Include="MushroomStateWalk.h" />
+    <ClInclude Include="MyWeapon.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Result.h" />
+    <ClInclude Include="SelectWeapon.h" />
     <ClInclude Include="Slime.h" />
     <ClInclude Include="SlimeStateAppear.h" />
     <ClInclude Include="SlimeStateAttack.h" />
@@ -481,6 +489,7 @@
     <ClInclude Include="TurtleShellStateIdle.h" />
     <ClInclude Include="TurtleShellStateVictory.h" />
     <ClInclude Include="TurtleShellStateWalk.h" />
+    <ClInclude Include="WeaponManager.h" />
     <ClInclude Include="Wizard.h" />
     <ClInclude Include="WizardStateAttack_1.h" />
     <ClInclude Include="WizardStateAttack_2_main.h" />

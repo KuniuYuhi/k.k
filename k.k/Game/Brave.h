@@ -80,11 +80,7 @@ public:
 	/// 当たり判定可能なアニメーションか
 	/// </summary>
 	/// <returns></returns>
-	bool isCollisionEntable() const override
-	{
-		return m_enAnimationState != enAnimationState_Hit &&
-			m_enAnimationState != enAnimationState_Defend;
-	}
+	bool isCollisionEntable() const override;
 	/// <summary>
 	/// 回転可能なアニメーションが再生中か
 	/// </summary>

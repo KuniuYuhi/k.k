@@ -13,10 +13,96 @@ public:
 	void Render(RenderContext& rc);
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
-	void MamageState();
+	/// <summary>
+	/// スプライトの座標、サイズ、回転を設定
+	/// </summary>
+	/// <param name="spriterender">スプライトレンダー</param>
+	/// <param name="position">座標</param>
+	/// <param name="scale">サイズ</param>
+	/// <param name="rotation">回転</param>
+	void SettingSpriteRender(
+		SpriteRender& spriterender, Vector3 position, Vector3 scale, Quaternion rotation)
+	{
+		spriterender.SetPosition(position);
+		spriterender.SetScale(scale);
+		spriterender.SetRotation(rotation);
+		spriterender.Update();
+	}
 
+	/// <summary>
+	/// 座標の設定
+	/// </summary>
+	/// <param name="position"></param>
+	void SetPosition(Vector3 position)
+	{
+		m_position = position;
+	}
+	/// <summary>
+	/// 座標の取得
+	/// </summary>
+	/// <returns></returns>
+	const Vector3 GetPosition() const
+	{
+		return m_position;
+	}
+	/// <summary>
+	/// ゲームのインスタンスの設定
+	/// </summary>
+	/// <param name="game"></param>
+	void SetGame(Game* game)
+	{
+		m_game = game;
+	}
+	/// <summary>
+	/// スカイキューブのインスタンスの設定
+	/// </summary>
+	/// <param name="skyCube"></param>
+	void SetSkyCube(SkyCube* skyCube)
+	{
+		m_skyCube = skyCube;
+	}
+
+private:
+	/// <summary>
+	/// 全体の流れのステート
+	/// </summary>
+	enum EnWholeState
+	{
+		enWholeState_RiseBoss,		//ボスが地面から上昇
+		enWholeState_FogRemoval,	//霧払い
+		enWholeState_Complete		//完了
+
+	};
+
+	/// <summary>
+	/// 全体のステートの処理
+	/// </summary>
+	void ManageState();
+	/// <summary>
+	/// ボス上昇ステートの状態遷移処理
+	/// </summary>
+	void OnProcessRiseBossTransition();
+	/// <summary>
+	/// 霧払いステートの状態遷移処理
+	/// </summary>
+	void OnProcessFogRemovalTransition();
+	/// <summary>
+	/// 完了ステートの状態遷移処理
+	/// </summary>
+	void OnProcessCompleteTransition();
+
+
+	/// <summary>
+	/// ボスの行動のステート
+	/// </summary>
+	void MamageActionBossState();
+	/// <summary>
+	/// アニメーション
+	/// </summary>
 	void Animation();
-
+	/// <summary>
+	/// 座標を上に上げる処理
+	/// </summary>
 	void positionUp();
 	/// <summary>
 	/// スプライトレンダーの初期化
@@ -50,43 +136,6 @@ public:
 	/// </summary>
 	void CalcMuteGogogoSE();
 
-	/// <summary>
-	/// スプライトの座標、サイズ、回転を設定
-	/// </summary>
-	/// <param name="spriterender">スプライトレンダー</param>
-	/// <param name="position">座標</param>
-	/// <param name="scale">サイズ</param>
-	/// <param name="rotation">回転</param>
-	void SettingSpriteRender(
-		SpriteRender& spriterender, Vector3 position, Vector3 scale, Quaternion rotation)
-	{
-		spriterender.SetPosition(position);
-		spriterender.SetScale(scale);
-		spriterender.SetRotation(rotation);
-		spriterender.Update();
-	}
-
-	void SetPosition(Vector3 position)
-	{
-		m_position = position;
-	}
-
-	const Vector3 GetPosition() const
-	{
-		return m_position;
-	}
-
-	void SetGame(Game* game)
-	{
-		m_game = game;
-	}
-
-	void SetSkyCube(SkyCube* skyCube)
-	{
-		m_skyCube = skyCube;
-	}
-
-
 	// アニメーションクリップの番号を表す列挙型。
 	enum EnAnimationClip {
 		enAnimClip_Idle,			// 0 : 待機アニメーション
@@ -100,6 +149,10 @@ public:
 		enAnimationState_FogRemoval
 	};
 
+	/// <summary>
+	/// 次のアニメーションステートを設定
+	/// </summary>
+	/// <param name="NextAnimationState"></param>
 	void SetNextAnimationState(EnAnimationState NextAnimationState)
 	{
 		m_enAnimationState = NextAnimationState;
@@ -114,6 +167,10 @@ public:
 	/// </summary>
 	void OnProcessFogRemovalStateTransition();
 
+
+	/// <summary>
+	/// リッチの文字列ステート
+	/// </summary>
 	enum EnLichName
 	{
 		L,
@@ -122,8 +179,6 @@ public:
 		H,
 		END
 	};
-
-private:
 
 	struct LichCharInfo
 	{
@@ -147,6 +202,7 @@ private:
 
 	AnimationClip				m_animationClip[enAnimClip_Num];				// アニメーションクリップ 
 	EnAnimationState			m_enAnimationState = enAninationState_Idle;		//アニメーションステート
+	EnWholeState				m_enWholeState = enWholeState_RiseBoss;			//全体の流れステート
 
 	SpriteRender				m_bossTextRender;								//BOSS
 	SpriteRender				m_PressAButton;									//右下のテキストの画像

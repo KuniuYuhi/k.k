@@ -2,8 +2,6 @@
 #include "Meteo.h"
 #include "InitEffect.h"
 
-//todo メテオが爆発するとき処理が止まる
-
 namespace {
 	const float EXPLOSION_SCALE = 12.0f;
 	const Vector3 SCALE = { 16.0f,16.0f,16.0f };
@@ -24,6 +22,8 @@ namespace {
 
 
 	const float GROUND_CHECK_COLLISION_SIZE = 4.0f;
+
+	const float CENTER_POS_ADD_Y = 200.0f;
 }
 
 Meteo::Meteo()
@@ -74,8 +74,9 @@ bool Meteo::Start()
 	m_startPosition = m_position;
 	//中間点を決める
 	m_centerPosition = (m_targetPosition + m_position) / 2.0f;
-	//Y座標を上げる
-	m_centerPosition.y += m_yUp;
+
+	//中間点のY座標を上げる
+	m_centerPosition.y = m_startPosition.y + CENTER_POS_ADD_Y;
 
 	m_scale = SCALE;
 
@@ -142,14 +143,8 @@ void Meteo::Move()
 	
 	m_timer += ADD_TIMER;
 
-	
-	//todo たまにエラー
 	//設定と更新
 	//爆発していない間メテオの当たり判定の座標を更新する
-	if (m_explosionEffectFlag != true)
-	{
-		
-	}
 	m_collision->SetPosition(m_movePos);
 	m_collision->Update();
 

@@ -8,5 +8,4 @@ void nsK2EngineLow::FontRender::Draw(RenderContext& rc)
 		return;
 	}
 	g_renderingEngine->AddRenderObject(this);
-	//g_renderingEngine->AddFontList(this);
 }

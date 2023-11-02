@@ -47,7 +47,7 @@ namespace {
 	const float ROT_ONLY_SPEED = 5.0f;
 
 	//ステータス
-	int MAXHP = 500;
+	int MAXHP = 100;
 	int MAXMP = 500;
 	int ATK = 20;
 	float SPEED = 160.0f;
@@ -110,7 +110,7 @@ bool Lich::Start()
 	SetSpecialActionState(enSpecialActionState_Normal);
 	
 	m_lichAction = new LichAction(this);
-	//todo 優先度設定する
+	//優先度設定する
 	m_lichAction->SettingPriority();
 	
 	return true;
@@ -437,9 +437,6 @@ bool Lich::RotationOnly()
 
 void Lich::DecideNextAction()
 {
-	//todo 通常と怒りモードで攻撃範囲や速度を変えたい
-
-
 	//被ダメージ時は処理をしない
 	if (isAnimationEntable() != true)
 	{
@@ -843,17 +840,29 @@ void Lich::CreateDarkBall(bool AddBallFlag)
 	{
 		return;
 	}
+	Quaternion right = m_rotation;
+	right.AddRotationDegY(ADD_CREATE_DARK_BALL_1_Y);
+	DarkBall* darkBall2 = NewGO<DarkBall>(0, "darkball");
+	darkBall2->SetLich(this);
+	darkBall2->SetAtk(m_status.atk);
+	darkBall2->Setting(m_position, right);
+
+	right = m_rotation;
+	right.AddRotationDegY(ADD_CREATE_DARK_BALL_2_Y);
+	DarkBall* darkBall3 = NewGO<DarkBall>(0, "darkball");
+	darkBall3->SetLich(this);
+	darkBall3->SetAtk(m_status.atk);
+	darkBall3->Setting(m_position, right);
 
 	//あと二つ生成する
-	AddCreateDarkBall(m_darkBall_left, DARL_BALL_LEFT,ADD_CREATE_DARK_BALL_1_Y);
-	AddCreateDarkBall(m_darkBall_light, DARL_BALL_LIGHT,ADD_CREATE_DARK_BALL_2_Y);
+	//AddCreateDarkBall(m_darkBall_left, DARL_BALL_LEFT,ADD_CREATE_DARK_BALL_1_Y);
+	//AddCreateDarkBall(m_darkBall_light, DARL_BALL_LIGHT,ADD_CREATE_DARK_BALL_2_Y);
 }
 
 void Lich::AddCreateDarkBall(DarkBall* darkBall, const char* name, float degY)
 {
 	Quaternion right = m_rotation;
 	right.AddRotationDegY(degY);
-	//todo 名前変える
 	darkBall = NewGO<DarkBall>(0, name);
 	darkBall->SetLich(this);
 	darkBall->SetAtk(m_status.atk);
@@ -864,9 +873,7 @@ void Lich::CreateDarkMeteorite(bool lastMeteoFlag)
 {
 	//大きなメテオを作成
 	m_darkMeteorite = NewGO<DarkMeteorite>(0, "darkmeteorite");
-	Vector3 pos = m_position;
-	pos.y += 840.0f;
-	m_darkMeteorite->SetPosition(pos);
+	m_darkMeteorite->SetPosition(m_position);
 	m_darkMeteorite->SetRotation(m_rotation);
 	m_darkMeteorite->SetmLastBigMeteoShotFlag(lastMeteoFlag);
 }

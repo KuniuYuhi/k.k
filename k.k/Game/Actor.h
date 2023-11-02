@@ -263,6 +263,12 @@ public:
 protected:
 
 	/// <summary>
+	/// 点滅するか。
+	/// </summary>
+	/// <returns>trueで非表示、falseで表示</returns>
+	bool IsFlashing();
+
+	/// <summary>
 	/// MPの回復
 	/// m_recoveryMpFlagがtrueの時に処理を実行
 	/// </summary>
@@ -349,7 +355,7 @@ protected:
 	bool							m_createAttackCollisionFlag = false;				//攻撃時に当たり判定を生成するかのフラグ
 
 	bool							m_invincibleTimeFlag = false;						//無敵時間であるかのフラグ
-	const float						m_invincbleTime = 2.0f;
+	const float						m_invincbleTime = 1.5f;
 	float							m_invincbleTimer = 0.0f;
 
 	const float						m_invincbleDashTime = 0.3f;							//無敵状態ダッシュの時間

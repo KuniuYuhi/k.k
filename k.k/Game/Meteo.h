@@ -104,9 +104,6 @@ private:
 
 	const float					m_speed = 200.0f;
 
-	const float					m_yUp = 800.0f;
-
-
 	float						m_timer = 0.0f;
 
 	const float					m_explosionEndTime = 0.5f;
