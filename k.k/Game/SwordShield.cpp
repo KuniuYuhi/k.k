@@ -2,6 +2,7 @@
 #include "SwordShield.h"
 #include "Brave.h"
 
+
 namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
@@ -53,9 +54,78 @@ void SwordShield::Update()
 	m_shieldCollision->Update();
 }
 
-bool SwordShield::IsHitShieldCollision()
+bool SwordShield::IsHitCollision()
 {
+	//ダークボールの当たり判定
+	const auto& DarkBallCollisions = g_collisionObjectManager->FindCollisionObjects("darkball");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : DarkBallCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(m_shieldCollision) == true)
+		{	
+			return true;
+		}
+	}
 
+	//ダークウォールの当たり判定
+	const auto& DarkWallCollisions = g_collisionObjectManager->FindCollisionObjects("DarkWall");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : DarkWallCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(m_shieldCollision) == true)
+		{	
+			return true;
+		}
+	}
+
+	//メテオの当たり判定
+	const auto& MeteoCollisions = g_collisionObjectManager->FindCollisionObjects("meteo");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : MeteoCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(m_shieldCollision) == true)
+		{
+			return true;
+		}
+	}
+	//メテオの爆発の当たり判定
+	const auto& MeteoExplosionCollisions = g_collisionObjectManager->FindCollisionObjects("explosion");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : MeteoExplosionCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(m_shieldCollision) == true)
+		{	
+			return true;
+		}
+	}
+
+	//モンスターの攻撃の当たり判定
+	const auto& MonsterCollisions = g_collisionObjectManager->FindCollisionObjects("monsterattack");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : MonsterCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(m_shieldCollision) == true)
+		{
+			return true;
+		}
+	}
+
+	//ダークメテオの攻撃の当たり判定
+	const auto& DarkMeteoCollisions = g_collisionObjectManager->FindCollisionObjects("bigmeteo");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : DarkMeteoCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(m_shieldCollision) == true)
+		{	
+			return true;
+		}
+	}
 
 	return false;
 }

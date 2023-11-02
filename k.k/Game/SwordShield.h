@@ -31,7 +31,7 @@ public:
 	/// 盾の当たり判定がヒットしたか
 	/// </summary>
 	/// <returns>ヒットしたらtrue、ヒットしなかったらfalse</returns>
-	bool IsHitShieldCollision();
+	bool IsHitCollision();
 
 private:
 	/// <summary>
