@@ -7,6 +7,10 @@ namespace {
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
 
 	const Vector3 BIG_SWORD_COLLISION_SIZE = { 18.0f,100.0f,8.0f };
+
+	const float SKILL_RADIUS = 80.0f;
+
+	const float ADD_FORWARD = 8.0f;
 }
 
 BigSword::BigSword()
@@ -47,6 +51,28 @@ void BigSword::Update()
 
 	m_modelBigSword.Update();
 	m_bigSwordCollision->Update();
+}
+
+void BigSword::ProcessSkillAttack()
+{
+	//当たり判定を生成する座標を設定
+	m_skillAttackPosition = g_vec3Zero;
+	//剣のワールド座標をベクトルに乗算
+	m_swordMatrix.Apply(m_skillAttackPosition);
+	m_skillAttackPosition.y = 0.0f;
+	Vector3 forward;
+	forward = m_brave->GetForward();
+	forward *= ADD_FORWARD;
+	//前方向分を足す
+	m_skillAttackPosition += forward;
+
+	//スキル攻撃時の当たり判定の生成
+	auto skillCollision = NewGO<CollisionObject>(0, "skillAttack");
+	skillCollision->CreateSphere(
+		m_skillAttackPosition,
+		g_quatIdentity,
+		SKILL_RADIUS
+	);
 }
 
 void BigSword::InitModel()

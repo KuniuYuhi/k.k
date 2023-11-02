@@ -27,6 +27,11 @@ public:
 		return m_jampSpeed;
 	}
 
+	/// <summary>
+	/// スキル攻撃処理
+	/// </summary>
+	void ProcessSkillAttack();
+
 private:
 	/// <summary>
 	/// モデルの初期化
@@ -53,6 +58,8 @@ private:
 	Vector3 m_swordPos = g_vec3Zero;
 
 	Matrix m_swordMatrix = g_matIdentity;
+
+	Vector3 m_skillAttackPosition = g_vec3Zero;
 
 	//武器を持たせる時のボーンID
 	int m_armedSwordBoonId = -1;
