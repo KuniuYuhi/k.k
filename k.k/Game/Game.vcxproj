@@ -283,6 +283,7 @@
     <ClCompile Include="HeroStateVictory.cpp" />
     <ClCompile Include="HeroStateWalk.cpp" />
     <ClCompile Include="IWeapon.cpp" />
+    <ClCompile Include="KnockBack.cpp" />
     <ClCompile Include="Lich.cpp" />
     <ClCompile Include="LichAction.cpp" />
     <ClCompile Include="LichStateAngry.cpp" />
@@ -431,6 +432,7 @@
     <ClInclude Include="ITurtleShellState.h" />
     <ClInclude Include="IWeapon.h" />
     <ClInclude Include="IWizardState.h" />
+    <ClInclude Include="KnockBack.h" />
     <ClInclude Include="Lich.h" />
     <ClInclude Include="LichAction.h" />
     <ClInclude Include="LichStateAngry.h" />

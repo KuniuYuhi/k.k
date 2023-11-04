@@ -291,6 +291,23 @@ bool TurtleShell::IsStopProcessing()
 		return true;
 	}
 
+	//ノックバック中なら
+	if (GetKnockBackFlag() == true)
+	{
+		//ノックバックの処理をするなら
+		if (IsProcessKnockBack(
+			m_knockBackTimer, m_moveSpeed) == true)
+		{
+			//座標を移動
+			m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+			return true;
+		}
+		else
+		{
+			SetKnockBackFlag(false);
+		}
+	}
+
 	//それ以外なら
 	return false;
 }
@@ -320,7 +337,7 @@ void TurtleShell::Damage(int attack)
 	//防御状態ならダメージを減らす
 	if (m_defenceState == enDefenceState_Defence)
 	{
-		m_damage = 0;
+		m_status.SetHp(0);
 		return;
 	}
 	//防御状態ではないなら
@@ -331,30 +348,30 @@ void TurtleShell::Damage(int attack)
 	}
 	
 	//HPを減らす
-	m_status.hp -= m_damage;
+	m_status.CalcHp(attack, false);
 
 	//HPが0以下なら
 	if (m_status.hp <= 0)
 	{
-		m_status.hp = 0;
+		//やられアニメーションステート
+		m_status.SetHp(0);
 		SetNextAnimationState(enAnimationState_Die);
 		Dead();
 		return;
 	}
-
-	SetNextAnimationState(enAnimationState_Damage);
-
-	//もし防御中なら
-	/*if (m_defenceState == enDefenceState_Defence)
+	//その攻撃にノックバック効果があるなら
+	if (m_player->GetKnockBackAttackFlag() == true)
 	{
-		m_defenceState = enDefenceState_DefenceDamaged;
-		SetNextAnimationState(enAnimationState_DifenceDamage);
+		//ノックバックフラグをセット
+		SetKnockBackFlag(true);
+		//ノックバックする方向を決める
+		m_moveSpeed = SetKnockBackDirection(
+			m_player->GetAttackPosition(),
+			m_position,
+			m_player->GetKnockBackPower()
+		);
 	}
-	else
-	{
-		SetNextAnimationState(enAnimationState_Damage);
-	}*/
-	
+	SetNextAnimationState(enAnimationState_Damage);
 	
 }
 

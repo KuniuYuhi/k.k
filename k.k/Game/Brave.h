@@ -72,6 +72,7 @@ public:
 			m_enAnimationState != enAnimationState_Skill_start &&
 			m_enAnimationState != enAnimationState_Skill_Main &&
 			m_enAnimationState != enAnimationState_Defend &&
+			m_enAnimationState != enAnimationState_DefendHit &&
 			m_enAnimationState != enAnimationState_Hit &&
 			m_enAnimationState != enAnimationState_Die &&
 			m_enAnimationState != enAnimationState_ChangeSwordShield;
@@ -381,21 +382,47 @@ public:
 		return m_useWeapon[enWeapon_Main].weapon->GetEnDefendTipe();
 	}
 
+	/// <summary>
+	/// 攻撃の中心座標を設定
+	/// </summary>
+	/// <param name="attackPosition"></param>
+	void SetAttackPosition(Vector3 attackPosition);
+	/// <summary>
+	/// ノックバックする時の設定をまとめたもの
+	/// </summary>
+	/// <param name="attackPosition">攻撃の中心座標</param>
+	/// <param name="power">ノックバックパワー</param>
+	/// <param name="flag">ノックバックするかのフラグ</param>
+	void SetKnockBackInfo(
+		Vector3 attackPosition, float power, bool flag)
+	{
+		//攻撃の中心座標を設定
+		SetAttackPosition(attackPosition);
+		//ノックバックパワーを設定
+		SetKnockBackPower(power);
+		//ノックバック攻撃フラグをセット
+		SetKnockBackAttackFalg(flag);
+	}
+
 private:
 	/// <summary>
 	/// コンボ攻撃のコンボの処理
 	/// </summary>
 	void ProcessComboAttack();
-
 	/// <summary>
 	/// メイン武器とサブ武器を入れ替える
 	/// </summary>
 	void ReverseWeapon();
-
 	/// <summary>
 	/// UseWeapon構造体の中身を入れ替える
 	/// </summary>
 	void ChangeUseWeapon();
+
+	/// <summary>
+	/// 防御中にヒットしたか
+	/// </summary>
+	/// <returns>ヒットならtrue、ヒットしていないならfalse</returns>
+	bool IsDefendHit();
 
 private:
 	/// <summary>

@@ -135,52 +135,29 @@ void Mushroom::InitModel()
 
 void Mushroom::Update()
 {
-	/*if (IsStopProcessing() == true)
-	{
-		ManageState();
-		PlayAnimation();
-		m_modelRender.Update();
-		return;
-	}*/
-
 	if (IsStopProcessing() != true)
 	{
+		//攻撃間隔インターバル
 		AttackInterval(m_attackIntervalTime);
-
+		//当たり判定
 		DamageCollision(m_charaCon);
-
+		//アングル切り替えインターバル
 		AngleChangeTimeIntarval(m_angleChangeTime);
-
+		//移動処理
 		Move(m_charaCon);
+		//回転処理
 		Rotation(ROT_SPEED, ROT_SPEED);
-		//攻撃
+		//攻撃処理
 		Attack();
-
+		//当たり判定の生成
 		if (m_createAttackCollisionFlag == true)
 		{
 			CreateCollision();
 		}
 	}
 
-	//AttackInterval(m_attackIntervalTime);
-
-	//DamageCollision(m_charaCon);
-
-	//AngleChangeTimeIntarval(m_angleChangeTime);
-
-	//Move(m_charaCon);
-	//Rotation(ROT_SPEED, ROT_SPEED);
-
-	////攻撃
-	//Attack();
-
 	ManageState();
 	PlayAnimation();
-
-	/*if (m_createAttackCollisionFlag == true)
-	{
-		CreateCollision();
-	}*/
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
@@ -283,6 +260,23 @@ bool Mushroom::IsStopProcessing()
 		return true;
 	}
 
+	//ノックバック中なら
+	if (GetKnockBackFlag() == true)
+	{
+		//ノックバックの処理をするなら
+		if (IsProcessKnockBack(
+			m_knockBackTimer, m_moveSpeed) == true)
+		{
+			//座標を移動
+			m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+			return true;
+		}
+		else
+		{
+			SetKnockBackFlag(false);
+		}
+	}
+
 	//それ以外なら
 	return false;
 }
@@ -292,19 +286,29 @@ void Mushroom::Damage(int attack)
 	//攻撃中かもしれないので当たり判定を生成しないようにする
 	m_createAttackCollisionFlag = false;
 	//HPを減らす
-	m_status.hp -= attack;
+	m_status.CalcHp(attack, false);
 
 	//HPが0以下なら
 	if (m_status.hp <= 0)
 	{
-		m_status.hp = 0;
+		//やられアニメーションステート
+		m_status.SetHp(0);
 		SetNextAnimationState(enAnimationState_Die);
 		Dead();
 		return;
 	}
-
-	//もし防御中なら
-
+	//その攻撃にノックバック効果があるなら
+	if (m_player->GetKnockBackAttackFlag() == true)
+	{
+		//ノックバックフラグをセット
+		SetKnockBackFlag(true);
+		//ノックバックする方向を決める
+		m_moveSpeed = SetKnockBackDirection(
+			m_player->GetAttackPosition(),
+			m_position,
+			m_player->GetKnockBackPower()
+		);
+	}
 	SetNextAnimationState(enAnimationState_Damage);
 }
 

@@ -16,13 +16,17 @@
 #include "BraveStateWin_Main.h"
 
 #include "Player.h"
+#include "KnockBack.h"
 
 #include "SwordShield.h"
 #include "BigSword.h"
 
 
 //todo たまにダークボールの当たった時の爆発がない
+//todotototototototo スキル使用時fpsが低いと地面との判定を取ってくれない
 
+//todo ジャストガードでカウンター(パリィ)
+//もしくはガード中に敵の攻撃に合わせてボタンを押して反撃。敵は怯む
 
 namespace {
 	const float ADD_SCALE = 1.2f;
@@ -113,7 +117,6 @@ void Brave::Update()
 		//当たり判定
 		DamageCollision(m_charaCon);
 	}
-	
 
 	ManageState();
 	PlayAnimation();
@@ -148,11 +151,6 @@ void Brave::ProcessAttack()
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		ProcessComboAttack();
-		//3コンボ以上ならパターンステートリセット
-		if (m_attackPatternState >= enAttackPattern_3)
-		{
-			m_attackPatternState = enAttackPattern_None;
-		}
 		return;
 	}
 	//スキル
@@ -187,24 +185,36 @@ void Brave::Damage(int damage)
 	//HPが0より大きいなら被ダメージ処理
 	if (GetStatus().hp > 0)
 	{
-		//ガード中なら
-		if (m_enAnimationState == enAnimationState_Defend)
+		//コンボが繋がっている時にダメージを受けたかもしれないのでリセット
+		m_attackPatternState = enAttackPattern_None;
+
+		//武器切り替え中にダメージを受けたら
+		if (m_enAnimationState == enAnimationState_ChangeSwordShield)
+		{
+			//武器切り替え前の武器のアニメーションが再生されるようにする
+			m_currentAnimationStartIndexNo
+				= m_useWeapon[enWeapon_Main].weaponAnimationStartIndexNo;
+		}
+
+		if (IsDefendHit() == true)
 		{
 			//ダメージを1/3に減らす
 			damage /= 3;
 			//どれだけダメージを減らしても１以下にはならない
-			if (damage < 1){damage = 1;}
+			if (damage < 1) { damage = 1; }
 			//盾ヒットステートに遷移
 			SetNextAnimationState(enAnimationState_DefendHit);
 		}
 		else
 		{
+			//普通にダメージを受ける
 			//ヒットステートに遷移
 			SetNextAnimationState(enAnimationState_Hit);
 		}
 
-		m_status.CalcHp(damage, false);
-
+		//受けるダメージを決定
+		m_hitDamage = damage;
+		m_status.CalcHp(m_hitDamage, false);
 		//ダメージを受けたので無敵時間に入る
 		SetInvicibleTimeFlag(true);
 	}
@@ -260,9 +270,13 @@ void Brave::ChangeWeapon()
 	//武器の切り替え
 	if (g_pad[0]->IsTrigger(enButtonRB1) == true)
 	{
-		ChangeUseWeapon();
-		SetIsActionFlag(true);
+		//武器のサブとメインの中身を入れ替える
+		//現在の武器のアニメーションクリップの最初の番号をサブに変更
+		m_currentAnimationStartIndexNo
+			= m_useWeapon[enWeapon_Sub].weaponAnimationStartIndexNo;
+
 		SetNextAnimationState(enAnimationState_ChangeSwordShield);
+		SetIsActionFlag(true);
 	}
 }
 
@@ -295,7 +309,7 @@ void Brave::ProcessSwordShieldSkill(bool UpOrDownFlag)
 	
 	m_position = m_charaCon.Execute(Y, 1.0f / 30.0f);
 	//地面についているなら
-	if (m_charaCon.IsOnGround() == true)
+	if (m_charaCon.IsOnGround() == true|| m_position.y < 0.0f)
 	{
 		m_position.y = 0.0f;
 	}
@@ -379,11 +393,17 @@ void Brave::ManageState()
 	m_BraveState->ManageState();
 }
 
+void Brave::SetAttackPosition(Vector3 attackPosition)
+{
+	m_player->SetAttackPosition(attackPosition);
+}
+
 void Brave::ProcessComboAttack()
 {
 	//パターンステートを一つ進める
 	m_attackPatternState =
 		static_cast<EnAttackPattern>(m_attackPatternState + 1);
+
 	//通常攻撃ステート設定
 	SetNextAnimationState(m_attackPatternState);
 	//敵のためのコンボステートを設定
@@ -406,7 +426,12 @@ void Brave::ProcessComboAttack()
 	default:
 		break;
 	}
-	
+	//3コンボ以上ならパターンステートリセット
+	if (m_attackPatternState >= enAttackPattern_3)
+	{
+		m_attackPatternState = enAttackPattern_None;
+	}
+
 	//アクションフラグをセット
 	SetIsActionFlag(true);
 }
@@ -432,6 +457,8 @@ void Brave::ProcessCommonWeaponChangeStateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		//todo 無敵状態フラグのリセット
+		SetInvicibleFlag(false);
 		//現在の武器のアニメーションクリップの最初の番号を変更
 		m_currentAnimationStartIndexNo
 			= m_useWeapon[enWeapon_Main].weaponAnimationStartIndexNo;
@@ -449,7 +476,7 @@ void Brave::ProcessNormalAttackStateTransition()
 	{
 		//次のコンボに繋げない、または3コンボ目ならリセット
 		if (GetNextComboFlagFlag() == false ||
-			m_attackPatternState >= enAttackPattern_3)
+			m_attackPatternState == enAttackPattern_None)
 		{
 			m_position.y = 0.0f;
 			m_attackPatternState = enAttackPattern_None;
@@ -501,6 +528,15 @@ void Brave::ProcessSkillMainStateTransition()
 {
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		//todo 無敵状態フラグのリセット
+		SetInvicibleFlag(false);
+
+		//ノックバック攻撃フラグが立っていたらリセット
+		if (GetKnockBackAttackFalg() == true)
+		{
+			SetKnockBackAttackFalg(false);
+		}
+
 		//攻撃アニメーションが終わったので攻撃可能
 		SetIsActionFlag(false);
 		//ステート共通の状態遷移処理に遷移
@@ -559,6 +595,9 @@ bool Brave::RotationOnly()
 
 void Brave::ReverseWeapon()
 {
+	//武器のサブとメインの中身を入れ替える
+	ChangeUseWeapon();
+
 	//メイン武器とサブ武器の状態ステートを逆にする
 	m_useWeapon[enWeapon_Main].weapon->ReverseWeaponState();
 	m_useWeapon[enWeapon_Sub].weapon->ReverseWeaponState();
@@ -574,6 +613,24 @@ void Brave::ChangeUseWeapon()
 	//現在の武器のアニメーションクリップの最初の番号を変更
 	m_currentAnimationStartIndexNo
 		= m_useWeapon[enWeapon_Main].weaponAnimationStartIndexNo;
+}
+
+bool Brave::IsDefendHit()
+{
+	//ガード中なら
+	if (m_enAnimationState == enAnimationState_Defend)
+	{
+		//盾に当たっているなら
+		if (m_useWeapon[enWeapon_Main].weapon->IsHitCollision() == true)
+		{
+			return true;
+		}
+		return false;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void Brave::InitModel()
@@ -667,7 +724,6 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	{
 		SetMoveforwardFlag(true);
 	}
-
 	//前進する終わり
 	if (wcscmp(eventName, L"MoveForwardEnd") == 0)
 	{
@@ -680,49 +736,62 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		ReverseWeapon();
 	}
 
-	//当たり判定の有効化
+	//攻撃当たり判定の有効化
 	if (wcscmp(eventName, L"CollisionStart") == 0)
 	{
 		SetIsCollisionPossibleFlag(true);
 	}
-	//当たり判定の無効化
+	//攻撃当たり判定の無効化
 	if (wcscmp(eventName, L"CollisionEnd") == 0)
 	{
 		SetIsCollisionPossibleFlag(false);
 	}
 
-	////////////////////////////////////////////////////////////
-	// 剣盾の処理
-	////////////////////////////////////////////////////////////
-	//スキルのノックバックのタイミング
-	if (wcscmp(eventName, L"KnockBack") == 0)
+	//無敵状態の有効化
+	if (wcscmp(eventName, L"InvisibleStart") == 0)
 	{
-		int a = 0;
+		SetInvicibleFlag(true);
+	}
+	//無敵状態の無効化
+	if (wcscmp(eventName, L"InvisibleEnd") == 0)
+	{
+		SetInvicibleFlag(false);
+	}
+
+	//スキル使用時の攻撃処理
+	if (wcscmp(eventName, L"SkillAttack") == 0)
+	{
+		//メイン武器のスキル攻撃処理
+		m_useWeapon[enWeapon_Main].weapon->ProcessSkillAttack();
 	}
 	//スキルのジャンプ処理
 	if (wcscmp(eventName, L"Jamp") == 0)
 	{
 		ProcessSwordShieldSkill(true);
 	}
-
 	//スキルのジャンプ処理
 	if (wcscmp(eventName, L"Down") == 0)
 	{
 		ProcessSwordShieldSkill(false);
 	}
 
+	
+
+	////////////////////////////////////////////////////////////
+	// 剣盾の処理
+	////////////////////////////////////////////////////////////
 
 }
 
 bool Brave::isCollisionEntable() const
 {
-	//もし片手剣なら
-	if (m_useWeapon[enWeapon_Main].weapon->GetName() == "swordshield")
+	//もし武器の防御タイプが盾などで防ぐタイプなら
+	if (m_useWeapon[enWeapon_Main].weapon->GetEnDefendTipe()==IWeapon::enDefendTipe_Defence)
 	{
 		return m_enAnimationState == enAnimationState_Hit ||
 			m_enAnimationState == enAnimationState_DefendHit;
 	}
-	//それ以外なら
+	//それ以外(回避)なら
 	else
 	{
 		return m_enAnimationState == enAnimationState_Hit ||

@@ -2,12 +2,17 @@
 #include "SwordShield.h"
 #include "Brave.h"
 
+
 namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
 
 	const Vector3 SWORD_COLLISION_SIZE = { 12.0f,100.0f,5.0f };
 	const Vector3 SHIELD_COLLISION_SIZE = { 22.0f,40.0f,16.0f };
+
+	const float SKILL_RADIUS = 60.0f;
+
+	const float ADD_FORWARD = 30.0f;
 }
 
 SwordShield::SwordShield()
@@ -34,6 +39,8 @@ bool SwordShield::Start()
 	//防御タイプの設定
 	SetEnDefendTipe(enDefendTipe_Defence);
 
+
+
 	return true;
 }
 
@@ -53,11 +60,109 @@ void SwordShield::Update()
 	m_shieldCollision->Update();
 }
 
-bool SwordShield::IsHitShieldCollision()
+bool SwordShield::IsHitCollision()
 {
+	//ダークボールの当たり判定
+	const auto& DarkBallCollisions = g_collisionObjectManager->FindCollisionObjects("darkball");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : DarkBallCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(m_shieldCollision) == true)
+		{	
+			return true;
+		}
+	}
 
+	//ダークウォールの当たり判定
+	const auto& DarkWallCollisions = g_collisionObjectManager->FindCollisionObjects("DarkWall");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : DarkWallCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(m_shieldCollision) == true)
+		{	
+			return true;
+		}
+	}
+
+	//メテオの当たり判定
+	const auto& MeteoCollisions = g_collisionObjectManager->FindCollisionObjects("meteo");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : MeteoCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(m_shieldCollision) == true)
+		{
+			return true;
+		}
+	}
+	//メテオの爆発の当たり判定
+	const auto& MeteoExplosionCollisions = g_collisionObjectManager->FindCollisionObjects("explosion");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : MeteoExplosionCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(m_shieldCollision) == true)
+		{	
+			return true;
+		}
+	}
+
+	//モンスターの攻撃の当たり判定
+	const auto& MonsterCollisions = g_collisionObjectManager->FindCollisionObjects("monsterattack");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : MonsterCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(m_shieldCollision) == true)
+		{
+			return true;
+		}
+	}
+
+	//ダークメテオの攻撃の当たり判定
+	const auto& DarkMeteoCollisions = g_collisionObjectManager->FindCollisionObjects("bigmeteo");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : DarkMeteoCollisions)
+	{
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(m_shieldCollision) == true)
+		{	
+			return true;
+		}
+	}
 
 	return false;
+}
+
+void SwordShield::ProcessSkillAttack()
+{
+	//当たり判定を生成する座標を設定
+	m_skillAttackPosition = g_vec3Zero;
+	//剣のワールド座標をベクトルに乗算
+	m_swordMatrix.Apply(m_skillAttackPosition);
+	m_skillAttackPosition.y = 0.0f;
+	Vector3 forward;
+	forward = m_brave->GetForward();
+	forward *= ADD_FORWARD;
+	//前方向分を足す
+	m_skillAttackPosition += forward;
+
+	//スキル攻撃時の当たり判定の生成
+	auto skillCollision = NewGO<CollisionObject>(0, "skillAttack");
+	skillCollision->CreateSphere(
+		m_skillAttackPosition,
+		g_quatIdentity,
+		SKILL_RADIUS
+	);
+
+	//ノックバックの設定
+	m_brave->SetKnockBackInfo(
+		m_skillAttackPosition,
+		m_knockBackPower,
+		true
+	);
 }
 
 void SwordShield::InitModel()

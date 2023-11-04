@@ -31,7 +31,13 @@ public:
 	/// 盾の当たり判定がヒットしたか
 	/// </summary>
 	/// <returns>ヒットしたらtrue、ヒットしなかったらfalse</returns>
-	bool IsHitShieldCollision();
+	bool IsHitCollision();
+
+	/// <summary>
+	/// スキル攻撃処理
+	/// </summary>
+	void ProcessSkillAttack();
+	
 
 private:
 	/// <summary>
@@ -55,14 +61,16 @@ private:
 	ModelRender m_modelSword;		//剣モデル
 	ModelRender m_modelShield;		//盾モデル
 
-	CollisionObject* m_swordCollision;	//片手剣の当たり判定
-	CollisionObject* m_shieldCollision;	//盾の当たり判定
+	CollisionObject* m_swordCollision = nullptr;	//片手剣の当たり判定
+	CollisionObject* m_shieldCollision = nullptr;	//盾の当たり判定
 
 	Vector3 m_swordPos = g_vec3Zero;
 	Vector3 m_shieldPos = g_vec3Zero;
 
 	Matrix m_swordMatrix = g_matIdentity;
 	Matrix m_shieldMatrix = g_matIdentity;
+
+	Vector3 m_skillAttackPosition = g_vec3Zero;
 
 	const float m_jampSpeed = 3000.0f;
 
@@ -73,6 +81,7 @@ private:
 	int m_stowedSwordBoonId = -1;
 	int m_stowedShieldBoonId = -1;
 
+	const float m_knockBackPower = 200.0f;	//ノックバックパワー
 
 };
 

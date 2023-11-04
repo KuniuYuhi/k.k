@@ -57,7 +57,22 @@ public:
 	/// </summary>
 	virtual void MoveStowed() = 0;
 
-	//todo 武器固有の処理
+	//武器固有の処理
+
+	/// <summary>
+	/// 武器の当たり判定
+	/// </summary>
+	/// <returns></returns>
+	virtual bool IsHitCollision()
+	{
+		return false;
+	};
+	/// <summary>
+	/// スキル攻撃処理
+	/// </summary>
+	virtual void ProcessSkillAttack()
+	{
+	}
 
 	/// <summary>
 	/// 攻撃やスキル時のジャンプの速度の取得

@@ -46,7 +46,8 @@ Vector3 AIActor::CalcVelocity(Status status,Vector3 targetposition,bool dashFlag
 		moveSpeed = diff * status.defaultSpeed;
 	}
 
-	
+	moveSpeed.y = 0.0f;
+
 	//前方向を設定
 	m_forward = diff;
 	//値をセーブしておく
@@ -123,8 +124,8 @@ void AIActor::DamageCollision(CharacterController& characon)
 		}
 	}
 
-	//ヒーローのスキルの当たり判定
-	const auto& SkillCollisions = g_collisionObjectManager->FindCollisionObjects("SkillAttack");
+	//スキルの当たり判定
+	const auto& SkillCollisions = g_collisionObjectManager->FindCollisionObjects("skillAttack");
 	//コリジョンの配列をfor文で回す
 	for (auto collision : SkillCollisions)
 	{
@@ -137,49 +138,51 @@ void AIActor::DamageCollision(CharacterController& characon)
 		}
 	}
 
-	//ウィザードのファイヤーボールの当たり判定
-	const auto& FireBallCollisions = g_collisionObjectManager->FindCollisionObjects("fireball");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : FireBallCollisions)
-	{
-		//自身のキャラコンと衝突したら
-		if (collision->IsHit(characon) == true)
-		{
-			FireBall* fireball = FindGO<FireBall>("fireball");
-			if (fireball != nullptr)
-			{
-				m_damage = fireball->GetAtk();
-				HitFireBall();
-				//ぶつかったのでファイヤーボールを消すフラグを立てる
-				fireball->SetHitFlag(true);
-			}
-			
-			return;
-		}
-	}
+	////ウィザードのファイヤーボールの当たり判定
+	//const auto& FireBallCollisions = g_collisionObjectManager->FindCollisionObjects("fireball");
+	////コリジョンの配列をfor文で回す
+	//for (auto collision : FireBallCollisions)
+	//{
+	//	//自身のキャラコンと衝突したら
+	//	if (collision->IsHit(characon) == true)
+	//	{
+	//		FireBall* fireball = FindGO<FireBall>("fireball");
+	//		if (fireball != nullptr)
+	//		{
+	//			m_damage = fireball->GetAtk();
+	//			HitFireBall();
+	//			//ぶつかったのでファイヤーボールを消すフラグを立てる
+	//			fireball->SetHitFlag(true);
+	//		}
+	//		
+	//		return;
+	//	}
+	//}
 
-	//ウィザードのフレイムピラーの当たり判定
-	const auto& FlamePillarCollisions = g_collisionObjectManager->FindCollisionObjects("flamepillar");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : FlamePillarCollisions)
-	{
-		//自身のキャラコンと衝突したら
-		if (collision->IsHit(characon) == true)
-		{
-			FlamePillar* flamepillar = FindGO<FlamePillar>("flamepillar");
+	////ウィザードのフレイムピラーの当たり判定
+	//const auto& FlamePillarCollisions = g_collisionObjectManager->FindCollisionObjects("flamepillar");
+	////コリジョンの配列をfor文で回す
+	//for (auto collision : FlamePillarCollisions)
+	//{
+	//	//自身のキャラコンと衝突したら
+	//	if (collision->IsHit(characon) == true)
+	//	{
+	//		FlamePillar* flamepillar = FindGO<FlamePillar>("flamepillar");
 
-			bool damageFlag = flamepillar->GetCanDamageFlag();
-			m_damage = flamepillar->GetAtk();
-			HitFlamePillar(damageFlag);
-			//ダメージフラグが立っていなかったら
-			if (flamepillar->GetCanDamageFlag() != true)
-			{
-				//フラグを立てる(ダメージ受けた)
-				flamepillar->SetCanDamageFlag(true);
-			}
-			return;
-		}
-	}
+	//		bool damageFlag = flamepillar->GetCanDamageFlag();
+	//		m_damage = flamepillar->GetAtk();
+	//		HitFlamePillar(damageFlag);
+	//		//ダメージフラグが立っていなかったら
+	//		if (flamepillar->GetCanDamageFlag() != true)
+	//		{
+	//			//フラグを立てる(ダメージ受けた)
+	//			flamepillar->SetCanDamageFlag(true);
+	//		}
+	//		return;
+	//	}
+	//}
+
+
 }
 
 bool AIActor::IsCollisionDetection()
@@ -203,6 +206,7 @@ void AIActor::HitNormalAttack()
 
 void AIActor::HitHeroSkillAttack()
 {
+	//攻撃力を取得
 	m_damage = m_player->GetAtk();
 	//ダメージを受ける
 	Damage(m_damage);
