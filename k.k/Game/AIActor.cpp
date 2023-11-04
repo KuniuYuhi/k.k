@@ -46,7 +46,8 @@ Vector3 AIActor::CalcVelocity(Status status,Vector3 targetposition,bool dashFlag
 		moveSpeed = diff * status.defaultSpeed;
 	}
 
-	
+	moveSpeed.y = 0.0f;
+
 	//前方向を設定
 	m_forward = diff;
 	//値をセーブしておく
@@ -205,6 +206,7 @@ void AIActor::HitNormalAttack()
 
 void AIActor::HitHeroSkillAttack()
 {
+	//攻撃力を取得
 	m_damage = m_player->GetAtk();
 	//ダメージを受ける
 	Damage(m_damage);
