@@ -1,5 +1,6 @@
 #pragma once
 #include "AIActor.h"
+#include "KnockBack.h"
 
 class Lich;
 
@@ -78,6 +79,23 @@ public:
 	/// </summary>
 	void CreateHitEffect();
 
+	/// <summary>
+	/// ノックバックフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetKnockBackFlag(bool flag)
+	{
+		m_knockBackFlag = flag;
+	}
+	/// <summary>
+	/// ノックバックフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetKnockBackFlag() const
+	{
+		return m_knockBackFlag;
+	}
+
 protected:
 
 	/// <summary>
@@ -123,5 +141,9 @@ protected:
 	float					m_pos2Length = 0.0;				//壁と判
 
 	bool                    m_chasePlayerFlag = false;		//プレイヤーを追いかけるかのフラグ
+
+	bool					m_knockBackFlag = false;		//ノックバックするかのフラグ
+
+	float					m_knockBackTimer = 0.0f;
 };
 
