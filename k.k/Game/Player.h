@@ -112,6 +112,40 @@ public:
 	{
 		return m_dontActionFlag;
 	}
+	/// <summary>
+	///　ノックバック攻撃フラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetKnockBackAttackFlag() const
+	{
+		return m_nowActor->GetKnockBackAttackFalg();
+	}
+
+	/// <summary>
+	/// 攻撃の中心座標を設定
+	/// </summary>
+	/// <param name="attackPosition"></param>
+	void SetAttackPosition(Vector3 attackPosition)
+	{
+		m_attackPosition = attackPosition;
+	}
+	/// <summary>
+	/// 攻撃の中心座標を取得
+	/// </summary>
+	/// <returns></returns>
+	const Vector3& GetAttackPosition() const
+	{
+		return m_attackPosition;
+	}
+
+	/// <summary>
+	/// ノックバックパワーを取得
+	/// </summary>
+	/// <returns></returns>
+	const float& GetKnockBackPower() const
+	{
+		return m_nowActor->GetKnockBackPower();
+	}
 
 private:
 	Game*						m_game = nullptr;
@@ -122,9 +156,11 @@ private:
 
 	Actor*						m_nowActor = nullptr;							//現在のアクター
 
-	Vector3						m_position = Vector3::Zero;						//現在のキャラクターの座標
+	Vector3						m_position = g_vec3Zero;						//現在のキャラクターの座標
 
-	Vector3						m_moveSpeed = Vector3::Zero;
+	Vector3						m_moveSpeed = g_vec3Zero;
+
+	Vector3						m_attackPosition = g_vec3Zero;
 
 	bool						m_informGameFlag = false;
 
@@ -135,6 +171,8 @@ private:
 	bool						m_dontActionFlag = true;	//行動しないフラグ。trueで行動しない
 
 	bool						m_decisionOutComeFlag = false;
+
+
 
 };
 
