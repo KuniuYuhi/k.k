@@ -16,6 +16,7 @@
 #include "BraveStateWin_Main.h"
 
 #include "Player.h"
+#include "KnockBack.h"
 
 #include "SwordShield.h"
 #include "BigSword.h"
@@ -116,7 +117,6 @@ void Brave::Update()
 		//当たり判定
 		DamageCollision(m_charaCon);
 	}
-	
 
 	ManageState();
 	PlayAnimation();
@@ -393,6 +393,11 @@ void Brave::ManageState()
 	m_BraveState->ManageState();
 }
 
+void Brave::SetAttackPosition(Vector3 attackPosition)
+{
+	m_player->SetAttackPosition(attackPosition);
+}
+
 void Brave::ProcessComboAttack()
 {
 	//パターンステートを一つ進める
@@ -525,6 +530,13 @@ void Brave::ProcessSkillMainStateTransition()
 	{
 		//todo 無敵状態フラグのリセット
 		SetInvicibleFlag(false);
+
+		//ノックバック攻撃フラグが立っていたらリセット
+		if (GetKnockBackAttackFalg() == true)
+		{
+			SetKnockBackAttackFalg(false);
+		}
+
 		//攻撃アニメーションが終わったので攻撃可能
 		SetIsActionFlag(false);
 		//ステート共通の状態遷移処理に遷移
