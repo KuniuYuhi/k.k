@@ -277,6 +277,40 @@ public:
 		return m_invicibleFlag;
 	}
 
+	/// <summary>
+	/// ノックバック攻撃フラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetKnockBackAttackFalg(bool flag)
+	{
+		m_knockBackAttackFalg = flag;
+	}
+	/// <summary>
+	/// ノックバック攻撃フラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetKnockBackAttackFalg() const
+	{
+		return m_knockBackAttackFalg;
+	}
+
+	/// <summary>
+	/// ノックバックパワーを設定
+	/// </summary>
+	/// <param name="power"></param>
+	void SetKnockBackPower(float power)
+	{
+		m_knockBackPower = power;
+	}
+	/// <summary>
+	/// ノックバックパワーを取得
+	/// </summary>
+	/// <returns></returns>
+	const float& GetKnockBackPower() const
+	{
+		return m_knockBackPower;
+	}
+
 protected:
 
 	/// <summary>
@@ -348,6 +382,8 @@ protected:
 	/// </summary>
 	/// <returns>当たり判定をとるときはtrue、とらないときはfalse</returns>
 	bool IsDecisionCollision();
+
+
 	
 protected:
 
@@ -392,6 +428,9 @@ protected:
 	float							m_changeCharaInvisibleTimer = 0.0f;
 
 	int								m_hitDamage = 0;									//攻撃されたときのダメージを記憶
+
+	float							m_knockBackPower = 0.0f;							//ノックバックの強さ
+	bool							m_knockBackAttackFalg = false;						//ノックバックの効果がある攻撃か
 
 };
 
