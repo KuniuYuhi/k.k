@@ -66,5 +66,7 @@ private:
 
 	const float m_jampSpeed = 30000.0f;
 
+	const float m_knockBackPower = 300.0f;
+
 };
 

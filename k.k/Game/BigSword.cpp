@@ -73,6 +73,13 @@ void BigSword::ProcessSkillAttack()
 		g_quatIdentity,
 		SKILL_RADIUS
 	);
+
+	//ノックバックの設定
+	m_brave->SetKnockBackInfo(
+		m_skillAttackPosition,
+		m_knockBackPower,
+		true
+	);
 }
 
 void BigSword::InitModel()
