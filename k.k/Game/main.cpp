@@ -30,12 +30,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	delete soundFile;
 
 	//フェードクラスの初期化
-	Fade*m_fade = NewGO<Fade>(5, "fade");
+	//Fade*m_fade = NewGO<Fade>(5, "fade");
 
-	//CascadModel* CCModel = NewGO<CascadModel>(0, "cascadeModel");
+	CascadModel* CCModel = NewGO<CascadModel>(0, "cascadeModel");
 
 	//Title* title = NewGO<Title>(0, "game");
-	Game* game = NewGO<Game>(0, "game");
+	//Game* game = NewGO<Game>(0, "game");
 
 	// ここからゲームループ。
 	while (DispatchWindowMessage() && g_gameLoop.m_isLoop == true)
