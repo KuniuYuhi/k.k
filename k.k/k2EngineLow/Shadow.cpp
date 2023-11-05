@@ -6,8 +6,8 @@ namespace ShadowConst
 	const int RENDER_TARGET_WIDTH = 6000;	//レンダリングターゲットの幅
 	const int RENDER_TARGET_HEIGHT = 6000;	//レンダリングターゲットの高さ
 
-	const float LIGHT_CAMERA_WIDTH = 2000.0f;
-	const float LIGHT_CAMERA_HEIGHT = 2000.0f;
+	const float LIGHT_CAMERA_WIDTH = 4000.0f;
+	const float LIGHT_CAMERA_HEIGHT = 4000.0f;
 
 	const float LIGHT_CAMERA_ANGLE = 20.0f;	//ライトカメラのアングル
 }
@@ -140,24 +140,24 @@ namespace nsK2EngineLow {
 	void Shadow::InitLightCamera()
 	{
 		//影描写用のライトカメラの初期化
+		//ライトカメラの位置。
 		m_lightCamera.SetPosition(m_lightCameraPosition);
-		//ライトを照らす場所(影が落とされる場所)
+		//カメラの注視点を設定(影が落とされる場所)
 		m_lightCamera.SetTarget(0, 0, 0);
 		//X方向を上にする
 		m_lightCamera.SetUp(1, 0, 0);
 		//画角
 		m_lightCamera.SetViewAngle(Math::DegToRad(ShadowConst::LIGHT_CAMERA_ANGLE));
 
-		m_lightCamera.SetFar(10000.0f);
-
 		//影が動かないようにするためにカメラを平行投影にする
 		m_lightCamera.SetUpdateProjMatrixFunc(Camera::enUpdateProjMatrixFunc_Ortho);
 		m_lightCamera.SetWidth(ShadowConst::LIGHT_CAMERA_WIDTH);
 		m_lightCamera.SetHeight(ShadowConst::LIGHT_CAMERA_HEIGHT);
+		m_lightCamera.SetNear(1.0f);
+		m_lightCamera.SetFar(10000.0f);
 
 		//ライトビュープロジェクション行列を計算している
 		m_lightCamera.Update();
-
 	}
 
 	void Shadow::UpDateLightCamera()
