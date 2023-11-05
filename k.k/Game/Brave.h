@@ -431,13 +431,15 @@ private:
 	enum AnimationClipGroup {
 		AnimationClipGroup_OneHandedSword,	// 片手剣を装備中のアニメーションクリップグループ
 		AnimationClipGroup_TwoHandedSword,	// 両手剣を装備中のアニメーションクリップグループ
+		AnimationClipGroup_Bow,				// 弓を装備中のアニメーションクリップグループ
 		AnimationClipGroup_Num,
 	};
 	//片手剣の最初のアニメーションクリップの番号
 	const int OneHandSwordAnimationStartIndexNo = AnimationClipGroup_OneHandedSword;
 	//両手剣の最初のアニメーションクリップの番号
 	const int TwoHandSwordAnimationStartIndexNo = enAnimClip_Num * AnimationClipGroup_TwoHandedSword;
-	// const int ThreeHandSwordAnimationStartIndexNo = enAnimClip_Num * 2;
+	//弓の最初のアニメーションクリップの番号
+	const int BowAnimationStartIndexNo = enAnimClip_Num * AnimationClipGroup_Bow;
 
 	//現在の武器のアニメーションの最初の番号
 	int m_currentAnimationStartIndexNo = OneHandSwordAnimationStartIndexNo;

@@ -20,6 +20,7 @@
 
 #include "SwordShield.h"
 #include "BigSword.h"
+#include "Bow.h"
 
 
 //todo たまにダークボールの当たった時の爆発がない
@@ -75,7 +76,7 @@ bool Brave::Start()
 	m_charaCon.Init(12.0f, 33.0f, m_position);
 
 	//武器の生成
-	m_subWeapon = NewGO<BigSword>(0, "bigsword");
+	m_subWeapon = NewGO<Bow>(0, "Bow");
 	m_mainWeapon = NewGO<SwordShield>(0,"swordshield");
 
 	m_useWeapon[enWeapon_Main].weapon = m_mainWeapon;
@@ -84,7 +85,7 @@ bool Brave::Start()
 
 	m_useWeapon[enWeapon_Sub].weapon = m_subWeapon;
 	m_useWeapon[enWeapon_Sub].weaponAnimationStartIndexNo
-		= TwoHandSwordAnimationStartIndexNo;
+		= BowAnimationStartIndexNo;
 
 	//現在の武器のアニメーションクリップの最初の番号
 	m_currentAnimationStartIndexNo 
@@ -683,6 +684,30 @@ void Brave::InitModel()
 		m_animationClip[TwoHandSwordAnimationStartIndexNo + i].SetLoopFlag(twoHandedSwordAnimClipFilePaths[i].second);
 	}
 
+	const std::pair<const char*, bool> bowAnimClipFilePaths[] = {
+		{"Assets/animData/character/Player/Bow/Idle.tka",true},
+		{"Assets/animData/character/Player/Bow/Sprint.tka",true},
+		{"Assets/animData/character/Player/Bow/KnockBack.tka",false},
+		{"Assets/animData/character/Player/Bow/Hit.tka",false},
+		{ "Assets/animData/character/Player/Bow/Rool.tka", false },
+		{ "Assets/animData/character/Player/Bow/Rool.tka", false },
+		{ "Assets/animData/character/Player/Bow/Die.tka", false },
+		{"Assets/animData/character/Player/Bow/ChangeBow.tka",false},
+		{"Assets/animData/character/Player/Bow/Win_Start.tka",false},
+		{"Assets/animData/character/Player/Bow/Win_Main.tka",false},
+		{"Assets/animData/character/Player/Bow/Attack_1.tka",false},
+		{"Assets/animData/character/Player/Bow/Attack_1_main.tka",false},
+		{"Assets/animData/character/Player/Bow/Attack_1_main.tka",false},
+		{"Assets/animData/character/Player/Bow/Skill_Start.tka",false},
+		{"Assets/animData/character/Player/Bow/Skill_Main.tka",false},
+		{"None",false}
+	};
+	for (int i = 0; i < enAnimClip_Num; i++) {
+		m_animationClip[BowAnimationStartIndexNo + i].Load(bowAnimClipFilePaths[i].first);
+		m_animationClip[BowAnimationStartIndexNo + i].SetLoopFlag(bowAnimClipFilePaths[i].second);
+	}
+
+	//モデルの初期化
 	m_modelRender.Init("Assets/modelData/character/Player/NewHero/Hero_Smile.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 		m_animationClip,
