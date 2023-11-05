@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Player.h"
-#include "Hero.h"
 #include "Wizard.h"
 #include "Actor.h"
 #include "Game.h"
