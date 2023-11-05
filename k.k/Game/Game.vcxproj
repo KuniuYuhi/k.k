@@ -228,6 +228,7 @@
     <ClCompile Include="BattleStart.cpp" />
     <ClCompile Include="BigSword.cpp" />
     <ClCompile Include="BossStage1.cpp" />
+    <ClCompile Include="Bow.cpp" />
     <ClCompile Include="Brave.cpp" />
     <ClCompile Include="BraveStateAttack_1.cpp" />
     <ClCompile Include="BraveStateAttack_2.cpp" />
@@ -356,6 +357,7 @@
     <ClInclude Include="BattleStart.h" />
     <ClInclude Include="BigSword.h" />
     <ClInclude Include="BossStage1.h" />
+    <ClInclude Include="Bow.h" />
     <ClInclude Include="Brave.h" />
     <ClInclude Include="BraveStateAttack_1.h" />
     <ClInclude Include="BraveStateAttack_2.h" />
