@@ -61,8 +61,8 @@ float CalcShadowRate(
         zInLVP<0.98f&&zInLVP>0.02f)
         {
             // シャドウマップから値をサンプリング
-             float4 shadowValue = shadowMap[cascadeIndex].Sample(
-                g_sampler,shadowMapUV
+            float4 shadowValue = shadowMap[cascadeIndex].Sample(
+                g_sampler, shadowMapUV
             );
             zInLVP -= 0.001f;
             //深度値
