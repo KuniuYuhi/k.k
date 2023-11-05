@@ -4,9 +4,6 @@
     <Filter Include="system">
       <UniqueIdentifier>{22dd8095-74f9-46df-81a1-36675a040b1f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Hero">
-      <UniqueIdentifier>{06a66712-32b5-41ac-bc45-a830f38ae8d8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Wizard">
       <UniqueIdentifier>{2887295a-a2b1-4b11-b171-11ad071fe549}</UniqueIdentifier>
     </Filter>
@@ -50,15 +47,6 @@
     <ClCompile Include="Status.cpp" />
     <ClCompile Include="BossStage1.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="HeroStateIdle.cpp">
-      <Filter>Hero</Filter>
-    </ClCompile>
-    <ClCompile Include="HeroStateWalk.cpp">
-      <Filter>Hero</Filter>
-    </ClCompile>
-    <ClCompile Include="HeroStateDash.cpp">
-      <Filter>Hero</Filter>
-    </ClCompile>
     <ClCompile Include="WizardStateIdle.cpp">
       <Filter>Wizard</Filter>
     </ClCompile>
@@ -68,18 +56,6 @@
     <ClCompile Include="WizardStateRun.cpp">
       <Filter>Wizard</Filter>
     </ClCompile>
-    <ClCompile Include="HeroStateAttack_1.cpp">
-      <Filter>Hero</Filter>
-    </ClCompile>
-    <ClCompile Include="HeroStateAttack_2.cpp">
-      <Filter>Hero</Filter>
-    </ClCompile>
-    <ClCompile Include="HeroStateAttack_3.cpp">
-      <Filter>Hero</Filter>
-    </ClCompile>
-    <ClCompile Include="HeroStateAttack_4.cpp">
-      <Filter>Hero</Filter>
-    </ClCompile>
     <ClCompile Include="WizardStateAttack_1.cpp">
       <Filter>Wizard</Filter>
     </ClCompile>
@@ -88,9 +64,6 @@
     </ClCompile>
     <ClCompile Include="WizardStateAttack_2_main.cpp">
       <Filter>Wizard</Filter>
-    </ClCompile>
-    <ClCompile Include="HeroStateAttack_Skill_Main.cpp">
-      <Filter>Hero</Filter>
     </ClCompile>
     <ClCompile Include="WizardStateAttack_3_Main.cpp">
       <Filter>Wizard</Filter>
@@ -125,9 +98,6 @@
     <ClCompile Include="FireBall.cpp">
       <Filter>Wizard</Filter>
     </ClCompile>
-    <ClCompile Include="Hero.cpp">
-      <Filter>Hero</Filter>
-    </ClCompile>
     <ClCompile Include="Wizard.cpp">
       <Filter>Wizard</Filter>
     </ClCompile>
@@ -136,9 +106,6 @@
     </ClCompile>
     <ClCompile Include="LichStateDie.cpp">
       <Filter>Lich</Filter>
-    </ClCompile>
-    <ClCompile Include="HeroStateDie.cpp">
-      <Filter>Hero</Filter>
     </ClCompile>
     <ClCompile Include="LichStateDamage.cpp">
       <Filter>Lich</Filter>
@@ -154,9 +121,6 @@
     </ClCompile>
     <ClCompile Include="Slime.cpp">
       <Filter>MobMonster\Slime</Filter>
-    </ClCompile>
-    <ClCompile Include="HeroStateDamage.cpp">
-      <Filter>Hero</Filter>
     </ClCompile>
     <ClCompile Include="LichStateDarkMeteorite_End.cpp">
       <Filter>Lich</Filter>
@@ -286,12 +250,6 @@
     </ClCompile>
     <ClCompile Include="GameUI.cpp" />
     <ClCompile Include="DamageFont.cpp" />
-    <ClCompile Include="HeroStatePowerUp.cpp">
-      <Filter>Hero</Filter>
-    </ClCompile>
-    <ClCompile Include="HeroStateVictory.cpp">
-      <Filter>Hero</Filter>
-    </ClCompile>
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="EntryBoss.cpp" />
     <ClCompile Include="WizardStateVictory_main.cpp">
@@ -409,19 +367,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Status.h" />
     <ClInclude Include="BossStage1.h" />
-    <ClInclude Include="IHeroState.h">
-      <Filter>Hero</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h" />
-    <ClInclude Include="HeroStateIdle.h">
-      <Filter>Hero</Filter>
-    </ClInclude>
-    <ClInclude Include="HeroStateWalk.h">
-      <Filter>Hero</Filter>
-    </ClInclude>
-    <ClInclude Include="HeroStateDash.h">
-      <Filter>Hero</Filter>
-    </ClInclude>
     <ClInclude Include="IWizardState.h">
       <Filter>Wizard</Filter>
     </ClInclude>
@@ -434,18 +380,6 @@
     <ClInclude Include="WizardStateRun.h">
       <Filter>Wizard</Filter>
     </ClInclude>
-    <ClInclude Include="HeroStateAttack_1.h">
-      <Filter>Hero</Filter>
-    </ClInclude>
-    <ClInclude Include="HeroStateAttack_2.h">
-      <Filter>Hero</Filter>
-    </ClInclude>
-    <ClInclude Include="HeroStateAttack_3.h">
-      <Filter>Hero</Filter>
-    </ClInclude>
-    <ClInclude Include="HeroStateAttack_4.h">
-      <Filter>Hero</Filter>
-    </ClInclude>
     <ClInclude Include="WizardStateAttack_1.h">
       <Filter>Wizard</Filter>
     </ClInclude>
@@ -454,9 +388,6 @@
     </ClInclude>
     <ClInclude Include="WizardStateAttack_2_main.h">
       <Filter>Wizard</Filter>
-    </ClInclude>
-    <ClInclude Include="HeroStateAttack_Skill_Main.h">
-      <Filter>Hero</Filter>
     </ClInclude>
     <ClInclude Include="WizardStateAttack_3_Main.h">
       <Filter>Wizard</Filter>
@@ -494,9 +425,6 @@
     <ClInclude Include="FireBall.h">
       <Filter>Wizard</Filter>
     </ClInclude>
-    <ClInclude Include="Hero.h">
-      <Filter>Hero</Filter>
-    </ClInclude>
     <ClInclude Include="Wizard.h">
       <Filter>Wizard</Filter>
     </ClInclude>
@@ -505,9 +433,6 @@
     </ClInclude>
     <ClInclude Include="LichStateDie.h">
       <Filter>Lich</Filter>
-    </ClInclude>
-    <ClInclude Include="HeroStateDie.h">
-      <Filter>Hero</Filter>
     </ClInclude>
     <ClInclude Include="LichStateDamage.h">
       <Filter>Lich</Filter>
@@ -523,9 +448,6 @@
     </ClInclude>
     <ClInclude Include="Slime.h">
       <Filter>MobMonster\Slime</Filter>
-    </ClInclude>
-    <ClInclude Include="HeroStateDamage.h">
-      <Filter>Hero</Filter>
     </ClInclude>
     <ClInclude Include="LichStateDarkMeteorite_End.h">
       <Filter>Lich</Filter>
@@ -667,12 +589,6 @@
     </ClInclude>
     <ClInclude Include="GameUI.h" />
     <ClInclude Include="DamageFont.h" />
-    <ClInclude Include="HeroStatePowerUp.h">
-      <Filter>Hero</Filter>
-    </ClInclude>
-    <ClInclude Include="HeroStateVictory.h">
-      <Filter>Hero</Filter>
-    </ClInclude>
     <ClInclude Include="Fade.h" />
     <ClInclude Include="EntryBoss.h" />
     <ClInclude Include="WizardStateVictory_main.h">
