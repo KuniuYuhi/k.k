@@ -40,7 +40,7 @@ private:
 	/// <summary>
 	/// “–‚½‚è”»’è‚Ì¶¬
 	/// </summary>
-	void InitCollision() override;
+	void InitCollision();
 	/// <summary>
 	/// •Ší‚ğ‘•”õ‚µ‚Ä‚¢‚é‚ÌˆÚ“®ˆ—
 	/// </summary>
