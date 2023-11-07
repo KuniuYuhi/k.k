@@ -13,7 +13,7 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
-
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	/// <summary>
 	/// 武器の移動処理
@@ -65,8 +65,11 @@ private:
 	/// <summary>
 	/// 遠距離攻撃処理
 	/// </summary>
-	void ProcessLongRangeAttack() override;
-
+	void ProcessLongRangeAttack();
+	/// <summary>
+	/// スキルを撃った時の処理
+	/// </summary>
+	void SkillShot();
 
 	/// <summary>
 	/// 矢の保持フラグを設定
