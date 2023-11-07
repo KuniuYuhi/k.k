@@ -359,6 +359,7 @@
     <ClCompile Include="Bow.cpp">
       <Filter>Weapons</Filter>
     </ClCompile>
+    <ClCompile Include="Arrow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -705,5 +706,6 @@
     <ClInclude Include="Bow.h">
       <Filter>Weapons</Filter>
     </ClInclude>
+    <ClInclude Include="Arrow.h" />
   </ItemGroup>
 </Project>

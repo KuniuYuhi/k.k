@@ -225,6 +225,7 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="AIActor.cpp" />
+    <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="BattleStart.cpp" />
     <ClCompile Include="BigSword.cpp" />
     <ClCompile Include="BossStage1.cpp" />
@@ -354,6 +355,7 @@
   <ItemGroup>
     <ClInclude Include="Actor.h" />
     <ClInclude Include="AIActor.h" />
+    <ClInclude Include="Arrow.h" />
     <ClInclude Include="BattleStart.h" />
     <ClInclude Include="BigSword.h" />
     <ClInclude Include="BossStage1.h" />
