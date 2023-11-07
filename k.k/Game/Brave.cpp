@@ -173,7 +173,6 @@ void Brave::ProcessAttack()
 		SetIsActionFlag(true);
 		SetNextAnimationState(enAnimationState_Skill_start);
 	}
-
 }
 
 void Brave::ProcessDefend()
@@ -712,7 +711,7 @@ void Brave::InitModel()
 		{"Assets/animData/character/Player/Bow/Attack_1.tka",false},
 		{"Assets/animData/character/Player/Bow/Attack_2.tka",false},
 		{"Assets/animData/character/Player/Bow/Attack_3.tka",false},
-		{"Assets/animData/character/Player/Bow/Skill_Start.tka",false},
+		{"Assets/animData/character/Player/Bow/Skill_Start.tka",true},
 		{"Assets/animData/character/Player/Bow/Skill_Main.tka",false},
 		{"None",false}
 	};
@@ -806,26 +805,17 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	//スキルのジャンプ処理
 	if (wcscmp(eventName, L"Jamp") == 0)
 	{
+		//キーフレームがJampの間処理し続ける
 		ProcessSwordShieldSkill(true);
 	}
 	//スキルのジャンプ処理
 	if (wcscmp(eventName, L"Down") == 0)
 	{
+		//キーフレームがJampの間処理し続ける
 		ProcessSwordShieldSkill(false);
 	}
 
-	//遠距離攻撃処理
-	if (wcscmp(eventName, L"LongRangeAttack") == 0)
-	{
-		m_useWeapon[enWeapon_Main].weapon->ProcessLongRangeAttack();
-	}
-	
-
-	////////////////////////////////////////////////////////////
-	// 剣盾の処理
-	////////////////////////////////////////////////////////////
-
-
+	//武器固有の処理はそれぞれの武器クラスのアニメーションイベント関数にある
 
 }
 
