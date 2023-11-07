@@ -99,7 +99,15 @@ protected:
 		return false;
 	}
 
-public:
+	/// <summary>
+	/// 前方向が設定できる条件か
+	/// </summary>
+	/// <returns>trueで可能、falseで不可能</returns>
+	virtual const bool& IsSetForwardCondition() const
+	{
+		return true;
+	}
+
 	///////////////////////////////////////////////////////////////
 	//その他の関数
 	///////////////////////////////////////////////////////////////
@@ -110,7 +118,13 @@ public:
 	/// <param name="status">ステータス</param>
 	/// <returns>moveSpeed</returns>
 	Vector3 calcVelocity(Status status);
+	/// <summary>
+	/// 前方向の計算
+	/// </summary>
+	/// <param name="moveSpeed"></param>
+	void CalcForward(Vector3 moveSpeed);
 
+public:
 	/// <summary>
 	/// 無敵時間の計算
 	/// </summary>
