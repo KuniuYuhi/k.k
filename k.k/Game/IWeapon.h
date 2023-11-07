@@ -54,15 +54,6 @@ public:
 	virtual void MoveStowed() = 0;
 
 	/// <summary>
-	/// “–‚½‚è”»’è‚Ì¶¬
-	/// </summary>
-	virtual void InitCollision()
-	{
-	}
-
-	//•ŠíŒÅ—L‚Ìˆ—
-
-	/// <summary>
 	/// •Ší‚Ì“–‚½‚è”»’è
 	/// </summary>
 	/// <returns></returns>
@@ -74,13 +65,6 @@ public:
 	/// ƒXƒLƒ‹UŒ‚ˆ—
 	/// </summary>
 	virtual void ProcessSkillAttack()
-	{
-	}
-
-	/// <summary>
-	/// ‰“‹——£UŒ‚ˆ—
-	/// </summary>
-	virtual void ProcessLongRangeAttack()
 	{
 	}
 
