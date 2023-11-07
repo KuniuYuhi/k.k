@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Bow.h"
 #include "Brave.h"
+#include "Arrow.h"
 
 namespace {
 	//武器が収納状態の時の座標
@@ -19,13 +20,22 @@ Bow::Bow()
 
 Bow::~Bow()
 {
-	DeleteGO(m_arrowCollision);
+	if (m_arrow != nullptr)
+	{
+		DeleteGO(m_arrow);
+	}
 }
 
 bool Bow::Start()
 {
 	//勇者のインスタンスを探す
 	m_brave = FindGO<Brave>("brave");
+
+	//矢のオブジェクトを生成
+	m_arrow = NewGO<Arrow>(0, "arrow");
+	m_arrow->SetBow(this);
+	//矢を持っているので、保持フラグをセット
+	SetStockArrowFlag(true);
 
 	InitModel();
 	InitCollision();
@@ -47,12 +57,17 @@ void Bow::Update()
 		return;
 	}
 
+	if (GetStockArrowFlag() != true)
+	{
+		m_arrow = NewGO<Arrow>(0, "arrow");
+		m_arrow->SetBow(this);
+		//矢を持っているので、保持フラグをセット
+		SetStockArrowFlag(true);
+	}
+
 	MoveWeapon();
 
 	m_modelBow.Update();
-	m_modelArrow.Update();
-	m_arrowCollision->Update();
-
 }
 
 void Bow::Render(RenderContext& rc)
@@ -63,7 +78,6 @@ void Bow::Render(RenderContext& rc)
 	}
 
 	m_modelBow.Draw(rc);
-	m_modelArrow.Draw(rc);
 }
 
 void Bow::MoveWeapon()
@@ -94,7 +108,7 @@ void Bow::ProcessSkillAttack()
 
 void Bow::InitModel()
 {
-	//剣モデルの初期化
+	//弓モデルの初期化
 	m_modelBow.Init("Assets/modelData/character/Player/NewHero/Bow.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 		0,
@@ -102,54 +116,62 @@ void Bow::InitModel()
 		enModelUpAxisZ
 	);
 
-	//盾モデルの初期化
-	m_modelArrow.Init("Assets/modelData/character/Player/NewHero/Arrow.tkm",
-		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
-		0,
-		0,
-		enModelUpAxisZ
-	);
-	//剣と盾の座標に対応するボーンIDを取得
+	//弓と矢の座標に対応するボーンIDを取得
 	//装備状態の時のボーンID
 	m_armedBowBoonId = m_brave->GetModelRender().FindBoneID(L"weaponShield_l");
 	m_armedArrowBoonId = m_brave->GetModelRender().FindBoneID(L"weaponShield_r");
 
 }
 
-void Bow::InitCollision()
-{
-	//矢の当たり判定の生成
-	m_arrowCollision = NewGO<CollisionObject>(0, "Attack");
-	m_arrowCollision->CreateBox(
-		STOWEDS_POSITION,
-		g_quatIdentity,
-		ARROW_COLLISION_SIZE
-	);
-	m_arrowCollision->SetIsEnableAutoDelete(false);
-	m_arrowCollision->SetIsEnable(false);
-
-}
-
 void Bow::MoveArmed()
 {
+	//弓のワールド座標を設定
 	m_bowMatrix = 
 		m_brave->GetModelRender().GetBone(m_armedBowBoonId)->GetWorldMatrix();
 	m_modelBow.SetWorldMatrix(m_bowMatrix);
-	m_arrowMatrix =
+	//矢のワールド座標を設定
+	m_arrowMatrix = 
 		m_brave->GetModelRender().GetBone(m_armedArrowBoonId)->GetWorldMatrix();
-	m_modelArrow.SetWorldMatrix(m_arrowMatrix);
+	m_modelBow.SetWorldMatrix(m_bowMatrix);
+
+	if (m_arrow != nullptr)
+	{
+		//矢のステートを設定
+		m_arrow->SetWeaponState(enWeaponState_Armed);
+	}
+	
 }
 
 void Bow::MoveStowed()
 {
+	//弓の座標を設定
 	m_bowPos = STOWEDS_POSITION;
-	m_arrowPos = STOWEDS_POSITION;
-
 	m_modelBow.SetPosition(m_bowPos);
-	m_modelArrow.SetPosition(m_arrowPos);
-	//当たり判定の座標設定
-	m_arrowCollision->SetPosition(m_arrowPos);
-	//当たり判定の無効化
-	m_arrowCollision->SetIsEnable(false);
+
+	if (m_arrow != nullptr)
+	{
+		//矢のステートを設定
+		m_arrow->SetWeaponState(enWeaponState_Stowed);
+	}
+	
+
 	SetStowedFlag(true);
+}
+
+void Bow::ProcessLongRangeAttack()
+{
+	if (m_arrow != nullptr)
+	{
+		//矢を発射
+		m_arrow->SetShotFlag(true);
+		//勇者の前方向を取得
+		m_arrow->SetForward(m_brave->GetForward());
+		//
+		m_arrow->ApplyMatrixToLocalPosition();
+		//射撃開始座標を設定
+		m_arrow->SetShotStartPosition(m_arrow->GetPosition());
+		//矢を放ったので、今の矢を
+		SetStockArrowFlag(false);
+		m_arrow = nullptr;
+	}
 }

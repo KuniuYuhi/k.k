@@ -2,6 +2,8 @@
 
 #include "IWeapon.h"
 
+class Arrow;
+
 class Bow :public IWeapon
 {
 public:
@@ -29,16 +31,29 @@ public:
 	/// </summary>
 	void ProcessSkillAttack();
 
+	/// <summary>
+	/// 矢のワールド座標を取得
+	/// </summary>
+	/// <returns></returns>
+	const Matrix GetArrowMatrix() const
+	{
+		return m_arrowMatrix;
+	}
+
+	/// <summary>
+	/// 弓のウェポンステートを取得
+	/// </summary>
+	/// <returns></returns>
+	const EnWeaponState& GetBowEnWeaponState() const
+	{
+		return m_enWeaponState;
+	}
 
 private:
 	/// <summary>
 	/// モデルの初期化
 	/// </summary>
 	void InitModel() override;
-	/// <summary>
-	/// 当たり判定の生成
-	/// </summary>
-	void InitCollision() override;
 	/// <summary>
 	/// 武器を装備している時の移動処理
 	/// </summary>
@@ -47,15 +62,35 @@ private:
 	/// 武器を収納している時の移動処理
 	/// </summary>
 	void MoveStowed() override;
+	/// <summary>
+	/// 遠距離攻撃処理
+	/// </summary>
+	void ProcessLongRangeAttack() override;
+
+
+	/// <summary>
+	/// 矢の保持フラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetStockArrowFlag(bool flag)
+	{
+		m_stockArrowFlag = flag;
+	}
+	/// <summary>
+	/// 矢の保持フラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetStockArrowFlag() const
+	{
+		return m_stockArrowFlag;
+	}
 
 private:
-	ModelRender m_modelBow;		//弓モデル
-	ModelRender m_modelArrow;		//矢モデル
+	Arrow* m_arrow = nullptr;
 
-	CollisionObject* m_arrowCollision = nullptr;	//矢の当たり判定
+	ModelRender m_modelBow;		//弓モデル
 
 	Vector3 m_bowPos = g_vec3Zero;
-	Vector3 m_arrowPos = g_vec3Zero;
 
 	Matrix m_bowMatrix = g_matIdentity;
 	Matrix m_arrowMatrix = g_matIdentity;
@@ -67,7 +102,7 @@ private:
 	int m_stowedBowBoonId = -1;
 	int m_stowedArrowBoonId = -1;
 
-
+	bool m_stockArrowFlag = false;
 
 };
 
