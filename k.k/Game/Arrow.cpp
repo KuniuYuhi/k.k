@@ -5,12 +5,20 @@
 namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
-
-	const Vector3 ARROW_COLLISION_SIZE = { 22.0f,40.0f,16.0f };
+	//通常攻撃の当たり判定のサイズ
+	const Vector3 ARROW_NORMAL_COLLISION_SIZE = { 100.0f,10.0f,10.0f };
+	//スキル攻撃の当たり判定のサイズ
+	const Vector3 ARROW_Skill_COLLISION_SIZE = { 150.0f,14.0f,20.0f };
 
 	const float SKILL_RADIUS = 60.0f;
 
 	const float ADD_FORWARD = 30.0f;
+
+	const float SKILL_DELETE_RANGE = 600.0f;
+	const float SKILL_ARROW_SPEED = 550.0f;
+
+	const float DEFAULT_DELETE_RANGE = 300.0f;
+	const float DEFAULT_ARROW_SPEED = 450.0f;
 }
 
 Arrow::Arrow()
@@ -19,13 +27,13 @@ Arrow::Arrow()
 
 Arrow::~Arrow()
 {
+	DeleteGO(m_arrowCollision);
 }
 
 bool Arrow::Start()
 {
 	InitModel();
-	//InitCollision();
-
+	
 	//装備
 	SetWeaponState(m_bow->GetBowEnWeaponState());
 
@@ -82,16 +90,36 @@ void Arrow::MoveStowed()
 
 void Arrow::ProcessLongRangeAttack()
 {
-	//射撃開始座標から現在の座標に向かうベクトルを計算
-	Vector3 diff = m_arrowPos - m_shotStartPosition;
-
-	if (diff.Length() > 200.0f)
+	switch (m_enShotPatternState)
 	{
-		DeleteGO(this);
+	case Arrow::enShotPatternState_Normal:
+		NormalShot();
+		break;
+	case Arrow::enShotPatternState_Skill:
+		SkillShot();
+		break;
+	default:
+		break;
 	}
-	//矢の座標を設定
-	m_arrowPos += (m_forward * 300.0f) * g_gameTime->GetFrameDeltaTime();
-	m_modelArrow.SetPosition(m_arrowPos);
+
+	m_arrowCollision->SetPosition(m_arrowPos);
+	m_arrowCollision->Update();
+}
+
+void Arrow::SetShotArrowSetting(
+	bool shotFlag, 
+	Vector3 forward, 
+	Vector3 shotStartPosition, 
+	EnShotPatternState shotPatternState
+)
+{
+	SetShotFlag(shotFlag);
+	SetForward(forward);
+	ApplyMatrixToLocalPosition();
+	SetShotStartPosition(m_arrowPos);
+	SetShotPatternState(shotPatternState);
+	//当たり判定の初期化
+	SelectInitCollision(shotPatternState);
 }
 
 void Arrow::InitModel()
@@ -105,17 +133,81 @@ void Arrow::InitModel()
 	);
 }
 
+void Arrow::SelectInitCollision(EnShotPatternState shotPatternState)
+{
+	switch (shotPatternState)
+	{
+	case Arrow::enShotPatternState_Normal:
+		InitCollision();
+		break;
+	case Arrow::enShotPatternState_Skill:
+		InitSkillCollision();
+		break;
+	default:
+		break;
+	}
+}
+
 void Arrow::InitCollision()
 {
-	//矢の当たり判定の生成
+	//矢の通常攻撃用の当たり判定の生成
 	m_arrowCollision = NewGO<CollisionObject>(0, "Attack");
+	m_arrowCollision->CreateBox(
+		m_arrowPos,
+		g_quatIdentity,
+		ARROW_NORMAL_COLLISION_SIZE
+	);
+	m_arrowCollision->SetIsEnableAutoDelete(false);
+	//m_arrowCollision->SetIsEnable(false);
+
+	m_arrowCollision->SetWorldMatrix(m_arrowMatrix);
+	m_arrowCollision->Update();
+}
+
+void Arrow::InitSkillCollision()
+{
+	//矢のスキル攻撃用の当たり判定の生成
+	m_arrowCollision = NewGO<CollisionObject>(0, "skillAttack");
 	m_arrowCollision->CreateBox(
 		STOWEDS_POSITION,
 		g_quatIdentity,
-		ARROW_COLLISION_SIZE
+		ARROW_Skill_COLLISION_SIZE
 	);
 	m_arrowCollision->SetIsEnableAutoDelete(false);
-	m_arrowCollision->SetIsEnable(false);
+	//m_arrowCollision->SetIsEnable(false);
+
+	m_arrowCollision->SetWorldMatrix(m_arrowMatrix);
+	m_arrowCollision->Update();
+}
+
+void Arrow::NormalShot()
+{
+	//射撃開始座標から現在の座標に向かうベクトルを計算
+	Vector3 diff = m_arrowPos - m_shotStartPosition;
+	//矢が自然消滅する距離なら
+	if (diff.Length() > DEFAULT_DELETE_RANGE)
+	{
+		//消滅
+		DeleteGO(this);
+	}
+	//矢の座標を設定
+	m_arrowPos += (m_forward * DEFAULT_ARROW_SPEED) * g_gameTime->GetFrameDeltaTime();
+	m_modelArrow.SetPosition(m_arrowPos);
+}
+
+void Arrow::SkillShot()
+{
+	//射撃開始座標から現在の座標に向かうベクトルを計算
+	Vector3 diff = m_arrowPos - m_shotStartPosition;
+	//矢が自然消滅する距離なら
+	if (diff.Length() > SKILL_DELETE_RANGE)
+	{
+		//消滅
+		DeleteGO(this);
+	}
+	//矢の座標を設定
+	m_arrowPos += (m_forward * SKILL_ARROW_SPEED) * g_gameTime->GetFrameDeltaTime();
+	m_modelArrow.SetPosition(m_arrowPos);
 }
 
 void Arrow::Render(RenderContext& rc)
