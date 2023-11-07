@@ -29,6 +29,8 @@
 //todo ジャストガードでカウンター(パリィ)
 //もしくはガード中に敵の攻撃に合わせてボタンを押して反撃。敵は怯む
 
+//todo 攻撃中に前方向を変えられてしまう!!!!!!!!!!!!!!!!!!!!!!!
+
 namespace {
 	const float ADD_SCALE = 1.2f;
 
@@ -132,6 +134,16 @@ void Brave::Move()
 {
 	m_moveSpeed = calcVelocity(GetStatus());
 	m_moveSpeed.y = 0.0f;
+	//特定のアニメーションが再生中なら移動なし
+	if (isAnimationEntable() != true)
+	{
+		m_moveSpeed = g_vec3Zero;
+	}
+	else
+	{
+		//前方向の計算
+		CalcForward(m_moveSpeed);
+	}
 
 	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 }
@@ -495,6 +507,8 @@ void Brave::ProcessNormalAttackStateTransition()
 			if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
 			{
 				m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
+				m_forward = m_SaveMoveSpeed;
+				m_forward.Normalize();
 			}
 			//次のコンボの処理
 			ProcessComboAttack();
@@ -584,8 +598,8 @@ void Brave::ProcessDefendStateTransition()
 
 bool Brave::RotationOnly()
 {
-	//回転可能なアニメーションなら
-	if (isRotationEntable() == true &&
+	//回転のみ可能なアニメーションなら
+	if (isRotationEntable() == false &&
 		m_useWeapon[enWeapon_Main].weapon->GetEnDefendTipe()==IWeapon::enDefendTipe_Defence)
 	{
 		return true;
@@ -696,8 +710,8 @@ void Brave::InitModel()
 		{"Assets/animData/character/Player/Bow/Win_Start.tka",false},
 		{"Assets/animData/character/Player/Bow/Win_Main.tka",false},
 		{"Assets/animData/character/Player/Bow/Attack_1.tka",false},
-		{"Assets/animData/character/Player/Bow/Attack_1_main.tka",false},
-		{"Assets/animData/character/Player/Bow/Attack_1_main.tka",false},
+		{"Assets/animData/character/Player/Bow/Attack_2.tka",false},
+		{"Assets/animData/character/Player/Bow/Attack_3.tka",false},
 		{"Assets/animData/character/Player/Bow/Skill_Start.tka",false},
 		{"Assets/animData/character/Player/Bow/Skill_Main.tka",false},
 		{"None",false}
@@ -800,11 +814,18 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		ProcessSwordShieldSkill(false);
 	}
 
+	//遠距離攻撃処理
+	if (wcscmp(eventName, L"LongRangeAttack") == 0)
+	{
+		m_useWeapon[enWeapon_Main].weapon->ProcessLongRangeAttack();
+	}
 	
 
 	////////////////////////////////////////////////////////////
 	// 剣盾の処理
 	////////////////////////////////////////////////////////////
+
+
 
 }
 
@@ -822,5 +843,19 @@ bool Brave::isCollisionEntable() const
 		return m_enAnimationState == enAnimationState_Hit ||
 			m_enAnimationState == enAnimationState_Defend ||
 			m_enAnimationState == enAnimationState_DefendHit;
+	}
+}
+
+bool Brave::isRotationEntable() const
+{
+	//もし武器の防御タイプが盾などで防ぐタイプなら
+	if (m_useWeapon[enWeapon_Main].weapon->GetEnDefendTipe() == IWeapon::enDefendTipe_Defence)
+	{
+		return m_enAnimationState != enAnimationState_Defend;
+	}
+	//それ以外(回避)なら
+	else
+	{
+		return m_enAnimationState == enAnimationState_Defend;
 	}
 }

@@ -86,10 +86,7 @@ public:
 	/// 回転可能なアニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
-	bool isRotationEntable() const override
-	{
-		return m_enAnimationState == enAnimationState_Defend;
-	}
+	bool isRotationEntable() const override;
 
 	/// <summary>
 	/// 勝利時の処理
@@ -423,6 +420,23 @@ private:
 	/// </summary>
 	/// <returns>ヒットならtrue、ヒットしていないならfalse</returns>
 	bool IsDefendHit();
+
+	/// <summary>
+	/// 前方向が設定できる条件か
+	/// </summary>
+	/// <returns>trueで可能、falseで不可能</returns>
+	const bool& IsSetForwardCondition() const
+	{
+		if (isAnimationEntable() == true)
+		{
+			return true;
+		}
+
+
+		//回転のみ可能なアニメーションではないなら
+		return 
+			GetMoveForwardFlag() != true;
+	}
 
 private:
 	/// <summary>
