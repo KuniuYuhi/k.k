@@ -202,6 +202,8 @@ void AIActor::HitNormalAttack()
 	//ダメージを受ける
 	Damage(m_damage);
 	CreateDamageFont(m_damage);
+	//攻撃が自身にヒットしたので、プレイヤーのattackHitFlagをtrueにする
+	m_player->SetAttackHitFlag(true);
 }
 
 void AIActor::HitHeroSkillAttack()
@@ -211,6 +213,8 @@ void AIActor::HitHeroSkillAttack()
 	//ダメージを受ける
 	Damage(m_damage);
 	CreateDamageFont(m_damage);
+	//攻撃が自身にヒットしたので、プレイヤーのattackHitFlagをtrueにする
+	m_player->SetAttackHitFlag(true);
 }
 
 void AIActor::HitFireBall()
