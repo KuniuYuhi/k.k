@@ -1,10 +1,10 @@
 #pragma once
 
-#include "IWeapon.h"
+#include "WeaponBase.h"
 
 class Bow;
 
-class Arrow:public IWeapon
+class Arrow:public WeaponBase
 {
 public:
 	Arrow();
