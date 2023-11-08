@@ -13,10 +13,13 @@ namespace {
 	const float SKILL_RADIUS = 60.0f;
 
 	const float ADD_FORWARD = 30.0f;
+
+	const int POWER = 30;
 }
 
 SwordShield::SwordShield()
 {
+	SetPower(POWER);
 }
 
 SwordShield::~SwordShield()
