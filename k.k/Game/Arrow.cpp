@@ -17,7 +17,7 @@ namespace {
 	const float SKILL_DELETE_RANGE = 600.0f;
 	const float SKILL_ARROW_SPEED = 550.0f;
 
-	const float DEFAULT_DELETE_RANGE = 300.0f;
+	const float DEFAULT_DELETE_RANGE = 800.0f;
 	const float DEFAULT_ARROW_SPEED = 450.0f;
 }
 
@@ -35,6 +35,7 @@ bool Arrow::Start()
 	InitModel();
 	
 	//装備
+	//弓と同じ状態を設定
 	SetWeaponState(m_bow->GetBowEnWeaponState());
 
 	return true;
@@ -52,6 +53,7 @@ void Arrow::Update()
 		ProcessLongRangeAttack();
 	}
 
+	
 	
 
 	ArrowUpdate();
@@ -86,6 +88,14 @@ void Arrow::MoveStowed()
 	//矢の座標を設定
 	m_arrowPos = STOWEDS_POSITION;
 	m_modelArrow.SetPosition(m_arrowPos);
+}
+
+bool Arrow::IsHitCollision()
+{
+
+
+
+	return false;
 }
 
 void Arrow::ProcessLongRangeAttack()
@@ -138,40 +148,31 @@ void Arrow::SelectInitCollision(EnShotPatternState shotPatternState)
 	switch (shotPatternState)
 	{
 	case Arrow::enShotPatternState_Normal:
-		InitCollision();
+		InitCollision(
+			"Attack",m_arrowPos,g_quatIdentity, ARROW_NORMAL_COLLISION_SIZE);
 		break;
 	case Arrow::enShotPatternState_Skill:
-		InitSkillCollision();
+		InitCollision(
+			"skillAttack", m_arrowPos, g_quatIdentity, ARROW_Skill_COLLISION_SIZE);
 		break;
 	default:
 		break;
 	}
 }
 
-void Arrow::InitCollision()
+void Arrow::InitCollision(
+	const char* collisionName,
+	Vector3 createPos,
+	Quaternion rotation,
+	Vector3 collisionSize
+)
 {
 	//矢の通常攻撃用の当たり判定の生成
-	m_arrowCollision = NewGO<CollisionObject>(0, "Attack");
+	m_arrowCollision = NewGO<CollisionObject>(0, collisionName);
 	m_arrowCollision->CreateBox(
-		m_arrowPos,
-		g_quatIdentity,
-		ARROW_NORMAL_COLLISION_SIZE
-	);
-	m_arrowCollision->SetIsEnableAutoDelete(false);
-	//m_arrowCollision->SetIsEnable(false);
-
-	m_arrowCollision->SetWorldMatrix(m_arrowMatrix);
-	m_arrowCollision->Update();
-}
-
-void Arrow::InitSkillCollision()
-{
-	//矢のスキル攻撃用の当たり判定の生成
-	m_arrowCollision = NewGO<CollisionObject>(0, "skillAttack");
-	m_arrowCollision->CreateBox(
-		STOWEDS_POSITION,
-		g_quatIdentity,
-		ARROW_Skill_COLLISION_SIZE
+		createPos,
+		rotation,
+		collisionSize
 	);
 	m_arrowCollision->SetIsEnableAutoDelete(false);
 	//m_arrowCollision->SetIsEnable(false);
@@ -182,6 +183,15 @@ void Arrow::InitSkillCollision()
 
 void Arrow::NormalShot()
 {
+	//攻撃がヒットしたら
+	if (m_bow->GetAttackHitFlag() == true)
+	{
+		//ヒットしたので、攻撃がヒットしたかのフラグをリセット
+		m_bow->SetAttackHitFlag(false);
+		DeleteGO(this);
+	}
+
+
 	//射撃開始座標から現在の座標に向かうベクトルを計算
 	Vector3 diff = m_arrowPos - m_shotStartPosition;
 	//矢が自然消滅する距離なら
@@ -197,6 +207,10 @@ void Arrow::NormalShot()
 
 void Arrow::SkillShot()
 {
+	//敵にダメージを与えられるタイミングを設定
+
+
+
 	//射撃開始座標から現在の座標に向かうベクトルを計算
 	Vector3 diff = m_arrowPos - m_shotStartPosition;
 	//矢が自然消滅する距離なら

@@ -35,6 +35,12 @@ public:
 	void MoveStowed() override;
 
 	/// <summary>
+	/// 武器の当たり判定
+	/// </summary>
+	/// <returns></returns>
+	bool IsHitCollision() override;
+
+	/// <summary>
 	/// 弓のインスタンスを設定
 	/// </summary>
 	/// <param name="bow"></param>
@@ -134,15 +140,20 @@ private:
 	/// </summary>
 	/// <param name="shotPatternState">初期化したい当たり判定のステート</param>
 	void SelectInitCollision(EnShotPatternState shotPatternState);
+	
 	/// <summary>
 	/// 通常攻撃の当たり判定の初期化
 	/// </summary>
-	void InitCollision();
-
-	/// <summary>
-	/// スキル攻撃の当たり判定の初期化
-	/// </summary>
-	void InitSkillCollision();
+	/// <param name="collisionName">当たり判定の名前</param>
+	/// <param name="createPos">生成したい座標</param>
+	/// <param name="rotation">回転</param>
+	/// <param name="collisionSize">当たり判定のサイズ(ボックス)</param>
+	void InitCollision(
+		const char* collisionName,
+		Vector3 createPos,
+		Quaternion rotation,
+		Vector3 collisionSize
+		);
 
 	/// <summary>
 	/// 遠距離攻撃処理
@@ -157,7 +168,6 @@ private:
 	/// </summary>
 	void SkillShot();
 	
-
 	Bow* m_bow = nullptr;
 
 	ModelRender m_modelArrow;		//矢モデル
