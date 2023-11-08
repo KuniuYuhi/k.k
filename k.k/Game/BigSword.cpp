@@ -31,8 +31,9 @@ bool BigSword::Start()
 	InitCollision();
 
 	//‘•”õ
-	SetWeaponState(enWeaponState_Stowed);
-	SetStowedFlag(true);
+	//SetWeaponState(enWeaponState_Stowed);
+	SetWeaponState(enWeaponState_Armed);
+	SetStowedFlag(false);
 	//–hŒäƒ^ƒCƒv‚Ìİ’è
 	SetEnDefendTipe(enDefendTipe_avoid);
 
