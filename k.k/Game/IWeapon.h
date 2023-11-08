@@ -2,6 +2,9 @@
 
 class Brave;
 
+/// <summary>
+/// インターフェースの実装
+/// </summary>
 class IWeapon:public IGameObject
 {
 public:
@@ -101,14 +104,6 @@ public:
 	{
 		return m_enWeaponState;
 	}
-	/*/// <summary>
-	/// 武器の状態ステートを返す
-	/// </summary>
-	/// <returns>「0」で収納状態、「1」で装備状態、「2」で何も装備していない状態</returns>
-	const int& GetWeaponState() const
-	{
-		return m_enWeaponState;
-	}*/
 
 	/// <summary>
 	/// 武器の攻撃力の設定
@@ -169,16 +164,39 @@ public:
 	{
 		return m_enDefendTipe;
 	}
+	/// <summary>
+	/// 多段ヒット攻撃がヒットしたかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	virtual void SetHittableFlag(bool flag)
+	{
+	};
+	/// <summary>
+	/// 多段ヒット攻撃がヒットしたかのフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	virtual const bool& GetHittableFlag() const
+	{
+		return true;
+	}
 
 protected:
 
 	/// <summary>
-	/// 武器の防御タイプを取得
+	/// 武器の防御タイプを設定
 	/// </summary>
 	/// <returns></returns>
 	void SetEnDefendTipe(EnDefendTipe defendTipe)
 	{
 		m_enDefendTipe = defendTipe;
+	}
+	/// <summary>
+	/// 武器の攻撃力を設定
+	/// </summary>
+	/// <param name="power"></param>
+	void SetWeaponPower(int power)
+	{
+		m_power = power;
 	}
 
 protected:
