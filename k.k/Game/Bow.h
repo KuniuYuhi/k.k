@@ -1,8 +1,10 @@
 #pragma once
 
 #include "IWeapon.h"
+#include "HitDetection.h"
 
 class Arrow;
+class HitDetection;
 
 class Bow :public IWeapon
 {
@@ -19,12 +21,6 @@ public:
 	/// 武器の移動処理
 	/// </summary>
 	void MoveWeapon() override;
-
-	/// <summary>
-	/// 盾の当たり判定がヒットしたか
-	/// </summary>
-	/// <returns>ヒットしたらtrue、ヒットしなかったらfalse</returns>
-	bool IsHitCollision();
 
 	/// <summary>
 	/// スキル攻撃処理
@@ -48,6 +44,27 @@ public:
 	{
 		return m_enWeaponState;
 	}
+
+	/// <summary>
+	/// 攻撃がヒットしたかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetAttackHitFlag(bool flag);
+	/// <summary>
+	/// 攻撃がヒットしたかのフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetAttackHitFlag() const;
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetHittableFlag(bool flag) override;
+	/// <summary>
+	/// ヒット可能かフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetHittableFlag() const override;
 
 private:
 	/// <summary>
@@ -88,7 +105,10 @@ private:
 		return m_stockArrowFlag;
 	}
 
+	
+
 private:
+	HitDetection m_hitDelection;
 	Arrow* m_arrow = nullptr;
 
 	ModelRender m_modelBow;		//弓モデル
@@ -107,5 +127,6 @@ private:
 
 	bool m_stockArrowFlag = false;
 
+	
 };
 

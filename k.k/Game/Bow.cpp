@@ -7,11 +7,14 @@ namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
 
+	const int POWER = 10;
 
+	const float HITTABLE_TIME = 0.15f;
 }
 
 Bow::Bow()
 {
+	SetPower(POWER);
 }
 
 Bow::~Bow()
@@ -66,6 +69,9 @@ void Bow::Update()
 		SetStockArrowFlag(true);
 	}
 
+	//ヒット可能か判断する
+	m_hitDelection.IsHittable(HITTABLE_TIME);
+
 	MoveWeapon();
 
 	m_modelBow.Update();
@@ -88,11 +94,6 @@ void Bow::MoveWeapon()
 	}
 }
 
-bool Bow::IsHitCollision()
-{
-	return false;
-}
-
 void Bow::ProcessSkillAttack()
 {
 	//ボタンを押している間チャージ
@@ -106,6 +107,16 @@ void Bow::ProcessSkillAttack()
 		//勇者のアニメーションをスキルメインに切り替え
 		m_brave->SetNextAnimationState(Brave::enAnimationState_Skill_Main);
 	}
+}
+
+void Bow::SetAttackHitFlag(bool flag)
+{
+	m_brave->SetAttackHitFlag(flag);
+}
+
+const bool& Bow::GetAttackHitFlag() const
+{
+	return m_brave->GetAttackHitFlag();
 }
 
 void Bow::InitModel()
@@ -217,4 +228,14 @@ void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	{
 		SkillShot();
 	}
+}
+
+void Bow::SetHittableFlag(bool flag)
+{
+	m_hitDelection.SetHittableFlag(flag);
+}
+
+const bool& Bow::GetHittableFlag() const
+{
+	return m_hitDelection.GetHittableFlag();
 }
