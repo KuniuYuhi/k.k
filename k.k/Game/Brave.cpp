@@ -59,8 +59,8 @@ Brave::Brave()
 
 Brave::~Brave()
 {
-	DeleteGO(m_subWeapon);
-	DeleteGO(m_mainWeapon);
+	DeleteGO(m_mainUseWeapon.weapon);
+	DeleteGO(m_subUseWeapon.weapon);
 }
 
 bool Brave::Start()
@@ -82,25 +82,25 @@ bool Brave::Start()
 	m_charaCon.Init(12.0f, 33.0f, m_position);
 
 	//武器の生成
-	m_subWeapon = NewGO<Bow>(0, "Bow");
-	m_mainWeapon = NewGO<BigSword>(0,"bigsword");
+	Bow* bow = NewGO<Bow>(0, "Bow");
+	BigSword* bigsword = NewGO<BigSword>(0,"bigsword");
 
-	m_useWeapon[enWeapon_Main].weapon = m_mainWeapon;
-	m_useWeapon[enWeapon_Main].weaponAnimationStartIndexNo
+	m_mainUseWeapon.weapon = bigsword;
+	m_mainUseWeapon.weaponAnimationStartIndexNo
 		= TwoHandSwordAnimationStartIndexNo;
 
-	m_useWeapon[enWeapon_Sub].weapon = m_subWeapon;
-	m_useWeapon[enWeapon_Sub].weaponAnimationStartIndexNo
+	m_subUseWeapon.weapon = bow;
+	m_subUseWeapon.weaponAnimationStartIndexNo
 		= BowAnimationStartIndexNo;
 
 	//現在の武器のアニメーションクリップの最初の番号
 	m_currentAnimationStartIndexNo 
-		= m_useWeapon[enWeapon_Main].weaponAnimationStartIndexNo;
+		= m_mainUseWeapon.weaponAnimationStartIndexNo;
 
 	SetNextAnimationState(enAninationState_Idle);
 
 
-	m_status.atk = m_useWeapon[enWeapon_Main].weapon->GetPower();
+	m_status.atk = m_mainUseWeapon.weapon->GetWeaponPower();
 
 
 	return true;
@@ -213,7 +213,7 @@ void Brave::Damage(int damage)
 		{
 			//武器切り替え前の武器のアニメーションが再生されるようにする
 			m_currentAnimationStartIndexNo
-				= m_useWeapon[enWeapon_Main].weaponAnimationStartIndexNo;
+				= m_mainUseWeapon.weaponAnimationStartIndexNo;
 		}
 
 		if (IsDefendHit() == true)
@@ -290,11 +290,10 @@ void Brave::ChangeWeapon()
 	//武器の切り替え
 	if (g_pad[0]->IsTrigger(enButtonRB1) == true)
 	{
-		//武器のサブとメインの中身を入れ替える
 		//現在の武器のアニメーションクリップの最初の番号をサブに変更
 		m_currentAnimationStartIndexNo
-			= m_useWeapon[enWeapon_Sub].weaponAnimationStartIndexNo;
-
+			= m_subUseWeapon.weaponAnimationStartIndexNo;
+		//サブ武器の武器切り替えアニメーションステートを設定
 		SetNextAnimationState(enAnimationState_ChangeSwordShield);
 		SetIsActionFlag(true);
 	}
@@ -316,14 +315,14 @@ void Brave::ProcessSwordShieldSkill(bool UpOrDownFlag)
 	{
 		//Up処理
 		mulYPos += 
-			g_gameTime->GetFrameDeltaTime() * m_useWeapon[enWeapon_Main].weapon->GetJampSpeed();
+			g_gameTime->GetFrameDeltaTime() * m_mainUseWeapon.weapon->GetJampSpeed();
 		Y.y += mulYPos;
 	}
 	else
 	{
 		//Down処理
 		mulYPos += 
-			g_gameTime->GetFrameDeltaTime() * m_useWeapon[enWeapon_Main].weapon->GetJampSpeed() * 1.5f;
+			g_gameTime->GetFrameDeltaTime() * m_mainUseWeapon.weapon->GetJampSpeed() * 1.5f;
 		Y.y -= mulYPos;
 	}
 	
@@ -481,7 +480,7 @@ void Brave::ProcessCommonWeaponChangeStateTransition()
 		SetInvicibleFlag(false);
 		//現在の武器のアニメーションクリップの最初の番号を変更
 		m_currentAnimationStartIndexNo
-			= m_useWeapon[enWeapon_Main].weaponAnimationStartIndexNo;
+			= m_mainUseWeapon.weaponAnimationStartIndexNo;
 		//切り替えアニメーションが終わったのでアクションフラグをfalseにする
 		SetIsActionFlag(false);
 		//ステート共通の状態遷移処理に遷移
@@ -605,9 +604,9 @@ void Brave::ProcessDefendStateTransition()
 
 bool Brave::RotationOnly()
 {
-	//回転のみ可能なアニメーションなら
+	//回転のみ可能なアニメーションまたは、現在の武器の防御タイプが盾で守るタイプなら
 	if (isRotationEntable() == false &&
-		m_useWeapon[enWeapon_Main].weapon->GetEnDefendTipe()==IWeapon::enDefendTipe_Defence)
+		m_mainUseWeapon.weapon->GetEnDefendTipe()==IWeapon::enDefendTipe_Defence)
 	{
 		return true;
 	}
@@ -621,22 +620,22 @@ void Brave::ReverseWeapon()
 	ChangeUseWeapon();
 
 	//メイン武器とサブ武器の状態ステートを逆にする
-	m_useWeapon[enWeapon_Main].weapon->ReverseWeaponState();
-	m_useWeapon[enWeapon_Sub].weapon->ReverseWeaponState();
+	m_mainUseWeapon.weapon->ReverseWeaponState();
+	m_subUseWeapon.weapon->ReverseWeaponState();
 	//攻撃力を現在の武器のものに変更。
-	m_status.atk = m_useWeapon[enWeapon_Main].weapon->GetPower();
+	m_status.atk = m_mainUseWeapon.weapon->GetWeaponPower();
 }
 
 void Brave::ChangeUseWeapon()
 {
 	UseWeapon temporary;
-	temporary = m_useWeapon[enWeapon_Main];
-	m_useWeapon[enWeapon_Main] = m_useWeapon[enWeapon_Sub];
-	m_useWeapon[enWeapon_Sub] = temporary;
+	temporary = m_mainUseWeapon;
+	m_mainUseWeapon = m_subUseWeapon;
+	m_subUseWeapon = temporary;
 
 	//現在の武器のアニメーションクリップの最初の番号を変更
 	m_currentAnimationStartIndexNo
-		= m_useWeapon[enWeapon_Main].weaponAnimationStartIndexNo;
+		= m_mainUseWeapon.weaponAnimationStartIndexNo;
 }
 
 bool Brave::IsDefendHit()
@@ -645,7 +644,7 @@ bool Brave::IsDefendHit()
 	if (m_enAnimationState == enAnimationState_Defend)
 	{
 		//盾に当たっているなら
-		if (m_useWeapon[enWeapon_Main].weapon->IsHitCollision() == true)
+		if (m_mainUseWeapon.weapon->IsHitCollision() == true)
 		{
 			return true;
 		}
@@ -810,7 +809,7 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	if (wcscmp(eventName, L"SkillAttack") == 0)
 	{
 		//メイン武器のスキル攻撃処理
-		m_useWeapon[enWeapon_Main].weapon->ProcessSkillAttack();
+		m_mainUseWeapon.weapon->ProcessSkillAttack();
 	}
 	//スキルのジャンプ処理
 	if (wcscmp(eventName, L"Jamp") == 0)
@@ -832,7 +831,7 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 bool Brave::isCollisionEntable() const
 {
 	//もし武器の防御タイプが盾などで防ぐタイプなら
-	if (m_useWeapon[enWeapon_Main].weapon->GetEnDefendTipe()==IWeapon::enDefendTipe_Defence)
+	if (m_mainUseWeapon.weapon->GetEnDefendTipe()==IWeapon::enDefendTipe_Defence)
 	{
 		return m_enAnimationState == enAnimationState_Hit ||
 			m_enAnimationState == enAnimationState_DefendHit;
@@ -849,7 +848,7 @@ bool Brave::isCollisionEntable() const
 bool Brave::isRotationEntable() const
 {
 	//もし武器の防御タイプが盾などで防ぐタイプなら
-	if (m_useWeapon[enWeapon_Main].weapon->GetEnDefendTipe() == IWeapon::enDefendTipe_Defence)
+	if (m_mainUseWeapon.weapon->GetEnDefendTipe() == IWeapon::enDefendTipe_Defence)
 	{
 		return m_enAnimationState != enAnimationState_Defend;
 	}

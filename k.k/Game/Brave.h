@@ -1,12 +1,10 @@
 #pragma once
 #include "Actor.h"
-#include "IWeapon.h"
+#include "WeaponBase.h"
 
 class Player;
 class IBraveState;
-class IWeapon;
-
-class SwordShield;
+class WeaponBase;
 
 /// <summary>
 /// 勇者クラス
@@ -40,7 +38,7 @@ public:
 	/// </summary>
 	struct UseWeapon
 	{
-		IWeapon* weapon = nullptr;	//武器オブジェクトの変数
+		WeaponBase* weapon = nullptr;	//武器オブジェクト
 		int weaponAnimationStartIndexNo = 0;	//武器のアニメーションクリップの最初の番号
 	};
 
@@ -385,9 +383,16 @@ public:
 	/// </summary>
 	/// <param name="subOrMain">サブかメインのステート</param>
 	/// <returns></returns>
-	IWeapon* GetWeapon(EnWepons subOrMain) const
+	WeaponBase* GetWeapon(EnWepons subOrMain) const
 	{
-		return m_useWeapon[subOrMain].weapon;
+		if (subOrMain == enWeapon_Main)
+		{
+			return m_mainUseWeapon.weapon;
+		}
+		else
+		{
+			return m_subUseWeapon.weapon;
+		}
 	}
 	/// <summary>
 	/// メイン武器のアニメーションクリップの最初の番号を取得
@@ -403,7 +408,7 @@ public:
 	/// <returns></returns>
 	const int& GetMainWeaponDefendTipe() const
 	{
-		return m_useWeapon[enWeapon_Main].weapon->GetEnDefendTipe();
+		return m_mainUseWeapon.weapon->GetEnDefendTipe();
 	}
 
 	/// <summary>
@@ -485,15 +490,12 @@ private:
 	//現在の武器のアニメーションの最初の番号
 	int m_currentAnimationStartIndexNo = OneHandSwordAnimationStartIndexNo;
 
-	UseWeapon					m_useWeapon[enWeapon_num];	//使う武器
+	UseWeapon					m_mainUseWeapon;				//メイン武器
+	UseWeapon					m_subUseWeapon;				//サブ武器
 
-	IWeapon*					m_weapon[enWeapon_num];	//武器の数
-	IWeapon*					m_mainWeapon = nullptr;	//メイン武器
-	IWeapon*					m_subWeapon = nullptr;		//サブ武器
 
 	Player*						m_player = nullptr;
 	IBraveState*				m_BraveState = nullptr;
-	SwordShield*				m_swordShield = nullptr;
 
 	EnAnimationState			m_enAnimationState = enAninationState_Idle;			//アニメーションステート
 	EnAttackPattern				m_attackPatternState = enAttackPattern_None;

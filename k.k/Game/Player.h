@@ -4,7 +4,6 @@
 
 class Actor;
 class Game;
-
 class Brave;
 
 class Player:public IGameObject
