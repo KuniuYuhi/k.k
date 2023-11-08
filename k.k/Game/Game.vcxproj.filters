@@ -359,7 +359,11 @@
     <ClCompile Include="Bow.cpp">
       <Filter>Weapons</Filter>
     </ClCompile>
-    <ClCompile Include="Arrow.cpp" />
+    <ClCompile Include="Arrow.cpp">
+      <Filter>Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="HitDetection.cpp" />
+    <ClCompile Include="WeaponBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -706,6 +710,10 @@
     <ClInclude Include="Bow.h">
       <Filter>Weapons</Filter>
     </ClInclude>
-    <ClInclude Include="Arrow.h" />
+    <ClInclude Include="Arrow.h">
+      <Filter>Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="HitDetection.h" />
+    <ClInclude Include="WeaponBase.h" />
   </ItemGroup>
 </Project>

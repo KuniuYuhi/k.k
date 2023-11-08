@@ -262,6 +262,7 @@
     <ClCompile Include="DarkMeteorite.cpp" />
     <ClCompile Include="DarkWall.cpp" />
     <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="HitDetection.cpp" />
     <ClCompile Include="InitEffect.cpp" />
     <ClCompile Include="EntryBoss.cpp" />
     <ClCompile Include="Fade.cpp" />
@@ -335,6 +336,7 @@
     <ClCompile Include="TurtleShellStateIdle.cpp" />
     <ClCompile Include="TurtleShellStateVictory.cpp" />
     <ClCompile Include="TurtleShellStateWalk.cpp" />
+    <ClCompile Include="WeaponBase.cpp" />
     <ClCompile Include="WeaponManager.cpp" />
     <ClCompile Include="Wizard.cpp" />
     <ClCompile Include="WizardStateAttack_1.cpp" />
@@ -392,6 +394,7 @@
     <ClInclude Include="DarkMeteorite.h" />
     <ClInclude Include="DarkWall.h" />
     <ClInclude Include="EventManager.h" />
+    <ClInclude Include="HitDetection.h" />
     <ClInclude Include="IBraveState.h" />
     <ClInclude Include="InitEffect.h" />
     <ClInclude Include="EntryBoss.h" />
@@ -468,6 +471,7 @@
     <ClInclude Include="TurtleShellStateIdle.h" />
     <ClInclude Include="TurtleShellStateVictory.h" />
     <ClInclude Include="TurtleShellStateWalk.h" />
+    <ClInclude Include="WeaponBase.h" />
     <ClInclude Include="WeaponManager.h" />
     <ClInclude Include="Wizard.h" />
     <ClInclude Include="WizardStateAttack_1.h" />
