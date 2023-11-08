@@ -424,8 +424,6 @@ protected:
 	
 	bool							m_recoveryMpFlag = false;							//スキルを打ち終わったあとにtrueにする。打つ前はfalse
 
-	bool							m_createAttackCollisionFlag = false;				//攻撃時に当たり判定を生成するかのフラグ
-
 	bool							m_invicibleFlag = false;							//無敵状態フラグ(アクション時に無敵状態にしたいとき使う)
 
 	bool							m_invincibleTimeFlag = false;						//無敵時間であるかのフラグ(ダメージを受けた後などに使う)
@@ -436,10 +434,6 @@ protected:
 	float							m_invincbledDashTimer = 0.0f;
 
 	bool							m_modelDrawFlag = false;							//モデルを描画するかのフラグ
-
-	bool							m_changeCharacterInvincbleFlag = false;				//キャラを切り替えた直後の無敵時間のフラグ
-	const float						m_changeCharaInvisibleTime = 1.0f;
-	float							m_changeCharaInvisibleTimer = 0.0f;
 
 	int								m_hitDamage = 0;									//攻撃されたときのダメージを記憶
 
