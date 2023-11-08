@@ -11,10 +11,13 @@ namespace {
 	const float SKILL_RADIUS = 80.0f;
 
 	const float ADD_FORWARD = 8.0f;
+
+	const float POWER = 50;
 }
 
 BigSword::BigSword()
 {
+	SetWeaponPower(POWER);
 }
 
 BigSword::~BigSword()

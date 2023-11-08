@@ -1,8 +1,8 @@
 #pragma once
 
-#include "IWeapon.h"
+#include "WeaponBase.h"
 
-class BigSword:public IWeapon
+class BigSword:public WeaponBase
 {
 public:
 	BigSword();
