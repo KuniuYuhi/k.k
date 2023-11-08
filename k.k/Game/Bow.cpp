@@ -14,7 +14,7 @@ namespace {
 
 Bow::Bow()
 {
-	SetPower(POWER);
+	SetWeaponPower(POWER);
 }
 
 Bow::~Bow()
@@ -228,14 +228,4 @@ void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	{
 		SkillShot();
 	}
-}
-
-void Bow::SetHittableFlag(bool flag)
-{
-	m_hitDelection.SetHittableFlag(flag);
-}
-
-const bool& Bow::GetHittableFlag() const
-{
-	return m_hitDelection.GetHittableFlag();
 }

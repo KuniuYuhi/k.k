@@ -1,12 +1,12 @@
 #pragma once
 
-#include "IWeapon.h"
+#include "WeaponBase.h"
 #include "HitDetection.h"
 
 class Arrow;
 class HitDetection;
 
-class Bow :public IWeapon
+class Bow :public WeaponBase
 {
 public:
 	Bow();
@@ -56,15 +56,21 @@ public:
 	/// <returns></returns>
 	const bool& GetAttackHitFlag() const;
 	/// <summary>
-	/// 
+	/// 多段ヒット攻撃がヒットしたかのフラグを設定
 	/// </summary>
 	/// <param name="flag"></param>
-	void SetHittableFlag(bool flag) override;
+	void SetHittableFlag(bool flag) override
+	{
+		m_hitDelection.SetHittableFlag(flag);
+	}
 	/// <summary>
-	/// ヒット可能かフラグを取得
+	/// 多段ヒット攻撃がヒットしたかのフラグを取得
 	/// </summary>
 	/// <returns></returns>
-	const bool& GetHittableFlag() const override;
+	const bool& GetHittableFlag() const override
+	{
+		return m_hitDelection.GetHittableFlag();
+	}
 
 private:
 	/// <summary>
