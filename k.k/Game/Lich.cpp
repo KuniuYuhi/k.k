@@ -278,11 +278,6 @@ void Lich::Move()
 		//移動する
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	}
-	//else
-	//{
-	//	//移動しないようにする
-	//	m_moveSpeed = Vector3::Zero;
-	//}
 }
 
 void Lich::Damage(int attack)
@@ -925,18 +920,24 @@ void Lich::HitNormalAttack()
 		CreateDamageFont(m_player->GetAtk());
 		//ダメージを受けた時のコンボステートに現在のコンボステートを代入する
 		m_player->SetDamagedComboState(m_player->GetNowComboState());
+		//攻撃が自身にヒットしたので、プレイヤーのattackHitFlagをtrueにする
+		m_player->SetAttackHitFlag(true);
 	}
 }
 
 void Lich::HitHeroSkillAttack()
 {
-	//一定間隔でダメージを受ける
-	if (m_damageFlag == false)
+	//スキル攻撃を受けられないなら
+	if (m_player->GetHittableFlag() != true)
 	{
-		m_damageFlag = true;
-		Damage(m_player->GetAtk());
-		CreateDamageFont(m_player->GetAtk());
+		return;
 	}
+
+	m_damageFlag = true;
+	Damage(m_player->GetAtk());
+	CreateDamageFont(m_player->GetAtk());
+	//多段ヒットしたのでフラグをリセット。多段ヒットでなくとも
+	m_player->SetHittableFlag(false);
 }
 
 void Lich::HitFlamePillar(bool damageFlag)
