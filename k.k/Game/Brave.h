@@ -32,6 +32,7 @@ public:
 		bool nextComboFlag = false;		//次のコンボ攻撃をするかのフラグ
 		bool isComboReceptionFlag = false;	//コンボ受付可能フラグ
 		bool isCollisionPossibleFlag = false;	//当たり判定が有効かの判定フラグ。
+		bool attackHitFlag = false;		//攻撃が相手にヒットしたかのフラグ
 	};
 
 	/// <summary>
@@ -263,6 +264,7 @@ public:
 		m_infoAboutActionFlag.nextComboFlag = flag;
 		m_infoAboutActionFlag.isComboReceptionFlag = flag;
 		m_infoAboutActionFlag.isCollisionPossibleFlag = flag;
+		m_infoAboutActionFlag.attackHitFlag = flag;
 	}
 	/// <summary>
 	/// アクションフラグの設定
@@ -345,6 +347,23 @@ public:
 		return m_infoAboutActionFlag.isCollisionPossibleFlag;
 	}
 	/// <summary>
+	/// 攻撃がヒットしたかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetAttackHitFlag(bool flag)
+	{
+		m_infoAboutActionFlag.attackHitFlag = flag;
+	}
+	/// <summary>
+	/// 攻撃がヒットしたかのフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetAttackHitFlag() const
+	{
+		return m_infoAboutActionFlag.attackHitFlag;
+	}
+
+	/// <summary>
 	/// 前進する攻撃のスピードの取得
 	/// </summary>
 	/// <returns></returns>
@@ -360,7 +379,16 @@ public:
 	{
 		return m_avoidSpeed;
 	}
-
+	
+	/// <summary>
+	/// 武器の取得
+	/// </summary>
+	/// <param name="subOrMain">サブかメインのステート</param>
+	/// <returns></returns>
+	IWeapon* GetWeapon(EnWepons subOrMain) const
+	{
+		return m_useWeapon[subOrMain].weapon;
+	}
 	/// <summary>
 	/// メイン武器のアニメーションクリップの最初の番号を取得
 	/// </summary>
@@ -369,7 +397,6 @@ public:
 	{
 		return m_currentAnimationStartIndexNo;
 	}
-
 	/// <summary>
 	/// メイン武器の防御タイプを取得
 	/// </summary>
@@ -486,6 +513,7 @@ private:
 
 	const float					m_avoidSpeed = 230.0f;
 
+	
 
 };
 

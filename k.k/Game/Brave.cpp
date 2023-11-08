@@ -29,7 +29,11 @@
 //todo ジャストガードでカウンター(パリィ)
 //もしくはガード中に敵の攻撃に合わせてボタンを押して反撃。敵は怯む
 
-//todo 攻撃中に前方向を変えられてしまう!!!!!!!!!!!!!!!!!!!!!!!
+//todo 武器の攻撃力をポインタで管理したい
+
+//todo メイン武器が片手剣以外だとゲームスタートのとき
+// アニメーションが遅れる。最初に読み込むのが片手剣のアニメーションだから
+
 
 namespace {
 	const float ADD_SCALE = 1.2f;
@@ -79,11 +83,11 @@ bool Brave::Start()
 
 	//武器の生成
 	m_subWeapon = NewGO<Bow>(0, "Bow");
-	m_mainWeapon = NewGO<SwordShield>(0,"swordshield");
+	m_mainWeapon = NewGO<BigSword>(0,"bigsword");
 
 	m_useWeapon[enWeapon_Main].weapon = m_mainWeapon;
 	m_useWeapon[enWeapon_Main].weaponAnimationStartIndexNo
-		= OneHandSwordAnimationStartIndexNo;
+		= TwoHandSwordAnimationStartIndexNo;
 
 	m_useWeapon[enWeapon_Sub].weapon = m_subWeapon;
 	m_useWeapon[enWeapon_Sub].weaponAnimationStartIndexNo
@@ -94,6 +98,10 @@ bool Brave::Start()
 		= m_useWeapon[enWeapon_Main].weaponAnimationStartIndexNo;
 
 	SetNextAnimationState(enAninationState_Idle);
+
+
+	m_status.atk = m_useWeapon[enWeapon_Main].weapon->GetPower();
+
 
 	return true;
 }
@@ -615,6 +623,8 @@ void Brave::ReverseWeapon()
 	//メイン武器とサブ武器の状態ステートを逆にする
 	m_useWeapon[enWeapon_Main].weapon->ReverseWeaponState();
 	m_useWeapon[enWeapon_Sub].weapon->ReverseWeaponState();
+	//攻撃力を現在の武器のものに変更。
+	m_status.atk = m_useWeapon[enWeapon_Main].weapon->GetPower();
 }
 
 void Brave::ChangeUseWeapon()
