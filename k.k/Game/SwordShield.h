@@ -1,8 +1,8 @@
 #pragma once
 
-#include "IWeapon.h"
+#include "WeaponBase.h"
 
-class SwordShield:public IWeapon
+class SwordShield:public WeaponBase
 {
 public:
 	SwordShield();

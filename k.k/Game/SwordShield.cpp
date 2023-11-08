@@ -19,7 +19,7 @@ namespace {
 
 SwordShield::SwordShield()
 {
-	SetPower(POWER);
+	SetWeaponPower(POWER);
 }
 
 SwordShield::~SwordShield()
