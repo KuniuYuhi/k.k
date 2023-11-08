@@ -6,8 +6,8 @@ class Brave;
 class WeaponBase:public IWeapon
 {
 public:
-	WeaponBase();
-	virtual ~WeaponBase();
+	WeaponBase(){}
+	virtual ~WeaponBase(){}
 
 	////////////////////////////////////////////////////////////////////////
 	///仮想関数、純粋仮想関数
@@ -15,34 +15,31 @@ public:
 	/// <summary>
 	/// モデルの初期化
 	/// </summary>
-	virtual void InitModel() override;
+	virtual void InitModel() override{}
 	/// <summary>
 	/// 武器の移動処理
 	/// </summary>
-	virtual void MoveWeapon() override;
+	virtual void MoveWeapon() override{}
 	/// <summary>
 	/// 武器を装備している時の移動処理
 	/// </summary>
-	virtual void MoveArmed() override;
+	virtual void MoveArmed() override{}
 	/// <summary>
 	/// 武器を収納している時の移動処理
 	/// </summary>
-	virtual void MoveStowed() override;
-
+	virtual void MoveStowed() override{}
 	/// <summary>
 	/// 武器の当たり判定
 	/// </summary>
 	/// <returns></returns>
-	virtual bool IsHitCollision() override
+	virtual bool IsHitCollision()
 	{
 		return false;
 	}
 	/// <summary>
 	/// スキル攻撃処理
 	/// </summary>
-	virtual void ProcessSkillAttack() override
-	{
-	}
+	virtual void ProcessSkillAttack(){}
 
 	/// <summary>
 	/// 攻撃やスキル時のジャンプの速度の取得
@@ -82,26 +79,9 @@ public:
 	/// 武器の攻撃力を取得
 	/// </summary>
 	/// <returns></returns>
-	const int& GetPower() const
+	const int& GetWeaponPower() const
 	{
 		return m_power;
-	}
-
-	/// <summary>
-	/// 座標を設定
-	/// </summary>
-	/// <param name="position"></param>
-	void SetPosition(Vector3 position)
-	{
-		m_position = position;
-	}
-	/// <summary>
-	/// 座標を取得
-	/// </summary>
-	/// <returns></returns>
-	const Vector3& GetPosition() const
-	{
-		return m_position;
 	}
 
 	/// <summary>
