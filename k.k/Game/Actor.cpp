@@ -107,34 +107,25 @@ Vector3 Actor::calcVelocity(Status status)
 	moveSpeed += right + forward;
 	moveSpeed.y = 0.0f;
 
+	//値をセーブしておく
+	m_SaveMoveSpeed = moveSpeed;
+
+	return moveSpeed;
+}
+
+void Actor::CalcForward(Vector3 moveSpeed)
+{
 	//前方向の取得
 	//x,yどちらかの入力があったら
 	if (fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f)
 	{
-		if (isRotationEntable() == false)
+		//前方向を設定できる条件なら
+		if (IsSetForwardCondition() == true)
 		{
-			//前進フラグがtrueでないなら
-			if (GetMoveForwardFlag() == false)
-			{
-				m_forward = moveSpeed;
-				m_forward.Normalize();
-			}
-		}	
+			m_forward = moveSpeed;
+			m_forward.Normalize();
+		}
 	}
-	
-	//値をセーブしておく
-	m_SaveMoveSpeed = moveSpeed;
-
-	//特定のアニメーションが再生中なら移動なし
-	if (isAnimationEntable() != true)
-	{
-		return moveSpeed = g_vec3Zero;
-	}
-	else
-	{
-		return moveSpeed;
-	}
-	
 }
 
 bool Actor::CalcInvincibleTime()

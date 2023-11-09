@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Player.h"
-#include "Hero.h"
 #include "Wizard.h"
 #include "Actor.h"
 #include "Game.h"
@@ -27,14 +26,8 @@ bool Player::Start()
 	m_game = FindGO<Game>("game");
 	m_brave = NewGO<Brave>(0, "brave");
 
-	//現在のキャラクターを勇者に設定する
-	m_nowActor = m_brave;
-
 	//キャラクターの座標を設定
-	m_nowActor->SetPosition(START_POSITION);
-
-	//座標の設定
-	m_position = m_nowActor->GetPosition();
+	m_brave->SetPosition(START_POSITION);
 
 	return true;
 }
@@ -67,7 +60,7 @@ bool Player::IsInaction()
 	if (m_game->GetEnOutCome() == Game::enOutCome_Player_Win)
 	{
 		//勝利時の処理実行
-		m_nowActor->ProcessWin();
+		m_brave->ProcessWin();
 		//
 		m_decisionOutComeFlag = true;
 		return true;
@@ -92,7 +85,7 @@ bool Player::IsInaction()
 bool Player::IsDeadPlayer()
 {
 	//プレイヤーがやられたら
-	if (m_nowActor->GetDieFlag() == true)
+	if (m_brave->GetDieFlag() == true)
 	{
 		return true;
 	}
@@ -102,22 +95,22 @@ bool Player::IsDeadPlayer()
 
 int Player::GetAtk()
 {
-	return m_nowActor->GetStatus().atk;
+	return m_brave->GetStatus().atk;
 }
 
 bool Player::IsComboStateSame()
 {
-	return m_nowActor->IsComboStateSame();
+	return m_brave->IsComboStateSame();
 }
 
 void Player::SetDamagedComboState(Actor::EnComboState damagedcombostate)
 {
-	m_nowActor->SetDamagedComboState(damagedcombostate);
+	m_brave->SetDamagedComboState(damagedcombostate);
 }
 
 Actor::EnComboState Player::GetNowComboState() const
 {
-	return m_nowActor->GetNowComboState();
+	return m_brave->GetNowComboState();
 }
 
 

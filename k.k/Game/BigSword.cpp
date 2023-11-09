@@ -11,10 +11,15 @@ namespace {
 	const float SKILL_RADIUS = 80.0f;
 
 	const float ADD_FORWARD = 8.0f;
+
+	const float POWER = 40;
+
+	const float HITTABLE_TIME = 0.5f;
 }
 
 BigSword::BigSword()
 {
+	SetWeaponPower(POWER);
 }
 
 BigSword::~BigSword()
@@ -31,8 +36,9 @@ bool BigSword::Start()
 	InitCollision();
 
 	//装備
-	SetWeaponState(enWeaponState_Stowed);
-	SetStowedFlag(true);
+	//SetWeaponState(enWeaponState_Stowed);
+	SetWeaponState(enWeaponState_Armed);
+	SetStowedFlag(false);
 	//防御タイプの設定
 	SetEnDefendTipe(enDefendTipe_avoid);
 
@@ -46,6 +52,9 @@ void BigSword::Update()
 	{
 		return;
 	}
+
+	//ヒット可能か判断する
+	m_hitDelection.IsHittable(HITTABLE_TIME);
 
 	MoveWeapon();
 

@@ -99,7 +99,15 @@ protected:
 		return false;
 	}
 
-public:
+	/// <summary>
+	/// 前方向が設定できる条件か
+	/// </summary>
+	/// <returns>trueで可能、falseで不可能</returns>
+	virtual const bool& IsSetForwardCondition() const
+	{
+		return true;
+	}
+
 	///////////////////////////////////////////////////////////////
 	//その他の関数
 	///////////////////////////////////////////////////////////////
@@ -110,7 +118,13 @@ public:
 	/// <param name="status">ステータス</param>
 	/// <returns>moveSpeed</returns>
 	Vector3 calcVelocity(Status status);
+	/// <summary>
+	/// 前方向の計算
+	/// </summary>
+	/// <param name="moveSpeed"></param>
+	void CalcForward(Vector3 moveSpeed);
 
+public:
 	/// <summary>
 	/// 無敵時間の計算
 	/// </summary>
@@ -410,8 +424,6 @@ protected:
 	
 	bool							m_recoveryMpFlag = false;							//スキルを打ち終わったあとにtrueにする。打つ前はfalse
 
-	bool							m_createAttackCollisionFlag = false;				//攻撃時に当たり判定を生成するかのフラグ
-
 	bool							m_invicibleFlag = false;							//無敵状態フラグ(アクション時に無敵状態にしたいとき使う)
 
 	bool							m_invincibleTimeFlag = false;						//無敵時間であるかのフラグ(ダメージを受けた後などに使う)
@@ -422,10 +434,6 @@ protected:
 	float							m_invincbledDashTimer = 0.0f;
 
 	bool							m_modelDrawFlag = false;							//モデルを描画するかのフラグ
-
-	bool							m_changeCharacterInvincbleFlag = false;				//キャラを切り替えた直後の無敵時間のフラグ
-	const float						m_changeCharaInvisibleTime = 1.0f;
-	float							m_changeCharaInvisibleTimer = 0.0f;
 
 	int								m_hitDamage = 0;									//攻撃されたときのダメージを記憶
 

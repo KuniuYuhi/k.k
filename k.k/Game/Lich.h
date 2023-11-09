@@ -36,17 +36,17 @@ public:
 	/// <summary>
 	/// モデルの初期化
 	/// </summary>
-	void InitModel();
+	void InitModel()  override;
 
 	/// <summary>
 	/// アニメーションを再生
 	/// </summary>
-	void PlayAnimation();
+	void PlayAnimation()  override;
 
 	/// <summary>
 	/// ステート管理
 	/// </summary>
-	void ManageState();
+	void ManageState()  override;
 
 	/// <summary>
 	/// 移動処理
@@ -57,27 +57,27 @@ public:
 	/// 被ダメージ時処理
 	/// </summary>
 	/// <param name="attack">くらう攻撃力</param>
-	void Damage(int attack);
+	void Damage(int attack)  override;
 
 	/// <summary>
 	/// 当たり判定の処理をするか
 	/// </summary>
-	bool IsCollisionDetection();
+	bool IsCollisionDetection()  override;
 
 	/// <summary>
 	/// 通常攻撃に当たった時の処理
 	/// </summary>
-	void HitNormalAttack();
+	void HitNormalAttack() override;
 	
 	/// <summary>
 	/// ヒーローのスキルに当たった時の処理
 	/// </summary>
-	void HitHeroSkillAttack();
+	void HitHeroSkillAttack() override;
 
 	/// <summary>
 	/// ウィザードのフレイムピラーに当たった時の処理。派生クラスで実装
 	/// </summary>
-	void HitFlamePillar(bool damageFlag = false);
+	void HitFlamePillar(bool damageFlag = false)  override;
 
 	/// <summary>
 	/// ダークウォールの生成
@@ -126,13 +126,13 @@ public:
 
 	bool IsDistanceToPlayer();
 
-	void CreateDamageFont(int damage);
+	void CreateDamageFont(int damage)  override;
 
 	/// <summary>
 	/// 特定のアニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
-	bool isAnimationEntable() const
+	bool isAnimationEntable() const  override
 	{
 		return m_enAnimationState != enAnimationState_Damage &&
 			m_enAnimationState != enAnimationState_Angry &&
@@ -143,7 +143,7 @@ public:
 	/// 攻撃アニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
-	bool IsAttackEntable() const
+	bool IsAttackEntable() const  override
 	{
 		return m_enAnimationState != enAnimationState_Attack_1 &&
 			m_enAnimationState != enAnimationState_Attack_2 &&
@@ -158,7 +158,7 @@ public:
 	/// 回転可能かどうか
 	/// </summary>
 	/// <returns></returns>
-	bool isRotationEntable() const
+	bool isRotationEntable() const  override
 	{
 		return m_enAnimationState != enAnimationState_Attack_1 &&
 			m_enAnimationState != enAninationState_Idle&&

@@ -1,9 +1,9 @@
 #pragma once
-#include "Actor.h"
+//#include "Actor.h"
+#include "Brave.h"
 
 class Actor;
 class Game;
-
 class Brave;
 
 class Player:public IGameObject
@@ -32,7 +32,7 @@ public:
 	/// <returns></returns>
 	const Vector3& GetPosition() const
 	{
-		return m_nowActor->GetPosition();
+		return m_brave->GetPosition();
 	}
 
 	const Vector3& GetMoveSpeed() const
@@ -46,7 +46,7 @@ public:
 	/// <returns></returns>
 	Status GetNowActorStatus()
 	{
-		return m_nowActor->GetStatus();
+		return m_brave->GetStatus();
 	}
 
 	/// <summary>
@@ -55,7 +55,7 @@ public:
 	/// <returns></returns>
 	const Vector3& GetForward() const
 	{
-		return m_nowActor->GetForward();
+		return m_brave->GetForward();
 	}
 
 	/// <summary>
@@ -64,7 +64,7 @@ public:
 	/// <returns></returns>
 	const bool GetNowActorDieFlag() const
 	{
-		return m_nowActor->GetDieFlag();
+		return m_brave->GetDieFlag();
 	}
 		
 	/// <summary>
@@ -112,15 +112,15 @@ public:
 	{
 		return m_dontActionFlag;
 	}
+
 	/// <summary>
 	///　ノックバック攻撃フラグを取得
 	/// </summary>
 	/// <returns></returns>
 	const bool& GetKnockBackAttackFlag() const
 	{
-		return m_nowActor->GetKnockBackAttackFalg();
+		return m_brave->GetKnockBackAttackFalg();
 	}
-
 	/// <summary>
 	/// 攻撃の中心座標を設定
 	/// </summary>
@@ -137,15 +137,41 @@ public:
 	{
 		return m_attackPosition;
 	}
-
 	/// <summary>
 	/// ノックバックパワーを取得
 	/// </summary>
 	/// <returns></returns>
 	const float& GetKnockBackPower() const
 	{
-		return m_nowActor->GetKnockBackPower();
+		return m_brave->GetKnockBackPower();
 	}
+
+	/// <summary>
+	/// 攻撃がヒットしたかのフラグを設定。通常攻撃
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetAttackHitFlag(bool flag)
+	{
+		m_brave->SetAttackHitFlag(flag);
+	}
+
+	/// <summary>
+	/// 多段ヒット攻撃がヒットしたかのフラグを設定。
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetHittableFlag(bool flag)
+	{
+		m_brave->GetWeapon(Brave::enWeapon_Main)->SetHittableFlag(flag);
+	}
+	/// <summary>
+	/// 多段ヒット攻撃がヒットしたかのフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetHittableFlag() const
+	{
+		return m_brave->GetWeapon(Brave::enWeapon_Main)->GetHittableFlag();
+	}
+
 
 private:
 	Game*						m_game = nullptr;
@@ -153,8 +179,6 @@ private:
 
 	FontRender					m_mpFont;
 	FontRender					m_hpFont;
-
-	Actor*						m_nowActor = nullptr;							//現在のアクター
 
 	Vector3						m_position = g_vec3Zero;						//現在のキャラクターの座標
 

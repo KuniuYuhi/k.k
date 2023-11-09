@@ -1,12 +1,10 @@
 #pragma once
 #include "Actor.h"
-#include "IWeapon.h"
+#include "WeaponBase.h"
 
 class Player;
 class IBraveState;
-class IWeapon;
-
-class SwordShield;
+class WeaponBase;
 
 /// <summary>
 /// 勇者クラス
@@ -32,6 +30,7 @@ public:
 		bool nextComboFlag = false;		//次のコンボ攻撃をするかのフラグ
 		bool isComboReceptionFlag = false;	//コンボ受付可能フラグ
 		bool isCollisionPossibleFlag = false;	//当たり判定が有効かの判定フラグ。
+		bool attackHitFlag = false;		//攻撃が相手にヒットしたかのフラグ
 	};
 
 	/// <summary>
@@ -39,7 +38,7 @@ public:
 	/// </summary>
 	struct UseWeapon
 	{
-		IWeapon* weapon = nullptr;	//武器オブジェクトの変数
+		WeaponBase* weapon = nullptr;	//武器オブジェクト
 		int weaponAnimationStartIndexNo = 0;	//武器のアニメーションクリップの最初の番号
 	};
 
@@ -86,10 +85,7 @@ public:
 	/// 回転可能なアニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
-	bool isRotationEntable() const override
-	{
-		return m_enAnimationState == enAnimationState_Defend;
-	}
+	bool isRotationEntable() const override;
 
 	/// <summary>
 	/// 勝利時の処理
@@ -266,6 +262,7 @@ public:
 		m_infoAboutActionFlag.nextComboFlag = flag;
 		m_infoAboutActionFlag.isComboReceptionFlag = flag;
 		m_infoAboutActionFlag.isCollisionPossibleFlag = flag;
+		m_infoAboutActionFlag.attackHitFlag = flag;
 	}
 	/// <summary>
 	/// アクションフラグの設定
@@ -348,6 +345,23 @@ public:
 		return m_infoAboutActionFlag.isCollisionPossibleFlag;
 	}
 	/// <summary>
+	/// 攻撃がヒットしたかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetAttackHitFlag(bool flag)
+	{
+		m_infoAboutActionFlag.attackHitFlag = flag;
+	}
+	/// <summary>
+	/// 攻撃がヒットしたかのフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetAttackHitFlag() const
+	{
+		return m_infoAboutActionFlag.attackHitFlag;
+	}
+
+	/// <summary>
 	/// 前進する攻撃のスピードの取得
 	/// </summary>
 	/// <returns></returns>
@@ -363,7 +377,23 @@ public:
 	{
 		return m_avoidSpeed;
 	}
-
+	
+	/// <summary>
+	/// 武器の取得
+	/// </summary>
+	/// <param name="subOrMain">サブかメインのステート</param>
+	/// <returns></returns>
+	WeaponBase* GetWeapon(EnWepons subOrMain) const
+	{
+		if (subOrMain == enWeapon_Main)
+		{
+			return m_mainUseWeapon.weapon;
+		}
+		else
+		{
+			return m_subUseWeapon.weapon;
+		}
+	}
 	/// <summary>
 	/// メイン武器のアニメーションクリップの最初の番号を取得
 	/// </summary>
@@ -372,14 +402,13 @@ public:
 	{
 		return m_currentAnimationStartIndexNo;
 	}
-
 	/// <summary>
 	/// メイン武器の防御タイプを取得
 	/// </summary>
 	/// <returns></returns>
 	const int& GetMainWeaponDefendTipe() const
 	{
-		return m_useWeapon[enWeapon_Main].weapon->GetEnDefendTipe();
+		return m_mainUseWeapon.weapon->GetEnDefendTipe();
 	}
 
 	/// <summary>
@@ -424,6 +453,23 @@ private:
 	/// <returns>ヒットならtrue、ヒットしていないならfalse</returns>
 	bool IsDefendHit();
 
+	/// <summary>
+	/// 前方向が設定できる条件か
+	/// </summary>
+	/// <returns>trueで可能、falseで不可能</returns>
+	const bool& IsSetForwardCondition() const
+	{
+		if (isAnimationEntable() == true)
+		{
+			return true;
+		}
+
+
+		//回転のみ可能なアニメーションではないなら
+		return 
+			GetMoveForwardFlag() != true;
+	}
+
 private:
 	/// <summary>
 	/// 武器それぞれのアニメーションクリップグループ
@@ -431,26 +477,25 @@ private:
 	enum AnimationClipGroup {
 		AnimationClipGroup_OneHandedSword,	// 片手剣を装備中のアニメーションクリップグループ
 		AnimationClipGroup_TwoHandedSword,	// 両手剣を装備中のアニメーションクリップグループ
+		AnimationClipGroup_Bow,				// 弓を装備中のアニメーションクリップグループ
 		AnimationClipGroup_Num,
 	};
 	//片手剣の最初のアニメーションクリップの番号
 	const int OneHandSwordAnimationStartIndexNo = AnimationClipGroup_OneHandedSword;
 	//両手剣の最初のアニメーションクリップの番号
 	const int TwoHandSwordAnimationStartIndexNo = enAnimClip_Num * AnimationClipGroup_TwoHandedSword;
-	// const int ThreeHandSwordAnimationStartIndexNo = enAnimClip_Num * 2;
+	//弓の最初のアニメーションクリップの番号
+	const int BowAnimationStartIndexNo = enAnimClip_Num * AnimationClipGroup_Bow;
 
 	//現在の武器のアニメーションの最初の番号
 	int m_currentAnimationStartIndexNo = OneHandSwordAnimationStartIndexNo;
 
-	UseWeapon					m_useWeapon[enWeapon_num];	//使う武器
+	UseWeapon					m_mainUseWeapon;				//メイン武器
+	UseWeapon					m_subUseWeapon;				//サブ武器
 
-	IWeapon*					m_weapon[enWeapon_num];	//武器の数
-	IWeapon*					m_mainWeapon = nullptr;	//メイン武器
-	IWeapon*					m_subWeapon = nullptr;		//サブ武器
 
 	Player*						m_player = nullptr;
 	IBraveState*				m_BraveState = nullptr;
-	SwordShield*				m_swordShield = nullptr;
 
 	EnAnimationState			m_enAnimationState = enAninationState_Idle;			//アニメーションステート
 	EnAttackPattern				m_attackPatternState = enAttackPattern_None;
@@ -470,6 +515,7 @@ private:
 
 	const float					m_avoidSpeed = 230.0f;
 
+	
 
 };
 

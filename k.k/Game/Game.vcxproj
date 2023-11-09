@@ -225,9 +225,11 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="AIActor.cpp" />
+    <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="BattleStart.cpp" />
     <ClCompile Include="BigSword.cpp" />
     <ClCompile Include="BossStage1.cpp" />
+    <ClCompile Include="Bow.cpp" />
     <ClCompile Include="Brave.cpp" />
     <ClCompile Include="BraveStateAttack_1.cpp" />
     <ClCompile Include="BraveStateAttack_2.cpp" />
@@ -260,6 +262,7 @@
     <ClCompile Include="DarkMeteorite.cpp" />
     <ClCompile Include="DarkWall.cpp" />
     <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="HitDetection.cpp" />
     <ClCompile Include="InitEffect.cpp" />
     <ClCompile Include="EntryBoss.cpp" />
     <ClCompile Include="Fade.cpp" />
@@ -269,19 +272,6 @@
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameUI.cpp" />
-    <ClCompile Include="Hero.cpp" />
-    <ClCompile Include="HeroStateAttack_1.cpp" />
-    <ClCompile Include="HeroStateAttack_2.cpp" />
-    <ClCompile Include="HeroStateAttack_3.cpp" />
-    <ClCompile Include="HeroStateAttack_4.cpp" />
-    <ClCompile Include="HeroStateAttack_Skill_Main.cpp" />
-    <ClCompile Include="HeroStateDamage.cpp" />
-    <ClCompile Include="HeroStateDie.cpp" />
-    <ClCompile Include="HeroStateIdle.cpp" />
-    <ClCompile Include="HeroStatePowerUp.cpp" />
-    <ClCompile Include="HeroStateDash.cpp" />
-    <ClCompile Include="HeroStateVictory.cpp" />
-    <ClCompile Include="HeroStateWalk.cpp" />
     <ClCompile Include="IWeapon.cpp" />
     <ClCompile Include="KnockBack.cpp" />
     <ClCompile Include="Lich.cpp" />
@@ -346,6 +336,7 @@
     <ClCompile Include="TurtleShellStateIdle.cpp" />
     <ClCompile Include="TurtleShellStateVictory.cpp" />
     <ClCompile Include="TurtleShellStateWalk.cpp" />
+    <ClCompile Include="WeaponBase.cpp" />
     <ClCompile Include="WeaponManager.cpp" />
     <ClCompile Include="Wizard.cpp" />
     <ClCompile Include="WizardStateAttack_1.cpp" />
@@ -366,9 +357,11 @@
   <ItemGroup>
     <ClInclude Include="Actor.h" />
     <ClInclude Include="AIActor.h" />
+    <ClInclude Include="Arrow.h" />
     <ClInclude Include="BattleStart.h" />
     <ClInclude Include="BigSword.h" />
     <ClInclude Include="BossStage1.h" />
+    <ClInclude Include="Bow.h" />
     <ClInclude Include="Brave.h" />
     <ClInclude Include="BraveStateAttack_1.h" />
     <ClInclude Include="BraveStateAttack_2.h" />
@@ -401,6 +394,7 @@
     <ClInclude Include="DarkMeteorite.h" />
     <ClInclude Include="DarkWall.h" />
     <ClInclude Include="EventManager.h" />
+    <ClInclude Include="HitDetection.h" />
     <ClInclude Include="IBraveState.h" />
     <ClInclude Include="InitEffect.h" />
     <ClInclude Include="EntryBoss.h" />
@@ -411,21 +405,7 @@
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameUI.h" />
-    <ClInclude Include="Hero.h" />
-    <ClInclude Include="HeroStateAttack_1.h" />
-    <ClInclude Include="HeroStateAttack_2.h" />
-    <ClInclude Include="HeroStateAttack_3.h" />
-    <ClInclude Include="HeroStateAttack_4.h" />
-    <ClInclude Include="HeroStateAttack_Skill_Main.h" />
-    <ClInclude Include="HeroStateDamage.h" />
-    <ClInclude Include="HeroStateDie.h" />
-    <ClInclude Include="HeroStateIdle.h" />
-    <ClInclude Include="HeroStatePowerUp.h" />
-    <ClInclude Include="HeroStateDash.h" />
-    <ClInclude Include="HeroStateVictory.h" />
-    <ClInclude Include="HeroStateWalk.h" />
     <ClInclude Include="ICactusState.h" />
-    <ClInclude Include="IHeroState.h" />
     <ClInclude Include="ILichState.h" />
     <ClInclude Include="IMushroomState.h" />
     <ClInclude Include="ISlimeState.h" />
@@ -491,6 +471,7 @@
     <ClInclude Include="TurtleShellStateIdle.h" />
     <ClInclude Include="TurtleShellStateVictory.h" />
     <ClInclude Include="TurtleShellStateWalk.h" />
+    <ClInclude Include="WeaponBase.h" />
     <ClInclude Include="WeaponManager.h" />
     <ClInclude Include="Wizard.h" />
     <ClInclude Include="WizardStateAttack_1.h" />
