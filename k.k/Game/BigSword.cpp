@@ -12,7 +12,9 @@ namespace {
 
 	const float ADD_FORWARD = 8.0f;
 
-	const float POWER = 50;
+	const float POWER = 40;
+
+	const float HITTABLE_TIME = 0.5f;
 }
 
 BigSword::BigSword()
@@ -50,6 +52,9 @@ void BigSword::Update()
 	{
 		return;
 	}
+
+	//ƒqƒbƒg‰Â”\‚©”»’f‚·‚é
+	m_hitDelection.IsHittable(HITTABLE_TIME);
 
 	MoveWeapon();
 

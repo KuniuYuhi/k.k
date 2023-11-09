@@ -53,7 +53,7 @@ private:
 private:
 	ModelRender m_modelBigSword;		//Œ•ƒ‚ƒfƒ‹
 
-	CollisionObject* m_bigSwordCollision;	//—¼ŽèŒ•‚Ì“–‚½‚è”»’è
+	CollisionObject* m_bigSwordCollision = nullptr;	//—¼ŽèŒ•‚Ì“–‚½‚è”»’è
 
 	Vector3 m_swordPos = g_vec3Zero;
 
