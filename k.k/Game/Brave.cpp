@@ -142,14 +142,19 @@ void Brave::Move()
 {
 	m_moveSpeed = calcVelocity(GetStatus());
 	m_moveSpeed.y = 0.0f;
+
 	//特定のアニメーションが再生中なら移動なし
 	if (isAnimationEntable() != true)
 	{
+		if (m_mainUseWeapon.weapon->GetRotationDelectionFlag() == true)
+		{
+			//前方向の計算
+			CalcForward(m_moveSpeed);
+		}
 		m_moveSpeed = g_vec3Zero;
 	}
 	else
 	{
-		//前方向の計算
 		CalcForward(m_moveSpeed);
 	}
 
@@ -476,7 +481,7 @@ void Brave::ProcessCommonWeaponChangeStateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//todo 無敵状態フラグのリセット
+		//無敵状態フラグのリセット
 		SetInvicibleFlag(false);
 		//現在の武器のアニメーションクリップの最初の番号を変更
 		m_currentAnimationStartIndexNo
@@ -499,8 +504,8 @@ void Brave::ProcessNormalAttackStateTransition()
 		{
 			m_position.y = 0.0f;
 			m_attackPatternState = enAttackPattern_None;
-			//攻撃アニメーションが終わったのでアクションフラグをfalseにする
-			SetIsActionFlag(false);
+			//攻撃アニメーションが終わったのでアクション構造体のフラグを全てリセット
+			SetAllInfoAboutActionFlag(false);
 			//コンボ状態をリセット
 			SetComboStateNone();
 			//ステート共通の状態遷移処理に遷移
@@ -558,8 +563,8 @@ void Brave::ProcessSkillMainStateTransition()
 			SetKnockBackAttackFalg(false);
 		}
 
-		//攻撃アニメーションが終わったので攻撃可能
-		SetIsActionFlag(false);
+		//攻撃アニメーションが終わったのでアクション構造体のフラグを全てリセット
+		SetAllInfoAboutActionFlag(false);
 		//ステート共通の状態遷移処理に遷移
 		ProcessCommonStateTransition();
 	}
@@ -574,6 +579,8 @@ void Brave::ProcessHitStateTransition()
 		SetAllInfoAboutActionFlag(false);
 		//コンボ状態をリセット
 		SetComboStateNone();
+		//被ダメージによって戻せなかった変数をリセット
+		m_mainUseWeapon.weapon->ResetVariable();
 		//ステート共通の状態遷移処理に遷移
 		ProcessCommonStateTransition();
 	}
@@ -597,6 +604,8 @@ void Brave::ProcessDefendStateTransition()
 		SetAllInfoAboutActionFlag(false);
 		//コンボ状態をリセット
 		SetComboStateNone();
+		//被ダメージによって戻せなかった変数をリセット
+		m_mainUseWeapon.weapon->ResetVariable();
 		//ステート共通の状態遷移処理に遷移
 		ProcessCommonStateTransition();
 	}
@@ -610,6 +619,12 @@ bool Brave::RotationOnly()
 	{
 		return true;
 	}
+	//装備中の武器の回転可能フラグがtrueなら
+	else if (m_mainUseWeapon.weapon->GetRotationDelectionFlag() == true)
+	{
+		return true;
+	}
+		
 
 	return false;
 }
@@ -624,6 +639,8 @@ void Brave::ReverseWeapon()
 	m_subUseWeapon.weapon->ReverseWeaponState();
 	//攻撃力を現在の武器のものに変更。
 	m_status.atk = m_mainUseWeapon.weapon->GetWeaponPower();
+	//
+	m_mainUseWeapon.weapon->SetHittableFlag(true);
 }
 
 void Brave::ChangeUseWeapon()
