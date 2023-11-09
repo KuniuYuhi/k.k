@@ -2,13 +2,16 @@
 
 //相手に攻撃をヒットさせられるかの判定を行う
 //多段ヒットする攻撃で使う
-struct HitDetection
+class HitDetection
 {
 private:
 	float timer = 0.0f;			//タイマー
-	bool hittableFlag = false;
+	bool hittableFlag = true;
 
 public:
+	HitDetection(){}
+	~HitDetection(){}
+
 	/// <summary>
 	/// 多段ヒット可能か
 	/// </summary>
@@ -34,4 +37,3 @@ public:
 		return hittableFlag;
 	}
 };
-
