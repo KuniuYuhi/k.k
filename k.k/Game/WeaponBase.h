@@ -1,7 +1,9 @@
 #pragma once
 #include "IWeapon.h"
+#include "HitDetection.h"
 
 class Brave;
+class HitDetection;
 
 class WeaponBase:public IWeapon
 {
@@ -113,17 +115,40 @@ public:
 	/// 多段ヒット攻撃がヒットしたかのフラグを設定
 	/// </summary>
 	/// <param name="flag"></param>
-	virtual void SetHittableFlag(bool flag)
+	void SetHittableFlag(bool flag)
 	{
-	};
+		m_hitDelection.SetHittableFlag(flag);
+	}
 	/// <summary>
 	/// 多段ヒット攻撃がヒットしたかのフラグを取得
 	/// </summary>
 	/// <returns></returns>
-	virtual const bool& GetHittableFlag() const
+	const bool& GetHittableFlag() const
 	{
-		return true;
+		return m_hitDelection.GetHittableFlag();
 	}
+
+	/// <summary>
+	/// 回転可能フラグの設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetRotationDelectionFlag(bool flag)
+	{
+		m_RotationDelectionFlag = flag;
+	}
+	/// <summary>
+	/// 回転可能フラグの取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetRotationDelectionFlag() const
+	{
+		return m_RotationDelectionFlag;
+	}
+
+	/// <summary>
+	/// 被ダメージなどで、正常に戻すはずだった変数を強制的にリセットする
+	/// </summary>
+	virtual void ResetVariable(){}
 
 protected:
 	/// <summary>
@@ -145,15 +170,19 @@ protected:
 
 protected:
 
-	Brave* m_brave = nullptr;
+	Brave*				m_brave = nullptr;
 
-	EnWeaponState m_enWeaponState = enWeaponState_None;
+	HitDetection		m_hitDelection;
 
-	int m_power = 0;		//武器の攻撃力
+	EnWeaponState		m_enWeaponState = enWeaponState_None;
 
-	EnDefendTipe m_enDefendTipe = enDefendTipe_None;
+	EnDefendTipe		m_enDefendTipe = enDefendTipe_None;
 
-	bool m_stowedFlag = false;		//収納状態フラグ。処理しないようにするためのフラグ
+	int					m_power = 0;							//武器の攻撃力
+
+	bool				m_stowedFlag = false;					//収納状態フラグ。処理しないようにするためのフラグ
+
+	bool				m_RotationDelectionFlag = false;		//回転可能フラグ
 
 };
 
