@@ -10,6 +10,8 @@ namespace {
 	const int POWER = 10;
 
 	const float HITTABLE_TIME = 0.15f;
+
+	const float CHARGE_COMPLETE_TIME = 1.0f;
 }
 
 Bow::Bow()
@@ -31,10 +33,7 @@ bool Bow::Start()
 	m_brave = FindGO<Brave>("brave");
 
 	//矢のオブジェクトを生成
-	m_arrow = NewGO<Arrow>(0, "arrow");
-	m_arrow->SetBow(this);
-	//矢を持っているので、保持フラグをセット
-	SetStockArrowFlag(true);
+	CreateArrow();
 
 	InitModel();
 
@@ -61,14 +60,16 @@ void Bow::Update()
 		return;
 	}
 
-	if (GetStockArrowFlag() != true)
+	//アニメーション終了時に矢を持っていなかったら、矢を生成
+	if (m_brave->GetModelRender().IsPlayingAnimation() == false)
 	{
-		m_arrow = NewGO<Arrow>(0, "arrow");
-		m_arrow->SetBow(this);
-		//矢を持っているので、保持フラグをセット
-		SetStockArrowFlag(true);
+		if (GetStockArrowFlag() != true)
+		{
+			CreateArrow();
+		}
 	}
 
+	
 	//ヒット可能か判断する
 	m_hitDelection.IsHittable(HITTABLE_TIME);
 
@@ -99,13 +100,28 @@ void Bow::ProcessSkillAttack()
 	//ボタンを押している間チャージ
 	if (g_pad[0]->IsPress(enButtonB) == true)
 	{
-		int a = 0;
+		//チャージしている間は回転可能
+		SetRotationDelectionFlag(true);
+		//チャージタイマーを加算
+		m_ChargeTimer += g_gameTime->GetFrameDeltaTime();
+
 	}
-	//離したら矢を発射
-	else
+	//離した時にチャージタイマーがチャージ完了タイムを超えていたら
+	//矢を撃つ
+	else if (m_ChargeTimer >= CHARGE_COMPLETE_TIME)
 	{
+		//チャージタイマーをリセット
+		m_ChargeTimer = 0.0f;
+		//矢を撃つので回転可能フラグをリセット
+		SetRotationDelectionFlag(false);
 		//勇者のアニメーションをスキルメインに切り替え
 		m_brave->SetNextAnimationState(Brave::enAnimationState_Skill_Main);
+	}
+	//チャージ完了できなかったら
+	else
+	{
+		m_brave->SetAllInfoAboutActionFlag(false);
+		m_brave->ProcessCommonStateTransition();
 	}
 }
 
@@ -205,6 +221,15 @@ void Bow::SkillShot()
 	}
 }
 
+void Bow::CreateArrow()
+{
+	//矢のオブジェクトを生成
+	m_arrow = NewGO<Arrow>(0, "arrow");
+	m_arrow->SetBow(this);
+	//矢を持っているので、保持フラグをセット
+	SetStockArrowFlag(true);
+}
+
 void Bow::Render(RenderContext& rc)
 {
 	if (GetWeaponState() == enWeaponState_Stowed)
@@ -228,4 +253,6 @@ void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	{
 		SkillShot();
 	}
+
+	
 }

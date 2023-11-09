@@ -1,10 +1,8 @@
 #pragma once
 
 #include "WeaponBase.h"
-#include "HitDetection.h"
 
 class Arrow;
-class HitDetection;
 
 class Bow :public WeaponBase
 {
@@ -55,21 +53,13 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	const bool& GetAttackHitFlag() const;
+	
 	/// <summary>
-	/// 多段ヒット攻撃がヒットしたかのフラグを設定
+	/// 被ダメージなどで、正常に戻すはずだった変数を強制的にリセットする
 	/// </summary>
-	/// <param name="flag"></param>
-	void SetHittableFlag(bool flag) override
+	void ResetVariable() override
 	{
-		m_hitDelection.SetHittableFlag(flag);
-	}
-	/// <summary>
-	/// 多段ヒット攻撃がヒットしたかのフラグを取得
-	/// </summary>
-	/// <returns></returns>
-	const bool& GetHittableFlag() const override
-	{
-		return m_hitDelection.GetHittableFlag();
+		m_RotationDelectionFlag = false;
 	}
 
 private:
@@ -111,10 +101,13 @@ private:
 		return m_stockArrowFlag;
 	}
 
-	
+	/// <summary>
+	/// 矢の生成処理
+	/// </summary>
+	void CreateArrow();
 
 private:
-	HitDetection m_hitDelection;
+
 	Arrow* m_arrow = nullptr;
 
 	ModelRender m_modelBow;		//弓モデル
@@ -133,6 +126,6 @@ private:
 
 	bool m_stockArrowFlag = false;
 
-	
+	float m_ChargeTimer = 0.0f;		//スキルのチャージタイマー
 };
 
