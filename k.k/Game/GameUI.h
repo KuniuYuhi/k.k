@@ -78,75 +78,100 @@ public:
 	}
 
 	/// <summary>
-	/// スプライトの座標、サイズ、回転を設定
+	/// スプライトレンダーの初期化。
 	/// </summary>
-	/// <param name="spriterender">スプライトレンダー</param>
+	/// <param name="spriterender">初期化したいスプライトレンダー</param>
+	/// <param name="filePath">画像のファイルパス</param>
+	/// <param name="width">画像の幅</param>
+	/// <param name="height">画像の高さ</param>
 	/// <param name="position">座標</param>
 	/// <param name="scale">サイズ</param>
 	/// <param name="rotation">回転</param>
-	void SettingSpriteRender(
-		SpriteRender& spriterender, Vector3 position, Vector3 scale, Quaternion rotation)
-	{
-		spriterender.SetPosition(position);
-		spriterender.SetScale(scale);
-		spriterender.SetRotation(rotation);
-		spriterender.Update();
-	}
+	void InitSpriteRender(
+		SpriteRender& spriterender,
+		const char* filePath,
+		const float width, const float height,
+		Vector3 position,
+		Vector3 scale = g_vec3One,
+		Quaternion rotation = g_quatIdentity
+	);
+	/// <summary>
+	/// フォントレンダーの初期化。
+	/// </summary>
+	/// <param name="fontRender">初期化したいフォントレンダー</param>
+	/// <param name="position">座標</param>
+	/// <param name="color">カラー</param>
+	/// <param name="scale">サイズ</param>
+	/// <param name="isShadowParam">影(輪郭)をつけるか</param>
+	/// <param name="shadowOffset">オフセット量</param>
+	/// <param name="shadowColor">影のカラー</param>
+	void InitFontRender(
+		FontRender& fontRender,
+		Vector2 position,
+		float scale = 1.0f,
+		Vector4 color = g_vec4White,
+		bool isShadowParam = true,
+		float shadowOffset = 1.8f,
+		Vector4 shadowColor = g_vec4Black
+	);
+
+private:
+	/// <summary>
+	/// プレイヤーのHPの処理
+	/// </summary>
+	void ProcessPlayerHp();
+	/// <summary>
+	/// プレイヤーのMPの処理
+	/// </summary>
+	void ProcessPlayerMp();
+
+	/// <summary>
+	/// ボスのHPの処理
+	/// </summary>
+	void ProcessBossHP();
 
 private:
 
 	struct MonsterUI
 	{
-		FontRender m_hpFont;
-		FontRender m_AccumulationDamageFont;
+		FontRender m_hpFont;					//HPの値
+		FontRender m_AccumulationDamageFont;	//
 
-		SpriteRender m_IconRender;
-		SpriteRender m_HpFlameRender;
-		SpriteRender m_HpFrontRender;
-		SpriteRender m_HpBackRender;
+		SpriteRender m_IconRender;				//キャラアイコン
+		SpriteRender m_HpFlameRender;			//HPのフレーム
+		SpriteRender m_HpFrontRender;			//変動するHPバー
+		SpriteRender m_HpWhiteRender;			//遅れて減らす白いHPバー
+		SpriteRender m_HpBackRender;			//HPバーの裏側
 	};
 
+	//プレイヤーのUI
 	struct PlayerUI
 	{
-		FontRender m_hpFont;
-		FontRender m_mpFont;
+		FontRender m_hpFont;						//HPの値
+		FontRender m_mpFont;						//MPの値
 
-		SpriteRender m_MainIconRender;
-		SpriteRender m_SubIconRender;
+		SpriteRender m_characterIconRender;			//キャラアイコン
 
-		SpriteRender m_MainIconBaseRender;
-		SpriteRender m_SubIconBaseRender;
+		SpriteRender m_iconBaseRender;				//キャラアイコンのベース
 
-		SpriteRender m_MainStatusBarRender;
-		SpriteRender m_SubStatusBarRender;
+		SpriteRender m_statusBarRender;			//ステータスバー
 
-		SpriteRender m_MainHpFrontRender;
-		SpriteRender m_MainHpBackRender;
-		SpriteRender m_MainMpFrontRender;
-		SpriteRender m_MainMpBackRender;
+		SpriteRender m_hpFrontRender;			//変動するHPバー
+		SpriteRender m_hpBackRender;			//HPバーの裏側
+		SpriteRender m_hpWhiteRender;			//遅れて減らす白いHPバー
+		SpriteRender m_mpFrontRender;			//変動するMPバー
+		SpriteRender m_mpBackRender;			//MPバーの裏側
 
-		SpriteRender m_SubHpFrontRender;
-		SpriteRender m_SubHpBackRender;
-		SpriteRender m_SubMpFrontRender;
-		SpriteRender m_SubMpBackRender;
+		SpriteRender m_SkillCenterRender;			//スキル関連の中心
+		SpriteRender m_Skill_1FlameRender;			//スキル1のフレーム
+		SpriteRender m_Skill_1FlameInsideRender;	//スキル1のフレームの内側
 
-		SpriteRender m_SkillCenterRender;
-		SpriteRender m_Skill_1FlameRender;
-		SpriteRender m_Skill_2FlameRender;
-		SpriteRender m_Skill_1FlameInsideRender;
-		SpriteRender m_Skill_2FlameInsideRender;
-
-		SpriteRender m_SkillButtonXRender;
-		SpriteRender m_SkillButtonYRender;
-
-		SpriteRender m_ChangeCharacterIconRender;
-		SpriteRender m_ChangeCharacterIconBlackRender;
+		SpriteRender m_SkillButtonXRender;			//スキルを発動できるボタン
 		
-		SpriteRender m_TimeFlameRender;
-
 	};
 
 	FontRender m_TimerFont;				//制限時間
+	SpriteRender m_TimeFlameRender;		//制限時間の枠
 
 	Game* m_game = nullptr;
 	Player* m_player = nullptr;
@@ -155,6 +180,13 @@ private:
 	PlayerUI m_playerUI;			//プレイヤーの情報のUI
 	MonsterUI m_monsterUI;			//モンスターの情報のUI
 
+	Vector3 m_playerHpWhiteScale = g_vec3One;		//プレイヤーの白いHPバー
+	Vector3 m_oldPlayerHpScale = g_vec3One;	//前フレームのプレイヤーのHPバー
+
+	Vector3 m_BossHpWhiteScale = g_vec3One;			//ボスの白いHPバー
+	Vector3 m_oldBossHpScale = g_vec3One;		//前フレームのボスのHPバー
+
+	Vector3 m_playerMpWhiteScale = g_vec3One;		//プレイヤーの白いMPバー
 
 	float m_oldMainCharaHP = 0.0f;				//前フレームのメインキャラのHP
 
@@ -165,6 +197,15 @@ private:
 	bool m_coolTimeDrawFlag = true;
 
 	float m_wipeSize = 0;
+
+	float m_bossLerpSpeed = 0.0f;
+	float m_playerLerpSpeed = 0.0f;
+
+
+
+
+
+
 
 };
 

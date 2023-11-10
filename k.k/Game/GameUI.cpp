@@ -4,9 +4,11 @@
 #include "Player.h"
 #include "Lich.h"
 
+//todo MPも白いバーいれる？
+
 namespace {
 
-	const Vector3 TIMER_POS = { -34.0f,522.0f,0.0f };
+	const Vector2 TIMER_POS = { -34.0f,522.0f };
 	const Vector2 TIMER_OFFSET = { 50.0f,-20.0f };
 
 	/// <summary>
@@ -18,7 +20,7 @@ namespace {
 	const Vector3 BOSS_HP_FRONT_POS = { -489.0f,450.0f,0.0f };
 	const Vector3 BOSS_HP_BACK_POS = { 0.0f,450.0f,0.0f };
 
-	const Vector2 BSS_HP_FONT_POS = { -200.0f, 486.0f };
+	const Vector2 BOSS_HP_FONT_POS = { -200.0f, 486.0f };
 
 	/// <summary>
 	/// プレイヤー側
@@ -29,15 +31,10 @@ namespace {
 	const Vector3 MAIN_ICON_POS = { -301.0f, -411.0f, 0.0f };
 	const Vector3 MAIN_ICON_BASE_POS = { -301.0f, -411.0f, 0.0f };
 
-	const Vector3 SUB_ICON_POS = { -863.0f, -219.0f, 0.0f };
-	const Vector3 SUB_ICON_BASE_POS = { -863.0f, -219.0f, 0.0f };
-	const Vector3 SUB_ICON_SCALE = { 0.65f, 0.65f, 0.65f };
-
 	const Vector3 CHARA_CHANGE_ICON_POS = { -490.0f,-467.0f,0.0f };
 	const Vector3 CHARA_CHANGE_ICON_FONT_POS = { -546.0f,-433.0f,0.0f };
 
 	const Vector3 MAIN_STATUS_BAR = { 36.0f, -432.0f, 0.0f };
-	const Vector3 SUB_STATUS_BAR = { -682.0f, -215.0f, 0.0f };
 
 	const Vector3 MAIN_HP_FRONT_BAR = { -166.0f, -469.0f, 0.0f };
 	const Vector3 MAIN_HP_BACK_BAR = { 101.0f, -468.0f, 0.0f };
@@ -47,24 +44,25 @@ namespace {
 	const Vector2 HP_FONT_POS = { -164.0f,-425.0f };
 	const Vector2 MP_FONT_POS = { -164.0f, -354.0f };
 
-	const Vector3 SUB_HP_FRONT_BAR = { -771.0f, -233.0f, 0.0f };
-	const Vector3 SUB_HP_BACK_BAR = { -651.0f, -233.0f, 0.0f };
-	const Vector3 SUB_MP_FRONT_BAR = { -770.0f, -198.0f, 0.0f };
-	const Vector3 SUB_MP_BACK_BAR = { -667.0f, -198.0f, 0.0f };
 	//+10+10
 	const Vector3 SKILL_CENTER_POS = { 755.0f,-396.0f,0.0f };
 	const Vector3 SKILL_1__POS = { 592.0f,-376.0f,0.0f };
-	const Vector3 SKILL_2__POS = { 755.0f,-217.0f,0.0f };
 
 	const Vector3 SKILL_1_X_POS = { 674.0f,-376.0f,0.0f };
-	const Vector3 SKILL_2_Y_POS = { 755.0f,-295.0f,0.0f };
 
-	const Vector3 ICON_LERP_CENTER_POS = { -571.0f,300.0f,0.0f };
+
+
+
 
 	const Vector3 TIME_FLAME_POS = { 0.0f,509.0f,0.0f };
 
-	const float CHANGE_CHARA_COOLTIME = 3.0f;
+	const Vector3 TIME_FLAME_SIZE = { 0.6f, 0.5f, 0.6f };
 
+
+	const Vector3 HP_SCALE_END_POS = { 0.0f,1.0f,1.0f };
+
+	const float WHITE_HP_LERP_START = 0.6f;
+	const float WHITE_HP_LERP_END = 5.0f;
 }
 
 GameUI::GameUI()
@@ -83,11 +81,13 @@ bool GameUI::Start()
 	InitMonsterUI();
 
 	//制限時間
-	m_TimerFont.SetColor(g_vec4White);
-	m_TimerFont.SetScale(1.1f);
+	InitFontRender(m_TimerFont, TIMER_POS, 1.1f);
 	m_TimerFont.SetOffset(TIMER_OFFSET);
-	m_TimerFont.SetPosition(TIMER_POS);
-	m_TimerFont.SetShadowParam(true, 2.0f, g_vec4Black);
+
+	//制限時間の枠
+	InitSpriteRender(
+		m_TimeFlameRender, "Assets/sprite/InGame/Character/TimeFlame2.DDS", 500, 124, TIME_FLAME_POS, TIME_FLAME_SIZE
+	);
 
 	m_oldMainCharaHP = m_player->GetNowActorStatus().hp;
 
@@ -96,9 +96,9 @@ bool GameUI::Start()
 
 void GameUI::Update()
 {
-
+	//プレイヤーのUIの処理
 	PlayerUIUpdate();
-
+	//ボスのUIの処理
 	MonsterUIUpdate();
 
 
@@ -115,48 +115,12 @@ void GameUI::PlayerUIUpdate()
 
 void GameUI::UpdateMainStatus()
 {
-	//線形補間
-	//HPバーの減っていく割合。
-	Vector3 HpScale = Vector3::One;
-	HpScale = CalcGaugeScale(m_player->GetNowActorStatus().maxHp, m_player->GetNowActorStatus().hp);
-	m_playerUI.m_MainHpFrontRender.SetScale(HpScale);
-	//前フレームのメインキャラのHPと現在のフレームのメインキャラのHPが違うなら
-	//if (m_oldMainCharaHP != m_player->GetNowActorStatus().hp)
-	//{
-	//	float nowHp = m_player->GetNowActorStatus().hp;
-	//	float HpScaleX = 0.0f;
-	//	HpScaleX = Math::Lerp(m_gaugeTimer, m_oldMainCharaHP, nowHp);
-	//	Vector3 HpScale = Vector3::One;
-	//	HpScale.x -= HpScaleX;
-	//	m_gaugeTimer += g_gameTime->GetFrameDeltaTime();
-	//}
-	//else
-	//{
-	//	//前フレームのメインキャラのHPをセーブ
-	//	m_oldMainCharaHP = m_player->GetNowActorStatus().hp;
-	//	m_gaugeTimer = 0.0f;
-	//}
-	
-	//MPバーの減っていく割合。
-	Vector3 MpScale = Vector3::One;
-	MpScale = CalcGaugeScale(m_player->GetNowActorStatus().maxMp, m_player->GetNowActorStatus().mp);
-	m_playerUI.m_MainMpFrontRender.SetScale(MpScale);
-	
-	//HPフォント
-	int HpFont = m_player->GetNowActorStatus().hp;
-	wchar_t HP[255];
-	swprintf_s(HP, 255, L"HP      %3d", HpFont);
-	m_playerUI.m_hpFont.SetText(HP);
+	//HPの処理
+	ProcessPlayerHp();
+	//MPの処理
+	ProcessPlayerMp();
 
-	//HPフォント
-	int MpFont = m_player->GetNowActorStatus().mp;
-	wchar_t MP[255];
-	swprintf_s(MP, 255, L"MP     %3d", MpFont);
-	m_playerUI.m_mpFont.SetText(MP);
-
-	//更新
-	m_playerUI.m_MainHpFrontRender.Update();
-	m_playerUI.m_MainMpFrontRender.Update();
+	
 }
 
 void GameUI::UpdateCharaIcon()
@@ -164,7 +128,7 @@ void GameUI::UpdateCharaIcon()
 	//やられたキャラのアイコンをグレースケールにする
 	if (m_player->GetNowActorDieFlag()==true)
 	{
-		m_playerUI.m_MainIconRender.SetGrayScale(true);
+		m_playerUI.m_characterIconRender.SetGrayScale(true);
 	}
 }
 
@@ -177,33 +141,16 @@ Vector3 GameUI::CalcGaugeScale(float Maxvalue, float value)
 
 void GameUI::MonsterUIUpdate()
 {
+	//ボスがいないなら処理しない
 	if (m_lich == nullptr)
 	{
 		return;
 	}
 
+	//ボスのHPの処理
+	ProcessBossHP();
 
-	//HPバーの減っていく割合。
-	Vector3 HpScale = Vector3::One;
-	HpScale = CalcGaugeScale(m_lich->GetStatus().maxHp, m_lich->GetStatus().hp);
-	m_monsterUI.m_HpFrontRender.SetScale(HpScale);
-
-
-	//ボスのHPの表示
-	int NowActorMP = m_lich->GetStatus().hp;
-	int NowActorMaxMP = m_lich->GetStatus().maxHp;
-	wchar_t MP[255];
-	swprintf_s(MP, 255, L"HP %3d/%d", NowActorMP, NowActorMaxMP);
-	m_monsterUI.m_hpFont.SetText(MP);
-
-	/*int a = m_lich->GetAccumulationDamage();
-	int b = m_lich->GetHitCount();
-	wchar_t A[255];
-	swprintf_s(A, 255, L"%3d%3d回", a,b);
-	m_monsterUI.m_AccumulationDamageFont.SetText(A);*/
-
-
-	m_monsterUI.m_HpFrontRender.Update();
+	
 }
 
 void GameUI::TimerUIUpdate()
@@ -221,55 +168,39 @@ void GameUI::TimerUIUpdate()
 
 void GameUI::DrawPlayerUI(RenderContext& rc)
 {
-	
 	//メインHP
-	m_playerUI.m_MainHpBackRender.Draw(rc);
-	m_playerUI.m_MainHpFrontRender.Draw(rc);
+	m_playerUI.m_hpBackRender.Draw(rc);
+
+	if (m_playerHpWhiteScale.x > 0.0f)
+	{
+		m_playerUI.m_hpWhiteRender.Draw(rc);
+	}
+
+	
+	m_playerUI.m_hpFrontRender.Draw(rc);
 	//メインMP
-	m_playerUI.m_MainMpBackRender.Draw(rc);
-	m_playerUI.m_MainMpFrontRender.Draw(rc);
-	//サブHP
-	m_playerUI.m_SubHpBackRender.Draw(rc);
-	m_playerUI.m_SubHpFrontRender.Draw(rc);
-	//サブMP
-	m_playerUI.m_SubMpBackRender.Draw(rc);
-	m_playerUI.m_SubMpFrontRender.Draw(rc);
-
-	//キャラチェンジのアイコン
-	m_playerUI.m_ChangeCharacterIconRender.Draw(rc);
-
+	m_playerUI.m_mpBackRender.Draw(rc);
+	m_playerUI.m_mpFrontRender.Draw(rc);
+	
 	//メインステータスバー
-	m_playerUI.m_MainStatusBarRender.Draw(rc);
-	//サブステータスバー
-	m_playerUI.m_SubStatusBarRender.Draw(rc);
+	m_playerUI.m_statusBarRender.Draw(rc);
 	//メインアイコンベース
-	m_playerUI.m_MainIconBaseRender.Draw(rc);
-	//サブアイコンベース
-	m_playerUI.m_SubIconBaseRender.Draw(rc);
+	m_playerUI.m_iconBaseRender.Draw(rc);
 	//スキルの真ん中の◇
 	m_playerUI.m_SkillCenterRender.Draw(rc);
 	//スキル１のフレーム
 	m_playerUI.m_Skill_1FlameRender.Draw(rc);
-	//スキル２のフレーム
-	m_playerUI.m_Skill_2FlameRender.Draw(rc);
 	//スキル１の内側のフレーム
 	m_playerUI.m_Skill_1FlameInsideRender.Draw(rc);
-	//スキル２の内側のフレーム
-	m_playerUI.m_Skill_2FlameInsideRender.Draw(rc);
 
 	//メインアイコン
-	m_playerUI.m_MainIconRender.Draw(rc);
-	//サブアイコン
-	m_playerUI.m_SubIconRender.Draw(rc);
-	
+	m_playerUI.m_characterIconRender.Draw(rc);
 	//Xボタン
 	m_playerUI.m_SkillButtonXRender.Draw(rc);
-	//Yボタン
-	m_playerUI.m_SkillButtonYRender.Draw(rc);
 
-	//制限時間の枠
-	m_playerUI.m_TimeFlameRender.Draw(rc);
-
+	//HPとMPのフォント
+	m_playerUI.m_hpFont.Draw(rc);
+	m_playerUI.m_mpFont.Draw(rc);
 }
 
 void GameUI::DrawMonsterUI(RenderContext& rc)
@@ -278,176 +209,268 @@ void GameUI::DrawMonsterUI(RenderContext& rc)
 	{
 		return;
 	}
-
-	
-
 	//アイコン
 	m_monsterUI.m_IconRender.Draw(rc);
 
 	//HP
+	
+
 	m_monsterUI.m_HpBackRender.Draw(rc);
+	if (m_BossHpWhiteScale.x > 0.0f)
+	{
+		m_monsterUI.m_HpWhiteRender.Draw(rc);
+	}
 	m_monsterUI.m_HpFrontRender.Draw(rc);
 
 	//HPのフレーム
 	m_monsterUI.m_HpFlameRender.Draw(rc);
-}
+
+	//HPのフォント
+	m_monsterUI.m_hpFont.Draw(rc);
+	m_monsterUI.m_AccumulationDamageFont.Draw(rc);
+} 
+
+
 
 void GameUI::Render(RenderContext& rc)
 {
 	DrawPlayerUI(rc);
 	DrawMonsterUI(rc);
 
+	m_TimeFlameRender.Draw(rc);
 	m_TimerFont.Draw(rc);
-
-	m_monsterUI.m_hpFont.Draw(rc);
-	m_monsterUI.m_AccumulationDamageFont.Draw(rc);
-
-	m_playerUI.m_hpFont.Draw(rc);
-	m_playerUI.m_mpFont.Draw(rc);
 }
 
 void GameUI::InitPlayerUI()
 {
-	m_playerUI.m_hpFont.SetPosition(HP_FONT_POS);
-	m_playerUI.m_hpFont.SetColor(g_vec4White);
-	m_playerUI.m_hpFont.SetScale(1.3f);
-	m_playerUI.m_hpFont.SetShadowParam(true, 1.8f, g_vec4Black);
-
-	m_playerUI.m_mpFont.SetPosition(MP_FONT_POS);
-	m_playerUI.m_mpFont.SetColor(g_vec4White);
-	m_playerUI.m_mpFont.SetScale(1.2f);
-	m_playerUI.m_mpFont.SetShadowParam(true, 1.8f, g_vec4Black);
+	//HPの値
+	InitFontRender(m_playerUI.m_hpFont, HP_FONT_POS, 1.3f);
+	//MPの値
+	InitFontRender(m_playerUI.m_mpFont, MP_FONT_POS, 1.2f);
 
 	//キャラアイコン
-	m_playerUI.m_MainIconRender.Init("Assets/sprite/InGame/Character/Icon_Hero.DDS",219,219);
-	SettingSpriteRender(
-		m_playerUI.m_MainIconRender, MAIN_ICON_POS, g_vec3One, g_quatIdentity);
-	m_playerUI.m_SubIconRender.Init("Assets/sprite/InGame/Character/Icon_Wizard.DDS", 219, 219);
-	SettingSpriteRender(
-		m_playerUI.m_SubIconRender, SUB_ICON_POS, Vector3(0.65f,0.65f,0.65f), g_quatIdentity);
+	InitSpriteRender(
+		m_playerUI.m_characterIconRender, "Assets/sprite/InGame/Character/Icon_Hero.DDS", 219, 219, MAIN_ICON_POS);
 
-	//キャラチェンジのアイコン
-	m_playerUI.m_ChangeCharacterIconRender.Init("Assets/sprite/InGame/Character/CharaChangeIcon.DDS", 140, 140);
-	SettingSpriteRender(
-		m_playerUI.m_ChangeCharacterIconRender, CHARA_CHANGE_ICON_POS, g_vec3One, g_quatIdentity);
-	m_playerUI.m_ChangeCharacterIconBlackRender.Init("Assets/sprite/InGame/Character/CharaChangeIcon_Black.DDS", 140, 140);
-	SettingSpriteRender(
-		m_playerUI.m_ChangeCharacterIconBlackRender, CHARA_CHANGE_ICON_POS, g_vec3One, g_quatIdentity);
-	
 	//アイコンベース
-	m_playerUI.m_MainIconBaseRender.Init("Assets/sprite/InGame/Character/Icon_Base_Main.DDS", 250, 250);
-	SettingSpriteRender(
-		m_playerUI.m_MainIconBaseRender, MAIN_ICON_BASE_POS, g_vec3One, g_quatIdentity);
-	m_playerUI.m_SubIconBaseRender.Init("Assets/sprite/InGame/Character/Icon_Base_Sub.DDS", 185, 185);
-	SettingSpriteRender(
-		m_playerUI.m_SubIconBaseRender, SUB_ICON_BASE_POS, Vector3(0.9f, 0.9f, 0.9f), g_quatIdentity);
+	InitSpriteRender(
+		m_playerUI.m_iconBaseRender, "Assets/sprite/InGame/Character/Icon_Base_Main.DDS", 250, 250, MAIN_ICON_BASE_POS);
 
 	//ステータスバー
-	m_playerUI.m_MainStatusBarRender.Init("Assets/sprite/InGame/Character/StatusBar_Main.DDS", 720, 206);
-	SettingSpriteRender(
-		m_playerUI.m_MainStatusBarRender, MAIN_STATUS_BAR, g_vec3One, g_quatIdentity);
-	m_playerUI.m_SubStatusBarRender.Init("Assets/sprite/InGame/Character/StatusBar_Sub.DDS", 320, 104);
-	SettingSpriteRender(
-		m_playerUI.m_SubStatusBarRender, SUB_STATUS_BAR, g_vec3One, g_quatIdentity);
+	InitSpriteRender(
+		m_playerUI.m_statusBarRender, "Assets/sprite/InGame/Character/StatusBar_Main.DDS", 720, 206, MAIN_STATUS_BAR);
+	
+	//HPバー
+	InitSpriteRender(
+		m_playerUI.m_hpFrontRender, "Assets/sprite/InGame/Character/HP_Front_Main.DDS", 550, 72, MAIN_HP_FRONT_BAR);
+	//ピボットの設定
+	m_playerUI.m_hpFrontRender.SetPivot(HP_OR_MP_PIBOT);
 
-	//メインHP
-	m_playerUI.m_MainHpFrontRender.Init("Assets/sprite/InGame/Character/HP_Front_Main.DDS", 550, 72);
-	m_playerUI.m_MainHpFrontRender.SetPivot(HP_OR_MP_PIBOT);
-	SettingSpriteRender(
-		m_playerUI.m_MainHpFrontRender, MAIN_HP_FRONT_BAR, g_vec3One, g_quatIdentity);
-	m_playerUI.m_MainHpBackRender.Init("Assets/sprite/InGame/Character/HP_Back_Main.DDS", 585, 63);
-	SettingSpriteRender(
-		m_playerUI.m_MainHpBackRender, MAIN_HP_BACK_BAR, g_vec3One, g_quatIdentity);
+	//白いHPバー
+	InitSpriteRender(
+		m_playerUI.m_hpWhiteRender, "Assets/sprite/InGame/Character/HP_White.DDS", 550, 72, MAIN_HP_FRONT_BAR);
+	//ピボットの設定
+	m_playerUI.m_hpWhiteRender.SetPivot(HP_OR_MP_PIBOT);
 
-	//メインMP
-	m_playerUI.m_MainMpFrontRender.Init("Assets/sprite/InGame/Character/MP_Front_Main.DDS", 483, 53);
-	m_playerUI.m_MainMpFrontRender.SetPivot(HP_OR_MP_PIBOT);
-	SettingSpriteRender(
-		m_playerUI.m_MainMpFrontRender, MAIN_MP_FRONT_BAR, g_vec3One, g_quatIdentity);
-	m_playerUI.m_MainMpBackRender.Init("Assets/sprite/InGame/Character/MP_Back_Main.DDS", 483, 53);
-	SettingSpriteRender(
-		m_playerUI.m_MainMpBackRender, MAIN_MP_BACK_BAR, g_vec3One, g_quatIdentity);
+	//HPバーの裏側
+	InitSpriteRender(
+		m_playerUI.m_hpBackRender, "Assets/sprite/InGame/Character/HP_Back_Main.DDS", 585, 63, MAIN_HP_BACK_BAR);
 
-	//サブHP
-	m_playerUI.m_SubHpFrontRender.Init("Assets/sprite/InGame/Character/HP_Front_Sub.DDS", 242, 32);
-	m_playerUI.m_SubHpFrontRender.SetPivot(HP_OR_MP_PIBOT);
-	SettingSpriteRender(
-		m_playerUI.m_SubHpFrontRender, SUB_HP_FRONT_BAR, g_vec3One, g_quatIdentity);
-	m_playerUI.m_SubHpBackRender.Init("Assets/sprite/InGame/Character/HP_Back_Sub.DDS", 244, 32);
-	SettingSpriteRender(
-		m_playerUI.m_SubHpBackRender, SUB_HP_BACK_BAR, g_vec3One, g_quatIdentity);
-	//サブMP
-	m_playerUI.m_SubMpFrontRender.Init("Assets/sprite/InGame/Character/MP_Front_Sub.DDS", 206, 31);
-	m_playerUI.m_SubMpFrontRender.SetPivot(HP_OR_MP_PIBOT);
-	SettingSpriteRender(
-		m_playerUI.m_SubMpFrontRender, SUB_MP_FRONT_BAR, g_vec3One, g_quatIdentity);
-	m_playerUI.m_SubMpBackRender.Init("Assets/sprite/InGame/Character/MP_Back_Sub.DDS", 206, 31);
-	SettingSpriteRender(
-		m_playerUI.m_SubMpBackRender, SUB_MP_BACK_BAR, g_vec3One, g_quatIdentity);
+	//MPバー
+	InitSpriteRender(
+		m_playerUI.m_mpFrontRender, "Assets/sprite/InGame/Character/MP_Front_Main.DDS", 483, 53, MAIN_MP_FRONT_BAR);
+	//ピボットの設定
+	m_playerUI.m_mpFrontRender.SetPivot(HP_OR_MP_PIBOT);
 
+	//MPバーの裏側
+	InitSpriteRender(
+		m_playerUI.m_mpBackRender, "Assets/sprite/InGame/Character/MP_Back_Main.DDS", 483, 53, MAIN_MP_BACK_BAR);
+	
 	//スキルの真ん中の◇
-	m_playerUI.m_SkillCenterRender.Init("Assets/sprite/InGame/Character/Skill_Center.DDS", 400, 400);
-	SettingSpriteRender(
-		m_playerUI.m_SkillCenterRender, SKILL_CENTER_POS, Vector3(0.7f,0.7f,0.7f), g_quatIdentity);
+	InitSpriteRender(
+		m_playerUI.m_SkillCenterRender, "Assets/sprite/InGame/Character/Skill_Center.DDS", 400, 400, SKILL_CENTER_POS,g_vec3One*0.7f);
+
 	//スキル１のフレーム
-	m_playerUI.m_Skill_1FlameRender.Init("Assets/sprite/InGame/Character/Skill_Flame.DDS", 285, 285);
-	SettingSpriteRender(
-		m_playerUI.m_Skill_1FlameRender, SKILL_1__POS, Vector3(0.7f, 0.7f, 0.7f), g_quatIdentity);
+	InitSpriteRender(
+		m_playerUI.m_Skill_1FlameRender, "Assets/sprite/InGame/Character/Skill_Flame.DDS", 285, 285, SKILL_1__POS, g_vec3One * 0.7f);
+
 	//スキル１の内側のフレーム
-	m_playerUI.m_Skill_1FlameInsideRender.Init("Assets/sprite/InGame/Character/Skill_Flame_Inside.DDS",262, 262);
-	SettingSpriteRender(
-		m_playerUI.m_Skill_1FlameInsideRender, SKILL_1__POS, Vector3(0.7f, 0.7f, 0.7f), g_quatIdentity);
-	//スキル２のフレーム
-	m_playerUI.m_Skill_2FlameRender.Init("Assets/sprite/InGame/Character/Skill_Flame.DDS", 285, 285);
-	SettingSpriteRender(
-		m_playerUI.m_Skill_2FlameRender, SKILL_2__POS, Vector3(0.7f, 0.7f, 0.7f), g_quatIdentity);
-	//スキル２の内側のフレーム
-	m_playerUI.m_Skill_2FlameInsideRender.Init("Assets/sprite/InGame/Character/Skill_Flame_Inside.DDS", 262, 262);
-	SettingSpriteRender(
-		m_playerUI.m_Skill_2FlameInsideRender, SKILL_2__POS, Vector3(0.7f, 0.7f, 0.7f), g_quatIdentity);
+	InitSpriteRender(
+		m_playerUI.m_Skill_1FlameInsideRender, "Assets/sprite/InGame/Character/Skill_Flame_Inside.DDS", 262, 262, SKILL_1__POS, g_vec3One * 0.7f);
+
 	//スキル１のボタンX
-	m_playerUI.m_SkillButtonXRender.Init("Assets/sprite/InGame/Character/SkillButtonX.DDS", 100, 90);
-	SettingSpriteRender(
-		m_playerUI.m_SkillButtonXRender, SKILL_1_X_POS, Vector3(0.7f, 0.7f, 0.7f), g_quatIdentity);
-	//スキル２のボタンY
-	m_playerUI.m_SkillButtonYRender.Init("Assets/sprite/InGame/Character/SkillButtonY.DDS", 100, 90);
-	SettingSpriteRender(
-		m_playerUI.m_SkillButtonYRender, SKILL_2_Y_POS, Vector3(0.7f, 0.7f, 0.7f), g_quatIdentity);
+	InitSpriteRender(
+		m_playerUI.m_SkillButtonXRender, "Assets/sprite/InGame/Character/SkillButtonX.DDS", 100, 90, SKILL_1_X_POS, g_vec3One * 0.7f);
 
-	//制限時間の枠
-	m_playerUI.m_TimeFlameRender.Init("Assets/sprite/InGame/Character/TimeFlame2.DDS", 500, 124);
-	SettingSpriteRender(
-		m_playerUI.m_TimeFlameRender, TIME_FLAME_POS, Vector3(0.6f, 0.5f, 0.6f), g_quatIdentity);
-
-
+	
 }
 
 void GameUI::InitMonsterUI()
 {
-	m_monsterUI.m_hpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_monsterUI.m_hpFont.SetScale(1.1f);
-	m_monsterUI.m_hpFont.SetShadowParam(true, 1.8f, g_vec4Black);
-	m_monsterUI.m_hpFont.SetPosition(BSS_HP_FONT_POS);
+	//HPの値
+	InitFontRender(m_monsterUI.m_hpFont, BOSS_HP_FONT_POS, 1.1f);
 
-	m_monsterUI.m_AccumulationDamageFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_monsterUI.m_AccumulationDamageFont.SetScale(1.5f);
-	m_monsterUI.m_AccumulationDamageFont.SetPosition(0.0f, 500.0f);
-
+	//確認用
+	InitFontRender(m_monsterUI.m_AccumulationDamageFont, { 0.0f, 500.0f });
+	
 	//ボスのアイコン
-	m_monsterUI.m_IconRender.Init("Assets/sprite/InGame/Character/Icon_Lich.DDS", 180, 180);
-	SettingSpriteRender(
-		m_monsterUI.m_IconRender, BOSS_ICON_POS, Vector3(0.8f,0.8f,0.8f), g_quatIdentity);
+	InitSpriteRender(
+		m_monsterUI.m_IconRender, "Assets/sprite/InGame/Character/Icon_Lich.DDS", 180, 180, BOSS_ICON_POS, g_vec3One * 0.8f);
+
 	//ボスのHPのフレーム
-	m_monsterUI.m_HpFlameRender.Init("Assets/sprite/InGame/Character/HP_Flame_Boss.DDS", 1000, 60);
-	SettingSpriteRender(
-		m_monsterUI.m_HpFlameRender, BOSS_HP_FLAME_POS, g_vec3One, g_quatIdentity);
-	//ボスのHP
-	m_monsterUI.m_HpFrontRender.Init("Assets/sprite/InGame/Character/HP_Front_Boss.DDS", 978, 47);
+	InitSpriteRender(
+		m_monsterUI.m_HpFlameRender, "Assets/sprite/InGame/Character/HP_Flame_Boss.DDS", 1000, 60, BOSS_HP_FLAME_POS);
+
+	//ボスのHPバー
+	InitSpriteRender(
+		m_monsterUI.m_HpFrontRender, "Assets/sprite/InGame/Character/HP_Front_Boss.DDS", 978, 47, BOSS_HP_FRONT_POS);
+	//ピボットの設定
 	m_monsterUI.m_HpFrontRender.SetPivot(HP_OR_MP_PIBOT);
-	SettingSpriteRender(
-		m_monsterUI.m_HpFrontRender, BOSS_HP_FRONT_POS, g_vec3One, g_quatIdentity);
-	m_monsterUI.m_HpBackRender.Init("Assets/sprite/InGame/Character/HP_Back_Boss.DDS", 978, 47);
-	SettingSpriteRender(
-		m_monsterUI.m_HpBackRender, BOSS_HP_BACK_POS, g_vec3One, g_quatIdentity);
+	
+	//ボスの白いHPバー
+	InitSpriteRender(
+		m_monsterUI.m_HpWhiteRender, "Assets/sprite/InGame/Character/HP_White_Boss.DDS", 978, 47, BOSS_HP_FRONT_POS);
+	//ピボットの設定
+	m_monsterUI.m_HpWhiteRender.SetPivot(HP_OR_MP_PIBOT);
+
+	//HPバーの裏側
+	InitSpriteRender(
+		m_monsterUI.m_HpBackRender, "Assets/sprite/InGame/Character/HP_Back_Boss.DDS", 978, 47, BOSS_HP_BACK_POS);
+}
+
+
+void GameUI::InitSpriteRender(
+	SpriteRender& spriterender, 
+	const char* filePath, 
+	const float width, const float height,
+	Vector3 position, 
+	Vector3 scale,
+	Quaternion rotation
+)
+{
+	//初期化
+	spriterender.Init(filePath, width, height);
+	//座標、サイズ、回転の設定と更新
+	spriterender.SetPosition(position);
+	spriterender.SetScale(scale);
+	spriterender.SetRotation(rotation);
+	spriterender.Update();
+}
+
+void GameUI::InitFontRender(
+	FontRender& fontRender, 
+	Vector2 position, 
+	float scale,
+	Vector4 color, 
+	bool isShadowParam, float shadowOffset, Vector4 shadowColor)
+{
+	fontRender.SetPosition(position);
+	fontRender.SetScale(scale);
+	fontRender.SetColor(color);
+	if (isShadowParam)
+	{
+		fontRender.SetShadowParam(
+			isShadowParam, shadowOffset, shadowColor
+		);
+	}
+}
+
+void GameUI::ProcessPlayerHp()
+{
+	//HPバーの減っていく割合。
+	Vector3 HpScale = Vector3::One;
+	HpScale = CalcGaugeScale(m_player->GetNowActorStatus().maxHp, m_player->GetNowActorStatus().hp);
+	m_playerUI.m_hpFrontRender.SetScale(HpScale);
+	//現在のフレームのHPと前フレームのHPのサイズが違うなら
+	if (HpScale.x < m_oldPlayerHpScale.x)
+	{
+		m_playerHpWhiteScale = m_oldPlayerHpScale;
+	}
+
+	//白いHPバーを減らすための補間率を計算。
+	//HPが多いほど遅く少なくなるほど速くする
+	float num = m_player->GetNowActorStatus().hp / m_player->GetNowActorStatus().maxHp;
+	m_playerLerpSpeed = Math::Lerp(num, WHITE_HP_LERP_START, WHITE_HP_LERP_END);
+
+	//白いHPバーの減っていく割合
+	m_playerHpWhiteScale = Math::Lerp(
+		g_gameTime->GetFrameDeltaTime() * m_playerLerpSpeed,
+		m_playerHpWhiteScale, HP_SCALE_END_POS);
+	m_playerUI.m_hpWhiteRender.SetScale(m_playerHpWhiteScale);
+
+	//HPフォント
+	int HpFont = m_player->GetNowActorStatus().hp;
+	wchar_t HP[255];
+	swprintf_s(HP, 255, L"HP      %3d", HpFont);
+	m_playerUI.m_hpFont.SetText(HP);
+
+	//前フレームのHpスケールを設定
+	m_oldPlayerHpScale = HpScale;
+
+	//更新
+	m_playerUI.m_hpFrontRender.Update();
+	m_playerUI.m_hpWhiteRender.Update();
+}
+
+void GameUI::ProcessPlayerMp()
+{
+	//MPバーの減っていく割合。
+	Vector3 MpScale = Vector3::One;
+	MpScale = CalcGaugeScale(m_player->GetNowActorStatus().maxMp, m_player->GetNowActorStatus().mp);
+	m_playerUI.m_mpFrontRender.SetScale(MpScale);
+
+
+
+
+	//MPフォント
+	int MpFont = m_player->GetNowActorStatus().mp;
+	wchar_t MP[255];
+	swprintf_s(MP, 255, L"MP     %3d", MpFont);
+	m_playerUI.m_mpFont.SetText(MP);
+
+	//更新
+	m_playerUI.m_mpFrontRender.Update();
+}
+
+void GameUI::ProcessBossHP()
+{
+	//HPバーの減っていく割合。
+	Vector3 HpScale = Vector3::One;
+	HpScale = CalcGaugeScale(m_lich->GetStatus().maxHp, m_lich->GetStatus().hp);
+	m_monsterUI.m_HpFrontRender.SetScale(HpScale);
+	//現在のフレームのHPと前フレームのHPのサイズが違うなら
+	if (HpScale.x < m_oldBossHpScale.x)
+	{
+		m_BossHpWhiteScale = m_oldBossHpScale;
+	}
+
+	//白いHPバーを減らすための補間率を計算。
+	//HPが多いほど遅く少なくなるほど速くする
+	float num = m_lich->GetStatus().hp / m_lich->GetStatus().maxHp;
+	m_bossLerpSpeed = Math::Lerp(num, WHITE_HP_LERP_START, WHITE_HP_LERP_END);
+
+	//白いHPバーの減っていく割合
+	m_BossHpWhiteScale = Math::Lerp(
+		g_gameTime->GetFrameDeltaTime() * m_bossLerpSpeed,
+		m_BossHpWhiteScale, HP_SCALE_END_POS);
+	m_monsterUI.m_HpWhiteRender.SetScale(m_BossHpWhiteScale);
+
+	//ボスのHPの表示
+	int NowActorMP = m_lich->GetStatus().hp;
+	int NowActorMaxMP = m_lich->GetStatus().maxHp;
+	wchar_t MP[255];
+	swprintf_s(MP, 255, L"HP %3d/%d", NowActorMP, NowActorMaxMP);
+	m_monsterUI.m_hpFont.SetText(MP);
+
+	/*int a = m_lich->GetAccumulationDamage();
+	int b = m_lich->GetHitCount();
+	wchar_t A[255];
+	swprintf_s(A, 255, L"%3d%3d回", a,b);
+	m_monsterUI.m_AccumulationDamageFont.SetText(A);*/
+
+	m_oldBossHpScale = HpScale;
+
+	m_monsterUI.m_HpFrontRender.Update();
+	m_monsterUI.m_HpWhiteRender.Update();
 }
 
