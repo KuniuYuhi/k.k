@@ -1,4 +1,4 @@
-32
+34
 12,Skill_Center,58,../../Game/Assets/sprite/InGame/Character/Skill_Center.png,755.7692307692307,-336.53846153846143,400,400,10,1.0,1.0,0.5,0.5,16,Skill_Center.dds
 11,Skill_Flame,57,../../Game/Assets/sprite/InGame/Character/Skill_Flame.png,755.7692307692307,-117.30769230769226,285,285,10,1.0,1.0,0.5,0.5,15,Skill_Flame.dds
 11,Skill_Flame,57,../../Game/Assets/sprite/InGame/Character/Skill_Flame.png,532.6923076923076,-336.53846153846143,285,285,10,1.0,1.0,0.5,0.5,15,Skill_Flame.dds
@@ -31,3 +31,5 @@
 12,SkillButtonY,58,../../Game/Assets/sprite/InGame/Character/SkillButtonY.png,755.7692307692307,-232.69230769230774,100,90,10,1.0,1.0,0.5,0.5,16,SkillButtonY.dds
 9,TimeFlame,55,../../Game/Assets/sprite/InGame/Character/TimeFlame.png,0.0,478.8461538461538,251,124,10,1.0,1.0,0.5,0.5,13,TimeFlame.dds
 10,TimeFlame2,56,../../Game/Assets/sprite/InGame/Character/TimeFlame2.png,1.9230769230770193,473.07692307692304,500,124,10,1.0,1.0,0.5,0.5,14,TimeFlame2.dds
+8,HP_White,54,../../Game/Assets/sprite/InGame/Character/HP_White.png,163.46153846153857,-476.9230769230768,499,65,10,1.0,1.0,0.5,0.5,12,HP_White.dds
+13,HP_White_Boss,59,../../Game/Assets/sprite/InGame/Character/HP_White_Boss.png,-9.615384615384528,444.2307692307692,978,57,10,1.0,1.0,0.5,0.5,17,HP_White_Boss.dds
