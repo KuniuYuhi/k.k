@@ -29,5 +29,4 @@ void nsK2EngineLow::SpriteRender::Init(const char* filePath, const float width, 
 void nsK2EngineLow::SpriteRender::Draw(RenderContext& rc)
 {
 	g_renderingEngine->AddRenderObject(this);
-	//g_renderingEngine->AddSpriteList(this);
 }
