@@ -135,6 +135,10 @@ SPSIn VSMainCore(
 	psIn.posInProj=psIn.pos;
 	psIn.posInProj/=psIn.posInProj.w;
 
+    psIn.posInLVP[0] = mul(mLVP[0], worldPos);
+    psIn.posInLVP[1] = mul(mLVP[1], worldPos);
+    psIn.posInLVP[2] = mul(mLVP[2], worldPos);
+	
 	return psIn;
 }
 
