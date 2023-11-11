@@ -6,6 +6,9 @@
 
 //todo フォント配列にしたらエラー
 
+//todo　選んだ武器はそのままグレーにして置いておくか
+//		二段階にするか
+
 namespace {
 	const Vector3 WEAPON_POSITION = { 370.0f,150.0f,0.0f };
 	const Vector3 ROOM_POSITION = { 0.0f,-100.0f,-280.0f };
@@ -79,19 +82,6 @@ void SelectWeapon::Update()
 	
 }
 
-void SelectWeapon::Render(RenderContext& rc)
-{
-	m_weaponRoomModel.Draw(rc);
-
-	m_weaponInfo[m_nowSelectWeaponNumber].m_weaponModel.Draw(rc);
-
-
-	//フォント
-	//m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.Draw(rc);
-
-	//m_font.Draw(rc);
-}
-
 void SelectWeapon::InitWeaponRoom()
 {
 	m_weaponRoomModel.Init(
@@ -119,6 +109,15 @@ void SelectWeapon::InitWeapon()
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 		0, 0, enModelUpAxisZ, false, true, true
 	);
+
+	m_weaponInfo[enWeaponType_Bow].m_weaponModel.Init(
+		"Assets/modelData/character/Player/NewHero/Bow.tkm",
+		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
+		0,
+		0,
+		enModelUpAxisZ, false, true, true
+	);
+
 	//更新処理
 	for (int num = 0; num < enWeaponType_Num; num++)
 	{
@@ -141,18 +140,25 @@ void SelectWeapon::InitWeaponName()
 	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetPosition(
 		m_namePosForSelectMainWeapon[enWeaponType_SwordShield]);
 	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetColor(g_vec4White);
-	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetText(SS);
+	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetText(L"ソード＆シールド");
 	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetShadowParam(
 		true, 2.0f, g_vec4Black
 	);
 
 
 
-	m_font.SetPosition(
+	aaa.m_weaponNameFont.SetPosition(
 		m_namePosForSelectMainWeapon[enWeaponType_SwordShield]);
-	m_font.SetColor(g_vec4White);
-	m_font.SetText(L"グレイトソード");
-	m_font.SetShadowParam(true, 2.0f, g_vec4Black);
+	aaa.m_weaponNameFont.SetColor(g_vec4White);
+	aaa.m_weaponNameFont.SetText(L"グレイトソード");
+	aaa.m_weaponNameFont.SetShadowParam(true, 2.0f, g_vec4Black);
+
+
+	m_font[0].SetPosition(
+		m_namePosForSelectMainWeapon[enWeaponType_SwordShield]);
+	m_font[0].SetColor(g_vec4White);
+	m_font[0].SetText(L"グレイトソード");
+	m_font[0].SetShadowParam(true, 2.0f, g_vec4Black);
 
 }
 
@@ -212,6 +218,7 @@ void SelectWeapon::ProcessChoice()
 	{
 		m_nowSelectWeaponNumber++;
 		//現在の選択番号が武器の種類より多くなったら
+		//todo リストのサイズにしたい
 		if (m_nowSelectWeaponNumber >= enWeaponType_Num)
 		{
 			//最初に戻す
@@ -240,4 +247,22 @@ void SelectWeapon::GoToPlayMode()
 		//フェード開始
 		m_fade->StartFadeIn(2.0f);
 	}
+}
+
+void SelectWeapon::Render(RenderContext& rc)
+{
+	//部屋
+	m_weaponRoomModel.Draw(rc);
+	//選択中の武器
+	//m_canSelectWeapon[0]->m_weaponModel.Draw(rc);
+	m_weaponInfo[m_nowSelectWeaponNumber].m_weaponModel.Draw(rc);
+
+
+	//m_font[0].Draw(rc);
+
+	//m_canSelectWeapon[0]->m_weaponNameFont.Draw(rc);
+	//フォント
+	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.Draw(rc);
+
+	//aaa.m_weaponNameFont.Draw(rc);
 }

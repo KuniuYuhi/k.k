@@ -73,13 +73,16 @@ private:
 
 	Vector2 m_namePosForSelectMainWeapon[enWeaponType_Num] = {
 		{0.0f,200.0f},
-		{50.0f,100.0f}
+		{50.0f,100.0f},
+		{70.0f,0.0f},
 	};
 
 	Vector2 m_namePosForSelectSubWeapon[enWeaponType_Num] = {
 		{200.0f,200.0f},
-		{250.0f,0.0f}
+		{250.0f,0.0f},
+		{300.0f,-200.0f}
 	};
+
 
 
 	struct WeaponInfo
@@ -91,11 +94,17 @@ private:
 
 	WeaponInfo m_weaponInfo[enWeaponType_Num];
 
+	WeaponInfo aaa;
+
+	std::vector<WeaponInfo*> m_canSelectWeapon;		//‘I‚×‚é•Ší
+	std::vector<WeaponInfo*> m_chosenSelectWeapon;	//‘I‚Î‚ê‚½•Ší
+
 	
+
 	int					m_notChoseWeapon = enWeaponType_Num;	//‘I‚Î‚ê‚Ä‚¢‚È‚¢•Ší‚Ìí—Ş
 
 	
-	FontRender			m_font;
+	FontRender			m_font[1];
 
 	
 
