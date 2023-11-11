@@ -3,7 +3,10 @@
 /*
 *@brief 進行状況の管理
 */
-class GameManager:public Noncopyable
+
+
+
+class GameManager :public Noncopyable
 {
 private:
 	GameManager();
@@ -34,9 +37,6 @@ public:
 	}
 
 
-
-
-
 public:
 	//ゲームのシーン
 	enum EnSeenState
@@ -50,12 +50,11 @@ public:
 	};
 
 
-
-
-
 	static GameManager* m_instance;		//唯一のインスタンスのアドレスを記録する変数。
 
 
 
 };
+
+
 

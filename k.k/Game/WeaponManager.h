@@ -2,17 +2,19 @@
 #include "MyWeapon.h"
 #include "IWeapon.h"
 
+
 class SwordShield;
 class BigSword;
 
 /*
 *@brief 武器の管理 
 */
-namespace nsK2EngineLow {
+namespace MyManager {
 
+	
 }
 
-class WeaponManager:public Noncopyable
+class WeaponManager :public Noncopyable
 {
 private:
 	WeaponManager();
@@ -62,7 +64,7 @@ public:
 		}
 		//見つからないなら
 		return nullptr;
-		
+
 	}
 
 
@@ -102,17 +104,18 @@ public:
 public:
 
 	std::map<EnWeaponType, IWeapon*> m_weaponMap;	//武器の種類とインスタンスを関連づけて格納
-													//格納するのは基本的にメイン武器とサブ武器のみ
+	//格納するのは基本的にメイン武器とサブ武器のみ
 
-	
+
 	SwordShield* m_swordShield = nullptr;
 	BigSword* m_bigSword = nullptr;
-	
+
 	static EnWeaponType m_selectMainWeapon;					//メイン武器(一つめの選択)
 	static EnWeaponType m_selectSubWeapon;					//サブ武器(二つめの選択)
-	
+
 
 	static WeaponManager* m_weaponInstance;		//唯一のインスタンスのアドレスを記録する変数。
+
 
 };
 
@@ -131,15 +134,17 @@ T* WeaponManager::CreateWeapon(EnWeaponType weaponTipe)
 			NewGO<BigSword>(0, "bigsword");
 		return m_weaponMap[enWeaponType_TwoHandSword];
 		break;
-	/*case enWeaponType_Bow:
-		return nullptr;
-		break;
-	case enWeaponType_DoubleSwords:
-		return nullptr;
-		break;*/
+		/*case enWeaponType_Bow:
+			return nullptr;
+			break;
+		case enWeaponType_DoubleSwords:
+			return nullptr;
+			break;*/
 	default:
 		return nullptr;
 		break;
 	}
 	return nullptr;
 }
+
+
