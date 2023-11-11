@@ -145,9 +145,12 @@ namespace nsK2EngineLow {
 		/// ライトビュープロジェクション行列を設定する
 		/// </summary>
 		/// <param name="LVP">ライトビュープロジェクション行列</param>
-		void SetmLVP(Matrix LVP)
+		void SetmLVP()
 		{
-			m_sceneLight.SetmLVP(LVP);
+			for (int shadowMapNo = 0; shadowMapNo < NUM_SHADOW_MAP; shadowMapNo++)
+			{
+				m_sceneLight.SetmLVP(GetlvpcMatrix(shadowMapNo),shadowMapNo);
+			}
 		}
 
 		/// <summary>
@@ -205,6 +208,16 @@ namespace nsK2EngineLow {
 		Camera& GetLightCamera()
 		{
 			return m_shadowMapRenders.GetLightCamera();
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="shadowNo"></param>
+		/// <returns></returns>
+		Matrix GetlvpcMatrix(int shadowNo)
+		{
+			return m_shadowMapRenders.GetLVPMatrix(shadowNo);
 		}
 
 		/// <summary>
