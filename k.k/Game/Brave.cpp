@@ -34,6 +34,7 @@
 //todo メイン武器が片手剣以外だとゲームスタートのとき
 // アニメーションが遅れる。最初に読み込むのが片手剣のアニメーションだから
 
+//todo 前方向
 
 namespace {
 	const float ADD_SCALE = 1.2f;
@@ -83,11 +84,12 @@ bool Brave::Start()
 
 	//武器の生成
 	Bow* bow = NewGO<Bow>(0, "Bow");
-	BigSword* bigsword = NewGO<BigSword>(0,"bigsword");
+	//BigSword* bigsword = NewGO<BigSword>(0,"bigsword");
+	SwordShield* swordShield = NewGO<SwordShield>(0, "swordShield");
 
-	m_mainUseWeapon.weapon = bigsword;
+	m_mainUseWeapon.weapon = swordShield;
 	m_mainUseWeapon.weaponAnimationStartIndexNo
-		= TwoHandSwordAnimationStartIndexNo;
+		= OneHandSwordAnimationStartIndexNo;
 
 	m_subUseWeapon.weapon = bow;
 	m_subUseWeapon.weaponAnimationStartIndexNo
@@ -157,6 +159,7 @@ void Brave::Move()
 	{
 		CalcForward(m_moveSpeed);
 	}
+
 
 	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 }
@@ -649,7 +652,7 @@ void Brave::ChangeUseWeapon()
 	temporary = m_mainUseWeapon;
 	m_mainUseWeapon = m_subUseWeapon;
 	m_subUseWeapon = temporary;
-
+	
 	//現在の武器のアニメーションクリップの最初の番号を変更
 	m_currentAnimationStartIndexNo
 		= m_mainUseWeapon.weaponAnimationStartIndexNo;
@@ -786,6 +789,7 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	//前進する始まり
 	if (wcscmp(eventName, L"MoveForwardStart") == 0)
 	{
+		CalcForward(m_moveSpeed);
 		SetMoveforwardFlag(true);
 	}
 	//前進する終わり

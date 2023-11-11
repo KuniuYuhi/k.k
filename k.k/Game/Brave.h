@@ -463,11 +463,14 @@ private:
 		{
 			return true;
 		}
-
-
+		
+		if (GetMoveForwardFlag() != true)
+		{
+			return true;
+		}
 		//回転のみ可能なアニメーションではないなら
-		return 
-			GetMoveForwardFlag() != true;
+		return false;
+			
 	}
 
 private:
