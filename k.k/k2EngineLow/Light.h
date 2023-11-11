@@ -91,12 +91,13 @@ namespace nsK2EngineLow {
 		/// ライトビュープロジェクション行列を設定する
 		/// </summary>
 		/// <param name="LVP">ライトビュープロジェクション行列</param>
-		void SetmLVP(Matrix LVP)
+		void SetmLVP(Matrix LVP,int shadowMapNo)
 		{
-			for (int mapNo = 0; mapNo < NUM_SHADOW_MAP; mapNo++)
+			m_light.mLVP[shadowMapNo] = LVP;
+			/*for (int mapNo = 0; mapNo < NUM_SHADOW_MAP; mapNo++)
 			{
 				m_light.mLVP[mapNo] = LVP;
-			}
+			}*/
 			
 		}
 		//////////////////////////////////////////////////////////////////////
