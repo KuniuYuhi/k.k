@@ -4,7 +4,7 @@
 #include "Fade.h"
 #include "Game.h"
 
-//todo フォント配列にしたらエラー
+//全角記号文字はグリフに含まれていないのでつかわない！！！
 
 //todo　選んだ武器はそのままグレーにして置いておくか
 //		二段階にするか
@@ -133,14 +133,14 @@ void SelectWeapon::InitWeaponName()
 {
 
 	wchar_t SS[255];
-	swprintf_s(SS, 255, L"ソード＆シールド");
+	swprintf_s(SS, 255, L"ソード&シールド");
 	wchar_t BS[255];
 	swprintf_s(BS, 255, L"グレイトソード");
 	
 	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetPosition(
 		m_namePosForSelectMainWeapon[enWeaponType_SwordShield]);
 	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetColor(g_vec4White);
-	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetText(L"ソード＆シールド");
+	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetText(L"ソード&シールド");
 	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetShadowParam(
 		true, 2.0f, g_vec4Black
 	);
