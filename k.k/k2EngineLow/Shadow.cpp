@@ -61,19 +61,8 @@ namespace nsK2EngineLow {
 		}*/
 
 		//レンダリングエンジンの方でやる
-		UpDateLightCamera();
+		//UpDateLightCamera();
 	}
-
-	/*void Shadow::ShadowSpriteRender(RenderContext& rc)
-	{
-		shadowSprite.Update(
-			{ FRAME_BUFFER_W / -2.0f,FRAME_BUFFER_H / 2.0f,0.0f },
-			g_quatIdentity,
-			g_vec3One,
-			{ 0.0f,1.0f }
-		);
-		shadowSprite.Draw(rc);
-	}*/
 
 	void Shadow::SetCascadeNearAreaRates(
 		float nearArea, float middleArea, float farArea)
