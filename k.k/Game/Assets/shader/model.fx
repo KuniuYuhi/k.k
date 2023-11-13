@@ -205,14 +205,7 @@ float4 PSMainCore( SPSIn psIn ,int isToon, int isShadowCaster) : SV_Target0
 		//影生成用のパラメータ。
     	float shadowParam = 1.0f;
         float shadow = 0.0f;
-		
-        //float4 posInLVP = mul(mLVP[0], float4(psIn.worldPos, 1.0f));
-        ////Zの値を見て、このピクセルがこのシャドウマップに含まれているか判定
-        //float2 shadowMapUV = posInLVP.xy / posInLVP.w;
-        //float zInLVP = posInLVP.z / posInLVP.w;
-        //shadowMapUV *= float2(0.5f, -0.5f);
-        //shadowMapUV += 0.5f;
-		
+	
 		//自身に影を生成
         shadow = CalcShadowRate(
 		shadowMapArray, mLVP, psIn.worldPos, 0
