@@ -10,14 +10,16 @@
 //		二段階にするか
 
 namespace {
-	const Vector3 WEAPON_POSITION = { 370.0f,150.0f,0.0f };
+	const Vector3 WEAPON_POSITION = { 460.0f,150.0f,0.0f };
 	const Vector3 ROOM_POSITION = { 0.0f,-100.0f,-280.0f };
 
 	const float ROTATION_SPEED = 3.0F;
 
 	const float ADD_WEAPON_SCALE = 7.0f;
 
-	const float FONT_SCALE = 1.5f;
+	const float FONT_SCALE = 1.8f;
+
+	const Vector2 SELECT_BACK_SPRITE_POS = { 400.0f,0.0f };
 }
 
 SelectWeapon::SelectWeapon()
@@ -30,7 +32,7 @@ SelectWeapon::SelectWeapon()
 
 SelectWeapon::~SelectWeapon()
 {
-	WeaponManager::DeleteInstance();
+	//WeaponManager::DeleteInstance();
 }
 
 bool SelectWeapon::Start()
@@ -48,6 +50,9 @@ bool SelectWeapon::Start()
 	InitWeaponName();
 	//カメラの初期化
 	InitCamera();
+	//画像の初期化
+	InitSprite();
+
 
 	m_fade = FindGO<Fade>("fade");
 	if (m_fade->IsFade() != true)
@@ -73,13 +78,185 @@ void SelectWeapon::Update()
 		return;
 	}
 
-	GoToPlayMode();
+	//GoToPlayMode();
 
 	ProcessSelectWeapon();
 
 	RotationWeapon();
 
 	
+}
+
+void SelectWeapon::RotationWeapon()
+{
+	m_rotation.AddRotationDegY(ROTATION_SPEED);
+	m_weaponInfo[m_nowSelectWeaponNumber].m_weaponModel.SetRotation(m_rotation);
+	m_weaponInfo[m_nowSelectWeaponNumber].m_weaponModel.Update();
+}
+
+void SelectWeapon::ProcessSelectWeapon()
+{
+	SelectWeaponManageState();
+}
+
+void SelectWeapon::ProcessChoice(EnSelectWeaponOrder weaponOrder)
+{
+	//この武器に決定
+	if (g_pad[0]->IsTrigger(enButtonA))
+	{
+		//選択状態でないなら
+		if (m_weaponInfo[m_nowSelectWeaponNumber].m_isSelect != true)
+		{
+			//この武器に決定
+			m_weaponInfo[m_nowSelectWeaponNumber].m_isSelect = true;
+			m_weaponInfo[m_nowSelectWeaponNumber].m_weaponOrder = weaponOrder;
+			//選択する武器のオーダーを進める
+			m_enSelectWeaponOrder = static_cast<EnSelectWeaponOrder>(m_enSelectWeaponOrder + 1);
+			//オーダーが全て決まったら
+			if (GetSelectWeaponOrder() == enSelectWeaponOrder_Complete)
+			{
+				return;
+			}
+		}
+		//もし既に選択している武器なら選択状態を解除
+		else
+		{
+			m_weaponInfo[m_nowSelectWeaponNumber].m_isSelect = false;
+		}
+		m_nowSelectWeaponNumber++;
+		//現在の選択番号が武器の種類より多くなったら
+		//todo リストのサイズにしたい
+		if (m_nowSelectWeaponNumber >= enWeaponType_Num)
+		{
+			//最初に戻す
+			m_nowSelectWeaponNumber = 0;
+		}
+		return;
+	}
+
+	//上に上がる
+	if (g_pad[0]->IsTrigger(enButtonUp) == true)
+	{
+		m_nowSelectWeaponNumber--;
+		//現在の選択番号が武器の種類より多くなったら
+		//todo リストのサイズにしたい
+		if (m_nowSelectWeaponNumber < 0)
+		{
+			//最初に戻す
+			m_nowSelectWeaponNumber = enWeaponType_Num - 1;
+		}
+		return;
+	}
+	//下に下がる
+	if (g_pad[0]->IsTrigger(enButtonDown) == true)
+	{
+		m_nowSelectWeaponNumber++;
+		//現在の選択番号が武器の種類より多くなったら
+		//todo リストのサイズにしたい
+		if (m_nowSelectWeaponNumber >= enWeaponType_Num)
+		{
+			//最初に戻す
+			m_nowSelectWeaponNumber = 0;
+		}
+	}
+}
+
+void SelectWeapon::SelectWeaponManageState()
+{
+	switch (m_enSelectWeaponOrder)
+	{
+	case SelectWeapon::enSelectWeaponOrder_MainWeapon:
+		ProcessChoice(enSelectWeaponOrder_MainWeapon);
+		//名前の色の処理
+		ProcessWeaponName();
+		break;
+	case SelectWeapon::enSelectWeaponOrder_SubWeapon:
+		ProcessChoice(enSelectWeaponOrder_SubWeapon);
+		//名前の色の処理
+		ProcessWeaponName();
+		break;
+	case SelectWeapon::enSelectWeaponOrder_Complete:
+		ProcessComplete();
+		break;
+	default:
+		break;
+	}
+
+	m_selectBarSprite.SetPosition(m_namePosForSelectMainWeapon[m_nowSelectWeaponNumber]);
+	m_selectBarSprite.Update();
+}
+
+void SelectWeapon::ProcessComplete()
+{
+	//Bボタンを押したら、武器を選びなおす
+	if (g_pad[0]->IsTrigger(enButtonB))
+	{
+		//選択状態をリセット
+		for (int num = 0; num < enWeaponType_Num; num++)
+		{
+			m_weaponInfo[num].m_isSelect = false;
+		}
+		//最初のメイン武器から選びなおし
+		SetEnSelectWeaponOrder(enSelectWeaponOrder_MainWeapon);
+		return;
+	}
+
+	GoToPlayMode();
+
+}
+
+void SelectWeapon::ProcessWeaponName()
+{
+	for (int num = 0; num < enWeaponType_Num; num++)
+	{
+		//既に選ばれている武器なら色変え処理しない
+		if (m_weaponInfo[num].m_isSelect == true)
+		{
+			m_weaponInfo[num].m_weaponNameFont.SetColor(g_vec4Red);
+		}
+		//それ以外は白
+		else
+		{
+			m_weaponInfo[num].m_weaponNameFont.SetColor(g_vec4White);
+		}
+	}
+}
+
+void SelectWeapon::GoToPlayMode()
+{
+	if (g_pad[0]->IsTrigger(enButtonA) && m_goToGameFlag != true)
+	{
+		//装備する武器の決定
+		for (int num = 0; num < enWeaponType_Num; num++)
+		{
+			//選ばれた武器なら
+			if (m_weaponInfo[num].m_isSelect == true)
+			{
+				m_enWeaponTipe = static_cast<EnWeaponType>(num);
+				switch (m_weaponInfo[num].m_weaponOrder)
+				{
+				case SelectWeapon::enSelectWeaponOrder_MainWeapon:
+					//武器の種類をメイン武器に設定
+					WeaponManager::GetInstance()->SetMainWeapon(m_enWeaponTipe);
+					break;
+				case SelectWeapon::enSelectWeaponOrder_SubWeapon:
+					//武器の種類をサブ武器に設定
+					WeaponManager::GetInstance()->SetSubWeapon(m_enWeaponTipe);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		//ゲームクラスに遷移決定
+		m_goToGameFlag = true;
+
+		//g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
+		//フェード開始
+		m_fade->StartFadeIn(2.0f);
+
+
+	}
 }
 
 void SelectWeapon::InitWeaponRoom()
@@ -132,33 +309,37 @@ void SelectWeapon::InitWeapon()
 void SelectWeapon::InitWeaponName()
 {
 
-	wchar_t SS[255];
-	swprintf_s(SS, 255, L"ソード&シールド");
-	wchar_t BS[255];
-	swprintf_s(BS, 255, L"グレイトソード");
-	
-	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetPosition(
-		m_namePosForSelectMainWeapon[enWeaponType_SwordShield]);
-	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetColor(g_vec4White);
-	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetText(L"ソード&シールド");
-	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.SetShadowParam(
-		true, 2.0f, g_vec4Black
+	wchar_t SwordShield[255];
+	swprintf_s(SwordShield, 255, L"ソード&シールド");
+	wchar_t GrateSword[255];
+	swprintf_s(GrateSword, 255, L"グレイトソード");
+	wchar_t bow[255];
+	swprintf_s(bow, 255, L"ボウ&アロー");
+
+	//ソード＆シールドのフォントの初期化
+	InitFontRender(
+		m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont,
+		m_namePosForSelectMainWeapon[enWeaponType_SwordShield],
+		FONT_SCALE,
+		SwordShield
+	);
+
+	//グレイトソードのフォントの初期化
+	InitFontRender(
+		m_weaponInfo[enWeaponType_TwoHandSword].m_weaponNameFont,
+		m_namePosForSelectMainWeapon[enWeaponType_TwoHandSword],
+		FONT_SCALE,
+		GrateSword
+	);
+	//アローのフォントの初期化
+	InitFontRender(
+		m_weaponInfo[enWeaponType_Bow].m_weaponNameFont,
+		m_namePosForSelectMainWeapon[enWeaponType_Bow],
+		FONT_SCALE,
+		bow
 	);
 
 
-
-	aaa.m_weaponNameFont.SetPosition(
-		m_namePosForSelectMainWeapon[enWeaponType_SwordShield]);
-	aaa.m_weaponNameFont.SetColor(g_vec4White);
-	aaa.m_weaponNameFont.SetText(L"グレイトソード");
-	aaa.m_weaponNameFont.SetShadowParam(true, 2.0f, g_vec4Black);
-
-
-	m_font[0].SetPosition(
-		m_namePosForSelectMainWeapon[enWeaponType_SwordShield]);
-	m_font[0].SetColor(g_vec4White);
-	m_font[0].SetText(L"グレイトソード");
-	m_font[0].SetShadowParam(true, 2.0f, g_vec4Black);
 
 }
 
@@ -190,79 +371,56 @@ void SelectWeapon::InitCamera()
 	m_springCamera.Update();
 }
 
-void SelectWeapon::RotationWeapon()
+void SelectWeapon::InitSprite()
 {
-	m_rotation.AddRotationDegY(ROTATION_SPEED);
-	m_weaponInfo[m_nowSelectWeaponNumber].m_weaponModel.SetRotation(m_rotation);
-	m_weaponInfo[m_nowSelectWeaponNumber].m_weaponModel.Update();
+	//選択バー
+	m_selectBarSprite.Init("Assets/sprite/InGame/SelectWeapon/SelectBar.DDS", 1920, 256);
+	m_selectBarSprite.SetPosition(m_namePosForSelectMainWeapon[enWeaponType_SwordShield]);
+	m_selectBarSprite.SetScale(g_vec3One);
+	m_selectBarSprite.SetRotation(g_quatIdentity);
+	m_selectBarSprite.Update();
+	//背景
+	m_selectBackSprite.Init("Assets/sprite/InGame/SelectWeapon/SelectBack.DDS", 1152, 1080);
+	m_selectBackSprite.SetPosition(SELECT_BACK_SPRITE_POS);
+	m_selectBackSprite.SetScale(g_vec3One);
+	m_selectBackSprite.SetRotation(g_quatIdentity);
+	m_selectBackSprite.Update();
 }
 
-void SelectWeapon::ProcessSelectWeapon()
+void SelectWeapon::InitFontRender(
+	FontRender& fontRender, 
+	Vector2 position, 
+	float scale, 
+	const wchar_t* name, 
+	Vector4 color, 
+	bool isShadowParam, float shadowOffset, Vector4 shadowColor)
 {
-	ProcessChoice();
-
+	fontRender.SetPosition(position);
+	fontRender.SetScale(scale);
+	fontRender.SetColor(g_vec4White);
+	fontRender.SetText(name);
+	fontRender.SetShadowParam(
+		isShadowParam, shadowOffset, shadowColor
+	);
 }
 
-void SelectWeapon::ProcessChoice()
-{
-	/*if (g_pad[0]->IsTrigger(enButtonA))
-	{
-		EnWeaponType weaponNum;
-		weaponNum = static_cast<EnWeaponType>(m_nowSelectWeaponNumber);
 
-		WeaponManager::SetMainWeapon(weaponNum);
-		return;
-	}*/
-
-	if (g_pad[0]->IsTrigger(enButtonDown) == true)
-	{
-		m_nowSelectWeaponNumber++;
-		//現在の選択番号が武器の種類より多くなったら
-		//todo リストのサイズにしたい
-		if (m_nowSelectWeaponNumber >= enWeaponType_Num)
-		{
-			//最初に戻す
-			m_nowSelectWeaponNumber = 0;
-		}
-	}
-}
-
-void SelectWeapon::SelectWeaponManageState()
-{
-
-}
-
-void SelectWeapon::ProcessWeaponName()
-{
-
-}
-
-void SelectWeapon::GoToPlayMode()
-{
-	if (g_pad[0]->IsTrigger(enButtonA) && m_goToGameFlag != true)
-	{
-		m_goToGameFlag = true;
-
-		//g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
-		//フェード開始
-		m_fade->StartFadeIn(2.0f);
-	}
-}
 
 void SelectWeapon::Render(RenderContext& rc)
 {
 	//部屋
 	m_weaponRoomModel.Draw(rc);
 	//選択中の武器
-	//m_canSelectWeapon[0]->m_weaponModel.Draw(rc);
 	m_weaponInfo[m_nowSelectWeaponNumber].m_weaponModel.Draw(rc);
+	//選択背景
+	m_selectBackSprite.Draw(rc);
+	//選択バー
+	m_selectBarSprite.Draw(rc);
 
-
-	//m_font[0].Draw(rc);
-
-	//m_canSelectWeapon[0]->m_weaponNameFont.Draw(rc);
 	//フォント
-	m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont.Draw(rc);
+	for (int num = 0; num < enWeaponType_Num; num++)
+	{
+		m_weaponInfo[num].m_weaponNameFont.Draw(rc);
+	}
 
-	//aaa.m_weaponNameFont.Draw(rc);
 }
