@@ -55,13 +55,11 @@ namespace nsK2EngineLow {
 		}
 
 		//ブラーを実行する
-		/*for (auto& blur : m_blur)
+		for (auto& blur : m_blur)
 		{
 			blur.ExecuteOnGPU(rc, 1.0f);
-		}*/
+		}
 
-		//レンダリングエンジンの方でやる
-		//UpDateLightCamera();
 	}
 
 	void Shadow::SetCascadeNearAreaRates(

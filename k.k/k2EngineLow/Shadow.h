@@ -52,11 +52,9 @@ namespace nsK2EngineLow {
 		/// <returns></returns>
 		Texture& GetShadowMap(int areaNo)
 		{
-			//return m_blur[areaNo].GetBokeTexture();
-			/*if (m_isSoftShadow) {
-				return m_blur[areaNo].GetBokeTexture();
-			}*/
-			return m_shadowMaps[areaNo].GetRenderTargetTexture();
+			return m_blur[areaNo].GetBokeTexture();
+			
+			//return m_shadowMaps[areaNo].GetRenderTargetTexture();
 		}
 
 
