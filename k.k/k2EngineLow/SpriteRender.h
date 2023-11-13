@@ -53,6 +53,15 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
+		/// À•W‚Ìİ’è
+		/// </summary>
+		/// <param name="position"></param>
+		void SetPosition(const Vector2& position)
+		{
+			SetPosition(position.x, position.y);
+		}
+
+		/// <summary>
 		/// À•W‚ğæ“¾‚·‚é
 		/// </summary>
 		/// <returns>À•W</returns>
