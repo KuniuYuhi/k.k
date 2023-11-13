@@ -287,7 +287,6 @@
       <Filter>Weapons</Filter>
     </ClCompile>
     <ClCompile Include="HitDetection.cpp" />
-    <ClCompile Include="WeaponBase.cpp" />
     <ClCompile Include="LichStateAngry.cpp">
       <Filter>Lich\LichState</Filter>
     </ClCompile>
@@ -371,6 +370,9 @@
     </ClCompile>
     <ClCompile Include="ManagerPreCompile.cpp">
       <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponBase.cpp">
+      <Filter>Weapons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -634,7 +636,6 @@
       <Filter>Weapons</Filter>
     </ClInclude>
     <ClInclude Include="HitDetection.h" />
-    <ClInclude Include="WeaponBase.h" />
     <ClInclude Include="LichStateAngry.h">
       <Filter>Lich\LichState</Filter>
     </ClInclude>
@@ -724,6 +725,9 @@
     </ClInclude>
     <ClInclude Include="ManagerPreCompile.h">
       <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponBase.h">
+      <Filter>Weapons</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -37,9 +37,6 @@ bool Bow::Start()
 
 	InitModel();
 
-	//‘•”õ
-	SetWeaponState(enWeaponState_Stowed);
-	SetStowedFlag(true);
 	//–hŒäƒ^ƒCƒv‚Ìİ’è
 	SetEnDefendTipe(enDefendTipe_avoid);
 
