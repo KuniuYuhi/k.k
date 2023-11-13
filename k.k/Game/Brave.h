@@ -1,6 +1,7 @@
 #pragma once
 #include "Actor.h"
 #include "WeaponBase.h"
+#include "MyWeapon.h"
 
 class Player;
 class IBraveState;
@@ -13,7 +14,7 @@ class Brave:public Actor
 {
 public:
 
-	enum EnWepons
+	enum EnWeapons
 	{
 		enWeapon_Main,
 		enWeapon_Sub,
@@ -383,7 +384,7 @@ public:
 	/// </summary>
 	/// <param name="subOrMain">サブかメインのステート</param>
 	/// <returns></returns>
-	WeaponBase* GetWeapon(EnWepons subOrMain) const
+	WeaponBase* GetWeapon(EnWeapons subOrMain) const
 	{
 		if (subOrMain == enWeapon_Main)
 		{
@@ -470,9 +471,27 @@ private:
 		}
 		//回転のみ可能なアニメーションではないなら
 		return false;
-			
 	}
 
+	/// <summary>
+	/// 装備する武器の設定
+	/// </summary>
+	void SettingWeapons();
+	
+	/// <summary>
+	/// 武器のアニメーションの最初の番号を設定
+	/// </summary>
+	/// <param name="useWeapon">番号を設定したい武器</param>
+	/// <param name="weaponType">武器の種類</param>
+	void SetCurrentAnimationStartIndexNo(UseWeapon& useWeapon, EnWeapons mainOrSub);
+
+	/// <summary>
+	/// 武器の種類に対応したアニメーションクリップのロード
+	/// </summary>
+	void RoadWeaponTypeAnimetionClip(EnWeaponType weaponType, int mainWeaponAnimationStartIndexNo);
+	void RoadOneHandSwordAnimationClip(int mainWeaponAnimationStartIndexNo);
+	void RoadTwoHandSwordAnimationClip(int mainWeaponAnimationStartIndexNo);
+	void RoadBowAnimationClip(int mainWeaponAnimationStartIndexNo);
 private:
 	/// <summary>
 	/// 武器それぞれのアニメーションクリップグループ
@@ -483,15 +502,15 @@ private:
 		AnimationClipGroup_Bow,				// 弓を装備中のアニメーションクリップグループ
 		AnimationClipGroup_Num,
 	};
-	//片手剣の最初のアニメーションクリップの番号
-	const int OneHandSwordAnimationStartIndexNo = AnimationClipGroup_OneHandedSword;
-	//両手剣の最初のアニメーションクリップの番号
-	const int TwoHandSwordAnimationStartIndexNo = enAnimClip_Num * AnimationClipGroup_TwoHandedSword;
-	//弓の最初のアニメーションクリップの番号
-	const int BowAnimationStartIndexNo = enAnimClip_Num * AnimationClipGroup_Bow;
+	
+	const int m_mainWeaponAnimationStartIndexNo = 0;						//メイン武器のアニメーションクリップの最初の番号
+	const int m_subWeaponAnimationStartIndexNo = enAnimClip_Num * 1;		//サブ武器のアニメーションクリップの最初の番号
 
 	//現在の武器のアニメーションの最初の番号
-	int m_currentAnimationStartIndexNo = OneHandSwordAnimationStartIndexNo;
+	int m_currentAnimationStartIndexNo = m_mainWeaponAnimationStartIndexNo;
+
+	EnWeaponType				m_mainWeaponType = enWeaponType_Num;
+	EnWeaponType				m_subWeaponType = enWeaponType_Num;
 
 	UseWeapon					m_mainUseWeapon;				//メイン武器
 	UseWeapon					m_subUseWeapon;				//サブ武器
@@ -504,7 +523,7 @@ private:
 	EnAttackPattern				m_attackPatternState = enAttackPattern_None;
 	CharacterController			m_charaCon;
 	
-	AnimationClip				m_animationClip[enAnimClip_Num * AnimationClipGroup_Num];// アニメーションクリップ 
+	AnimationClip				m_animationClip[enAnimClip_Num * 2];// アニメーションクリップ 
 	
 	ModelRender					m_modelRender;
 
