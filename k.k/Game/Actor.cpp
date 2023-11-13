@@ -119,11 +119,13 @@ void Actor::CalcForward(Vector3 moveSpeed)
 	//x,y‚Ç‚¿‚ç‚©‚Ì“ü—Í‚ª‚ ‚Á‚½‚ç
 	if (fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f)
 	{
+		m_forward = moveSpeed;
+		m_forward.Normalize();
+
 		//‘O•ûŒü‚ğİ’è‚Å‚«‚éğŒ‚È‚ç
 		if (IsSetForwardCondition() == true)
 		{
-			m_forward = moveSpeed;
-			m_forward.Normalize();
+			
 		}
 	}
 }

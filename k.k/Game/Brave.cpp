@@ -21,6 +21,7 @@
 #include "SwordShield.h"
 #include "BigSword.h"
 #include "Bow.h"
+#include "ManagerPreCompile.h"
 
 
 //todo たまにダークボールの当たった時の爆発がない
@@ -34,6 +35,7 @@
 //todo メイン武器が片手剣以外だとゲームスタートのとき
 // アニメーションが遅れる。最初に読み込むのが片手剣のアニメーションだから
 
+//todo 前方向
 
 namespace {
 	const float ADD_SCALE = 1.2f;
@@ -76,31 +78,20 @@ bool Brave::Start()
 		NAME
 	);
 
+	//装備する武器の設定
+	SettingWeapons();
+
 	InitModel();
 
 	//キャラコンの設定
 	m_charaCon.Init(12.0f, 33.0f, m_position);
 
-	//武器の生成
-	Bow* bow = NewGO<Bow>(0, "Bow");
-	BigSword* bigsword = NewGO<BigSword>(0,"bigsword");
-
-	m_mainUseWeapon.weapon = bigsword;
-	m_mainUseWeapon.weaponAnimationStartIndexNo
-		= TwoHandSwordAnimationStartIndexNo;
-
-	m_subUseWeapon.weapon = bow;
-	m_subUseWeapon.weaponAnimationStartIndexNo
-		= BowAnimationStartIndexNo;
-
-	//現在の武器のアニメーションクリップの最初の番号
-	m_currentAnimationStartIndexNo 
-		= m_mainUseWeapon.weaponAnimationStartIndexNo;
+	
 
 	SetNextAnimationState(enAninationState_Idle);
 
 
-	m_status.atk = m_mainUseWeapon.weapon->GetWeaponPower();
+	
 
 
 	return true;
@@ -157,6 +148,7 @@ void Brave::Move()
 	{
 		CalcForward(m_moveSpeed);
 	}
+
 
 	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 }
@@ -639,7 +631,7 @@ void Brave::ReverseWeapon()
 	m_subUseWeapon.weapon->ReverseWeaponState();
 	//攻撃力を現在の武器のものに変更。
 	m_status.atk = m_mainUseWeapon.weapon->GetWeaponPower();
-	//
+	//多段ヒット判定フラグをセット
 	m_mainUseWeapon.weapon->SetHittableFlag(true);
 }
 
@@ -649,7 +641,7 @@ void Brave::ChangeUseWeapon()
 	temporary = m_mainUseWeapon;
 	m_mainUseWeapon = m_subUseWeapon;
 	m_subUseWeapon = temporary;
-
+	
 	//現在の武器のアニメーションクリップの最初の番号を変更
 	m_currentAnimationStartIndexNo
 		= m_mainUseWeapon.weaponAnimationStartIndexNo;
@@ -673,7 +665,76 @@ bool Brave::IsDefendHit()
 	}
 }
 
-void Brave::InitModel()
+void Brave::SettingWeapons()
+{
+	//メイン武器の生成とインスタンスの代入
+	m_mainWeaponType = WeaponManager::GetInstance()->GetMainWeapon();
+	m_mainUseWeapon.weapon =
+		WeaponManager::GetInstance()->CreateWeapon(m_mainWeaponType);
+	//メイン武器を装備状態にする
+	m_mainUseWeapon.weapon->StartSetWeaponState(WeaponBase::enWeaponState_Armed);
+	//アニメーションクリップの最初の番号を設定
+	SetCurrentAnimationStartIndexNo(m_mainUseWeapon, enWeapon_Main);
+
+	//サブ武器の生成とインスタンスの代入
+	m_subWeaponType = WeaponManager::GetInstance()->GetSubWeapon();
+	m_subUseWeapon.weapon =
+		WeaponManager::GetInstance()->CreateWeapon(m_subWeaponType);
+	//サブ武器を収納状態にする
+	m_subUseWeapon.weapon->StartSetWeaponState(WeaponBase::enWeaponState_Stowed);
+	//アニメーションクリップの最初の番号を設定
+	SetCurrentAnimationStartIndexNo(m_subUseWeapon, enWeapon_Sub);
+
+	//現在の武器のアニメーションクリップの最初の番号
+	m_currentAnimationStartIndexNo
+		= m_mainUseWeapon.weaponAnimationStartIndexNo;
+	//武器の攻撃力を自身の攻撃力に設定
+	m_status.atk = m_mainUseWeapon.weapon->GetWeaponPower();
+
+	//ウェポンマネージャーの削除
+	WeaponManager::DeleteInstance();
+}
+
+void Brave::SetCurrentAnimationStartIndexNo(UseWeapon& useWeapon, EnWeapons mainOrSub)
+{
+	switch (mainOrSub)
+	{
+	case Brave::enWeapon_Main:
+		useWeapon.weaponAnimationStartIndexNo = m_mainWeaponAnimationStartIndexNo;
+		break;
+	case Brave::enWeapon_Sub:
+		useWeapon.weaponAnimationStartIndexNo = m_subWeaponAnimationStartIndexNo;
+		break;
+	case Brave::enWeapon_num:
+		std::abort();
+		break;
+	default:
+		break;
+	}
+}
+
+void Brave::RoadWeaponTypeAnimetionClip(EnWeaponType weaponType, int weaponAnimationStartIndexNo)
+{
+	switch (weaponType)
+	{
+	case enWeaponType_SwordShield:
+		RoadOneHandSwordAnimationClip(weaponAnimationStartIndexNo);
+		break;
+	case enWeaponType_TwoHandSword:
+		RoadTwoHandSwordAnimationClip(weaponAnimationStartIndexNo);
+		break;
+	case enWeaponType_Bow:
+		RoadBowAnimationClip(weaponAnimationStartIndexNo);
+		break;
+	case enWeaponType_Num:
+		std::abort();
+		break;
+	default:
+		break;
+	}
+}
+
+void Brave::RoadOneHandSwordAnimationClip(int mainWeaponAnimationStartIndexNo)
 {
 	// 片手剣のアニメーションクリップをロードする
 	const std::pair<const char*, bool> oneHandedSwordAnimClipFilePaths[] = {
@@ -695,10 +756,12 @@ void Brave::InitModel()
 		{"None",false}
 	};
 	for (int i = 0; i < enAnimClip_Num; i++) {
-		m_animationClip[i].Load(oneHandedSwordAnimClipFilePaths[i].first);
-		m_animationClip[i].SetLoopFlag(oneHandedSwordAnimClipFilePaths[i].second);
+		m_animationClip[mainWeaponAnimationStartIndexNo + i].Load(oneHandedSwordAnimClipFilePaths[i].first);
+		m_animationClip[mainWeaponAnimationStartIndexNo + i].SetLoopFlag(oneHandedSwordAnimClipFilePaths[i].second);
 	}
-
+}
+void Brave::RoadTwoHandSwordAnimationClip(int mainWeaponAnimationStartIndexNo)
+{
 	// 両手剣のアニメーションクリップをロードする
 	const std::pair<const char*, bool> twoHandedSwordAnimClipFilePaths[] = {
 		{"Assets/animData/character/Player/TwoHandSword/idle_BigSword.tka",true},
@@ -719,10 +782,13 @@ void Brave::InitModel()
 		{"None",false}
 	};
 	for (int i = 0; i < enAnimClip_Num; i++) {
-		m_animationClip[TwoHandSwordAnimationStartIndexNo + i].Load(twoHandedSwordAnimClipFilePaths[i].first);
-		m_animationClip[TwoHandSwordAnimationStartIndexNo + i].SetLoopFlag(twoHandedSwordAnimClipFilePaths[i].second);
+		m_animationClip[mainWeaponAnimationStartIndexNo + i].Load(twoHandedSwordAnimClipFilePaths[i].first);
+		m_animationClip[mainWeaponAnimationStartIndexNo + i].SetLoopFlag(twoHandedSwordAnimClipFilePaths[i].second);
 	}
-
+}
+void Brave::RoadBowAnimationClip(int mainWeaponAnimationStartIndexNo)
+{
+	// 弓のアニメーションクリップをロードする
 	const std::pair<const char*, bool> bowAnimClipFilePaths[] = {
 		{"Assets/animData/character/Player/Bow/Idle.tka",true},
 		{"Assets/animData/character/Player/Bow/Sprint.tka",true},
@@ -742,9 +808,17 @@ void Brave::InitModel()
 		{"None",false}
 	};
 	for (int i = 0; i < enAnimClip_Num; i++) {
-		m_animationClip[BowAnimationStartIndexNo + i].Load(bowAnimClipFilePaths[i].first);
-		m_animationClip[BowAnimationStartIndexNo + i].SetLoopFlag(bowAnimClipFilePaths[i].second);
+		m_animationClip[mainWeaponAnimationStartIndexNo + i].Load(bowAnimClipFilePaths[i].first);
+		m_animationClip[mainWeaponAnimationStartIndexNo + i].SetLoopFlag(bowAnimClipFilePaths[i].second);
 	}
+}
+
+void Brave::InitModel()
+{
+	//メイン武器に対応するアニメーションクリップを読み込む
+	RoadWeaponTypeAnimetionClip(m_mainWeaponType, m_mainWeaponAnimationStartIndexNo);
+	//サブ武器に対応するアニメーションクリップを読み込む
+	RoadWeaponTypeAnimetionClip(m_subWeaponType, m_subWeaponAnimationStartIndexNo);
 
 	//モデルの初期化
 	m_modelRender.Init("Assets/modelData/character/Player/NewHero/Hero_Smile.tkm",
@@ -786,6 +860,7 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	//前進する始まり
 	if (wcscmp(eventName, L"MoveForwardStart") == 0)
 	{
+		CalcForward(m_moveSpeed);
 		SetMoveforwardFlag(true);
 	}
 	//前進する終わり

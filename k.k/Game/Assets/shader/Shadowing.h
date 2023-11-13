@@ -67,17 +67,16 @@ float CalcShadowRate(
             zInLVP -= 0.001f;
             //深度値
             float pos = exp(INFINITY * zInLVP);
-
-           // shadow = Chebyshev(shadowValue.xy, pos);
-
+            //影になる可能性を計算する
+            shadow = Chebyshev(shadowValue.xy, pos);
             //ハードシャドウ
-            if(zInLVP >= shadowValue.r)
+            /* if(zInLVP >= shadowValue.r)
             {
                 shadow=0.5f;
-               
-            }
 
-            //shadow*=0.5f;
+            }*/
+            //影を薄くする
+            shadow *= 0.5f;
             break;
         }
 

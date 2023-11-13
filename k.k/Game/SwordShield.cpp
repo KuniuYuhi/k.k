@@ -36,13 +36,8 @@ bool SwordShield::Start()
 	InitModel();
 	InitCollision();
 
-	//‘•”õ
-	SetWeaponState(enWeaponState_Armed);
-	SetStowedFlag(false);
 	//–hŒäƒ^ƒCƒv‚Ìİ’è
 	SetEnDefendTipe(enDefendTipe_Defence);
-
-
 
 	return true;
 }

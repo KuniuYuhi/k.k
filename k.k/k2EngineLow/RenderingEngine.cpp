@@ -292,9 +292,11 @@ namespace nsK2EngineLow {
 		//シャドウマップ描画用のモデルを描画
 		RenderToShadowMap(rc);
 
-		LightCameraUpDate();
+		//ライトカメラの設定
+		//LightCameraUpDate();
+		
 		//ライトビュープロジェクション行列を設定
-		SetmLVP(GetLightCamera().GetViewProjectionMatrix());
+		SetmLVP();
 
 		//ZPrepassモデルを描画
 		ZPrepass(rc);

@@ -2,9 +2,10 @@
 #include "WeaponManager.h"
 #include "SwordShield.h"
 #include "BigSword.h"
+#include "Bow.h"
 
-namespace nsK2EngineLow {
-}
+//todo •Ší“ü‚è‘Ö‚¦ŠÖ”•K—vH
+
 WeaponManager* WeaponManager::m_weaponInstance = nullptr;
 
 WeaponManager::WeaponManager()
@@ -14,8 +15,6 @@ WeaponManager::WeaponManager()
 		std::abort();
 	}
 	m_weaponInstance = this;
-
-	AddToWeaponMap();
 }
 
 
@@ -24,8 +23,52 @@ WeaponManager::~WeaponManager()
 	m_weaponInstance = nullptr;
 }
 
-void WeaponManager::AddToWeaponMap()
+WeaponBase* WeaponManager::CreateWeapon(EnWeaponType weaponTipe)
 {
-	m_weaponMap[enWeaponType_SwordShield] = m_swordShield;
-	m_weaponMap[enWeaponType_TwoHandSword] = m_bigSword;
+	switch (weaponTipe)
+	{
+	case enWeaponType_SwordShield:
+		return CreateSwordShield();
+		break;
+	case enWeaponType_TwoHandSword:
+		return CreateBigSword();
+		break;
+	case enWeaponType_Bow:
+		return CreateBow();
+		break;
+		/*case enWeaponType_DoubleSwords:
+			return nullptr;
+			break;*/
+	default:
+		return nullptr;
+		break;
+	}
+	return nullptr;
 }
+
+void WeaponManager::SwapWeapons(
+	WeaponBase* mainWeapon, WeaponBase* subWeapon)
+{
+	mainWeapon->ReverseWeaponState();
+	subWeapon->ReverseWeaponState();
+
+}
+
+WeaponBase* WeaponManager::CreateSwordShield()
+{
+	SwordShield* swordshield = NewGO<SwordShield>(0, "swordshield");
+	return swordshield;
+}
+
+WeaponBase* WeaponManager::CreateBigSword()
+{
+	BigSword* bigsword = NewGO<BigSword>(0, "bigsword");
+	return bigsword;
+}
+
+WeaponBase* WeaponManager::CreateBow()
+{
+	Bow* bow = NewGO<Bow>(0, "bow");
+	return bow;
+}
+

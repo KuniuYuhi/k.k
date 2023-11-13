@@ -11,6 +11,10 @@
 // K2EngineLowのグローバルアクセスポイント。
 K2EngineLow* g_k2EngineLow = nullptr;
 
+
+
+
+
 /// <summary>
 /// メイン関数
 /// </summary>
@@ -22,10 +26,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	// k2EngineLowの初期化。
 	g_k2EngineLow = new K2EngineLow();
 	g_k2EngineLow->Init(g_hWnd, FRAME_BUFFER_W, FRAME_BUFFER_H);
+	//カメラの設定
 	g_camera3D->SetPosition({ 0.0f, 100.0f, -200.0f });
 	g_camera3D->SetTarget({ 0.0f, 50.0f, 0.0f });
 
-	//
+	//サウンドファイルの読み込み
 	SoundFile* soundFile = new SoundFile();
 	delete soundFile;
 
@@ -34,8 +39,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	//CascadModel* CCModel = NewGO<CascadModel>(0, "cascadeModel");
 
-	//Title* title = NewGO<Title>(0, "game");
-	Game* game = NewGO<Game>(0, "game");
+	Title* title = NewGO<Title>(0, "game");
+	//Game* game = NewGO<Game>(0, "game");
 
 	// ここからゲームループ。
 	while (DispatchWindowMessage() && g_gameLoop.m_isLoop == true)
