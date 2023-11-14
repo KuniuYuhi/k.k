@@ -6,11 +6,12 @@
 
 //全角記号文字はグリフに含まれていないのでつかわない！！！
 
-//todo　選んだ武器はそのままグレーにして置いておくか
-//		二段階にするか
-
 namespace {
 	const Vector3 WEAPON_POSITION = { 460.0f,150.0f,0.0f };
+
+	const Vector3 WEAPON_MOVE_END_POSITION = { -180.0f,150.0f,0.0f };
+	const Vector3 WEAPON_MOVE_START_POSITION = { -2080.0f,150.0f,0.0f };
+
 	const Vector3 ROOM_POSITION = { 0.0f,-100.0f,-280.0f };
 
 	const float ROTATION_SPEED = 3.0F;
@@ -19,7 +20,28 @@ namespace {
 
 	const float FONT_SCALE = 1.8f;
 
-	const Vector2 SELECT_BACK_SPRITE_POS = { 400.0f,0.0f };
+	const Vector3 SELECT_BACK_SPRITE_POS = { 400.0f,0.0f, 0.0f };
+	const Vector3 SELECT_BACK_SPRITE_MAX_POS = { 2300.0f,0.0f,0.0f };
+
+	const Vector3 LERP_START_POS = { 0.0f,0.0f,0.0f };
+
+	const Vector3 LERP_END_POS = { 2000.0f,0.0f,0.0f };
+
+	const Vector3 WEAPON_NAME_DEFAULT_POS[enWeaponType_Num] = {
+		{50.0f,250.0f,0.0f},
+		{120.0f,50.0f,0.0f},
+		{190.0f,-150.0f,0.0f},
+	};
+
+	const Vector3 WEAPON_NAME_MAX_POS[enWeaponType_Num] = {
+		{1950.0f,250.0f,0.0f},
+		{2020.0f,50.0f,0.0f},
+		{2090.0f,-150.0f,0.0f},
+	};
+
+	const Vector3 DILECTION_LIGHT = { 1.0f,-1.0f,-1.0f };
+	const Vector3 DILECTION_LIGHT_COLOR = { 0.6f,0.5f,0.6f };
+	const Vector3 POINT_LIGHT_POSITION = { 340.0f,300.0f,300.0f };
 }
 
 SelectWeapon::SelectWeapon()
@@ -39,9 +61,8 @@ bool SelectWeapon::Start()
 {
 	//ウェポンマネージャー作成
 	WeaponManager::CreateInstance();
-
-	//環境光の設定
-	g_renderingEngine->SetAmbient({1.0f,1.0f,0.8f});
+	//各種ライトの初期化
+	SettingLight();
 	//武器部屋の初期化
 	InitWeaponRoom();
 	//武器の初期化
@@ -77,26 +98,59 @@ void SelectWeapon::Update()
 		}
 		return;
 	}
-
-	//GoToPlayMode();
-
+	//武器選択処理
 	ProcessSelectWeapon();
-
+	//武器の回転処理
 	RotationWeapon();
-
-	
 }
 
 void SelectWeapon::RotationWeapon()
 {
 	m_rotation.AddRotationDegY(ROTATION_SPEED);
+	m_weaponInfo[m_nowSelectWeaponNumber].m_weaponModel.SetPosition(WEAPON_POSITION);
 	m_weaponInfo[m_nowSelectWeaponNumber].m_weaponModel.SetRotation(m_rotation);
 	m_weaponInfo[m_nowSelectWeaponNumber].m_weaponModel.Update();
+
+	if (m_moveWeapon != nullptr)
+	{
+		m_moveWeapon->m_weaponModel.SetRotation(m_rotation);
+		m_moveWeapon->m_weaponModel.Update();
+	}
 }
 
 void SelectWeapon::ProcessSelectWeapon()
 {
 	SelectWeaponManageState();
+}
+
+void SelectWeapon::SelectWeaponManageState()
+{
+	switch (m_enSelectWeaponOrder)
+	{
+		//メイン武器の選択処理
+	case SelectWeapon::enSelectWeaponOrder_MainWeapon:
+		ProcessChoice(enSelectWeaponOrder_MainWeapon);
+		//名前の色の処理
+		ProcessWeaponName();
+		m_selectBarSprite.SetPosition(WEAPON_NAME_DEFAULT_POS[m_nowSelectWeaponNumber]);
+		m_selectBarSprite.Update();
+		break;
+		//サブ武器の選択処理
+	case SelectWeapon::enSelectWeaponOrder_SubWeapon:
+		ProcessChoice(enSelectWeaponOrder_SubWeapon);
+		//名前の色の処理
+		ProcessWeaponName();
+		m_selectBarSprite.SetPosition(WEAPON_NAME_DEFAULT_POS[m_nowSelectWeaponNumber]);
+		m_selectBarSprite.Update();
+		break;
+		//武器決まったら
+	case SelectWeapon::enSelectWeaponOrder_Complete:
+		ProcessComplete();
+		break;
+	default:
+		break;
+	}
+
 }
 
 void SelectWeapon::ProcessChoice(EnSelectWeaponOrder weaponOrder)
@@ -115,12 +169,16 @@ void SelectWeapon::ProcessChoice(EnSelectWeaponOrder weaponOrder)
 			//オーダーが全て決まったら
 			if (GetSelectWeaponOrder() == enSelectWeaponOrder_Complete)
 			{
+				//メイン武器を画面内に移動させるために何の武器か探す
+				FindAndSetMainWeaponInfo();
 				return;
 			}
 		}
 		//もし既に選択している武器なら選択状態を解除
 		else
 		{
+			//選択する武器のオーダーを戻す
+			m_enSelectWeaponOrder = static_cast<EnSelectWeaponOrder>(m_enSelectWeaponOrder - 1);
 			m_weaponInfo[m_nowSelectWeaponNumber].m_isSelect = false;
 		}
 		m_nowSelectWeaponNumber++;
@@ -133,7 +191,6 @@ void SelectWeapon::ProcessChoice(EnSelectWeaponOrder weaponOrder)
 		}
 		return;
 	}
-
 	//上に上がる
 	if (g_pad[0]->IsTrigger(enButtonUp) == true)
 	{
@@ -161,32 +218,188 @@ void SelectWeapon::ProcessChoice(EnSelectWeaponOrder weaponOrder)
 	}
 }
 
-void SelectWeapon::SelectWeaponManageState()
+void SelectWeapon::ProcessComplete()
 {
-	switch (m_enSelectWeaponOrder)
+	switch (m_enCompleteState)
 	{
-	case SelectWeapon::enSelectWeaponOrder_MainWeapon:
-		ProcessChoice(enSelectWeaponOrder_MainWeapon);
-		//名前の色の処理
-		ProcessWeaponName();
+	case SelectWeapon::enCompleteState_OffScreenObject:
+		//ウィンドウを画面外に移動させる
+		ScreenWeaponFontAndSprite(true, LERP_START_POS, LERP_END_POS);
 		break;
-	case SelectWeapon::enSelectWeaponOrder_SubWeapon:
-		ProcessChoice(enSelectWeaponOrder_SubWeapon);
-		//名前の色の処理
-		ProcessWeaponName();
+	case SelectWeapon::enCompleteState_OnScreenObject:
+		//ウィンドウを画面内に移動させる
+		ScreenWeaponFontAndSprite(false, LERP_START_POS, LERP_END_POS);
 		break;
-	case SelectWeapon::enSelectWeaponOrder_Complete:
-		ProcessComplete();
+	case SelectWeapon::enCompleteState_Complete:
+		//武器選び直しかゲームに遷移処理
+		ProcessResetOrGoToPlay();
 		break;
 	default:
 		break;
 	}
-
-	m_selectBarSprite.SetPosition(m_namePosForSelectMainWeapon[m_nowSelectWeaponNumber]);
-	m_selectBarSprite.Update();
 }
 
-void SelectWeapon::ProcessComplete()
+void SelectWeapon::ScreenWeaponFontAndSprite(bool moveScreenFlag, Vector3 start, Vector3 end)
+{
+	if (m_screenTimer > 1.0f)
+	{
+		//次のステートに遷移
+		m_enCompleteState = enCompleteState_Complete;
+		m_screenTimer = 0.0f;
+		//画面内に移動し終わったなら
+		if (moveScreenFlag == false)
+		{
+			//中身をリセット
+			m_moveWeapon = nullptr;
+			//最初のメイン武器から選びなおし
+			SetEnSelectWeaponOrder(enSelectWeaponOrder_MainWeapon);
+			//コンプリートステートをリセット
+			m_enCompleteState = enCompleteState_OffScreenObject;
+		}
+		return;
+	}
+	else
+	{
+		m_screenTimer += g_gameTime->GetFrameDeltaTime() * 1.0f;
+		//線形補間
+		Vector3 pos;
+		pos.Lerp(m_screenTimer, start, end);
+		if (moveScreenFlag == false)
+		{
+			pos *= 1.5f;
+		}
+		//スクリーンフラグによって計算の仕方を変える
+		ProcessMoveScreen(moveScreenFlag, pos);
+	}
+}
+
+void SelectWeapon::ProcessMoveScreen(bool moveScreenFlag, const Vector3 movePos)
+{
+	//画面外に移動させるなら
+	if (moveScreenFlag == true)
+	{
+		//画像の移動
+		MoveOffScreen(movePos);
+		//武器の移動
+		MoveInWeapon(movePos);
+	}
+	//画面内に移動させるなら
+	else
+	{
+		//画像の移動
+		MoveOnScreen(movePos);
+		//武器の移動
+		MoveOutWeapon(movePos);
+	}
+
+	//更新処理
+	m_selectBarSprite.Update();
+	m_selectBackSprite.Update();
+}
+
+void SelectWeapon::MoveOffScreen(Vector3 movePos)
+{
+	Vector3 newPos = g_vec3Zero;
+	//フォント
+	for (int num = 0; num < enWeaponType_Num; num++)
+	{
+		newPos = WEAPON_NAME_DEFAULT_POS[num] + movePos;
+		//武器のフォントの座標
+		if (m_weaponInfo[num].m_weaponNameFont.GetPosition().x >= WEAPON_NAME_MAX_POS[num].x)
+		{
+			m_weaponInfo[num].m_weaponNameFont.SetPosition(WEAPON_NAME_MAX_POS[num]);
+		}
+		else
+			m_weaponInfo[num].m_weaponNameFont.SetPosition(newPos);
+
+		//選択バーと同じ番号なら
+		if (num == m_nowSelectWeaponNumber)
+		{
+			if (m_selectBarSprite.GetPosition().x >= WEAPON_NAME_MAX_POS[num].x)
+			{
+				m_selectBarSprite.SetPosition(WEAPON_NAME_MAX_POS[num]);
+			}
+			else
+				m_selectBarSprite.SetPosition(newPos);
+		}
+	}
+	
+
+	newPos = SELECT_BACK_SPRITE_POS + movePos;
+	//選択背景の座標
+	if (m_selectBackSprite.GetPosition().x >= SELECT_BACK_SPRITE_MAX_POS.x)
+	{
+		m_selectBackSprite.SetPosition(SELECT_BACK_SPRITE_MAX_POS);
+	}
+	else
+		m_selectBackSprite.SetPosition(newPos);
+}
+
+void SelectWeapon::MoveOnScreen(Vector3 movePos)
+{
+	Vector3 newPos = g_vec3Zero;
+	//フォント
+	for (int num = 0; num < enWeaponType_Num; num++)
+	{
+		//初期位置に戻っていく
+		newPos = WEAPON_NAME_MAX_POS[num] - movePos;
+		//武器のフォントの座標
+		if (m_weaponInfo[num].m_weaponNameFont.GetPosition().x <= WEAPON_NAME_DEFAULT_POS[num].x)
+		{
+			m_weaponInfo[num].m_weaponNameFont.SetPosition(WEAPON_NAME_DEFAULT_POS[num]);
+		}
+		else
+			m_weaponInfo[num].m_weaponNameFont.SetPosition(newPos);
+
+		//選択バーと同じ番号なら
+		if (num == m_nowSelectWeaponNumber)
+		{
+			if (m_selectBarSprite.GetPosition().x <= WEAPON_NAME_DEFAULT_POS[num].x)
+			{
+				m_selectBarSprite.SetPosition(WEAPON_NAME_DEFAULT_POS[num]);
+			}
+			else
+				m_selectBarSprite.SetPosition(newPos);
+		}
+	}
+
+	newPos = SELECT_BACK_SPRITE_MAX_POS - movePos;
+	//選択背景の座標
+	if (m_selectBackSprite.GetPosition().x <= SELECT_BACK_SPRITE_POS.x)
+	{
+		m_selectBackSprite.SetPosition(SELECT_BACK_SPRITE_POS);
+	}
+	else
+		m_selectBackSprite.SetPosition(newPos);
+}
+
+void SelectWeapon::MoveOutWeapon(Vector3 movePos)
+{
+	Vector3 newPos = g_vec3Zero;
+	newPos = WEAPON_MOVE_END_POSITION - movePos;
+	//選択背景の座標
+	if (m_moveWeapon->m_weaponModel.GetPosition().x <= WEAPON_MOVE_START_POSITION.x)
+	{
+		m_moveWeapon->m_weaponModel.SetPosition(WEAPON_MOVE_START_POSITION);
+	}
+	else
+		m_moveWeapon->m_weaponModel.SetPosition(newPos);
+}
+
+void SelectWeapon::MoveInWeapon(Vector3 movePos)
+{
+	Vector3 newPos = g_vec3Zero;
+	newPos = WEAPON_MOVE_START_POSITION + movePos;
+	//選択背景の座標
+	if (m_moveWeapon->m_weaponModel.GetPosition().x >= WEAPON_MOVE_END_POSITION.x)
+	{
+		m_moveWeapon->m_weaponModel.SetPosition(WEAPON_MOVE_END_POSITION);
+	}
+	else
+		m_moveWeapon->m_weaponModel.SetPosition(newPos);
+}
+
+void SelectWeapon::ProcessResetOrGoToPlay()
 {
 	//Bボタンを押したら、武器を選びなおす
 	if (g_pad[0]->IsTrigger(enButtonB))
@@ -195,13 +408,31 @@ void SelectWeapon::ProcessComplete()
 		for (int num = 0; num < enWeaponType_Num; num++)
 		{
 			m_weaponInfo[num].m_isSelect = false;
+			m_weaponInfo[num].m_weaponOrder = enSelectWeaponOrder_None;
+			m_weaponInfo[num].m_weaponNameFont.SetColor(g_vec4White);
 		}
-		//最初のメイン武器から選びなおし
-		SetEnSelectWeaponOrder(enSelectWeaponOrder_MainWeapon);
+		//前のステートに遷移。画像を画面内に戻す
+		m_enCompleteState = enCompleteState_OnScreenObject;
 		return;
 	}
-
+	//ゲームに遷移決定
 	GoToPlayMode();
+}
+
+void SelectWeapon::FindAndSetMainWeaponInfo()
+{
+	for (int num = 0; num < enWeaponType_Num; num++)
+	{
+		if (m_weaponInfo[num].m_weaponOrder == enSelectWeaponOrder_MainWeapon)
+		{
+			//新しく生成せずに直接動かす
+			m_moveWeapon = &m_weaponInfo[num];
+			//座標を開始座標を設定と更新
+			m_moveWeapon->m_weaponModel.SetPosition(WEAPON_MOVE_START_POSITION);
+			m_moveWeapon->m_weaponModel.Update();
+			return;
+		}
+	}
 
 }
 
@@ -254,9 +485,30 @@ void SelectWeapon::GoToPlayMode()
 		//g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
 		//フェード開始
 		m_fade->StartFadeIn(2.0f);
-
-
 	}
+}
+
+void SelectWeapon::SettingLight()
+{
+	//環境光の設定
+	g_renderingEngine->SetAmbient({ 1.0f,1.0f,0.8f });
+	//ディレクションライトの設定
+	g_renderingEngine->SetDerectionLight(0, DILECTION_LIGHT, DILECTION_LIGHT_COLOR);
+
+	g_renderingEngine->SetPointLight(
+		POINT_LIGHT_POSITION, { 10.0f,10.0f,10.0f }, {400.0f,3.2f,0.0f});
+
+
+	/*Vector3 direciton = { 1.0f,-5.0f,0.0f };
+	direciton.Normalize();
+	g_renderingEngine->SetSpotLight(
+		{ 460.0f,300.0f,0.0f },
+		{200.0f,0.0f,0.0f},
+		{ 700.0f,3.0f,0.0f },
+		direciton,
+		{ 80.0f,0.5f,0.0f }
+	);
+	g_renderingEngine->SpotLightIsUse();*/
 }
 
 void SelectWeapon::InitWeaponRoom()
@@ -288,7 +540,7 @@ void SelectWeapon::InitWeapon()
 	);
 
 	m_weaponInfo[enWeaponType_Bow].m_weaponModel.Init(
-		"Assets/modelData/character/Player/NewHero/Bow.tkm",
+		"Assets/modelData/SelectWeaponBg/BowArrow.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 		0,
 		0,
@@ -319,7 +571,7 @@ void SelectWeapon::InitWeaponName()
 	//ソード＆シールドのフォントの初期化
 	InitFontRender(
 		m_weaponInfo[enWeaponType_SwordShield].m_weaponNameFont,
-		m_namePosForSelectMainWeapon[enWeaponType_SwordShield],
+		WEAPON_NAME_DEFAULT_POS[enWeaponType_SwordShield],
 		FONT_SCALE,
 		SwordShield
 	);
@@ -327,14 +579,14 @@ void SelectWeapon::InitWeaponName()
 	//グレイトソードのフォントの初期化
 	InitFontRender(
 		m_weaponInfo[enWeaponType_TwoHandSword].m_weaponNameFont,
-		m_namePosForSelectMainWeapon[enWeaponType_TwoHandSword],
+		WEAPON_NAME_DEFAULT_POS[enWeaponType_TwoHandSword],
 		FONT_SCALE,
 		GrateSword
 	);
 	//アローのフォントの初期化
 	InitFontRender(
 		m_weaponInfo[enWeaponType_Bow].m_weaponNameFont,
-		m_namePosForSelectMainWeapon[enWeaponType_Bow],
+		WEAPON_NAME_DEFAULT_POS[enWeaponType_Bow],
 		FONT_SCALE,
 		bow
 	);
@@ -346,7 +598,7 @@ void SelectWeapon::InitWeaponName()
 void SelectWeapon::InitCamera()
 {
 	g_camera3D->SetNear(1.0f);
-	g_camera3D->SetFar(10000.0f);
+	g_camera3D->SetFar(5000.0f);
 
 	//注視点から視点までのベクトルを設定。300,400
 	m_toCameraPos.Set(0.0f, 100.0f, 700.0f);
@@ -375,7 +627,7 @@ void SelectWeapon::InitSprite()
 {
 	//選択バー
 	m_selectBarSprite.Init("Assets/sprite/InGame/SelectWeapon/SelectBar.DDS", 1920, 256);
-	m_selectBarSprite.SetPosition(m_namePosForSelectMainWeapon[enWeaponType_SwordShield]);
+	m_selectBarSprite.SetPosition(WEAPON_NAME_DEFAULT_POS[enWeaponType_SwordShield]);
 	m_selectBarSprite.SetScale(g_vec3One);
 	m_selectBarSprite.SetRotation(g_quatIdentity);
 	m_selectBarSprite.Update();
@@ -389,7 +641,7 @@ void SelectWeapon::InitSprite()
 
 void SelectWeapon::InitFontRender(
 	FontRender& fontRender, 
-	Vector2 position, 
+	Vector3 position, 
 	float scale, 
 	const wchar_t* name, 
 	Vector4 color, 
@@ -404,14 +656,18 @@ void SelectWeapon::InitFontRender(
 	);
 }
 
-
-
 void SelectWeapon::Render(RenderContext& rc)
 {
 	//部屋
 	m_weaponRoomModel.Draw(rc);
 	//選択中の武器
 	m_weaponInfo[m_nowSelectWeaponNumber].m_weaponModel.Draw(rc);
+
+	if (m_moveWeapon != nullptr)
+	{
+		m_moveWeapon->m_weaponModel.Draw(rc);
+	}
+
 	//選択背景
 	m_selectBackSprite.Draw(rc);
 	//選択バー

@@ -27,8 +27,20 @@ private:
 		enSelectWeaponOrder_Complete,	//両方決めたので、完了
 		enSelectWeaponOrder_None		//何も選択されていない
 	};
+	/// <summary>
+	/// 武器が決定してからのステート
+	/// </summary>
+	enum EnCompleteState
+	{
+		enCompleteState_OffScreenObject,
+		enCompleteState_OnScreenObject,
+		enCompleteState_Complete,
+	};
 
-
+	/// <summary>
+	/// 各種ライトの設定
+	/// </summary>
+	void SettingLight();
 	/// <summary>
 	/// 武器選択部屋モデルの初期化
 	/// </summary>
@@ -86,18 +98,6 @@ private:
 	/// <summary>
 	/// フォントの初期化
 	/// </summary>
-	/// <param name="fontRender">初期化したいフォントレンダー</param>
-	/// <param name="position">座標</param>
-	/// <param name="name">設定したい文字、文字列</param>
-	/// <param name="color">文字の色</param>
-	/// <param name="isShadowParam">影をつけるか(輪郭)</param>
-	/// <param name="shadowOffset">オフセット量</param>
-	/// <param name="shadowColor">影の色</param>
-	
-
-	/// <summary>
-	/// フォントの初期化
-	/// </summary>
 	/// <param name="fontRender">初期化したいフォントレンダー<</param>
 	/// <param name="position">座標</param>
 	/// <param name="scale">拡大率</param>
@@ -108,7 +108,7 @@ private:
 	/// <param name="shadowColor">影の色</param>
 	void InitFontRender(
 		FontRender& fontRender,
-		Vector2 position,
+		Vector3 position,
 		float scale,
 		const wchar_t* name,
 		Vector4 color = g_vec4White,
@@ -134,42 +134,67 @@ private:
 		return m_enSelectWeaponOrder;
 	}
 
+	/// <summary>
+	/// 武器選択に関連するフォント、画像を画面外に移動させる
+	/// </summary>
+	/// <param name="moveScreenFlag">画面外に移動させるならtrue、画面内に移動させるならfalse</param>
+	void ScreenWeaponFontAndSprite(bool moveScreenFlag,Vector3 start,Vector3 end);
+	
+	/// <summary>
+	/// スクリーン(画像、フォント)の移動
+	/// </summary>
+	/// <param name="moveScreenFlag">画面外に移動させるならtrue、画面内に移動させるならfalse</param>
+	/// <param name="movePos">移動する量</param>
+	void ProcessMoveScreen(bool moveScreenFlag,const Vector3 movePos);
+	/// <summary>
+	/// 画面外に移動
+	/// </summary>
+	/// <param name="movePos"></param>
+	void MoveOffScreen(Vector3 movePos);
+	/// <summary>
+	/// 画面内に移動
+	/// </summary>
+	/// <param name="movePos"></param>
+	void MoveOnScreen(Vector3 movePos);
+	/// <summary>
+	/// 武器を画面外に移動
+	/// </summary>
+	void MoveOutWeapon(Vector3 movePos);
+	/// <summary>
+	/// 武器を画面内に移動
+	/// </summary>
+	void MoveInWeapon(Vector3 movePos);
+
+	/// <summary>
+	/// 武器選択をリセットかゲームモードに切り替え
+	/// </summary>
+	void ProcessResetOrGoToPlay();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void FindAndSetMainWeaponInfo();
+
 private:
-
-	Vector2 m_namePosForSelectMainWeapon[enWeaponType_Num] = {
-		{50.0f,250.0f},
-		{120.0f,50.0f},
-		{190.0f,-150.0f},
-	};
-
-	Vector2 m_namePosForSelectSubWeapon[enWeaponType_Num] = {
-		{200.0f,200.0f},
-		{250.0f,0.0f},
-		{300.0f,-200.0f}
-	};
-
-
 
 	struct WeaponInfo
 	{
 		ModelRender m_weaponModel;//武器のモデルを格納する配列
 		FontRender m_weaponNameFont;
 		bool m_isSelect = false;		//選ばれたか
-		EnSelectWeaponOrder m_weaponOrder;
+		EnSelectWeaponOrder m_weaponOrder=enSelectWeaponOrder_None;
 	};
 
 	WeaponInfo m_weaponInfo[enWeaponType_Num];
 
-	WeaponInfo aaa;
+	WeaponInfo* m_moveWeapon=nullptr;
 
 	std::vector<WeaponInfo*> m_canSelectWeapon;		//選べる武器
 	std::vector<WeaponInfo*> m_chosenSelectWeapon;	//選ばれた武器
 
-	
+	EnCompleteState		m_enCompleteState = enCompleteState_OffScreenObject;
 
 	int					m_notChoseWeapon = enWeaponType_Num;	//選ばれていない武器の種類
-
-	
 
 	Fade*				m_fade = nullptr;
 
@@ -196,9 +221,12 @@ private:
 	Vector3				m_selectCompleteBar = g_vec3Zero;
 
 
-	int					m_nowSelectWeaponNumber = 0;
+	int					m_nowSelectWeaponNumber = 0;		//現在選択している武器の種類(順番)
 
-	bool				m_goToGameFlag = false;
+
+	bool				m_goToGameFlag = false;				//
+
+	float				m_screenTimer = 0.0f;				//画面切り替え時のタイマー
 
 };
 
