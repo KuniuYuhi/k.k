@@ -225,7 +225,7 @@ private:
 	float							m_bigMeteoMoveCount = 4.0f;				//ビッグメテオがプレイヤーに向かうベクトルに移動する回数
 
 
-	const int						m_bigMeteoAttack = 80;
+	const int						m_bigMeteoAttack = 60;
 
 	bool							m_chaseFlag = true;						//プレイヤーを追いかけるかのフラグ。trueで追いかける
 
