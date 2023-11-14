@@ -135,9 +135,9 @@ SPSIn VSMainCore(
 	psIn.posInProj=psIn.pos;
 	psIn.posInProj/=psIn.posInProj.w;
 
-    psIn.posInLVP[0] = mul(mLVP[0], worldPos);
-    psIn.posInLVP[1] = mul(mLVP[1], worldPos);
-    psIn.posInLVP[2] = mul(mLVP[2], worldPos);
+    //psIn.posInLVP[0] = mul(mLVP[0], worldPos);
+    //psIn.posInLVP[1] = mul(mLVP[1], worldPos);
+    //psIn.posInLVP[2] = mul(mLVP[2], worldPos);
 	
 	return psIn;
 }
@@ -199,8 +199,8 @@ float4 PSMainCore( SPSIn psIn ,int isToon, int isShadowCaster) : SV_Target0
 		albedoColor*=Toon;
 	}
 	
-	//シャドウキャスターなら
-    if (!isShadowCaster)
+	//シャドウキャスターでないなら
+    if (isShadowCaster==false)
     {
 		//影生成用のパラメータ。
     	float shadowParam = 1.0f;
@@ -380,7 +380,7 @@ float3 CalcLigFromSpotLight(SPSIn psIn,float3 normal)
 	}
 
 	//影響の仕方を指数関数的にする
-	affect=pow(affect,spotLight.range.y);
+    affect = pow(affect, spotLight.range.y);
 	//影響率を乗算して反射光を弱める
 	diffSpotLight*=affect;
 	specSpotLight*=affect;
@@ -392,16 +392,18 @@ float3 CalcLigFromSpotLight(SPSIn psIn,float3 normal)
 	angle=abs(acos(angle));
 
 	//角度に比例して小さくなっていく影響率を求める
-	affect=1.0f-1.0f/spotLight.angle*angle;
+	affect=1.0f-1.0f/spotLight.angle.x*angle;
 	if(affect<0.0f)
 	{
 		affect=0.0f;
 	}
-	affect=pow(affect,spotLight.range.y);
+    affect = pow(affect, spotLight.angle.y);
 	diffSpotLight*=affect;
 	specSpotLight*=affect;
 
-	return diffSpotLight+specSpotLight;
+    float3 final = diffSpotLight + specSpotLight;
+	
+    return final;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

@@ -94,11 +94,6 @@ namespace nsK2EngineLow {
 		void SetmLVP(Matrix LVP,int shadowMapNo)
 		{
 			m_light.mLVP[shadowMapNo] = LVP;
-			/*for (int mapNo = 0; mapNo < NUM_SHADOW_MAP; mapNo++)
-			{
-				m_light.mLVP[mapNo] = LVP;
-			}*/
-			
 		}
 		//////////////////////////////////////////////////////////////////////
 		///ディレクションライトの関数

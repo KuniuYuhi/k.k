@@ -15,13 +15,10 @@
 #include "SkyCube.h"
 #include "InitEffect.h"
 
-
-
-
 #include "ManagerPreCompile.h"
 
 namespace {
-	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.6f, 0.6f, 0.6f);
+	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.5f, 0.5f, 0.5f);
 
 	const Vector3 SPOT_LIGHT_COLOR = Vector3(40.0f, 10.0f, 10.0f);
 
@@ -54,7 +51,7 @@ Game::~Game()
 
 	DeleteGO(m_gameCamera);
 
-	DeleteGO(m_gameUI);
+	//DeleteGO(m_gameUI);
 }
 
 bool Game::Start()

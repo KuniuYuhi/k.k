@@ -187,16 +187,16 @@ void GameUI::DrawPlayerUI(RenderContext& rc)
 	//メインアイコンベース
 	m_playerUI.m_iconBaseRender.Draw(rc);
 	//スキルの真ん中の◇
-	m_playerUI.m_SkillCenterRender.Draw(rc);
+	//m_playerUI.m_SkillCenterRender.Draw(rc);
 	//スキル１のフレーム
-	m_playerUI.m_Skill_1FlameRender.Draw(rc);
+	//m_playerUI.m_Skill_1FlameRender.Draw(rc);
 	//スキル１の内側のフレーム
-	m_playerUI.m_Skill_1FlameInsideRender.Draw(rc);
+	//m_playerUI.m_Skill_1FlameInsideRender.Draw(rc);
 
 	//メインアイコン
-	m_playerUI.m_characterIconRender.Draw(rc);
+	//m_playerUI.m_characterIconRender.Draw(rc);
 	//Xボタン
-	m_playerUI.m_SkillButtonXRender.Draw(rc);
+	//m_playerUI.m_SkillButtonXRender.Draw(rc);
 
 	//HPとMPのフォント
 	m_playerUI.m_hpFont.Draw(rc);

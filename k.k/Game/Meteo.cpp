@@ -41,7 +41,7 @@ Meteo::~Meteo()
 		m_ExplosionEffect->Stop();
 	}
 
-	DeleteGO(m_collision);
+	//DeleteGO(m_collision);
 	DeleteGO(m_explosionCollision);
 }
 
@@ -89,7 +89,7 @@ bool Meteo::Start()
 
 
 	//メテオの当たり判定の生成
-	m_collision = NewGO<CollisionObject>(0, "meteo");
+	/*m_collision = NewGO<CollisionObject>(0, "meteo");
 	m_collision->CreateSphere(
 		m_position,
 		m_rotation,
@@ -97,7 +97,7 @@ bool Meteo::Start()
 	);
 	m_collision->SetIsEnableAutoDelete(false);
 	m_collision->SetPosition(m_position);
-	m_collision->Update();
+	m_collision->Update();*/
 
 	//ステート設定
 	m_state = enMoveState;
@@ -145,8 +145,8 @@ void Meteo::Move()
 
 	//設定と更新
 	//爆発していない間メテオの当たり判定の座標を更新する
-	m_collision->SetPosition(m_movePos);
-	m_collision->Update();
+	/*m_collision->SetPosition(m_movePos);
+	m_collision->Update();*/
 
 	m_meteoEffect->SetPosition(m_movePos);
 	m_meteoEffect->Update();
@@ -233,8 +233,7 @@ void Meteo::OnProcessMoveTransition()
 		SetExplosionFlag(true);
 
 		//メテオ本体の当たり判定削除
-		//m_collision->Dead();
-		DeleteGO(m_collision);
+		//DeleteGO(m_collision);
 
 		//爆発エフェクトの生成
 		while (m_ExplosionEffect == nullptr)
