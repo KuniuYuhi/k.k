@@ -24,19 +24,6 @@
 #include "ManagerPreCompile.h"
 
 
-//todo たまにダークボールの当たった時の爆発がない
-//todotototototototo スキル使用時fpsが低いと地面との判定を取ってくれない
-
-//todo ジャストガードでカウンター(パリィ)
-//もしくはガード中に敵の攻撃に合わせてボタンを押して反撃。敵は怯む
-
-//todo 武器の攻撃力をポインタで管理したい
-
-//todo メイン武器が片手剣以外だとゲームスタートのとき
-// アニメーションが遅れる。最初に読み込むのが片手剣のアニメーションだから
-
-//todo 前方向
-
 namespace {
 	const float ADD_SCALE = 1.2f;
 
@@ -319,12 +306,14 @@ void Brave::ProcessSwordShieldSkill(bool UpOrDownFlag)
 	{
 		//Down処理
 		mulYPos += 
-			g_gameTime->GetFrameDeltaTime() * m_mainUseWeapon.weapon->GetJampSpeed() * 1.5f;
+			g_gameTime->GetFrameDeltaTime() * m_mainUseWeapon.weapon->GetJampSpeed() * 1.2f;
 		Y.y -= mulYPos;
 	}
 	
 	m_position = m_charaCon.Execute(Y, 1.0f / 30.0f);
 	//地面についているなら
+
+
 	if (m_charaCon.IsOnGround() == true|| m_position.y < 0.0f)
 	{
 		m_position.y = 0.0f;
