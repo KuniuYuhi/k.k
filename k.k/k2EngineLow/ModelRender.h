@@ -197,6 +197,11 @@ namespace nsK2EngineLow {
 			return m_skeleton.GetBone(boneNo);
 		}
 
+		const Vector3 GetPosition() const
+		{
+			return m_position;
+		}
+
 		/// <summary>
 		/// アニメーションイベントを追加する
 		/// </summary>
