@@ -312,12 +312,13 @@ void MobMonster::Dead()
 
 void MobMonster::CreateHitEffect()
 {
-	EffectEmitter* hitEffect = NewGO<EffectEmitter>(0);
+	//todo exe‚¾‚Æ‰½ŒÌ‚©‰æ‘œ‚ª‚È‚­‚È‚é
+	/*EffectEmitter* hitEffect = NewGO<EffectEmitter>(0);
 	hitEffect->Init(InitEffect::enEffect_Hit);
 	hitEffect->Play();
 	hitEffect->SetPosition(m_position);
 	hitEffect->SetScale(g_vec3One * HIT_EFFECT_SIZE);
-	hitEffect->Update();
+	hitEffect->Update();*/
 }
 
 

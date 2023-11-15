@@ -285,7 +285,7 @@ void Brave::ChangeWeapon()
 
 void Brave::ProcessWin()
 {
-	//点滅しないようにする
+	//無敵時間で点滅しないようにする
 	SetInvicibleTimeFlag(false);
 	//勝利スタートのステート
 	SetNextAnimationState(enAnimationState_Win_Start);
