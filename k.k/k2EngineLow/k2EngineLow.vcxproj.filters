@@ -231,8 +231,6 @@
     <ClCompile Include="FontRender.cpp" />
     <ClCompile Include="Level3DRender.cpp" />
     <ClCompile Include="Light.cpp" />
-    <ClCompile Include="Bloom.cpp" />
-    <ClCompile Include="PostEffect.cpp" />
     <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="SpringCamera.cpp" />
     <ClCompile Include="CameraCollisionSolver.cpp" />
@@ -240,6 +238,18 @@
     <ClCompile Include="SkyCube.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="CascadeShadowMapMatrix.cpp" />
+    <ClCompile Include="Bloom.cpp">
+      <Filter>PostEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="DoF.cpp">
+      <Filter>PostEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="PostEffect.cpp">
+      <Filter>PostEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="PostEffectComponentBase.cpp">
+      <Filter>PostEffect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="k2EngineLowPreCompile.h" />
@@ -520,8 +530,6 @@
     <ClInclude Include="FontRender.h" />
     <ClInclude Include="Level3DRender.h" />
     <ClInclude Include="Light.h" />
-    <ClInclude Include="Bloom.h" />
-    <ClInclude Include="PostEffect.h" />
     <ClInclude Include="Shadow.h" />
     <ClInclude Include="SpringCamera.h" />
     <ClInclude Include="CameraCollisionSolver.h" />
@@ -531,6 +539,18 @@
     <ClInclude Include="IRenderer.h" />
     <ClInclude Include="MyRenderer.h" />
     <ClInclude Include="CascadeShadowMapMatrix.h" />
+    <ClInclude Include="Bloom.h">
+      <Filter>PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="DoF.h">
+      <Filter>PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="PostEffect.h">
+      <Filter>PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="PostEffectComponentBase.h">
+      <Filter>PostEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphics">
@@ -589,6 +609,9 @@
     </Filter>
     <Filter Include="AI\PathFinding">
       <UniqueIdentifier>{72d94fe6-e599-4523-8e54-81df808c96fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PostEffect">
+      <UniqueIdentifier>{3e10b6b2-f4b0-4c49-a2e3-bd9d65938dc5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
