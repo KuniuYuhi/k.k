@@ -17,5 +17,7 @@ public:
 private:
 	ModelRender tea;
 	ModelRender bg;
+
+	ModelRender ball;
 };
 

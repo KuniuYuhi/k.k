@@ -22,6 +22,14 @@ bool CascadModel::Start()
 	bg.Init("Assets/modelData/cascadeShadowModel/bg/bg.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 		0, 0, enModelUpAxisZ, false, false, false);
+
+
+	ball.Init("Assets/modelData/character/Wizard/Effect/FireBall.tkm",
+		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
+		0, 0, enModelUpAxisZ
+		);
+
+
 	//カスケードシャドウ用カメラ
 	g_camera3D->SetPosition(0, 100.0f, 350.0f);
 	g_camera3D->SetTarget(0, 0.0f, 0);
@@ -37,8 +45,10 @@ void CascadModel::Update()
 
 void CascadModel::Render(RenderContext& rc)
 {
-	tea.Draw(rc);
+	//tea.Draw(rc);
 	bg.Draw(rc);
+
+	ball.Draw(rc);
 }
 
 void CascadModel::MoveCamera()
