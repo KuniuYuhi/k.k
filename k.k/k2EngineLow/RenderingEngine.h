@@ -132,6 +132,11 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダーコンテキスト</param>
 		void Execute(RenderContext& rc);
 
+		void SetMainRenderTargetAndDepthStencilBuffer(RenderContext& rc)
+		{
+			rc.SetRenderTarget(m_mainRenderTarget.GetRTVCpuDescriptorHandle(), m_zprepassRenderTarget.GetDSVCpuDescriptorHandle());
+		}
+
 		/// <summary>
 		/// シーンライトを取得
 		/// </summary>
@@ -183,6 +188,21 @@ namespace nsK2EngineLow {
 		Texture& GetZPrepassDepthTexture()
 		{
 			return m_zprepassRenderTarget.GetRenderTargetTexture();
+		}
+
+		/// <summary>
+		/// 被写界深度の有効化
+		/// </summary>
+		void EnableDof()
+		{
+			m_postEffect.DofEnable();
+		}
+		/// <summary>
+		/// 被写界深度の無効化
+		/// </summary>
+		void DisableDof()
+		{
+			m_postEffect.DofDisable();
 		}
 
 		/////////////////////////////////////////////////////
@@ -626,7 +646,16 @@ namespace nsK2EngineLow {
 			m_sceneLight.SetEyePos(eyePos);
 		}
 
-		
+		RenderTarget& GetZprepassRenderTarget()
+		{
+			return m_zprepassRenderTarget;
+		}
+
+		/// <summary>
+		/// モデルを描画する
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		void ModelRendering(RenderContext& rc);
 
 	private:
 		// GBufferの定義
@@ -649,11 +678,11 @@ namespace nsK2EngineLow {
 		/// </summary>
 		void InitDefferedLighting_Sprite();
 
-		/// <summary>
+		/*/// <summary>
 		/// モデルを描画する
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
-		void ModelRendering(RenderContext& rc);
+		void ModelRendering(RenderContext& rc);*/
 
 		/// <summary>
 		/// スプライトを描画する
@@ -674,7 +703,7 @@ namespace nsK2EngineLow {
 		void RenderToShadowMap(RenderContext& rc);
 
 		/// <summary>
-		/// ZPrepass
+		/// ZPrepassへの描画
 		/// </summary>
 		/// <param name="rc">レンダリングコンテキスト</param>
 		void ZPrepass(RenderContext& rc);
@@ -692,10 +721,23 @@ namespace nsK2EngineLow {
 		void ForwardRendering(RenderContext& rc);
 
 		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="rc"></param>
+		/// <param name="mainRenderTarget"></param>
+		void PostEffecting(RenderContext& rc);
+
+		/// <summary>
 		/// 2D描画
 		/// </summary>
 		/// <param name="rc">レンダリングコンテキスト</param>
 		void Render2D(RenderContext& rc);
+
+		/// <summary>
+		/// メインレンダリングターゲットの内容をフレームバッファにコピーする
+		/// </summary>
+		/// <param name="rc">レンダリングコンテキスト</param>
+		void CopyMainRenderTargetToFrameBuffer(RenderContext& rc);
 
 		/// <summary>
 		/// ZPrepass用のレンダリングターゲットを初期化
@@ -706,6 +748,13 @@ namespace nsK2EngineLow {
 		/// シャドウマップへの描画処理を初期化
 		/// </summary>
 		void InitShadowMapRender();
+
+
+		///////////////////
+//////////////////////////////////////////7
+
+		
+
 
 		std::vector<ModelRender*>		m_modelList;	//モデルリスト
 		std::vector<SpriteRender*>		m_spriteList;	//スプライトリスト

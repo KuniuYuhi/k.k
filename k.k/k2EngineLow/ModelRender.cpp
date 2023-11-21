@@ -203,12 +203,14 @@ namespace nsK2EngineLow {
 		InitCommon(renderingEngine, modelInitData.m_fxFilePath);
 	}
 
-	void ModelRender::InitSkyCube(ModelInitData& initData)
+	void ModelRender::InitSkyCube(ModelInitData& initData,const char* tkmFilePath)
 	{
 		initData.m_colorBufferFormat[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
 		m_frowardRenderModel.Init(initData);
-
 		m_frowardRenderModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+
+		//ZPrepass描画用のモデルを初期化。
+		InitModelOnZprepass(tkmFilePath, enModelUpAxisZ);
 	}
 
 	//モデルの情報を更新

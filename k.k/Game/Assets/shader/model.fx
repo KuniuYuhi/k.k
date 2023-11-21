@@ -19,6 +19,12 @@ struct SPSIn{
 	float4 posInLVP : TEXCOORD5; //ライトビュースクリーン空間でのピクセルの座標
 };
 
+struct SPSOut
+{
+    float4 color : SV_Target0;
+    float depth : SV_Target1;
+};
+
 ///////////////////////////////////////
 // 頂点シェーダーの共通処理をインクルードする。
 ///////////////////////////////////////
@@ -135,9 +141,8 @@ SPSIn VSMainCore(
 	psIn.posInProj=psIn.pos;
 	psIn.posInProj/=psIn.posInProj.w;
 
-    //psIn.posInLVP[0] = mul(mLVP[0], worldPos);
-    //psIn.posInLVP[1] = mul(mLVP[1], worldPos);
-    //psIn.posInLVP[2] = mul(mLVP[2], worldPos);
+	//頂点シェーダーでカメラ空間でのZ値を設定する
+    psIn.depth = psIn.pos.z;
 	
 	return psIn;
 }
@@ -145,8 +150,11 @@ SPSIn VSMainCore(
 /// <summary>
 /// ピクセルシェーダーのエントリー関数。
 /// </summary>
-float4 PSMainCore( SPSIn psIn ,int isToon, int isShadowCaster) : SV_Target0
+SPSOut PSMainCore(SPSIn psIn, int isToon, int isShadowCaster) : SV_Target0
 {
+	
+    SPSOut psOut;
+	
 	//シャドウマップにアクセスできる変数を宣言
     Texture2D<float4> shadowMapArray[3];
     shadowMapArray[0] = g_shadowMap_0;
@@ -214,7 +222,11 @@ float4 PSMainCore( SPSIn psIn ,int isToon, int isShadowCaster) : SV_Target0
         albedoColor.xyz *= (1.0f - shadow);
     }
 	
-	return albedoColor;
+    psOut.color = albedoColor;
+	
+    psOut.depth = psIn.depth;
+	
+    return psOut;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -510,25 +522,25 @@ float4 CalcOutLine(SPSIn psIn,float4 color)
 }
 
 //普通のピクセルシェーダーの処理
-float4 PSMain(SPSIn psIn) : SV_Target0
+SPSOut PSMain(SPSIn psIn) : SV_Target0
 {
 	return PSMainCore(psIn,0, 0);
 }
 
 //シャドウキャスター用のピクセルシェーダーの処理
-float4 PSShadowCasterMain(SPSIn psIn) : SV_Target0
+SPSOut PSShadowCasterMain(SPSIn psIn) : SV_Target0
 {
     return PSMainCore(psIn, 0, 1);
 }
 
 //普通のトゥーンシェーディングのピクセルシェーダーの処理
-float4 PSToonMain(SPSIn psIn) : SV_Target0
+SPSOut PSToonMain(SPSIn psIn) : SV_Target0
 {
 	return PSMainCore(psIn,1, 0);
 }
 
 //シャドウキャスター用のトゥーンシェーディングのピクセルシェーダーの処理
-float4 PSShadowCasterToonMain(SPSIn psIn) : SV_Target0
+SPSOut PSShadowCasterToonMain(SPSIn psIn) : SV_Target0
 {
     return PSMainCore(psIn, 1, 1);
 }

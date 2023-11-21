@@ -465,18 +465,14 @@ void Cactus::OnProcessDieStateTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//アニメーションの再生が終わったら
-		if (m_modelRender.IsPlayingAnimation() == false)
+		if (m_lich != nullptr)
 		{
-			if (m_lich != nullptr)
-			{
-				//リストから自身を消す
-				m_lich->RemoveAIActorFromList(this);
-				m_elaseListFlag = true;
-			}
-			//自身を削除する
-			DeleteGO(this);
+			//リストから自身を消す
+			m_lich->RemoveAIActorFromList(this);
+			m_elaseListFlag = true;
 		}
+		//自身を削除する
+		DeleteGO(this);
 	}
 }
 

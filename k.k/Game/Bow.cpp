@@ -100,7 +100,7 @@ void Bow::ProcessSkillAttack()
 		//チャージしている間は回転可能
 		SetRotationDelectionFlag(true);
 		//チャージタイマーを加算
-		m_ChargeTimer += g_gameTime->GetFrameDeltaTime();
+		m_ChargeTimer += g_gameTime->GetFrameDeltaTime()*2.4f;
 
 	}
 	//離した時にチャージタイマーがチャージ完了タイムを超えていたら

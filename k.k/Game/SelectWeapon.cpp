@@ -7,6 +7,8 @@
 //全角記号文字はグリフに含まれていないのでつかわない！！！
 
 namespace {
+	const Vector3 CAMERA_TARGET_POS = { 150.0f,200.0f,0.0f };
+	//460,150,0
 	const Vector3 WEAPON_POSITION = { 460.0f,150.0f,0.0f };
 
 	const Vector3 WEAPON_MOVE_END_POSITION = { -180.0f,150.0f,0.0f };
@@ -73,7 +75,8 @@ bool SelectWeapon::Start()
 	InitCamera();
 	//画像の初期化
 	InitSprite();
-
+	//被写界深度の有効化
+	g_renderingEngine->EnableDof();
 
 	m_fade = FindGO<Fade>("fade");
 	if (m_fade->IsFade() != true)
@@ -180,6 +183,7 @@ void SelectWeapon::ProcessChoice(EnSelectWeaponOrder weaponOrder)
 			//選択する武器のオーダーを戻す
 			m_enSelectWeaponOrder = static_cast<EnSelectWeaponOrder>(m_enSelectWeaponOrder - 1);
 			m_weaponInfo[m_nowSelectWeaponNumber].m_isSelect = false;
+			m_weaponInfo[m_nowSelectWeaponNumber].m_weaponOrder = enSelectWeaponOrder_None;
 		}
 		m_nowSelectWeaponNumber++;
 		//現在の選択番号が武器の種類より多くなったら
@@ -519,7 +523,11 @@ void SelectWeapon::InitWeaponRoom()
 		0, 0, enModelUpAxisZ, false, true, false
 	);
 
+	//Quaternion rot;
+	//rot.AddRotationDegY(-45.0f);
+
 	m_weaponRoomModel.SetScale(5.0f);
+	//m_weaponRoomModel.SetRotation(rot);
 	m_weaponRoomModel.SetPosition(ROOM_POSITION);
 	m_weaponRoomModel.Update();
 }
@@ -613,13 +621,11 @@ void SelectWeapon::InitCamera()
 		2.0f
 	);
 
-	m_targetPosition.y += 200.0f;
-	m_targetPosition.x += 150.0f;
-	Vector3 pos = m_targetPosition + m_positionCamera;
+	Vector3 pos = CAMERA_TARGET_POS + m_positionCamera;
 
-	m_springCamera.SetTarget(m_targetPosition);
+	m_springCamera.SetTarget(CAMERA_TARGET_POS);
 	m_springCamera.SetPosition(pos);
-
+	g_camera3D->SetPosition(pos);
 	m_springCamera.Update();
 }
 

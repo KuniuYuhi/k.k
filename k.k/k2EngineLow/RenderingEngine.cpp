@@ -12,7 +12,10 @@ namespace nsK2EngineLow {
 		InitShadowMapRender();
 		
 
-		m_postEffect.Init(m_mainRenderTarget);
+		m_postEffect.Init(
+			m_mainRenderTarget, 
+			m_zprepassRenderTarget
+		);
 
 		InitCopyToFrameBufferSprite();
 		
@@ -243,6 +246,15 @@ namespace nsK2EngineLow {
 		EndGPUEvent();
 	}
 
+	void RenderingEngine::PostEffecting(RenderContext& rc)
+	{
+		BeginGPUEvent("PostEffect");
+
+		m_postEffect.Render(rc, m_mainRenderTarget);
+
+		EndGPUEvent();
+	}
+
 	void RenderingEngine::Render2D(RenderContext& rc)
 	{
 		BeginGPUEvent("Render2D");
@@ -250,6 +262,20 @@ namespace nsK2EngineLow {
 		SpriteRendering(rc);
 		//フォントを描画
 		//FontRendering(rc);
+		EndGPUEvent();
+	}
+
+	void RenderingEngine::CopyMainRenderTargetToFrameBuffer(RenderContext& rc)
+	{
+		BeginGPUEvent("CopyMainRenderTargetToFrameBuffer");
+
+		rc.SetRenderTarget(
+			g_graphicsEngine->GetCurrentFrameBuffuerRTV(),
+			g_graphicsEngine->GetCurrentFrameBuffuerDSV()
+		);
+
+		m_copyToFrameBufferSprite.Draw(rc);
+
 		EndGPUEvent();
 	}
 
@@ -292,9 +318,6 @@ namespace nsK2EngineLow {
 		//シャドウマップ描画用のモデルを描画
 		RenderToShadowMap(rc);
 
-		//ライトカメラの設定
-		//LightCameraUpDate();
-		
 		//ライトビュープロジェクション行列を設定
 		SetmLVP();
 
@@ -307,14 +330,10 @@ namespace nsK2EngineLow {
 
 		//輝度抽出とガウシアンブラー実行
 		//ボケ画像をメインレンダリングターゲットに加算合成
-		m_postEffect.Render(rc, m_mainRenderTarget);
+		PostEffecting(rc);
 
 		//メインレンダリングターゲットの絵をフレームバッファーにコピー
-		rc.SetRenderTarget(
-			g_graphicsEngine->GetCurrentFrameBuffuerRTV(),
-			g_graphicsEngine->GetCurrentFrameBuffuerDSV()
-		);
-		m_copyToFrameBufferSprite.Draw(rc);
+		CopyMainRenderTargetToFrameBuffer(rc);
 
 		//スプライトを描画
 		SpriteRendering(rc);
