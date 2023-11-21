@@ -163,6 +163,8 @@ bool EntryBoss::Start()
 
 	//ƒSƒSƒSƒSƒSƒSƒS‚ÌÄ¶
 	g_soundManager->InitAndPlaySoundSource(enSoundName_Gogogo, g_soundManager->GetSEVolume());
+	//”íŽÊŠE[“x‚Ì–³Œø‰»
+	g_renderingEngine->DisableDof();
 
 	return true;
 }
