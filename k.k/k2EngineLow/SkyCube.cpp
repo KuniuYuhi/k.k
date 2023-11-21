@@ -47,9 +47,10 @@ namespace nsK2EngineLow {
 		initData.m_expandConstantBuffer = &m_luminance;
 		initData.m_expandConstantBufferSize = sizeof(m_luminance);
 
-		m_modelRender.InitSkyCube(initData);
+		m_modelRender.InitSkyCube(initData, initData.m_tkmFilePath);
 		m_modelRender.SetTransform(m_position, g_quatIdentity, m_scale);
 		m_modelRender.Update();
+
 
 		return true;
 	}
