@@ -374,6 +374,9 @@
     <ClCompile Include="WeaponBase.cpp">
       <Filter>Weapons</Filter>
     </ClCompile>
+    <ClCompile Include="CharactersInfoManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -728,6 +731,9 @@
     </ClInclude>
     <ClInclude Include="WeaponBase.h">
       <Filter>Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="CharactersInfoManager.h">
+      <Filter>Manager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
