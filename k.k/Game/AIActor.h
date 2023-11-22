@@ -63,7 +63,7 @@ public:
 	virtual bool IsStopProcessing();
 
 	/// <summary>
-	/// ターゲットの座標をm_targetPsitionに代入する
+	/// ターゲットの座標をm_targetPsitionに代入するtodo　なくす
 	/// </summary>
 	void SetTargetPosition();
 
