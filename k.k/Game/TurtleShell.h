@@ -1,4 +1,5 @@
 #pragma once
+
 #include "MobMonster.h"
 
 class Lich;
@@ -31,11 +32,6 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	bool IsStopProcessing();
-
-	void SetLich(Lich* lich)
-	{
-		m_lich = lich;
-	}
 
 	/// <summary>
 	/// 防御タイマーの処理

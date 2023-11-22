@@ -12,6 +12,8 @@
 #include "CactusStateVictory.h"
 #include "CactusStateAppear.h"
 
+#include "CharactersInfoManager.h"
+
 #include "Lich.h"
 
 namespace {
@@ -295,7 +297,7 @@ void Cactus::Damage(int attack)
 		//やられアニメーションステート
 		m_status.SetHp(0);
 		SetNextAnimationState(enAnimationState_Die);
-		Dead();
+		ProcessDead();
 		return;
 	}
 	//その攻撃にノックバック効果があるなら
@@ -468,7 +470,8 @@ void Cactus::OnProcessDieStateTransition()
 		if (m_lich != nullptr)
 		{
 			//リストから自身を消す
-			m_lich->RemoveAIActorFromList(this);
+			CharactersInfoManager::GetInstance()->RemoveMobMonsterFormList(this);
+			//m_lich->RemoveAIActorFromList(this);
 			m_elaseListFlag = true;
 		}
 		//自身を削除する
