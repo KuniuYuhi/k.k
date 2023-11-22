@@ -8,6 +8,8 @@ class TurtleShell;
 class Mushroom;
 class Cactus;
 
+class MobMonster;
+
 class Summon:public IGameObject
 {
 public:
@@ -72,10 +74,14 @@ public:
 private:
 	Lich* m_lich = nullptr;
 
+	MobMonster* m_mobMonster = nullptr;			//モブモンスターのインスタンス
+
 	Slime* m_slime = nullptr;
 	TurtleShell* m_turtleShell = nullptr;
 	Mushroom* m_mushroom = nullptr;
 	Cactus* m_cactus = nullptr;
+
+
 
 	Vector3 m_lichPosition = g_vec3Zero;
 
