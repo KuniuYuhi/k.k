@@ -25,11 +25,6 @@ public:
 	/// <returns></returns>
 	bool IsStopProcessing();
 
-	void SetLich(Lich* lich)
-	{
-		m_lich = lich;
-	}
-
 	/// <summary>
 	/// ƒ‚ƒfƒ‹ƒŒƒ“ƒ_[‚Ìæ“¾
 	/// </summary>

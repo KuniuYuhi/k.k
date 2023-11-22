@@ -9,11 +9,6 @@ class BigSword;
 /*
 *@brief •Ší‚ÌŠÇ— 
 */
-namespace MyManager {
-
-	
-}
-
 class WeaponManager :public Noncopyable
 {
 private:

@@ -228,6 +228,7 @@
     <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="BattleStart.cpp" />
     <ClCompile Include="BigSword.cpp" />
+    <ClCompile Include="BossBase.cpp" />
     <ClCompile Include="BossStage1.cpp" />
     <ClCompile Include="Bow.cpp" />
     <ClCompile Include="Brave.cpp" />
@@ -257,6 +258,7 @@
     <ClCompile Include="CactusStateRun.cpp" />
     <ClCompile Include="CactusStateVictory.cpp" />
     <ClCompile Include="CascadModel.cpp" />
+    <ClCompile Include="CharactersInfoManager.cpp" />
     <ClCompile Include="DamageFont.cpp" />
     <ClCompile Include="DarkBall.cpp" />
     <ClCompile Include="DarkMeteorite.cpp" />
@@ -292,6 +294,7 @@
     <ClCompile Include="MagicBall.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ManagerPreCompile.cpp" />
+    <ClCompile Include="MonsterBase.cpp" />
     <ClCompile Include="MushroomStateAppear.cpp" />
     <ClCompile Include="Meteo.cpp" />
     <ClCompile Include="MobMonster.cpp" />
@@ -360,6 +363,7 @@
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="BattleStart.h" />
     <ClInclude Include="BigSword.h" />
+    <ClInclude Include="BossBase.h" />
     <ClInclude Include="BossStage1.h" />
     <ClInclude Include="Bow.h" />
     <ClInclude Include="Brave.h" />
@@ -389,6 +393,7 @@
     <ClInclude Include="CactusStateRun.h" />
     <ClInclude Include="CactusStateVictory.h" />
     <ClInclude Include="CascadModel.h" />
+    <ClInclude Include="CharactersInfoManager.h" />
     <ClInclude Include="DamageFont.h" />
     <ClInclude Include="DarkBall.h" />
     <ClInclude Include="DarkMeteorite.h" />
@@ -430,6 +435,7 @@
     <ClInclude Include="LichStateWarp.h" />
     <ClInclude Include="MagicBall.h" />
     <ClInclude Include="ManagerPreCompile.h" />
+    <ClInclude Include="MonsterBase.h" />
     <ClInclude Include="MushroomStateAppear.h" />
     <ClInclude Include="Meteo.h" />
     <ClInclude Include="MobMonster.h" />

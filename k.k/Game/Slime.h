@@ -37,11 +37,6 @@ public:
 		return m_modelRender;
 	}
 
-	void SetLich(Lich* lich)
-	{
-		m_lich = lich;
-	}
-
 	/// <summary>
 	/// 特定のアニメーションが再生中か
 	/// </summary>

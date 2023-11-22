@@ -22,6 +22,9 @@
 #include "LichStateAngry.h"
 #include "LichStateWarp.h"
 
+#include "CharactersInfoManager.h"
+
+
 namespace {
 	const float SCALE_UP = 4.0f;									//キャラクターのサイズ
 	const Vector3 FIRST_POSITION = Vector3(0.0f, 0.0f, -250.0f);	//最初の座標
@@ -69,15 +72,20 @@ Lich::Lich()
 
 Lich::~Lich()
 {
-	if (m_monsters.size() != 0)
+	//モブモンスターが0体でないならリスト内のモブモンスターを死亡
+	int mobMonsterNum = CharactersInfoManager::GetInstance()->GetMobMonsters().size();
+	if (mobMonsterNum != 0)
 	{
-		//生き残っているモンスターを死亡させる
-		for (auto monster : m_monsters)
+		for (auto mob : CharactersInfoManager::GetInstance()->GetMobMonsters())
 		{
-			monster->Dead();
+			mob->ProcessDead();
+			mob->Dead();
+			//リストから削除
+			//CharactersInfoManager::GetInstance()->RemoveMobMonsterFormList(mob);
 		}
 	}
 
+	//
 	if (m_lichAction != nullptr)
 	{
 		delete m_lichAction;
@@ -109,6 +117,7 @@ bool Lich::Start()
 	//状態ステート
 	SetSpecialActionState(enSpecialActionState_Normal);
 	
+	//todo　newする必要ない
 	m_lichAction = new LichAction(this);
 	//優先度設定する
 	m_lichAction->SettingPriority();
@@ -189,7 +198,7 @@ void Lich::Update()
 	DamageCollision(m_charaCon);
 	//インターバルの計算
 	AttackInterval(m_attackIntervalTime);
-	DamageInterval(m_damageIntervalTime);
+	//DamageInterval(m_damageIntervalTime);
 
 	//怒りモードなら怒りモードタイマーの計算
 	CalcAngryTime();

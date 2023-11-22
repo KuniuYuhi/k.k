@@ -380,45 +380,6 @@ public:
 		return m_accumulationDamage;
 	}
 
-
-	/// <summary>
-	/// AIActor(モンスター)の情報をリストに追加
-	/// </summary>
-	/// <param name="monster"></param>
-	void AddAIActorFromList(AIActor* monster)
-	{
-		m_monsters.emplace_back(monster);
-	}
-	/// <summary>
-	/// AIActor(モンスター)の情報をリストから削除する
-	/// </summary>
-	/// <param name="monster"></param>
-	void RemoveAIActorFromList(AIActor* monster)
-	{
-		std::vector<AIActor*>::iterator it = std::find(
-			m_monsters.begin(), // アクターのリストの最初
-			m_monsters.end(),   // アクターのリストの最後
-			monster                     // 消したいアクター
-		);
-		if (it != m_monsters.end()) {
-			m_monsters.erase(it);
-		}
-	}
-
-	/// <summary>
-	/// 召喚されているモンスターの数を取得
-	/// </summary>
-	/// <returns></returns>
-	const int& GetAIActors() const
-	{
-		return m_monsters.size();
-	}
-
-	std::vector<AIActor*>& GetMonsters()
-	{
-		return m_monsters;
-	}
-
 	/// <summary>
 	/// 怒りモード時間の計算
 	/// </summary>
@@ -483,7 +444,6 @@ private:
 	void OnProcessenWarpStepEnd();
 
 	std::vector<Vector3>			m_warpPositions;										//ワープ先の座標のリスト
-	std::vector<AIActor*>			m_monsters;												//召喚したモンスターの情報を格納するリスト
 
 	EnAnimationState				m_enAnimationState = enAninationState_Idle;				//アニメーションステート
 	EnSpecialActionState			m_enSpecialActionState = enSpecialActionState_Normal;	//特別な状態ステート(通常、怒りモード)

@@ -10,6 +10,8 @@
 
 #include "InitEffect.h"
 
+#include "CharactersInfoManager.h"
+
 namespace {
 	const float PI = 3.14f;
 
@@ -111,43 +113,34 @@ void Summon::SummonMonster(Vector3 summonPosition)
 	//ランダムに選ぶ
 	int number = rand() % m_divMonster;
 	
-
+	//番号によって生成するモンスターを変える
 	switch (number)
 	{
 	case enMonster_Slime:
-		m_slime = NewGO<Slime>(0, "slime");
-		m_slime->SetPosition(summonPosition);
-		m_slime->SetRotation(m_lich->GetRotation());
-		m_slime->SetLich(m_lich);
-		m_lich->AddAIActorFromList(m_slime);
+		m_mobMonster = NewGO<Slime>(0, "slime");
 		break;
 	case enMonster_TurtleShell:
 		m_summonTurtleShellCount--;
-		m_turtleShell = NewGO<TurtleShell>(0, "turtleshell");
-		m_turtleShell->SetPosition(summonPosition);
-		m_turtleShell->SetRotation(m_lich->GetRotation());
-		m_turtleShell->SetLich(m_lich);
-		m_lich->AddAIActorFromList(m_turtleShell);
+		m_mobMonster = NewGO<TurtleShell>(0, "turtleshell");
 		break;
 	case enMonster_Mushroom:
-		m_mushroom = NewGO<Mushroom>(0, "mushroom");
-		m_mushroom->SetPosition(summonPosition);
-		m_mushroom->SetRotation(m_lich->GetRotation());
-		m_mushroom->SetLich(m_lich);
-		m_lich->AddAIActorFromList(m_mushroom);
+		m_mobMonster = NewGO<Mushroom>(0, "mushroom");
 		break;
 	case enMonster_Cactus:
-		m_cactus = NewGO<Cactus>(0, "cactus");
-		m_cactus->SetPosition(summonPosition);
-		m_cactus->SetRotation(m_lich->GetRotation());
-		m_cactus->SetLich(m_lich);
-		m_lich->AddAIActorFromList(m_cactus);
-		break;
+		m_mobMonster = NewGO<Cactus>(0, "cactus");
+		break;                   
 
 	default:
 		break;
 	}
+	//召喚時の設定
+	m_mobMonster->SetPosition(summonPosition);
+	m_mobMonster->SetRotation(m_lich->GetRotation());
+	m_mobMonster->SetLich(m_lich);
+	//マネージャーのモブモンスターリストに追加
+	CharactersInfoManager::GetInstance()->AddMobMonsterFromList(m_mobMonster);
 
+	//召喚されたときの光のエフェクトの再生
 	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
 	effectEmitter->Init(InitEffect::enEffect_Mob_Summon_Right);
 	effectEmitter->Play();
