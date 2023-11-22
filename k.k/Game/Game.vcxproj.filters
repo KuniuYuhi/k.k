@@ -4,40 +4,52 @@
     <Filter Include="system">
       <UniqueIdentifier>{22dd8095-74f9-46df-81a1-36675a040b1f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Wizard">
-      <UniqueIdentifier>{2887295a-a2b1-4b11-b171-11ad071fe549}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Lich">
-      <UniqueIdentifier>{21da61a7-d81b-459b-b221-5b31fa8ed969}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="MobMonster">
-      <UniqueIdentifier>{10980145-dc75-4358-bbe2-827223ebeae3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="MobMonster\Mushroom">
-      <UniqueIdentifier>{171f71e6-9381-4839-b187-14e7805cd952}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="MobMonster\Cactus">
-      <UniqueIdentifier>{28bbc3b2-cb0f-4038-92f3-4593b9b6d9f5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="MobMonster\Slime">
-      <UniqueIdentifier>{2e495790-ee8d-4c1e-b20d-3dd2252b068a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="MobMonster\TurtleShell">
-      <UniqueIdentifier>{eaba4644-52df-49e7-ab11-46b649af7b1e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Brave">
-      <UniqueIdentifier>{cb6cd09f-fc8e-4001-a80a-8ce928ff27df}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Weapons">
       <UniqueIdentifier>{d8445f81-0a79-4ad9-9f94-409a2b4e6cdc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Manager">
       <UniqueIdentifier>{9f0853ec-296c-4466-874e-f835c5ab2ee1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Lich\LichState">
+    <Filter Include="Character">
+      <UniqueIdentifier>{c6a7755c-61b3-4dc5-886f-172e407a71be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Player">
+      <UniqueIdentifier>{5c3cc85a-f283-4f3b-b352-cd2c32fc0feb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Monster">
+      <UniqueIdentifier>{6df1f376-901f-4c7b-b6f9-1d478a9d2f21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Monster\MobMonster">
+      <UniqueIdentifier>{10980145-dc75-4358-bbe2-827223ebeae3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Monster\MobMonster\Mushroom">
+      <UniqueIdentifier>{171f71e6-9381-4839-b187-14e7805cd952}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Monster\MobMonster\Cactus">
+      <UniqueIdentifier>{28bbc3b2-cb0f-4038-92f3-4593b9b6d9f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Monster\MobMonster\Slime">
+      <UniqueIdentifier>{2e495790-ee8d-4c1e-b20d-3dd2252b068a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Monster\MobMonster\TurtleShell">
+      <UniqueIdentifier>{eaba4644-52df-49e7-ab11-46b649af7b1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Monster\BossMonster">
+      <UniqueIdentifier>{4317407a-a963-4bc5-bfff-fe1016c03c36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Monster\BossMonster\Lich">
+      <UniqueIdentifier>{21da61a7-d81b-459b-b221-5b31fa8ed969}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Monster\BossMonster\Lich\LichState">
       <UniqueIdentifier>{b43f38ad-e33f-4abf-b302-e1d16b580fe2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Brave\BraveState">
+    <Filter Include="Character\Player\Wizard">
+      <UniqueIdentifier>{2887295a-a2b1-4b11-b171-11ad071fe549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Player\Brave">
+      <UniqueIdentifier>{cb6cd09f-fc8e-4001-a80a-8ce928ff27df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Player\Brave\BraveState">
       <UniqueIdentifier>{10694726-74fe-4cc9-92b3-f39e4854081d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -49,216 +61,214 @@
     </ClCompile>
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
-    <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Status.cpp" />
     <ClCompile Include="BossStage1.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="WizardStateIdle.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="WizardStateWalk.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="WizardStateRun.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="WizardStateAttack_1.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="WizardStateAttack_2_Start.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="WizardStateAttack_2_main.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="WizardStateAttack_3_Main.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="WizardStateAttack_3_Start.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="WizardState_Attack_4.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="FlamePillar.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
-    <ClCompile Include="AIActor.cpp" />
     <ClCompile Include="WizardStateDie.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="FireBall.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="Wizard.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="Lich.cpp">
-      <Filter>Lich</Filter>
+      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClCompile>
     <ClCompile Include="LichAction.cpp">
-      <Filter>Lich</Filter>
+      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClCompile>
     <ClCompile Include="Slime.cpp">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClCompile>
     <ClCompile Include="DarkMeteorite.cpp">
-      <Filter>Lich</Filter>
+      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClCompile>
     <ClCompile Include="DarkWall.cpp">
-      <Filter>Lich</Filter>
+      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClCompile>
     <ClCompile Include="Meteo.cpp">
-      <Filter>Lich</Filter>
+      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClCompile>
     <ClCompile Include="WizardStateDamage.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="TurtleShell.cpp">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="Cactus.cpp">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClCompile>
     <ClCompile Include="Mushroom.cpp">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClCompile>
     <ClCompile Include="Summon.cpp">
-      <Filter>Lich</Filter>
+      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClCompile>
     <ClCompile Include="SlimeStateAttack.cpp">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClCompile>
     <ClCompile Include="SlimeStateDamage.cpp">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClCompile>
     <ClCompile Include="SlimeStateDie.cpp">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClCompile>
     <ClCompile Include="SlimeStateIdle.cpp">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClCompile>
     <ClCompile Include="SlimeStateVictory.cpp">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClCompile>
     <ClCompile Include="SlimeStateWalk.cpp">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClCompile>
     <ClCompile Include="TurtleShellStateAttack_1.cpp">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="TurtleShellStateAttack_2.cpp">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="TurtleShellStateDamage.cpp">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="TurtleShellStateDie.cpp">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="TurtleShellStateDifence.cpp">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="TurtleShellStateDifenceDamage.cpp">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="TurtleShellStateIdle.cpp">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="TurtleShellStateVictory.cpp">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="TurtleShellStateWalk.cpp">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="MushroomStateAttack_1.cpp">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClCompile>
     <ClCompile Include="MushroomStateAttack_2.cpp">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClCompile>
     <ClCompile Include="MushroomStateDamage.cpp">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClCompile>
     <ClCompile Include="MushroomStateDie.cpp">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClCompile>
     <ClCompile Include="MushroomStateIdle.cpp">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClCompile>
     <ClCompile Include="MushroomStateVictory.cpp">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClCompile>
     <ClCompile Include="MushroomStateWalk.cpp">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClCompile>
     <ClCompile Include="CactusStateAttack_1.cpp">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClCompile>
     <ClCompile Include="CactusStateAttack_2.cpp">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClCompile>
     <ClCompile Include="CactusStateDamage.cpp">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClCompile>
     <ClCompile Include="CactusStateDie.cpp">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClCompile>
     <ClCompile Include="CactusStateIdle.cpp">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClCompile>
     <ClCompile Include="CactusStatePlant.cpp">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClCompile>
     <ClCompile Include="CactusStatePlantToBattle.cpp">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClCompile>
     <ClCompile Include="CactusStateRun.cpp">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClCompile>
     <ClCompile Include="CactusStateVictory.cpp">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClCompile>
     <ClCompile Include="GameUI.cpp" />
     <ClCompile Include="DamageFont.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="EntryBoss.cpp" />
     <ClCompile Include="WizardStateVictory_main.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="WizardStateVictory_start.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="BattleStart.cpp" />
     <ClCompile Include="WIzardStateWarp.cpp">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="MobMonster.cpp">
-      <Filter>MobMonster</Filter>
+      <Filter>Character\Monster\MobMonster</Filter>
     </ClCompile>
     <ClCompile Include="MushroomStateAppear.cpp">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClCompile>
     <ClCompile Include="SlimeStateAppear.cpp">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClCompile>
     <ClCompile Include="CactusStateAppear.cpp">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClCompile>
     <ClCompile Include="InitEffect.cpp" />
     <ClCompile Include="TurtleShellStateAppear.cpp">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="MagicBall.cpp" />
     <ClCompile Include="DarkBall.cpp">
-      <Filter>Lich</Filter>
+      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClCompile>
     <ClCompile Include="SoundFile.cpp" />
     <ClCompile Include="CascadModel.cpp" />
     <ClCompile Include="Brave.cpp">
-      <Filter>Brave</Filter>
+      <Filter>Character\Player\Brave</Filter>
     </ClCompile>
     <ClCompile Include="IWeapon.cpp">
       <Filter>Weapons</Filter>
@@ -288,85 +298,85 @@
     </ClCompile>
     <ClCompile Include="HitDetection.cpp" />
     <ClCompile Include="LichStateAngry.cpp">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClCompile>
     <ClCompile Include="LichStateAttack_1.cpp">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClCompile>
     <ClCompile Include="LichStateAttack_2.cpp">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClCompile>
     <ClCompile Include="LichStateDamage.cpp">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClCompile>
     <ClCompile Include="LichStateDarkMeteorite_End.cpp">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClCompile>
     <ClCompile Include="LichStateDarkMeteorite_Main.cpp">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClCompile>
     <ClCompile Include="LichStateDarkMeteorite_Start.cpp">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClCompile>
     <ClCompile Include="LichStateDie.cpp">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClCompile>
     <ClCompile Include="LichStateIdle.cpp">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClCompile>
     <ClCompile Include="LichStateSummon.cpp">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClCompile>
     <ClCompile Include="LichStateVictory.cpp">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClCompile>
     <ClCompile Include="LichStateWalk.cpp">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClCompile>
     <ClCompile Include="LichStateWarp.cpp">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClCompile>
     <ClCompile Include="BraveStateAttack_1.cpp">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
     <ClCompile Include="BraveStateAttack_2.cpp">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
     <ClCompile Include="BraveStateAttack_3.cpp">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
     <ClCompile Include="BraveStateChangeSwordShield.cpp">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
     <ClCompile Include="BraveStateDefend.cpp">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
     <ClCompile Include="BraveStateDefendHit.cpp">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
     <ClCompile Include="BraveStateDie.cpp">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
     <ClCompile Include="BraveStateHit.cpp">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
     <ClCompile Include="BraveStateIdle.cpp">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
     <ClCompile Include="BraveStateSkill_Main.cpp">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
     <ClCompile Include="BraveStateSkill_Start.cpp">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
     <ClCompile Include="BraveStateSprint.cpp">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
     <ClCompile Include="BraveStateWin_Main.cpp">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
     <ClCompile Include="BraveStateWin_Start.cpp">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
     <ClCompile Include="ManagerPreCompile.cpp">
       <Filter>Manager</Filter>
@@ -377,6 +387,18 @@
     <ClCompile Include="CharactersInfoManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
+    <ClCompile Include="BossBase.cpp">
+      <Filter>Character\Monster\BossMonster</Filter>
+    </ClCompile>
+    <ClCompile Include="Actor.cpp">
+      <Filter>Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="AIActor.cpp">
+      <Filter>Character\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="MonsterBase.cpp">
+      <Filter>Character\Monster</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -385,231 +407,229 @@
     </ClInclude>
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
-    <ClInclude Include="Actor.h" />
     <ClInclude Include="Status.h" />
     <ClInclude Include="BossStage1.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="IWizardState.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="WizardStateIdle.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="WizardStateWalk.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="WizardStateRun.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="WizardStateAttack_1.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="WizardStateAttack_2_Start.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="WizardStateAttack_2_main.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="WizardStateAttack_3_Main.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="WizardStateAttack_3_Start.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="WizardState_Attack_4.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="FlamePillar.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
-    <ClInclude Include="AIActor.h" />
     <ClInclude Include="WizardStateDie.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="Title.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="FireBall.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="Wizard.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="Lich.h">
-      <Filter>Lich</Filter>
+      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClInclude>
     <ClInclude Include="LichAction.h">
-      <Filter>Lich</Filter>
+      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClInclude>
     <ClInclude Include="Slime.h">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClInclude>
     <ClInclude Include="DarkMeteorite.h">
-      <Filter>Lich</Filter>
+      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClInclude>
     <ClInclude Include="DarkWall.h">
-      <Filter>Lich</Filter>
+      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClInclude>
     <ClInclude Include="Meteo.h">
-      <Filter>Lich</Filter>
+      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClInclude>
     <ClInclude Include="WizardStateDamage.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="TurtleShell.h">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="Cactus.h">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClInclude>
     <ClInclude Include="Mushroom.h">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClInclude>
     <ClInclude Include="ISlimeState.h">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClInclude>
     <ClInclude Include="Summon.h">
-      <Filter>Lich</Filter>
+      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClInclude>
     <ClInclude Include="SlimeStateAttack.h">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClInclude>
     <ClInclude Include="SlimeStateDamage.h">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClInclude>
     <ClInclude Include="SlimeStateDie.h">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClInclude>
     <ClInclude Include="SlimeStateIdle.h">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClInclude>
     <ClInclude Include="SlimeStateVictory.h">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClInclude>
     <ClInclude Include="SlimeStateWalk.h">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClInclude>
     <ClInclude Include="TurtleShellStateAttack_1.h">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="TurtleShellStateAttack_2.h">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="TurtleShellStateDamage.h">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="TurtleShellStateDie.h">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="TurtleShellStateDifence.h">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="TurtleShellStateDifenceDamage.h">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="TurtleShellStateIdle.h">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="TurtleShellStateVictory.h">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="TurtleShellStateWalk.h">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="ITurtleShellState.h">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="MushroomStateAttack_1.h">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClInclude>
     <ClInclude Include="MushroomStateAttack_2.h">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClInclude>
     <ClInclude Include="MushroomStateDamage.h">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClInclude>
     <ClInclude Include="MushroomStateDie.h">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClInclude>
     <ClInclude Include="MushroomStateIdle.h">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClInclude>
     <ClInclude Include="MushroomStateVictory.h">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClInclude>
     <ClInclude Include="MushroomStateWalk.h">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClInclude>
     <ClInclude Include="IMushroomState.h">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClInclude>
     <ClInclude Include="CactusStateAttack_1.h">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClInclude>
     <ClInclude Include="CactusStateAttack_2.h">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClInclude>
     <ClInclude Include="CactusStateDamage.h">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClInclude>
     <ClInclude Include="CactusStateDie.h">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClInclude>
     <ClInclude Include="CactusStateIdle.h">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClInclude>
     <ClInclude Include="CactusStatePlant.h">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClInclude>
     <ClInclude Include="CactusStatePlantToBattle.h">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClInclude>
     <ClInclude Include="CactusStateRun.h">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClInclude>
     <ClInclude Include="CactusStateVictory.h">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClInclude>
     <ClInclude Include="ICactusState.h">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClInclude>
     <ClInclude Include="GameUI.h" />
     <ClInclude Include="DamageFont.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="EntryBoss.h" />
     <ClInclude Include="WizardStateVictory_main.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="WizardStateVictory_start.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="BattleStart.h" />
     <ClInclude Include="WIzardStateWarp.h">
-      <Filter>Wizard</Filter>
+      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="MobMonster.h">
-      <Filter>MobMonster</Filter>
+      <Filter>Character\Monster\MobMonster</Filter>
     </ClInclude>
     <ClInclude Include="MushroomStateAppear.h">
-      <Filter>MobMonster\Mushroom</Filter>
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClInclude>
     <ClInclude Include="SlimeStateAppear.h">
-      <Filter>MobMonster\Slime</Filter>
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClInclude>
     <ClInclude Include="CactusStateAppear.h">
-      <Filter>MobMonster\Cactus</Filter>
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClInclude>
     <ClInclude Include="InitEffect.h" />
     <ClInclude Include="TurtleShellStateAppear.h">
-      <Filter>MobMonster\TurtleShell</Filter>
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="MagicBall.h" />
     <ClInclude Include="DarkBall.h">
-      <Filter>Lich</Filter>
+      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClInclude>
     <ClInclude Include="SoundFile.h" />
     <ClInclude Include="CascadModel.h" />
     <ClInclude Include="Brave.h">
-      <Filter>Brave</Filter>
+      <Filter>Character\Player\Brave</Filter>
     </ClInclude>
     <ClInclude Include="IWeapon.h">
       <Filter>Weapons</Filter>
@@ -640,91 +660,91 @@
     </ClInclude>
     <ClInclude Include="HitDetection.h" />
     <ClInclude Include="LichStateAngry.h">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClInclude>
     <ClInclude Include="LichStateAttack_1.h">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClInclude>
     <ClInclude Include="LichStateAttack_2.h">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClInclude>
     <ClInclude Include="LichStateDamage.h">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClInclude>
     <ClInclude Include="LichStateDarkMeteorite_End.h">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClInclude>
     <ClInclude Include="LichStateDarkMeteorite_Main.h">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClInclude>
     <ClInclude Include="LichStateDarkMeteorite_Start.h">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClInclude>
     <ClInclude Include="LichStateDie.h">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClInclude>
     <ClInclude Include="LichStateIdle.h">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClInclude>
     <ClInclude Include="LichStateSummon.h">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClInclude>
     <ClInclude Include="LichStateVictory.h">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClInclude>
     <ClInclude Include="LichStateWalk.h">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClInclude>
     <ClInclude Include="LichStateWarp.h">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClInclude>
     <ClInclude Include="ILichState.h">
-      <Filter>Lich\LichState</Filter>
+      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
     </ClInclude>
     <ClInclude Include="BraveStateAttack_1.h">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
     <ClInclude Include="BraveStateAttack_2.h">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
     <ClInclude Include="BraveStateAttack_3.h">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
     <ClInclude Include="BraveStateChangeSwordShield.h">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
     <ClInclude Include="BraveStateDefend.h">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
     <ClInclude Include="BraveStateDefendHit.h">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
     <ClInclude Include="BraveStateDie.h">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
     <ClInclude Include="BraveStateHit.h">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
     <ClInclude Include="BraveStateIdle.h">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
     <ClInclude Include="BraveStateSkill_Main.h">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
     <ClInclude Include="BraveStateSkill_Start.h">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
     <ClInclude Include="BraveStateSprint.h">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
     <ClInclude Include="BraveStateWin_Main.h">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
     <ClInclude Include="BraveStateWin_Start.h">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
     <ClInclude Include="IBraveState.h">
-      <Filter>Brave\BraveState</Filter>
+      <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
     <ClInclude Include="ManagerPreCompile.h">
       <Filter>Manager</Filter>
@@ -734,6 +754,18 @@
     </ClInclude>
     <ClInclude Include="CharactersInfoManager.h">
       <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="BossBase.h">
+      <Filter>Character\Monster\BossMonster</Filter>
+    </ClInclude>
+    <ClInclude Include="Actor.h">
+      <Filter>Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="AIActor.h">
+      <Filter>Character\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterBase.h">
+      <Filter>Character\Monster</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
