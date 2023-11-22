@@ -15,7 +15,7 @@
 #include "SkyCube.h"
 #include "InitEffect.h"
 
-#include "ManagerPreCompile.h"
+#include "CharactersInfoManager.h"
 
 namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.5f, 0.5f, 0.5f);
@@ -51,7 +51,7 @@ Game::~Game()
 
 	DeleteGO(m_gameCamera);
 
-	//DeleteGO(m_gameUI);
+	CharactersInfoManager::DeleteInstance();
 }
 
 bool Game::Start()
@@ -65,6 +65,9 @@ bool Game::Start()
 	g_renderingEngine->SetAmbient(g_vec3One * AMBIENT_COLOR);
 	//半球ライト
 	g_renderingEngine->UseHemiLight();
+
+	//キャラクターの情報マネージャーの生成
+	CharactersInfoManager::CreateInstance();
 
 	//レベル2D
 	//level2DSp.Init(
@@ -137,6 +140,8 @@ void Game::CreateBoss()
 {
 	m_lich = NewGO<Lich>(0, "lich");
 	m_lich->SetPosition(BOSS_CREATE_POSITION);
+	//リッチのインスタンスを代入
+	CharactersInfoManager::GetInstance()->SetLichInstance(m_lich);
 	m_lich->Deactivate();
 }
 
