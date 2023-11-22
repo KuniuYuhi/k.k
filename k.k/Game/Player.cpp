@@ -5,6 +5,7 @@
 #include "Game.h"
 
 #include "Brave.h"
+#include "CharactersInfoManager.h"
 
 namespace {
 	const Vector3 START_POSITION = { 0.0f, 0.0f, -400.0f };
@@ -25,6 +26,8 @@ bool Player::Start()
 	//ゲームクラスと勇者クラスのインスタンスを検索
 	m_game = FindGO<Game>("game");
 	m_brave = NewGO<Brave>(0, "brave");
+	//勇者インスタンスを代入
+	CharactersInfoManager::GetInstance()->SetBraveInstance(m_brave);
 
 	//キャラクターの座標を設定
 	m_brave->SetPosition(START_POSITION);
