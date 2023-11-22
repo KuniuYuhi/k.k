@@ -211,37 +211,37 @@ bool MobMonster::IsBumpedForest(float pos2Length)
 bool MobMonster::IsBumpedMonster()
 {
 	//フィールド上の敵のリストを取得
-	std::vector<AIActor*> monsters = m_lich->GetMonsters();
+	//std::vector<AIActor*> monsters = m_lich->GetMonsters();
 
-	for (auto monster : monsters)
-	{
-		//リストのモンスターの座標を取得
-		Vector3 mosterPos = monster->GetPosition();
-		Vector3 diff = mosterPos - m_position;
-		//
-		if (diff.Length() <= 30.0f)
-		{
-			diff.Normalize();
-			m_passPower += diff * 12.0f;
-		}
+	//for (auto monster : monsters)
+	//{
+	//	//リストのモンスターの座標を取得
+	//	Vector3 mosterPos = monster->GetPosition();
+	//	Vector3 diff = mosterPos - m_position;
+	//	//
+	//	if (diff.Length() <= 30.0f)
+	//	{
+	//		diff.Normalize();
+	//		m_passPower += diff * 12.0f;
+	//	}
 
-	}
+	//}
 
-	//リッチとの距離を計算
-	Vector3 lichPos = m_lich->GetPosition();
-	Vector3 diff = lichPos - m_position;
-	if (diff.Length() <= 80.0f)
-	{
-		Vector3 direction;
-		//todo 向かう座標を少しずらす
-		direction = SetRamdomDirection(m_angleRange);
+	////リッチとの距離を計算
+	//Vector3 lichPos = m_lich->GetPosition();
+	//Vector3 diff = lichPos - m_position;
+	//if (diff.Length() <= 80.0f)
+	//{
+	//	Vector3 direction;
+	//	//todo 向かう座標を少しずらす
+	//	direction = SetRamdomDirection(m_angleRange);
 
-		diff.Normalize();
-		m_passPower += direction * 400.0f;
-		m_passPower += diff * 30.0f;
-	}
+	//	diff.Normalize();
+	//	m_passPower += direction * 400.0f;
+	//	m_passPower += diff * 30.0f;
+	//}
 
-	m_passPower.y = 0.0f;
+	//m_passPower.y = 0.0f;
 	return false;
 }
 
