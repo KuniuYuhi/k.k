@@ -3,6 +3,8 @@
 #include "Lich.h"
 #include "Player.h"
 
+#include "CharactersInfoManager.h"
+
 //行動の優先度つける
 void LichAction::SettingPriority()
 {
@@ -158,7 +160,7 @@ void LichAction::CalcEvalSummon(EnActionNumber m_enActionNumber)
 		return;
 	}
 	//既に6体以上モンスターがいたらこの行動をさせない
-	if (m_lich->GetAIActors() >= 7)
+	if (CharactersInfoManager::GetInstance()->GetMobMonsters().size() >= 7)
 	{
 		m_action[m_enActionNumber].m_eval = INT_MIN;
 		return;
