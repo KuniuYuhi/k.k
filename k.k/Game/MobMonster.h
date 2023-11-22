@@ -64,7 +64,7 @@ public:
 	/// <summary>
 	/// やられたときの処理
 	/// </summary>
-	virtual void Dead();
+	virtual void ProcessDead();
 
 	/// <summary>
 	/// 回転処理
@@ -94,6 +94,15 @@ public:
 	const bool& GetKnockBackFlag() const
 	{
 		return m_knockBackFlag;
+	}
+
+	/// <summary>
+	/// リッチのインスタンスを代入
+	/// </summary>
+	/// <param name="lich"></param>
+	void SetLich(Lich* lich)
+	{
+		m_lich = lich;
 	}
 
 protected:

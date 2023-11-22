@@ -255,7 +255,7 @@ void MobMonster::SubPassPower()
 	}
 }
 
-void MobMonster::Dead()
+void MobMonster::ProcessDead()
 {
 	g_soundManager->InitAndPlaySoundSource(enSoundName_Mob_Die, g_soundManager->GetSEVolume());
 
