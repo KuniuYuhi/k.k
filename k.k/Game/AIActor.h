@@ -1,7 +1,6 @@
 #pragma once
 #include "Status.h"
 #include "Player.h"
-#include "DamageFont.h"
 
 class AIActor:public IGameObject
 {
@@ -32,122 +31,6 @@ public:
 	/// <param name="scale"></param>
 	/// <param name="rotation"></param>
 	void SetTransForm(Vector3 position, Quaternion rotation, Vector3 scale = Vector3::One);
-	
-	/// <summary>
-	/// 移動処理
-	/// </summary>
-	/// <param name="status">自身のステータス</param>
-	/// <param name="targetposition">向かいたいターゲットの座標</param>
-	/// <param name="dashFlag">ダッシュフラグ。trueでダッシュ。主にプレイヤーを追いかけるときに使う</param>
-	/// <returns></returns>
-	Vector3 CalcVelocity(Status status,Vector3 targetposition, bool dashFlag = false);
-
-	/// <summary>
-	/// 視野角判定
-	/// </summary>
-	/// <param name="toPlayerDir">自身からターゲットに向かうベクトル</param>
-	/// <param name="forward">前方向</param>
-	/// <param name="angle">視野角</param>
-	/// <returns>視野角の中ならtrue,いなかったらfalse</returns>
-	bool IsInFieldOfView(Vector3 toPlayerDir,Vector3 forward, float angle);
-
-	/// <summary>
-	/// 攻撃処理
-	/// </summary>
-	virtual void Attack();
-
-	/// <summary>
-	/// 処理を止めるか
-	/// </summary>
-	/// <returns></returns>
-	virtual bool IsStopProcessing();
-
-	/// <summary>
-	/// ターゲットの座標をm_targetPsitionに代入するtodo　なくす
-	/// </summary>
-	void SetTargetPosition();
-
-	/// <summary>
-	/// 攻撃してから次の攻撃を行うまでのインターバル
-	/// </summary>
-	/// <returns></returns>
-	bool AttackInterval(const float attackintarvaltime);
-
-	/// <summary>
-	/// ダメージを受けた後のダメージを受けるまでのインターバル
-	/// </summary>
-	/// <returns></returns>
-	bool DamageInterval(const float damageintarvaltime);
-
-	/// <summary>
-	/// 向かうベクトルを変えるインターバルの計算
-	/// </summary>
-	/// <returns></returns> 
-	bool AngleChangeTimeIntarval(float LimitTime);
-
-	/// <summary>
-	/// プレイヤーを見つける
-	/// </summary>
-	/// <param name="distance">プレイヤーを見つけることができる上限の距離</param>
-	/// <returns>距離内だったらtrueを返す</returns>
-	bool IsFindPlayer(float distance);
-
-	/// <summary>
-	/// 特定のアニメーションが再生中か
-	/// </summary>
-	/// <returns></returns>
-	virtual bool isAnimationEntable() const = 0;
-
-	/// <summary>
-	/// 回転可能か
-	/// </summary>
-	/// <returns></returns>
-	virtual bool isRotationEntable() const = 0;
-
-	/// <summary>
-	/// 攻撃可能か
-	/// </summary>
-	/// <returns></returns>
-	virtual bool IsAttackEntable() const = 0;
-
-	/// <summary>
-	/// 被ダメージ時処理
-	/// </summary>
-	virtual void Damage(int attack) = 0;
-
-	/// <summary>
-	/// ダメージフォント生成
-	/// </summary>
-	virtual void CreateDamageFont(int damage);
-
-	/// <summary>
-	/// 被ダメージ用当たり判定
-	/// </summary>
-	virtual void DamageCollision(CharacterController& characon);
-
-	/// <summary>
-	/// 当たり判定の処理をするか
-	/// </summary>
-	virtual bool IsCollisionDetection();
-
-	//通常攻撃に当たった時の処理
-	virtual void HitNormalAttack();
-
-	//ヒーローのスキルに当たった時の処理
-	virtual void HitHeroSkillAttack();
-	/// <summary>
-	/// ウィザードのファイヤーボールに当たった時の処理。派生クラスで実装
-	/// </summary>
-	virtual void HitFireBall();
-	/// <summary>
-	/// ウィザードのフレイムピラーに当たった時の処理。派生クラスで実装
-	/// </summary>
-	virtual void HitFlamePillar(bool damageFlag = false);
-
-	/// <summary>
-	/// ヒットエフェクト生成
-	/// </summary>
-	virtual void CreateHitEffect();
 
 	/// <summary>
 	/// 攻撃時の音を再生
@@ -265,18 +148,17 @@ protected:
 	virtual void ManageState() = 0;
 
 	/// <summary>
-	///  移動時の回転
+	/// ターゲットの座標をm_targetPsitionに代入するtodo　なくす
 	/// </summary>
-	/// <param name="rotSpeed">線形補間時の回転速度(移動時)</param>
-	/// <param name="rotOnlySpeed">線形補間時の回転速度(回転のみの時)</param>
-	/// <returns></returns>
-	virtual Quaternion Rotation(float rotSpeed, float rotOnlySpeed);
+	void SetTargetPosition();
 
 	/// <summary>
-	/// 回転のみを行う処理条件
+	/// 特定のアニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
-	virtual bool RotationOnly() = 0;
+	virtual bool isAnimationEntable() const = 0;
+
+
 
 	Player*				m_player = nullptr;
 
@@ -299,29 +181,8 @@ protected:
 
 	EnOutCome					m_enOutCome = enOutCome_None;
 
-	int							m_damage = 0;							//受けたダメージを代入する
-
-	bool						m_dashFlag = false;						//ダッシュするかのフラグ
-	bool						m_attackFlag = true;					//攻撃していいかのフラグ。falseで攻撃可能
-	bool						m_damageFlag = false;					//ダメージを受けられるかのフラグ。falseで被ダメージ可能
-
-	float						m_attackIntervalTimer = 0.0f;			//アタックのインターバルタイマー
-	float						m_damageIntervalTimer = 0.0f;			//ダメージのインターバルタイマー
-
-	float						m_distance = 0.0f;						//プレイヤーを発見できる距離
-
-	float						m_angle = 0.0f;							//視野角
 
 	bool						m_winFlag = false;						//勝ったかのフラグ
-
-	float						m_angleChangeTimer = 0.0f;				//移動する方向をかえるタイミングを計算するタイマー
-	bool						m_angleChangeTimeFlag = false;			//移動する方向をかえるかのフラグ
-
-	bool						m_elaseListFlag = false;				//自身をリストから削除したかのフラグ
-
-	float						m_rotTimer = 0.0f;						//回転の線形補間で使うタイマー
-
-
 
 };
 
