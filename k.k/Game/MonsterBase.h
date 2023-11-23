@@ -18,12 +18,12 @@ public:
 	/// <summary>
 	/// 攻撃処理
 	/// </summary>
-	virtual void Attack() override {}
+	virtual void Attack(){}
 	/// <summary>
 	/// Update()処理を止めるか
 	/// </summary>
 	/// <returns></returns>
-	virtual bool IsStopProcessing() override { return false; }
+	virtual bool IsStopProcessing(){ return false; }
 
 	/// <summary>
 	/// 特定のアニメーションが再生中か
@@ -34,26 +34,40 @@ public:
 	/// 回転可能か
 	/// </summary>
 	/// <returns></returns>
-	virtual bool isRotationEntable() const override = 0;
+	virtual bool isRotationEntable() const = 0;
 	/// <summary>
 	/// 攻撃可能か
 	/// </summary>
 	/// <returns></returns>
-	virtual bool IsAttackEntable() const override = 0;
+	virtual bool IsAttackEntable() const = 0;
 	/// <summary>
 	/// 被ダメージ時処理
 	/// </summary>
-	virtual void Damage(int attack) override = 0;
+	virtual void Damage(int attack) = 0;
 
 	/// <summary>
 	/// ダメージフォント生成
 	/// </summary>
-	virtual void CreateDamageFont(int damage);
+	void CreateDamageFont(int damage);
 
 	/// <summary>
 	/// 被ダメージ用当たり判定
 	/// </summary>
-	virtual void DamageCollision(CharacterController& characon){}
+	virtual void DamageCollision(CharacterController& characon);
+
+	//通常攻撃に当たった時の処理
+	virtual void HitNormalAttack();
+
+	//ヒーローのスキルに当たった時の処理
+	virtual void HitSkillAttack();
+	/// <summary>
+	/// ウィザードのファイヤーボールに当たった時の処理。派生クラスで実装
+	/// </summary>
+	virtual void HitFireBall(){}
+	/// <summary>
+	/// ウィザードのフレイムピラーに当たった時の処理。派生クラスで実装
+	/// </summary>
+	virtual void HitFlamePillar(bool damageFlag = false){}
 
 	/// <summary>
 	/// 当たり判定の処理をするか
@@ -73,6 +87,11 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	virtual bool RotationOnly() = 0;
+
+	/// <summary>
+	/// ヒットエフェクト生成
+	/// </summary>
+	virtual void CreateHitEffect() {}
 
 	/////////////////////////////////////////////////////////////////////////////
 	// その他の関数
@@ -101,14 +120,7 @@ public:
 	/// <returns>距離内だったらtrueを返す</returns>
 	bool IsFindPlayer(float distance);
 
-
-
-
-
-
-
-
-
+	
 
 
 
@@ -125,9 +137,43 @@ public:
 	bool AngleChangeTimeIntarval(float LimitTime);
 
 
-
-
 protected:
+	/// <summary>
+	/// モデルの初期化
+	/// </summary>
+	virtual void InitModel() override = 0;
+
+	/// <summary>
+	/// アニメーションを再生
+	/// </summary>
+	virtual void PlayAnimation() override = 0;
+
+	/// <summary>
+	/// ステート管理
+	/// </summary>
+	virtual void ManageState() override = 0;
+
+
+
+	int							m_damage = 0;							//受けたダメージを代入する
+
+	bool						m_dashFlag = false;						//ダッシュするかのフラグ
+	bool						m_attackFlag = true;					//攻撃していいかのフラグ。falseで攻撃可能
+	bool						m_damageFlag = false;					//ダメージを受けられるかのフラグ。falseで被ダメージ可能
+
+	float						m_attackIntervalTimer = 0.0f;			//アタックのインターバルタイマー
+	float						m_damageIntervalTimer = 0.0f;			//ダメージのインターバルタイマー
+
+	float						m_distance = 0.0f;						//プレイヤーを発見できる距離
+
+	float						m_angle = 0.0f;							//視野角
+
+	float						m_angleChangeTimer = 0.0f;				//移動する方向をかえるタイミングを計算するタイマー
+	bool						m_angleChangeTimeFlag = false;			//移動する方向をかえるかのフラグ
+
+	bool						m_elaseListFlag = false;				//自身をリストから削除したかのフラグ
+
+	float						m_rotTimer = 0.0f;						//回転の線形補間で使うタイマー
 
 
 };
