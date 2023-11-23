@@ -2,6 +2,8 @@
 #include "Result.h"
 #include "Title.h"
 
+#include "CharactersInfoManager.h"
+
 namespace {
 	const float WIPE_SIZE = 5.0f;
 
@@ -24,6 +26,8 @@ ResultSeen::ResultSeen()
 
 ResultSeen::~ResultSeen()
 {
+	//キャラクターの情報マネージャーの削除
+	CharactersInfoManager::DeleteInstance();
 }
 
 bool ResultSeen::Start()
