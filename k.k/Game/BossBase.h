@@ -1,7 +1,7 @@
 #pragma once
-#include "AIActor.h"
+#include "MonsterBase.h"
 
-class BossBase:public AIActor
+class BossBase:public MonsterBase
 {
 public:
 	BossBase();
@@ -46,7 +46,25 @@ public:
 	/// </summary>
 	virtual void Damage(int attack) override = 0;
 
+	//通常攻撃に当たった時の処理
+	virtual void HitNormalAttack() override;
 
+	//ヒーローのスキルに当たった時の処理
+	virtual void HitSkillAttack() override;
+	/// <summary>
+	/// ウィザードのファイヤーボールに当たった時の処理。派生クラスで実装
+	/// </summary>
+	virtual void HitFireBall() override {}
+	/// <summary>
+	/// ウィザードのフレイムピラーに当たった時の処理。派生クラスで実装
+	/// </summary>
+	virtual void HitFlamePillar(bool damageFlag = false) override {}
+	
+	/// <summary>
+	/// 回転のみを行う処理条件
+	/// </summary>
+	/// <returns></returns>
+	virtual bool RotationOnly() override = 0;
 
 	/////////////////////////////////////////////////////////////////////////////
 	// その他の関数
@@ -55,7 +73,20 @@ public:
 
 
 protected:
+	/// <summary>
+	/// モデルの初期化
+	/// </summary>
+	virtual void InitModel() override = 0;
 
+	/// <summary>
+	/// アニメーションを再生
+	/// </summary>
+	virtual void PlayAnimation() override = 0;
+
+	/// <summary>
+	/// ステート管理
+	/// </summary>
+	virtual void ManageState() override = 0;
 
 
 };
