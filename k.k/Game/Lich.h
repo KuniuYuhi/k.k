@@ -1,5 +1,5 @@
 #pragma once
-#include "AIActor.h"
+#include "BossBase.h"
 #include "Level3DRender.h"
 
 class ILichState;
@@ -9,7 +9,7 @@ class Summon;
 class DarkBall;
 class DarkWall;
 
-class Lich:public AIActor
+class Lich:public BossBase
 {
 public:
 	Lich();
@@ -72,7 +72,7 @@ public:
 	/// <summary>
 	/// ヒーローのスキルに当たった時の処理
 	/// </summary>
-	void HitHeroSkillAttack() override;
+	void HitSkillAttack() override;
 
 	/// <summary>
 	/// ウィザードのフレイムピラーに当たった時の処理。派生クラスで実装
@@ -125,8 +125,6 @@ public:
 	bool Isflinch();
 
 	bool IsDistanceToPlayer();
-
-	void CreateDamageFont(int damage)  override;
 
 	/// <summary>
 	/// 特定のアニメーションが再生中か

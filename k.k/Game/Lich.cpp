@@ -72,24 +72,30 @@ Lich::Lich()
 
 Lich::~Lich()
 {
+	//
+	if (m_lichAction != nullptr)
+	{
+		delete m_lichAction;
+	}
+	//死亡した場合でないなら
+	if (m_dieFlag != true)
+	{
+		return;
+	}
 	//モブモンスターが0体でないならリスト内のモブモンスターを死亡
 	int mobMonsterNum = CharactersInfoManager::GetInstance()->GetMobMonsters().size();
 	if (mobMonsterNum != 0)
 	{
 		for (auto mob : CharactersInfoManager::GetInstance()->GetMobMonsters())
 		{
-			mob->ProcessDead();
+			mob->ProcessDead(false);
 			mob->Dead();
 			//リストから削除
 			//CharactersInfoManager::GetInstance()->RemoveMobMonsterFormList(mob);
 		}
 	}
 
-	//
-	if (m_lichAction != nullptr)
-	{
-		delete m_lichAction;
-	}
+	
 }
 
 bool Lich::Start()
@@ -334,7 +340,7 @@ void Lich::Damage(int attack)
 		m_game->SetClearCameraState(Game::enClearCameraState_Lich);
 		//Dieフラグをtrueにする
 		m_dieFlag = true;
-		m_status.hp = 0;
+		m_status.SetHp(0);
 		//技の途中でやられたかもしれない
 		if (m_darkWall != nullptr)
 		{
@@ -345,16 +351,6 @@ void Lich::Damage(int attack)
 		SetNextAnimationState(enAnimationState_Die);
 		m_modelRender.SetAnimationSpeed(0.8f);
 	}
-}
-
-void Lich::CreateDamageFont(int damage)
-{
-	DamageFont* damagefont = NewGO<DamageFont>(0, "damagefont");
-	damagefont->Setting(
-		DamageFont::enDamageActor_Boss,
-		damage,
-		m_position
-	);
 }
 
 bool Lich::Isflinch()
@@ -934,7 +930,7 @@ void Lich::HitNormalAttack()
 	}
 }
 
-void Lich::HitHeroSkillAttack()
+void Lich::HitSkillAttack()
 {
 	//スキル攻撃を受けられないなら
 	if (m_player->GetHittableFlag() != true)
