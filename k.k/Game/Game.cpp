@@ -50,8 +50,7 @@ Game::~Game()
 	DeleteGO(m_lich);
 
 	DeleteGO(m_gameCamera);
-
-	CharactersInfoManager::DeleteInstance();
+	
 }
 
 bool Game::Start()
