@@ -1,10 +1,10 @@
 #pragma once
-#include "AIActor.h"
+#include "MonsterBase.h"
 #include "KnockBack.h"
 
 class Lich;
 
-class MobMonster:public AIActor
+class MobMonster:public MonsterBase
 {
 public:
 
@@ -64,7 +64,8 @@ public:
 	/// <summary>
 	/// ‚â‚ç‚ê‚½‚Æ‚«‚Ìˆ—
 	/// </summary>
-	virtual void ProcessDead();
+	/// <param name="seFlag">‚â‚ç‚ê‚½‚Æ‚«‚ÌŒø‰Ê‰¹‚ğÄ¶‚·‚é‚©‚Ìƒtƒ‰ƒO</param>
+	virtual void ProcessDead(bool seFlag = true);
 
 	/// <summary>
 	/// ‰ñ“]ˆ—
