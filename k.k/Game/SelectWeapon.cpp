@@ -16,6 +16,14 @@ namespace {
 
 	const Vector3 ROOM_POSITION = { 0.0f,-100.0f,-280.0f };
 
+	const Vector3 READY_SPRITE_START_POSITION = { 0.0f,-830.0f,0.0f };
+	const Vector3 READY_SPRITE_END_POSITION = { 0.0f,-430.0f,0.0f };
+	//-40の差
+	const Vector3 READY_BACK_SPRITE_START_POSITION = { 0.0f,-790.0f,0.0f };
+	const Vector3 READY_BACK_SPRITE_END_POSITION = { 0.0f,-390.0f,0.0f };
+
+	const Vector3 READY_LERP_START_POSITION = { 0.0f,-1000.0f,0.0f };
+
 	const float ROTATION_SPEED = 3.0F;
 
 	const float ADD_WEAPON_SCALE = 7.0f;
@@ -89,14 +97,15 @@ bool SelectWeapon::Start()
 
 void SelectWeapon::Update()
 {
-	
-
+	//ゲーム移行フラグが立っているなら
 	if (m_goToGameFlag == true)
 	{
 		//フェードが終わったら消す
 		if (m_fade->GetCurrentAlpha() >= 1.0f)
 		{
+			//ゲーム画面に遷移
 			Game* game = NewGO<Game>(0, "game");
+			//自身を削除
 			DeleteGO(this);
 		}
 		return;
@@ -153,7 +162,6 @@ void SelectWeapon::SelectWeaponManageState()
 	default:
 		break;
 	}
-
 }
 
 void SelectWeapon::ProcessChoice(EnSelectWeaponOrder weaponOrder)
@@ -234,6 +242,14 @@ void SelectWeapon::ProcessComplete()
 		//ウィンドウを画面内に移動させる
 		ScreenWeaponFontAndSprite(false, LERP_START_POS, LERP_END_POS);
 		break;
+	case SelectWeapon::enCompleteState_OffScreenReadySprite:
+		//準備OKを画面外に移動
+		MoveReadySpriteScreen(false,g_vec3Zero, READY_LERP_START_POSITION);
+		break;
+	case SelectWeapon::enCompleteState_OnScreenReadySprite:
+		//準備OKを画面内に移動
+		MoveReadySpriteScreen(true,g_vec3Zero, READY_LERP_START_POSITION);
+		break;
 	case SelectWeapon::enCompleteState_Complete:
 		//武器選び直しかゲームに遷移処理
 		ProcessResetOrGoToPlay();
@@ -248,7 +264,7 @@ void SelectWeapon::ScreenWeaponFontAndSprite(bool moveScreenFlag, Vector3 start,
 	if (m_screenTimer > 1.0f)
 	{
 		//次のステートに遷移
-		m_enCompleteState = enCompleteState_Complete;
+		m_enCompleteState = enCompleteState_OnScreenReadySprite;
 		m_screenTimer = 0.0f;
 		//画面内に移動し終わったなら
 		if (moveScreenFlag == false)
@@ -283,7 +299,7 @@ void SelectWeapon::ProcessMoveScreen(bool moveScreenFlag, const Vector3 movePos)
 	if (moveScreenFlag == true)
 	{
 		//画像の移動
-		MoveOffScreen(movePos);
+		MoveSpriteOffScreen(movePos);
 		//武器の移動
 		MoveInWeapon(movePos);
 	}
@@ -291,17 +307,16 @@ void SelectWeapon::ProcessMoveScreen(bool moveScreenFlag, const Vector3 movePos)
 	else
 	{
 		//画像の移動
-		MoveOnScreen(movePos);
+		MoveSpriteOnScreen(movePos);
 		//武器の移動
 		MoveOutWeapon(movePos);
 	}
-
 	//更新処理
 	m_selectBarSprite.Update();
 	m_selectBackSprite.Update();
 }
 
-void SelectWeapon::MoveOffScreen(Vector3 movePos)
+void SelectWeapon::MoveSpriteOffScreen(Vector3 movePos)
 {
 	Vector3 newPos = g_vec3Zero;
 	//フォント
@@ -327,10 +342,8 @@ void SelectWeapon::MoveOffScreen(Vector3 movePos)
 				m_selectBarSprite.SetPosition(newPos);
 		}
 	}
-	
-
+	//選択背景の座標の移動
 	newPos = SELECT_BACK_SPRITE_POS + movePos;
-	//選択背景の座標
 	if (m_selectBackSprite.GetPosition().x >= SELECT_BACK_SPRITE_MAX_POS.x)
 	{
 		m_selectBackSprite.SetPosition(SELECT_BACK_SPRITE_MAX_POS);
@@ -339,7 +352,7 @@ void SelectWeapon::MoveOffScreen(Vector3 movePos)
 		m_selectBackSprite.SetPosition(newPos);
 }
 
-void SelectWeapon::MoveOnScreen(Vector3 movePos)
+void SelectWeapon::MoveSpriteOnScreen(Vector3 movePos)
 {
 	Vector3 newPos = g_vec3Zero;
 	//フォント
@@ -403,6 +416,93 @@ void SelectWeapon::MoveInWeapon(Vector3 movePos)
 		m_moveWeapon->m_weaponModel.SetPosition(newPos);
 }
 
+void SelectWeapon::MoveReadySpriteScreen(
+	bool OnOrOffScreenFlag, Vector3 start, Vector3 end)
+{
+	//タイマーの上限に達したら、またはスプライトの移動が終わったら
+	if (m_readyscreenTimer > 1.0f||
+		((m_readySpriteMoveFlags.m_readySpriteMoveEndFlag)&&
+		(m_readySpriteMoveFlags.m_readyBackSpriteMoveEndFlag)))
+	{
+		//画面外に出たなら
+		if (OnOrOffScreenFlag == false)
+		{
+			//オブジェクトを画面外に移動させるステートに遷移
+			m_enCompleteState = enCompleteState_OnScreenObject;
+		}
+		else
+		//次のステートに遷移
+		m_enCompleteState = enCompleteState_Complete;
+		//タイマーとフラグをリセット
+		m_readyscreenTimer = 0.0f;
+		m_readySpriteMoveFlags.m_readySpriteMoveEndFlag = false;
+		m_readySpriteMoveFlags.m_readyBackSpriteMoveEndFlag = false;
+		return;
+	}
+	//タイマーを加算
+	m_readyscreenTimer += g_gameTime->GetFrameDeltaTime()*2.5f;
+	//準備OKの移動処理
+	Vector3 movePos;
+	movePos.Lerp(m_readyscreenTimer, start, end);
+	Vector3 newPos = g_vec3Zero;
+	if (OnOrOffScreenFlag)
+	{
+		newPos = READY_SPRITE_START_POSITION - movePos;
+		//上限に達したら
+		if (m_ReadySprite.GetPosition().y >= READY_SPRITE_END_POSITION.y)
+		{
+			m_ReadySprite.SetPosition(READY_SPRITE_END_POSITION);
+			//既定の位置に移動が完了したのでフラグを立てる
+			m_readySpriteMoveFlags.m_readySpriteMoveEndFlag = true;
+		}
+		else
+			m_ReadySprite.SetPosition(newPos);
+	}	
+	else
+	{
+		newPos = READY_SPRITE_END_POSITION + movePos;
+		//上限に達したら
+		if (m_ReadySprite.GetPosition().y <= READY_SPRITE_START_POSITION.y)
+		{
+			m_ReadySprite.SetPosition(READY_SPRITE_START_POSITION);
+			//既定の位置に移動が完了したのでフラグを立てる
+			m_readySpriteMoveFlags.m_readySpriteMoveEndFlag = true;
+		}
+		else
+			m_ReadySprite.SetPosition(newPos);
+	}
+	//背景の移動処理
+	if (OnOrOffScreenFlag)
+	{
+		newPos = READY_BACK_SPRITE_START_POSITION - movePos;
+		//上限に達したら
+		if (m_ReadyBackSprite.GetPosition().y >= READY_BACK_SPRITE_END_POSITION.y)
+		{
+			m_ReadyBackSprite.SetPosition(READY_BACK_SPRITE_END_POSITION);
+			//既定の位置に移動が完了したのでフラグを立てる
+			m_readySpriteMoveFlags.m_readyBackSpriteMoveEndFlag = true;
+		}
+		else
+			m_ReadyBackSprite.SetPosition(newPos);
+	}
+	else
+	{
+		newPos = READY_BACK_SPRITE_END_POSITION + movePos;
+		//上限に達したら
+		if (m_ReadyBackSprite.GetPosition().y <= READY_BACK_SPRITE_START_POSITION.y)
+		{
+			m_ReadyBackSprite.SetPosition(READY_BACK_SPRITE_START_POSITION);
+			//既定の位置に移動が完了したのでフラグを立てる
+			m_readySpriteMoveFlags.m_readyBackSpriteMoveEndFlag = true;
+		}
+		else
+			m_ReadyBackSprite.SetPosition(newPos);
+	}
+	//更新
+	m_ReadySprite.Update();
+	m_ReadyBackSprite.Update();
+}
+
 void SelectWeapon::ProcessResetOrGoToPlay()
 {
 	//Bボタンを押したら、武器を選びなおす
@@ -416,7 +516,7 @@ void SelectWeapon::ProcessResetOrGoToPlay()
 			m_weaponInfo[num].m_weaponNameFont.SetColor(g_vec4White);
 		}
 		//前のステートに遷移。画像を画面内に戻す
-		m_enCompleteState = enCompleteState_OnScreenObject;
+		m_enCompleteState = enCompleteState_OffScreenReadySprite;
 		return;
 	}
 	//ゲームに遷移決定
@@ -437,7 +537,6 @@ void SelectWeapon::FindAndSetMainWeaponInfo()
 			return;
 		}
 	}
-
 }
 
 void SelectWeapon::ProcessWeaponName()
@@ -498,21 +597,9 @@ void SelectWeapon::SettingLight()
 	g_renderingEngine->SetAmbient({ 1.0f,1.0f,0.8f });
 	//ディレクションライトの設定
 	g_renderingEngine->SetDerectionLight(0, DILECTION_LIGHT, DILECTION_LIGHT_COLOR);
-
+	//ポイントライト
 	g_renderingEngine->SetPointLight(
 		POINT_LIGHT_POSITION, { 10.0f,10.0f,10.0f }, {400.0f,3.2f,0.0f});
-
-
-	/*Vector3 direciton = { 1.0f,-5.0f,0.0f };
-	direciton.Normalize();
-	g_renderingEngine->SetSpotLight(
-		{ 460.0f,300.0f,0.0f },
-		{200.0f,0.0f,0.0f},
-		{ 700.0f,3.0f,0.0f },
-		direciton,
-		{ 80.0f,0.5f,0.0f }
-	);
-	g_renderingEngine->SpotLightIsUse();*/
 }
 
 void SelectWeapon::InitWeaponRoom()
@@ -523,11 +610,7 @@ void SelectWeapon::InitWeaponRoom()
 		0, 0, enModelUpAxisZ, false, true, false
 	);
 
-	//Quaternion rot;
-	//rot.AddRotationDegY(-45.0f);
-
 	m_weaponRoomModel.SetScale(5.0f);
-	//m_weaponRoomModel.SetRotation(rot);
 	m_weaponRoomModel.SetPosition(ROOM_POSITION);
 	m_weaponRoomModel.Update();
 }
@@ -643,6 +726,20 @@ void SelectWeapon::InitSprite()
 	m_selectBackSprite.SetScale(g_vec3One);
 	m_selectBackSprite.SetRotation(g_quatIdentity);
 	m_selectBackSprite.Update();
+	//準備OK
+	m_ReadySprite.Init("Assets/sprite/InGame/SelectWeapon/Ready.DDS", 1070, 228);
+	m_ReadySprite.SetPosition(READY_SPRITE_START_POSITION);
+	m_ReadySprite.SetScale(g_vec3One);
+	m_ReadySprite.SetRotation(g_quatIdentity);
+	m_ReadySprite.Update();
+	//準備OKの背景
+	m_ReadyBackSprite.Init("Assets/sprite/InGame/SelectWeapon/Ready_Back.DDS", 2058, 421);
+	m_ReadyBackSprite.SetPosition(READY_BACK_SPRITE_START_POSITION);
+	m_ReadyBackSprite.SetScale(g_vec3One);
+	m_ReadyBackSprite.SetRotation(g_quatIdentity);
+	m_ReadyBackSprite.Update();
+
+
 }
 
 void SelectWeapon::InitFontRender(
@@ -684,5 +781,10 @@ void SelectWeapon::Render(RenderContext& rc)
 	{
 		m_weaponInfo[num].m_weaponNameFont.Draw(rc);
 	}
+
+	//準備OK
+	m_ReadyBackSprite.Draw(rc);
+	m_ReadySprite.Draw(rc);
+	
 
 }
