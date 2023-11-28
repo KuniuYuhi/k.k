@@ -2,7 +2,7 @@
 #include "SummonerState_NAttack_3.h"
 #include "Summoner.h"
 
-void SumonerState_NAttack_3::ManageState()
+void SummonerState_NAttack_3::ManageState()
 {
 	if (m_summoner->GetModelRender().IsPlayingAnimation() == false)
 	{
@@ -10,7 +10,7 @@ void SumonerState_NAttack_3::ManageState()
 	}
 }
 
-void SumonerState_NAttack_3::PlayAnimation()
+void SummonerState_NAttack_3::PlayAnimation()
 {
 	m_summoner->GetModelRender().PlayAnimation(Summoner::enAnimClip_NormalAttack_3);
 }
