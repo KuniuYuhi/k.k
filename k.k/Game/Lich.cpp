@@ -50,7 +50,7 @@ namespace {
 	const float ROT_ONLY_SPEED = 5.0f;
 
 	//ステータス
-	int MAXHP = 100;
+	int MAXHP = 200;
 	int MAXMP = 500;
 	int ATK = 20;
 	float SPEED = 160.0f;
