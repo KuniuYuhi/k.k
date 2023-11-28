@@ -95,6 +95,9 @@ void IBossStateMachine::ProcessAttackState()
 		ProcessMeleeAttack();
 	}
 
+	//怒りモードカウント加算
+	//m_angryCount++;
+
 	//行動した後の処理
 	m_waitTimer = 0.0f;
 	//起こしたアクションを記憶
@@ -105,6 +108,21 @@ void IBossStateMachine::ProcessWaitState()
 {
 	//タイマーを加算
 	m_waitTimer += g_gameTime->GetFrameDeltaTime();
+
+	//怒りモード
+	if (m_summoner->GetNowSpecialActionState() !=
+		Summoner::enSpecialActionState_AngryMode)
+	{
+		if (m_angryCount > 3)
+		{
+			m_summoner->
+				SetNextAnimationState(Summoner::enAnimationState_Angry);
+			//タイマーリセット
+			m_angryCount = 0;
+			return;
+		}
+	}
+	
 
 
 	//長い間勇者が近くにいるなら

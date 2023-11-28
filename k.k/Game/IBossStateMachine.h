@@ -119,7 +119,7 @@ private:
 	bool m_lotteryChanceFlag = false;		//もう一度攻撃するか抽選するチャンス
 	int m_randomValue = 0;
 
-
+	int m_angryCount = 0;				//怒りモードになるためのカウント
 
 	int m_meleeCount = 0;			//近距離攻撃をする度にカウント
 	float m_stayPlayerTimer = 0.0f;	//プレイヤーが近くにいる間を計るタイマー
