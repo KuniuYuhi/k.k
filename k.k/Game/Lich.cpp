@@ -212,7 +212,7 @@ void Lich::Update()
 	Move();
 	Rotation(ROT_SPEED, ROT_ONLY_SPEED);
 
-	DecideNextAction();
+	//DecideNextAction();
 
 	ManageState();
 	PlayAnimation();
@@ -263,7 +263,7 @@ void Lich::Move()
 	//移動処理
 	m_moveSpeed = CalcVelocity(m_status, m_targetPosition);
 	//被ダメージ時は処理をしない
-	if (isAnimationEntable() != true)
+	if (isAnimationEnable() != true)
 	{
 		return;
 	}
@@ -275,7 +275,7 @@ void Lich::Move()
 		return;
 	}
 	//攻撃中なら移動しない
-	if (IsAttackEntable() != true)
+	if (IsAttackEnable() != true)
 	{
 		//移動しないようにする
 		m_moveSpeed = Vector3::Zero;
@@ -397,7 +397,7 @@ bool Lich::CalcAngryTime()
 		return false;
 	}
 
-	if (IsAttackEntable() != true)
+	if (IsAttackEnable() != true)
 	{
 		return false;
 	}
@@ -428,7 +428,7 @@ bool Lich::CalcAngryTime()
 bool Lich::RotationOnly()
 {
 	//特定のアニメーションが再生中のとき
-	if (isRotationEntable() != true)
+	if (isRotationEnable() != true)
 	{
 		return true;
 	}
@@ -438,13 +438,13 @@ bool Lich::RotationOnly()
 void Lich::DecideNextAction()
 {
 	//被ダメージ時は処理をしない
-	if (isAnimationEntable() != true)
+	if (isAnimationEnable() != true)
 	{
 		return;
 	}
 
 	//攻撃中は処理をしない
-	if (IsAttackEntable() != true)
+	if (IsAttackEnable() != true)
 	{
 		return;
 	}

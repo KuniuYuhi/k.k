@@ -130,7 +130,7 @@ public:
 	/// 特定のアニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
-	bool isAnimationEntable() const  override
+	bool isAnimationEnable() const  override
 	{
 		return m_enAnimationState != enAnimationState_Damage &&
 			m_enAnimationState != enAnimationState_Angry &&
@@ -141,7 +141,7 @@ public:
 	/// 攻撃アニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
-	bool IsAttackEntable() const  override
+	bool IsAttackEnable() const  override
 	{
 		return m_enAnimationState != enAnimationState_Attack_1 &&
 			m_enAnimationState != enAnimationState_Attack_2 &&
@@ -156,7 +156,7 @@ public:
 	/// 回転可能かどうか
 	/// </summary>
 	/// <returns></returns>
-	bool isRotationEntable() const  override
+	bool isRotationEnable() const  override
 	{
 		return m_enAnimationState != enAnimationState_Attack_1 &&
 			m_enAnimationState != enAninationState_Idle&&
