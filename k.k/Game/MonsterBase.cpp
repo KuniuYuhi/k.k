@@ -194,7 +194,7 @@ void MonsterBase::HitSkillAttack()
 bool MonsterBase::IsCollisionDetection()
 {
 	//特定のアニメーションが再生中なら
-	if (isAnimationEntable() != true)
+	if (isAnimationEnable() != true)
 	{
 		//判定を取らない
 		return true;

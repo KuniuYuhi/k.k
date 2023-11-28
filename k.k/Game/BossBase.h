@@ -27,19 +27,19 @@ public:
 	/// 特定のアニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
-	virtual bool isAnimationEntable() const override = 0;
+	virtual bool isAnimationEnable() const override = 0;
 
 	/// <summary>
 	/// 回転可能か
 	/// </summary>
 	/// <returns></returns>
-	virtual bool isRotationEntable() const override = 0;
+	virtual bool isRotationEnable() const override = 0;
 
 	/// <summary>
 	/// 攻撃可能か
 	/// </summary>
 	/// <returns></returns>
-	virtual bool IsAttackEntable() const override = 0;
+	virtual bool IsAttackEnable() const override = 0;
 
 	/// <summary>
 	/// 被ダメージ時処理
@@ -70,7 +70,14 @@ public:
 	// その他の関数
 	/////////////////////////////////////////////////////////////////////////////
 
-
+	/// <summary>
+	/// モデルレンダーの取得
+	/// </summary>
+	/// <returns></returns>
+	ModelRender& GetModelRender()
+	{
+		return m_modelRender;
+	}
 
 protected:
 	/// <summary>
@@ -88,6 +95,8 @@ protected:
 	/// </summary>
 	virtual void ManageState() override = 0;
 
+protected:
+	ModelRender m_modelRender;
 
 };
 

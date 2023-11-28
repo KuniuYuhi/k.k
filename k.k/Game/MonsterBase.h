@@ -29,26 +29,21 @@ public:
 	/// 特定のアニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
-	virtual bool isAnimationEntable() const override = 0;
+	virtual bool isAnimationEnable() const override = 0;
 	/// <summary>
 	/// 回転可能か
 	/// </summary>
 	/// <returns></returns>
-	virtual bool isRotationEntable() const = 0;
+	virtual bool isRotationEnable() const = 0;
 	/// <summary>
 	/// 攻撃可能か
 	/// </summary>
 	/// <returns></returns>
-	virtual bool IsAttackEntable() const = 0;
+	virtual bool IsAttackEnable() const = 0;
 	/// <summary>
 	/// 被ダメージ時処理
 	/// </summary>
 	virtual void Damage(int attack) = 0;
-
-	/// <summary>
-	/// ダメージフォント生成
-	/// </summary>
-	void CreateDamageFont(int damage);
 
 	/// <summary>
 	/// 被ダメージ用当たり判定
@@ -120,7 +115,10 @@ public:
 	/// <returns>距離内だったらtrueを返す</returns>
 	bool IsFindPlayer(float distance);
 
-	
+	/// <summary>
+	/// ダメージフォント生成
+	/// </summary>
+	void CreateDamageFont(int damage);
 
 
 

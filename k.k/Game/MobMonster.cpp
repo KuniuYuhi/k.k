@@ -36,7 +36,7 @@ struct IsForestResult :public btCollisionWorld::ConvexResultCallback
 
 bool MobMonster::RotationOnly()
 {
-	if (isRotationEntable() != true)
+	if (isRotationEnable() != true)
 	{
 		return true;
 	}
@@ -45,12 +45,12 @@ bool MobMonster::RotationOnly()
 
 void MobMonster::Move(CharacterController& charaCon)
 {
-	if (isAnimationEntable() != true)
+	if (isAnimationEnable() != true)
 	{
 		return;
 	}
 	//UŒ‚’†‚Íˆ—‚µ‚È‚¢
-	if (IsAttackEntable() != true)
+	if (IsAttackEnable() != true)
 	{
 		return;
 	}
