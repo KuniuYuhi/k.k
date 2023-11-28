@@ -168,12 +168,12 @@ void Cactus::Update()
 void Cactus::Attack()
 {
 	//被ダメージ、デス時は処理をしない
-	if (isAnimationEntable() != true)
+	if (isAnimationEnable() != true)
 	{
 		return;
 	}
 	//攻撃中は処理しない
-	if (IsAttackEntable() != true)
+	if (IsAttackEnable() != true)
 	{
 		return;
 	}

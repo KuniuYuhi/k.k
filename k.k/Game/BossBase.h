@@ -1,7 +1,7 @@
 #pragma once
-#include "AIActor.h"
+#include "MonsterBase.h"
 
-class BossBase:public AIActor
+class BossBase:public MonsterBase
 {
 public:
 	BossBase();
@@ -27,36 +27,76 @@ public:
 	/// 特定のアニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
-	virtual bool isAnimationEntable() const override = 0;
+	virtual bool isAnimationEnable() const override = 0;
 
 	/// <summary>
 	/// 回転可能か
 	/// </summary>
 	/// <returns></returns>
-	virtual bool isRotationEntable() const override = 0;
+	virtual bool isRotationEnable() const override = 0;
 
 	/// <summary>
 	/// 攻撃可能か
 	/// </summary>
 	/// <returns></returns>
-	virtual bool IsAttackEntable() const override = 0;
+	virtual bool IsAttackEnable() const override = 0;
 
 	/// <summary>
 	/// 被ダメージ時処理
 	/// </summary>
 	virtual void Damage(int attack) override = 0;
 
+	//通常攻撃に当たった時の処理
+	virtual void HitNormalAttack() override;
 
+	//ヒーローのスキルに当たった時の処理
+	virtual void HitSkillAttack() override;
+	/// <summary>
+	/// ウィザードのファイヤーボールに当たった時の処理。派生クラスで実装
+	/// </summary>
+	virtual void HitFireBall() override {}
+	/// <summary>
+	/// ウィザードのフレイムピラーに当たった時の処理。派生クラスで実装
+	/// </summary>
+	virtual void HitFlamePillar(bool damageFlag = false) override {}
+	
+	/// <summary>
+	/// 回転のみを行う処理条件
+	/// </summary>
+	/// <returns></returns>
+	virtual bool RotationOnly() override = 0;
 
 	/////////////////////////////////////////////////////////////////////////////
 	// その他の関数
 	/////////////////////////////////////////////////////////////////////////////
 
-
+	/// <summary>
+	/// モデルレンダーの取得
+	/// </summary>
+	/// <returns></returns>
+	ModelRender& GetModelRender()
+	{
+		return m_modelRender;
+	}
 
 protected:
+	/// <summary>
+	/// モデルの初期化
+	/// </summary>
+	virtual void InitModel() override = 0;
 
+	/// <summary>
+	/// アニメーションを再生
+	/// </summary>
+	virtual void PlayAnimation() override = 0;
 
+	/// <summary>
+	/// ステート管理
+	/// </summary>
+	virtual void ManageState() override = 0;
+
+protected:
+	ModelRender m_modelRender;
 
 };
 

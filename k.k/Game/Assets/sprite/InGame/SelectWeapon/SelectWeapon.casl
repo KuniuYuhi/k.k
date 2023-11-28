@@ -1,3 +1,5 @@
-2
+4
 10,SelectBack,59,../../Game/Assets/sprite/InGame/SelectWeapon/SelectBack.png,382.6923076923076,3.846153846153925,1152,1080,10,1.0,1.0,0.5,0.5,14,SelectBack.dds
 9,SelectBar,58,../../Game/Assets/sprite/InGame/SelectWeapon/SelectBar.png,0.0,0.0,1920,256,10,1.0,1.0,0.5,0.5,13,SelectBar.dds
+10,Ready_Back,59,../../Game/Assets/sprite/InGame/SelectWeapon/Ready_Back.png,21.15384615384619,-336.53846153846143,2058,421,10,1.0,1.0,0.5,0.5,14,Ready_Back.dds
+5,Ready,54,../../Game/Assets/sprite/InGame/SelectWeapon/Ready.png,-23.07692307692298,-399.9999999999999,1070,228,10,1.0,1.0,0.5,0.5,9,Ready.dds

@@ -10,12 +10,15 @@
 #include "EntryBoss.h"
 #include "BattleStart.h"
 
-#include "Slime.h"
-
 #include "SkyCube.h"
 #include "InitEffect.h"
 
 #include "CharactersInfoManager.h"
+
+
+#include "Summoner.h"
+
+
 
 namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.5f, 0.5f, 0.5f);
@@ -50,8 +53,7 @@ Game::~Game()
 	DeleteGO(m_lich);
 
 	DeleteGO(m_gameCamera);
-
-	CharactersInfoManager::DeleteInstance();
+	
 }
 
 bool Game::Start()
@@ -113,7 +115,8 @@ bool Game::Start()
 	m_enGameState = enGameState_GameStart;
 
 	
-
+	Summoner* summoner = NewGO<Summoner>(0, "summoner");
+	summoner->SetPosition({0.0f,0.0f,0.0f});
 
 
 
@@ -349,7 +352,7 @@ void Game::OnProcessAppearanceBossTransition()
 			DeleteGO(m_entryBoss);
 			//ボスのアクティブ化
 			m_lich->Activate(); 
-		
+
 			//ステートを切り替える
 			SetNextGameState(enGameState_Game);
 			break;

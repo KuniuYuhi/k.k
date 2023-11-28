@@ -168,13 +168,13 @@ void Slime::Update()
 void Slime::Attack()
 {
 	//被ダメージ、デス時は処理しない
-	if (isAnimationEntable() != true)
+	if (isAnimationEnable() != true)
 	{
 		return;
 	}
 
 	//攻撃中は処理しない
-	if (IsAttackEntable() != true)
+	if (IsAttackEnable() != true)
 	{
 		return;
 	}

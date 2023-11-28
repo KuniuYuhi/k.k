@@ -52,6 +52,12 @@
     <Filter Include="Character\Player\Brave\BraveState">
       <UniqueIdentifier>{10694726-74fe-4cc9-92b3-f39e4854081d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Character\Monster\BossMonster\Summoner">
+      <UniqueIdentifier>{a01f4965-0644-4283-956f-46c41ff3c29d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Monster\BossMonster\Summoner\SummonerState">
+      <UniqueIdentifier>{8823fa93-d69b-4b1f-9b47-a660d16975f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -399,6 +405,41 @@
     <ClCompile Include="MonsterBase.cpp">
       <Filter>Character\Monster</Filter>
     </ClCompile>
+    <ClCompile Include="Summoner.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_DarkBall.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_Idle.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_DarkWall.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="IBossStateMachine.cpp">
+      <Filter>Character\Monster\BossMonster</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_KnockBack.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_NAttack_1.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_NAttack_2.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_NAttack_3.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_Walk.cpp" />
+    <ClCompile Include="SummonerState_Angry.cpp" />
+    <ClCompile Include="SummonerState_Die.cpp" />
+    <ClCompile Include="SummonerState_Hit.cpp" />
+    <ClCompile Include="SummonerState_Warp.cpp" />
+    <ClCompile Include="SummonerState_Summon.cpp" />
+    <ClCompile Include="SummonerState_Victory.cpp" />
+    <ClCompile Include="SummonerState_Command.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -767,5 +808,46 @@
     <ClInclude Include="MonsterBase.h">
       <Filter>Character\Monster</Filter>
     </ClInclude>
+    <ClInclude Include="Summoner.h">
+      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_DarkBall.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_Idle.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="ISummonerState.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_DarkWall.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerActionList.h">
+      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    </ClInclude>
+    <ClInclude Include="IBossStateMachine.h">
+      <Filter>Character\Monster\BossMonster</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_KnockBack.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_NAttack_1.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_NAttack_2.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_NAttack_3.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_Walk.h" />
+    <ClInclude Include="SummonerState_Angry.h" />
+    <ClInclude Include="SummonerState_Die.h" />
+    <ClInclude Include="SummonerState_Hit.h" />
+    <ClInclude Include="SummonerState_Warp.h" />
+    <ClInclude Include="SummonerState_Summon.h" />
+    <ClInclude Include="SummonerState_Victory.h" />
+    <ClInclude Include="SummonerState_Command.h" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "MonsterBase.h"
+//#include "FireBall.h"
+//#include "FlamePillar.h"
 
 MonsterBase::MonsterBase()
 {
@@ -104,23 +106,101 @@ bool MonsterBase::AttackInterval(const float attackintarvaltime)
 
 bool MonsterBase::AngleChangeTimeIntarval(float LimitTime)
 {
-	return false;
+	//方向を変えるフラグが立ったなら
+	if (m_angleChangeTimeFlag == true)
+	{
+		//タイマーが上限をこえたら
+		if (LimitTime < m_angleChangeTimer)
+		{
+			//フラグとタイマーをリセット
+			m_angleChangeTimeFlag = false;
+			m_angleChangeTimer = 0.0f;
+			return false;
+		}
+		else
+		{
+			m_angleChangeTimer += g_gameTime->GetFrameDeltaTime();
+		}
+	}
+	return true;
 }
 
 void MonsterBase::CreateDamageFont(int damage)
 {
+	//受けるダメージを表すオブジェクトを生成
+	DamageFont* damagefont = NewGO<DamageFont>(0, "damagefont");
+	damagefont->Setting(
+		DamageFont::enDamageActor_Monster,
+		damage,
+		m_position
+	);
+}
+
+void MonsterBase::DamageCollision(CharacterController& characon)
+{
+	if (IsCollisionDetection() == true)
+	{
+		return;
+	}
+	//
+	const auto& Attack_1Collisions = g_collisionObjectManager->FindCollisionObjects("Attack");
+	//
+	for (auto collision : Attack_1Collisions)
+	{
+		//
+		if (collision->IsHit(characon) == true)
+		{
+			CreateHitEffect();
+			HitNormalAttack();
+			return;
+		}
+	}
+
+	//
+	const auto& SkillCollisions = g_collisionObjectManager->FindCollisionObjects("skillAttack");
+	//
+	for (auto collision : SkillCollisions)
+	{
+		//
+		if (collision->IsHit(characon) == true)
+		{
+			CreateHitEffect();
+			HitSkillAttack();
+			return;
+		}
+	}
+}
+
+void MonsterBase::HitNormalAttack()
+{
+	m_damage = m_player->GetAtk();
+	//
+	Damage(m_damage);
+	CreateDamageFont(m_damage);
+	//
+	m_player->SetAttackHitFlag(true);
+}
+
+void MonsterBase::HitSkillAttack()
+{
+	m_damage = m_player->GetAtk();
+	//
+	Damage(m_damage);
+	CreateDamageFont(m_damage);
+	//
+	m_player->SetAttackHitFlag(true);
 }
 
 bool MonsterBase::IsCollisionDetection()
 {
 	//特定のアニメーションが再生中なら
-	if (isAnimationEntable() != true)
+	if (isAnimationEnable() != true)
 	{
 		//判定を取らない
-		return false;
+		return true;
 	}
 	//判定をとる
-	return true;
+	return false;
 }
 
 Quaternion MonsterBase::Rotation(float rotSpeed, float rotOnlySpeed)

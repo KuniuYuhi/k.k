@@ -8,3 +8,11 @@ BossBase::BossBase()
 BossBase::~BossBase()
 {
 }
+
+void BossBase::HitNormalAttack()
+{
+}
+
+void BossBase::HitSkillAttack()
+{
+}

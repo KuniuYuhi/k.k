@@ -36,7 +36,7 @@ struct IsForestResult :public btCollisionWorld::ConvexResultCallback
 
 bool MobMonster::RotationOnly()
 {
-	if (isRotationEntable() != true)
+	if (isRotationEnable() != true)
 	{
 		return true;
 	}
@@ -45,12 +45,12 @@ bool MobMonster::RotationOnly()
 
 void MobMonster::Move(CharacterController& charaCon)
 {
-	if (isAnimationEntable() != true)
+	if (isAnimationEnable() != true)
 	{
 		return;
 	}
 	//攻撃中は処理しない
-	if (IsAttackEntable() != true)
+	if (IsAttackEnable() != true)
 	{
 		return;
 	}
@@ -255,10 +255,14 @@ void MobMonster::SubPassPower()
 	}
 }
 
-void MobMonster::ProcessDead()
+void MobMonster::ProcessDead(bool seFlag)
 {
-	g_soundManager->InitAndPlaySoundSource(enSoundName_Mob_Die, g_soundManager->GetSEVolume());
-
+	//効果音フラグが立っているなら、効果音の再生
+	if (seFlag)
+	{
+		g_soundManager->InitAndPlaySoundSource(enSoundName_Mob_Die, g_soundManager->GetSEVolume());
+	}
+	//死亡時エフェクトの再生
 	EffectEmitter* deadEffect = NewGO<EffectEmitter>(0);
 	deadEffect->Init(InitEffect::enEffect_Mob_Dead);
 	deadEffect->Play();

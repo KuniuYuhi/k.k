@@ -34,6 +34,8 @@ private:
 	{
 		enCompleteState_OffScreenObject,
 		enCompleteState_OnScreenObject,
+		enCompleteState_OffScreenReadySprite,
+		enCompleteState_OnScreenReadySprite,
 		enCompleteState_Complete,
 	};
 
@@ -147,15 +149,15 @@ private:
 	/// <param name="movePos">移動する量</param>
 	void ProcessMoveScreen(bool moveScreenFlag,const Vector3 movePos);
 	/// <summary>
-	/// 画面外に移動
+	/// 選択肢画像、フォントを画面外に移動
 	/// </summary>
 	/// <param name="movePos"></param>
-	void MoveOffScreen(Vector3 movePos);
+	void MoveSpriteOffScreen(Vector3 movePos);
 	/// <summary>
-	/// 画面内に移動
+	/// 選択肢画像、フォントを画面内に移動
 	/// </summary>
 	/// <param name="movePos"></param>
-	void MoveOnScreen(Vector3 movePos);
+	void MoveSpriteOnScreen(Vector3 movePos);
 	/// <summary>
 	/// 武器を画面外に移動
 	/// </summary>
@@ -164,6 +166,11 @@ private:
 	/// 武器を画面内に移動
 	/// </summary>
 	void MoveInWeapon(Vector3 movePos);
+	/// <summary>
+	/// 準備OK関連の画像を画面内に移動
+	/// </summary>
+	/// <param name="OnOrOffScreenFlag"></param>
+	void MoveReadySpriteScreen(bool OnOrOffScreenFlag, Vector3 start, Vector3 end);
 
 	/// <summary>
 	/// 武器選択をリセットかゲームモードに切り替え
@@ -206,6 +213,9 @@ private:
 	SpriteRender		m_selectBarSprite;	//選択バー
 	SpriteRender		m_selectBackSprite;	//選択背景
 
+	SpriteRender		m_ReadySprite;		//準備OKの画像
+	SpriteRender		m_ReadyBackSprite;	//準備OKの背景の画像
+
 	SpringCamera		m_springCamera;
 	Vector3				m_toCameraPos = g_vec3Zero;
 	Vector3				m_positionCamera = g_vec3Zero;
@@ -227,6 +237,18 @@ private:
 	bool				m_goToGameFlag = false;				//
 
 	float				m_screenTimer = 0.0f;				//画面切り替え時のタイマー
+
+	float				m_readyscreenTimer = 0.0f;
+
+	/// <summary>
+	/// 準備OK関連の画像の移動が終わったかのフラグをまとめている
+	/// </summary>
+	struct ReadySpriteMoveFlags
+	{
+		bool m_readySpriteMoveEndFlag = false;
+		bool m_readyBackSpriteMoveEndFlag = false;
+	};
+	ReadySpriteMoveFlags m_readySpriteMoveFlags;
 
 };
 

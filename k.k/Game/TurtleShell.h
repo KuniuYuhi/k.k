@@ -51,7 +51,7 @@ public:
 	/// 特定のアニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
-	bool isAnimationEntable() const
+	bool isAnimationEnable() const override
 	{
 
 		return //m_enAnimationState != enAnimationState_Difence &&
@@ -64,7 +64,7 @@ public:
 	/// 
 	/// </summary>
 	/// <returns></returns>
-	bool isRotationEntable() const
+	bool isRotationEnable() const override
 	{
 		return m_enAnimationState != enAnimationState_Difence &&
 			m_enAnimationState != enAninationState_Idle;
@@ -74,7 +74,7 @@ public:
 	/// 
 	/// </summary>
 	/// <returns></returns>
-	bool IsAttackEntable() const
+	bool IsAttackEnable() const override
 	{
 		return /*m_enAnimationState != enAnimationState_Difence &&*/
 			m_enAnimationState != enAnimationState_Attack_1 &&

@@ -1,10 +1,10 @@
 #pragma once
-#include "AIActor.h"
+#include "MonsterBase.h"
 #include "KnockBack.h"
 
 class Lich;
 
-class MobMonster:public AIActor
+class MobMonster:public MonsterBase
 {
 public:
 
@@ -42,19 +42,19 @@ public:
 	/// 特定のアニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
-	virtual bool isAnimationEntable() const = 0;
+	virtual bool isAnimationEnable() const = 0;
 
 	/// <summary>
 	/// 回転可能か
 	/// </summary>
 	/// <returns></returns>
-	virtual bool isRotationEntable() const = 0;
+	virtual bool isRotationEnable() const = 0;
 
 	/// <summary>
 	/// 攻撃可能か
 	/// </summary>
 	/// <returns></returns>
-	virtual bool IsAttackEntable() const = 0;
+	virtual bool IsAttackEnable() const = 0;
 
 	/// <summary>
 	/// 被ダメージ時処理
@@ -64,7 +64,8 @@ public:
 	/// <summary>
 	/// やられたときの処理
 	/// </summary>
-	virtual void ProcessDead();
+	/// <param name="seFlag">やられたときの効果音を再生するかのフラグ</param>
+	virtual void ProcessDead(bool seFlag = true);
 
 	/// <summary>
 	/// 回転処理
