@@ -432,6 +432,14 @@
     <ClCompile Include="SummonerState_NAttack_3.cpp">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
     </ClCompile>
+    <ClCompile Include="SummonerState_Walk.cpp" />
+    <ClCompile Include="SummonerState_Angry.cpp" />
+    <ClCompile Include="SummonerState_Die.cpp" />
+    <ClCompile Include="SummonerState_Hit.cpp" />
+    <ClCompile Include="SummonerState_Warp.cpp" />
+    <ClCompile Include="SummonerState_Summon.cpp" />
+    <ClCompile Include="SummonerState_Victory.cpp" />
+    <ClCompile Include="SummonerState_Command.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -833,5 +841,13 @@
     <ClInclude Include="SummonerState_NAttack_3.h">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
     </ClInclude>
+    <ClInclude Include="SummonerState_Walk.h" />
+    <ClInclude Include="SummonerState_Angry.h" />
+    <ClInclude Include="SummonerState_Die.h" />
+    <ClInclude Include="SummonerState_Hit.h" />
+    <ClInclude Include="SummonerState_Warp.h" />
+    <ClInclude Include="SummonerState_Summon.h" />
+    <ClInclude Include="SummonerState_Victory.h" />
+    <ClInclude Include="SummonerState_Command.h" />
   </ItemGroup>
 </Project>
