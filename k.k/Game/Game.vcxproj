@@ -274,6 +274,7 @@
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameUI.cpp" />
+    <ClCompile Include="IBossStateMachine.cpp" />
     <ClCompile Include="IWeapon.cpp" />
     <ClCompile Include="KnockBack.cpp" />
     <ClCompile Include="Lich.cpp" />
@@ -325,6 +326,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Summon.cpp" />
+    <ClCompile Include="Summoner.cpp" />
+    <ClCompile Include="SummonerState_DarkBall.cpp" />
+    <ClCompile Include="SummonerState_DarkWall.cpp" />
+    <ClCompile Include="SummonerState_Idle.cpp" />
+    <ClCompile Include="SummonerState_KnockBack.cpp" />
+    <ClCompile Include="SummonerState_NAttack_1.cpp" />
+    <ClCompile Include="SummonerState_NAttack_2.cpp" />
+    <ClCompile Include="SummonerState_NAttack_3.cpp" />
     <ClCompile Include="SwordShield.cpp" />
     <ClCompile Include="system\system.cpp" />
     <ClCompile Include="Title.cpp" />
@@ -400,6 +409,7 @@
     <ClInclude Include="DarkWall.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="HitDetection.h" />
+    <ClInclude Include="ISummonerState.h" />
     <ClInclude Include="IBraveState.h" />
     <ClInclude Include="InitEffect.h" />
     <ClInclude Include="EntryBoss.h" />
@@ -414,6 +424,7 @@
     <ClInclude Include="ILichState.h" />
     <ClInclude Include="IMushroomState.h" />
     <ClInclude Include="ISlimeState.h" />
+    <ClInclude Include="IBossStateMachine.h" />
     <ClInclude Include="ITurtleShellState.h" />
     <ClInclude Include="IWeapon.h" />
     <ClInclude Include="IWizardState.h" />
@@ -463,6 +474,15 @@
     <ClInclude Include="Status.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Summon.h" />
+    <ClInclude Include="Summoner.h" />
+    <ClInclude Include="SummonerActionList.h" />
+    <ClInclude Include="SummonerState_DarkBall.h" />
+    <ClInclude Include="SummonerState_DarkWall.h" />
+    <ClInclude Include="SummonerState_Idle.h" />
+    <ClInclude Include="SummonerState_KnockBack.h" />
+    <ClInclude Include="SummonerState_NAttack_1.h" />
+    <ClInclude Include="SummonerState_NAttack_2.h" />
+    <ClInclude Include="SummonerState_NAttack_3.h" />
     <ClInclude Include="SwordShield.h" />
     <ClInclude Include="system\system.h" />
     <ClInclude Include="Title.h" />
