@@ -156,7 +156,7 @@ protected:
 	/// 特定のアニメーションが再生中か
 	/// </summary>
 	/// <returns></returns>
-	virtual bool isAnimationEntable() const = 0;
+	virtual bool isAnimationEnable() const = 0;
 
 
 
