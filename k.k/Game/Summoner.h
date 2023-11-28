@@ -34,8 +34,7 @@ public:
 	/// </summary>
 	enum EnAnimationClip {
 		enAnimClip_Idle,			// 0 : 待機アニメーション
-		//enAnimClip_Walk,			// 1 : 歩きアニメーション
-		//enAnimClip_Run,				// 2 : 走りアニメーション
+		enAnimClip_Walk,			// 1 : 歩きアニメーション
 		enAnimClip_DarkBall,		// 3 : 
 		enAnimClip_DarkWall,		// 4 : 
 		enAnimClip_NormalAttack_1,
@@ -47,11 +46,12 @@ public:
 		//enAnimClip_Attack_DarkMeteorite_start,
 		//enAnimClip_Attack_DarkMeteorite_main,
 		//enAnimClip_Attack_DarkMeteorite_end,
-		//enAnimClip_Summon,
-		//enAnimClip_Damage,
-		//enAnimClip_Die,
-		//enAnimClip_Victory,
-		//enAnimClip_Angry,
+		enAnimClip_Summon,
+		enAnimClip_CriticalHit,
+		enAnimClip_Die,
+		enAnimClip_Victory,
+		enAnimClip_Angry,
+		enAnimClip_Warp,
 		enAnimClip_Command,
 		enAnimClip_KnockBack,
 		enAnimClip_Num,				// 7 :アニメーションクリップの数
@@ -61,8 +61,7 @@ public:
 	/// </summary>
 	enum EnAnimationState {
 		enAninationState_Idle,
-		//enAninationState_Walk,
-		//enAninationState_Run,
+		enAninationState_Walk,
 		enAnimationState_DarkBall,
 		enAnimationState_DarkWall,
 		enAnimationState_NormalAttack_1,
@@ -74,12 +73,12 @@ public:
 		//enAnimationState_Attack_DarkMeteorite_start,
 		//enAnimationState_Attack_DarkMeteorite_main,
 		//enAnimationState_Attack_DarkMeteorite_end,
-		//enAninationState_Summon,
-		//enAnimationState_Damage,
-		//enAnimationState_Die,
-		//enAnimationState_Victory,
-		//enAnimationState_Angry,
-		//enAnimationState_Warp,
+		enAninationState_Summon,
+		enAnimationState_CriticalHit,
+		enAnimationState_Die,
+		enAnimationState_Victory,
+		enAnimationState_Angry,
+		enAnimationState_Warp,
 		enAnimationState_Command,
 		enAnimationState_KnockBack,
 		enAnimationState_Num,
@@ -205,15 +204,32 @@ public:
 	void ProcessCommonStateTransition();
 
 
-
-
 	/// <summary>
-	/// 現在の状態を取得
+	/// 現在のステートを取得
 	/// </summary>
 	/// <returns></returns>
 	ISummonerState* GetNowSummonerState()
 	{
 		return m_nowBossState;
+	}
+
+	/// <summary>
+	/// 状態の切り替え
+	/// </summary>
+	/// <param name="normalOrAngry">falseでノーマル、trueで怒りモード</param>
+	void ChangeSpecialState(bool normalOrAngry)
+	{
+		if (normalOrAngry == true)m_enSpecialActionState = enSpecialActionState_AngryMode;
+		else m_enSpecialActionState = enSpecialActionState_Normal;
+	}
+
+	/// <summary>
+	/// 現在の状態を取得
+	/// </summary>
+	/// <returns></returns>
+	const EnSpecialActionState& GetNowSpecialActionState() const
+	{
+		return m_enSpecialActionState;
 	}
 
 

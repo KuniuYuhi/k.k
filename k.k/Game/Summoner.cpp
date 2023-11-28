@@ -12,6 +12,14 @@
 #include "SummonerState_NAttack_1.h"
 #include "SummonerState_NAttack_2.h"
 #include "SummonerState_NAttack_3.h"
+#include "SummonerState_Angry.h"
+#include "SummonerState_Command.h"
+#include "SummonerState_Hit.h"
+#include "SummonerState_Die.h"
+#include "SummonerState_Summon.h"
+#include "SummonerState_Walk.h"
+#include "SummonerState_Warp.h"
+#include "SummonerState_Victory.h"
 
 
 namespace {
@@ -140,6 +148,9 @@ void Summoner::SetNextAnimationState(EnAnimationState nextState)
 	case Summoner::enAninationState_Idle://待機状態
 		m_nowBossState = new SummonerState_Idle(this);
 		break;
+	case Summoner::enAninationState_Walk://歩き状態
+		m_nowBossState = new SummonerState_Idle(this);
+		break;
 	case Summoner::enAnimationState_DarkBall://ダークボール
 		m_nowBossState = new SummonerState_DarkBall(this);
 		break;
@@ -156,7 +167,25 @@ void Summoner::SetNextAnimationState(EnAnimationState nextState)
 		m_nowBossState = new SummonerState_NAttack_2(this);
 		break;
 	case Summoner::enAnimationState_NormalAttack_3://通常攻撃３
-		m_nowBossState = new SumonerState_NAttack_3(this);
+		m_nowBossState = new SummonerState_NAttack_3(this);
+		break;
+	case Summoner::enAnimationState_Angry://怒りモード
+		m_nowBossState = new SummonerState_Angry(this);
+		break;
+	case Summoner::enAninationState_Summon://召喚
+		m_nowBossState = new SummonerState_Summon(this);
+		break;
+	case Summoner::enAnimationState_Command://モブに号令
+		m_nowBossState = new SummonerState_Command(this);
+		break;
+	case Summoner::enAnimationState_CriticalHit://スーパーアーマー割られた時
+		m_nowBossState = new SummonerState_Hit(this);
+		break;
+	case Summoner::enAnimationState_Die://やられた
+		m_nowBossState = new SummonerState_Die(this);
+		break;
+	case Summoner::enAnimationState_Victory://勝利
+		m_nowBossState = new SummonerState_Victory(this);
 		break;
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
@@ -170,7 +199,7 @@ void Summoner::ProcessCommonStateTransition()
 {
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		//SetNextAnimationState(enAninationState_Walk);
+		SetNextAnimationState(enAninationState_Walk);
 	}
 	else
 	{
@@ -185,6 +214,9 @@ void Summoner::InitModel()
 	m_animationClip[enAnimClip_Idle].Load(
 		"Assets/animData/character/Lich/Idle.tka");
 	m_animationClip[enAnimClip_Idle].SetLoopFlag(true);
+	m_animationClip[enAnimClip_Walk].Load(
+		"Assets/animData/character/Lich/Walk.tka");
+	m_animationClip[enAnimClip_Walk].SetLoopFlag(true);
 	m_animationClip[enAnimClip_DarkBall].Load(
 		"Assets/animData/character/Lich/Attack1.tka");
 	m_animationClip[enAnimClip_DarkBall].SetLoopFlag(false);
@@ -206,9 +238,22 @@ void Summoner::InitModel()
 	m_animationClip[enAnimClip_Command].Load(
 		"Assets/animData/character/Lich/Command.tka");
 	m_animationClip[enAnimClip_Command].SetLoopFlag(false);
-
-
-
+	m_animationClip[enAnimClip_Summon].Load(
+		"Assets/animData/character/Lich/Summon.tka");
+	m_animationClip[enAnimClip_Summon].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Victory].Load(
+		"Assets/animData/character/Lich/Victory.tka");
+	m_animationClip[enAnimClip_Victory].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Angry].Load(
+		"Assets/animData/character/Lich/Angry.tka");
+	m_animationClip[enAnimClip_Angry].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Die].Load(
+		"Assets/animData/character/Lich/Angry.tka");
+	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
+	m_animationClip[enAnimClip_CriticalHit].Load(
+		"Assets/animData/character/Lich/Angry.tka");
+	m_animationClip[enAnimClip_CriticalHit].SetLoopFlag(false);
+	
 	m_modelRender.Init("Assets/modelData/character/Lich/Lich_real.tkm",
 		L"Assets/shader/ToonTextrue/lamp_Lich.DDS",
 		m_animationClip,
