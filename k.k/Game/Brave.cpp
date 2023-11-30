@@ -55,32 +55,22 @@ Brave::~Brave()
 bool Brave::Start()
 {
 	m_player = FindGO<Player>("player");
-
 	//ステータスの初期化
-	m_status.InitStatus(
+	m_status.InitCharacterStatus(
 		MAXHP,
 		MAXMP,
 		ATK,
 		SPEED,
 		NAME
 	);
-
 	//装備する武器の設定
 	SettingWeapons();
-
+	//モデルの初期化
 	InitModel();
-
 	//キャラコンの設定
 	m_charaCon.Init(12.0f, 33.0f, m_position);
-
-	
-
+	//初期ステートを設定
 	SetNextAnimationState(enAninationState_Idle);
-
-
-	
-
-
 	return true;
 }
 
@@ -109,11 +99,9 @@ void Brave::Update()
 
 	ManageState();
 	PlayAnimation();
-	
+	//モデルの設定と更新
 	SetTransFormModel(m_modelRender);
-
 	m_modelRender.Update();
-	
 }
 
 void Brave::Move()
@@ -147,8 +135,8 @@ void Brave::ProcessRotation()
 
 void Brave::ProcessAttack()
 {
-	//アクションフラグがtrueなら攻撃処理をしない
-	if (GetIsActionFlag() == true)
+	//アクションフラグがtrueまたは、現在の武器の攻撃可能フラグがfalseなら攻撃処理をしない
+	if (GetIsActionFlag() == true||m_mainUseWeapon.weapon->GetIsAttackEnableFlag()!=true)
 	{
 		return;
 	}
@@ -169,13 +157,12 @@ void Brave::ProcessAttack()
 
 void Brave::ProcessDefend()
 {
-	//アクションフラグがtrueなら攻撃処理をしない
-	if (GetIsActionFlag() == true)
+	//アクションフラグがtrue、または現在の武器の防御可能かフラグがfalseなら攻撃処理をしない
+	if (GetIsActionFlag() == true|| m_mainUseWeapon.weapon->GetIsDefendEnableFlag() == false)
 	{
 		return;
 	}
 	//防御
-
 	if (g_pad[0]->IsTrigger(enButtonY) == true)
 	{
 		//アクションフラグをセット
@@ -199,7 +186,7 @@ void Brave::Damage(int damage)
 			m_currentAnimationStartIndexNo
 				= m_mainUseWeapon.weaponAnimationStartIndexNo;
 		}
-
+		//盾にヒットしたなら
 		if (IsDefendHit() == true)
 		{
 			//ダメージを1/3に減らす
@@ -208,6 +195,8 @@ void Brave::Damage(int damage)
 			if (damage < 1) { damage = 1; }
 			//盾ヒットステートに遷移
 			SetNextAnimationState(enAnimationState_DefendHit);
+			//耐久値を減らす。耐久値が0なら防御不可能になる
+			m_mainUseWeapon.weapon->CalcEndurance(damage, false);
 		}
 		else
 		{

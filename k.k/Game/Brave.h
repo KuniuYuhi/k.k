@@ -129,7 +129,7 @@ private:
 	/// </summary>
 	void ProcessAttack();
 	/// <summary>
-	/// –hŒäˆ—
+	/// –hŒäA‰ñ”ğˆ—
 	/// </summary>
 	void ProcessDefend();
 

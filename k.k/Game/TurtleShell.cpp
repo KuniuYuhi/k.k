@@ -65,7 +65,7 @@ bool TurtleShell::Start()
 	//初期のアニメーションステートを待機状態にする。
 	SetNextAnimationState(enAninationState_Idle);
 
-	m_status.InitStatus(
+	m_status.InitCharacterStatus(
 		MAXHP,
 		MAXMP,
 		ATK,
