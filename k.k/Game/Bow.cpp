@@ -12,6 +12,8 @@ namespace {
 	const float HITTABLE_TIME = 0.15f;
 
 	const float CHARGE_COMPLETE_TIME = 1.0f;
+
+	const float SHOT_ARROW_ANGLE = 30.0f;			//矢を撃つときの角度
 }
 
 Bow::Bow()
@@ -193,6 +195,7 @@ void Bow::ProcessLongRangeAttack()
 			true,
 			m_brave->GetForward(),
 			m_arrow->GetPosition(),
+			SHOT_ARROW_ANGLE,
 			Arrow::enShotPatternState_Normal
 		);
 		//矢を放ったので、今の矢を保持フラグをリセットする。矢を持っていない状態
@@ -210,6 +213,7 @@ void Bow::SkillShot()
 			true,
 			m_brave->GetForward(),
 			m_arrow->GetPosition(),
+			0.0f,
 			Arrow::enShotPatternState_Skill
 		);
 		//矢を放ったので、今の矢を保持フラグをリセットする。矢を持っていない状態
