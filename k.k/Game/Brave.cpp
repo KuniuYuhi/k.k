@@ -193,7 +193,7 @@ void Brave::Damage(int damage)
 		m_attackPatternState = enAttackPattern_None;
 
 		//武器切り替え中にダメージを受けたら
-		if (m_enAnimationState == enAnimationState_ChangeSwordShield)
+		if (m_enAnimationState == enAnimationState_ChangeWeapon)
 		{
 			//武器切り替え前の武器のアニメーションが再生されるようにする
 			m_currentAnimationStartIndexNo
@@ -271,16 +271,22 @@ void Brave::ChangeWeapon()
 	{
 		return;
 	}
-	//武器の切り替え
-	if (g_pad[0]->IsTrigger(enButtonRB1) == true)
+	//サブ１と武器切り替え
+	if (g_pad[0]->IsTrigger(enButtonUp))
 	{
-		//現在の武器のアニメーションクリップの最初の番号をサブに変更
-		m_currentAnimationStartIndexNo
-			= m_subUseWeapon.weaponAnimationStartIndexNo;
-		//サブ武器の武器切り替えアニメーションステートを設定
-		SetNextAnimationState(enAnimationState_ChangeSwordShield);
-		SetIsActionFlag(true);
+		//武器切り替えのための前準備
+		SettingChangeWeapon(
+			m_subUseWeapon.weaponAnimationStartIndexNo, enWeapon_Sub);
 	}
+	//サブ２と武器切り替え
+	if (g_pad[0]->IsTrigger(enButtonDown))
+	{
+		//武器切り替えのための前準備
+		SettingChangeWeapon(
+			m_subUseWeapon2.weaponAnimationStartIndexNo, enWeapon_Sub2);
+	}
+	
+
 }
 
 void Brave::ProcessWin()
@@ -357,7 +363,7 @@ void Brave::SetNextAnimationState(int nextState)
 	case Brave::enAnimationState_Die:
 		m_BraveState = new BraveStateDie(this);
 		break;
-	case Brave::enAnimationState_ChangeSwordShield:
+	case Brave::enAnimationState_ChangeWeapon:
 		m_BraveState = new BraveStateChangeSwordShield(this);
 		break;
 	case Brave::enAnimationState_Win_Start:
@@ -610,27 +616,39 @@ bool Brave::RotationOnly()
 	return false;
 }
 
-void Brave::ReverseWeapon()
+void Brave::ReverseWeapon(EnWeapons changeTargetWeaponType)
 {
-	//武器のサブとメインの中身を入れ替える
-	ChangeUseWeapon();
+	UseWeapon* ChangeUseSubWeapon = nullptr;
+
+	if (changeTargetWeaponType == enWeapon_Sub)
+	{
+		//武器のサブとメインの中身を入れ替える
+		ChangeUseWeapon(m_subUseWeapon);
+		ChangeUseSubWeapon = &m_subUseWeapon;
+	}
+	else
+	{
+		//武器のサブ２とメインの中身を入れ替える
+		ChangeUseWeapon(m_subUseWeapon2);
+		ChangeUseSubWeapon = &m_subUseWeapon2;
+	}
 
 	//メイン武器とサブ武器の状態ステートを逆にする
 	m_mainUseWeapon.weapon->ReverseWeaponState();
-	m_subUseWeapon.weapon->ReverseWeaponState();
+	ChangeUseSubWeapon->weapon->ReverseWeaponState();
+	//逆参照あった
 	//攻撃力を現在の武器のものに変更。
 	m_status.atk = m_mainUseWeapon.weapon->GetWeaponPower();
 	//多段ヒット判定フラグをセット
 	m_mainUseWeapon.weapon->SetHittableFlag(true);
 }
 
-void Brave::ChangeUseWeapon()
+void Brave::ChangeUseWeapon(UseWeapon& ChangeUseSubWeapon)
 {
 	UseWeapon temporary;
 	temporary = m_mainUseWeapon;
-	m_mainUseWeapon = m_subUseWeapon;
-	m_subUseWeapon = temporary;
-	
+	m_mainUseWeapon = ChangeUseSubWeapon;
+	ChangeUseSubWeapon = temporary;
 	//現在の武器のアニメーションクリップの最初の番号を変更
 	m_currentAnimationStartIndexNo
 		= m_mainUseWeapon.weaponAnimationStartIndexNo;
@@ -656,23 +674,31 @@ bool Brave::IsDefendHit()
 
 void Brave::SettingWeapons()
 {
-	//メイン武器の生成とインスタンスの代入
-	m_mainWeaponType = WeaponManager::GetInstance()->GetMainWeapon();
-	m_mainUseWeapon.weapon =
-		WeaponManager::GetInstance()->CreateWeapon(m_mainWeaponType);
-	//メイン武器を装備状態にする
-	m_mainUseWeapon.weapon->StartSetWeaponState(WeaponBase::enWeaponState_Armed);
+	//メイン武器はソード＆シールド
+	SwordShield* swordShield = NewGO<SwordShield>(0, "swordshield");
+	m_mainUseWeapon.weapon = swordShield;
+	m_mainWeaponType = enWeaponType_SwordShield;
 	//アニメーションクリップの最初の番号を設定
 	SetCurrentAnimationStartIndexNo(m_mainUseWeapon, enWeapon_Main);
+	//装備状態に設定
+	m_mainUseWeapon.weapon->StartSetWeaponState(SwordShield::enWeaponState_Armed);
 
-	//サブ武器の生成とインスタンスの代入
-	m_subWeaponType = WeaponManager::GetInstance()->GetSubWeapon();
-	m_subUseWeapon.weapon =
-		WeaponManager::GetInstance()->CreateWeapon(m_subWeaponType);
-	//サブ武器を収納状態にする
-	m_subUseWeapon.weapon->StartSetWeaponState(WeaponBase::enWeaponState_Stowed);
+
+	//サブ１はグレイトソード
+	BigSword* greatSword = NewGO<BigSword>(0, "greatSword");
+	m_subUseWeapon.weapon = greatSword;
+	m_subWeaponType = enWeaponType_TwoHandSword;
 	//アニメーションクリップの最初の番号を設定
 	SetCurrentAnimationStartIndexNo(m_subUseWeapon, enWeapon_Sub);
+	m_subUseWeapon.weapon->StartSetWeaponState(BigSword::enWeaponState_Stowed);
+
+	//サブ２はボウ＆アロー
+	Bow* bowArrow = NewGO<Bow>(0, "bowarrow");
+	m_subUseWeapon2.weapon = bowArrow;
+	m_subWeapon2Type = enWeaponType_Bow;
+	//アニメーションクリップの最初の番号を設定
+	SetCurrentAnimationStartIndexNo(m_subUseWeapon2, enWeapon_Sub2);
+	m_subUseWeapon2.weapon->StartSetWeaponState(BigSword::enWeaponState_Stowed);
 
 	//現在の武器のアニメーションクリップの最初の番号
 	m_currentAnimationStartIndexNo
@@ -680,8 +706,43 @@ void Brave::SettingWeapons()
 	//武器の攻撃力を自身の攻撃力に設定
 	m_status.atk = m_mainUseWeapon.weapon->GetWeaponPower();
 
-	//ウェポンマネージャーの削除
-	WeaponManager::DeleteInstance();
+
+	//メイン武器の生成とインスタンスの代入
+	//m_mainWeaponType = WeaponManager::GetInstance()->GetMainWeapon();
+	//m_mainUseWeapon.weapon =
+	//	WeaponManager::GetInstance()->CreateWeapon(m_mainWeaponType);
+	////メイン武器を装備状態にする
+	//m_mainUseWeapon.weapon->StartSetWeaponState(WeaponBase::enWeaponState_Armed);
+	////アニメーションクリップの最初の番号を設定
+	//SetCurrentAnimationStartIndexNo(m_mainUseWeapon, enWeapon_Main);
+	////サブ武器の生成とインスタンスの代入
+	//m_subWeaponType = WeaponManager::GetInstance()->GetSubWeapon();
+	//m_subUseWeapon.weapon =
+	//	WeaponManager::GetInstance()->CreateWeapon(m_subWeaponType);
+	////サブ武器を収納状態にする
+	//m_subUseWeapon.weapon->StartSetWeaponState(WeaponBase::enWeaponState_Stowed);
+	////アニメーションクリップの最初の番号を設定
+	//SetCurrentAnimationStartIndexNo(m_subUseWeapon, enWeapon_Sub);
+	////現在の武器のアニメーションクリップの最初の番号
+	//m_currentAnimationStartIndexNo
+	//	= m_mainUseWeapon.weaponAnimationStartIndexNo;
+	////武器の攻撃力を自身の攻撃力に設定
+	//m_status.atk = m_mainUseWeapon.weapon->GetWeaponPower();
+
+	////ウェポンマネージャーの削除
+	//WeaponManager::DeleteInstance();
+}
+
+void Brave::SettingChangeWeapon(
+	int animationStartInbexNo, EnWeapons changeTargetWeapon)
+{
+	//現在の武器のアニメーションクリップの最初の番号をサブに変更
+	m_currentAnimationStartIndexNo
+		= animationStartInbexNo;
+	m_changeTargetUseWeapon = changeTargetWeapon;
+	//サブ武器の武器切り替えアニメーションステートを設定
+	SetNextAnimationState(enAnimationState_ChangeWeapon);
+	SetIsActionFlag(true);
 }
 
 void Brave::SetCurrentAnimationStartIndexNo(UseWeapon& useWeapon, EnWeapons mainOrSub)
@@ -693,6 +754,9 @@ void Brave::SetCurrentAnimationStartIndexNo(UseWeapon& useWeapon, EnWeapons main
 		break;
 	case Brave::enWeapon_Sub:
 		useWeapon.weaponAnimationStartIndexNo = m_subWeaponAnimationStartIndexNo;
+		break;
+	case Brave::enWeapon_Sub2:
+		useWeapon.weaponAnimationStartIndexNo = m_subWeapon2AnimationStartIndexNo;
 		break;
 	case Brave::enWeapon_num:
 		std::abort();
@@ -808,6 +872,9 @@ void Brave::InitModel()
 	RoadWeaponTypeAnimetionClip(m_mainWeaponType, m_mainWeaponAnimationStartIndexNo);
 	//サブ武器に対応するアニメーションクリップを読み込む
 	RoadWeaponTypeAnimetionClip(m_subWeaponType, m_subWeaponAnimationStartIndexNo);
+	//サブ武器2に対応するアニメーションクリップを読み込む
+	RoadWeaponTypeAnimetionClip(m_subWeapon2Type, m_subWeapon2AnimationStartIndexNo);
+
 
 	//モデルの初期化
 	m_modelRender.Init("Assets/modelData/character/Player/NewHero/Hero_Smile.tkm",
@@ -861,7 +928,7 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	//武器入れ替え
 	if (wcscmp(eventName, L"ArmedSwordShield") == 0)
 	{
-		ReverseWeapon();
+		ReverseWeapon(m_changeTargetUseWeapon);
 	}
 
 	//攻撃当たり判定の有効化

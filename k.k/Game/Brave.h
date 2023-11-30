@@ -18,6 +18,7 @@ public:
 	{
 		enWeapon_Main,
 		enWeapon_Sub,
+		enWeapon_Sub2,
 		enWeapon_num
 	};
 
@@ -75,7 +76,7 @@ public:
 			m_enAnimationState != enAnimationState_DefendHit &&
 			m_enAnimationState != enAnimationState_Hit &&
 			m_enAnimationState != enAnimationState_Die &&
-			m_enAnimationState != enAnimationState_ChangeSwordShield;
+			m_enAnimationState != enAnimationState_ChangeWeapon;
 	}
 	/// <summary>
 	/// 当たり判定可能なアニメーションか
@@ -188,7 +189,7 @@ public:
 		enAnimationState_Defend,
 		enAnimationState_DefendHit,
 		enAnimationState_Die,
-		enAnimationState_ChangeSwordShield,
+		enAnimationState_ChangeWeapon,
 		enAnimationState_Win_Start,
 		enAnimationState_Win_Main,
 		enAnimationState_Attack_1,
@@ -393,9 +394,13 @@ public:
 		{
 			return m_mainUseWeapon.weapon;
 		}
-		else
+		else if (subOrMain == enWeapon_Sub)
 		{
 			return m_subUseWeapon.weapon;
+		}
+		else
+		{
+			return m_subUseWeapon2.weapon;
 		}
 	}
 	/// <summary>
@@ -441,16 +446,17 @@ private:
 	/// <summary>
 	/// コンボ攻撃のコンボの処理
 	/// </summary>
-	void ProcessComboAttack();
+	void ProcessComboAttack(); 
+	
 	/// <summary>
 	/// メイン武器とサブ武器を入れ替える
 	/// </summary>
-	void ReverseWeapon();
+	/// <param name="ChangeUseWeapon">入れ替えたいサブ武器</param>
+	void ReverseWeapon(EnWeapons changeTargetWeapon);
 	/// <summary>
 	/// UseWeapon構造体の中身を入れ替える
 	/// </summary>
-	void ChangeUseWeapon();
-
+	void ChangeUseWeapon(UseWeapon& ChangeUseSubWeapon);
 	/// <summary>
 	/// 防御中にヒットしたか
 	/// </summary>
@@ -477,9 +483,15 @@ private:
 	}
 
 	/// <summary>
-	/// 装備する武器の設定
+	/// 装備する武器の設定。スタート時に設定
 	/// </summary>
 	void SettingWeapons();
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="animationStartInbexNo"></param>
+	/// <param name="changeTargetWeapon"></param>
+	void SettingChangeWeapon(int animationStartInbexNo, EnWeapons changeTargetWeapon);;
 	
 	/// <summary>
 	/// 武器のアニメーションの最初の番号を設定
@@ -508,15 +520,19 @@ private:
 	
 	const int m_mainWeaponAnimationStartIndexNo = 0;						//メイン武器のアニメーションクリップの最初の番号
 	const int m_subWeaponAnimationStartIndexNo = enAnimClip_Num * 1;		//サブ武器のアニメーションクリップの最初の番号
+	const int m_subWeapon2AnimationStartIndexNo = enAnimClip_Num * 2;
 
 	//現在の武器のアニメーションの最初の番号
 	int m_currentAnimationStartIndexNo = m_mainWeaponAnimationStartIndexNo;
 
 	EnWeaponType				m_mainWeaponType = enWeaponType_Num;
 	EnWeaponType				m_subWeaponType = enWeaponType_Num;
+	EnWeaponType				m_subWeapon2Type = enWeaponType_Num;
+	EnWeapons				    m_changeTargetUseWeapon = enWeapon_num;		//切り替え対象の武器
 
-	UseWeapon					m_mainUseWeapon;				//メイン武器
-	UseWeapon					m_subUseWeapon;				//サブ武器
+	UseWeapon					m_mainUseWeapon;		//メイン武器
+	UseWeapon					m_subUseWeapon;			//サブ武器
+	UseWeapon					m_subUseWeapon2;		//サブ２
 
 
 	Player*						m_player = nullptr;
@@ -526,7 +542,7 @@ private:
 	EnAttackPattern				m_attackPatternState = enAttackPattern_None;
 	CharacterController			m_charaCon;
 	
-	AnimationClip				m_animationClip[enAnimClip_Num * 2];// アニメーションクリップ 
+	AnimationClip				m_animationClip[enAnimClip_Num * AnimationClipGroup_Num];// アニメーションクリップ 
 	
 	ModelRender					m_modelRender;
 
