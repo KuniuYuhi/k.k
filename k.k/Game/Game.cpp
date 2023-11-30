@@ -18,7 +18,7 @@
 
 #include "Summoner.h"
 
-
+//todo ƒŠƒbƒ`‚ªÁ‚¦‚éŽž‚É‘—‚ç‚ê‚éŸ”s‚ª‚¢‚¶‚Á‚Ä‚È‚¢‚Ì‚É•Ï‚í‚Á‚Ä‚¢‚é
 
 namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.5f, 0.5f, 0.5f);
@@ -158,7 +158,7 @@ void Game::InitSkyCube()
 	m_skyCube->Update();
 }
 
-void Game::GoResult(EnOutCome outcome)
+void Game::GoResult(EnOutComeState outcome)
 {
 	if (m_result == nullptr)
 	{
