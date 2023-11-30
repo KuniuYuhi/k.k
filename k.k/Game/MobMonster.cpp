@@ -262,6 +262,7 @@ void MobMonster::ProcessDead(bool seFlag)
 	{
 		g_soundManager->InitAndPlaySoundSource(enSoundName_Mob_Die, g_soundManager->GetSEVolume());
 	}
+
 	//死亡時エフェクトの再生
 	EffectEmitter* deadEffect = NewGO<EffectEmitter>(0);
 	deadEffect->Init(InitEffect::enEffect_Mob_Dead);
