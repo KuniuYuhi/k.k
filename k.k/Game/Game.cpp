@@ -115,8 +115,8 @@ bool Game::Start()
 	m_enGameState = enGameState_GameStart;
 
 	
-	Summoner* summoner = NewGO<Summoner>(0, "summoner");
-	summoner->SetPosition({0.0f,0.0f,0.0f});
+	/*Summoner* summoner = NewGO<Summoner>(0, "summoner");
+	summoner->SetPosition({0.0f,0.0f,0.0f});*/
 
 
 
