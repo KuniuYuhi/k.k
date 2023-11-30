@@ -84,12 +84,14 @@ public:
 	}
 
 	/// <summary>
-	/// 射撃開始座標を設定
+	/// 射撃開始時の設定
 	/// </summary>
-	/// <param name="startPosition"></param>
-	void SetShotStartPosition(Vector3 startPosition)
+	/// <param name="startPosition">矢を発射する座標</param>
+	/// <param name="deg">角度</param>
+	void SetShotStartPosition(Vector3 startPosition,float angle)
 	{
 		m_shotStartPosition = startPosition;
+		m_angle = angle;
 	}
 	/// <summary>
 	/// 矢の座標を取得
@@ -106,6 +108,7 @@ public:
 	{
 		m_arrowPos = g_vec3Zero;
 		m_arrowMatrix.Apply(m_arrowPos);
+		m_rotation.SetRotation(m_arrowMatrix);
 	}
 
 	/// <summary>
@@ -113,13 +116,19 @@ public:
 	/// </summary>
 	/// <param name="shotFlag">ショットフラグ</param>
 	/// <param name="forward">矢を撃つキャラの前方向</param>
+	/// <param name="angle">発射する角度</param>
 	/// <param name="shotStartPosition">発射開始座標</param>
 	void SetShotArrowSetting(
 		bool shotFlag,
 		Vector3 forward,
 		Vector3 shotStartPosition,
+		float angle,
 		EnShotPatternState shotPatternState
 	);
+	/// <summary>
+	/// 矢が落ちる地点の設定
+	/// </summary>
+	void SetTargetPosition();
 
 	/// <summary>
 	/// ショットパターンステートを設定
@@ -176,6 +185,8 @@ private:
 	Vector3 m_arrowPos = g_vec3Zero;
 	Vector3 m_forward = g_vec3Zero;
 	Vector3 m_shotStartPosition = g_vec3Zero;
+	Vector3 m_targetPosition = g_vec3Zero;			//矢が落ちる地点
+	Quaternion m_rotation = g_quatIdentity;
 
 	Matrix m_arrowMatrix = g_matIdentity;
 
@@ -183,6 +194,17 @@ private:
 	
 
 	bool m_shotFlag = false;			//矢を発射するかのフラグ
+
+	float m_angle = 0.0f;
+	float m_flightDuration = 0.0f;		//矢が落ちるまでの時間
+	float m_deleteTimer = 0.0f;
+
+	struct ShotArrowVerocity
+	{
+		float Vx = 0.0f;
+		float Vy = 0.0f;
+	};
+	ShotArrowVerocity m_shotArrowVerocity;
 
 };
 
