@@ -51,7 +51,7 @@ bool Wizard::Start()
 	SetNextAnimationState(enAninationState_Idle);
 
 	//ステータスの初期化
-	m_status.InitStatus(
+	m_status.InitCharacterStatus(
 		MAXHP,
 		MAXMP,
 		ATK,
