@@ -22,7 +22,7 @@ public:
 	/// 攻撃やスキル時のジャンプの速度の取得
 	/// </summary>
 	/// <returns></returns>
-	float GetJampSpeed()
+	float GetJampSpeed() override
 	{
 		return m_jampSpeed;
 	}
@@ -31,13 +31,29 @@ public:
 	/// 盾の当たり判定がヒットしたか
 	/// </summary>
 	/// <returns>ヒットしたらtrue、ヒットしなかったらfalse</returns>
-	bool IsHitCollision();
+	bool IsHitCollision() override;
 
 	/// <summary>
 	/// スキル攻撃処理
 	/// </summary>
-	void ProcessSkillAttack();
+	void ProcessSkillAttack() override;
 	
+	/// <summary>
+	/// 耐久値がなくなったらときの処理
+	/// </summary>
+	void ProcessNoEndurance() override
+	{
+		//盾の耐久値がなくなったので、防御不可能にする
+		SetIsDefendEnableFlag(false);
+	}
+	/// <summary>
+	/// 耐久値が0より大きくなったときの処理(0から以上になった時)
+	/// </summary>
+	void ProcessOnEndurance() override
+	{
+		//盾の耐久値が増えたので、防御可能にする
+		SetIsDefendEnableFlag(true);
+	}
 
 private:
 	/// <summary>
@@ -48,6 +64,14 @@ private:
 	/// 当たり判定の生成
 	/// </summary>
 	void InitCollision();
+	/// <summary>
+	/// 剣の当たり判定の初期化
+	/// </summary>
+	void InitSwordCollision();
+	/// <summary>
+	/// 盾の当たり判定の初期化
+	/// </summary>
+	void InitShieldCollision();
 	/// <summary>
 	/// 武器を装備している時の移動処理
 	/// </summary>

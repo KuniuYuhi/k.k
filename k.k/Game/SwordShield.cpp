@@ -14,7 +14,9 @@ namespace {
 
 	const float ADD_FORWARD = 30.0f;
 
+	//ステータス
 	const int POWER = 30;
+	const int ENDURANCE = 10;		//武器の耐久力(盾の耐久力)。
 }
 
 SwordShield::SwordShield()
@@ -30,6 +32,11 @@ SwordShield::~SwordShield()
 
 bool SwordShield::Start()
 {
+	//武器のステータス初期化
+	m_status.InitWeaponStatus(
+		POWER, ENDURANCE
+	);
+
 	//勇者のインスタンスを探す
 	m_brave = FindGO<Brave>("brave");
 
@@ -186,6 +193,12 @@ void SwordShield::InitModel()
 
 void SwordShield::InitCollision()
 {
+	InitSwordCollision();
+	InitShieldCollision();
+}
+
+void SwordShield::InitSwordCollision()
+{
 	//剣の当たり判定
 	m_swordCollision = NewGO<CollisionObject>(0, "Attack");
 	m_swordCollision->CreateBox(
@@ -195,6 +208,10 @@ void SwordShield::InitCollision()
 	);
 	m_swordCollision->SetIsEnableAutoDelete(false);
 	m_swordCollision->SetIsEnable(false);
+}
+
+void SwordShield::InitShieldCollision()
+{
 	//盾の当たり判定
 	m_shieldCollision = NewGO<CollisionObject>(0, "defence");
 	m_shieldCollision->CreateBox(
@@ -271,5 +288,11 @@ void SwordShield::Render(RenderContext& rc)
 	}
 
 	m_modelSword.Draw(rc);
+
+	//防御可能でないなら表示しない
+	if (GetIsDefendEnableFlag() != true)
+	{
+		return;
+	}
 	m_modelShield.Draw(rc);
 }
