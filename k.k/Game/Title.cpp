@@ -255,9 +255,8 @@ void Title::GoToPlayMode()
     //フェードが終わったら消す
     if (m_fade->GetCurrentAlpha() >= 1.0f && m_muteBGMFlag == true)
     {
-        SelectWeapon* selectweapon = NewGO<SelectWeapon>(0, "s");
-
-        //Game* game = NewGO<Game>(0, "game");
+        //SelectWeapon* selectweapon = NewGO<SelectWeapon>(0, "s");
+        Game* game = NewGO<Game>(0, "game");
         DeleteGO(this);
     }
 
