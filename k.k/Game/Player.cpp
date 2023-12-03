@@ -4,6 +4,7 @@
 #include "Actor.h"
 #include "Game.h"
 
+#include "GameManager.h"
 #include "CharactersInfoManager.h"
 
 namespace {
@@ -37,7 +38,8 @@ bool Player::Start()
 void Player::Update()
 {
 	//ƒQ[ƒ€‚ªŽn‚Ü‚é‚Ü‚Å‚ÍˆÚ“®‚µ‚È‚¢
-	if (m_game->GetNowGameState() != Game::enGameState_Game)
+	if (GameManager::GetInstance()->GetGameSeenState()!=
+		GameManager::enGameSeenState_Game)
 	{
 		return;
 	}
@@ -74,7 +76,8 @@ bool Player::IsInaction()
 		return true;
 	}
 	//ƒQ[ƒ€’†‚Å‚È‚¢‚È‚ç
-	if (m_game->IsMatchGameState(Game::enGameState_Game) != true)
+	if (GameManager::GetInstance()->GetGameSeenState() !=
+		GameManager::enGameSeenState_Game)
 	{
 		return true;
 	}
