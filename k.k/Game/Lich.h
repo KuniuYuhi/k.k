@@ -424,6 +424,15 @@ public:
 		return m_dieFlag;
 	}
 
+	/// <summary>
+	/// ゲームインスタンスの設定
+	/// </summary>
+	/// <param name="game"></param>
+	void SetGame(Game* game)
+	{
+		m_game = game;
+	}
+
 private:
 
 	bool RotationOnly();

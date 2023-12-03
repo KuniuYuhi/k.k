@@ -23,6 +23,8 @@
 #include "LichStateWarp.h"
 
 #include "CharactersInfoManager.h"
+#include "GameManager.h"
+
 
 
 namespace {
@@ -78,7 +80,7 @@ Lich::~Lich()
 		delete m_lichAction;
 	}
 	//勝敗が決まったら場合でないなら処理しない。終わる時にエフェクトが再生されるためエラーがでるから
-	if (m_game->GetEnOutCome() == Game::enOutCome_None)
+	if (GameManager::GetInstance()->GetOutComeState()==GameManager::enOutComeState_None)
 	{
 		return;
 	}
@@ -212,7 +214,7 @@ void Lich::Update()
 	Move();
 	Rotation(ROT_SPEED, ROT_ONLY_SPEED);
 
-	//DecideNextAction();
+	DecideNextAction();
 
 	ManageState();
 	PlayAnimation();
