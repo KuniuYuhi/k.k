@@ -5,6 +5,7 @@
 class Brave;		//勇者クラス
 class Lich;			//リッチ(ボス)
 class MobMonster;	//モブモンスター
+class Player;		//プレイヤー
 
 //todo 取得するのがポインタである必要があるのか
 
@@ -27,6 +28,8 @@ public:
 	/// </summary>
 	static void DeleteInstance()
 	{
+
+
 		delete m_charactersInfoInstance;
 		m_charactersInfoInstance = nullptr;
 	}
@@ -60,6 +63,28 @@ public:
 	Brave* GetBraveInstance()
 	{
 		return m_braveInstance;
+	}
+
+	/// <summary>
+	/// プレイヤーインスタンスの設定
+	/// </summary>
+	/// <param name="brave"></param>
+	void SetPlayerInstance(Player* player)
+	{
+		//既にインスタンスが代入されているなら
+		if (m_playerInstance != nullptr)
+		{
+			std::abort();
+		}
+		m_playerInstance = player;
+	}
+	/// <summary>
+	/// プレイヤーインスタンスの取得
+	/// </summary>
+	/// <returns></returns>
+	Player* GetPlayerInstance()
+	{
+		return m_playerInstance;
 	}
 
 	/// <summary>
@@ -121,6 +146,7 @@ public:
 private:
 	Brave* m_braveInstance;			//勇者のインスタンス
 	Lich* m_lichInstance;			//リッチのインスタンス
+	Player* m_playerInstance;		//プレイヤーのインスタンス
 
 	std::vector<MobMonster*> m_mobMonsters;			//モブモンスターのリスト
 
