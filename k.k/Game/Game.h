@@ -21,6 +21,58 @@ public:
 	bool Start();
 	void Update();
 	
+	///////////////////////////////////////////////////////
+	//構造体、列挙型の宣言
+	///////////////////////////////////////////////////////
+
+	enum EnGameStep
+	{
+		enGameStep_FadeOut,
+		enGameStep_FadeNone,
+		enGameStep_Battle
+	};
+	enum EnFadeState
+	{
+		enFadeState_None,
+		enFadeState_StartToBoss,
+		enFadeState_BossToPlayer,
+
+	};
+	/// <summary>
+	/// 勝敗ステート
+	/// </summary>
+	enum EnOutComeState
+	{
+		enOutCome_Player_Win,
+		enOutCome_Player_Lose,
+		enOutCome_None
+	};
+
+	///////////////////////////////////////////////////////
+	//進行
+    //////////////////////////////////////////////////////
+	/// <summary>
+	/// ステートの管理
+	/// </summary>
+	void ManageState();
+	//ゲームの流れ
+	void OnProcessGameStartTransition();
+	void OnProcessAppearanceBossTransition();
+	void OnProcessGameTransition();
+	void OnProcessGameOverTransition();
+	void OnProcessGameClearTransition();
+
+
+
+
+	void OnProcessGame_FadeOutTransition();
+	void OnProcessGame_FadeNoneTransition();
+	void OnProcessGame_BattleTransition();
+
+	///////////////////////////////////////////////////////////////////
+	//その他の関数
+	///////////////////////////////////////////////////////////////////
+
 	/// <summary>
 	/// ゲームの勝敗が決まったら
 	/// </summary>
@@ -34,10 +86,6 @@ public:
 	/// 負けの処理
 	/// </summary>
 	void ProcessLose();
-	/// <summary>
-	/// タイムアップで負けた時の処理
-	/// </summary>
-	void ProcessLoseTimeUp();
 
 	/// <summary>
 	/// ボスがやられたかのフラグを設定
@@ -63,15 +111,7 @@ public:
 	/// <returns></returns>
 	bool IsBossMovieSkipTime();
 
-	/// <summary>
-	/// 勝敗ステート
-	/// </summary>
-	enum EnOutComeState
-	{
-		enOutCome_Player_Win,
-		enOutCome_Player_Lose,
-		enOutCome_None
-	};
+	
 	/// <summary>
 	/// リザルト画面遷移処理
 	/// </summary>
@@ -94,7 +134,7 @@ public:
 		return m_enOutCome;
 	}
 
-	enum EnGameState
+	/*enum EnGameState
 	{
 		enGameState_Fade,
 		enGameState_GameStart,
@@ -104,9 +144,9 @@ public:
 		enGameState_GameOver,
 		enGameState_GameOver_TimeUp,
 		enGameState_GameClear
-	};
+	};*/
 
-	/// <summary>
+	/*/// <summary>
 	/// 次のゲームステートを設定
 	/// </summary>
 	/// <param name="nextgamestate"></param>
@@ -121,26 +161,21 @@ public:
 	EnGameState GetNowGameState()
 	{
 		return m_enGameState;
-	}
+	}*/
 
 	/// <summary>
 	/// タイムアップか
 	/// </summary>
 	/// <returns>タイムアップならtrueを返す</returns>
-	bool IsTimeUp()
+	/*bool IsTimeUp()
 	{
 		return m_enGameState == enGameState_GameOver_TimeUp;
-	}
+	}*/
 	/// <summary>
 	/// 勝敗が決まったか
 	/// </summary>
 	/// <returns></returns>
-	bool IsWinnerDecision()
-	{
-		return m_enGameState == enGameState_GameOver_TimeUp ||
-			m_enGameState == enGameState_GameOver ||
-			m_enGameState == enGameState_GameClear;
-	}
+	bool IsWinnerDecision();
 
 	/// <summary>
 	/// ボスの登場ムービーが終わったかのフラグ
@@ -207,14 +242,14 @@ public:
 	/// </summary>
 	/// <param name="searchGameState">検索したいゲームステート</param>
 	/// <returns>trueで同じ、falseで違う</returns>
-	bool IsMatchGameState(EnGameState searchGameState)
+	/*bool IsMatchGameState(EnGameState searchGameState)
 	{
 		if (GetNowGameState() == searchGameState)
 		{
 			return true;
 		}
 		return false;
-	}
+	}*/
 
 
 private:
@@ -242,36 +277,9 @@ private:
 	/// </summary>
 	void CalcMuteBGM();
 
-	/// <summary>
-	/// ステートの管理
-	/// </summary>
-	void ManageState();
-	//ゲームの流れ
-	void OnProcessGameStartTransition();
-	void OnProcessAppearanceBossTransition();
-	void OnProcessGameTransition();
-	void OnProcessGameOverTransition();
-	void OnProcessGameClearTransition();
-
-	enum EnGameStep
-	{
-		enGameStep_FadeOut,
-		enGameStep_FadeNone,
-		enGameStep_Battle
-	};
 	
 
-	void OnProcessGame_FadeOutTransition();
-	void OnProcessGame_FadeNoneTransition();
-	void OnProcessGame_BattleTransition();
-
-	enum EnFadeState
-	{
-		enFadeState_None,
-		enFadeState_StartToBoss,
-		enFadeState_BossToPlayer,
-
-	};
+	
 
 
 	EnFadeState					m_enFadeState = enFadeState_None;
@@ -295,14 +303,7 @@ private:
 
 	ModelRender					model;
 
-
-	//Level2DRender level2DSp;
-
-	Vector3						m_position = Vector3(0.0f,0.0f,0.0f);
-	Quaternion					m_rotation = Quaternion::Identity;
-	Vector3						m_scale = Vector3::One;
-
-	EnGameState					m_enGameState = enGameState_GameStart;
+	//EnGameState					m_enGameState = enGameState_GameStart;
 
 	EnOutComeState				m_enOutCome = enOutCome_None;
 

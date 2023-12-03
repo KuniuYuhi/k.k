@@ -14,7 +14,7 @@
 #include "InitEffect.h"
 
 #include "CharactersInfoManager.h"
-
+#include "GameManager.h"
 
 #include "Summoner.h"
 
@@ -53,7 +53,7 @@ Game::~Game()
 	DeleteGO(m_lich);
 
 	DeleteGO(m_gameCamera);
-	
+
 }
 
 bool Game::Start()
@@ -68,26 +68,10 @@ bool Game::Start()
 	//半球ライト
 	g_renderingEngine->UseHemiLight();
 
-	//キャラクターの情報マネージャーの生成
-	CharactersInfoManager::CreateInstance();
-
-	//レベル2D
-	//level2DSp.Init(
-	//	"Assets/Level2D/testLevel2D.casl",
-	//	[&](Level2DObjectData& objData) {
-	//		if (objData.EqualObjectName("pointer_black") == true)
-	//		{
-	//			spriteTest.Init("Assets/sprite/pointer_black.DDS", 220.0f, 220.0f);
-	//			spriteTest.SetPosition(objData.position);
-	//			//spriteTest.SetGrayScale(true);
-	//			spriteTest.Update();
-
-	//			return true;
-	//		}
-
-	//		return false;
-	//	});
-
+	//ゲーム進行マネージャークラスの生成
+	GameManager::CreateInstance(GameManager::enGameSeenState_GameStart);
+	//初期化処理
+	GameManager::GetInstance()->Init();
 
 	//エフェクト初期化クラスの生成。
 	InitEffect* initEffect = new InitEffect();
@@ -100,11 +84,16 @@ bool Game::Start()
 	InitSkyCube();
 
 	m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
-	m_player = NewGO<Player>(0, "player");
+
+	//プレイヤークラスの生成
+	GameManager::GetInstance()->CreatePlayerClass();
+	m_player = CharactersInfoManager::GetInstance()->GetPlayerInstance();
+	//m_player = NewGO<Player>(0, "player");
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 
 	//ボスの生成。非アクティブにする
-	CreateBoss();
+	//CreateBoss();
+
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
@@ -112,7 +101,7 @@ bool Game::Start()
 	//画面を明るくする
 	m_fade->StartFadeOut(2.0f);
 	//ゲームステートをスタートにする
-	m_enGameState = enGameState_GameStart;
+	//m_enGameState = enGameState_GameStart;
 
 	
 	/*Summoner* summoner = NewGO<Summoner>(0, "summoner");
@@ -143,9 +132,10 @@ void Game::CreateBoss()
 {
 	m_lich = NewGO<Lich>(0, "lich");
 	m_lich->SetPosition(BOSS_CREATE_POSITION);
+	//m_lich->SetGame(this);
 	//リッチのインスタンスを代入
 	CharactersInfoManager::GetInstance()->SetLichInstance(m_lich);
-	m_lich->Deactivate();
+	//m_lich->Deactivate();
 }
 
 void Game::InitSkyCube()
@@ -183,6 +173,17 @@ void Game::GoResult(EnOutComeState outcome)
 	{
 		DeleteGO(this);
 	}
+}
+
+bool Game::IsWinnerDecision()
+{
+	return GameManager::GetInstance()->GetGameSeenState() ==
+		GameManager::enGameSeenState_GameOver ||
+		GameManager::GetInstance()->GetGameSeenState() ==
+		GameManager::enGameSeenState_GameClear;
+	/*return m_enGameState == enGameState_GameOver_TimeUp ||
+			m_enGameState == enGameState_GameOver ||
+			m_enGameState == enGameState_GameClear;*/
 }
 
 bool Game::CalcTimeLimit()
@@ -261,36 +262,28 @@ void Game::ManageState()
 	//フラグが立っていたらBGMを小さくする
 	CalcMuteBGM();
 
-	switch (m_enGameState)
+	switch (GameManager::GetInstance()->GetGameSeenState())
 	{
-	case enGameState_Fade:
-		break;
-	case enGameState_GameStart:
+	case GameManager::enGameSeenState_GameStart:
 		OnProcessGameStartTransition();
 		break;
-	case enGameState_AppearanceBoss:
+	case GameManager::enGameSeenState_AppearanceBoss:
 		OnProcessAppearanceBossTransition();
 		break;
-	case enGameState_Game:
+	case GameManager::enGameSeenState_Game:
 		OnProcessGameTransition();
 		break;
-	case enGameState_Pause:
+	case GameManager::enGameSeenState_Pause:
 		break;
-	case enGameState_GameOver:
+	case GameManager::enGameSeenState_GameOver:
 		OnProcessGameOverTransition();
 		break;
-	case enGameState_GameOver_TimeUp:
-		OnProcessGameOverTransition();
-		break;
-	case enGameState_GameClear:
+	case GameManager::enGameSeenState_GameClear:
 		OnProcessGameClearTransition();
 		break;
 	default:
 		break;
 	}
-
-
-
 }
 
 void Game::OnProcessGameStartTransition()
@@ -311,7 +304,8 @@ void Game::OnProcessGameStartTransition()
 			DeleteGO(m_battleStart);
 			//次のステップ
 			//ステートを切り替える
-			SetNextGameState(enGameState_AppearanceBoss);
+			GameManager::GetInstance()->SetGameSeenState(
+				GameManager::enGameSeenState_AppearanceBoss);
 			//カメラをリセットする
 			m_gameCamera->CameraRefresh();
 
@@ -351,10 +345,11 @@ void Game::OnProcessAppearanceBossTransition()
 			//ムービー用のモデルを消す
 			DeleteGO(m_entryBoss);
 			//ボスのアクティブ化
-			m_lich->Activate(); 
+			CreateBoss();
 
 			//ステートを切り替える
-			SetNextGameState(enGameState_Game);
+			GameManager::GetInstance()->SetGameSeenState(
+				GameManager::enGameSeenState_Game);
 			break;
 		default:
 			break;
@@ -474,10 +469,12 @@ void Game::OnProcessGame_BattleTransition()
 
 bool Game::IsOutcome()
 {
+	//制限時間に達したらtodo
 	//プレイヤーがやられたら
 	if (m_player->IsDeadPlayer() == true)
 	{
 		//負けの処理
+		GameManager::GetInstance()->SetOutComeState(GameManager::enOutComeState_PlayerLose);
 		SetEnOutCome(enOutCome_Player_Lose);
 		ProcessLose();
 		return true;
@@ -487,19 +484,13 @@ bool Game::IsOutcome()
 	if (m_lich->GetDieFlag() == true)
 	{
 		//勝ちの処理
+		GameManager::GetInstance()->SetOutComeState(GameManager::enOutComeState_PlayerWin);
 		SetEnOutCome(enOutCome_Player_Win);
 		ProcessWin();
 		return true;
 	}
 
-	//制限時間に達したら
-	if (IsTimeUp() == true)
-	{
-		//負けの処理
-		SetEnOutCome(enOutCome_Player_Lose);
-		ProcessLoseTimeUp();
-		return true;
-	}
+	
 
 
 	return false;
@@ -509,7 +500,8 @@ void Game::ProcessWin()
 {
 	DeleteGO(m_gameUI);
 	//ステートを切り替える
-	SetNextGameState(enGameState_GameClear);
+	GameManager::GetInstance()->SetGameSeenState(
+		GameManager::enGameSeenState_GameClear);
 	//カメラをリッチに向ける
 	m_gameCamera->SetLich(m_lich);
 	//カメラをリセットする
@@ -523,16 +515,9 @@ void Game::ProcessLose()
 {
 	DeleteGO(m_gameUI);
 	//ステートを切り替える
-	SetNextGameState(enGameState_GameOver);
+	GameManager::GetInstance()->SetGameSeenState(
+		GameManager::enGameSeenState_GameOver);
 	//BGMを消し始める
 	m_muteBGMFlag = true;
 	m_bgmVolume = g_soundManager->GetBGMVolume();
-}
-
-void Game::ProcessLoseTimeUp()
-{
-	//タイムアップ
-	DeleteGO(m_gameUI);
-	//ステートを切り替える
-	SetNextGameState(enGameState_GameOver_TimeUp);
 }
