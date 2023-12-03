@@ -4,7 +4,6 @@
 #include "Actor.h"
 #include "Game.h"
 
-#include "Brave.h"
 #include "CharactersInfoManager.h"
 
 namespace {
@@ -94,7 +93,6 @@ bool Player::IsDeadPlayer()
 	}
 	return false;
 }
-
 
 int Player::GetAtk()
 {

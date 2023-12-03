@@ -1,6 +1,7 @@
 #pragma once
-//#include "Actor.h"
+
 #include "Brave.h"
+
 
 class Actor;
 class Game;
@@ -161,7 +162,7 @@ public:
 	/// <param name="flag"></param>
 	void SetHittableFlag(bool flag)
 	{
-		m_brave->GetWeapon(Brave::enWeapon_Main)->SetHittableFlag(flag);
+		m_brave->GetWeapon(enWeapon_Main)->SetHittableFlag(flag);
 	}
 	/// <summary>
 	/// 多段ヒット攻撃がヒットしたかのフラグを取得
@@ -169,9 +170,33 @@ public:
 	/// <returns></returns>
 	const bool& GetHittableFlag() const
 	{
-		return m_brave->GetWeapon(Brave::enWeapon_Main)->GetHittableFlag();
+		return m_brave->GetWeapon(enWeapon_Main)->GetHittableFlag();
 	}
 
+	/// <summary>
+	/// 武器切り替え完了フラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetChangeWeaponCompleteFlag(bool flag)
+	{
+		m_brave->SetChangeWeaponCompleteFlag(flag);
+	}
+	/// <summary>
+	/// 武器切り替え完了フラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetChangeWeaponCompleteFlag() const
+	{
+		return m_brave->GetChangeWeaponCompleteFlag();
+	}
+	/// <summary>
+	/// 切り替え対象の武器を取得
+	/// </summary>
+	/// <returns></returns>
+	const EnWeapons& GetChangeTargetUseWeapon() const
+	{
+		return m_brave->GetChangeTargetUseWeapon();
+	}
 
 private:
 	Game*						m_game = nullptr;
