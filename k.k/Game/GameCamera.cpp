@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "EntryBoss.h"
 #include "Lich.h"
+#include "GameManager.h"
 
 namespace {
 
@@ -354,29 +355,29 @@ void GameCamera::ZoomCamera()
 void GameCamera::ManageState()
 {
 	//ゲームのステートによってカメラを切り替える
-	switch (m_game->GetNowGameState())
+	switch (GameManager::GetInstance()->GetGameSeenState())
 	{
-	case Game::enGameState_GameStart:
+	case GameManager::enGameSeenState_GameStart:
 		//ゲームスタート
 		OnProcessGameStartTransition();
 		break;
-	case Game::enGameState_AppearanceBoss:
+	case GameManager::enGameSeenState_AppearanceBoss:
 		//ボスを見る
 		OnProcessAppearanceBossTransition();
 		break;
-	case Game::enGameState_Game:
+	case GameManager::enGameSeenState_Game:
 		//ゲーム中
 		OnProcessGameTransition();
 		break;
-	case Game::enGameState_GameOver:
+	case GameManager::enGameSeenState_GameOver:
 		//ゲームオーバー
 		OnProcessGameOverTransition();
 		break;
-	case Game::enGameState_GameClear:
+	case GameManager::enGameSeenState_GameClear:
 		//ゲームクリア
 		OnProcessGameClearTransition();
 		break;
-	case Game::enGameState_Pause:
+	case GameManager::enGameSeenState_Pause:
 
 		break;
 	default:
