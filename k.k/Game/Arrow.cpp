@@ -17,8 +17,10 @@ namespace {
 	const float SKILL_DELETE_RANGE = 600.0f;
 	const float SKILL_ARROW_SPEED = 550.0f;
 
-	const float DEFAULT_DELETE_RANGE = 800.0f;
+	const float DEFAULT_DELETE_RANGE = 400.0f;	//矢が消える距離
 	const float DEFAULT_ARROW_SPEED = 450.0f;
+
+	const float GRAVITY = 9.8f;					//重力
 }
 
 Arrow::Arrow()
@@ -120,16 +122,39 @@ void Arrow::SetShotArrowSetting(
 	bool shotFlag, 
 	Vector3 forward, 
 	Vector3 shotStartPosition, 
+	float angle,
 	EnShotPatternState shotPatternState
 )
 {
 	SetShotFlag(shotFlag);
 	SetForward(forward);
 	ApplyMatrixToLocalPosition();
-	SetShotStartPosition(m_arrowPos);
+	SetShotStartPosition(m_arrowPos, angle);
 	SetShotPatternState(shotPatternState);
 	//当たり判定の初期化
 	SelectInitCollision(shotPatternState);
+	//落下地点の設定
+	SetTargetPosition();
+
+	//1.目標に向かう距離の計算
+	Vector3 targetDistance = m_targetPosition - m_shotStartPosition;
+	float distance = targetDistance.Length();
+	//2.初速度の計算
+	float verocity = distance / (sin(Math::DegToRad(2 * m_angle)) / GRAVITY);
+	//3.初速度の分解
+	m_shotArrowVerocity.Vx = sqrt(verocity) * cos(Math::DegToRad(m_angle));
+	m_shotArrowVerocity.Vy = sqrt(verocity) * sin(Math::DegToRad(m_angle));
+	//4.飛行時間の計算
+	m_flightDuration = distance / m_shotArrowVerocity.Vx;
+	//5.物体の向きの調整
+
+}
+
+void Arrow::SetTargetPosition()
+{
+	m_targetPosition = m_shotStartPosition;
+	m_targetPosition += m_forward * DEFAULT_DELETE_RANGE;
+	m_targetPosition.y = 0.0f;
 }
 
 void Arrow::InitModel()
@@ -190,19 +215,37 @@ void Arrow::NormalShot()
 		m_bow->SetAttackHitFlag(false);
 		DeleteGO(this);
 	}
+	//6.移動
+	if (m_deleteTimer < m_flightDuration)
+	{
+		float X = m_forward.x * m_shotArrowVerocity.Vx * g_gameTime->GetFrameDeltaTime() * 7.0f;
+		float Z = m_forward.z * m_shotArrowVerocity.Vx * g_gameTime->GetFrameDeltaTime() * 7.0f;
 
-
-	//射撃開始座標から現在の座標に向かうベクトルを計算
-	Vector3 diff = m_arrowPos - m_shotStartPosition;
-	//矢が自然消滅する距離なら
-	if (diff.Length() > DEFAULT_DELETE_RANGE)
+		//新しい座標
+		m_arrowPos += {
+			X,
+			(m_shotArrowVerocity.Vy - (GRAVITY * m_deleteTimer)) * g_gameTime->GetFrameDeltaTime(),
+			Z
+		};
+		m_deleteTimer += g_gameTime->GetFrameDeltaTime() * 6.0f;
+		//回転
+		/*float angle = atan2(X, Z);
+		m_rotation = {
+			1.0f,
+			angle,
+			1.0f,
+			1.0f
+		};*/
+	}
+	else
 	{
 		//消滅
 		DeleteGO(this);
 	}
-	//矢の座標を設定
-	m_arrowPos += (m_forward * DEFAULT_ARROW_SPEED) * g_gameTime->GetFrameDeltaTime();
+
+	//m_arrowPos += (m_forward * DEFAULT_ARROW_SPEED) * g_gameTime->GetFrameDeltaTime();
 	m_modelArrow.SetPosition(m_arrowPos);
+	m_modelArrow.SetRotation(m_rotation);
 }
 
 void Arrow::SkillShot()

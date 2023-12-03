@@ -1,6 +1,7 @@
 #pragma once
 #include "IWeapon.h"
 #include "HitDetection.h"
+#include "Status.h"
 
 class Brave;
 class HitDetection;
@@ -52,6 +53,21 @@ public:
 		return 0;
 	}
 
+	/// <summary>
+	/// 被ダメージなどで、正常に戻すはずだった変数を強制的にリセットする
+	/// </summary>
+	virtual void ResetVariable() {}
+
+	/// <summary>
+	/// 耐久値がなくなったらときの処理
+	/// </summary>
+	virtual void ProcessNoEndurance(){}
+
+	/// <summary>
+	/// 耐久値が0より大きくなったときの処理(0から以上になった時)
+	/// </summary>
+	virtual void ProcessOnEndurance() {}
+
 	///////////////////////////////////////////////////////////////////////////
 	///その他の関数
 	///////////////////////////////////////////////////////////////////////////
@@ -67,6 +83,7 @@ public:
 	/// </summary>
 	/// <param name="NowWeaponState">現在の武器の状態ステート</param>
 	void ReverseWeaponState();
+
 	/// <summary>
 	/// 武器の状態ステートを設定
 	/// </summary>
@@ -153,9 +170,66 @@ public:
 	}
 
 	/// <summary>
-	/// 被ダメージなどで、正常に戻すはずだった変数を強制的にリセットする
+	/// ステータスの取得
 	/// </summary>
-	virtual void ResetVariable(){}
+	/// <returns></returns>
+	const Status& GetStatus() const
+	{
+		return m_status;
+	}
+
+	/// <summary>
+	/// 耐久値の増減の計算。
+	/// </summary>
+	/// <param name="value"></param>
+	/// <param name="addOrSubFlag"></param>
+	void CalcEndurance(int value, bool addOrSubFlag);
+
+	/// <summary>
+	/// 防御可能かフラグの設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetIsDefendEnableFlag(bool flag)
+	{
+		m_isDefendEnableFlag = flag;
+	}
+	/// <summary>
+	/// 防御可能かフラグの取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetIsDefendEnableFlag() const
+	{
+		return m_isDefendEnableFlag;
+	}
+	/// <summary>
+	/// 攻撃可能かのフラグの設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetIsAttackEnableFlag(bool flag)
+	{
+		m_isAttackEnableFlag = flag;
+	}
+	/// <summary>
+	/// 攻撃可能かのフラグの取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetIsAttackEnableFlag() const
+	{
+		return m_isAttackEnableFlag;
+	}
+
+	/// <summary>
+	/// 耐久値が0より大きいかどうか判定
+	/// </summary>
+	/// <returns>trueで攻撃可能、falseで攻撃不可能</returns>
+	const bool& IsWeaponEndurance() const
+	{
+		if (m_status.endurance > 0)
+		{
+			return true;
+		}
+		return false;
+	}
 
 protected:
 	/// <summary>
@@ -175,8 +249,10 @@ protected:
 		m_power = power;
 	}
 
-protected:
+	
 
+protected:
+	Status              m_status;
 	Brave*				m_brave = nullptr;
 
 	HitDetection		m_hitDelection;
@@ -190,6 +266,10 @@ protected:
 	bool				m_stowedFlag = false;					//収納状態フラグ。処理しないようにするためのフラグ
 
 	bool				m_RotationDelectionFlag = false;		//回転可能フラグ
+
+	bool				m_isDefendEnableFlag = true;			//防御可能かのフラグ。trueで可能
+
+	bool				m_isAttackEnableFlag = true;			//攻撃可能かのフラグ。trueで可能
 
 };
 

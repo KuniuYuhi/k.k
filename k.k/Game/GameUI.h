@@ -1,4 +1,5 @@
 #pragma once
+#include "MyWeapon.h"
 
 class Game;
 class Player;
@@ -14,43 +15,11 @@ public:
 	void Update();
 	void Render(RenderContext& rc);
 
-	void InitPlayerUI();
 
-	void InitMonsterUI();
-
-	/// <summary>
-	/// プレイヤーUIの処理
-	/// </summary>
-	void PlayerUIUpdate();
-	/// <summary>
-	/// メインキャラのステータスの更新処理
-	/// </summary>
-	void UpdateMainStatus();
-	/// <summary>
-	/// キャラアイコンの更新処理
-	/// </summary>
-	void UpdateCharaIcon();
-	/// <summary>
-	/// HPやMPなどのゲージのスケールを計算する
-	/// </summary>
-	/// <param name="Maxvalue">最大値</param>
-	/// <param name="value">計算したい値</param>
-	/// <returns>サイズ</returns>
-	Vector3 CalcGaugeScale(float Maxvalue, float value);
-
-	/// <summary>
-	/// モンスターのUIの処理
-	/// </summary>
-	void MonsterUIUpdate();
-
-	/// <summary>
-	/// タイマーのUIの処理
-	/// </summary>
-	void TimerUIUpdate();
-
-	void DrawPlayerUI(RenderContext& rc);
-
-	void DrawMonsterUI(RenderContext& rc);
+	struct WeaponSprits
+	{
+		SpriteRender* m_weaponSprite=nullptr;
+	};
 
 	/// <summary>
 	/// プレイヤーインスタンスの取得
@@ -76,6 +45,79 @@ public:
 	{
 		m_game = game;
 	}
+
+	
+private:
+	/// <summary>
+	/// プレイヤーのUIの初期化
+	/// </summary>
+	void InitPlayerUI();
+	/// <summary>
+	/// モンスターのUIの初期化
+	/// </summary>
+	void InitMonsterUI();
+
+	/// <summary>
+	/// プレイヤーUIの処理
+	/// </summary>
+	void PlayerUIUpdate();
+	/// <summary>
+	/// メインキャラのステータスの更新処理
+	/// </summary>
+	void UpdateMainStatus();
+	/// <summary>
+	/// キャラアイコンの更新処理
+	/// </summary>
+	void UpdateCharaIcon();
+	/// <summary>
+	/// 武器の更新処理
+	/// </summary>
+	void UpdateWeapon();
+	/// <summary>
+	/// HPやMPなどのゲージのスケールを計算する
+	/// </summary>
+	/// <param name="Maxvalue">最大値</param>
+	/// <param name="value">計算したい値</param>
+	/// <returns>サイズ</returns>
+	Vector3 CalcGaugeScale(float Maxvalue, float value);
+
+	/// <summary>
+	/// モンスターのUIの処理
+	/// </summary>
+	void MonsterUIUpdate();
+
+	/// <summary>
+	/// タイマーのUIの処理
+	/// </summary>
+	void TimerUIUpdate();
+
+	void DrawPlayerUI(RenderContext& rc);
+
+	void DrawMonsterUI(RenderContext& rc);
+
+	/// <summary>
+	/// プレイヤーのHPの処理
+	/// </summary>
+	void ProcessPlayerHp();
+	/// <summary>
+	/// プレイヤーのMPの処理
+	/// </summary>
+	void ProcessPlayerMp();
+
+	/// <summary>
+	/// ボスのHPの処理
+	/// </summary>
+	void ProcessBossHP();
+
+
+
+	/// <summary>
+	/// 武器切り替え処理
+	/// </summary>
+	void ChangeWeapon(
+		WeaponSprits& changeWeaponSprite
+	);
+
 
 	/// <summary>
 	/// スプライトレンダーの初期化。
@@ -116,21 +158,6 @@ public:
 	);
 
 private:
-	/// <summary>
-	/// プレイヤーのHPの処理
-	/// </summary>
-	void ProcessPlayerHp();
-	/// <summary>
-	/// プレイヤーのMPの処理
-	/// </summary>
-	void ProcessPlayerMp();
-
-	/// <summary>
-	/// ボスのHPの処理
-	/// </summary>
-	void ProcessBossHP();
-
-private:
 
 	struct MonsterUI
 	{
@@ -162,13 +189,35 @@ private:
 		SpriteRender m_mpFrontRender;			//変動するMPバー
 		SpriteRender m_mpBackRender;			//MPバーの裏側
 
-		SpriteRender m_SkillCenterRender;			//スキル関連の中心
 		SpriteRender m_Skill_1FlameRender;			//スキル1のフレーム
-		SpriteRender m_Skill_1FlameInsideRender;	//スキル1のフレームの内側
 
-		SpriteRender m_SkillButtonXRender;			//スキルを発動できるボタン
-		
+		SpriteRender m_mainWeaponFlameRender;		//メイン武器のフレーム
+
+		SpriteRender m_subWeaponFlameRender;		//サブ武器１のフレーム
+		SpriteRender m_subWeaponCommandRender;		//サブ武器１のコマンド
+
+		SpriteRender m_sub2WeaponFlameRender;		//サブ武器２のフレーム
+		SpriteRender m_sub2WeaponCommandRender;		//サブ武器２のコマンド
+
+		SpriteRender m_weaponRender[enWeapon_num];
 	};
+
+	
+	WeaponSprits m_weaponSprits[enWeapon_num];
+
+
+
+	Vector3 m_weaponIconPos[enWeapon_num] = {
+		{720.0f,-330.0f,0.0f},
+		{850.0f,38.0f,0.0f},
+		{850.0f,-110.0f,0.0f}
+	};
+	Vector3 m_weaponIconScale[enWeapon_num] = {
+		g_vec3One * 0.8f,
+		g_vec3One * 0.5f,
+		g_vec3One * 0.5f
+	};
+
 
 	FontRender m_TimerFont;				//制限時間
 	SpriteRender m_TimeFlameRender;		//制限時間の枠

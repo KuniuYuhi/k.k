@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Lich.h"
 
+
 //todo MPも白いバーいれる？
 
 namespace {
@@ -28,21 +29,16 @@ namespace {
 
 	const Vector2 HP_OR_MP_PIBOT = { 0.0f,0.5f };							//HPかMPのピボット
 
-	const Vector3 MAIN_ICON_POS = { -301.0f, -411.0f, 0.0f };
-	const Vector3 MAIN_ICON_BASE_POS = { -301.0f, -411.0f, 0.0f };
-
-	const Vector3 CHARA_CHANGE_ICON_POS = { -490.0f,-467.0f,0.0f };
-	const Vector3 CHARA_CHANGE_ICON_FONT_POS = { -546.0f,-433.0f,0.0f };
-
-	const Vector3 MAIN_STATUS_BAR = { 36.0f, -432.0f, 0.0f };
-
-	const Vector3 MAIN_HP_FRONT_BAR = { -166.0f, -469.0f, 0.0f };
-	const Vector3 MAIN_HP_BACK_BAR = { 101.0f, -468.0f, 0.0f };
-	const Vector3 MAIN_MP_FRONT_BAR = { -168.5f, -394.0f, 0.0f };
-	const Vector3 MAIN_MP_BACK_BAR = { 73.0f, -394.0f, 0.0f };
-
-	const Vector2 HP_FONT_POS = { -164.0f,-425.0f };
-	const Vector2 MP_FONT_POS = { -164.0f, -354.0f };
+	//ステータスバー
+	const Vector3 MAIN_ICON_POS = { -835.0f, -411.0f, 0.0f };
+	const Vector3 MAIN_ICON_BASE_POS = { -835.0f, -411.0f, 0.0f };
+	const Vector3 MAIN_STATUS_BAR = { -504.0f, -432.0f, 0.0f };
+	const Vector3 MAIN_HP_FRONT_BAR = { -706.0f, -469.0f, 0.0f };
+	const Vector3 MAIN_HP_BACK_BAR = { -439.0f, -468.0f, 0.0f };
+	const Vector3 MAIN_MP_FRONT_BAR = { -708.5f, -394.0f, 0.0f };
+	const Vector3 MAIN_MP_BACK_BAR = { -467.0f, -394.0f, 0.0f };
+	const Vector2 HP_FONT_POS = { -704.0f,-425.0f };
+	const Vector2 MP_FONT_POS = { -704.0f, -354.0f };
 
 	//+10+10
 	const Vector3 SKILL_CENTER_POS = { 755.0f,-396.0f,0.0f };
@@ -60,6 +56,8 @@ namespace {
 
 
 	const Vector3 HP_SCALE_END_POS = { 0.0f,1.0f,1.0f };
+
+
 
 	const float WHITE_HP_LERP_START = 0.6f;
 	const float WHITE_HP_LERP_END = 5.0f;
@@ -106,11 +104,14 @@ void GameUI::Update()
 
 void GameUI::PlayerUIUpdate()
 {
+	//制限時間
 	TimerUIUpdate();
-
+	//ステータス
 	UpdateMainStatus();
-
+	//キャラアイコン
 	UpdateCharaIcon();
+	//ウェポン
+	UpdateWeapon();
 }
 
 void GameUI::UpdateMainStatus()
@@ -129,6 +130,34 @@ void GameUI::UpdateCharaIcon()
 	if (m_player->GetNowActorDieFlag()==true)
 	{
 		m_playerUI.m_characterIconRender.SetGrayScale(true);
+	}
+}
+
+void GameUI::UpdateWeapon()
+{
+	//入れ替え確定してから処理
+	if (m_player->GetChangeWeaponCompleteFlag() == true)
+	{
+		if (m_player->GetChangeTargetUseWeapon() == enWeapon_Sub)
+		{
+			//切り替え対象の武器と武器のスプライトを入れ替える
+			ChangeWeapon(m_weaponSprits[enWeapon_Sub]);
+		}
+		else
+		{
+			//切り替え対象の武器と武器のスプライトを入れ替える
+			ChangeWeapon(m_weaponSprits[enWeapon_Sub2]);
+		}
+		
+		//切り替えたので、フラグをリセット
+		m_player->SetChangeWeaponCompleteFlag(false);
+	}
+
+	for (int num = 0; num < enWeapon_num; num++)
+	{
+		m_weaponSprits[num].m_weaponSprite->SetPosition(m_weaponIconPos[num]);
+		m_weaponSprits[num].m_weaponSprite->SetScale(m_weaponIconScale[num]);
+		m_weaponSprits[num].m_weaponSprite->Update();
 	}
 }
 
@@ -186,21 +215,27 @@ void GameUI::DrawPlayerUI(RenderContext& rc)
 	m_playerUI.m_statusBarRender.Draw(rc);
 	//メインアイコンベース
 	m_playerUI.m_iconBaseRender.Draw(rc);
-	//スキルの真ん中の◇
-	//m_playerUI.m_SkillCenterRender.Draw(rc);
-	//スキル１のフレーム
-	//m_playerUI.m_Skill_1FlameRender.Draw(rc);
-	//スキル１の内側のフレーム
-	//m_playerUI.m_Skill_1FlameInsideRender.Draw(rc);
-
-	//メインアイコン
-	//m_playerUI.m_characterIconRender.Draw(rc);
-	//Xボタン
-	//m_playerUI.m_SkillButtonXRender.Draw(rc);
-
 	//HPとMPのフォント
 	m_playerUI.m_hpFont.Draw(rc);
 	m_playerUI.m_mpFont.Draw(rc);
+
+
+	//メイン武器のフレーム
+	m_playerUI.m_mainWeaponFlameRender.Draw(rc);
+	////サブ武器１のフレーム
+	m_playerUI.m_subWeaponFlameRender.Draw(rc);
+	////サブ武器１のコマンド
+	m_playerUI.m_subWeaponCommandRender.Draw(rc);
+	////サブ武器２のフレーム
+	m_playerUI.m_sub2WeaponFlameRender.Draw(rc);
+	////サブ武器２のコマンド
+	m_playerUI.m_sub2WeaponCommandRender.Draw(rc);
+
+	//武器のアイコン
+	for (int num = 0; num < enWeapon_num; num++)
+	{
+		m_weaponSprits[num].m_weaponSprite->Draw(rc);
+	}
 }
 
 void GameUI::DrawMonsterUI(RenderContext& rc)
@@ -243,6 +278,7 @@ void GameUI::Render(RenderContext& rc)
 
 void GameUI::InitPlayerUI()
 {
+
 	//HPの値
 	InitFontRender(m_playerUI.m_hpFont, HP_FONT_POS, 1.3f);
 	//MPの値
@@ -259,7 +295,7 @@ void GameUI::InitPlayerUI()
 	//ステータスバー
 	InitSpriteRender(
 		m_playerUI.m_statusBarRender, "Assets/sprite/InGame/Character/StatusBar_Main.DDS", 720, 206, MAIN_STATUS_BAR);
-	
+
 	//HPバー
 	InitSpriteRender(
 		m_playerUI.m_hpFrontRender, "Assets/sprite/InGame/Character/HP_Front_Main.DDS", 550, 72, MAIN_HP_FRONT_BAR);
@@ -285,24 +321,63 @@ void GameUI::InitPlayerUI()
 	//MPバーの裏側
 	InitSpriteRender(
 		m_playerUI.m_mpBackRender, "Assets/sprite/InGame/Character/MP_Back_Main.DDS", 483, 53, MAIN_MP_BACK_BAR);
-	
-	//スキルの真ん中の◇
-	InitSpriteRender(
-		m_playerUI.m_SkillCenterRender, "Assets/sprite/InGame/Character/Skill_Center.DDS", 400, 400, SKILL_CENTER_POS,g_vec3One*0.7f);
 
 	//スキル１のフレーム
 	InitSpriteRender(
-		m_playerUI.m_Skill_1FlameRender, "Assets/sprite/InGame/Character/Skill_Flame.DDS", 285, 285, SKILL_1__POS, g_vec3One * 0.7f);
+		m_playerUI.m_Skill_1FlameRender, "Assets/sprite/InGame/Character/SkillFlame.DDS", 181, 181, SKILL_1__POS, g_vec3One);
 
-	//スキル１の内側のフレーム
+
+	//メイン武器のアイコン
 	InitSpriteRender(
-		m_playerUI.m_Skill_1FlameInsideRender, "Assets/sprite/InGame/Character/Skill_Flame_Inside.DDS", 262, 262, SKILL_1__POS, g_vec3One * 0.7f);
+		m_playerUI.m_weaponRender[enWeapon_Main],
+		"Assets/sprite/InGame/Character/SwordShield.DDS", 256, 256,
+		m_weaponIconPos[enWeapon_Main], m_weaponIconScale[enWeapon_Main]
+	);
+	m_weaponSprits[enWeapon_Main].m_weaponSprite = &m_playerUI.m_weaponRender[enWeapon_Main];
 
-	//スキル１のボタンX
+	//メイン武器のフレーム
 	InitSpriteRender(
-		m_playerUI.m_SkillButtonXRender, "Assets/sprite/InGame/Character/SkillButtonX.DDS", 100, 90, SKILL_1_X_POS, g_vec3One * 0.7f);
+		m_playerUI.m_mainWeaponFlameRender, "Assets/sprite/InGame/Character/MainWeaponFlame.DDS", 238, 237,
+		m_weaponIconPos[enWeapon_Main], g_vec3One*1.1f
+	);
 
-	
+	//サブ武器１のアイコン
+	InitSpriteRender(
+		m_playerUI.m_weaponRender[enWeapon_Sub], "Assets/sprite/InGame/Character/GreatSword.DDS", 300, 300,
+		m_weaponIconPos[enWeapon_Sub], m_weaponIconScale[enWeapon_Sub]
+	);
+	m_weaponSprits[enWeapon_Sub].m_weaponSprite = &m_playerUI.m_weaponRender[enWeapon_Sub];
+
+	//サブ武器１のフレーム
+	InitSpriteRender(
+		m_playerUI.m_subWeaponFlameRender, "Assets/sprite/InGame/Character/SubWeaponFlame.DDS", 156, 155,
+		m_weaponIconPos[enWeapon_Sub], g_vec3One * 0.9f
+	);
+	//サブ武器１のコマンド
+	InitSpriteRender(
+		m_playerUI.m_subWeaponCommandRender, "Assets/sprite/InGame/Character/SkillKye.DDS", 60, 56,
+		{ 750.0f,38.0f,0.0f }, g_vec3One
+	);
+
+	//サブ武器２のアイコン
+	InitSpriteRender(
+		m_playerUI.m_weaponRender[enWeapon_Sub2], "Assets/sprite/InGame/Character/BowArrow.DDS", 290, 290,
+		m_weaponIconPos[enWeapon_Sub2], m_weaponIconScale[enWeapon_Sub2]
+	);
+	m_weaponSprits[enWeapon_Sub2].m_weaponSprite = &m_playerUI.m_weaponRender[enWeapon_Sub2];
+
+	//サブ武器２のフレーム
+	InitSpriteRender(
+		m_playerUI.m_sub2WeaponFlameRender, "Assets/sprite/InGame/Character/SubWeaponFlame.DDS", 156, 155,
+		m_weaponIconPos[enWeapon_Sub2], g_vec3One * 0.9f
+	);
+	//サブ武器２のコマンド
+	Quaternion rot;
+	rot.SetRotationDegZ(180.0f);
+	InitSpriteRender(
+		m_playerUI.m_sub2WeaponCommandRender, "Assets/sprite/InGame/Character/SkillKye.DDS", 60, 56,
+		{ 750.0f,-110.0f,0.0f }, g_vec3One, rot
+	);	
 }
 
 void GameUI::InitMonsterUI()
@@ -472,5 +547,15 @@ void GameUI::ProcessBossHP()
 
 	m_monsterUI.m_HpFrontRender.Update();
 	m_monsterUI.m_HpWhiteRender.Update();
+}
+
+void GameUI::ChangeWeapon(
+	WeaponSprits& changeWeaponSprite
+)
+{
+	WeaponSprits temporary;
+	temporary = m_weaponSprits[enWeapon_Main];
+	m_weaponSprits[enWeapon_Main] = changeWeaponSprite;
+	changeWeaponSprite = temporary;
 }
 

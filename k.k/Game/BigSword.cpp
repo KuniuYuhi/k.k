@@ -12,7 +12,9 @@ namespace {
 
 	const float ADD_FORWARD = 8.0f;
 
-	const float POWER = 40;
+	//ステータス
+	const int POWER = 40;
+	const int ENDURANCE = INT_MAX;		//武器の耐久力(耐久力概念なし)
 
 	const float HITTABLE_TIME = 0.5f;
 }
@@ -29,6 +31,11 @@ BigSword::~BigSword()
 
 bool BigSword::Start()
 {
+	//武器のステータス初期化
+	m_status.InitWeaponStatus(
+		POWER, ENDURANCE
+	);
+
 	//勇者のインスタンスを探す
 	m_brave = FindGO<Brave>("brave");
 

@@ -30,3 +30,20 @@ void WeaponBase::ReverseWeaponState()
 		m_enWeaponState = enWeaponState_Armed;
 	}
 }
+
+void WeaponBase::CalcEndurance(int value, bool addOrSubFlag)
+{
+	int old = m_status.endurance;
+	m_status.CalcEndurance(value, addOrSubFlag);
+	//‘Ï‹v’l‚ª‚È‚­‚È‚Á‚½‚Æ‚«‚Ìˆ—
+	if (m_status.endurance <= 0)
+	{
+		ProcessNoEndurance();
+		return;
+	}
+	//‘Ï‹v’l‚ª0‚©‚ç0ˆÈã‚É‰ñ•œ‚µ‚½‚ç
+	if (old <= 0 && m_status.endurance > 0)
+	{
+		ProcessOnEndurance();
+	}
+}

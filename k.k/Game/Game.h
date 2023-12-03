@@ -66,7 +66,7 @@ public:
 	/// <summary>
 	/// 勝敗ステート
 	/// </summary>
-	enum EnOutCome
+	enum EnOutComeState
 	{
 		enOutCome_Player_Win,
 		enOutCome_Player_Lose,
@@ -76,12 +76,12 @@ public:
 	/// リザルト画面遷移処理
 	/// </summary>
 	/// <param name="outcome">勝敗ステート</param>
-	void GoResult(EnOutCome outcome);
+	void GoResult(EnOutComeState outcome);
 	/// <summary>
 	/// 勝敗ステートの設定
 	/// </summary>
 	/// <param name="outCome"></param>
-	void SetEnOutCome(EnOutCome outCome)
+	void SetEnOutCome(EnOutComeState outCome)
 	{
 		m_enOutCome = outCome;
 	}
@@ -89,7 +89,7 @@ public:
 	/// 勝敗ステートの取得
 	/// </summary>
 	/// <returns></returns>
-	const EnOutCome& GetEnOutCome() const
+	const EnOutComeState& GetEnOutCome() const
 	{
 		return m_enOutCome;
 	}
@@ -304,7 +304,7 @@ private:
 
 	EnGameState					m_enGameState = enGameState_GameStart;
 
-	EnOutCome					m_enOutCome = enOutCome_None;
+	EnOutComeState				m_enOutCome = enOutCome_None;
 
 	float						m_TimeLimit = 300.0f;							//制限時間三分
 	float						m_minute = 3.0f;								//分

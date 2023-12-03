@@ -11,3 +11,11 @@ enum EnWeaponType
 	//enWeaponType_DoubleSwords,
 	enWeaponType_Num
 };
+
+enum EnWeapons
+{
+	enWeapon_Main,
+	enWeapon_Sub,
+	enWeapon_Sub2,
+	enWeapon_num
+};

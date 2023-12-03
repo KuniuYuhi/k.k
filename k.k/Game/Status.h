@@ -1,25 +1,28 @@
 #pragma once
 struct Status
 {
-	int maxHp = 0;
-	int hp = 0;
-	int maxMp = 0;
-	int mp = 0;
-	int defaultAtk = 0;
-	int atk = 0;
-	float dashSpeed = 0.0f;
-	float defaultSpeed = 0.0f;
-	const char* characterName = nullptr;
+	int maxHp = 0;					//HPの最大値
+	int hp = 0;					//HP
+	int maxMp = 0;					//MPの最大値
+	int mp = 0;					//MP
+	int defaultAtk = 0;				//基礎攻撃力
+	int atk = 0;					//攻撃力
+	float dashSpeed = 0.0f;			//加速時のスピード
+	float defaultSpeed = 0.0f;				//基礎スピード
+	const char* characterName = nullptr;		//キャラクターの名前
+
+	int maxEndurance = 0;		//耐久値の最大値
+	int endurance = 0;		//耐久値
 
 	/// <summary>
-	/// 全てのステータスの初期化
+	/// キャラクターの全てのステータスの初期化
 	/// </summary>
 	/// <param name="MaxHp"></param>
 	/// <param name="MaxMp"></param>
 	/// <param name="Atk"></param>
 	/// <param name="Speed"></param>
 	/// <param name="name"></param>
-	void InitStatus(int MaxHp,int MaxMp,int Atk, float Speed,const char* name)
+	void InitCharacterStatus(int MaxHp,int MaxMp,int Atk, float Speed,const char* name)
 	{
 		maxHp = MaxHp;
 		hp = maxHp;
@@ -31,6 +34,20 @@ struct Status
 		dashSpeed = defaultSpeed;
 		characterName = name;
 	}
+
+	/// <summary>
+	/// 武器の全てのステータスの初期化
+	/// </summary>
+	/// <param name="Atk"></param>
+	/// <param name="Endurance"></param>
+	void InitWeaponStatus(int Atk, int Endurance)
+	{
+		defaultAtk = Atk;
+		atk = defaultAtk = Atk;
+		maxEndurance = Endurance;
+		endurance = maxEndurance;
+	}
+
 	/// <summary>
 	/// HPの設定
 	/// </summary>
@@ -55,6 +72,25 @@ struct Status
 		{
 			//引き算
 			SubHp(value);
+		}
+	}
+
+	/// <summary>
+	/// 耐久力の増減の計算
+	/// </summary>
+	/// <param name="value">計算する値</param>
+	/// <param name="UpOrDownFlag">足すか引くかのフラグ。trueで足す、falseで引く</param>
+	void CalcEndurance(int value, bool UpOrDownFlag)
+	{
+		if (UpOrDownFlag == true)
+		{
+			//足し算
+			AddEndurance(value);
+		}
+		else
+		{
+			//引き算
+			SubEndurance(value);
 		}
 	}
 
@@ -94,4 +130,30 @@ private:
 			hp = 0;
 		}
 	}
+
+	/// <summary>
+	/// 耐久値を足す
+	/// </summary>
+	/// <param name="addEndurance"></param>
+	void AddEndurance(int addEndurance)
+	{
+		endurance += addEndurance;
+		if (endurance >= maxEndurance)
+		{
+			endurance = maxEndurance;
+		}
+	}
+	/// <summary>
+	/// 耐久値を減らす
+	/// </summary>
+	/// <param name="subEndurance"></param>
+	void SubEndurance(int subEndurance)
+	{
+		endurance -= subEndurance;
+		if (endurance <= 0)
+		{
+			endurance = 0;
+		}
+	}
+
 };

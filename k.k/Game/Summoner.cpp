@@ -46,7 +46,7 @@ Summoner::~Summoner()
 bool Summoner::Start()
 {
 	//ステータスの初期化
-	m_status.InitStatus(
+	m_status.InitCharacterStatus(
 		MAXHP,
 		MAXMP,
 		ATK,

@@ -77,8 +77,8 @@ Lich::~Lich()
 	{
 		delete m_lichAction;
 	}
-	//死亡した場合でないなら
-	if (m_dieFlag != true)
+	//勝敗が決まったら場合でないなら処理しない。終わる時にエフェクトが再生されるためエラーがでるから
+	if (m_game->GetEnOutCome() == Game::enOutCome_None)
 	{
 		return;
 	}
@@ -109,7 +109,7 @@ bool Lich::Start()
 	SetNextAnimationState(enAninationState_Idle);
 
 	//ステータスの初期化
-	m_status.InitStatus(
+	m_status.InitCharacterStatus(
 		MAXHP,
 		MAXMP,
 		ATK,
@@ -208,7 +208,7 @@ void Lich::Update()
 
 	//怒りモードなら怒りモードタイマーの計算
 	CalcAngryTime();
-
+	
 	Move();
 	Rotation(ROT_SPEED, ROT_ONLY_SPEED);
 

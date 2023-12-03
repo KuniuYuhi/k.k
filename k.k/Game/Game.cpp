@@ -18,7 +18,7 @@
 
 #include "Summoner.h"
 
-
+//todo ƒŠƒbƒ`‚ªÁ‚¦‚é‚É‘—‚ç‚ê‚éŸ”s‚ª‚¢‚¶‚Á‚Ä‚È‚¢‚Ì‚É•Ï‚í‚Á‚Ä‚¢‚é
 
 namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.5f, 0.5f, 0.5f);
@@ -115,8 +115,8 @@ bool Game::Start()
 	m_enGameState = enGameState_GameStart;
 
 	
-	Summoner* summoner = NewGO<Summoner>(0, "summoner");
-	summoner->SetPosition({0.0f,0.0f,0.0f});
+	/*Summoner* summoner = NewGO<Summoner>(0, "summoner");
+	summoner->SetPosition({0.0f,0.0f,0.0f});*/
 
 
 
@@ -158,7 +158,7 @@ void Game::InitSkyCube()
 	m_skyCube->Update();
 }
 
-void Game::GoResult(EnOutCome outcome)
+void Game::GoResult(EnOutComeState outcome)
 {
 	if (m_result == nullptr)
 	{

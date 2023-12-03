@@ -62,7 +62,7 @@ bool Mushroom::Start()
 {
 	SetNextAnimationState(enAninationState_Idle);
 
-	m_status.InitStatus(
+	m_status.InitCharacterStatus(
 		MAXHP,
 		MAXMP,
 		ATK,

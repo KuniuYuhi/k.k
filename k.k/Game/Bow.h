@@ -23,7 +23,24 @@ public:
 	/// <summary>
 	/// スキル攻撃処理
 	/// </summary>
-	void ProcessSkillAttack();
+	void ProcessSkillAttack() override;
+
+	/// <summary>
+	/// 耐久値がなくなったらときの処理
+	/// </summary>
+	void ProcessNoEndurance() override
+	{
+		//矢のストックがなくなったので、攻撃不可能にする
+		SetIsAttackEnableFlag(false);
+	}
+	/// <summary>
+	/// 耐久値が0より大きくなったときの処理(0から以上になった時)
+	/// </summary>
+	void ProcessOnEndurance() override
+	{
+		//矢のストックが増えたので、攻撃可能になる
+		SetIsAttackEnableFlag(true);
+	}
 
 	/// <summary>
 	/// 矢のワールド座標を取得
@@ -61,6 +78,11 @@ public:
 	{
 		m_RotationDelectionFlag = false;
 	}
+
+	/// <summary>
+	/// 矢を生成するかどうか
+	/// </summary>
+	void IsCreatArrow();
 
 private:
 	/// <summary>

@@ -14,13 +14,7 @@ class Brave:public Actor
 {
 public:
 
-	enum EnWeapons
-	{
-		enWeapon_Main,
-		enWeapon_Sub,
-		enWeapon_num
-	};
-
+	
 	/// <summary>
 	/// アクションする時に使うフラグをまとめている
 	/// </summary>
@@ -75,7 +69,7 @@ public:
 			m_enAnimationState != enAnimationState_DefendHit &&
 			m_enAnimationState != enAnimationState_Hit &&
 			m_enAnimationState != enAnimationState_Die &&
-			m_enAnimationState != enAnimationState_ChangeSwordShield;
+			m_enAnimationState != enAnimationState_ChangeWeapon;
 	}
 	/// <summary>
 	/// 当たり判定可能なアニメーションか
@@ -128,7 +122,7 @@ private:
 	/// </summary>
 	void ProcessAttack();
 	/// <summary>
-	/// 防御処理
+	/// 防御、回避処理
 	/// </summary>
 	void ProcessDefend();
 
@@ -188,7 +182,7 @@ public:
 		enAnimationState_Defend,
 		enAnimationState_DefendHit,
 		enAnimationState_Die,
-		enAnimationState_ChangeSwordShield,
+		enAnimationState_ChangeWeapon,
 		enAnimationState_Win_Start,
 		enAnimationState_Win_Main,
 		enAnimationState_Attack_1,
@@ -385,17 +379,21 @@ public:
 	/// <summary>
 	/// 武器の取得
 	/// </summary>
-	/// <param name="subOrMain">サブかメインのステート</param>
+	/// <param name="enWeapon">サブかメインのステート</param>
 	/// <returns></returns>
-	WeaponBase* GetWeapon(EnWeapons subOrMain) const
+	WeaponBase* GetWeapon(EnWeapons enWeapon) const
 	{
-		if (subOrMain == enWeapon_Main)
+		if (enWeapon == enWeapon_Main)
 		{
 			return m_mainUseWeapon.weapon;
 		}
-		else
+		else if (enWeapon == enWeapon_Sub)
 		{
 			return m_subUseWeapon.weapon;
+		}
+		else
+		{
+			return m_subUseWeapon2.weapon;
 		}
 	}
 	/// <summary>
@@ -413,6 +411,32 @@ public:
 	const int& GetMainWeaponDefendTipe() const
 	{
 		return m_mainUseWeapon.weapon->GetEnDefendTipe();
+	}
+
+	/// <summary>
+	/// 武器切り替え完了フラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetChangeWeaponCompleteFlag(bool flag)
+	{
+		m_changeWeaponCompleteFlag = flag;
+	}
+	/// <summary>
+	/// 武器切り替え完了フラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetChangeWeaponCompleteFlag() const
+	{
+		return m_changeWeaponCompleteFlag;
+	}
+
+	/// <summary>
+	/// 切り替え対象の武器を取得
+	/// </summary>
+	/// <returns></returns>
+	const EnWeapons& GetChangeTargetUseWeapon() const
+	{
+		return m_changeTargetUseWeapon;
 	}
 
 	/// <summary>
@@ -441,16 +465,17 @@ private:
 	/// <summary>
 	/// コンボ攻撃のコンボの処理
 	/// </summary>
-	void ProcessComboAttack();
+	void ProcessComboAttack(); 
+	
 	/// <summary>
 	/// メイン武器とサブ武器を入れ替える
 	/// </summary>
-	void ReverseWeapon();
+	/// <param name="ChangeUseWeapon">入れ替えたいサブ武器</param>
+	void ReverseWeapon(EnWeapons changeTargetWeapon);
 	/// <summary>
 	/// UseWeapon構造体の中身を入れ替える
 	/// </summary>
-	void ChangeUseWeapon();
-
+	void ChangeUseWeapon(UseWeapon& ChangeUseSubWeapon);
 	/// <summary>
 	/// 防御中にヒットしたか
 	/// </summary>
@@ -477,9 +502,15 @@ private:
 	}
 
 	/// <summary>
-	/// 装備する武器の設定
+	/// 装備する武器の設定。スタート時に設定
 	/// </summary>
 	void SettingWeapons();
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="animationStartInbexNo"></param>
+	/// <param name="changeTargetWeapon"></param>
+	void SettingChangeWeapon(int animationStartInbexNo, EnWeapons changeTargetWeapon);;
 	
 	/// <summary>
 	/// 武器のアニメーションの最初の番号を設定
@@ -508,15 +539,19 @@ private:
 	
 	const int m_mainWeaponAnimationStartIndexNo = 0;						//メイン武器のアニメーションクリップの最初の番号
 	const int m_subWeaponAnimationStartIndexNo = enAnimClip_Num * 1;		//サブ武器のアニメーションクリップの最初の番号
+	const int m_subWeapon2AnimationStartIndexNo = enAnimClip_Num * 2;
 
 	//現在の武器のアニメーションの最初の番号
 	int m_currentAnimationStartIndexNo = m_mainWeaponAnimationStartIndexNo;
 
 	EnWeaponType				m_mainWeaponType = enWeaponType_Num;
 	EnWeaponType				m_subWeaponType = enWeaponType_Num;
+	EnWeaponType				m_subWeapon2Type = enWeaponType_Num;
+	EnWeapons				    m_changeTargetUseWeapon = enWeapon_num;		//切り替え対象の武器
 
-	UseWeapon					m_mainUseWeapon;				//メイン武器
-	UseWeapon					m_subUseWeapon;				//サブ武器
+	UseWeapon					m_mainUseWeapon;		//メイン武器
+	UseWeapon					m_subUseWeapon;			//サブ武器
+	UseWeapon					m_subUseWeapon2;		//サブ２
 
 
 	Player*						m_player = nullptr;
@@ -526,7 +561,7 @@ private:
 	EnAttackPattern				m_attackPatternState = enAttackPattern_None;
 	CharacterController			m_charaCon;
 	
-	AnimationClip				m_animationClip[enAnimClip_Num * 2];// アニメーションクリップ 
+	AnimationClip				m_animationClip[enAnimClip_Num * AnimationClipGroup_Num];// アニメーションクリップ 
 	
 	ModelRender					m_modelRender;
 
@@ -540,7 +575,7 @@ private:
 
 	const float					m_avoidSpeed = 230.0f;
 
-	
+	bool						m_changeWeaponCompleteFlag = false;			//武器切り替え完了フラグ
 
 };
 
