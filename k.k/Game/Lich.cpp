@@ -212,7 +212,7 @@ void Lich::Update()
 	Move();
 	Rotation(ROT_SPEED, ROT_ONLY_SPEED);
 
-	DecideNextAction();
+	//DecideNextAction();
 
 	ManageState();
 	PlayAnimation();
