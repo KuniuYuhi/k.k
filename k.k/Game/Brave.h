@@ -14,14 +14,7 @@ class Brave:public Actor
 {
 public:
 
-	enum EnWeapons
-	{
-		enWeapon_Main,
-		enWeapon_Sub,
-		enWeapon_Sub2,
-		enWeapon_num
-	};
-
+	
 	/// <summary>
 	/// アクションする時に使うフラグをまとめている
 	/// </summary>
@@ -386,15 +379,15 @@ public:
 	/// <summary>
 	/// 武器の取得
 	/// </summary>
-	/// <param name="subOrMain">サブかメインのステート</param>
+	/// <param name="enWeapon">サブかメインのステート</param>
 	/// <returns></returns>
-	WeaponBase* GetWeapon(EnWeapons subOrMain) const
+	WeaponBase* GetWeapon(EnWeapons enWeapon) const
 	{
-		if (subOrMain == enWeapon_Main)
+		if (enWeapon == enWeapon_Main)
 		{
 			return m_mainUseWeapon.weapon;
 		}
-		else if (subOrMain == enWeapon_Sub)
+		else if (enWeapon == enWeapon_Sub)
 		{
 			return m_subUseWeapon.weapon;
 		}
@@ -418,6 +411,32 @@ public:
 	const int& GetMainWeaponDefendTipe() const
 	{
 		return m_mainUseWeapon.weapon->GetEnDefendTipe();
+	}
+
+	/// <summary>
+	/// 武器切り替え完了フラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetChangeWeaponCompleteFlag(bool flag)
+	{
+		m_changeWeaponCompleteFlag = flag;
+	}
+	/// <summary>
+	/// 武器切り替え完了フラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetChangeWeaponCompleteFlag() const
+	{
+		return m_changeWeaponCompleteFlag;
+	}
+
+	/// <summary>
+	/// 切り替え対象の武器を取得
+	/// </summary>
+	/// <returns></returns>
+	const EnWeapons& GetChangeTargetUseWeapon() const
+	{
+		return m_changeTargetUseWeapon;
 	}
 
 	/// <summary>
@@ -556,7 +575,7 @@ private:
 
 	const float					m_avoidSpeed = 230.0f;
 
-	
+	bool						m_changeWeaponCompleteFlag = false;			//武器切り替え完了フラグ
 
 };
 

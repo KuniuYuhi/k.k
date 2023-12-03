@@ -630,6 +630,9 @@ void Brave::ReverseWeapon(EnWeapons changeTargetWeaponType)
 	m_status.atk = m_mainUseWeapon.weapon->GetWeaponPower();
 	//多段ヒット判定フラグをセット
 	m_mainUseWeapon.weapon->SetHittableFlag(true);
+	//武器を切り替えた
+	SetChangeWeaponCompleteFlag(true);
+	//切り替えた
 }
 
 void Brave::ChangeUseWeapon(UseWeapon& ChangeUseSubWeapon)
@@ -672,7 +675,6 @@ void Brave::SettingWeapons()
 	//装備状態に設定
 	m_mainUseWeapon.weapon->StartSetWeaponState(SwordShield::enWeaponState_Armed);
 
-
 	//サブ１はグレイトソード
 	BigSword* greatSword = NewGO<BigSword>(0, "greatSword");
 	m_subUseWeapon.weapon = greatSword;
@@ -694,32 +696,6 @@ void Brave::SettingWeapons()
 		= m_mainUseWeapon.weaponAnimationStartIndexNo;
 	//武器の攻撃力を自身の攻撃力に設定
 	m_status.atk = m_mainUseWeapon.weapon->GetWeaponPower();
-
-
-	//メイン武器の生成とインスタンスの代入
-	//m_mainWeaponType = WeaponManager::GetInstance()->GetMainWeapon();
-	//m_mainUseWeapon.weapon =
-	//	WeaponManager::GetInstance()->CreateWeapon(m_mainWeaponType);
-	////メイン武器を装備状態にする
-	//m_mainUseWeapon.weapon->StartSetWeaponState(WeaponBase::enWeaponState_Armed);
-	////アニメーションクリップの最初の番号を設定
-	//SetCurrentAnimationStartIndexNo(m_mainUseWeapon, enWeapon_Main);
-	////サブ武器の生成とインスタンスの代入
-	//m_subWeaponType = WeaponManager::GetInstance()->GetSubWeapon();
-	//m_subUseWeapon.weapon =
-	//	WeaponManager::GetInstance()->CreateWeapon(m_subWeaponType);
-	////サブ武器を収納状態にする
-	//m_subUseWeapon.weapon->StartSetWeaponState(WeaponBase::enWeaponState_Stowed);
-	////アニメーションクリップの最初の番号を設定
-	//SetCurrentAnimationStartIndexNo(m_subUseWeapon, enWeapon_Sub);
-	////現在の武器のアニメーションクリップの最初の番号
-	//m_currentAnimationStartIndexNo
-	//	= m_mainUseWeapon.weaponAnimationStartIndexNo;
-	////武器の攻撃力を自身の攻撃力に設定
-	//m_status.atk = m_mainUseWeapon.weapon->GetWeaponPower();
-
-	////ウェポンマネージャーの削除
-	//WeaponManager::DeleteInstance();
 }
 
 void Brave::SettingChangeWeapon(
@@ -738,16 +714,16 @@ void Brave::SetCurrentAnimationStartIndexNo(UseWeapon& useWeapon, EnWeapons main
 {
 	switch (mainOrSub)
 	{
-	case Brave::enWeapon_Main:
+	case enWeapon_Main:
 		useWeapon.weaponAnimationStartIndexNo = m_mainWeaponAnimationStartIndexNo;
 		break;
-	case Brave::enWeapon_Sub:
+	case enWeapon_Sub:
 		useWeapon.weaponAnimationStartIndexNo = m_subWeaponAnimationStartIndexNo;
 		break;
-	case Brave::enWeapon_Sub2:
+	case enWeapon_Sub2:
 		useWeapon.weaponAnimationStartIndexNo = m_subWeapon2AnimationStartIndexNo;
 		break;
-	case Brave::enWeapon_num:
+	case enWeapon_num:
 		std::abort();
 		break;
 	default:
