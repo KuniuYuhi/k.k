@@ -60,13 +60,13 @@ void Actor::RecoveryMP()
 		return;
 	}
 		
-	if (m_status.mp < m_status.maxMp)
+	if (m_status.GetMp() < m_status.GetMaxMp())
 	{
-		m_status.mp += g_gameTime->GetFrameDeltaTime();
-
-		if (m_status.mp > m_status.maxMp)
+		//MPを足す
+		m_status.CalcMp(g_gameTime->GetFrameDeltaTime(), true);
+		//MPとMaxMPが同じになったら
+		if (m_status.GetMp() >= m_status.GetMaxMp())
 		{
-			m_status.mp = m_status.maxMp;
 			//MP回復状態をなしにする
 			m_recoveryMpFlag = false;
 		}
@@ -94,14 +94,14 @@ Vector3 Actor::calcVelocity(Status status)
 	if (m_dashFlag == false)
 	{
 		//移動の入力量とstatusのスピードを乗算。
-		right *= stickL.x * status.defaultSpeed;
-		forward *= stickL.y * status.defaultSpeed;
+		right *= stickL.x * status.GetDefaultSpeed();
+		forward *= stickL.y * status.GetDefaultSpeed();
 	}
 	else
 	{
 		//移動の入力量とstatusのスピードとダッシュの値を乗算。
-		right *= stickL.x * (status.defaultSpeed + status.dashSpeed);
-		forward *= stickL.y * (status.defaultSpeed + status.dashSpeed);
+		right *= stickL.x * (status.GetDefaultSpeed() + status.GetDashSpeed());
+		forward *= stickL.y * (status.GetDefaultSpeed() + status.GetDashSpeed());
 	}
 
 	moveSpeed += right + forward;
@@ -237,7 +237,7 @@ void Actor::DamageCollision(CharacterController& characon)
 			m_atttackAIActor = FindGO<AIActor>(collision->GetCreatorName());
 			//ヒット音を再生
 			m_atttackAIActor->PlayAttackSound();
-			Damage(m_atttackAIActor->GetStatus().atk);
+			Damage(m_atttackAIActor->GetStatus().GetAtk());
 			CreateDamageFont(m_hitDamage);
 			return;
 		}
