@@ -183,7 +183,7 @@ void LichAction::CalcEvalSummon(EnActionNumber m_enActionNumber)
 	}
 
 	//Å‘åHP‚Ì1/5‚Ìƒ_ƒ[ƒW‚ª’~Ï‚µ‚½‚ç•]‰¿’l‚ð‘‚â‚·
-	if (m_lich->GetAccumulationDamage()>m_lich->GetStatus().maxHp/5)
+	if (m_lich->GetAccumulationDamage()>m_lich->GetStatus().GetMaxHp()/5)
 	{
 		m_action[m_enActionNumber].m_eval += 50;
 	}
