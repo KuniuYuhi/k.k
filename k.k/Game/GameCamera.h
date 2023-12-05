@@ -35,20 +35,10 @@ public:
 	void SetBattleStartCamera();
 
 	/// <summary>
-	/// ボスを追うカメラ
-	/// </summary>
-	void ChaseBossCamera();
-
-	/// <summary>
 	/// プレイヤーを追うカメラ
 	/// </summary>
 	/// <param name="Reversesflag">視点を反対方向にするかのフラグ。trueで反対方向にする</param>
 	void ChaseCamera(bool Reversesflag = false);
-
-	/// <summary>
-	/// ゲームスタート時のカメラ
-	/// </summary>
-	void GameStartCamera();
 
 	/// <summary>
 	/// ゲームクリア時のカメラ
@@ -73,11 +63,8 @@ public:
 	/// </summary>
 	void ZoomCamera();
 
-
 	void ManageState();
 
-	void OnProcessGameStartTransition();
-	void OnProcessAppearanceBossTransition();
 	void OnProcessGameTransition();
 	void OnProcessGameOverTransition();
 	void OnProcessGameClearTransition();
@@ -121,9 +108,7 @@ private:
 
 	bool SetBattleCameraFlag = false;
 
-	float m_time = 0.0f;
 
-	float m_count = 1.0f;
 
 };
 

@@ -122,9 +122,6 @@ void GameCamera::ClearCameraForPlayer()
 		PLAYER_CAMERA_Y,
 		TARGETPOS_YUP_WIN
 	);
-
-	//ゲームにプレイヤーをみたことを教える
-
 }
 
 void GameCamera::ClearCameraForBoss()
@@ -170,33 +167,6 @@ void GameCamera::SetBattleStartCamera()
 	m_springCamera.SetTarget(m_target);
 	m_springCamera.SetPosition(finalCameraPos);
 
-	//カメラの更新。
-	m_springCamera.Update();
-}
-
-void GameCamera::ChaseBossCamera()
-{
-	if (m_time > 1.0f)
-	{
-		return;
-	}
-
-	//注視点の計算
-	m_target = m_entryBoss->GetPosition();
-	m_target.y = 0.0f;
-
-	//線形補間
-	m_pos1.Lerp(m_time, START_POS, CENTER_POS);
-	m_pos2.Lerp(m_time, CENTER_POS, END_POS);
-	m_toCameraPosForBoss.Lerp(m_time, m_pos1, m_pos2);
-
-	m_time += g_gameTime->GetFrameDeltaTime() * 0.12f;
-
-	Vector3 finalCameraPos = m_toCameraPosForBoss + m_target;
-
-	//視点と注視点を設定
-	m_springCamera.SetTarget(m_target);
-	m_springCamera.SetPosition(finalCameraPos);
 	//カメラの更新。
 	m_springCamera.Update();
 }
@@ -252,36 +222,6 @@ void GameCamera::ChaseCamera(bool Reversesflag)
 
 	//カメラの更新。
 	m_springCamera.Update();
-}
-
-void GameCamera::GameStartCamera()
-{
-	//注視点の計算
-	m_target = m_player->GetPosition();
-	m_target.y += TARGETPOS_GAMESTART_YUP;
-	//前方向の取得
-	Vector3 CameraPosXZ = m_player->GetForward();
-	CameraPosXZ.y = 0.0f;
-
-	//XZ方向の
-	CameraPosXZ *= 100.0f + m_count;
-	//Y方向の
-	Vector3 CameraPosY = Vector3::AxisY;
-	CameraPosY *= STARTCAMERA_YUP +(m_count * 0.5f);
-
-	//カメラの座標
-	Vector3 newCameraPos = CameraPosXZ + CameraPosY;
-
-	Vector3 finalCameraPos = newCameraPos + m_target;
-
-	//視点と注視点を設定
-	m_springCamera.SetTarget(m_target);
-	m_springCamera.SetPosition(finalCameraPos);
-
-	//カメラの更新。
-	m_springCamera.Update();
-
-	m_count++;
 }
 
 void GameCamera::GameClearCamera(Vector3 targetPos, Vector3 forward, float X, float Y, float Yup, bool reversalFlag)
@@ -357,14 +297,6 @@ void GameCamera::ManageState()
 	//ゲームのステートによってカメラを切り替える
 	switch (GameManager::GetInstance()->GetGameSeenState())
 	{
-	case GameManager::enGameSeenState_GameStart:
-		//ゲームスタート
-		OnProcessGameStartTransition();
-		break;
-	case GameManager::enGameSeenState_AppearanceBoss:
-		//ボスを見る
-		OnProcessAppearanceBossTransition();
-		break;
 	case GameManager::enGameSeenState_Game:
 		//ゲーム中
 		OnProcessGameTransition();
@@ -383,22 +315,6 @@ void GameCamera::ManageState()
 	default:
 		break;
 	}
-}
-
-void GameCamera::OnProcessGameStartTransition()
-{
-	GameStartCamera();
-}
-
-void GameCamera::OnProcessAppearanceBossTransition()
-{
-	if (m_entryBoss == nullptr)
-	{
-		m_entryBoss = FindGO<EntryBoss>("entryboss");
-		return;
-	}
-
-	ChaseBossCamera();
 }
 
 void GameCamera::OnProcessGameTransition()
