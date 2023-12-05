@@ -225,23 +225,30 @@ void Lich::Update()
 
 bool Lich::IsStopProcessing()
 {
+	//ゲームステート以外なら
+	if (GameManager::GetInstance()->GetGameSeenState() !=
+		GameManager::enGameSeenState_Game)
+	{
+		return true;
+	}
+
 	//勝敗が決まったら
 	if (m_enOutCome != enOutCome_None)
 	{
 		return true;
 	}
 
-	switch (m_game->GetEnOutCome())
+	switch (GameManager::GetInstance()->GetOutComeState())
 	{
 		//負けた
-	case Game::enOutCome_Player_Win:
+	case GameManager::enOutComeState_PlayerWin:
 		//勝敗ステートの設定
 		SetEnOutCome(enOutCome_Lose);
 		return true;
 		break;
 
 		//勝った
-	case Game::enOutCome_Player_Lose:
+	case GameManager::enOutComeState_PlayerLose:
 		//勝敗ステートの設定
 		SetEnOutCome(enOutCome_Win);
 		//ダークメテオの削除
@@ -304,7 +311,7 @@ void Lich::Damage(int attack)
 	//怒りモードカウントを増やす
 	m_angryModeCount++;
 
-	if (m_status.hp > 0)
+	if (m_status.GetHp() > 0)
 	{
 		//一定確率で怯む。怒りモードの時はひるまない
 		if (m_enAnimationState != enAnimationState_Angry && Isflinch() == true)
@@ -321,9 +328,9 @@ void Lich::Damage(int attack)
 		}
 
 		//HPを減らす
-		m_status.hp -= attack;
+		m_status.CalcHp(attack, false);
 		//HPが半分になったら
-		if (m_status.hp <= m_status.maxHp / 2)
+		if (m_status.GetHp() <= m_status.GetMaxHp() / 2)
 		{
 			m_halfHpFlag = true;
 			//攻撃間隔を短くする
@@ -331,17 +338,22 @@ void Lich::Damage(int attack)
 		}
 	}
 	//やられたとき
-	if(m_status.hp <= 0)
+	if(m_status.GetHp() <= 0)
 	{
 		//やられるところをゆっくりにする
 		//フレームレートを落とす
 		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 30);
 		//自身が倒されたらことをゲームに伝える
-		m_game->SetDeathBossFlag(true);
+		//m_game->SetDeathBossFlag(true);
 		//カメラがリッチを追うようにする
 		m_game->SetClearCameraState(Game::enClearCameraState_Lich);
 		//Dieフラグをtrueにする
 		m_dieFlag = true;
+
+		//ゲームマネージャーのプレイヤーの勝ちフラグを設定
+		GameManager::GetInstance()->SetPlayerWinFlag(true);
+
+
 		m_status.SetHp(0);
 		//技の途中でやられたかもしれない
 		if (m_darkWall != nullptr)
@@ -835,7 +847,7 @@ void Lich::CreateDarkBall(bool AddBallFlag)
 {
 	DarkBall* darkBall = NewGO<DarkBall>(0, "darkball");
 	darkBall->SetLich(this);
-	darkBall->SetAtk(m_status.atk);
+	darkBall->SetAtk(m_status.GetAtk());
 	darkBall->Setting(m_position, m_rotation);
 	//更にダークボールを生成しないなら
 	if (AddBallFlag != true)
@@ -846,14 +858,14 @@ void Lich::CreateDarkBall(bool AddBallFlag)
 	right.AddRotationDegY(ADD_CREATE_DARK_BALL_1_Y);
 	DarkBall* darkBall2 = NewGO<DarkBall>(0, "darkball");
 	darkBall2->SetLich(this);
-	darkBall2->SetAtk(m_status.atk);
+	darkBall2->SetAtk(m_status.GetAtk());
 	darkBall2->Setting(m_position, right);
 
 	right = m_rotation;
 	right.AddRotationDegY(ADD_CREATE_DARK_BALL_2_Y);
 	DarkBall* darkBall3 = NewGO<DarkBall>(0, "darkball");
 	darkBall3->SetLich(this);
-	darkBall3->SetAtk(m_status.atk);
+	darkBall3->SetAtk(m_status.GetAtk());
 	darkBall3->Setting(m_position, right);
 
 	//あと二つ生成する
@@ -867,7 +879,7 @@ void Lich::AddCreateDarkBall(DarkBall* darkBall, const char* name, float degY)
 	right.AddRotationDegY(degY);
 	darkBall = NewGO<DarkBall>(0, name);
 	darkBall->SetLich(this);
-	darkBall->SetAtk(m_status.atk);
+	darkBall->SetAtk(m_status.GetAtk());
 	darkBall->Setting(m_position, right);
 }
 
