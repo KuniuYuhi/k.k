@@ -32,7 +32,21 @@ ResultSeen::~ResultSeen()
 
 bool ResultSeen::Start()
 {
+	switch (GameManager::GetInstance()->GetOutComeState())
+	{
+		//プレイヤーの勝利
+	case GameManager::enOutComeState_PlayerWin:
+		SetOutcome(enOutcome_Win);
+		break;
+		//プレイヤーの敗北
+	case GameManager::enOutComeState_PlayerLose:
+		SetOutcome(enOutcome_Lose);
+		break;
 
+	default:
+		std::abort();
+		break;
+	}
 	
 
 	m_resultSprite.Init("Assets/sprite/InGame/Result_Lose/Fade_Black.DDS", 1920, 1080);
