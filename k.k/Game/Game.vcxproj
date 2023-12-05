@@ -228,6 +228,7 @@
     <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="BattleStart.cpp" />
     <ClCompile Include="BigSword.cpp" />
+    <ClCompile Include="Boss.cpp" />
     <ClCompile Include="BossBase.cpp" />
     <ClCompile Include="BossStage1.cpp" />
     <ClCompile Include="Bow.cpp" />
@@ -246,6 +247,7 @@
     <ClCompile Include="BraveStateSprint.cpp" />
     <ClCompile Include="BraveStateWin_Main.cpp" />
     <ClCompile Include="BraveStateWin_Start.cpp" />
+    <ClCompile Include="BttlePhase.cpp" />
     <ClCompile Include="Cactus.cpp" />
     <ClCompile Include="CactusStateAppear.cpp" />
     <ClCompile Include="CactusStateAttack_1.cpp" />
@@ -268,8 +270,6 @@
     <ClCompile Include="InitEffect.cpp" />
     <ClCompile Include="EntryBoss.cpp" />
     <ClCompile Include="Fade.cpp" />
-    <ClCompile Include="FireBall.cpp" />
-    <ClCompile Include="FlamePillar.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameManager.cpp" />
@@ -307,6 +307,7 @@
     <ClCompile Include="MushroomStateIdle.cpp" />
     <ClCompile Include="MushroomStateVictory.cpp" />
     <ClCompile Include="MushroomStateWalk.cpp" />
+    <ClCompile Include="Pause.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="SelectWeapon.cpp" />
@@ -358,21 +359,6 @@
     <ClCompile Include="TurtleShellStateWalk.cpp" />
     <ClCompile Include="WeaponBase.cpp" />
     <ClCompile Include="WeaponManager.cpp" />
-    <ClCompile Include="Wizard.cpp" />
-    <ClCompile Include="WizardStateAttack_1.cpp" />
-    <ClCompile Include="WizardStateAttack_2_main.cpp" />
-    <ClCompile Include="WizardStateAttack_2_Start.cpp" />
-    <ClCompile Include="WizardStateAttack_3_Main.cpp" />
-    <ClCompile Include="WizardStateAttack_3_Start.cpp" />
-    <ClCompile Include="WizardStateDamage.cpp" />
-    <ClCompile Include="WizardStateDie.cpp" />
-    <ClCompile Include="WizardStateIdle.cpp" />
-    <ClCompile Include="WizardStateRun.cpp" />
-    <ClCompile Include="WizardStateVictory_main.cpp" />
-    <ClCompile Include="WizardStateVictory_start.cpp" />
-    <ClCompile Include="WizardStateWalk.cpp" />
-    <ClCompile Include="WIzardStateWarp.cpp" />
-    <ClCompile Include="WizardState_Attack_4.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
@@ -380,6 +366,7 @@
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="BattleStart.h" />
     <ClInclude Include="BigSword.h" />
+    <ClInclude Include="Boss.h" />
     <ClInclude Include="BossBase.h" />
     <ClInclude Include="BossStage1.h" />
     <ClInclude Include="Bow.h" />
@@ -398,6 +385,7 @@
     <ClInclude Include="BraveStateSprint.h" />
     <ClInclude Include="BraveStateWin_Main.h" />
     <ClInclude Include="BraveStateWin_Start.h" />
+    <ClInclude Include="BttlePhase.h" />
     <ClInclude Include="Cactus.h" />
     <ClInclude Include="CactusStateAppear.h" />
     <ClInclude Include="CactusStateAttack_1.h" />
@@ -422,8 +410,6 @@
     <ClInclude Include="InitEffect.h" />
     <ClInclude Include="EntryBoss.h" />
     <ClInclude Include="Fade.h" />
-    <ClInclude Include="FireBall.h" />
-    <ClInclude Include="FlamePillar.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameManager.h" />
@@ -435,7 +421,6 @@
     <ClInclude Include="IBossStateMachine.h" />
     <ClInclude Include="ITurtleShellState.h" />
     <ClInclude Include="IWeapon.h" />
-    <ClInclude Include="IWizardState.h" />
     <ClInclude Include="KnockBack.h" />
     <ClInclude Include="Lich.h" />
     <ClInclude Include="LichAction.h" />
@@ -467,6 +452,7 @@
     <ClInclude Include="MushroomStateVictory.h" />
     <ClInclude Include="MushroomStateWalk.h" />
     <ClInclude Include="MyWeapon.h" />
+    <ClInclude Include="Pause.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="SelectWeapon.h" />
@@ -515,21 +501,6 @@
     <ClInclude Include="TurtleShellStateWalk.h" />
     <ClInclude Include="WeaponBase.h" />
     <ClInclude Include="WeaponManager.h" />
-    <ClInclude Include="Wizard.h" />
-    <ClInclude Include="WizardStateAttack_1.h" />
-    <ClInclude Include="WizardStateAttack_2_main.h" />
-    <ClInclude Include="WizardStateAttack_2_Start.h" />
-    <ClInclude Include="WizardStateAttack_3_Main.h" />
-    <ClInclude Include="WizardStateAttack_3_Start.h" />
-    <ClInclude Include="WizardStateDamage.h" />
-    <ClInclude Include="WizardStateDie.h" />
-    <ClInclude Include="WizardStateIdle.h" />
-    <ClInclude Include="WizardStateRun.h" />
-    <ClInclude Include="WizardStateVictory_main.h" />
-    <ClInclude Include="WizardStateVictory_start.h" />
-    <ClInclude Include="WizardStateWalk.h" />
-    <ClInclude Include="WIzardStateWarp.h" />
-    <ClInclude Include="WizardState_Attack_4.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

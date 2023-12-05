@@ -70,47 +70,8 @@
     <ClCompile Include="Status.cpp" />
     <ClCompile Include="BossStage1.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="WizardStateIdle.cpp">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClCompile>
-    <ClCompile Include="WizardStateWalk.cpp">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClCompile>
-    <ClCompile Include="WizardStateRun.cpp">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClCompile>
-    <ClCompile Include="WizardStateAttack_1.cpp">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClCompile>
-    <ClCompile Include="WizardStateAttack_2_Start.cpp">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClCompile>
-    <ClCompile Include="WizardStateAttack_2_main.cpp">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClCompile>
-    <ClCompile Include="WizardStateAttack_3_Main.cpp">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClCompile>
-    <ClCompile Include="WizardStateAttack_3_Start.cpp">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClCompile>
-    <ClCompile Include="WizardState_Attack_4.cpp">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClCompile>
-    <ClCompile Include="FlamePillar.cpp">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClCompile>
-    <ClCompile Include="WizardStateDie.cpp">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClCompile>
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Result.cpp" />
-    <ClCompile Include="FireBall.cpp">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClCompile>
-    <ClCompile Include="Wizard.cpp">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClCompile>
     <ClCompile Include="Lich.cpp">
       <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClCompile>
@@ -128,9 +89,6 @@
     </ClCompile>
     <ClCompile Include="Meteo.cpp">
       <Filter>Character\Monster\BossMonster\Lich</Filter>
-    </ClCompile>
-    <ClCompile Include="WizardStateDamage.cpp">
-      <Filter>Character\Player\Wizard</Filter>
     </ClCompile>
     <ClCompile Include="TurtleShell.cpp">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
@@ -241,16 +199,7 @@
     <ClCompile Include="DamageFont.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="EntryBoss.cpp" />
-    <ClCompile Include="WizardStateVictory_main.cpp">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClCompile>
-    <ClCompile Include="WizardStateVictory_start.cpp">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClCompile>
     <ClCompile Include="BattleStart.cpp" />
-    <ClCompile Include="WIzardStateWarp.cpp">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClCompile>
     <ClCompile Include="MobMonster.cpp">
       <Filter>Character\Monster\MobMonster</Filter>
     </ClCompile>
@@ -440,6 +389,9 @@
     <ClCompile Include="SummonerState_Summon.cpp" />
     <ClCompile Include="SummonerState_Victory.cpp" />
     <ClCompile Include="SummonerState_Command.cpp" />
+    <ClCompile Include="Pause.cpp" />
+    <ClCompile Include="BttlePhase.cpp" />
+    <ClCompile Include="Boss.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -451,50 +403,8 @@
     <ClInclude Include="Status.h" />
     <ClInclude Include="BossStage1.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="IWizardState.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
-    <ClInclude Include="WizardStateIdle.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
-    <ClInclude Include="WizardStateWalk.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
-    <ClInclude Include="WizardStateRun.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
-    <ClInclude Include="WizardStateAttack_1.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
-    <ClInclude Include="WizardStateAttack_2_Start.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
-    <ClInclude Include="WizardStateAttack_2_main.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
-    <ClInclude Include="WizardStateAttack_3_Main.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
-    <ClInclude Include="WizardStateAttack_3_Start.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
-    <ClInclude Include="WizardState_Attack_4.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
-    <ClInclude Include="FlamePillar.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
-    <ClInclude Include="WizardStateDie.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
     <ClInclude Include="Title.h" />
     <ClInclude Include="Result.h" />
-    <ClInclude Include="FireBall.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
-    <ClInclude Include="Wizard.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
     <ClInclude Include="Lich.h">
       <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClInclude>
@@ -512,9 +422,6 @@
     </ClInclude>
     <ClInclude Include="Meteo.h">
       <Filter>Character\Monster\BossMonster\Lich</Filter>
-    </ClInclude>
-    <ClInclude Include="WizardStateDamage.h">
-      <Filter>Character\Player\Wizard</Filter>
     </ClInclude>
     <ClInclude Include="TurtleShell.h">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
@@ -637,16 +544,7 @@
     <ClInclude Include="DamageFont.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="EntryBoss.h" />
-    <ClInclude Include="WizardStateVictory_main.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
-    <ClInclude Include="WizardStateVictory_start.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
     <ClInclude Include="BattleStart.h" />
-    <ClInclude Include="WIzardStateWarp.h">
-      <Filter>Character\Player\Wizard</Filter>
-    </ClInclude>
     <ClInclude Include="MobMonster.h">
       <Filter>Character\Monster\MobMonster</Filter>
     </ClInclude>
@@ -849,5 +747,8 @@
     <ClInclude Include="SummonerState_Summon.h" />
     <ClInclude Include="SummonerState_Victory.h" />
     <ClInclude Include="SummonerState_Command.h" />
+    <ClInclude Include="Pause.h" />
+    <ClInclude Include="BttlePhase.h" />
+    <ClInclude Include="Boss.h" />
   </ItemGroup>
 </Project>
