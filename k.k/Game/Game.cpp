@@ -9,6 +9,8 @@
 #include "Fade.h"
 #include "EntryBoss.h"
 #include "BattleStart.h"
+#include "Pause.h"
+#include "Title.h"
 
 #include "SkyCube.h"
 #include "InitEffect.h"
@@ -16,11 +18,15 @@
 #include "CharactersInfoManager.h"
 #include "GameManager.h"
 
-#include "Summoner.h"
+#include "Boss.h"
 
 //todo リッチが消える時に送られる勝敗がいじってないのに変わっている
 
 namespace {
+
+	//スカイキューブの初期の明るさ
+	const float START_SKY_CUBE_LMINANCE = 1.07f;
+
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.5f, 0.5f, 0.5f);
 
 	const Vector3 SPOT_LIGHT_COLOR = Vector3(40.0f, 10.0f, 10.0f);
@@ -49,27 +55,28 @@ Game::~Game()
 	DeleteGO(m_skyCube);
 	DeleteGO(m_bossStage1);
 	
+	GameManager::GetInstance()->DeletePlayerClass();
+	GameManager::GetInstance()->DeleteBossClass();
 	DeleteGO(m_player);
-	DeleteGO(m_lich);
+	DeleteGO(m_boss);
 
 	DeleteGO(m_gameCamera);
+	DeleteGO(m_pause);
 
+	if (m_gameUI != nullptr)
+	{
+		DeleteGO(m_gameUI);
+	}
 }
 
 bool Game::Start()
 {
-	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
-	directionLightDir.Normalize();
-	Vector3 directionLightColor = DIRECTION_RIGHT_COLOR;
-	//ディレクションライト
-	g_renderingEngine->SetDerectionLight(0, directionLightDir, directionLightColor);
-	//環境光
-	g_renderingEngine->SetAmbient(g_vec3One * AMBIENT_COLOR);
-	//半球ライト
-	g_renderingEngine->UseHemiLight();
+	//ライティングの初期化
+	InitLighting();
 
 	//ゲーム進行マネージャークラスの生成
-	GameManager::CreateInstance(GameManager::enGameSeenState_GameStart);
+	//ゲームシーンステートの設定
+	GameManager::CreateInstance(GameManager::enGameSeenState_Game);
 	//初期化処理
 	GameManager::GetInstance()->Init();
 
@@ -78,35 +85,17 @@ bool Game::Start()
 	initEffect->InitEFK();
 	delete initEffect;
 
+	//ゲームオブジェクトの初期化
+	InitGameObject();
+
 	//フェードクラスのインスタンスを探す
 	m_fade = FindGO<Fade>("fade");
-	//スカイキューブの初期化
-	InitSkyCube();
-
-	m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
-
-	//プレイヤークラスの生成
-	GameManager::GetInstance()->CreatePlayerClass();
-	m_player = CharactersInfoManager::GetInstance()->GetPlayerInstance();
-	//m_player = NewGO<Player>(0, "player");
-	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
-
-	//ボスの生成。非アクティブにする
-	//CreateBoss();
-
-
-	//当たり判定の可視化
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
-
 	//画面を明るくする
 	m_fade->StartFadeOut(2.0f);
-	//ゲームステートをスタートにする
-	//m_enGameState = enGameState_GameStart;
-
-	
-	/*Summoner* summoner = NewGO<Summoner>(0, "summoner");
-	summoner->SetPosition({0.0f,0.0f,0.0f});*/
-
+	//被写界深度の無効化
+	g_renderingEngine->DisableDof();
+	//当たり判定の可視化
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 
 	return true;
@@ -130,12 +119,14 @@ bool Game::Fadecomplete()
 
 void Game::CreateBoss()
 {
-	m_lich = NewGO<Lich>(0, "lich");
-	m_lich->SetPosition(BOSS_CREATE_POSITION);
-	//m_lich->SetGame(this);
+	//m_boss = NewGO<Boss>(0, "boss");
+	//ボスクラスの生成
+	GameManager::GetInstance()->CreateBoss();
+	m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
+	/*m_lich = NewGO<Lich>(0, "lich");
+	m_lich->SetPosition(BOSS_CREATE_POSITION);*/
 	//リッチのインスタンスを代入
-	CharactersInfoManager::GetInstance()->SetLichInstance(m_lich);
-	//m_lich->Deactivate();
+	//CharactersInfoManager::GetInstance()->SetLichInstance(m_lich);
 }
 
 void Game::InitSkyCube()
@@ -148,27 +139,15 @@ void Game::InitSkyCube()
 	m_skyCube->Update();
 }
 
-void Game::GoResult(EnOutComeState outcome)
+void Game::GoResult()
 {
 	if (m_result == nullptr)
 	{
 		m_result = NewGO<ResultSeen>(0, "result");
-		switch (outcome)
-		{
-		case Game::enOutCome_Player_Win:
-			g_soundManager->InitAndPlaySoundSource(enSoundName_GameClear);
-			m_result->SetOutcome(ResultSeen::enOutcome_Win);
-			break;
-		case Game::enOutCome_Player_Lose:
-			g_soundManager->InitAndPlaySoundSource(enSoundName_GameOver);
-			m_result->SetOutcome(ResultSeen::enOutcome_Lose);
-			break;
-		default:
-			break;
-		}
 	}
 	//画面がリザルトの画像になった
 	//円形ワイプが終わったら
+	//todo円形ワイプの間音を小さくしていく
 	if (m_result->GetRoundWipeEndFlag() == true)
 	{
 		DeleteGO(this);
@@ -181,37 +160,6 @@ bool Game::IsWinnerDecision()
 		GameManager::enGameSeenState_GameOver ||
 		GameManager::GetInstance()->GetGameSeenState() ==
 		GameManager::enGameSeenState_GameClear;
-	/*return m_enGameState == enGameState_GameOver_TimeUp ||
-			m_enGameState == enGameState_GameOver ||
-			m_enGameState == enGameState_GameClear;*/
-}
-
-bool Game::CalcTimeLimit()
-{
-	//0秒以下なら
-	if (m_second <= 0) {
-		//1分減らす
-		m_minute--;
-		//もし0分なら、秒も0にする
-		if (m_minute < 0) {
-			m_second = 0.0f;
-			m_minute = 0.0f;
-			//制限時間に達した
-			// ゲームオーバー
-			return true;
-		}
-		//60秒に戻す
-		else
-		{
-			m_second = SECOND;
-		}
-	}
-	else
-	{
-		//秒を減らす
-		m_second -= g_gameTime->GetFrameDeltaTime();
-	}
-	return false;
 }
 
 void Game::CalcMuteBGM()
@@ -235,28 +183,6 @@ void Game::CalcMuteBGM()
 	}
 }
 
-bool Game::IsBossMovieSkipTime()
-{
-	if (g_pad[0]->IsPress(enButtonA))
-	{
-		//3秒たったらスキップ
-		if (m_bossMovieSkipTime < m_bossMovieSkipTimer)
-		{
-			return true;
-		}
-		else
-		{
-			m_bossMovieSkipTimer += g_gameTime->GetFrameDeltaTime();
-		}
-	}
-	else
-	{
-		m_bossMovieSkipTimer = 0.0f;
-	}
-
-	return false;
-}
-
 void Game::ManageState()
 {
 	//フラグが立っていたらBGMを小さくする
@@ -264,20 +190,27 @@ void Game::ManageState()
 
 	switch (GameManager::GetInstance()->GetGameSeenState())
 	{
+		//ゲームスタート
 	case GameManager::enGameSeenState_GameStart:
 		OnProcessGameStartTransition();
 		break;
+		//ボス登場ムービー
 	case GameManager::enGameSeenState_AppearanceBoss:
 		OnProcessAppearanceBossTransition();
 		break;
+		//インゲーム
 	case GameManager::enGameSeenState_Game:
 		OnProcessGameTransition();
 		break;
+		//ポーズ画面
 	case GameManager::enGameSeenState_Pause:
+		OnProcessPauseTransition();
 		break;
+		//ゲームオーバー
 	case GameManager::enGameSeenState_GameOver:
 		OnProcessGameOverTransition();
 		break;
+		//ゲームクリア
 	case GameManager::enGameSeenState_GameClear:
 		OnProcessGameClearTransition();
 		break;
@@ -288,81 +221,32 @@ void Game::ManageState()
 
 void Game::OnProcessGameStartTransition()
 {
-	//一度だけバトルスタートクラス生成
-	if (m_battleStart == nullptr)
+	//画面が完全にフェードインしたら
+	if (Fadecomplete() != true && m_fade->IsFade() == false)
 	{
-		m_battleStart = NewGO<BattleStart>(0, "battlestart");
+		//バトルスタートクラス削除
+		DeleteGO(m_battleStart);
+		//次のステップのステートに切り替える
+		GameManager::GetInstance()->SetGameSeenState(
+			GameManager::enGameSeenState_AppearanceBoss);
 	}
-
-	//フェードアウト仕切らないと処理しない
-	if (Fadecomplete() != true)
-	{
-		//画面が完全にフェードインしたら
-		if (m_fade->IsFade()==false && m_enFadeState == enFadeState_StartToBoss)
-		{
-
-			DeleteGO(m_battleStart);
-			//次のステップ
-			//ステートを切り替える
-			GameManager::GetInstance()->SetGameSeenState(
-				GameManager::enGameSeenState_AppearanceBoss);
-			//カメラをリセットする
-			m_gameCamera->CameraRefresh();
-
-		}
-
-		return;
-	}
-	//プレイヤーを見ている
-	m_cameraZoomOutTimer += g_gameTime->GetFrameDeltaTime();
-	//ある程度ズームしたら
-	if (m_cameraZoomOutTime < m_cameraZoomOutTimer)
-	{
-		//フェードインを始める
-		m_enFadeState = enFadeState_StartToBoss;
-		m_fade->StartFadeIn(3.0f);
-	}
+	return;
 }
 
 void Game::OnProcessAppearanceBossTransition()
 {
 	//ボスの出現アニメーションを再生する。終わったらボス生成
-
-	//フェードに入っている状態なら
-	//フェードインしきったらステートを切り替える
-	if (m_fade->IsFade() == false && m_enFadeState!=enFadeState_None)
+	//ボス登場ムービーが終わったら
+	if (m_bossMovieEndFlag == true)
 	{
-		switch (m_enFadeState)
-		{
-		case Game::enFadeState_StartToBoss:
-			//このステートに入ってフェードアウトするとき
-			m_fade->StartFadeOut(3.0f);
-			//フェードステートをなしにする
-			m_enFadeState = enFadeState_None;
-			break;
-		case Game::enFadeState_BossToPlayer:
-			//次のステートに移る時
-			//ムービー用のモデルを消す
-			DeleteGO(m_entryBoss);
-			//ボスのアクティブ化
-			CreateBoss();
-
-			//ステートを切り替える
-			GameManager::GetInstance()->SetGameSeenState(
-				GameManager::enGameSeenState_Game);
-			break;
-		default:
-			break;
-		}
-		return;
-	}
-
-	//スキップ処理
-	if (IsBossMovieSkipTime() == true)
-	{
-		//フェードインを始める
-		m_enFadeState = enFadeState_BossToPlayer;
-		m_fade->StartFadeIn(3.0f);
+		//次のステートに移る時
+		//ムービー用のモデルを消す
+		DeleteGO(m_entryBoss);
+		//ボスのアクティブ化
+		CreateBoss();
+		//ステートを切り替える
+		GameManager::GetInstance()->SetGameSeenState(
+			GameManager::enGameSeenState_Game);
 		return;
 	}
 
@@ -374,25 +258,21 @@ void Game::OnProcessAppearanceBossTransition()
 		m_entryBoss->SetGame(this);
 		m_entryBoss->SetSkyCube(m_skyCube);
 	}
-	//ボスの登場ムービーが終わったら
-	if (m_bossMovieEndFlag == true)
-	{
-		//フェードインを始める
-		m_enFadeState = enFadeState_BossToPlayer;
-		m_fade->StartFadeIn(3.0f);
-	}
 }
 
 void Game::OnProcessGameTransition()
 {
 	switch (m_enGameStep)
 	{
+		//フェードアウト
 	case Game::enGameStep_FadeOut:
 		OnProcessGame_FadeOutTransition();
 		break;
+		//フェードイン
 	case Game::enGameStep_FadeNone:
 		OnProcessGame_FadeNoneTransition();
 		break;
+		//バトル開始
 	case Game::enGameStep_Battle:
 		OnProcessGame_BattleTransition();
 		break;
@@ -404,45 +284,65 @@ void Game::OnProcessGameTransition()
 void Game::OnProcessGameOverTransition()
 {
 	//ゲーム画面からリザルト画面に遷移するまでの処理
-	GoResult(m_enOutCome);
+	GoResult();
 }
 
 void Game::OnProcessGameClearTransition()
 {
 	if (m_displayResultFlag == true)
 	{
-		GoResult(m_enOutCome);
+		GoResult();
 		return;
 	}
 	//リザルト画面がない間
 	//リッチがいる間はカメラに移す
-	m_lich = FindGO<Lich>("lich");
-	if (m_lich == nullptr)
+
+
+	//m_lich = FindGO<Lich>("lich");
+	//if (m_lich == nullptr)
+	//{
+	//	//フレームレートを落とす
+	//	g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 60);
+	//	//ボスがいなくなったのでカメラの対象を変える
+	//	SetClearCameraState(Game::enClearCameraState_Player);
+	//	//リザルト画面表示
+	//	m_displayResultFlag = true;
+	//}
+
+}
+
+void Game::OnProcessPauseTransition()
+{
+	//ポーズ画面のゲーム終了フラグがtrueなら
+	if (m_pause->GetGameExitFlag() == true)
 	{
-		//フレームレートを落とす
-		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 60);
-		//ボスがいなくなったらカメラの対象を変える
-		SetClearCameraState(Game::enClearCameraState_Player);
-		//リザルト画面表示
-		m_displayResultFlag = true;
+		//ローディング画面挟んでタイトルに戻る
+		Title* title = NewGO<Title>(0, "title");
+		DeleteGO(this);
+		return;
 	}
 
+	//スタートボタンを押したらゲームに戻る
+	if (g_pad[0]->IsTrigger(enButtonStart))
+	{
+		//ポーズ画面の削除
+		DeleteGO(m_pause);
+		//ゲームに戻る
+		GameManager::GetInstance()->SetGameSeenState(
+			GameManager::enGameSeenState_Game);
+		return;
+	}
 }
 
 void Game::OnProcessGame_FadeOutTransition()
 {
 	//フェード状態がなしならフェードアウトする
-	if (m_fade->IsFade() == false && m_enFadeState == enFadeState_BossToPlayer)
+	if (m_fade->IsFade() == false)
 	{
 		//UI生成
-		m_gameUI = NewGO<GameUI>(0, "gameUI");
-		m_gameUI->GetGame(this);
-		m_gameUI->GetPlayer(m_player);
-		m_gameUI->GetLich(m_lich);
+		CreateGameUI();
 		//このステートに入ってフェードアウトするとき
 		m_fade->StartFadeOut(3.0f);
-		//フェードステートをなしにする
-		m_enFadeState = enFadeState_None;
 		//次のステップに進む
 		m_enGameStep = enGameStep_FadeNone;
 	}
@@ -462,38 +362,47 @@ void Game::OnProcessGame_FadeNoneTransition()
 
 void Game::OnProcessGame_BattleTransition()
 {
-	CalcTimeLimit();
+	//勝敗が着いたら
+	if (IsOutcome() == true)
+	{
+		return;
+	}
+	//スタートボタンを押したらポーズ画面
+	if (g_pad[0]->IsTrigger(enButtonStart))
+	{
+		//ポーズ画面の生成
+		m_pause = NewGO<Pause>(0, "pause");
+		//ポーズ画面ステートに切り替え
+		GameManager::GetInstance()->SetGameSeenState(
+			GameManager::enGameSeenState_Pause);
+		return;
+	}
 
-	IsOutcome();
+	//ゲームマネージャーの毎フレームの更新処理
+	GameManager::GetInstance()->Execute();
 }
 
 bool Game::IsOutcome()
 {
-	//制限時間に達したらtodo
-	//プレイヤーがやられたら
-	if (m_player->IsDeadPlayer() == true)
+	//勝敗がついてないなら処理しない
+	if (GameManager::GetInstance()->GetOutComeState() ==
+		GameManager::enOutComeState_None)
 	{
-		//負けの処理
-		GameManager::GetInstance()->SetOutComeState(GameManager::enOutComeState_PlayerLose);
-		SetEnOutCome(enOutCome_Player_Lose);
-		ProcessLose();
-		return true;
+		return false;
 	}
 
-	//ボスがやられたら
-	if (m_lich->GetDieFlag() == true)
+	//プレイヤーの勝ちなら
+	if (GameManager::GetInstance()->GetOutComeState() ==
+		GameManager::enOutComeState_PlayerWin)
 	{
-		//勝ちの処理
-		GameManager::GetInstance()->SetOutComeState(GameManager::enOutComeState_PlayerWin);
-		SetEnOutCome(enOutCome_Player_Win);
 		ProcessWin();
-		return true;
 	}
-
-	
-
-
-	return false;
+	//プレイヤーの負けなら
+	else
+	{
+		ProcessLose();
+	}
+	return true;
 }
 
 void Game::ProcessWin()
@@ -520,4 +429,54 @@ void Game::ProcessLose()
 	//BGMを消し始める
 	m_muteBGMFlag = true;
 	m_bgmVolume = g_soundManager->GetBGMVolume();
+}
+
+void Game::CreateGameUI()
+{
+	m_gameUI = NewGO<GameUI>(0, "gameUI");
+	m_gameUI->SetGame(this);
+	m_gameUI->SetPlayer(CharactersInfoManager::GetInstance()->GetPlayerInstance());
+	//m_gameUI->GetLich(m_lich);
+	m_gameUI->SetBoss(CharactersInfoManager::GetInstance()->GetBossInstance());
+}
+
+void Game::InitGameObject()
+{
+	//スカイキューブの初期化
+	InitSkyCube();
+	//ボスステージの生成
+	m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
+	//プレイヤークラスの生成
+	GameManager::GetInstance()->CreatePlayerClass();
+	m_player = CharactersInfoManager::GetInstance()->GetPlayerInstance();
+	//ゲームカメラの生成
+	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
+
+	//ゲームシーンステートがゲームスタートなら
+	if (GameManager::GetInstance()->GetGameSeenState() ==
+		GameManager::enGameSeenState_GameStart)
+	{
+		//バトルスタートクラス生成
+		m_battleStart = NewGO<BattleStart>(0, "battlestart");
+	}
+	//ゲームシーンステートがゲームなら
+	else if (GameManager::GetInstance()->GetGameSeenState() ==
+		GameManager::enGameSeenState_Game)
+	{
+		//ボスの生成
+		CreateBoss();
+	}
+}
+
+void Game::InitLighting()
+{
+	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
+	directionLightDir.Normalize();
+	Vector3 directionLightColor = DIRECTION_RIGHT_COLOR;
+	//ディレクションライト
+	g_renderingEngine->SetDerectionLight(0, directionLightDir, directionLightColor);
+	//環境光
+	g_renderingEngine->SetAmbient(g_vec3One * AMBIENT_COLOR);
+	//半球ライト
+	g_renderingEngine->UseHemiLight();
 }

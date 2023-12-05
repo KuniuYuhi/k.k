@@ -11,6 +11,8 @@ class GameUI;
 class Fade;
 class EntryBoss;
 class BattleStart;
+class Pause;
+class Boss;
 
 class Game:public IGameObject
 {
@@ -31,21 +33,15 @@ public:
 		enGameStep_FadeNone,
 		enGameStep_Battle
 	};
-	enum EnFadeState
-	{
-		enFadeState_None,
-		enFadeState_StartToBoss,
-		enFadeState_BossToPlayer,
-
-	};
+	
 	/// <summary>
-	/// 勝敗ステート
+	/// ゲームが終わった時のカメラを向ける相手
 	/// </summary>
-	enum EnOutComeState
+	enum EnGameEndCameraState
 	{
-		enOutCome_Player_Win,
-		enOutCome_Player_Lose,
-		enOutCome_None
+		enClearCameraState_None,
+		enClearCameraState_Lich,	//リッチ
+		enClearCameraState_Player	//勇者
 	};
 
 	///////////////////////////////////////////////////////
@@ -56,13 +52,31 @@ public:
 	/// </summary>
 	void ManageState();
 	//ゲームの流れ
+	
+	/// <summary>
+	/// ゲームスタート
+	/// </summary>
 	void OnProcessGameStartTransition();
+	/// <summary>
+	/// ボス登場ムービー
+	/// </summary>
 	void OnProcessAppearanceBossTransition();
+	/// <summary>
+	/// インゲーム
+	/// </summary>
 	void OnProcessGameTransition();
+	/// <summary>
+	/// ゲームオーバー
+	/// </summary>
 	void OnProcessGameOverTransition();
+	/// <summary>
+	/// ゲームクリア
+	/// </summary>
 	void OnProcessGameClearTransition();
-
-
+	/// <summary>
+	/// ポーズ画面
+	/// </summary>
+	void OnProcessPauseTransition();
 
 
 	void OnProcessGame_FadeOutTransition();
@@ -86,15 +100,10 @@ public:
 	/// 負けの処理
 	/// </summary>
 	void ProcessLose();
-
 	/// <summary>
-	/// ボスがやられたかのフラグを設定
+	/// ゲームUI生成
 	/// </summary>
-	/// <param name="flag"></param>
-	void SetDeathBossFlag(bool flag)
-	{
-		m_DeathBossFlag = flag;
-	}
+	void CreateGameUI();
 
 	/// <summary>
 	/// プレイヤーが全滅したかのフラグを設定
@@ -106,71 +115,10 @@ public:
 	}
 
 	/// <summary>
-	/// ボス登場ムービーのスキップ処理
-	/// </summary>
-	/// <returns></returns>
-	bool IsBossMovieSkipTime();
-
-	
-	/// <summary>
 	/// リザルト画面遷移処理
 	/// </summary>
-	/// <param name="outcome">勝敗ステート</param>
-	void GoResult(EnOutComeState outcome);
-	/// <summary>
-	/// 勝敗ステートの設定
-	/// </summary>
-	/// <param name="outCome"></param>
-	void SetEnOutCome(EnOutComeState outCome)
-	{
-		m_enOutCome = outCome;
-	}
-	/// <summary>
-	/// 勝敗ステートの取得
-	/// </summary>
-	/// <returns></returns>
-	const EnOutComeState& GetEnOutCome() const
-	{
-		return m_enOutCome;
-	}
+	void GoResult();
 
-	/*enum EnGameState
-	{
-		enGameState_Fade,
-		enGameState_GameStart,
-		enGameState_AppearanceBoss,
-		enGameState_Game,
-		enGameState_Pause,
-		enGameState_GameOver,
-		enGameState_GameOver_TimeUp,
-		enGameState_GameClear
-	};*/
-
-	/*/// <summary>
-	/// 次のゲームステートを設定
-	/// </summary>
-	/// <param name="nextgamestate"></param>
-	void SetNextGameState(EnGameState nextgamestate)
-	{
-		m_enGameState = nextgamestate;
-	}
-	/// <summary>
-	/// ゲームステートを取得
-	/// </summary>
-	/// <returns></returns>
-	EnGameState GetNowGameState()
-	{
-		return m_enGameState;
-	}*/
-
-	/// <summary>
-	/// タイムアップか
-	/// </summary>
-	/// <returns>タイムアップならtrueを返す</returns>
-	/*bool IsTimeUp()
-	{
-		return m_enGameState == enGameState_GameOver_TimeUp;
-	}*/
 	/// <summary>
 	/// 勝敗が決まったか
 	/// </summary>
@@ -185,24 +133,8 @@ public:
 	{
 		m_bossMovieEndFlag = flag;
 	}
-	/// <summary>
-	/// ボスが死んだかのフラグを取得
-	/// </summary>
-	/// <returns></returns>
-	bool GetDeathBossFlag()
-	{
-		return m_DeathBossFlag;
-	}
-
-	/// <summary>
-	/// ゲームが終わった時のカメラを向ける相手
-	/// </summary>
-	enum EnGameEndCameraState
-	{
-		enClearCameraState_None,
-		enClearCameraState_Lich,	//リッチ
-		enClearCameraState_Player	//勇者
-	};
+	
+	
 	/// <summary>
 	/// ゲームエンドカメラを設定
 	/// </summary>
@@ -220,39 +152,15 @@ public:
 		return m_clearCameraState;
 	}
 
-	/// <summary>
-	/// 制限時間の分の取得
-	/// </summary>
-	/// <returns></returns>
-	const float& GetMinute() const
-	{
-		return m_minute;
-	}
-	/// <summary>
-	/// 制限時間の秒の取得
-	/// </summary>
-	/// <returns></returns>
-	const float& GetSecond() const
-	{
-		return m_second;
-	}
-
-	/// <summary>
-	/// ゲームの現在のステートと検索したいステートが同じか判定
-	/// </summary>
-	/// <param name="searchGameState">検索したいゲームステート</param>
-	/// <returns>trueで同じ、falseで違う</returns>
-	/*bool IsMatchGameState(EnGameState searchGameState)
-	{
-		if (GetNowGameState() == searchGameState)
-		{
-			return true;
-		}
-		return false;
-	}*/
-
-
 private:
+	/// <summary>
+	/// ゲームオブジェクトの初期化
+	/// </summary>
+	void InitGameObject();
+	/// <summary>
+	/// ライトの初期化
+	/// </summary>
+	void InitLighting();
 
 	/// <summary>
 	/// フェード
@@ -268,29 +176,22 @@ private:
 	/// </summary>
 	void InitSkyCube();
 	/// <summary>
-	/// 制限時間の計算
-	/// </summary>
-	/// <returns></returns>
-	bool CalcTimeLimit();
-	/// <summary>
 	/// BGMを少しずつ小さくする
 	/// </summary>
 	void CalcMuteBGM();
 
 	
 
-	
-
-
-	EnFadeState					m_enFadeState = enFadeState_None;
-
 	EnGameStep					m_enGameStep = enGameStep_FadeOut;
 
 	EnGameEndCameraState		m_clearCameraState = enClearCameraState_None;
 
+	Pause*						m_pause = nullptr;
 	Fade*						m_fade = nullptr;
 	Player*						m_player = nullptr;
 	Lich*						m_lich = nullptr;
+	Boss*						m_boss = nullptr;
+
 	BossStage1*					m_bossStage1 = nullptr;
 	GameCamera*					m_gameCamera = nullptr;
 	ResultSeen*					m_result = nullptr;
@@ -303,16 +204,6 @@ private:
 
 	ModelRender					model;
 
-	//EnGameState					m_enGameState = enGameState_GameStart;
-
-	EnOutComeState				m_enOutCome = enOutCome_None;
-
-	float						m_TimeLimit = 300.0f;							//制限時間三分
-	float						m_minute = 3.0f;								//分
-	float						m_second = 0.0f;								//秒
-
-
-	bool						m_DeathBossFlag = false;						//ボスがやられたのフラグ
 	bool						m_ChaseBossFlag = false;						//ボスを見るかのフラグ
 
 	bool						m_playerAnnihilationFlag = false;
@@ -320,13 +211,6 @@ private:
 	bool						m_bossMovieEndFlag = false;						//ボスの登場ムービーが終わったら
 
 	bool						m_displayResultFlag = false;
-	
-	const float					m_fadeTime = 3.0f;
-	const float					m_cameraZoomOutTime = 2.0f;
-	float						m_cameraZoomOutTimer = 0.0f;
-
-	const float					m_bossMovieSkipTime = 1.0f;
-	float						m_bossMovieSkipTimer = 0.0f;
 
 	bool						m_muteBGMFlag = false;							//BGMをミュートするかのフラグ
 	float						m_bgmVolume = 0.0f;								//BGMの音量
