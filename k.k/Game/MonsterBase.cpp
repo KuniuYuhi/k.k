@@ -23,12 +23,12 @@ Vector3 MonsterBase::CalcVelocity(Status status, Vector3 targetposition, bool da
 	if (dashFlag == true)
 	{
 		//‘¬“x‚ğİ’è
-		moveSpeed = diff * (status.defaultSpeed * 1.5f);
+		moveSpeed = diff * (status.GetDefaultSpeed() * 1.5f);
 	}
 	else
 	{
 		//‘¬“x‚ğİ’è
-		moveSpeed = diff * status.defaultSpeed;
+		moveSpeed = diff * status.GetDefaultSpeed();
 	}
 	//”ò‚Î‚È‚¢‚æ‚¤‚É‚·‚é
 	moveSpeed.y = 0.0f;
