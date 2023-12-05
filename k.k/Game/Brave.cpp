@@ -174,7 +174,7 @@ void Brave::ProcessDefend()
 void Brave::Damage(int damage)
 {
 	//HPが0より大きいなら被ダメージ処理
-	if (GetStatus().hp > 0)
+	if (GetStatus().GetHp() > 0)
 	{
 		//コンボが繋がっている時にダメージを受けたかもしれないのでリセット
 		m_attackPatternState = enAttackPattern_None;
@@ -212,7 +212,7 @@ void Brave::Damage(int damage)
 		SetInvicibleTimeFlag(true);
 	}
 	//HPが0以下なら
-	if (GetStatus().hp <= 0)
+	if (GetStatus().GetHp() <= 0)
 	{
 		//やられたのでdieFlagをtrueにする
 		SetDieFlag(true);
@@ -627,7 +627,7 @@ void Brave::ReverseWeapon(EnWeapons changeTargetWeaponType)
 	ChangeUseSubWeapon->weapon->ReverseWeaponState();
 	//逆参照あった
 	//攻撃力を現在の武器のものに変更。
-	m_status.atk = m_mainUseWeapon.weapon->GetWeaponPower();
+	m_status.SetAtk(m_mainUseWeapon.weapon->GetWeaponPower());
 	//多段ヒット判定フラグをセット
 	m_mainUseWeapon.weapon->SetHittableFlag(true);
 	//武器を切り替えた
@@ -695,7 +695,7 @@ void Brave::SettingWeapons()
 	m_currentAnimationStartIndexNo
 		= m_mainUseWeapon.weaponAnimationStartIndexNo;
 	//武器の攻撃力を自身の攻撃力に設定
-	m_status.atk = m_mainUseWeapon.weapon->GetWeaponPower();
+	m_status.SetAtk(m_mainUseWeapon.weapon->GetWeaponPower());
 }
 
 void Brave::SettingChangeWeapon(
