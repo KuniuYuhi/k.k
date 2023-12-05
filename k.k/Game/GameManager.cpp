@@ -5,9 +5,17 @@
 #include "BattleStart.h"
 #include "Player.h"
 #include "Lich.h"
+#include "Boss.h"
 
 namespace {
 	const float SECOND_MAX = 60.0f;
+
+	const float PHASE_TIME_LIMMIT = 10.0f;
+	const float BREAK_TIME_LIMMIT = 10.0f;
+
+	const Vector3 BOSS_START_POSITON = { 0.0f, 0.0f, 600.0f };
+
+	const Vector3 PLAYER_START_POSITON = { 0.0f, 0.0f, -400.0f };
 }
 
 GameManager* GameManager::m_instance = nullptr;
@@ -39,9 +47,20 @@ void GameManager::Init()
 
 void GameManager::Execute()
 {
-
-
+	//勝敗が着いたら処理しない
+	if (GetOutComeState() != enOutComeState_None)
+	{
+		return;
+	}
+	//制限時間の計算
 	CalcTimeLimmit();
+	//フェーズの処理
+	ProcessPhase();
+
+
+
+	//勝敗が着いたか
+	IsOutComeDecided();
 }
 
 void GameManager::CreateBattleStartClass()
@@ -53,21 +72,89 @@ void GameManager::CreateBattleStartClass()
 void GameManager::CreatePlayerClass()
 {
 	Player* player = NewGO<Player>(0, "player");
+	//初期座標の設定
+	player->SetPosition(PLAYER_START_POSITON);
 	CharactersInfoManager::GetInstance()->SetPlayerInstance(player);
+}
+
+void GameManager::DeletePlayerClass()
+{
+	CharactersInfoManager::GetInstance()->DeletePlayerInstance();
 }
 
 void GameManager::CreateBoss()
 {
-	Lich* lich = NewGO<Lich>(0, "lich");
-	CharactersInfoManager::GetInstance()->SetLichInstance(lich);
+	Boss* boss = NewGO<Boss>(0, "boss");
+	//初期座標の設定
+	boss->SetPosition(BOSS_START_POSITON);
+	CharactersInfoManager::GetInstance()->SetBossInstance(boss);
 }
 
+void GameManager::DeleteBossClass()
+{
+	CharactersInfoManager::GetInstance()->DeleteBossInstance();
+}
 
+void GameManager::ProcessPhase()
+{
+	switch (m_enPhaseState)
+	{
+	case GameManager::EnPhaseState_Phase1:
+		OnProcessPhaseTransition();
+		break;
+	case GameManager::EnPhaseState_Phase2:
+		OnProcessPhaseTransition();
+		break;
+	case GameManager::EnPhaseState_Phase3:
+		OnProcessPhaseTransition();
+		break;
+	case GameManager::EnPhaseState_BreakTime:
+		OnProcessBreakTimeTransition();
+		break;
+	default:
+		break;
+	}
+
+}
+
+void GameManager::OnProcessPhaseTransition()
+{
+	//一つのフェーズの時間が終わったら
+	if (m_phaseTimer > PHASE_TIME_LIMMIT)
+	{
+		m_phaseTimer = 0.0f;
+		//次のフェーズに進む
+		m_enPhaseState = static_cast<EnPhaseState>(m_enPhaseState + 1);
+		return;
+	}
+	else
+	{
+		//タイマーを加算
+		m_phaseTimer += g_gameTime->GetFrameDeltaTime();
+	}
+
+}
+
+void GameManager::OnProcessBreakTimeTransition()
+{
+	//一定時間経ったら休憩終了
+	if (m_breakTimeTimer > BREAK_TIME_LIMMIT)
+	{
+		m_breakTimeTimer = 0.0f;
+		//フェーズを一番最初に戻す
+		m_enPhaseState = EnPhaseState_Phase1;
+		return;
+	}
+	else
+	{
+		//タイマーを加算
+		m_breakTimeTimer += g_gameTime->GetFrameDeltaTime();
+	}
+
+}
 
 void GameManager::CalcTimeLimmit()
 {
-
-
 	//0秒以下なら
 	if (m_second <= 0) {
 		//1分減らす
@@ -76,9 +163,8 @@ void GameManager::CalcTimeLimmit()
 		if (m_minute < 0) {
 			m_second = 0.0f;
 			m_minute = 0.0f;
-			//制限時間に達した
-			//ゲームオーバーステートを設定
-			SetGameSeenState(enGameSeenState_GameOver);
+			//制限時間に達したのでプレイヤーの負け
+			m_playerLoseFlag = true;
 		}
 		//60秒に戻す
 		else
@@ -90,6 +176,24 @@ void GameManager::CalcTimeLimmit()
 	{
 		//秒を減らす
 		m_second -= g_gameTime->GetFrameDeltaTime();
+	}
+}
+
+void GameManager::IsOutComeDecided()
+{
+	//負け
+	if (m_playerLoseFlag == true ||
+		CharactersInfoManager::GetInstance()
+		->GetPlayerInstance()->IsDeadPlayer() == true)
+	{
+		SetOutComeState(enOutComeState_PlayerLose);
+	}
+	//勝ち
+	if (m_playerWinFlag == true /*||
+		CharactersInfoManager::GetInstance()
+		->GetLichInstance()->GetDieFlag() == true*/)
+	{
+		SetOutComeState(enOutComeState_PlayerWin);
 	}
 }
 

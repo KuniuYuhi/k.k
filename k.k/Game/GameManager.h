@@ -12,7 +12,10 @@ public:
 	//////////////////////////////////////////////////////////////
 	//構造体、列挙型の宣言
 	//////////////////////////////////////////////////////////////
-	//ゲームのシーン
+	
+	/// <summary>
+	/// ゲームのシーン
+	/// </summary>
 	enum EnGameSeenState
 	{
 		enGameSeenState_Fade,
@@ -23,14 +26,25 @@ public:
 		enGameSeenState_GameOver,
 		enGameSeenState_GameClear
 	};
-
+	/// <summary>
+	/// 勝敗ステート
+	/// </summary>
 	enum EnOutComeState
 	{
 		enOutComeState_None,
 		enOutComeState_PlayerWin,
 		enOutComeState_PlayerLose,
 	};
-
+	/// <summary>
+	/// フェーズステート。ループする
+	/// </summary>
+	enum EnPhaseState
+	{
+		EnPhaseState_Phase1,		//フェーズ1
+		EnPhaseState_Phase2,		//フェーズ2
+		EnPhaseState_Phase3,		//フェーズ3
+		EnPhaseState_BreakTime,		//休憩
+	};
 
 private:
 	GameManager(EnGameSeenState startGameSeenState);
@@ -102,6 +116,17 @@ public:
 	}
 
 	/// <summary>
+	/// 現在のフェーズを取得
+	/// </summary>
+	/// <returns></returns>
+	const EnPhaseState& GetNowPhaseState() const
+	{
+		return m_enPhaseState;
+	}
+
+
+
+	/// <summary>
 	/// 毎フレームの更新処理
 	/// </summary>
 	void Execute();
@@ -110,22 +135,40 @@ public:
 	/// バトルスタートクラスの作成
 	/// </summary>
 	void CreateBattleStartClass();
+
 	/// <summary>
 	/// プレイヤークラス生成
 	/// </summary>
 	void CreatePlayerClass();
 	/// <summary>
+	/// プレイヤークラス削除
+	/// </summary>
+	void DeletePlayerClass();
+
+	/// <summary>
 	/// ボスクラス生成
 	/// </summary>
 	void CreateBoss();
-
-
-
+	/// <summary>
+	/// ボスクラス削除
+	/// </summary>
+	void DeleteBossClass();
 
 	/// <summary>
-	/// 制限時間の計算
+	/// ゲームの現在のステートと検索したいステートが同じか判定
 	/// </summary>
-	void CalcTimeLimmit();
+	/// <param name="searchGameState">検索したいゲームステート</param>
+	/// <returns>trueで同じ、falseで違う</returns>
+	/*bool IsMatchGameState(EnGameState searchGameState)
+	{
+		if (GetNowGameState() == searchGameState)
+		{
+			return true;
+		}
+		return false;
+	}*/
+
+	
 
 	/// <summary>
 	/// 秒の取得
@@ -144,21 +187,79 @@ public:
 		return m_second;
 	}
 
+	/// <summary>
+	/// プレイヤーの勝利フラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetPlayerWinFlag(bool flag)
+	{
+		m_playerWinFlag = flag;
+	}
+	const bool& GetPlayerWinFlag() const
+	{
+		return m_playerWinFlag;
+	}
+	/// <summary>
+	/// プレイヤーの敗北フラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetPlayerLoseFlag(bool flag)
+	{
+		m_playerLoseFlag = flag;
+	}
+	const bool& GetPlayerLoseFlag() const
+	{
+		return m_playerLoseFlag;
+	}
+
+
+
+private:
+
+	/// <summary>
+	/// フェーズの処理
+	/// </summary>
+	void ProcessPhase();
+
+	/// <summary>
+	/// フェーズ1,2,3の処理
+	/// </summary>
+	void OnProcessPhaseTransition();
+	/// <summary>
+	/// 休憩時間の処理
+	/// </summary>
+	void OnProcessBreakTimeTransition();
+
+	/// <summary>
+	/// 制限時間の計算
+	/// </summary>
+	void CalcTimeLimmit();
+	/// <summary>
+	/// 勝敗が着いたか
+	/// </summary>
+	void IsOutComeDecided();
+
 
 public:
-	
-	EnGameSeenState m_enGameSeenState = enGameSeenState_GameStart;
-	EnOutComeState m_enOutComeState = enOutComeState_None;
-
 
 	static GameManager* m_instance;		//唯一のインスタンスのアドレスを記録する変数。
 
 private:
+
+
+	EnGameSeenState m_enGameSeenState = enGameSeenState_GameStart;
+	EnOutComeState m_enOutComeState = enOutComeState_None;
+	EnPhaseState m_enPhaseState = EnPhaseState_Phase1;
+
 	float m_minute = 3.0f;			//制限時間
 	float m_second = 0.0f;
 
 	bool m_playerWinFlag = false;
 	bool m_playerLoseFlag = false;
+
+	float m_breakTimeTimer = 0.0f;
+
+	float m_phaseTimer = 0.0f;
 
 };
 
