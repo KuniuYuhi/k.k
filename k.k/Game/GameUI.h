@@ -4,6 +4,7 @@
 class Game;
 class Player;
 class Lich;
+class Boss;
 
 class GameUI:public IGameObject
 {
@@ -25,10 +26,20 @@ public:
 	/// プレイヤーインスタンスの取得
 	/// </summary>
 	/// <param name="player"></param>
-	void GetPlayer(Player* player)
+	void SetPlayer(Player* player)
 	{
 		m_player = player;
 	}
+
+	/// <summary>
+	/// ボスインスタンスの取得
+	/// </summary>
+	/// <param name="boss"></param>
+	void SetBoss(Boss* boss)
+	{
+		m_boss = boss;
+	}
+
 	/// <summary>
 	/// リッチ(ボス)のインスタンスの取得
 	/// </summary>
@@ -41,7 +52,7 @@ public:
 	/// ゲームインスタンスの取得
 	/// </summary>
 	/// <param name="game"></param>
-	void GetGame(Game* game)
+	void SetGame(Game* game)
 	{
 		m_game = game;
 	}
@@ -109,7 +120,10 @@ private:
 	/// </summary>
 	void ProcessBossHP();
 
-
+	/// <summary>
+	/// フェーズの処理
+	/// </summary>
+	void ProcessPhade();
 
 	/// <summary>
 	/// 武器切り替え処理
@@ -222,9 +236,13 @@ private:
 	FontRender m_TimerFont;				//制限時間
 	SpriteRender m_TimeFlameRender;		//制限時間の枠
 
+	FontRender m_PhadeFont;
+	SpriteRender m_PhaseFlameRender;	//フェーズのフレーム
+
 	Game* m_game = nullptr;
 	Player* m_player = nullptr;
 	Lich* m_lich = nullptr;
+	Boss* m_boss = nullptr;
 
 	PlayerUI m_playerUI;			//プレイヤーの情報のUI
 	MonsterUI m_monsterUI;			//モンスターの情報のUI
