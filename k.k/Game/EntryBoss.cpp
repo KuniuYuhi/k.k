@@ -2,6 +2,7 @@
 #include "EntryBoss.h"
 #include "Game.h"
 #include "InitEffect.h"
+#include "Fade.h"
 
 namespace {
 	//スカイキューブの初期の明るさ
@@ -56,6 +57,12 @@ namespace {
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.7f, 0.7f, 0.7f);
 
 	const float MUTE_SPEED = 15.0f;
+
+	const Vector3 START_POS = { 0.0f,670.0f,800.0f };
+	const Vector3 CENTER_POS = { 700.0f,470.0f,0.0f };
+	const Vector3 END_POS = { 160.0f,230.0f,-550.0f };
+
+	const float BOSS_MOVIE_SKIP_TIME = 3.0f;
 }
 
 EntryBoss::EntryBoss()
@@ -91,10 +98,8 @@ EntryBoss::~EntryBoss()
 
 bool EntryBoss::Start()
 {
-	//m_animationClip[enAnimClip_Idle].Load("Assets/animData/character/Lich/deleteAtk.tka");
-	//m_animationClip[enAnimClip_Idle].SetLoopFlag(true);
-	//m_animationClip[enAnimClip_Victory].Load("Assets/animData/character/Lich/deleteAtk.tka");
-	//m_animationClip[enAnimClip_Victory].SetLoopFlag(true);
+	m_fade = FindGO<Fade>("fade");
+
 	m_animationClip[enAnimClip_Idle].Load("Assets/animData/character/Lich/Idle.tka");
 	m_animationClip[enAnimClip_Idle].SetLoopFlag(true);
 	m_animationClip[enAnimClip_FogRemoval].Load("Assets/animData/character/Lich/FogRemoval.tka");
@@ -166,15 +171,42 @@ bool EntryBoss::Start()
 	//被写界深度の無効化
 	g_renderingEngine->DisableDof();
 
+	//ばねカメラの初期化。
+	m_springCamera.Init(
+		*g_camera3D,		//ばねカメラの処理を行うカメラを指定する。
+		1000.0f,			//カメラの移動速度の最大値。
+		false,				//カメラと地形とのあたり判定を取るかどうかのフラグ。trueだとあたり判定を行う。
+		1.0f				//カメラに設定される球体コリジョンの半径。第３引数がtrueの時に有効になる。
+	);
+
+	m_fade->StartFadeOut(3.0f);
+
 	return true;
 }
 
 void EntryBoss::Update()
 {
+	//全ての処理が完了して、フェードインが終わったら
+	if (m_completeFlag == true && m_fade->IsFade() == false)
+	{
+		//登場ムービーが終わったことゲームに伝える
+		m_game->SetBossMovieFlag(true);
+		return;
+	}
+	//処理は終わっているのでする必要ない
+	/*else if(m_completeFlag == true)
+	{
+		return;
+	}*/
+
+	//ムービースキップ処理
+	BossMovieSkip();
 	//画面を徐々に暗くする。暗くなったら処理が止まる
 	slowlyDarkScreen();
-
+	//ステート管理
 	ManageState();
+	//カメラ処理
+	ChaseBossCamera();
 
 	MamageActionBossState();
 	Animation();
@@ -337,8 +369,10 @@ void EntryBoss::CompleteTime()
 	//処理がおわったらしばらく停止してから
 	if (m_endTime < m_endTimer)
 	{
-		//登場ムービーが終わったことを伝える
-		m_game->SetBossMovieFlag(true);
+		//やることが終わったのでフェードインする
+		m_fade->StartFadeIn(3.0f);
+		//処理完了フラグを立てる
+		m_completeFlag = true;
 	}
 	else
 	{
@@ -422,7 +456,6 @@ void EntryBoss::OnProcessFogRemovalTransition()
 			m_enWholeState = enWholeState_Complete;
 			return;
 
-			m_completeFlag = true;
 		}
 	}
 }
@@ -473,6 +506,64 @@ void EntryBoss::OnProcessFogRemovalStateTransition()
 	if (m_model.IsPlayingAnimation() == false)
 	{
 		OnProcessCommonStateTransition();
+	}
+}
+
+void EntryBoss::ChaseBossCamera()
+{
+	if (m_chaseBossTime > 1.0f)
+	{
+		return;
+	}
+
+	//注視点の計算
+	m_target = GetPosition();
+	m_target.y = 0.0f;
+
+	//線形補間
+	m_pos1.Lerp(m_chaseBossTime, START_POS, CENTER_POS);
+	m_pos2.Lerp(m_chaseBossTime, CENTER_POS, END_POS);
+	m_toCameraPosForBoss.Lerp(m_chaseBossTime, m_pos1, m_pos2);
+
+	m_chaseBossTime += g_gameTime->GetFrameDeltaTime() * 0.12f;
+
+	Vector3 finalCameraPos = m_toCameraPosForBoss + m_target;
+
+	//視点と注視点を設定
+	m_springCamera.SetTarget(m_target);
+	m_springCamera.SetPosition(finalCameraPos);
+	//カメラの更新。
+	m_springCamera.Update();
+}
+
+void EntryBoss::BossMovieSkip()
+{
+	//スキップが確定したら処理しない
+	if (m_movieSkipFlag != false)
+	{
+		return;
+	}
+
+	if (g_pad[0]->IsPress(enButtonA))
+	{
+		//3秒たったらスキップ
+		if (m_bossMovieSkipTimer > BOSS_MOVIE_SKIP_TIME)
+		{
+			//フェードインする
+			m_fade->StartFadeIn(3.0f);
+			m_completeFlag = true;
+			m_movieSkipFlag = true;
+		}
+		else
+		{
+			//タイマーを加算
+			m_bossMovieSkipTimer += g_gameTime->GetFrameDeltaTime();
+		}
+	}
+	else
+	{
+		//タイマーをリセット
+		m_bossMovieSkipTimer = 0.0f;
 	}
 }
 
