@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "Player.h"
-#include "Wizard.h"
-#include "Actor.h"
 #include "Game.h"
 
 #include "GameManager.h"
@@ -25,7 +23,10 @@ bool Player::Start()
 {
 	//ゲームクラスと勇者クラスのインスタンスを検索
 	m_game = FindGO<Game>("game");
+
+
 	m_brave = NewGO<Brave>(0, "brave");
+	m_brave->SetPosition(m_position);
 	//勇者インスタンスを代入
 	CharactersInfoManager::GetInstance()->SetBraveInstance(m_brave);
 
@@ -38,11 +39,17 @@ bool Player::Start()
 void Player::Update()
 {
 	//ゲームが始まるまでは移動しない
-	if (GameManager::GetInstance()->GetGameSeenState()!=
+	/*if (GameManager::GetInstance()->GetGameSeenState()!=
 		GameManager::enGameSeenState_Game)
 	{
 		return;
+	}*/
+
+	if (IsInaction() == true)
+	{
+		return;
 	}
+
 	//行動可能にする
 	if (m_dontActionFlag != false)
 	{
@@ -61,7 +68,7 @@ bool Player::IsInaction()
 	// 行動出来なくなる条件
 	////////////////////////////////////////////////// 
 	//勝利したら 
-	if (m_game->GetEnOutCome() == Game::enOutCome_Player_Win)
+	if (GameManager::GetInstance()->GetPlayerWinFlag()==true)
 	{
 		//勝利時の処理実行
 		m_brave->ProcessWin();
@@ -70,7 +77,7 @@ bool Player::IsInaction()
 		return true;
 	}
 	//負けたら
-	if (m_game->GetEnOutCome() == Game::enOutCome_Player_Lose)
+	if (GameManager::GetInstance()->GetPlayerLoseFlag() == true)
 	{
 		m_decisionOutComeFlag = true;
 		return true;
@@ -99,7 +106,7 @@ bool Player::IsDeadPlayer()
 
 int Player::GetAtk()
 {
-	return m_brave->GetStatus().atk;
+	return m_brave->GetStatus().GetAtk();
 }
 
 bool Player::IsComboStateSame()

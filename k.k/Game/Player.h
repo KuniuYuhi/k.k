@@ -28,6 +28,23 @@ public:
 	bool IsDeadPlayer();
 
 	/// <summary>
+	/// 座標の設定
+	/// </summary>
+	/// <param name="position"></param>
+	void SetPosition(Vector3 position)
+	{
+		m_position = position;
+	}
+
+	/// <summary>
+	/// 座標の設定
+	/// </summary>
+	/// <param name="position"></param>
+	void SetPlayerPosition(Vector3 position)
+	{
+		m_brave->SetPosition(position);
+	}
+	/// <summary>
 	/// 座標の取得。現在のアクターの座標
 	/// </summary>
 	/// <returns></returns>
