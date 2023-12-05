@@ -11,7 +11,7 @@
 #include "MushroomStateAppear.h"
 
 #include "CharactersInfoManager.h"
-
+#include "GameManager.h"
 #include "Lich.h"
 
 namespace {
@@ -230,6 +230,13 @@ void Mushroom::CreateCollision()
 
 bool Mushroom::IsStopProcessing()
 {
+	//ゲームステート以外なら
+	if (GameManager::GetInstance()->GetGameSeenState() !=
+		GameManager::enGameSeenState_Game)
+	{
+		return true;
+	}
+
 	//勝敗が決まったら
 	if (m_enOutCome != enOutCome_None)
 	{
@@ -291,7 +298,7 @@ void Mushroom::Damage(int attack)
 	m_status.CalcHp(attack, false);
 
 	//HPが0以下なら
-	if (m_status.hp <= 0)
+	if (m_status.GetHp() <= 0)
 	{
 		//やられアニメーションステート
 		m_status.SetHp(0);
