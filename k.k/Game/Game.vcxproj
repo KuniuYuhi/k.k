@@ -247,7 +247,7 @@
     <ClCompile Include="BraveStateSprint.cpp" />
     <ClCompile Include="BraveStateWin_Main.cpp" />
     <ClCompile Include="BraveStateWin_Start.cpp" />
-    <ClCompile Include="BttlePhase.cpp" />
+    <ClCompile Include="BattlePhase.cpp" />
     <ClCompile Include="Cactus.cpp" />
     <ClCompile Include="CactusStateAppear.cpp" />
     <ClCompile Include="CactusStateAttack_1.cpp" />
@@ -266,6 +266,7 @@
     <ClCompile Include="DarkMeteorite.cpp" />
     <ClCompile Include="DarkWall.cpp" />
     <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="GameFinishCamera.cpp" />
     <ClCompile Include="HitDetection.cpp" />
     <ClCompile Include="InitEffect.cpp" />
     <ClCompile Include="EntryBoss.cpp" />
@@ -385,7 +386,7 @@
     <ClInclude Include="BraveStateSprint.h" />
     <ClInclude Include="BraveStateWin_Main.h" />
     <ClInclude Include="BraveStateWin_Start.h" />
-    <ClInclude Include="BttlePhase.h" />
+    <ClInclude Include="BattlePhase.h" />
     <ClInclude Include="Cactus.h" />
     <ClInclude Include="CactusStateAppear.h" />
     <ClInclude Include="CactusStateAttack_1.h" />
@@ -404,6 +405,7 @@
     <ClInclude Include="DarkMeteorite.h" />
     <ClInclude Include="DarkWall.h" />
     <ClInclude Include="EventManager.h" />
+    <ClInclude Include="GameFinishCamera.h" />
     <ClInclude Include="HitDetection.h" />
     <ClInclude Include="ISummonerState.h" />
     <ClInclude Include="IBraveState.h" />

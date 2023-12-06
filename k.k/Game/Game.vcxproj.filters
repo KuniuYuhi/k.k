@@ -43,9 +43,6 @@
     <Filter Include="Character\Monster\BossMonster\Lich\LichState">
       <UniqueIdentifier>{b43f38ad-e33f-4abf-b302-e1d16b580fe2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\Player\Wizard">
-      <UniqueIdentifier>{2887295a-a2b1-4b11-b171-11ad071fe549}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Character\Player\Brave">
       <UniqueIdentifier>{cb6cd09f-fc8e-4001-a80a-8ce928ff27df}</UniqueIdentifier>
     </Filter>
@@ -390,8 +387,9 @@
     <ClCompile Include="SummonerState_Victory.cpp" />
     <ClCompile Include="SummonerState_Command.cpp" />
     <ClCompile Include="Pause.cpp" />
-    <ClCompile Include="BttlePhase.cpp" />
+    <ClCompile Include="BattlePhase.cpp" />
     <ClCompile Include="Boss.cpp" />
+    <ClCompile Include="GameFinishCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -748,7 +746,8 @@
     <ClInclude Include="SummonerState_Victory.h" />
     <ClInclude Include="SummonerState_Command.h" />
     <ClInclude Include="Pause.h" />
-    <ClInclude Include="BttlePhase.h" />
+    <ClInclude Include="BattlePhase.h" />
     <ClInclude Include="Boss.h" />
+    <ClInclude Include="GameFinishCamera.h" />
   </ItemGroup>
 </Project>
