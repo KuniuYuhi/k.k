@@ -109,7 +109,7 @@ void Summoner::ProcessMove()
 void Summoner::ProcessRotation()
 {
 	m_targetPosition = 
-		CharactersInfoManager::GetInstance()->GetBraveInstance()->GetPosition();
+		CharactersInfoManager::GetInstance()->GetPlayerInstance()->GetPosition();
 
 	m_moveSpeed= CalcVelocity(m_status, m_targetPosition);
 
