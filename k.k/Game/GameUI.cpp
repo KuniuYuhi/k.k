@@ -58,7 +58,7 @@ namespace {
 
 
 	const Vector3 PHASE_FLAME_POS = { -800.0f,240.0f,0.0f };
-	const Vector2 PHASE_FONT_POS = { -820.0f,256.0f };
+	const Vector2 PHASE_FONT_POS = { -960.0f,288.0f };
 
 	const float WHITE_HP_LERP_START = 0.1f;
 	const float WHITE_HP_LERP_END = 4.5f;
@@ -94,7 +94,7 @@ bool GameUI::Start()
 		PHASE_FLAME_POS, g_vec3One
 	);
 	//フェーズの文字
-	InitFontRender(m_PhadeFont, PHASE_FONT_POS, 1.1f);
+	InitFontRender(m_PhadeFont, PHASE_FONT_POS, 1.5f);
 
 	m_oldMainCharaHP = m_player->GetNowActorStatus().GetHp();
 
@@ -116,7 +116,7 @@ void GameUI::PlayerUIUpdate()
 	//制限時間
 	TimerUIUpdate();
 	//フェーズの処理
-	ProcessPhade();
+	ProcessPhase();
 	//ステータス
 	UpdateMainStatus();
 	//キャラアイコン
@@ -564,11 +564,11 @@ void GameUI::ProcessBossHP()
 	m_monsterUI.m_HpWhiteRender.Update();
 }
 
-void GameUI::ProcessPhade()
+void GameUI::ProcessPhase()
 {
 	int PhaseNumber = GameManager::GetInstance()->GetNowPhaseState();
 	wchar_t NowPhase[255];
-	swprintf_s(NowPhase, 255, L"フェーズ%2d", PhaseNumber);
+	swprintf_s(NowPhase, 255, L"フェーズ%d", PhaseNumber+1);
 
 	m_PhadeFont.SetText(NowPhase);
 }

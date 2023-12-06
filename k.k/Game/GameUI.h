@@ -123,7 +123,7 @@ private:
 	/// <summary>
 	/// フェーズの処理
 	/// </summary>
-	void ProcessPhade();
+	void ProcessPhase();
 
 	/// <summary>
 	/// 武器切り替え処理
