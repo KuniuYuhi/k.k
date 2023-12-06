@@ -2,7 +2,7 @@
 #include "Boss.h"
 #include "Lich.h"
 
-//#include "CharactersInfoManager.h"
+#include "GameManager.h"
 
 Boss::Boss()
 {
@@ -23,21 +23,30 @@ bool Boss::Start()
 
 void Boss::Update()
 {
+	IsDeleteBoss();
+
+
 }
 
 void Boss::CreatBossCharacter()
 {
 	/*m_sumoner = NewGO<Summoner>(0, "summoner");
-	m_sumoner->SetPosition(m_position);*/
+	m_sumoner->SetPosition(m_position);
+	m_bossBase = m_sumoner;*/
 
 	m_lich = NewGO<Lich>(0, "lich");
 	m_lich->SetPosition(m_position);
-	//
 	m_bossBase = m_lich;
+	
 }
 
-
-//void Boss::Render(RenderContext& rc)
-//{
-//}
+void Boss::IsDeleteBoss()
+{
+	//ボスがもう削除されてもよいなら
+	if (GameManager::GetInstance()->GetBossDeleteOkFlag() == true)
+	{
+		//ボスを削除
+		DeleteGO(this);
+	}
+}
 

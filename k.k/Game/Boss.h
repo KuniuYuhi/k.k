@@ -36,6 +36,22 @@ public:
 	{
 		m_bossBase->SetPosition(position);
 	}
+	/// <summary>
+	/// ボス座標の取得
+	/// </summary>
+	/// <returns></returns>
+	const Vector3& GetPosition() const
+	{
+		return m_bossBase->GetPosition();
+	}
+	/// <summary>
+	/// 前方向の取得
+	/// </summary>
+	/// <returns></returns>
+	const Vector3& GetForward() const
+	{
+		return m_bossBase->GetForward();
+	}
 
 	/// <summary>
 	/// ボスのステータスを取得
@@ -46,12 +62,18 @@ public:
 		return m_bossBase->GetStatus();
 	}
 
+
+
 private:
 	/// <summary>
 	/// ボスを生成
 	/// </summary>
 	void CreatBossCharacter();
 
+	/// <summary>
+	/// ボスを削除してもよいか
+	/// </summary>
+	void IsDeleteBoss();
 
 private:
 	BossBase* m_bossBase = nullptr;
