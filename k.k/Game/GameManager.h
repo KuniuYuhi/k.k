@@ -45,6 +45,23 @@ public:
 		EnPhaseState_Phase3,		//フェーズ3
 		EnPhaseState_BreakTime,		//休憩
 	};
+	/// <summary>
+	/// フェーズ内での処理のステップ
+	/// </summary>
+	enum EnPhaseStep
+	{
+		enPhaseStep_PhaseTime,
+		enPhaseStep_ShortBreak,
+	};
+	/// <summary>
+	/// モンスターを生成するか削除するか
+	/// </summary>
+	enum EnDeleteAndCreateMonstersState
+	{
+		enMonsters_None,
+		enMonsters_Create,
+		enMonsters_Delete,
+	};
 
 private:
 	GameManager(EnGameSeenState startGameSeenState);
@@ -212,7 +229,56 @@ public:
 		return m_playerLoseFlag;
 	}
 
+	/// <summary>
+	/// ゲームが終わった後の処理が終わったかのフラグの設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetGameFinishProcessEndFlag(bool flag)
+	{
+		m_gameFinishProcessEndFlag = flag;
+	}
+	/// <summary>
+	/// ゲームが終わった後の処理が終わったかのフラグの取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetGameFinishProcessEndFlag() const
+	{
+		return m_gameFinishProcessEndFlag;
+	}
 
+	/// <summary>
+	/// ボスを削除してもよいかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetBossDeleteOkFlag(bool flag)
+	{
+		m_bossDeleteOkFlag = flag;
+	}
+	/// <summary>
+	/// ボスを削除してもよいかのフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetBossDeleteOkFlag() const
+	{
+		return m_bossDeleteOkFlag;
+	}
+
+	/// <summary>
+	/// モンスターを生成するか削除するかのステートを設定
+	/// </summary>
+	/// <param name="state"></param>
+	void SetDAndCMonstersState(EnDeleteAndCreateMonstersState state)
+	{
+		m_enDAndCMonstersState = state;
+	}
+	/// <summary>
+	/// モンスターを生成するか削除するかのステートを取得
+	/// </summary>
+	/// <returns></returns>
+	const EnDeleteAndCreateMonstersState& GetDAndCMonstersState() const
+	{
+		return m_enDAndCMonstersState;
+	}
 
 private:
 
@@ -225,6 +291,12 @@ private:
 	/// フェーズ1,2,3の処理
 	/// </summary>
 	void OnProcessPhaseTransition();
+
+	/// <summary>
+	/// フェーズとフェーズの間の小休憩
+	/// </summary>
+	void ProcessShortBreak();
+
 	/// <summary>
 	/// 休憩時間の処理
 	/// </summary>
@@ -239,6 +311,10 @@ private:
 	/// </summary>
 	void IsOutComeDecided();
 
+	/// <summary>
+	/// フェーズの制限時間の計算
+	/// </summary>
+	void CalcPhaseTime();
 
 public:
 
@@ -251,6 +327,10 @@ private:
 	EnOutComeState m_enOutComeState = enOutComeState_None;
 	EnPhaseState m_enPhaseState = EnPhaseState_Phase1;
 
+	EnPhaseStep m_enPhaseStep = enPhaseStep_PhaseTime;
+
+	EnDeleteAndCreateMonstersState m_enDAndCMonstersState = enMonsters_Create;
+
 	float m_minute = 3.0f;			//制限時間
 	float m_second = 0.0f;
 
@@ -260,6 +340,12 @@ private:
 	float m_breakTimeTimer = 0.0f;
 
 	float m_phaseTimer = 0.0f;
+
+	float m_shortBreakTimer = 0.0f;
+
+	bool m_gameFinishProcessEndFlag = false;	//ゲームが終わった後の処理(リザルト含まない)が終わったかのフラグ
+	bool m_bossDeleteOkFlag = false;			//ボスがもう削除しても良い状態かのフラグ
+
 
 };
 
