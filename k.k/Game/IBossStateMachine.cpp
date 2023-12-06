@@ -81,7 +81,7 @@ void IBossStateMachine::ProcessAttackState()
 
 	//ƒTƒ‚ƒi[‚©‚ç—EŽÒ‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ðŒvŽZ‚·‚é
 	m_toPlayer = m_summoner->GetPosition() -
-		CharactersInfoManager::GetInstance()->GetBraveInstance()->GetPosition();
+		CharactersInfoManager::GetInstance()->GetPlayerInstance()->GetPosition();
 
 	//‹——£‚É‚æ‚Á‚Ä‹ß‹——£UŒ‚‚©‰“‹——£UŒ‚‚©Œˆ‚ß‚é
 	if (m_toPlayer.Length() > 200.0f)
