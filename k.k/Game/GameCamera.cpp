@@ -2,9 +2,9 @@
 #include "GameCamera.h"
 #include "Game.h"
 #include "Player.h"
-#include "EntryBoss.h"
 #include "Lich.h"
 #include "GameManager.h"
+#include "CharactersInfoManager.h"
 
 namespace {
 
@@ -50,6 +50,9 @@ bool GameCamera::Start()
 {
 	m_game = FindGO<Game>("game");
 	m_player = FindGO<Player>("player");
+
+	m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
+
 
 	m_toCameraPosForBoss.Set(0.0f, 300.0f, 600.0f);
 	//注視点から視点までのベクトルを設定。300,400
@@ -304,10 +307,6 @@ void GameCamera::ManageState()
 	case GameManager::enGameSeenState_GameOver:
 		//ゲームオーバー
 		OnProcessGameOverTransition();
-		break;
-	case GameManager::enGameSeenState_GameClear:
-		//ゲームクリア
-		OnProcessGameClearTransition();
 		break;
 	case GameManager::enGameSeenState_Pause:
 

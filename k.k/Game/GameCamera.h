@@ -5,8 +5,9 @@
 
 class Game;
 class Player;
-class EntryBoss;
 class Lich;
+class Boss;
+
 
 class GameCamera:public IGameObject
 {
@@ -86,7 +87,7 @@ public:
 private:
 	Game* m_game = nullptr;
 	Player* m_player = nullptr;
-	EntryBoss* m_entryBoss = nullptr;
+	Boss* m_boss = nullptr;
 	Lich* m_lich = nullptr;
 
 	CameraCollisionSolver	m_cameraCollisionSolver;
