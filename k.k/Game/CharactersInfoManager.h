@@ -2,8 +2,6 @@
 
 #include "MobMonster.h"
 
-class Brave;		//勇者クラス
-class Lich;			//リッチ(ボス)
 class MobMonster;	//モブモンスター
 class Player;		//プレイヤー
 class Boss;			//ボス
@@ -45,28 +43,6 @@ public:
 	}
 
 	/// <summary>
-	/// 勇者インスタンスの設定
-	/// </summary>
-	/// <param name="brave"></param>
-	void SetBraveInstance(Brave* brave)
-	{
-		//既にインスタンスが代入されているなら
-		if (m_braveInstance != nullptr)
-		{
-			std::abort();
-		}
-		m_braveInstance = brave;
-	}
-	/// <summary>
-	/// 勇者インスタンスの取得
-	/// </summary>
-	/// <returns></returns>
-	Brave* GetBraveInstance()
-	{
-		return m_braveInstance;
-	}
-
-	/// <summary>
 	/// プレイヤーインスタンスの設定
 	/// </summary>
 	/// <param name="brave"></param>
@@ -93,28 +69,6 @@ public:
 	void DeletePlayerInstance()
 	{
 		//DeleteGO(m_playerInstance);
-	}
-
-	/// <summary>
-	/// リッチインスタンスの設定
-	/// </summary>
-	/// <param name="brave"></param>
-	void SetLichInstance(Lich* lich)
-	{
-		//既にインスタンスが代入されているなら
-		if (m_lichInstance != nullptr)
-		{
-			std::abort();
-		}
-		m_lichInstance = lich;
-	}
-	/// <summary>
-	/// リッチインスタンスの取得
-	/// </summary>
-	/// <returns></returns>
-	Lich* GetLichInstance()
-	{
-		return m_lichInstance;
 	}
 
 	/// <summary>
@@ -181,10 +135,18 @@ public:
 		return m_mobMonsters;
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="number"></param>
+	/// <returns></returns>
+	MobMonster* GetMobMonster(int number)
+	{
+		return m_mobMonsters[number];
+	}
+
 
 private:
-	Brave* m_braveInstance;			//勇者のインスタンス
-	Lich* m_lichInstance;			//リッチのインスタンス
 	Boss* m_bossInstance;
 	Player* m_playerInstance;		//プレイヤーのインスタンス
 
