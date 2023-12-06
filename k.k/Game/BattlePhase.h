@@ -98,5 +98,7 @@ private:
 
 	float m_incantationTimer = 0.0f;
 
+	
+
 };
 

@@ -15,6 +15,7 @@
 #include "Mushroom.h"
 #include "Cactus.h"
 
+//todo モンスターのリストがちゃんと消せない
 
 namespace {
 	//const int SUMMON_MONSTERS_CONUT = 10;
@@ -36,6 +37,7 @@ BattlePhase::BattlePhase()
 
 BattlePhase::~BattlePhase()
 {
+	//todo エフェクトの削除
 }
 
 bool BattlePhase::Start()
@@ -119,11 +121,14 @@ void BattlePhase::CreateMobMonsters(const int createCount)
 
 void BattlePhase::DeleteMobMonsters()
 {
-	for (auto monster : CharactersInfoManager::GetInstance()->GetMobMonsters())
+	while (CharactersInfoManager::GetInstance()->GetMobMonsters().size()!=0)
 	{
-		monster->ProcessDead();
-		DeleteGO(monster);
-		CharactersInfoManager::GetInstance()->RemoveMobMonsterFormList(monster);
+		for (auto monster : CharactersInfoManager::GetInstance()->GetMobMonsters())
+		{
+			monster->ProcessDead();
+			DeleteGO(monster);
+			CharactersInfoManager::GetInstance()->RemoveMobMonsterFormList(monster);
+		}
 	}
 }
 
