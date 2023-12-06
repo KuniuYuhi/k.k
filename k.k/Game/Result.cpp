@@ -37,18 +37,20 @@ bool ResultSeen::Start()
 		//ƒvƒŒƒCƒ„[‚ÌŸ—˜
 	case GameManager::enOutComeState_PlayerWin:
 		SetOutcome(enOutcome_Win);
+		//Ÿ—˜SEÄ¶
+		g_soundManager->InitAndPlaySoundSource(enSoundName_GameClear);
 		break;
 		//ƒvƒŒƒCƒ„[‚Ì”s–k
 	case GameManager::enOutComeState_PlayerLose:
 		SetOutcome(enOutcome_Lose);
+		//”s–kSEÄ¶
+		g_soundManager->InitAndPlaySoundSource(enSoundName_GameOver);
 		break;
 
 	default:
 		std::abort();
 		break;
 	}
-	
-
 	m_resultSprite.Init("Assets/sprite/InGame/Result_Lose/Fade_Black.DDS", 1920, 1080);
 	m_resultSprite.SetRoundWipe(true);
 	m_resultSprite.SetRoundWipeStartPosition(1920.0f / 2, 1080.0f / 2);
