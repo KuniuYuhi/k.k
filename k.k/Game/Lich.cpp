@@ -25,6 +25,8 @@
 #include "CharactersInfoManager.h"
 #include "GameManager.h"
 
+#include "InitEffect.h"
+
 
 
 namespace {
@@ -52,7 +54,7 @@ namespace {
 	const float ROT_ONLY_SPEED = 5.0f;
 
 	//ステータス
-	int MAXHP = 200;
+	int MAXHP = 50;
 	int MAXMP = 500;
 	int ATK = 20;
 	float SPEED = 160.0f;
@@ -84,6 +86,13 @@ Lich::~Lich()
 	{
 		return;
 	}
+
+	//死んだときにモブモンスターを消しているので消す必要なし
+	if (m_dieFlag == true)
+	{
+		return;
+	}
+
 	//モブモンスターが0体でないならリスト内のモブモンスターを死亡
 	int mobMonsterNum = CharactersInfoManager::GetInstance()->GetMobMonsters().size();
 	if (mobMonsterNum != 0)
@@ -214,7 +223,7 @@ void Lich::Update()
 	Move();
 	Rotation(ROT_SPEED, ROT_ONLY_SPEED);
 
-	DecideNextAction();
+	//DecideNextAction();
 
 	ManageState();
 	PlayAnimation();
@@ -343,17 +352,9 @@ void Lich::Damage(int attack)
 		//やられるところをゆっくりにする
 		//フレームレートを落とす
 		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 30);
-		//自身が倒されたらことをゲームに伝える
-		//m_game->SetDeathBossFlag(true);
-		//カメラがリッチを追うようにする
-		m_game->SetClearCameraState(Game::enClearCameraState_Lich);
-		//Dieフラグをtrueにする
-		m_dieFlag = true;
-
+		m_modelRender.SetAnimationSpeed(0.5f);
 		//ゲームマネージャーのプレイヤーの勝ちフラグを設定
 		GameManager::GetInstance()->SetPlayerWinFlag(true);
-
-
 		m_status.SetHp(0);
 		//技の途中でやられたかもしれない
 		if (m_darkWall != nullptr)
@@ -645,10 +646,36 @@ void Lich::OnProcessAttack_2StateTransition()
 
 void Lich::OnProcessDieStateTransition()
 {
+	if (m_isdeadEffectPlayFlag==true && m_deadEffect->IsPlay() != true)
+	{
+		//全ての処理が終わりもう削除されてもよい
+		GameManager::GetInstance()->SetBossDeleteOkFlag(true);
+		return;
+	}
+
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		DeleteGO(this);
+		if (m_deadEffect == nullptr)
+		{
+			//死亡エフェクト再生
+			//死亡時エフェクトの再生
+			m_deadEffect = NewGO<EffectEmitter>(0);
+			m_deadEffect->Init(InitEffect::enEffect_Mob_Dead);
+			m_deadEffect->Play();
+			m_deadEffect->SetPosition(m_position);
+			m_deadEffect->SetScale(g_vec3One * 8.0f);
+			m_deadEffect->Update();
+			//フレームレートを落とす
+			g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 60);
+		}
+		m_isdeadEffectPlayFlag = true;
+		//やられたのでモデルを表示しないようにする
+		m_dieFlag = true;
+
+		//モブモンスターを削除
+		DeleteMobMonster();
+		//DeleteGO(this);
 	}
 }
 
@@ -1019,7 +1046,25 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 
 void Lich::Render(RenderContext& rc)
 {
+	if (m_dieFlag == true)
+	{
+		return;
+	}
 	m_modelRender.Draw(rc);
 }
 
-
+void Lich::DeleteMobMonster()
+{
+	//モブモンスターが0体でないならリスト内のモブモンスターを死亡
+	int mobMonsterNum = CharactersInfoManager::GetInstance()->GetMobMonsters().size();
+	if (mobMonsterNum != 0)
+	{
+		for (auto mob : CharactersInfoManager::GetInstance()->GetMobMonsters())
+		{
+			mob->ProcessDead(false);
+			mob->Dead();
+			//リストから削除
+			CharactersInfoManager::GetInstance()->RemoveMobMonsterFormList(mob);
+		}
+	}
+}
