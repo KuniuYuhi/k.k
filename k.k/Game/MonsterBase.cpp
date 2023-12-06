@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "MonsterBase.h"
-//#include "FireBall.h"
-//#include "FlamePillar.h"
+
 
 MonsterBase::MonsterBase()
 {
