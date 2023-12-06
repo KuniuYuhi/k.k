@@ -27,8 +27,6 @@ bool Player::Start()
 
 	m_brave = NewGO<Brave>(0, "brave");
 	m_brave->SetPosition(m_position);
-	//勇者インスタンスを代入
-	CharactersInfoManager::GetInstance()->SetBraveInstance(m_brave);
 
 	//キャラクターの座標を設定
 	m_brave->SetPosition(START_POSITION);
@@ -67,18 +65,20 @@ bool Player::IsInaction()
 	//////////////////////////////////////////////////
 	// 行動出来なくなる条件
 	////////////////////////////////////////////////// 
-	//勝利したら 
-	if (GameManager::GetInstance()->GetPlayerWinFlag()==true)
+	//勝利したかつゲーム終了後の処理が終わったなら
+	if (GameManager::GetInstance()->GetPlayerWinFlag()==true&&
+		GameManager::GetInstance()->GetGameFinishProcessEndFlag())
 	{
 		//勝利時の処理実行
 		m_brave->ProcessWin();
-		//
+		//勝敗決定
 		m_decisionOutComeFlag = true;
 		return true;
 	}
 	//負けたら
 	if (GameManager::GetInstance()->GetPlayerLoseFlag() == true)
 	{
+		//勝敗決定
 		m_decisionOutComeFlag = true;
 		return true;
 	}
@@ -122,6 +122,19 @@ void Player::SetDamagedComboState(Actor::EnComboState damagedcombostate)
 Actor::EnComboState Player::GetNowComboState() const
 {
 	return m_brave->GetNowComboState();
+}
+
+void Player::ProcessPlayerDead()
+{
+	//やられていないなら処理しない
+	if (m_isPlayerDeadFlag != true)
+	{
+		return;
+	}
+
+
+
+
 }
 
 
