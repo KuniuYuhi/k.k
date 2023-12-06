@@ -3,7 +3,6 @@
 //#include "Level2DRender.h"
 
 class Player;
-class Lich;
 class BossStage1;
 class GameCamera;
 class ResultSeen;
@@ -13,6 +12,8 @@ class EntryBoss;
 class BattleStart;
 class Pause;
 class Boss;
+class GameFinishCamera;
+class BattlePhase;
 
 class Game:public IGameObject
 {
@@ -172,6 +173,10 @@ private:
 	/// </summary>
 	void CreateBoss();
 	/// <summary>
+	/// バトルフェーズクラス生成
+	/// </summary>
+	void CreateBattlePhase();
+	/// <summary>
 	/// スカイキューブの初期化
 	/// </summary>
 	void InitSkyCube();
@@ -186,11 +191,13 @@ private:
 
 	EnGameEndCameraState		m_clearCameraState = enClearCameraState_None;
 
+	BattlePhase*				m_battlePhase = nullptr;
 	Pause*						m_pause = nullptr;
 	Fade*						m_fade = nullptr;
 	Player*						m_player = nullptr;
-	Lich*						m_lich = nullptr;
 	Boss*						m_boss = nullptr;
+
+	GameFinishCamera* m_gameFinishCamera = nullptr;
 
 	BossStage1*					m_bossStage1 = nullptr;
 	GameCamera*					m_gameCamera = nullptr;

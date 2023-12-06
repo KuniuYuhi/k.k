@@ -3,7 +3,6 @@
 #include "GameCamera.h"
 #include "Player.h"
 #include "BossStage1.h"
-#include "Lich.h"
 #include "Result.h"
 #include "GameUI.h"
 #include "Fade.h"
@@ -19,6 +18,9 @@
 #include "GameManager.h"
 
 #include "Boss.h"
+
+#include "GameFinishCamera.h"
+#include "BattlePhase.h"
 
 //todo リッチが消える時に送られる勝敗がいじってないのに変わっている
 
@@ -55,12 +57,18 @@ Game::~Game()
 	DeleteGO(m_skyCube);
 	DeleteGO(m_bossStage1);
 	
-	GameManager::GetInstance()->DeletePlayerClass();
-	GameManager::GetInstance()->DeleteBossClass();
+	/*GameManager::GetInstance()->DeletePlayerClass();
+	GameManager::GetInstance()->DeleteBossClass();*/
 	DeleteGO(m_player);
 	DeleteGO(m_boss);
 
-	DeleteGO(m_gameCamera);
+	if (m_gameCamera != nullptr)
+	{
+		DeleteGO(m_gameCamera);
+	}
+
+	DeleteGO(m_gameFinishCamera);
+	DeleteGO(m_battlePhase);
 	DeleteGO(m_pause);
 
 	if (m_gameUI != nullptr)
@@ -119,14 +127,15 @@ bool Game::Fadecomplete()
 
 void Game::CreateBoss()
 {
-	//m_boss = NewGO<Boss>(0, "boss");
 	//ボスクラスの生成
 	GameManager::GetInstance()->CreateBoss();
 	m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
-	/*m_lich = NewGO<Lich>(0, "lich");
-	m_lich->SetPosition(BOSS_CREATE_POSITION);*/
-	//リッチのインスタンスを代入
-	//CharactersInfoManager::GetInstance()->SetLichInstance(m_lich);
+}
+
+void Game::CreateBattlePhase()
+{
+	//バトルフェーズ処理クラス生成
+	m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
 }
 
 void Game::InitSkyCube()
@@ -283,32 +292,24 @@ void Game::OnProcessGameTransition()
 
 void Game::OnProcessGameOverTransition()
 {
-	//ゲーム画面からリザルト画面に遷移するまでの処理
-	GoResult();
+	//バトル終了後の処理が終わったら
+	if (GameManager::GetInstance()->GetGameFinishProcessEndFlag() == true)
+	{
+		//ゲーム画面からリザルト画面に遷移するまでの処理
+		GoResult();
+		return;
+	}
+	
 }
 
 void Game::OnProcessGameClearTransition()
 {
-	if (m_displayResultFlag == true)
+	//バトル終了後の処理が終わったら
+	if (GameManager::GetInstance()->GetGameFinishProcessEndFlag() == true)
 	{
 		GoResult();
 		return;
 	}
-	//リザルト画面がない間
-	//リッチがいる間はカメラに移す
-
-
-	//m_lich = FindGO<Lich>("lich");
-	//if (m_lich == nullptr)
-	//{
-	//	//フレームレートを落とす
-	//	g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 60);
-	//	//ボスがいなくなったのでカメラの対象を変える
-	//	SetClearCameraState(Game::enClearCameraState_Player);
-	//	//リザルト画面表示
-	//	m_displayResultFlag = true;
-	//}
-
 }
 
 void Game::OnProcessPauseTransition()
@@ -341,6 +342,8 @@ void Game::OnProcessGame_FadeOutTransition()
 	{
 		//UI生成
 		CreateGameUI();
+		//バトルフェーズクラス生成の生成
+		CreateBattlePhase();
 		//このステートに入ってフェードアウトするとき
 		m_fade->StartFadeOut(3.0f);
 		//次のステップに進む
@@ -407,17 +410,22 @@ bool Game::IsOutcome()
 
 void Game::ProcessWin()
 {
+	//ゲームUIの削除
 	DeleteGO(m_gameUI);
-	//ステートを切り替える
-	GameManager::GetInstance()->SetGameSeenState(
-		GameManager::enGameSeenState_GameClear);
-	//カメラをリッチに向ける
-	m_gameCamera->SetLich(m_lich);
-	//カメラをリセットする
-	m_gameCamera->CameraRefresh();
+	//カメラの削除
+	DeleteGO(m_gameCamera);
+
+	//ゲーム終わったときのカメラ生成
+	m_gameFinishCamera = NewGO<GameFinishCamera>(0, "gamefinishcamera");
+
 	//BGMを消し始める
 	m_muteBGMFlag = true;
 	m_bgmVolume = g_soundManager->GetBGMVolume();
+
+	//ステートを切り替える
+	GameManager::GetInstance()->SetGameSeenState(
+		GameManager::enGameSeenState_GameClear);
+
 }
 
 void Game::ProcessLose()
@@ -436,7 +444,6 @@ void Game::CreateGameUI()
 	m_gameUI = NewGO<GameUI>(0, "gameUI");
 	m_gameUI->SetGame(this);
 	m_gameUI->SetPlayer(CharactersInfoManager::GetInstance()->GetPlayerInstance());
-	//m_gameUI->GetLich(m_lich);
 	m_gameUI->SetBoss(CharactersInfoManager::GetInstance()->GetBossInstance());
 }
 
@@ -449,9 +456,6 @@ void Game::InitGameObject()
 	//プレイヤークラスの生成
 	GameManager::GetInstance()->CreatePlayerClass();
 	m_player = CharactersInfoManager::GetInstance()->GetPlayerInstance();
-	//ゲームカメラの生成
-	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
-
 	//ゲームシーンステートがゲームスタートなら
 	if (GameManager::GetInstance()->GetGameSeenState() ==
 		GameManager::enGameSeenState_GameStart)
@@ -466,6 +470,9 @@ void Game::InitGameObject()
 		//ボスの生成
 		CreateBoss();
 	}
+
+	//ゲームカメラの生成
+	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 }
 
 void Game::InitLighting()
