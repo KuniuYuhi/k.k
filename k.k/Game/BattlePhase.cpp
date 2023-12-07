@@ -16,6 +16,7 @@
 #include "Cactus.h"
 
 //todo モンスターのリストがちゃんと消せない
+//エラーあり！！！！！！！！！！！！！！
 
 namespace {
 	//const int SUMMON_MONSTERS_CONUT = 10;
@@ -125,7 +126,7 @@ void BattlePhase::DeleteMobMonsters()
 	{
 		for (auto monster : CharactersInfoManager::GetInstance()->GetMobMonsters())
 		{
-			monster->ProcessDead();
+			monster->ProcessDead(false);
 			DeleteGO(monster);
 			CharactersInfoManager::GetInstance()->RemoveMobMonsterFormList(monster);
 		}
