@@ -20,16 +20,6 @@ public:
 
 	void CalcDirectionLight();
 
-
-	/// <summary>
-	/// ゲームクリア時にプレイヤーを見るカメラ
-	/// </summary>
-	void ClearCameraForPlayer();
-	/// <summary>
-	/// ゲームクリア時にBOSSを見るカメラ
-	/// </summary>
-	void ClearCameraForBoss();
-
 	/// <summary>
 	/// バトル開始時のカメラ
 	/// </summary>
@@ -42,24 +32,6 @@ public:
 	void ChaseCamera(bool Reversesflag = false);
 
 	/// <summary>
-	/// ゲームクリア時のカメラ
-	/// </summary>
-	/// <param name="targetPos"></param>
-	/// <param name="forward"></param>
-	/// <param name="X"></param>
-	/// <param name="Y"></param>
-	/// <param name="Yupbool"></param>
-	/// <param name="reversalFlag"></param>
-	void GameClearCamera(
-		Vector3 targetPos,
-		Vector3 forward,
-		float X,
-		float Y,
-		float Yup,
-		bool reversalFlag = false
-	);
-
-	/// <summary>
 	/// カメラのズーム処理
 	/// </summary>
 	void ZoomCamera();
@@ -67,8 +39,6 @@ public:
 	void ManageState();
 
 	void OnProcessGameTransition();
-	void OnProcessGameOverTransition();
-	void OnProcessGameClearTransition();
 
 
 	void CameraRefresh()

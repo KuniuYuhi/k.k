@@ -89,57 +89,18 @@ void GameCamera::Update()
 		OnProcessGameTransition();
 	}
 	
-
 	CalcDirectionLight();
 }
 
 void GameCamera::CalcDirectionLight()
 {
-	Vector3 pos1 = m_target;
-	pos1.y = 0.0f;
-	Vector3 pos2 = m_toCameraPos;
-	pos2.y = pos1.y + 800.0f;
-
-	Vector3 diff = pos1 - pos2;
-
-	diff.Normalize();
+	Vector3 forward = g_camera3D->GetForward();
+	forward.y = -0.3f;
+	forward.x = 1.0f;
+	forward.Normalize();
 
 	//xy軸だけ動かす
-	g_renderingEngine->SetDirLightDirection(diff);
-}
-
-void GameCamera::ClearCameraForPlayer()
-{
-	//注視点の計算
-	m_springCamera.Refresh();
-
-	m_target = m_player->GetPosition();
-	Vector3 forward = m_player->GetForward();
-	//forward *= -1.0f;
-	forward.Normalize();
-	//プレイヤーを見る
-	GameClearCamera(
-		m_target,
-		forward,
-		PLAYER_CAMERA_X,
-		PLAYER_CAMERA_Y,
-		TARGETPOS_YUP_WIN
-	);
-}
-
-void GameCamera::ClearCameraForBoss()
-{
-	//注視点の計算
-	m_target = m_lich->GetPosition();
-	Vector3 forward = m_lich->GetForward();
-	//リッチを見る
-	GameClearCamera(
-		m_target,
-		forward,
-		BOSS_CAMERA_X,
-		BOSS_CAMERA_Y,
-		TARGETPOS_YUP
-	);
+	g_renderingEngine->SetDirLightDirection(forward);
 }
 
 void GameCamera::SetBattleStartCamera()
@@ -227,47 +188,6 @@ void GameCamera::ChaseCamera(bool Reversesflag)
 	m_springCamera.Update();
 }
 
-void GameCamera::GameClearCamera(Vector3 targetPos, Vector3 forward, float X, float Y, float Yup, bool reversalFlag)
-{
-	//注視点の計算
-	m_target = targetPos;
-	//Y座標を上げる
-	m_target.y += Yup;
-	//前方向の取得
-	Vector3 CameraPosXZ = forward;
-	CameraPosXZ.y = 0.0f;
-	//反転させる
-	if (reversalFlag == true)
-	{
-		CameraPosXZ *= -1.0f;
-	}
-	//XZ方向の
-	if (X > 0.0f)
-	{
-		CameraPosXZ *= X;
-	}
-	//Y方向の
-	Vector3 CameraPosY = Vector3::AxisY;
-	//0より大きければ
-	if (Y > 0.0f)
-	{
-		CameraPosY *= Y;
-	}
-	
-
-	//カメラの座標
-	Vector3 newCameraPos = CameraPosXZ + CameraPosY;
-
-	Vector3 finalCameraPos = newCameraPos + m_target;
-
-	//視点と注視点を設定
-	m_springCamera.SetTarget(m_target);
-	m_springCamera.SetPosition(finalCameraPos);
-
-	//カメラの更新。
-	m_springCamera.Update();
-}
-
 void GameCamera::ZoomCamera()
 {
 	//LB押していないなら処理しない
@@ -304,13 +224,6 @@ void GameCamera::ManageState()
 		//ゲーム中
 		OnProcessGameTransition();
 		break;
-	case GameManager::enGameSeenState_GameOver:
-		//ゲームオーバー
-		OnProcessGameOverTransition();
-		break;
-	case GameManager::enGameSeenState_Pause:
-
-		break;
 	default:
 		break;
 	}
@@ -333,24 +246,3 @@ void GameCamera::OnProcessGameTransition()
 	ZoomCamera();
 
 }
-
-void GameCamera::OnProcessGameOverTransition()
-{
-}
-
-void GameCamera::OnProcessGameClearTransition()
-{
-	switch (m_game->GetClearCameraState())
-	{
-	case Game::enClearCameraState_Lich:
-		ClearCameraForBoss();
-		break;
-	case Game::enClearCameraState_Player:
-		ClearCameraForPlayer();
-		break;
-
-	default:
-		break;
-	}	
-}
-
