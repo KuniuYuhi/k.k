@@ -27,9 +27,9 @@
 namespace {
 
 	//スカイキューブの初期の明るさ
-	const float START_SKY_CUBE_LMINANCE = 1.07f;
+	const float START_SKY_CUBE_LMINANCE = 1.05f;
 
-	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.5f, 0.5f, 0.5f);
+	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.1f, 0.1f, 0.1f);
 
 	const Vector3 SPOT_LIGHT_COLOR = Vector3(40.0f, 10.0f, 10.0f);
 
@@ -37,7 +37,7 @@ namespace {
 	const Vector3 BOSS_CREATE_POSITION = Vector3(0.0f, 0.0f, 600.0f);
 	const Vector3 PLAYER_CREATE_POSITION = Vector3(0.0f, 0.0f, -400.0f);
 
-	const float AMBIENT_COLOR = 0.7f;
+	const float AMBIENT_COLOR = 1.0f;
 
 	const float SECOND = 60.0f;
 
