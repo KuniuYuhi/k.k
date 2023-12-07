@@ -15,7 +15,7 @@ namespace {
 
 	const float CHARGE_COMPLETE_TIME = 1.0f;
 
-	const float SHOT_ARROW_ANGLE = 30.0f;			//–î‚ðŒ‚‚Â‚Æ‚«‚ÌŠp“x
+	const float SHOT_ARROW_ANGLE = 40.0f;			//–î‚ðŒ‚‚Â‚Æ‚«‚ÌŠp“x
 }
 
 Bow::Bow()
