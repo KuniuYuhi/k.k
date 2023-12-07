@@ -103,6 +103,7 @@ float3 CalcLigFromhemiSphereLight(SPSIn psIn);
 float3 CalcNormalMap(SPSIn psIn);
 float4 CalcToonMap(SPSIn psIn,float3 lightDirection);
 float4 CalcOutLine(SPSIn psIn,float4 color);
+float3 CalcLimLight(SPSIn psIn);
 
 /// <summary>
 /// 頂点シェーダーのコア関数。
@@ -189,11 +190,23 @@ SPSOut PSMainCore(SPSIn psIn, int isToon, int isShadowCaster) : SV_Target0
 		hemiLig = CalcLigFromhemiSphereLight(psIn);
 	}
 
+    float3 finalAmbient = ambient;
+	//リムライトの処理
+    float limLight = 0.0f;
+    if (isShadowCaster)
+    {
+        limLight = CalcLimLight(psIn);
+		
+        finalAmbient = 0.9f;
+    }
+	
 	//ディレクションライトと環境光をたす				
-	float3 lig = directionLig + pointLig + spotLig + hemiLig + ambient;
+    float3 lig = directionLig + pointLig + 
+						spotLig + hemiLig + finalAmbient + limLight;
+	
 	//アルベドカラーをサンプリング
 	float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
-
+	//ライトを乗算
 	albedoColor.xyz*=lig;
 
 	//輪郭線の計算
@@ -289,20 +302,8 @@ float3 CalcLigFromDrectionLight(SPSIn psIn,float3 normal)
 	float3 specDirection=CalcPhongSpecular(
 		directionLight.direction,directionLight.color,psIn.worldPos,normal,psIn.uv);
 
-	//リムライトを使用するなら
-	//サーフェイスの法線と光の入射方向に依存するリムの強さを求める
-	float power1=1.0f-max(0.0f,dot(directionLight.direction,normal));
-	//サーフェイスの法線と視線の方向に依存するリムの強さを求める
-	float power2=1.0f-max(0.0f,psIn.normalInView.z*-1.0f);
-	//最終的なリムの強さを求める
-	float limPower=power1*power2;
-	//強さを指数関数的にする
-	limPower=pow(limPower,1.0f);
-	//リムライトのカラーを計算する
-	float3 limColor=limPower*directionLight.color;
-
 	//最終的な光
-	return diffDirection+specDirection/*+limColor*/;
+	return diffDirection + specDirection;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -520,6 +521,22 @@ float4 CalcOutLine(SPSIn psIn,float4 color)
 
 	return color;
 }
+
+////////////////////////////////////////////////////////////////////////////////////
+///リムライトの計算
+////////////////////////////////////////////////////////////////////////////////////
+float3 CalcLimLight(SPSIn psIn)
+{
+	// サーフェイスの法線を利用してリムライトの強さを求める。
+    //カメラ空間でのZ値の値を使って、リムライトの強さを計算する
+    //psIn.normalInView=カメラ空間での法線
+    float limLight = 1.0f - max(0.0f, psIn.normalInView.z * -1.0f);
+	// pow()を使用して、強さの変化を指数関数的にする
+    limLight = pow(limLight, 1.5f) * 1.1f;
+	
+    return limLight;
+}
+
 
 //普通のピクセルシェーダーの処理
 SPSOut PSMain(SPSIn psIn) : SV_Target0
