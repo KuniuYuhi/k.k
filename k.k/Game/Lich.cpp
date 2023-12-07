@@ -54,7 +54,7 @@ namespace {
 	const float ROT_ONLY_SPEED = 5.0f;
 
 	//ステータス
-	int MAXHP = 50;
+	int MAXHP = 200;
 	int MAXMP = 500;
 	int ATK = 20;
 	float SPEED = 160.0f;
@@ -137,7 +137,7 @@ bool Lich::Start()
 	//todo　newする必要ない
 	m_lichAction = new LichAction(this);
 	//優先度設定する
-	m_lichAction->SettingPriority();
+	//m_lichAction->SettingPriority();
 	
 	return true;
 }
@@ -223,7 +223,7 @@ void Lich::Update()
 	Move();
 	Rotation(ROT_SPEED, ROT_ONLY_SPEED);
 
-	//DecideNextAction();
+	DecideNextAction();
 
 	ManageState();
 	PlayAnimation();
