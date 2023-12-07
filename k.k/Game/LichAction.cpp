@@ -24,7 +24,7 @@ int LichAction::NextAction()
 
 	CalcEvalAttack2(enAttack_2);
 
-	CalcEvalSummon(enAttack_Summon);
+	//CalcEvalSummon(enAttack_Summon);
 
 	CalcEvalDarkMeteorite(enAttack_DarkMeteorite);
 
@@ -203,7 +203,7 @@ void LichAction::CalcEvalDarkMeteorite(EnActionNumber m_enActionNumber)
 	//前の行動が召喚ならこの行動の評価値を上げる
 	if (m_oldActionNumber == enAttack_Summon)
 	{
-		m_action[m_enActionNumber].m_eval += 40;
+		m_action[m_enActionNumber].m_eval += 20;
 	}
 
 	m_action[m_enActionNumber].m_eval += 10;
