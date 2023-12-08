@@ -57,8 +57,6 @@ Game::~Game()
 	DeleteGO(m_skyCube);
 	DeleteGO(m_bossStage1);
 	
-	/*GameManager::GetInstance()->DeletePlayerClass();
-	GameManager::GetInstance()->DeleteBossClass();*/
 	DeleteGO(m_player);
 	DeleteGO(m_boss);
 
@@ -135,7 +133,7 @@ void Game::CreateBoss()
 void Game::CreateBattlePhase()
 {
 	//バトルフェーズ処理クラス生成
-	m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
+	//m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
 }
 
 void Game::InitSkyCube()

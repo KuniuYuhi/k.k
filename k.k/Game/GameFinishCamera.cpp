@@ -89,7 +89,7 @@ void GameFinishCamera::OnProcessChasePlayerTransition()
 
 void GameFinishCamera::OnProcessFinishTransition()
 {
-	//
+	//‘S‚Ä‚Ìˆ—I‚í‚è
 	GameManager::GetInstance()->SetGameFinishProcessEndFlag(true);
 }
 
