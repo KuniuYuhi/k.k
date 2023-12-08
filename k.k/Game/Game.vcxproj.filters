@@ -378,18 +378,34 @@
     <ClCompile Include="SummonerState_NAttack_3.cpp">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
     </ClCompile>
-    <ClCompile Include="SummonerState_Walk.cpp" />
-    <ClCompile Include="SummonerState_Angry.cpp" />
-    <ClCompile Include="SummonerState_Die.cpp" />
-    <ClCompile Include="SummonerState_Hit.cpp" />
-    <ClCompile Include="SummonerState_Warp.cpp" />
-    <ClCompile Include="SummonerState_Summon.cpp" />
-    <ClCompile Include="SummonerState_Victory.cpp" />
-    <ClCompile Include="SummonerState_Command.cpp" />
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="BattlePhase.cpp" />
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="GameFinishCamera.cpp" />
+    <ClCompile Include="SummonerState_Angry.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_Command.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_Die.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_Hit.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_Summon.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_Victory.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_Walk.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_Warp.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -737,17 +753,33 @@
     <ClInclude Include="SummonerState_NAttack_3.h">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
     </ClInclude>
-    <ClInclude Include="SummonerState_Walk.h" />
-    <ClInclude Include="SummonerState_Angry.h" />
-    <ClInclude Include="SummonerState_Die.h" />
-    <ClInclude Include="SummonerState_Hit.h" />
-    <ClInclude Include="SummonerState_Warp.h" />
-    <ClInclude Include="SummonerState_Summon.h" />
-    <ClInclude Include="SummonerState_Victory.h" />
-    <ClInclude Include="SummonerState_Command.h" />
     <ClInclude Include="Pause.h" />
     <ClInclude Include="BattlePhase.h" />
     <ClInclude Include="Boss.h" />
     <ClInclude Include="GameFinishCamera.h" />
+    <ClInclude Include="SummonerState_Warp.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_Angry.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_Command.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_Die.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_Hit.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_Summon.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_Victory.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_Walk.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
