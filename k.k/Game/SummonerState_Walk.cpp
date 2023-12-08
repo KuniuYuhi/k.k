@@ -5,7 +5,7 @@
 void SummonerState_Walk::ManageState()
 {
 	//ˆÚ“®ˆ—
-	m_summoner->ProcessMove();
+	//m_summoner->ProcessMove();
 
 	m_summoner->ProcessCommonStateTransition();
 }

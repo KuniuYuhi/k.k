@@ -23,6 +23,10 @@
 #include "LichStateWarp.h"
 
 #include "CharactersInfoManager.h"
+#include "GameManager.h"
+
+#include "InitEffect.h"
+
 
 
 namespace {
@@ -78,10 +82,17 @@ Lich::~Lich()
 		delete m_lichAction;
 	}
 	//勝敗が決まったら場合でないなら処理しない。終わる時にエフェクトが再生されるためエラーがでるから
-	if (m_game->GetEnOutCome() == Game::enOutCome_None)
+	if (GameManager::GetInstance()->GetOutComeState()==GameManager::enOutComeState_None)
 	{
 		return;
 	}
+
+	//死んだときにモブモンスターを消しているので消す必要なし
+	if (m_dieFlag == true)
+	{
+		return;
+	}
+
 	//モブモンスターが0体でないならリスト内のモブモンスターを死亡
 	int mobMonsterNum = CharactersInfoManager::GetInstance()->GetMobMonsters().size();
 	if (mobMonsterNum != 0)
@@ -126,7 +137,7 @@ bool Lich::Start()
 	//todo　newする必要ない
 	m_lichAction = new LichAction(this);
 	//優先度設定する
-	m_lichAction->SettingPriority();
+	//m_lichAction->SettingPriority();
 	
 	return true;
 }
@@ -212,7 +223,7 @@ void Lich::Update()
 	Move();
 	Rotation(ROT_SPEED, ROT_ONLY_SPEED);
 
-	//DecideNextAction();
+	DecideNextAction();
 
 	ManageState();
 	PlayAnimation();
@@ -223,23 +234,30 @@ void Lich::Update()
 
 bool Lich::IsStopProcessing()
 {
+	//ゲームステート以外なら
+	if (GameManager::GetInstance()->GetGameSeenState() !=
+		GameManager::enGameSeenState_Game)
+	{
+		return true;
+	}
+
 	//勝敗が決まったら
 	if (m_enOutCome != enOutCome_None)
 	{
 		return true;
 	}
 
-	switch (m_game->GetEnOutCome())
+	switch (GameManager::GetInstance()->GetOutComeState())
 	{
 		//負けた
-	case Game::enOutCome_Player_Win:
+	case GameManager::enOutComeState_PlayerWin:
 		//勝敗ステートの設定
 		SetEnOutCome(enOutCome_Lose);
 		return true;
 		break;
 
 		//勝った
-	case Game::enOutCome_Player_Lose:
+	case GameManager::enOutComeState_PlayerLose:
 		//勝敗ステートの設定
 		SetEnOutCome(enOutCome_Win);
 		//ダークメテオの削除
@@ -302,7 +320,7 @@ void Lich::Damage(int attack)
 	//怒りモードカウントを増やす
 	m_angryModeCount++;
 
-	if (m_status.hp > 0)
+	if (m_status.GetHp() > 0)
 	{
 		//一定確率で怯む。怒りモードの時はひるまない
 		if (m_enAnimationState != enAnimationState_Angry && Isflinch() == true)
@@ -319,9 +337,9 @@ void Lich::Damage(int attack)
 		}
 
 		//HPを減らす
-		m_status.hp -= attack;
+		m_status.CalcHp(attack, false);
 		//HPが半分になったら
-		if (m_status.hp <= m_status.maxHp / 2)
+		if (m_status.GetHp() <= m_status.GetMaxHp() / 2)
 		{
 			m_halfHpFlag = true;
 			//攻撃間隔を短くする
@@ -329,17 +347,14 @@ void Lich::Damage(int attack)
 		}
 	}
 	//やられたとき
-	if(m_status.hp <= 0)
+	if(m_status.GetHp() <= 0)
 	{
 		//やられるところをゆっくりにする
 		//フレームレートを落とす
 		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 30);
-		//自身が倒されたらことをゲームに伝える
-		m_game->SetDeathBossFlag(true);
-		//カメラがリッチを追うようにする
-		m_game->SetClearCameraState(Game::enClearCameraState_Lich);
-		//Dieフラグをtrueにする
-		m_dieFlag = true;
+		m_modelRender.SetAnimationSpeed(0.4f);
+		//ゲームマネージャーのプレイヤーの勝ちフラグを設定
+		GameManager::GetInstance()->SetPlayerWinFlag(true);
 		m_status.SetHp(0);
 		//技の途中でやられたかもしれない
 		if (m_darkWall != nullptr)
@@ -631,10 +646,36 @@ void Lich::OnProcessAttack_2StateTransition()
 
 void Lich::OnProcessDieStateTransition()
 {
+	if (m_isdeadEffectPlayFlag==true && m_deadEffect->IsPlay() != true)
+	{
+		//全ての処理が終わりもう削除されてもよい
+		GameManager::GetInstance()->SetBossDeleteOkFlag(true);
+		return;
+	}
+
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		DeleteGO(this);
+		if (m_deadEffect == nullptr)
+		{
+			//死亡エフェクト再生
+			//死亡時エフェクトの再生
+			m_deadEffect = NewGO<EffectEmitter>(0);
+			m_deadEffect->Init(InitEffect::enEffect_Mob_Dead);
+			m_deadEffect->Play();
+			m_deadEffect->SetPosition(m_position);
+			m_deadEffect->SetScale(g_vec3One * 8.0f);
+			m_deadEffect->Update();
+			//フレームレートを落とす
+			g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 60);
+		}
+		m_isdeadEffectPlayFlag = true;
+		//やられたのでモデルを表示しないようにする
+		m_dieFlag = true;
+
+		//モブモンスターを削除
+		DeleteMobMonster();
+		//DeleteGO(this);
 	}
 }
 
@@ -832,8 +873,7 @@ void Lich::CreateDarkWall()
 void Lich::CreateDarkBall(bool AddBallFlag)
 {
 	DarkBall* darkBall = NewGO<DarkBall>(0, "darkball");
-	darkBall->SetLich(this);
-	darkBall->SetAtk(m_status.atk);
+	darkBall->SetAtk(m_status.GetAtk());
 	darkBall->Setting(m_position, m_rotation);
 	//更にダークボールを生成しないなら
 	if (AddBallFlag != true)
@@ -843,15 +883,13 @@ void Lich::CreateDarkBall(bool AddBallFlag)
 	Quaternion right = m_rotation;
 	right.AddRotationDegY(ADD_CREATE_DARK_BALL_1_Y);
 	DarkBall* darkBall2 = NewGO<DarkBall>(0, "darkball");
-	darkBall2->SetLich(this);
-	darkBall2->SetAtk(m_status.atk);
+	darkBall2->SetAtk(m_status.GetAtk());
 	darkBall2->Setting(m_position, right);
 
 	right = m_rotation;
 	right.AddRotationDegY(ADD_CREATE_DARK_BALL_2_Y);
 	DarkBall* darkBall3 = NewGO<DarkBall>(0, "darkball");
-	darkBall3->SetLich(this);
-	darkBall3->SetAtk(m_status.atk);
+	darkBall3->SetAtk(m_status.GetAtk());
 	darkBall3->Setting(m_position, right);
 
 	//あと二つ生成する
@@ -864,8 +902,7 @@ void Lich::AddCreateDarkBall(DarkBall* darkBall, const char* name, float degY)
 	Quaternion right = m_rotation;
 	right.AddRotationDegY(degY);
 	darkBall = NewGO<DarkBall>(0, name);
-	darkBall->SetLich(this);
-	darkBall->SetAtk(m_status.atk);
+	darkBall->SetAtk(m_status.GetAtk());
 	darkBall->Setting(m_position, right);
 }
 
@@ -918,7 +955,7 @@ bool Lich::IsCollisionDetection()
 void Lich::HitNormalAttack()
 {
 	//１コンボの間に1回だけ判定
-			//ダメージを受けた時のコンボステートと現在のコンボステートが違うなら
+	//ダメージを受けた時のコンボステートと現在のコンボステートが違うなら
 	if (m_player->IsComboStateSame() == true)
 	{
 		Damage(m_player->GetAtk());
@@ -1005,7 +1042,25 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 
 void Lich::Render(RenderContext& rc)
 {
+	if (m_dieFlag == true)
+	{
+		return;
+	}
 	m_modelRender.Draw(rc);
 }
 
-
+void Lich::DeleteMobMonster()
+{
+	//モブモンスターが0体でないならリスト内のモブモンスターを死亡
+	int mobMonsterNum = CharactersInfoManager::GetInstance()->GetMobMonsters().size();
+	if (mobMonsterNum != 0)
+	{
+		for (auto mob : CharactersInfoManager::GetInstance()->GetMobMonsters())
+		{
+			mob->ProcessDead(false);
+			mob->Dead();
+			//リストから削除
+			CharactersInfoManager::GetInstance()->RemoveMobMonsterFormList(mob);
+		}
+	}
+}

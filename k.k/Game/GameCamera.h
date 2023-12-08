@@ -5,8 +5,9 @@
 
 class Game;
 class Player;
-class EntryBoss;
 class Lich;
+class Boss;
+
 
 class GameCamera:public IGameObject
 {
@@ -19,25 +20,10 @@ public:
 
 	void CalcDirectionLight();
 
-
-	/// <summary>
-	/// ゲームクリア時にプレイヤーを見るカメラ
-	/// </summary>
-	void ClearCameraForPlayer();
-	/// <summary>
-	/// ゲームクリア時にBOSSを見るカメラ
-	/// </summary>
-	void ClearCameraForBoss();
-
 	/// <summary>
 	/// バトル開始時のカメラ
 	/// </summary>
 	void SetBattleStartCamera();
-
-	/// <summary>
-	/// ボスを追うカメラ
-	/// </summary>
-	void ChaseBossCamera();
 
 	/// <summary>
 	/// プレイヤーを追うカメラ
@@ -46,41 +32,13 @@ public:
 	void ChaseCamera(bool Reversesflag = false);
 
 	/// <summary>
-	/// ゲームスタート時のカメラ
-	/// </summary>
-	void GameStartCamera();
-
-	/// <summary>
-	/// ゲームクリア時のカメラ
-	/// </summary>
-	/// <param name="targetPos"></param>
-	/// <param name="forward"></param>
-	/// <param name="X"></param>
-	/// <param name="Y"></param>
-	/// <param name="Yupbool"></param>
-	/// <param name="reversalFlag"></param>
-	void GameClearCamera(
-		Vector3 targetPos,
-		Vector3 forward,
-		float X,
-		float Y,
-		float Yup,
-		bool reversalFlag = false
-	);
-
-	/// <summary>
 	/// カメラのズーム処理
 	/// </summary>
 	void ZoomCamera();
 
-
 	void ManageState();
 
-	void OnProcessGameStartTransition();
-	void OnProcessAppearanceBossTransition();
 	void OnProcessGameTransition();
-	void OnProcessGameOverTransition();
-	void OnProcessGameClearTransition();
 
 
 	void CameraRefresh()
@@ -99,7 +57,7 @@ public:
 private:
 	Game* m_game = nullptr;
 	Player* m_player = nullptr;
-	EntryBoss* m_entryBoss = nullptr;
+	Boss* m_boss = nullptr;
 	Lich* m_lich = nullptr;
 
 	CameraCollisionSolver	m_cameraCollisionSolver;
@@ -121,9 +79,7 @@ private:
 
 	bool SetBattleCameraFlag = false;
 
-	float m_time = 0.0f;
 
-	float m_count = 1.0f;
 
 };
 

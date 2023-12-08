@@ -34,6 +34,17 @@ public:
 	{
 		return m_FadeState != FadeIdle;
 	}
+
+	const bool& IsFadeIn() const
+	{
+		return m_FadeState == FadeIn;
+	}
+	const bool& IsFadeOut() const
+	{
+		return m_FadeState == FadeOut;
+	}
+
+
 	/// <summary>
 	/// ƒ¿’l‚ğæ“¾B
 	/// </summary>

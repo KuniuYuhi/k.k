@@ -224,7 +224,7 @@ public:
 	/// <returns>trueで攻撃可能、falseで攻撃不可能</returns>
 	const bool& IsWeaponEndurance() const
 	{
-		if (m_status.endurance > 0)
+		if (m_status.GetEndurance() > 0)
 		{
 			return true;
 		}

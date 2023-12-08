@@ -2,9 +2,9 @@
 
 #include "MobMonster.h"
 
-class Brave;		//勇者クラス
-class Lich;			//リッチ(ボス)
 class MobMonster;	//モブモンスター
+class Player;		//プレイヤー
+class Boss;			//ボス
 
 //todo 取得するのがポインタである必要があるのか
 
@@ -27,6 +27,8 @@ public:
 	/// </summary>
 	static void DeleteInstance()
 	{
+
+
 		delete m_charactersInfoInstance;
 		m_charactersInfoInstance = nullptr;
 	}
@@ -41,48 +43,64 @@ public:
 	}
 
 	/// <summary>
-	/// 勇者インスタンスの設定
+	/// プレイヤーインスタンスの設定
 	/// </summary>
 	/// <param name="brave"></param>
-	void SetBraveInstance(Brave* brave)
+	void SetPlayerInstance(Player* player)
 	{
 		//既にインスタンスが代入されているなら
-		if (m_braveInstance != nullptr)
+		if (m_playerInstance != nullptr)
 		{
 			std::abort();
 		}
-		m_braveInstance = brave;
+		m_playerInstance = player;
 	}
 	/// <summary>
-	/// 勇者インスタンスの取得
+	/// プレイヤーインスタンスの取得
 	/// </summary>
 	/// <returns></returns>
-	Brave* GetBraveInstance()
+	Player* GetPlayerInstance()
 	{
-		return m_braveInstance;
+		return m_playerInstance;
+	}
+	/// <summary>
+	/// プレイヤーインスタンスの削除
+	/// </summary>
+	void DeletePlayerInstance()
+	{
+		//DeleteGO(m_playerInstance);
 	}
 
 	/// <summary>
-	/// リッチインスタンスの設定
+	/// ボスインスタンスの設定
 	/// </summary>
-	/// <param name="brave"></param>
-	void SetLichInstance(Lich* lich)
+	/// <param name="boss"></param>
+	void SetBossInstance(Boss* boss)
 	{
 		//既にインスタンスが代入されているなら
-		if (m_lichInstance != nullptr)
+		if (m_bossInstance != nullptr)
 		{
 			std::abort();
 		}
-		m_lichInstance = lich;
+		m_bossInstance = boss;
 	}
 	/// <summary>
-	/// リッチインスタンスの取得
+	/// ボスインスタンスの取得
 	/// </summary>
 	/// <returns></returns>
-	Lich* GetLichInstance()
+	Boss* GetBossInstance()
 	{
-		return m_lichInstance;
+		return m_bossInstance;
 	}
+
+	/// <summary>
+	/// ボスインスタンスの削除
+	/// </summary>
+	void DeleteBossInstance()
+	{
+		//DeleteGO(m_bossInstance);
+	}
+
 
 	/// <summary>
 	/// モブモンスターのリストに情報を追加
@@ -117,10 +135,20 @@ public:
 		return m_mobMonsters;
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="number"></param>
+	/// <returns></returns>
+	MobMonster* GetMobMonster(int number)
+	{
+		return m_mobMonsters[number];
+	}
+
 
 private:
-	Brave* m_braveInstance;			//勇者のインスタンス
-	Lich* m_lichInstance;			//リッチのインスタンス
+	Boss* m_bossInstance;
+	Player* m_playerInstance;		//プレイヤーのインスタンス
 
 	std::vector<MobMonster*> m_mobMonsters;			//モブモンスターのリスト
 

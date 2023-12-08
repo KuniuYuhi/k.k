@@ -24,7 +24,7 @@ DarkWall::~DarkWall()
 bool DarkWall::Start()
 {
     //UŒ‚—Í‚ðÝ’è
-    m_attak = m_lich->GetStatus().atk;
+    m_attak = m_lich->GetStatus().GetAtk();
 
     m_position = AppltMatrixToPosition();
     m_rotation = m_lich->GetRotation();

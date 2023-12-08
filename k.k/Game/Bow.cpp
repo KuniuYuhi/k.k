@@ -15,7 +15,7 @@ namespace {
 
 	const float CHARGE_COMPLETE_TIME = 1.0f;
 
-	const float SHOT_ARROW_ANGLE = 30.0f;			//矢を撃つときの角度
+	const float SHOT_ARROW_ANGLE = 40.0f;			//矢を撃つときの角度
 }
 
 Bow::Bow()
@@ -67,7 +67,7 @@ void Bow::Update()
 	}
 
 	//矢の数が残っているなら、矢を生成
-	if (m_status.endurance > 0)
+	if (m_status.GetEndurance() > 0)
 	{
 		IsCreatArrow();
 	}
@@ -100,7 +100,7 @@ void Bow::MoveWeapon()
 void Bow::ProcessSkillAttack()
 {
 	//矢のストックがないならスキル発動できない
-	if (m_status.endurance <= 0)
+	if (m_status.GetEndurance() <= 0)
 	{
 		return;
 	}

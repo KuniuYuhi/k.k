@@ -16,7 +16,7 @@ namespace {
 
 	//ステータス
 	const int POWER = 30;
-	const int ENDURANCE = 10;		//武器の耐久力(盾の耐久力)。
+	const int ENDURANCE = 70;		//武器の耐久力(盾の耐久力)。
 }
 
 SwordShield::SwordShield()

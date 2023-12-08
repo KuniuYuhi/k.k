@@ -20,4 +20,14 @@ public:
 
 private:
 
+	/// <summary>
+	/// 死亡時のエフェクト再生
+	/// </summary>
+	void CreateDeadEffect();
+
+
+private:
+
+	EffectEmitter* m_deadEffect = nullptr;	//死亡エフェクト
+	bool m_isdeadEffectPlayFlag = false;
 };

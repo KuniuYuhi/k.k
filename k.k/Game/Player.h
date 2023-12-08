@@ -28,6 +28,23 @@ public:
 	bool IsDeadPlayer();
 
 	/// <summary>
+	/// 座標の設定
+	/// </summary>
+	/// <param name="position"></param>
+	void SetPosition(Vector3 position)
+	{
+		m_position = position;
+	}
+
+	/// <summary>
+	/// 座標の設定
+	/// </summary>
+	/// <param name="position"></param>
+	void SetPlayerPosition(Vector3 position)
+	{
+		m_brave->SetPosition(position);
+	}
+	/// <summary>
 	/// 座標の取得。現在のアクターの座標
 	/// </summary>
 	/// <returns></returns>
@@ -198,7 +215,34 @@ public:
 		return m_brave->GetChangeTargetUseWeapon();
 	}
 
+	/// <summary>
+	/// プレイヤーがやられたかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetIsPlayerDeadFlag(bool flag)
+	{
+		m_isPlayerDeadFlag = flag;
+	}
+	/// <summary>
+	/// プレイヤーがやられたかのフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetmIsPlayerDeadFlag() const
+	{
+		return m_isPlayerDeadFlag;
+	}
+
+
 private:
+	/// <summary>
+	/// プレイヤーがやられたか後の処理
+	/// </summary>
+	void ProcessPlayerDead();
+
+
+private:
+
+
 	Game*						m_game = nullptr;
 	Brave*						m_brave = nullptr;
 
@@ -221,7 +265,7 @@ private:
 
 	bool						m_decisionOutComeFlag = false;
 
-
+	bool						m_isPlayerDeadFlag = false;		//プレイヤーがやられたかのフラグ
 
 };
 

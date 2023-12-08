@@ -174,7 +174,7 @@ void Brave::ProcessDefend()
 void Brave::Damage(int damage)
 {
 	//HPが0より大きいなら被ダメージ処理
-	if (GetStatus().hp > 0)
+	if (GetStatus().GetHp() > 0)
 	{
 		//コンボが繋がっている時にダメージを受けたかもしれないのでリセット
 		m_attackPatternState = enAttackPattern_None;
@@ -212,14 +212,19 @@ void Brave::Damage(int damage)
 		SetInvicibleTimeFlag(true);
 	}
 	//HPが0以下なら
-	if (GetStatus().hp <= 0)
+	if (GetStatus().GetHp() <= 0)
 	{
 		//やられたのでdieFlagをtrueにする
 		SetDieFlag(true);
+		//プレイヤーがやられたので負けたことをゲームマネージャーに教える
+		GameManager::GetInstance()->SetPlayerLoseFlag(true);
 		//点滅しないようにする
 		SetInvicibleTimeFlag(false);
 		//HPを0に固定する
 		m_status.SetHp(0);
+
+		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 30);
+		m_modelRender.SetAnimationSpeed(0.5f);
 		//死亡ステートに遷移
 		SetNextAnimationState(enAnimationState_Die);
 	}
@@ -230,6 +235,11 @@ const bool& Brave::IsInaction() const
 	//行動出来なくなる条件
 	//プレイヤークラスの関数の動けない条件がtrueなら
 	if (m_player->IsInaction() == true)
+	{
+		return true;
+	}
+	//敵を倒したら
+	if (GameManager::GetInstance()->GetPlayerWinFlag() == true)
 	{
 		return true;
 	}
@@ -568,6 +578,9 @@ void Brave::ProcessDieStateTransition()
 	{
 		//やられたのでdieFlagをtrueにする
 		SetDieFlag(true);
+		//バトル終了後の処理終わり
+		GameManager::GetInstance()->SetGameFinishProcessEndFlag(true);
+		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 60);
 	}
 }
 
@@ -627,7 +640,7 @@ void Brave::ReverseWeapon(EnWeapons changeTargetWeaponType)
 	ChangeUseSubWeapon->weapon->ReverseWeaponState();
 	//逆参照あった
 	//攻撃力を現在の武器のものに変更。
-	m_status.atk = m_mainUseWeapon.weapon->GetWeaponPower();
+	m_status.SetAtk(m_mainUseWeapon.weapon->GetWeaponPower());
 	//多段ヒット判定フラグをセット
 	m_mainUseWeapon.weapon->SetHittableFlag(true);
 	//武器を切り替えた
@@ -695,7 +708,7 @@ void Brave::SettingWeapons()
 	m_currentAnimationStartIndexNo
 		= m_mainUseWeapon.weaponAnimationStartIndexNo;
 	//武器の攻撃力を自身の攻撃力に設定
-	m_status.atk = m_mainUseWeapon.weapon->GetWeaponPower();
+	m_status.SetAtk(m_mainUseWeapon.weapon->GetWeaponPower());
 }
 
 void Brave::SettingChangeWeapon(
@@ -765,7 +778,7 @@ void Brave::RoadOneHandSwordAnimationClip(int mainWeaponAnimationStartIndexNo)
 		{ "Assets/animData/character/Player/OneHandSword/Die.tka", false },
 		{"Assets/animData/character/Player/OneHandSword/ChangeSwordShield.tka",false},
 		{"Assets/animData/character/Player/OneHandSword/Win_start.tka",false},
-		{"Assets/animData/character/Player/OneHandSword/Win_main.tka",false},
+		{"Assets/animData/character/Player/OneHandSword/Win_main.tka",true},
 		{"Assets/animData/character/Player/OneHandSword/Attack_1.tka",false},
 		{"Assets/animData/character/Player/OneHandSword/Attack_2.tka",false},
 		{"Assets/animData/character/Player/OneHandSword/Attack_3.tka",false},
@@ -791,7 +804,7 @@ void Brave::RoadTwoHandSwordAnimationClip(int mainWeaponAnimationStartIndexNo)
 		{ "Assets/animData/character/Player/TwoHandSword/Die.tka", false },
 		{"Assets/animData/character/Player/TwoHandSword/ChangeTwoHandSword.tka",false},
 		{"Assets/animData/character/Player/TwoHandSword/Win_Start.tka",false},
-		{"Assets/animData/character/Player/TwoHandSword/Win_Main.tka",false},
+		{"Assets/animData/character/Player/TwoHandSword/Win_Main.tka",true},
 		{"Assets/animData/character/Player/TwoHandSword/Attack_1.tka",false},
 		{"Assets/animData/character/Player/TwoHandSword/Attack_2.tka",false},
 		{"Assets/animData/character/Player/TwoHandSword/Attack_3.tka",false},
@@ -817,7 +830,7 @@ void Brave::RoadBowAnimationClip(int mainWeaponAnimationStartIndexNo)
 		{ "Assets/animData/character/Player/Bow/Die.tka", false },
 		{"Assets/animData/character/Player/Bow/ChangeBow.tka",false},
 		{"Assets/animData/character/Player/Bow/Win_Start.tka",false},
-		{"Assets/animData/character/Player/Bow/Win_Main.tka",false},
+		{"Assets/animData/character/Player/Bow/Win_Main.tka",true},
 		{"Assets/animData/character/Player/Bow/Attack_1.tka",false},
 		{"Assets/animData/character/Player/Bow/Attack_2.tka",false},
 		{"Assets/animData/character/Player/Bow/Attack_3.tka",false},

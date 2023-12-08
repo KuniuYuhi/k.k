@@ -1,6 +1,9 @@
 #pragma once
+#include "CameraCollisionSolver.h"
+#include "SpringCamera.h"
 
 class Game;
+class Fade;
 
 class EntryBoss:public IGameObject
 {
@@ -167,6 +170,18 @@ private:
 	/// </summary>
 	void OnProcessFogRemovalStateTransition();
 
+	/// <summary>
+	/// ボスを追うカメラ
+	/// </summary>
+	void ChaseBossCamera();
+
+	/// <summary>
+	/// ボス登場ムービースキップ処理
+	/// </summary>
+	void BossMovieSkip();
+
+private:
+
 
 	/// <summary>
 	/// リッチの文字列ステート
@@ -187,7 +202,10 @@ private:
 		Vector3 m_endPosition = g_vec3Zero;
 	};
 
+	CameraCollisionSolver	m_cameraCollisionSolver;
+	SpringCamera			m_springCamera;
 
+	Fade*						m_fade = nullptr;
 	Game*						m_game = nullptr;
 	SkyCube*					m_skyCube = nullptr;
 	EffectEmitter*				m_CircleEffect = nullptr;
@@ -197,6 +215,11 @@ private:
 	Vector3						m_position = g_vec3Zero;
 	Quaternion					m_rotation = g_quatIdentity;
 	Vector3						m_scale = g_vec3One;
+
+	Vector3				m_toCameraPosForBoss = Vector3::Zero;	//カメラ位置から注視点(ボス)に向かうベクトル
+	Vector3				m_target = Vector3::Zero;		//カメラ注視点
+	Vector3				m_pos1 = Vector3::Zero;
+	Vector3				m_pos2 = Vector3::Zero;
 
 	Vector3						m_finalAmbientColor = g_vec3One;
 
@@ -208,6 +231,8 @@ private:
 	SpriteRender				m_PressAButton;									//右下のテキストの画像
 
 	LichCharInfo				m_lichCharInfo[END];							//線形補間で使う始点と終点
+
+	float m_chaseBossTime = 0.0f;
 
 	bool						m_completeFlag = false;							//全ての処理が完了したかのフラグ
 	bool						m_positionUpEndFlag = false;					//座標を上げる処理が終わったかのフラグ
@@ -235,5 +260,9 @@ private:
 
 	bool						m_SlowlyDarkScreenEndFlag = false;				//画面を暗くしたかのフラグ
 	bool						m_SlowlyBrightScreenEndFlag = false;			//画面を明るくしたかのフラグ
+
+	float                       m_bossMovieSkipTimer = 0.0f;
+	bool						m_movieSkipFlag = false;
+
 };
 

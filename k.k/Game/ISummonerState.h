@@ -43,7 +43,7 @@ public:
 	}
 
 	/// <summary>
-	/// 
+	/// s“®‚Ì–¼‘O‚ğæ“¾
 	/// </summary>
 	/// <returns></returns>
 	const EnActionName GetActionName()

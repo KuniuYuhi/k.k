@@ -2,8 +2,9 @@
 #include "GameCamera.h"
 #include "Game.h"
 #include "Player.h"
-#include "EntryBoss.h"
 #include "Lich.h"
+#include "GameManager.h"
+#include "CharactersInfoManager.h"
 
 namespace {
 
@@ -50,6 +51,9 @@ bool GameCamera::Start()
 	m_game = FindGO<Game>("game");
 	m_player = FindGO<Player>("player");
 
+	m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
+
+
 	m_toCameraPosForBoss.Set(0.0f, 300.0f, 600.0f);
 	//注視点から視点までのベクトルを設定。300,400
 	m_toCameraPos.Set(DEFAULT_TOCAMERAPOS);
@@ -85,60 +89,18 @@ void GameCamera::Update()
 		OnProcessGameTransition();
 	}
 	
-
 	CalcDirectionLight();
 }
 
 void GameCamera::CalcDirectionLight()
 {
-	Vector3 pos1 = m_target;
-	pos1.y = 0.0f;
-	Vector3 pos2 = m_toCameraPos;
-	pos2.y = pos1.y + 800.0f;
-
-	Vector3 diff = pos1 - pos2;
-
-	diff.Normalize();
+	Vector3 forward = g_camera3D->GetForward();
+	forward.y = -0.3f;
+	forward.x = 1.0f;
+	forward.Normalize();
 
 	//xy軸だけ動かす
-	g_renderingEngine->SetDirLightDirection(diff);
-}
-
-void GameCamera::ClearCameraForPlayer()
-{
-	//注視点の計算
-	m_springCamera.Refresh();
-
-	m_target = m_player->GetPosition();
-	Vector3 forward = m_player->GetForward();
-	//forward *= -1.0f;
-	forward.Normalize();
-	//プレイヤーを見る
-	GameClearCamera(
-		m_target,
-		forward,
-		PLAYER_CAMERA_X,
-		PLAYER_CAMERA_Y,
-		TARGETPOS_YUP_WIN
-	);
-
-	//ゲームにプレイヤーをみたことを教える
-
-}
-
-void GameCamera::ClearCameraForBoss()
-{
-	//注視点の計算
-	m_target = m_lich->GetPosition();
-	Vector3 forward = m_lich->GetForward();
-	//リッチを見る
-	GameClearCamera(
-		m_target,
-		forward,
-		BOSS_CAMERA_X,
-		BOSS_CAMERA_Y,
-		TARGETPOS_YUP
-	);
+	g_renderingEngine->SetDirLightDirection(forward);
 }
 
 void GameCamera::SetBattleStartCamera()
@@ -169,33 +131,6 @@ void GameCamera::SetBattleStartCamera()
 	m_springCamera.SetTarget(m_target);
 	m_springCamera.SetPosition(finalCameraPos);
 
-	//カメラの更新。
-	m_springCamera.Update();
-}
-
-void GameCamera::ChaseBossCamera()
-{
-	if (m_time > 1.0f)
-	{
-		return;
-	}
-
-	//注視点の計算
-	m_target = m_entryBoss->GetPosition();
-	m_target.y = 0.0f;
-
-	//線形補間
-	m_pos1.Lerp(m_time, START_POS, CENTER_POS);
-	m_pos2.Lerp(m_time, CENTER_POS, END_POS);
-	m_toCameraPosForBoss.Lerp(m_time, m_pos1, m_pos2);
-
-	m_time += g_gameTime->GetFrameDeltaTime() * 0.12f;
-
-	Vector3 finalCameraPos = m_toCameraPosForBoss + m_target;
-
-	//視点と注視点を設定
-	m_springCamera.SetTarget(m_target);
-	m_springCamera.SetPosition(finalCameraPos);
 	//カメラの更新。
 	m_springCamera.Update();
 }
@@ -253,77 +188,6 @@ void GameCamera::ChaseCamera(bool Reversesflag)
 	m_springCamera.Update();
 }
 
-void GameCamera::GameStartCamera()
-{
-	//注視点の計算
-	m_target = m_player->GetPosition();
-	m_target.y += TARGETPOS_GAMESTART_YUP;
-	//前方向の取得
-	Vector3 CameraPosXZ = m_player->GetForward();
-	CameraPosXZ.y = 0.0f;
-
-	//XZ方向の
-	CameraPosXZ *= 100.0f + m_count;
-	//Y方向の
-	Vector3 CameraPosY = Vector3::AxisY;
-	CameraPosY *= STARTCAMERA_YUP +(m_count * 0.5f);
-
-	//カメラの座標
-	Vector3 newCameraPos = CameraPosXZ + CameraPosY;
-
-	Vector3 finalCameraPos = newCameraPos + m_target;
-
-	//視点と注視点を設定
-	m_springCamera.SetTarget(m_target);
-	m_springCamera.SetPosition(finalCameraPos);
-
-	//カメラの更新。
-	m_springCamera.Update();
-
-	m_count++;
-}
-
-void GameCamera::GameClearCamera(Vector3 targetPos, Vector3 forward, float X, float Y, float Yup, bool reversalFlag)
-{
-	//注視点の計算
-	m_target = targetPos;
-	//Y座標を上げる
-	m_target.y += Yup;
-	//前方向の取得
-	Vector3 CameraPosXZ = forward;
-	CameraPosXZ.y = 0.0f;
-	//反転させる
-	if (reversalFlag == true)
-	{
-		CameraPosXZ *= -1.0f;
-	}
-	//XZ方向の
-	if (X > 0.0f)
-	{
-		CameraPosXZ *= X;
-	}
-	//Y方向の
-	Vector3 CameraPosY = Vector3::AxisY;
-	//0より大きければ
-	if (Y > 0.0f)
-	{
-		CameraPosY *= Y;
-	}
-	
-
-	//カメラの座標
-	Vector3 newCameraPos = CameraPosXZ + CameraPosY;
-
-	Vector3 finalCameraPos = newCameraPos + m_target;
-
-	//視点と注視点を設定
-	m_springCamera.SetTarget(m_target);
-	m_springCamera.SetPosition(finalCameraPos);
-
-	//カメラの更新。
-	m_springCamera.Update();
-}
-
 void GameCamera::ZoomCamera()
 {
 	//LB押していないなら処理しない
@@ -354,50 +218,15 @@ void GameCamera::ZoomCamera()
 void GameCamera::ManageState()
 {
 	//ゲームのステートによってカメラを切り替える
-	switch (m_game->GetNowGameState())
+	switch (GameManager::GetInstance()->GetGameSeenState())
 	{
-	case Game::enGameState_GameStart:
-		//ゲームスタート
-		OnProcessGameStartTransition();
-		break;
-	case Game::enGameState_AppearanceBoss:
-		//ボスを見る
-		OnProcessAppearanceBossTransition();
-		break;
-	case Game::enGameState_Game:
+	case GameManager::enGameSeenState_Game:
 		//ゲーム中
 		OnProcessGameTransition();
-		break;
-	case Game::enGameState_GameOver:
-		//ゲームオーバー
-		OnProcessGameOverTransition();
-		break;
-	case Game::enGameState_GameClear:
-		//ゲームクリア
-		OnProcessGameClearTransition();
-		break;
-	case Game::enGameState_Pause:
-
 		break;
 	default:
 		break;
 	}
-}
-
-void GameCamera::OnProcessGameStartTransition()
-{
-	GameStartCamera();
-}
-
-void GameCamera::OnProcessAppearanceBossTransition()
-{
-	if (m_entryBoss == nullptr)
-	{
-		m_entryBoss = FindGO<EntryBoss>("entryboss");
-		return;
-	}
-
-	ChaseBossCamera();
 }
 
 void GameCamera::OnProcessGameTransition()
@@ -417,24 +246,3 @@ void GameCamera::OnProcessGameTransition()
 	ZoomCamera();
 
 }
-
-void GameCamera::OnProcessGameOverTransition()
-{
-}
-
-void GameCamera::OnProcessGameClearTransition()
-{
-	switch (m_game->GetClearCameraState())
-	{
-	case Game::enClearCameraState_Lich:
-		ClearCameraForBoss();
-		break;
-	case Game::enClearCameraState_Player:
-		ClearCameraForPlayer();
-		break;
-
-	default:
-		break;
-	}	
-}
-

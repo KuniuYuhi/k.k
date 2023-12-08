@@ -65,7 +65,7 @@ public:
 	/// ‚â‚ç‚ê‚½‚Æ‚«‚Ìˆ—
 	/// </summary>
 	/// <param name="seFlag">‚â‚ç‚ê‚½‚Æ‚«‚ÌŒø‰Ê‰¹‚ğÄ¶‚·‚é‚©‚Ìƒtƒ‰ƒO</param>
-	virtual void ProcessDead(bool seFlag = true);
+	void ProcessDead(bool seFlag = true) override;
 
 	/// <summary>
 	/// ‰ñ“]ˆ—

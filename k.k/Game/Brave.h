@@ -248,7 +248,7 @@ public:
 	/// 防御、回避のステートの状態遷移処理
 	/// </summary>
 	void ProcessDefendStateTransition();
-
+	
 	/// <summary>
 	/// アクションフラグ構造体の全てのフラグを設定
 	/// </summary>

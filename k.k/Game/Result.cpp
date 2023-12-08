@@ -2,7 +2,7 @@
 #include "Result.h"
 #include "Title.h"
 
-#include "CharactersInfoManager.h"
+#include "GameManager.h"
 
 namespace {
 	const float WIPE_SIZE = 5.0f;
@@ -26,12 +26,31 @@ ResultSeen::ResultSeen()
 
 ResultSeen::~ResultSeen()
 {
-	//キャラクターの情報マネージャーの削除
-	CharactersInfoManager::DeleteInstance();
+	//ゲームマネージャーの削除
+	GameManager::DeleteInstance();
 }
 
 bool ResultSeen::Start()
 {
+	switch (GameManager::GetInstance()->GetOutComeState())
+	{
+		//プレイヤーの勝利
+	case GameManager::enOutComeState_PlayerWin:
+		SetOutcome(enOutcome_Win);
+		//勝利SE再生
+		g_soundManager->InitAndPlaySoundSource(enSoundName_GameClear);
+		break;
+		//プレイヤーの敗北
+	case GameManager::enOutComeState_PlayerLose:
+		SetOutcome(enOutcome_Lose);
+		//敗北SE再生
+		g_soundManager->InitAndPlaySoundSource(enSoundName_GameOver);
+		break;
+
+	default:
+		std::abort();
+		break;
+	}
 	m_resultSprite.Init("Assets/sprite/InGame/Result_Lose/Fade_Black.DDS", 1920, 1080);
 	m_resultSprite.SetRoundWipe(true);
 	m_resultSprite.SetRoundWipeStartPosition(1920.0f / 2, 1080.0f / 2);

@@ -24,7 +24,7 @@ int LichAction::NextAction()
 
 	CalcEvalAttack2(enAttack_2);
 
-	CalcEvalSummon(enAttack_Summon);
+	//CalcEvalSummon(enAttack_Summon);
 
 	CalcEvalDarkMeteorite(enAttack_DarkMeteorite);
 
@@ -183,7 +183,7 @@ void LichAction::CalcEvalSummon(EnActionNumber m_enActionNumber)
 	}
 
 	//最大HPの1/5のダメージが蓄積したら評価値を増やす
-	if (m_lich->GetAccumulationDamage()>m_lich->GetStatus().maxHp/5)
+	if (m_lich->GetAccumulationDamage()>m_lich->GetStatus().GetMaxHp()/5)
 	{
 		m_action[m_enActionNumber].m_eval += 50;
 	}
@@ -203,7 +203,7 @@ void LichAction::CalcEvalDarkMeteorite(EnActionNumber m_enActionNumber)
 	//前の行動が召喚ならこの行動の評価値を上げる
 	if (m_oldActionNumber == enAttack_Summon)
 	{
-		m_action[m_enActionNumber].m_eval += 40;
+		m_action[m_enActionNumber].m_eval += 20;
 	}
 
 	m_action[m_enActionNumber].m_eval += 10;

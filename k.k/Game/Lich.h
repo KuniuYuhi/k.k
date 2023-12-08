@@ -424,6 +424,17 @@ public:
 		return m_dieFlag;
 	}
 
+	/// <summary>
+	/// ゲームインスタンスの設定
+	/// </summary>
+	/// <param name="game"></param>
+	void SetGame(Game* game)
+	{
+		m_game = game;
+	}
+
+
+
 private:
 
 	bool RotationOnly();
@@ -440,6 +451,9 @@ private:
 	void OnProcessenWarpStepWarp();
 	void OnProcessenWarpSteDown();
 	void OnProcessenWarpStepEnd();
+
+
+	void DeleteMobMonster();
 
 	std::vector<Vector3>			m_warpPositions;										//ワープ先の座標のリスト
 
@@ -466,6 +480,7 @@ private:
 	Vector3							m_warpPosition = g_vec3Zero;							//ワープの座標
 	Vector3							m_toPlayerDir = g_vec3Zero;								//プレイヤーに向かうベクトル
 
+	EffectEmitter* m_deadEffect = nullptr;
 	
 	int								m_hitCount = 0;											//被ダメージ時にカウントを増やす
 	int								m_accumulationDamage = 0;								//被ダメージ時に受けたダメージ分増やす
@@ -495,8 +510,13 @@ private:
 
 	const float						m_angryLimitTime = 20.0f;
 	float							m_angryLimitTimer = 0.0f;
-	int								m_angryModeCount = 0;									//怒りモードになる指標となるカウント
+	int								m_angryModeCount = 0;	
+	
+	
+	//怒りモードになる指標となるカウント
 
+
+	bool m_isdeadEffectPlayFlag = false;
 
 };
 

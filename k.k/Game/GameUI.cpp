@@ -2,10 +2,9 @@
 #include "GameUI.h"
 #include "Game.h"
 #include "Player.h"
+#include "Boss.h"
 #include "Lich.h"
-
-
-//todo MPも白いバーいれる？
+#include "GameManager.h"
 
 namespace {
 
@@ -58,9 +57,11 @@ namespace {
 	const Vector3 HP_SCALE_END_POS = { 0.0f,1.0f,1.0f };
 
 
+	const Vector3 PHASE_FLAME_POS = { -800.0f,240.0f,0.0f };
+	const Vector2 PHASE_FONT_POS = { -960.0f,288.0f };
 
-	const float WHITE_HP_LERP_START = 0.6f;
-	const float WHITE_HP_LERP_END = 5.0f;
+	const float WHITE_HP_LERP_START = 0.1f;
+	const float WHITE_HP_LERP_END = 4.5f;
 }
 
 GameUI::GameUI()
@@ -87,7 +88,15 @@ bool GameUI::Start()
 		m_TimeFlameRender, "Assets/sprite/InGame/Character/TimeFlame2.DDS", 500, 124, TIME_FLAME_POS, TIME_FLAME_SIZE
 	);
 
-	m_oldMainCharaHP = m_player->GetNowActorStatus().hp;
+	//フェーズのフレーム
+	InitSpriteRender(
+		m_PhaseFlameRender, "Assets/sprite/InGame/Character/Wave_Flame.DDS", 629, 97,
+		PHASE_FLAME_POS, g_vec3One
+	);
+	//フェーズの文字
+	InitFontRender(m_PhadeFont, PHASE_FONT_POS, 1.5f);
+
+	m_oldMainCharaHP = m_player->GetNowActorStatus().GetHp();
 
 	return true;
 }
@@ -106,6 +115,8 @@ void GameUI::PlayerUIUpdate()
 {
 	//制限時間
 	TimerUIUpdate();
+	//フェーズの処理
+	ProcessPhase();
 	//ステータス
 	UpdateMainStatus();
 	//キャラアイコン
@@ -171,7 +182,7 @@ Vector3 GameUI::CalcGaugeScale(float Maxvalue, float value)
 void GameUI::MonsterUIUpdate()
 {
 	//ボスがいないなら処理しない
-	if (m_lich == nullptr)
+	if (m_boss == nullptr)
 	{
 		return;
 	}
@@ -185,9 +196,9 @@ void GameUI::MonsterUIUpdate()
 void GameUI::TimerUIUpdate()
 {
 	//分の取得
-	int minute = m_game->GetMinute();
+	int minute = GameManager::GetInstance()->GetMinute();
 	//秒の取得
-	int second = m_game->GetSecond();
+	int second = GameManager::GetInstance()->GetSecond();
 
 	wchar_t time[256];
 	swprintf_s(time, 256, L"%d:%02d", minute, second);
@@ -240,7 +251,7 @@ void GameUI::DrawPlayerUI(RenderContext& rc)
 
 void GameUI::DrawMonsterUI(RenderContext& rc)
 {
-	if (m_lich == nullptr)
+	if (m_boss == nullptr)
 	{
 		return;
 	}
@@ -274,6 +285,9 @@ void GameUI::Render(RenderContext& rc)
 
 	m_TimeFlameRender.Draw(rc);
 	m_TimerFont.Draw(rc);
+
+	m_PhaseFlameRender.Draw(rc);
+	m_PhadeFont.Draw(rc);
 }
 
 void GameUI::InitPlayerUI()
@@ -452,9 +466,12 @@ void GameUI::InitFontRender(
 
 void GameUI::ProcessPlayerHp()
 {
+	int maxHP = m_player->GetNowActorStatus().GetMaxHp();
+	int nowHP = m_player->GetNowActorStatus().GetHp();
+
 	//HPバーの減っていく割合。
 	Vector3 HpScale = Vector3::One;
-	HpScale = CalcGaugeScale(m_player->GetNowActorStatus().maxHp, m_player->GetNowActorStatus().hp);
+	HpScale = CalcGaugeScale(maxHP, nowHP);
 	m_playerUI.m_hpFrontRender.SetScale(HpScale);
 	//現在のフレームのHPと前フレームのHPのサイズが違うなら
 	if (HpScale.x < m_oldPlayerHpScale.x)
@@ -464,7 +481,7 @@ void GameUI::ProcessPlayerHp()
 
 	//白いHPバーを減らすための補間率を計算。
 	//HPが多いほど遅く少なくなるほど速くする
-	float num = m_player->GetNowActorStatus().hp / m_player->GetNowActorStatus().maxHp;
+	float num = nowHP / maxHP;
 	m_playerLerpSpeed = Math::Lerp(num, WHITE_HP_LERP_START, WHITE_HP_LERP_END);
 
 	//白いHPバーの減っていく割合
@@ -474,9 +491,8 @@ void GameUI::ProcessPlayerHp()
 	m_playerUI.m_hpWhiteRender.SetScale(m_playerHpWhiteScale);
 
 	//HPフォント
-	int HpFont = m_player->GetNowActorStatus().hp;
 	wchar_t HP[255];
-	swprintf_s(HP, 255, L"HP      %3d", HpFont);
+	swprintf_s(HP, 255, L"HP      %3d", nowHP);
 	m_playerUI.m_hpFont.SetText(HP);
 
 	//前フレームのHpスケールを設定
@@ -489,18 +505,16 @@ void GameUI::ProcessPlayerHp()
 
 void GameUI::ProcessPlayerMp()
 {
+	int maxMP = m_player->GetNowActorStatus().GetMaxMp();
+	int nowMP = m_player->GetNowActorStatus().GetMp();
+
 	//MPバーの減っていく割合。
 	Vector3 MpScale = Vector3::One;
-	MpScale = CalcGaugeScale(m_player->GetNowActorStatus().maxMp, m_player->GetNowActorStatus().mp);
+	MpScale = CalcGaugeScale(maxMP, nowMP);
 	m_playerUI.m_mpFrontRender.SetScale(MpScale);
-
-
-
-
 	//MPフォント
-	int MpFont = m_player->GetNowActorStatus().mp;
 	wchar_t MP[255];
-	swprintf_s(MP, 255, L"MP     %3d", MpFont);
+	swprintf_s(MP, 255, L"MP     %3d", nowMP);
 	m_playerUI.m_mpFont.SetText(MP);
 
 	//更新
@@ -509,9 +523,12 @@ void GameUI::ProcessPlayerMp()
 
 void GameUI::ProcessBossHP()
 {
+	int maxHP = m_boss->GetStatus().GetMaxHp();
+	int nowHP = m_boss->GetStatus().GetHp();
+
 	//HPバーの減っていく割合。
 	Vector3 HpScale = Vector3::One;
-	HpScale = CalcGaugeScale(m_lich->GetStatus().maxHp, m_lich->GetStatus().hp);
+	HpScale = CalcGaugeScale(maxHP, nowHP);
 	m_monsterUI.m_HpFrontRender.SetScale(HpScale);
 	//現在のフレームのHPと前フレームのHPのサイズが違うなら
 	if (HpScale.x < m_oldBossHpScale.x)
@@ -521,7 +538,7 @@ void GameUI::ProcessBossHP()
 
 	//白いHPバーを減らすための補間率を計算。
 	//HPが多いほど遅く少なくなるほど速くする
-	float num = m_lich->GetStatus().hp / m_lich->GetStatus().maxHp;
+	float num = (float)nowHP / (float)maxHP;
 	m_bossLerpSpeed = Math::Lerp(num, WHITE_HP_LERP_START, WHITE_HP_LERP_END);
 
 	//白いHPバーの減っていく割合
@@ -531,10 +548,8 @@ void GameUI::ProcessBossHP()
 	m_monsterUI.m_HpWhiteRender.SetScale(m_BossHpWhiteScale);
 
 	//ボスのHPの表示
-	int NowActorMP = m_lich->GetStatus().hp;
-	int NowActorMaxMP = m_lich->GetStatus().maxHp;
 	wchar_t MP[255];
-	swprintf_s(MP, 255, L"HP %3d/%d", NowActorMP, NowActorMaxMP);
+	swprintf_s(MP, 255, L"HP %3d/%d", nowHP, maxHP);
 	m_monsterUI.m_hpFont.SetText(MP);
 
 	/*int a = m_lich->GetAccumulationDamage();
@@ -547,6 +562,15 @@ void GameUI::ProcessBossHP()
 
 	m_monsterUI.m_HpFrontRender.Update();
 	m_monsterUI.m_HpWhiteRender.Update();
+}
+
+void GameUI::ProcessPhase()
+{
+	int PhaseNumber = GameManager::GetInstance()->GetNowPhaseState();
+	wchar_t NowPhase[255];
+	swprintf_s(NowPhase, 255, L"フェーズ%d", PhaseNumber+1);
+
+	m_PhadeFont.SetText(NowPhase);
 }
 
 void GameUI::ChangeWeapon(

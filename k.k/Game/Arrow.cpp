@@ -2,6 +2,10 @@
 #include "Arrow.h"
 #include "Bow.h"
 
+
+//todo@–î‚ğ‰ñ“]‚³‚¹‚Ä”ò‚Î‚·
+
+
 namespace {
 	//•Ší‚ªû”[ó‘Ô‚Ì‚ÌÀ•W
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };

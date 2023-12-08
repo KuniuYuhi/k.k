@@ -11,6 +11,7 @@
 namespace {
 	const float WAIT_TIME = 5.0f;		//待機時間
 
+	const float MELEE_ATTACK_RANGE = 280.0f;	//近距離攻撃の範囲内
 
 	const float STAY_PLAYER_LIMMIT_TIME = 6.0f;		//プレイヤーが近くにとどまっているタイマーの上限
 }
@@ -20,6 +21,9 @@ IBossStateMachine* IBossStateMachine::m_stateMachineInstance = nullptr;
 IBossStateMachine::IBossStateMachine(Summoner* bossInstance)
 {
 	m_summoner = bossInstance;
+
+	//乱数を初期化。
+	srand((unsigned)time(NULL));
 }
 
 IBossStateMachine::~IBossStateMachine()
@@ -81,18 +85,18 @@ void IBossStateMachine::ProcessAttackState()
 
 	//サモナーから勇者に向かうベクトルを計算する
 	m_toPlayer = m_summoner->GetPosition() -
-		CharactersInfoManager::GetInstance()->GetBraveInstance()->GetPosition();
+		CharactersInfoManager::GetInstance()->GetPlayerInstance()->GetPosition();
 
 	//距離によって近距離攻撃か遠距離攻撃か決める
-	if (m_toPlayer.Length() > 200.0f)
-	{
-		//遠距離攻撃
-		ProcessLongRangeAttack();
-	}
-	else
+	if (m_toPlayer.Length() < MELEE_ATTACK_RANGE)
 	{
 		//近距離攻撃
 		ProcessMeleeAttack();
+	}
+	else
+	{
+		//遠距離攻撃
+		ProcessLongRangeAttack();
 	}
 
 	//怒りモードカウント加算
@@ -168,7 +172,9 @@ void IBossStateMachine::ProcessWaitState()
 
 void IBossStateMachine::ProcessLongRangeAttack()
 {
-	
+	//
+
+
 
 	m_summoner->
 		SetNextAnimationState(Summoner::enAnimationState_DarkBall);
@@ -209,14 +215,16 @@ void IBossStateMachine::ProcessMeleeAttack()
 	}
 
 	int bb = rand() % 10;
-
+	//確率で変化
 	if (bb > 4)
 	{
+		//ダークウォール
 		m_summoner->
 			SetNextAnimationState(Summoner::enAnimationState_DarkWall);
 	}
 	else
 	{
+		//通常攻撃
 		m_summoner->
 			SetNextAnimationState(Summoner::enAnimationState_NormalAttack_1);
 	}

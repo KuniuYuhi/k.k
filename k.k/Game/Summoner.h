@@ -43,9 +43,9 @@ public:
 		//enAnimClip_Attack_3_start,		// 5 : 
 		//enAnimClip_Attack_3_main,
 		//enAnimClip_Attack_4,		// 6 : 
-		//enAnimClip_Attack_DarkMeteorite_start,
-		//enAnimClip_Attack_DarkMeteorite_main,
-		//enAnimClip_Attack_DarkMeteorite_end,
+		enAnimClip_Attack_DarkMeteorite_start,
+		enAnimClip_Attack_DarkMeteorite_main,
+		enAnimClip_Attack_DarkMeteorite_end,
 		enAnimClip_Summon,
 		enAnimClip_CriticalHit,
 		enAnimClip_Die,
@@ -70,9 +70,9 @@ public:
 		//enAnimationState_Attack_3_start,
 		//enAnimationState_Attack_3_main,
 		//enAnimationState_Attack_4,
-		//enAnimationState_Attack_DarkMeteorite_start,
-		//enAnimationState_Attack_DarkMeteorite_main,
-		//enAnimationState_Attack_DarkMeteorite_end,
+		enAnimationState_Attack_DarkMeteorite_start,
+		enAnimationState_Attack_DarkMeteorite_main,
+		enAnimationState_Attack_DarkMeteorite_end,
 		enAninationState_Summon,
 		enAnimationState_CriticalHit,
 		enAnimationState_Die,
@@ -113,15 +113,15 @@ public:
 	/// 処理を止めるか
 	/// </summary>
 	/// <returns></returns>
-	bool IsStopProcessing() override { return false; }
+	bool IsStopProcessing() override;
 
 	/// <summary>
-	/// 特定のアニメーションが再生中か
+	/// 特定のアニメーションが再生中か。当たり判定に使う
 	/// </summary>
 	/// <returns></returns>
 	bool isAnimationEnable() const override
 	{
-		return false;
+		return true;
 	}
 	/// <summary>
 	/// 回転可能か
@@ -151,13 +151,18 @@ public:
 	/// <summary>
 	/// 被ダメージ時処理
 	/// </summary>
-	void Damage(int attack) override{}
+	void Damage(int attack) override;
 
-	//通常攻撃に当たった時の処理
-	void HitNormalAttack() override {};
+	/// <summary>
+	/// 通常攻撃に当たった時の処理
+	/// </summary>
+	void HitNormalAttack() override;
 
-	//ヒーローのスキルに当たった時の処理
-	void HitSkillAttack() override {};
+	/// <summary>
+	/// スキルに当たった時の処理
+	/// </summary>
+	void HitSkillAttack() override;
+
 	/// <summary>
 	/// ウィザードのファイヤーボールに当たった時の処理。派生クラスで実装
 	/// </summary>
@@ -176,21 +181,20 @@ public:
 		return false;
 	}
 
-
-
+	/// <summary>
+	/// やられたときの処理
+	/// </summary>
+	/// <param name="seFlag">やられたときの効果音を再生するかのフラグ</param>
+	void ProcessDead(bool seFlag = true) override;
 
 	/////////////////////////////////////////////////////////////////////
 	//その他の関数
 	/////////////////////////////////////////////////////////////////////
 
 	/// <summary>
-	/// 移動処理
+	/// モブモンスターを削除
 	/// </summary>
-	void ProcessMove();
-	/// <summary>
-	/// 回転処理
-	/// </summary>
-	void ProcessRotation();
+	void DeleteMobMonsters();
 
 	/// <summary>
 	/// 次のアニメーションステートを作成する。
@@ -232,6 +236,22 @@ public:
 		return m_enSpecialActionState;
 	}
 
+	/// <summary>
+	/// モデルドローフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetIsDrawModelFlag(bool flag)
+	{
+		m_isDrawModelFlag = flag;
+	}
+	/// <summary>
+	/// モデルドローフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetIsDrawModelFlag() const
+	{
+		return m_isDrawModelFlag;
+	}
 
 private:
 	/// <summary>
@@ -247,7 +267,16 @@ private:
 	/// </summary>
 	void ManageState()  override;
 
+	/// <summary>
+	/// 移動処理
+	/// </summary>
+	void ProcessMove();
+	/// <summary>
+	/// 回転処理
+	/// </summary>
+	void ProcessRotation();
 
+	
 
 private:
 	EnAnimationState				m_enAnimationState = enAninationState_Idle;				//アニメーションステート
@@ -262,6 +291,9 @@ private:
 	IBossStateMachine*				m_stateMachine = nullptr;
 
 	ISummonerState*					m_nowBossState = nullptr;
+
+	bool							m_isDrawModelFlag = true;
+
 
 
 };

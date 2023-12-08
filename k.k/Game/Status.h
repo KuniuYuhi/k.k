@@ -1,6 +1,7 @@
 #pragma once
 struct Status
 {
+private:
 	int maxHp = 0;					//HPの最大値
 	int hp = 0;					//HP
 	int maxMp = 0;					//MPの最大値
@@ -13,6 +14,8 @@ struct Status
 
 	int maxEndurance = 0;		//耐久値の最大値
 	int endurance = 0;		//耐久値
+
+public:
 
 	/// <summary>
 	/// キャラクターの全てのステータスの初期化
@@ -57,6 +60,55 @@ struct Status
 		hp = setHp;
 	}
 	/// <summary>
+	/// HPの取得
+	/// </summary>
+	/// <returns></returns>
+	const int& GetHp() const
+	{
+		return hp;
+	}
+
+	const int& GetMaxHp() const
+	{
+		return maxHp;
+	}
+
+	const int& GetMp() const
+	{
+		return mp;
+	}
+
+	const int& GetMaxMp() const
+	{
+		return maxMp;
+	}
+
+	void SetAtk(const int setAtk)
+	{
+		atk = setAtk;
+	}
+
+	const int& GetAtk() const
+	{
+		return atk;
+	}
+
+	const int& GetDefaultSpeed() const
+	{
+		return defaultSpeed;
+	}
+	const int& GetDashSpeed() const
+	{
+		return dashSpeed;
+	}
+
+	const int& GetEndurance() const
+	{
+		return endurance;
+	}
+
+
+	/// <summary>
 	/// HPの増減の計算。0以下になったら0になる。最大HPより大きくならない
 	/// </summary>
 	/// <param name="value">計算する値</param>
@@ -72,6 +124,25 @@ struct Status
 		{
 			//引き算
 			SubHp(value);
+		}
+	}
+
+	/// <summary>
+	/// MPの増減の計算。0以下になったら0になる。最大HPより大きくならない
+	/// </summary>
+	/// <param name="value">計算する値</param>
+	/// <param name="UpOrDownFlag">足すか引くかのフラグ。trueで足す、falseで引く</param>
+	void CalcMp(int value, bool UpOrDownFlag)
+	{
+		if (UpOrDownFlag == true)
+		{
+			//足し算
+			AddMp(value);
+		}
+		else
+		{
+			//引き算
+			SubMp(value);
 		}
 	}
 
@@ -128,6 +199,31 @@ private:
 		if (hp <= 0)
 		{
 			hp = 0;
+		}
+	}
+
+	/// <summary>
+	/// MPを足す
+	/// </summary>
+	/// <param name="addMp"></param>
+	void AddMp(float addMp)
+	{
+		mp += addMp;
+		if (mp >= maxMp)
+		{
+			mp = maxMp;
+		}
+	}
+	/// <summary>
+	/// MPを引く
+	/// </summary>
+	/// <param name="subMp"></param>
+	void SubMp(float subMp)
+	{
+		mp -= subMp;
+		if (mp <= 0)
+		{
+			mp = 0;
 		}
 	}
 

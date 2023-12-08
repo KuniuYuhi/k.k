@@ -1,8 +1,6 @@
 #pragma once
 #include "MagicBall.h"
 
-class Lich;
-
 class DarkBall:public MagicBall
 {
 public:
@@ -12,12 +10,25 @@ public:
 	bool Start();
 	void Update();
 
+	/// <summary>
+	/// 移動処理
+	/// </summary>
 	void Move();
 
+	/// <summary>
+	/// 当たり判定の設定
+	/// </summary>
 	void SettingCollision();
 
+	/// <summary>
+	/// 爆発処理
+	/// </summary>
 	void Explosion();
 
+	/// <summary>
+	/// 攻撃力を設定
+	/// </summary>
+	/// <param name="attack"></param>
 	void SetAtk(const int attack)
 	{
 		m_attack = attack;
@@ -32,18 +43,9 @@ public:
 		return m_attack;
 	}
 
-	/// <summary>
-	/// リッチのオブジェクトの設定
-	/// </summary>
-	/// <param name="lich"></param>
-	void SetLich(Lich* lich)
-	{
-		m_lich = lich;
-	}
-
 
 private:
-	Lich*					m_lich = nullptr;
+
 	CollisionObject*		m_BallCollision;
 
 	EffectEmitter*			m_darkBallEffect;

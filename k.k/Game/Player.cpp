@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "Player.h"
-#include "Wizard.h"
-#include "Actor.h"
 #include "Game.h"
 
+#include "GameManager.h"
 #include "CharactersInfoManager.h"
 
 namespace {
@@ -24,9 +23,10 @@ bool Player::Start()
 {
 	//ゲームクラスと勇者クラスのインスタンスを検索
 	m_game = FindGO<Game>("game");
+
+
 	m_brave = NewGO<Brave>(0, "brave");
-	//勇者インスタンスを代入
-	CharactersInfoManager::GetInstance()->SetBraveInstance(m_brave);
+	m_brave->SetPosition(m_position);
 
 	//キャラクターの座標を設定
 	m_brave->SetPosition(START_POSITION);
@@ -37,10 +37,17 @@ bool Player::Start()
 void Player::Update()
 {
 	//ゲームが始まるまでは移動しない
-	if (m_game->GetNowGameState() != Game::enGameState_Game)
+	/*if (GameManager::GetInstance()->GetGameSeenState()!=
+		GameManager::enGameSeenState_Game)
+	{
+		return;
+	}*/
+
+	if (IsInaction() == true)
 	{
 		return;
 	}
+
 	//行動可能にする
 	if (m_dontActionFlag != false)
 	{
@@ -58,23 +65,26 @@ bool Player::IsInaction()
 	//////////////////////////////////////////////////
 	// 行動出来なくなる条件
 	////////////////////////////////////////////////// 
-	//勝利したら 
-	if (m_game->GetEnOutCome() == Game::enOutCome_Player_Win)
+	//勝利したかつゲーム終了後の処理が終わったなら
+	if (GameManager::GetInstance()->GetPlayerWinFlag()==true&&
+		GameManager::GetInstance()->GetGameFinishProcessEndFlag())
 	{
 		//勝利時の処理実行
 		m_brave->ProcessWin();
-		//
+		//勝敗決定
 		m_decisionOutComeFlag = true;
 		return true;
 	}
 	//負けたら
-	if (m_game->GetEnOutCome() == Game::enOutCome_Player_Lose)
+	if (GameManager::GetInstance()->GetPlayerLoseFlag() == true)
 	{
+		//勝敗決定
 		m_decisionOutComeFlag = true;
 		return true;
 	}
 	//ゲーム中でないなら
-	if (m_game->IsMatchGameState(Game::enGameState_Game) != true)
+	if (GameManager::GetInstance()->GetGameSeenState() !=
+		GameManager::enGameSeenState_Game)
 	{
 		return true;
 	}
@@ -96,7 +106,7 @@ bool Player::IsDeadPlayer()
 
 int Player::GetAtk()
 {
-	return m_brave->GetStatus().atk;
+	return m_brave->GetStatus().GetAtk();
 }
 
 bool Player::IsComboStateSame()
@@ -112,6 +122,19 @@ void Player::SetDamagedComboState(Actor::EnComboState damagedcombostate)
 Actor::EnComboState Player::GetNowComboState() const
 {
 	return m_brave->GetNowComboState();
+}
+
+void Player::ProcessPlayerDead()
+{
+	//やられていないなら処理しない
+	if (m_isPlayerDeadFlag != true)
+	{
+		return;
+	}
+
+
+
+
 }
 
 
