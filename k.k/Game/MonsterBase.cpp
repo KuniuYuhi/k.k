@@ -137,16 +137,16 @@ void MonsterBase::CreateDamageFont(int damage)
 
 void MonsterBase::DamageCollision(CharacterController& characon)
 {
+	//当たり判定を取らない処理
 	if (IsCollisionDetection() == true)
 	{
 		return;
 	}
-	//
-	const auto& Attack_1Collisions = g_collisionObjectManager->FindCollisionObjects("Attack");
-	//
-	for (auto collision : Attack_1Collisions)
+	//通常攻撃の当たり判定
+	const auto& Attack_Collisions = g_collisionObjectManager->FindCollisionObjects("Attack");
+	for (auto collision : Attack_Collisions)
 	{
-		//
+		//キャラコンと当たり判定が衝突したら
 		if (collision->IsHit(characon) == true)
 		{
 			CreateHitEffect();
@@ -155,12 +155,11 @@ void MonsterBase::DamageCollision(CharacterController& characon)
 		}
 	}
 
-	//
+	//スキルの当たり判定
 	const auto& SkillCollisions = g_collisionObjectManager->FindCollisionObjects("skillAttack");
-	//
 	for (auto collision : SkillCollisions)
 	{
-		//
+		//キャラコンと当たり判定が衝突したら
 		if (collision->IsHit(characon) == true)
 		{
 			CreateHitEffect();
