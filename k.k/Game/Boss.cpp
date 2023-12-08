@@ -30,13 +30,13 @@ void Boss::Update()
 
 void Boss::CreatBossCharacter()
 {
-	/*m_sumoner = NewGO<Summoner>(0, "summoner");
+	m_sumoner = NewGO<Summoner>(0, "summoner");
 	m_sumoner->SetPosition(m_position);
-	m_bossBase = m_sumoner;*/
+	m_bossBase = m_sumoner;
 
-	m_lich = NewGO<Lich>(0, "lich");
+	/*m_lich = NewGO<Lich>(0, "lich");
 	m_lich->SetPosition(m_position);
-	m_bossBase = m_lich;
+	m_bossBase = m_lich;*/
 	
 }
 
