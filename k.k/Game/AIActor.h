@@ -11,7 +11,7 @@ public:
 	/// <summary>
 	/// 勝敗ステート
 	/// </summary>
-	enum EnOutCome
+	enum EnOutComeForMonsters
 	{
 		enOutCome_Win,
 		enOutCome_Lose,
@@ -117,7 +117,7 @@ public:
 	/// 勝敗ステートの設定
 	/// </summary>
 	/// <param name="outCome"></param>
-	void SetEnOutCome(EnOutCome outCome)
+	void SetEnOutCome(EnOutComeForMonsters outCome)
 	{
 		m_enOutCome = outCome;
 	}
@@ -125,7 +125,7 @@ public:
 	/// 勝敗ステートの取得
 	/// </summary>
 	/// <returns></returns>
-	const EnOutCome& GetEnOutCome() const
+	const EnOutComeForMonsters& GetEnOutCome() const
 	{
 		return m_enOutCome;
 	}
@@ -179,7 +179,7 @@ protected:
 	Quaternion					m_rotation = Quaternion::Identity;
 	Vector3						m_scale = Vector3::One;
 
-	EnOutCome					m_enOutCome = enOutCome_None;
+	EnOutComeForMonsters					m_enOutCome = enOutCome_None;
 
 
 	bool						m_winFlag = false;						//勝ったかのフラグ
