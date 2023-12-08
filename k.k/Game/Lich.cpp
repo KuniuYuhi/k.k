@@ -352,7 +352,7 @@ void Lich::Damage(int attack)
 		//やられるところをゆっくりにする
 		//フレームレートを落とす
 		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 30);
-		m_modelRender.SetAnimationSpeed(0.5f);
+		m_modelRender.SetAnimationSpeed(0.4f);
 		//ゲームマネージャーのプレイヤーの勝ちフラグを設定
 		GameManager::GetInstance()->SetPlayerWinFlag(true);
 		m_status.SetHp(0);
@@ -873,7 +873,6 @@ void Lich::CreateDarkWall()
 void Lich::CreateDarkBall(bool AddBallFlag)
 {
 	DarkBall* darkBall = NewGO<DarkBall>(0, "darkball");
-	darkBall->SetLich(this);
 	darkBall->SetAtk(m_status.GetAtk());
 	darkBall->Setting(m_position, m_rotation);
 	//更にダークボールを生成しないなら
@@ -884,14 +883,12 @@ void Lich::CreateDarkBall(bool AddBallFlag)
 	Quaternion right = m_rotation;
 	right.AddRotationDegY(ADD_CREATE_DARK_BALL_1_Y);
 	DarkBall* darkBall2 = NewGO<DarkBall>(0, "darkball");
-	darkBall2->SetLich(this);
 	darkBall2->SetAtk(m_status.GetAtk());
 	darkBall2->Setting(m_position, right);
 
 	right = m_rotation;
 	right.AddRotationDegY(ADD_CREATE_DARK_BALL_2_Y);
 	DarkBall* darkBall3 = NewGO<DarkBall>(0, "darkball");
-	darkBall3->SetLich(this);
 	darkBall3->SetAtk(m_status.GetAtk());
 	darkBall3->Setting(m_position, right);
 
@@ -905,7 +902,6 @@ void Lich::AddCreateDarkBall(DarkBall* darkBall, const char* name, float degY)
 	Quaternion right = m_rotation;
 	right.AddRotationDegY(degY);
 	darkBall = NewGO<DarkBall>(0, name);
-	darkBall->SetLich(this);
 	darkBall->SetAtk(m_status.GetAtk());
 	darkBall->Setting(m_position, right);
 }
@@ -959,7 +955,7 @@ bool Lich::IsCollisionDetection()
 void Lich::HitNormalAttack()
 {
 	//１コンボの間に1回だけ判定
-			//ダメージを受けた時のコンボステートと現在のコンボステートが違うなら
+	//ダメージを受けた時のコンボステートと現在のコンボステートが違うなら
 	if (m_player->IsComboStateSame() == true)
 	{
 		Damage(m_player->GetAtk());
