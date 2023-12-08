@@ -2,6 +2,7 @@
 #include "Summoner.h"
 //マネージャー
 #include "CharactersInfoManager.h"
+#include "GameManager.h"
 //ステートマシン
 #include "IBossStateMachine.h"
 //各種ステート
@@ -41,6 +42,21 @@ Summoner::~Summoner()
 {
 	//ステートマシンの削除
 	IBossStateMachine::DeleteInstance();
+
+	//勝敗が決まったら場合でないなら処理しない。終わる時にエフェクトが再生されるためエラーがでるから
+	if (GameManager::GetInstance()->GetOutComeState() == GameManager::enOutComeState_None)
+	{
+		return;
+	}
+
+	//死んだときにモブモンスターを消しているので消す必要なし
+	if (GameManager::GetInstance()->GetBossDeleteOkFlag() == true)
+	{
+		return;
+	}
+
+	//モブモンスターを削除
+	DeleteMobMonsters();
 }
 
 bool Summoner::Start()
@@ -66,22 +82,28 @@ bool Summoner::Start()
 	//最初のアニメーション設定
 	SetNextAnimationState(enAninationState_Idle);
 
+	//プレイヤーのインスタンスの代入
+	m_player = CharactersInfoManager::GetInstance()->GetPlayerInstance();
 
 	return true;
 }
 
 void Summoner::Update()
 {
+	if (IsStopProcessing() != true)
+	{
+		//回転処理
+		ProcessRotation();
+		//移動処理。怒りモードの時のみ
+		ProcessMove();
 
+		//ステートマシンの毎フレームの処理
+		IBossStateMachine::GetInstance()->Execute();
+
+		//当たり判定の処理
+		DamageCollision(m_charaCon);
+	}
 	
-	//回転処理
-	ProcessRotation();
-	//移動処理。怒りモードの時のみ
-	ProcessMove();
-
-	//ステートマシンの毎フレームの処理
-	IBossStateMachine::GetInstance()->Execute();
-
 	//状態管理
 	ManageState();
 	//アニメーション
@@ -101,6 +123,103 @@ void Summoner::ManageState()
 	m_nowBossState->ManageState();
 }
 
+bool Summoner::IsStopProcessing()
+{
+	//ゲームステート以外なら
+	if (GameManager::GetInstance()->GetGameSeenState() !=
+		GameManager::enGameSeenState_Game)
+	{
+		return true;
+	}
+	//勝敗決定したら
+	switch (GameManager::GetInstance()->GetOutComeState())
+	{
+		//負けた
+	case GameManager::enOutComeState_PlayerWin:
+		//勝敗ステートの設定
+		SetEnOutCome(enOutCome_Lose);
+		return true;
+		break;
+
+		//勝った
+	case GameManager::enOutComeState_PlayerLose:
+		//勝敗ステートの設定
+		SetEnOutCome(enOutCome_Win);
+		//勝利アニメーション再生
+		SetNextAnimationState(enAnimationState_Victory);
+		return true;
+		break;
+	default:
+		break;
+	}
+
+	return false;
+}
+
+void Summoner::Damage(int attack)
+{
+	//HPを減らす
+	m_status.CalcHp(attack, false);
+
+	//やられたとき
+	if (m_status.GetHp() <= 0)
+	{
+		//やられた時の処理
+		ProcessDead();
+	}
+
+}
+
+void Summoner::HitNormalAttack()
+{
+	//１コンボの間に1回だけ判定
+	//ダメージを受けた時のコンボステートと現在のコンボステートが違うなら
+	if (m_player->IsComboStateSame() == true)
+	{
+		Damage(m_player->GetAtk());
+		CreateDamageFont(m_player->GetAtk());
+		//ダメージを受けた時のコンボステートに現在のコンボステートを代入する
+		m_player->SetDamagedComboState(m_player->GetNowComboState());
+		//攻撃が自身にヒットしたので、プレイヤーのattackHitFlagをtrueにする
+		m_player->SetAttackHitFlag(true);
+	}
+}
+
+void Summoner::HitSkillAttack()
+{
+	//スキル攻撃を受けられないなら
+	if (m_player->GetHittableFlag() != true)
+	{
+		return;
+	}
+	m_damageFlag = true;
+	Damage(m_player->GetAtk());
+	CreateDamageFont(m_player->GetAtk());
+	//多段ヒットしたのでフラグをリセット。多段ヒットでなくとも
+	m_player->SetHittableFlag(false);
+}
+
+void Summoner::ProcessDead(bool seFlag)
+{
+	//やられるところをゆっくりにする
+	//フレームレートを落とす
+	g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 30);
+	//ゲームマネージャーのプレイヤーの勝ちフラグを設定
+	GameManager::GetInstance()->SetPlayerWinFlag(true);
+	m_status.SetHp(0);
+	//技の途中でやられたかもしれない
+
+	//効果音の再生
+	if (seFlag == true)
+	{
+
+	}
+
+	//やられステート
+	SetNextAnimationState(enAnimationState_Die);
+	m_modelRender.SetAnimationSpeed(0.7f);
+}
+
 void Summoner::ProcessMove()
 {
 
@@ -108,8 +227,7 @@ void Summoner::ProcessMove()
 
 void Summoner::ProcessRotation()
 {
-	m_targetPosition = 
-		CharactersInfoManager::GetInstance()->GetPlayerInstance()->GetPosition();
+	m_targetPosition = m_player->GetPosition();
 
 	m_moveSpeed= CalcVelocity(m_status, m_targetPosition);
 
@@ -248,10 +366,10 @@ void Summoner::InitModel()
 		"Assets/animData/character/Lich/Angry.tka");
 	m_animationClip[enAnimClip_Angry].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Die].Load(
-		"Assets/animData/character/Lich/Angry.tka");
+		"Assets/animData/character/Lich/Die.tka");
 	m_animationClip[enAnimClip_Die].SetLoopFlag(false);
 	m_animationClip[enAnimClip_CriticalHit].Load(
-		"Assets/animData/character/Lich/Angry.tka");
+		"Assets/animData/character/Lich/Damage.tka");
 	m_animationClip[enAnimClip_CriticalHit].SetLoopFlag(false);
 	
 	m_modelRender.Init("Assets/modelData/character/Lich/Lich_real.tkm",
@@ -279,9 +397,6 @@ void Summoner::InitModel()
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
-
-
-	m_modelRender.PlayAnimation(enAnimClip_Idle, 0.2f);
 }
 
 
@@ -289,8 +404,31 @@ void Summoner::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 {
 }
 
+void Summoner::DeleteMobMonsters()
+{
+	//モブモンスターが0体でないならリスト内のモブモンスターを死亡
+	int mobMonsterNum = CharactersInfoManager::GetInstance()->GetMobMonsters().size();
+	if (mobMonsterNum == 0)
+		return;
+
+	//リストがなくなるまで削除繰り返し
+	while (CharactersInfoManager::GetInstance()->GetMobMonsters().size() != 0)
+	{
+		for (auto monster : CharactersInfoManager::GetInstance()->GetMobMonsters())
+		{
+			monster->ProcessDead(false);
+			DeleteGO(monster);
+			CharactersInfoManager::GetInstance()->RemoveMobMonsterFormList(monster);
+		}
+	}
+}
 
 void Summoner::Render(RenderContext& rc)
 {
+	if (GetIsDrawModelFlag() != true)
+	{
+		return;
+	}
+
 	m_modelRender.Draw(rc);
 }
