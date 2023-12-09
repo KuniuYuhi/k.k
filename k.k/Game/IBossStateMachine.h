@@ -102,6 +102,26 @@ private:
 	/// </summary>
 	void AddStayPlayerTimer();
 
+	/// <summary>
+	///	ダークボールのアニメーションに移るための処理
+	/// </summary>
+	void ProcessPlayAnimDarkBall();
+
+	/// <summary>
+	/// 次の行動をダークメテオにするか決める
+	/// </summary>
+	/// <returns>ダークメテオならtrue</returns>
+	bool IsNextActionDarkMeteo();
+
+	/// <summary>
+	/// ノックバックするか決める処理
+	/// </summary>
+	void ProcessIsKnockBack();
+	/// <summary>
+	/// ノックバックタイマーを加速させるか
+	/// </summary>
+	void IsKnockBackTimerAccelerate();
+
 private:
 	static IBossStateMachine* m_stateMachineInstance;
 
