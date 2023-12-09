@@ -36,7 +36,7 @@ namespace {
 	int MAXHP = 200;
 	int MAXMP = 100;
 	int ATK = 40;
-	float SPEED = 200.0f;
+	float SPEED = 260.0f;
 	const char* NAME = "Brave";
 
 	const int SKILL_ATTACK_POWER = 30;
@@ -855,7 +855,7 @@ void Brave::InitModel()
 
 
 	//ƒ‚ƒfƒ‹‚Ì‰Šú‰»
-	m_modelRender.Init("Assets/modelData/character/Player/NewHero/Hero_Smile.tkm",
+	m_modelRender.Init("Assets/modelData/character/Player/NewHero/Hero_Smile_Selllook.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 		m_animationClip,
 		enAnimClip_Num * AnimationClipGroup_Num,
