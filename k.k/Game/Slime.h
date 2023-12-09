@@ -160,6 +160,8 @@ private:
 
 	RigidBody m_rigidBody;		//„‘ÌB
 
+	CollisionObject* m_headCollision = nullptr;
+
 	ModelRender m_modelRender;
 	CharacterController m_charaCon;
 

@@ -195,20 +195,13 @@ private:
 
 	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
 
-	//float m_angleChangeTime = 0.0f;		//ベクトルを計算するタイマー。生成時に決める
-
+	CollisionObject* m_headCollision = nullptr;
+	
 	ModelRender m_modelRender;
 
 	CharacterController m_charaCon;
 
-	//Vector3 m_direction = Vector3::Zero;
-
-	//const float m_attackIntervalTime = 2.0f;	//攻撃した後のインターバル
-
-	//const float m_distanceToPlayer = 400.0f;
-	//const float m_attackRange = 60.0f;
-	//const float m_stayDistance = 50.0f;
-
+	
 	int m_attackBoonId = -1;					//攻撃で使うボーンID
 
 	bool m_createAttackCollisionFlag = false;

@@ -183,6 +183,8 @@ private:
 
 	ModelRender						m_modelRender;
 
+	CollisionObject*				m_headCollision = nullptr;
+
 	CharacterController				m_charaCon;
 
 	int								m_attackBoonId = -1;								//UŒ‚‚Åg‚¤ƒ{[ƒ“ID

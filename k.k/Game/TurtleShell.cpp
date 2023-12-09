@@ -53,6 +53,8 @@ TurtleShell::TurtleShell()
 
 TurtleShell::~TurtleShell()
 {
+	DeleteGO(m_headCollision);
+
 	//if (m_lich != nullptr)
 	//{
 	//	//リストから自身を消す
@@ -247,16 +249,16 @@ bool TurtleShell::Difence()
 
 void TurtleShell::CreateCollision()
 {
-	auto HeadCollision = NewGO<CollisionObject>(0, "monsterattack");
-	HeadCollision->SetCreatorName(GetName());
-	HeadCollision->CreateSphere(
+	m_headCollision = NewGO<CollisionObject>(0, "monsterattack");
+	m_headCollision->SetCreatorName(GetName());
+	m_headCollision->CreateSphere(
 		m_position,
 		m_rotation,
 		17.0f
 	);
 	//ワールド座標取得
 	Matrix HeadMatrix = m_modelRender.GetBone(m_attackBoonId)->GetWorldMatrix();
-	HeadCollision->SetWorldMatrix(HeadMatrix);
+	m_headCollision->SetWorldMatrix(HeadMatrix);
 }
 
 bool TurtleShell::IsStopProcessing()
@@ -542,13 +544,9 @@ void TurtleShell::OnProcessDieStateTransition()
 	//アニメーションが終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		if (m_lich != nullptr)
-		{
-			//リストから自身を消す
-			CharactersInfoManager::GetInstance()->RemoveMobMonsterFormList(this);
-			//m_lich->RemoveAIActorFromList(this);
-			m_elaseListFlag = true;
-		}
+		//リストから自身を消す
+		CharactersInfoManager::GetInstance()->RemoveMobMonsterFormList(this);
+		m_elaseListFlag = true;
 		//自身を削除する
 		DeleteGO(this);
 	}
