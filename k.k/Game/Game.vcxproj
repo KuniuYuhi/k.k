@@ -334,6 +334,8 @@
     <ClCompile Include="SummonerState_DarkBall.cpp" />
     <ClCompile Include="SummonerState_DarkWall.cpp" />
     <ClCompile Include="SummonerState_Die.cpp" />
+    <ClCompile Include="SummonerState_DMeteo_Main.cpp" />
+    <ClCompile Include="SummonerState_DMeteo_Start.cpp" />
     <ClCompile Include="SummonerState_Hit.cpp" />
     <ClCompile Include="SummonerState_Idle.cpp" />
     <ClCompile Include="SummonerState_KnockBack.cpp" />
@@ -477,6 +479,8 @@
     <ClInclude Include="SummonerState_DarkBall.h" />
     <ClInclude Include="SummonerState_DarkWall.h" />
     <ClInclude Include="SummonerState_Die.h" />
+    <ClInclude Include="SummonerState_DMeteo_Main.h" />
+    <ClInclude Include="SummonerState_DMeteo_Start.h" />
     <ClInclude Include="SummonerState_Hit.h" />
     <ClInclude Include="SummonerState_Idle.h" />
     <ClInclude Include="SummonerState_KnockBack.h" />
