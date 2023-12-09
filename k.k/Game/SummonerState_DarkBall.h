@@ -24,6 +24,7 @@ public:
 	/// </summary>
 	void PlayAnimation();
 
+	
 
 private:
 	/// <summary>
@@ -37,4 +38,9 @@ private:
 	/// ダークボールの生成
 	/// </summary>
 	void CreateDarkBall();
+
+private:
+
+	
+
 };
