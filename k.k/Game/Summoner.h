@@ -129,9 +129,13 @@ public:
 	/// <returns></returns>
 	bool isRotationEnable() const override
 	{
-		return m_enAnimationState != enAnimationState_DarkBall ||
-			m_enAnimationState != enAnimationState_DarkWall ||
-			m_enAnimationState != enAnimationState_KnockBack;
+		return m_enAnimationState != enAnimationState_DarkBall &&
+			m_enAnimationState != enAnimationState_DarkWall &&
+			m_enAnimationState != enAnimationState_KnockBack &&
+			m_enAnimationState != enAnimationState_NormalAttack_1 &&
+			m_enAnimationState != enAnimationState_NormalAttack_2 &&
+			m_enAnimationState != enAnimationState_NormalAttack_3 &&
+			m_enAnimationState != enAnimationState_CriticalHit;
 	}
 	/// <summary>
 	/// 攻撃可能か
@@ -144,7 +148,9 @@ public:
 			m_enAnimationState != enAnimationState_NormalAttack_1 &&
 			m_enAnimationState != enAnimationState_NormalAttack_2 &&
 			m_enAnimationState != enAnimationState_NormalAttack_3 &&
-			m_enAnimationState != enAnimationState_KnockBack;
+			m_enAnimationState != enAnimationState_KnockBack &&
+			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_start &&
+			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_main;
 
 	}
 
@@ -253,6 +259,23 @@ public:
 		return m_isDrawModelFlag;
 	}
 
+	/// <summary>
+	/// 被ダメージカウントを設定
+	/// </summary>
+	/// <param name="value"></param>
+	void SetDamageCount(int value)
+	{
+		m_damageCount = value;
+	}
+	/// <summary>
+	/// 被ダメージカウントを取得
+	/// </summary>
+	/// <returns></returns>
+	const int& GetDamageCount() const
+	{
+		return m_damageCount;
+	}
+
 private:
 	/// <summary>
 	/// モデルの初期化
@@ -276,6 +299,15 @@ private:
 	/// </summary>
 	void ProcessRotation();
 
+	/// <summary>
+	/// 被ダメージ処理
+	/// </summary>
+	void ProcessHit(int hitDamage);
+
+	/// <summary>
+	/// スーパーアーマーの回復。ブレイクしていないと処理しない
+	/// </summary>
+	void RecoverySuperArmor();
 	
 
 private:
@@ -294,6 +326,7 @@ private:
 
 	bool							m_isDrawModelFlag = true;
 
+	int								m_damageCount = 0;				//被ダメージした時に加算するカウント
 
 
 };

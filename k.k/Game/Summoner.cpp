@@ -13,6 +13,8 @@
 #include "SummonerState_NAttack_1.h"
 #include "SummonerState_NAttack_2.h"
 #include "SummonerState_NAttack_3.h"
+#include "SummonerState_DMeteo_Start.h"
+#include "SummonerState_DMeteo_Main.h"
 #include "SummonerState_Angry.h"
 #include "SummonerState_Command.h"
 #include "SummonerState_Hit.h"
@@ -22,12 +24,17 @@
 #include "SummonerState_Warp.h"
 #include "SummonerState_Victory.h"
 
+//todo スーパーアーマーがある間はのけぞらない
+//壊れたらたまにのけぞる
+//回復していく
 
 namespace {
 	const float SCALE_UP = 4.0f;		//キャラクターのサイズ
 
+	const float MAX_SUPERARMOR_POINT = 10.0f;
+
 	//ステータス
-	int MAXHP = 100;
+	int MAXHP = 200;
 	int MAXMP = 500;
 	int ATK = 20;
 	float SPEED = 160.0f;
@@ -36,6 +43,8 @@ namespace {
 
 Summoner::Summoner()
 {
+	m_maxSuperArmorPoint = MAX_SUPERARMOR_POINT;
+	m_superArmorPoint = m_maxSuperArmorPoint;
 }
 
 Summoner::~Summoner()
@@ -104,6 +113,9 @@ void Summoner::Update()
 		DamageCollision(m_charaCon);
 	}
 	
+	//スーパーアーマーの回復
+	RecoverySuperArmor();
+
 	//状態管理
 	ManageState();
 	//アニメーション
@@ -158,8 +170,9 @@ bool Summoner::IsStopProcessing()
 
 void Summoner::Damage(int attack)
 {
-	//HPを減らす
-	m_status.CalcHp(attack, false);
+	//ダメージを受ける処理
+	ProcessHit(attack);
+	
 
 	//やられたとき
 	if (m_status.GetHp() <= 0)
@@ -242,13 +255,46 @@ void Summoner::ProcessRotation()
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
 		//緩やかに回転させる
-		m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * 5.0f, m_rotMove, m_moveSpeed);
+		m_rotMove = Math::Lerp(
+			g_gameTime->GetFrameDeltaTime() * 5.0f, m_rotMove, m_moveSpeed);
 		m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
+		//todo
 	}
 	//前方向を設定
 	m_forward = m_rotMove;
 	m_forward.Normalize();
 	m_moveSpeed= g_vec3Zero;
+}
+
+void Summoner::ProcessHit(int hitDamage)
+{
+	//HPを減らす
+	m_status.CalcHp(hitDamage, false);
+	//被ダメージカウント加算
+	m_damageCount++;
+	//スーパーアーマーを減らす
+	CalcSuperArmor(false, hitDamage);
+
+	//スーパーアーマーがブレイクしているなら
+	if (GetBreakSuperArmorFlag() == true)
+	{
+		//一定確率で怯む
+		if (IsFlinch() == true)
+		{
+			SetNextAnimationState(enAnimationState_CriticalHit);
+		}
+	}
+}
+
+void Summoner::RecoverySuperArmor()
+{
+	//スーパーアーマーがブレイクしていないなら処理しない
+	if (GetBreakSuperArmorFlag() != true)
+	{
+		return;
+	}
+	//スーパーアーマーの回復
+	CalcSuperArmor(true, g_gameTime->GetFrameDeltaTime());
 }
 
 void Summoner::SetNextAnimationState(EnAnimationState nextState)
@@ -286,6 +332,12 @@ void Summoner::SetNextAnimationState(EnAnimationState nextState)
 		break;
 	case Summoner::enAnimationState_NormalAttack_3://通常攻撃３
 		m_nowBossState = new SummonerState_NAttack_3(this);
+		break;
+	case Summoner::enAnimationState_Attack_DarkMeteorite_start://ダークメテオスタート
+		m_nowBossState = new SummonerState_DMeteo_Start(this);//ダークメテオメイン
+		break;
+	case Summoner::enAnimationState_Attack_DarkMeteorite_main:
+		m_nowBossState = new SummonerState_DMeteo_Main(this);
 		break;
 	case Summoner::enAnimationState_Angry://怒りモード
 		m_nowBossState = new SummonerState_Angry(this);
@@ -353,6 +405,12 @@ void Summoner::InitModel()
 	m_animationClip[enAnimClip_NormalAttack_3].Load(
 		"Assets/animData/character/Lich/NormalAttack_3.tka");
 	m_animationClip[enAnimClip_NormalAttack_3].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Attack_DarkMeteorite_start].Load(
+		"Assets/animData/character/Lich/DarkMeteorite_Start.tka");
+	m_animationClip[enAnimClip_Attack_DarkMeteorite_start].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Attack_DarkMeteorite_main].Load(
+		"Assets/animData/character/Lich/DarkMeteorite_Main.tka");
+	m_animationClip[enAnimClip_Attack_DarkMeteorite_main].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Command].Load(
 		"Assets/animData/character/Lich/Command.tka");
 	m_animationClip[enAnimClip_Command].SetLoopFlag(false);
@@ -372,7 +430,7 @@ void Summoner::InitModel()
 		"Assets/animData/character/Lich/Damage.tka");
 	m_animationClip[enAnimClip_CriticalHit].SetLoopFlag(false);
 	
-	m_modelRender.Init("Assets/modelData/character/Lich/Lich_real.tkm",
+	m_modelRender.Init("Assets/modelData/character/Lich/Lich_real_Selllook.tkm",
 		L"Assets/shader/ToonTextrue/lamp_Lich.DDS",
 		m_animationClip,
 		enAnimClip_Num,
@@ -394,9 +452,10 @@ void Summoner::InitModel()
 		m_position
 	);
 	//アニメーションイベント用の関数を設定する。
-	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
-		OnAnimationEvent(clipName, eventName);
-		});
+	//m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+	//	OnAnimationEvent(clipName, eventName);
+	//	});
+
 }
 
 
@@ -411,16 +470,13 @@ void Summoner::DeleteMobMonsters()
 	if (mobMonsterNum == 0)
 		return;
 
-	//リストがなくなるまで削除繰り返し
-	while (CharactersInfoManager::GetInstance()->GetMobMonsters().size() != 0)
+	for (auto monster : CharactersInfoManager::GetInstance()->GetMobMonsters())
 	{
-		for (auto monster : CharactersInfoManager::GetInstance()->GetMobMonsters())
-		{
-			monster->ProcessDead(false);
-			DeleteGO(monster);
-			CharactersInfoManager::GetInstance()->RemoveMobMonsterFormList(monster);
-		}
+		monster->ProcessDead(false);
+		DeleteGO(monster);
 	}
+	//リストをクリア
+	CharactersInfoManager::GetInstance()->GetMobMonsters().clear();
 }
 
 void Summoner::Render(RenderContext& rc)
@@ -431,4 +487,5 @@ void Summoner::Render(RenderContext& rc)
 	}
 
 	m_modelRender.Draw(rc);
+
 }
