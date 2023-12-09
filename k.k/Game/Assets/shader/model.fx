@@ -197,7 +197,7 @@ SPSOut PSMainCore(SPSIn psIn, int isToon, int isShadowCaster) : SV_Target0
     {
         limLight = CalcLimLight(psIn);
 		
-        finalAmbient = 0.9f;
+        finalAmbient = 0.7f;
     }
 	
 	//ディレクションライトと環境光をたす				
