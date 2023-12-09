@@ -19,7 +19,9 @@ public:
 
 	struct WeaponSprits
 	{
-		SpriteRender* m_weaponSprite=nullptr;
+		SpriteRender* m_weaponSprite = nullptr;
+		SpriteRender* m_weaponEnduranceSprite = nullptr;
+		FontRender* m_enduranceFont = nullptr;
 	};
 
 	/// <summary>
@@ -214,6 +216,8 @@ private:
 		SpriteRender m_sub2WeaponCommandRender;		//サブ武器２のコマンド
 
 		SpriteRender m_weaponRender[enWeapon_num];
+
+
 	};
 
 	
