@@ -14,7 +14,7 @@ namespace {
 
 	//ƒXƒe[ƒ^ƒX
 	const int POWER = 40;
-	const int ENDURANCE = INT_MAX;		//•Ší‚Ì‘Ï‹v—Í(‘Ï‹v—ÍŠT”O‚È‚µ)
+	const int ENDURANCE = -1;		//•Ší‚Ì‘Ï‹v—Í(‘Ï‹v—ÍŠT”O‚È‚µ)
 
 	const float HITTABLE_TIME = 0.5f;
 }
