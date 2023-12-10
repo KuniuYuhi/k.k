@@ -1,4 +1,4 @@
-22
+24
 9,Icon_Lich,55,../../Game/Assets/sprite/InGame/Character/Icon_Lich.png,-613.4615384615383,450.0,180,180,10,1.0,1.0,0.5,0.5,13,Icon_Lich.dds
 12,HP_Back_Boss,58,../../Game/Assets/sprite/InGame/Character/HP_Back_Boss.png,-9.615384615384528,448.07692307692304,978,57,10,1.0,1.0,0.5,0.5,16,HP_Back_Boss.dds
 13,HP_Front_Boss,59,../../Game/Assets/sprite/InGame/Character/HP_Front_Boss.png,-9.615384615384528,448.07692307692304,978,57,10,1.0,1.0,0.5,0.5,17,HP_Front_Boss.dds
@@ -21,3 +21,5 @@
 11,SwordShield,57,../../Game/Assets/sprite/InGame/Character/SwordShield.png,0.0,0.0,280,280,10,1.0,1.0,0.5,0.5,15,SwordShield.dds
 8,BowArrow,54,../../Game/Assets/sprite/InGame/Character/BowArrow.png,0.0,0.0,256,256,10,1.0,1.0,0.5,0.5,12,BowArrow.dds
 10,Wave_Flame,56,../../Game/Assets/sprite/InGame/Character/Wave_Flame.png,-749.9999999999999,238.46153846153845,628,94,10,1.0,1.0,0.5,0.5,14,Wave_Flame.dds
+10,ArrowStock,56,../../Game/Assets/sprite/InGame/Character/ArrowStock.png,830.7692307692307,-434.6153846153845,177,182,10,1.0,1.0,0.5,0.5,14,ArrowStock.dds
+16,Shield_Endurance,62,../../Game/Assets/sprite/InGame/Character/Shield_Endurance.png,830.7692307692307,-438.46153846153834,134,132,10,1.0,1.0,0.5,0.5,20,Shield_Endurance.dds
