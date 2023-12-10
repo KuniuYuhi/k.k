@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#include <codecvt>
+
 #include "GameUI.h"
 #include "Game.h"
 #include "Player.h"
@@ -45,8 +48,8 @@ namespace {
 
 	const Vector3 SKILL_1_X_POS = { 674.0f,-376.0f,0.0f };
 
-
-
+	const Vector3 ENDURANCE_SPRITE_POS = { 835.0f,-450.0f,0.0f };
+	const Vector2 ENDURANCE_FONT_POS = { 800.0f,-405.0f };
 
 
 	const Vector3 TIME_FLAME_POS = { 0.0f,509.0f,0.0f };
@@ -164,11 +167,15 @@ void GameUI::UpdateWeapon()
 		m_player->SetChangeWeaponCompleteFlag(false);
 	}
 
+	//耐久値のフォントの処理
+	ProcessWeaponEndranceFont();
+	
+	//画像の更新
 	for (int num = 0; num < enWeapon_num; num++)
 	{
-		m_weaponSprits[num].m_weaponSprite->SetPosition(m_weaponIconPos[num]);
-		m_weaponSprits[num].m_weaponSprite->SetScale(m_weaponIconScale[num]);
-		m_weaponSprits[num].m_weaponSprite->Update();
+		m_weaponSprits[num].m_weaponRender->SetPosition(m_weaponIconPos[num]);
+		m_weaponSprits[num].m_weaponRender->SetScale(m_weaponIconScale[num]);
+		m_weaponSprits[num].m_weaponRender->Update();
 	}
 }
 
@@ -243,9 +250,21 @@ void GameUI::DrawPlayerUI(RenderContext& rc)
 	m_playerUI.m_sub2WeaponCommandRender.Draw(rc);
 
 	//武器のアイコン
+	//耐久値の背景
 	for (int num = 0; num < enWeapon_num; num++)
 	{
-		m_weaponSprits[num].m_weaponSprite->Draw(rc);
+		m_weaponSprits[num].m_weaponRender->Draw(rc);
+	}
+
+	if (m_weaponSprits[enWeapon_Main].m_weaponEndranceRender != nullptr)
+	{
+		m_weaponSprits[enWeapon_Main].m_weaponEndranceRender->Draw(rc);
+	}
+
+	//武器の耐久値が-１より大きかったら描画
+	if (m_player->GetNowWeaponEndrance() > -1)
+	{
+		m_playerUI.m_weaponEndranceFont.Draw(rc);
 	}
 }
 
@@ -347,7 +366,7 @@ void GameUI::InitPlayerUI()
 		"Assets/sprite/InGame/Character/SwordShield.DDS", 256, 256,
 		m_weaponIconPos[enWeapon_Main], m_weaponIconScale[enWeapon_Main]
 	);
-	m_weaponSprits[enWeapon_Main].m_weaponSprite = &m_playerUI.m_weaponRender[enWeapon_Main];
+	m_weaponSprits[enWeapon_Main].m_weaponRender = &m_playerUI.m_weaponRender[enWeapon_Main];
 
 	//メイン武器のフレーム
 	InitSpriteRender(
@@ -357,10 +376,11 @@ void GameUI::InitPlayerUI()
 
 	//サブ武器１のアイコン
 	InitSpriteRender(
-		m_playerUI.m_weaponRender[enWeapon_Sub], "Assets/sprite/InGame/Character/GreatSword.DDS", 300, 300,
+		m_playerUI.m_weaponRender[enWeapon_Sub],
+		"Assets/sprite/InGame/Character/GreatSword.DDS", 300, 300,
 		m_weaponIconPos[enWeapon_Sub], m_weaponIconScale[enWeapon_Sub]
 	);
-	m_weaponSprits[enWeapon_Sub].m_weaponSprite = &m_playerUI.m_weaponRender[enWeapon_Sub];
+	m_weaponSprits[enWeapon_Sub].m_weaponRender = &m_playerUI.m_weaponRender[enWeapon_Sub];
 
 	//サブ武器１のフレーム
 	InitSpriteRender(
@@ -375,10 +395,11 @@ void GameUI::InitPlayerUI()
 
 	//サブ武器２のアイコン
 	InitSpriteRender(
-		m_playerUI.m_weaponRender[enWeapon_Sub2], "Assets/sprite/InGame/Character/BowArrow.DDS", 290, 290,
+		m_playerUI.m_weaponRender[enWeapon_Sub2],
+		"Assets/sprite/InGame/Character/BowArrow.DDS", 290, 290,
 		m_weaponIconPos[enWeapon_Sub2], m_weaponIconScale[enWeapon_Sub2]
 	);
-	m_weaponSprits[enWeapon_Sub2].m_weaponSprite = &m_playerUI.m_weaponRender[enWeapon_Sub2];
+	m_weaponSprits[enWeapon_Sub2].m_weaponRender = &m_playerUI.m_weaponRender[enWeapon_Sub2];
 
 	//サブ武器２のフレーム
 	InitSpriteRender(
@@ -392,6 +413,27 @@ void GameUI::InitPlayerUI()
 		m_playerUI.m_sub2WeaponCommandRender, "Assets/sprite/InGame/Character/SkillKye.DDS", 60, 56,
 		{ 750.0f,-110.0f,0.0f }, g_vec3One, rot
 	);	
+
+	//メイン武器(ソード＆シールド)の耐久値の背景
+	InitSpriteRender(m_playerUI.m_weaponEndranceRender[enWeapon_Main],
+		"Assets/sprite/InGame/Character/Shield_Endurance.DDS", 134, 132,
+		ENDURANCE_SPRITE_POS, g_vec3One);
+	m_weaponSprits[enWeapon_Main].m_weaponEndranceRender = &m_playerUI.m_weaponEndranceRender[enWeapon_Main];
+	//サブ武器２(ボウ＆アロー)の耐久値の背景
+	InitSpriteRender(m_playerUI.m_weaponEndranceRender[enWeapon_Sub2],
+		"Assets/sprite/InGame/Character/ArrowStock.DDS", 177, 182,
+		ENDURANCE_SPRITE_POS, g_vec3One);
+	m_weaponSprits[enWeapon_Sub2].m_weaponEndranceRender = &m_playerUI.m_weaponEndranceRender[enWeapon_Sub2];
+
+	//耐久力のフォント
+	InitFontRender(
+		m_playerUI.m_weaponEndranceFont, ENDURANCE_FONT_POS,1.5f
+	);
+
+	//wchar_t srr = m_playerUI.m_weaponEndranceFont.GetText();
+
+	m_playerUI.m_weaponEndranceFont.SetOffset({ 20.0f,0.0f });
+
 }
 
 void GameUI::InitMonsterUI()
@@ -581,5 +623,39 @@ void GameUI::ChangeWeapon(
 	temporary = m_weaponSprits[enWeapon_Main];
 	m_weaponSprits[enWeapon_Main] = changeWeaponSprite;
 	changeWeaponSprite = temporary;
+}
+
+void GameUI::ProcessWeaponEndranceFont()
+{
+	int num = m_player->GetNowWeaponEndrance();
+	wchar_t endrance[255];
+	swprintf_s(endrance, 255, L"%d", num);
+
+	//wchar_t型をstring型に変換
+	//std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+	//std::string str = converter.to_bytes(endrance);
+	////文字列の長さを取得
+	//int length= str.length();
+	//m_playerUI.m_weaponEndranceFont.SetOffset({ length/2.0f ,0.0f });
+
+	m_playerUI.m_weaponEndranceFont.SetText(endrance);
+
+	int harfEndrance = m_player->GetNowWeaponMaxEndrance() / 2;
+
+	//半分より上なら白色にする
+	if (m_player->GetNowWeaponEndrance() > harfEndrance)
+	{
+		m_playerUI.m_weaponEndranceFont.SetColor(g_vec4White);
+	}
+	//耐久値の半分の半分(四分の一)だったら赤色にする
+	else if (m_player->GetNowWeaponEndrance() <= harfEndrance / 2)
+	{
+		m_playerUI.m_weaponEndranceFont.SetColor(g_vec4Red);
+	}
+	//半分以下なら黄色にする
+	else
+	{
+		m_playerUI.m_weaponEndranceFont.SetColor(g_vec4Yellow);
+	}
 }
 
