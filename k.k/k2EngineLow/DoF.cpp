@@ -60,7 +60,7 @@ void nsK2EngineLow::DoF::OnRender(RenderContext& rc, RenderTarget& mainRenderTar
 	rc.WaitUntilToPossibleSetRenderTarget(mainRenderTarget);
 	// メインレンダリングターゲットを設定
 	rc.SetRenderTargetAndViewport(mainRenderTarget);
-	// スプライトを描画&
+	// スプライトを描画
 	m_combineBokeImageSprite.Draw(rc);
 	// レンダリングターゲットへの書き込み終了待ち
 	rc.WaitUntilFinishDrawingToRenderTarget(mainRenderTarget);
@@ -86,15 +86,17 @@ void nsK2EngineLow::DoF::Render(RenderContext& rc, RenderTarget& mainRenderTarge
 void nsK2EngineLow::DoF::InitRenderTarget(RenderTarget& mainRenderTarget)
 {
 	//シーンのカメラ空間でのZ値を書き込むレンダリングターゲットを作成
+	float clearColor[4] = { 10000.0f,10000.0f,10000.0f,1.0f };
 	m_depthRenderTarget.Create(
 		mainRenderTarget.GetWidth(),
 		mainRenderTarget.GetHeight(),
 		1,
 		1,
 		DXGI_FORMAT_R32_FLOAT,
-		DXGI_FORMAT_UNKNOWN
+		DXGI_FORMAT_UNKNOWN,
+		clearColor
 	);
-
+	
 	//垂直ブラーをかけるためのレンダリングターゲット
 	m_rtVerticalBlur.Create(
 		mainRenderTarget.GetWidth(),
