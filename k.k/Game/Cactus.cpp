@@ -14,7 +14,6 @@
 
 #include "CharactersInfoManager.h"
 #include "GameManager.h"
-#include "Lich.h"
 
 namespace {
 	const float ANGLE = 80.0f;				//視野角
@@ -54,12 +53,6 @@ Cactus::Cactus()
 Cactus::~Cactus()
 {
 	DeleteGO(m_headCollision);
-
-	//if (m_lich != nullptr)
-	//{
-	//	//リストから自身を消す
-	//	m_lich->RemoveAIActorFromList(this);
-	//}
 }
 
 bool Cactus::Start()
@@ -233,23 +226,22 @@ bool Cactus::IsStopProcessing()
 	}
 
 	//勝利したら
-	if (m_lich != nullptr)
+	if (GameManager::GetInstance()->GetOutComeState()
+		== GameManager::enOutComeState_PlayerLose)
 	{
-		if (m_lich->GetEnOutCome() == enOutCome_Win)
-		{
-			//勝敗ステートの設定
-			SetEnOutCome(enOutCome_Win);
-			SetWinFlag(true);
-			//攻撃中でなければ
-			SetNextAnimationState(enAnimationState_Victory);
-			return true;
-		}
-		//負けた時
-		if (m_lich->GetEnOutCome() == enOutCome_Lose)
-		{
-			SetNextAnimationState(enAninationState_Idle);
-			return true;
-		}
+		//勝敗ステートの設定
+		SetEnOutCome(enOutCome_Win);
+		SetWinFlag(true);
+		//攻撃中でなければ
+		SetNextAnimationState(enAnimationState_Victory);
+		return true;
+	}
+	//負けた時
+	if (GameManager::GetInstance()->GetOutComeState()
+		== GameManager::enOutComeState_PlayerWin)
+	{
+		SetNextAnimationState(enAninationState_Idle);
+		return true;
 	}
 
 	//召喚された時のアニメーションステートなら	
