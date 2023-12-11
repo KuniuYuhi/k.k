@@ -12,7 +12,6 @@
 
 #include "CharactersInfoManager.h"
 #include "GameManager.h"
-#include "Lich.h"
 
 namespace {
 	const float ANGLE = 60.0f;				//視野角
@@ -21,7 +20,7 @@ namespace {
 	const float STAY_RANGR = 45.0f;						//停止する距離
 	const float ATTACK_INTAERVALE_TIME = 1.5f;			//攻撃する間隔
 	const float ANGLE_RANGE = 2.0f;						//移動するアングルの範囲
-	const float POS2_LENGTH = 27.0f;
+	const float POS2_LENGTH = 30.0f;
 	const float ROT_SPEED = 8.0f;
 
 	//ステータス
@@ -52,12 +51,6 @@ Mushroom::Mushroom()
 Mushroom::~Mushroom()
 {
 	DeleteGO(m_headCollision);
-
-	//if (m_lich != nullptr)
-	//{
-	//	//リストから自身を消す
-	//	m_lich->RemoveAIActorFromList(this);
-	//}
 }
 
 bool Mushroom::Start()
@@ -114,10 +107,6 @@ void Mushroom::InitModel()
 		enAnimClip_Num,
 		enModelUpAxisZ
 	);
-	//モデルの静的オブジェクト作成
-	//m_monsterStaticObject.CreateFromModel(m_modelRender.GetModel(), m_modelRender.GetModel().GetWorldMatrix());
-	////コリジョン属性を付ける
-	//m_monsterStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Monster);
 
 	m_charaCon.Init(
 		22.0f,
@@ -125,16 +114,17 @@ void Mushroom::InitModel()
 		m_position
 	);
 
-	//座標の設定
-	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
-	m_modelRender.Update();
-
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
 
 	m_attackBoonId = m_modelRender.FindBoneID(L"mushroom_spine03");
+
+	//座標の設定
+	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
+	m_modelRender.Update();
+
 }
 
 void Mushroom::Update()
@@ -244,25 +234,24 @@ bool Mushroom::IsStopProcessing()
 	{
 		return true;
 	}
-
+	
 	//勝利したら
-	if (m_lich != nullptr)
+	if (GameManager::GetInstance()->GetOutComeState()
+		== GameManager::enOutComeState_PlayerLose)
 	{
-		if (m_lich->GetEnOutCome() == enOutCome_Win)
-		{
-			//勝敗ステートの設定
-			SetEnOutCome(enOutCome_Win);
-			SetWinFlag(true);
-			//攻撃中でなければ
-			SetNextAnimationState(enAnimationState_Victory);
-			return true;
-		}
-		//負けた時
-		if (m_lich->GetEnOutCome() == enOutCome_Lose)
-		{
-			SetNextAnimationState(enAninationState_Idle);
-			return true;
-		}
+		//勝敗ステートの設定
+		SetEnOutCome(enOutCome_Win);
+		SetWinFlag(true);
+		//攻撃中でなければ
+		SetNextAnimationState(enAnimationState_Victory);
+		return true;
+	}
+	//負けた時
+	if (GameManager::GetInstance()->GetOutComeState()
+		== GameManager::enOutComeState_PlayerWin)
+	{
+		SetNextAnimationState(enAninationState_Idle);
+		return true;
 	}
 
 	//召喚された時のアニメーションステートなら	

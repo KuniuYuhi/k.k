@@ -41,7 +41,8 @@ public:
 	bool isAnimationEnable() const
 	{
 		return m_enAnimationState != enAnimationState_Damage &&
-			m_enAnimationState != enAnimationState_Die;
+			m_enAnimationState != enAnimationState_Die &&
+			m_enAnimationState != enAnimationState_Victory;
 	}
 
 	/// <summary>
