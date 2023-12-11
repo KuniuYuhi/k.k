@@ -56,6 +56,7 @@ bool BossStage1::Start()
 					0,
 					0,
 					enModelUpAxisZ,
+					true,
 					false,
 					false,
 					false
