@@ -3,8 +3,11 @@
 
 namespace nsK2EngineLow {
 
-	void ModelRender::Init(const char* tkmFilePath, const wchar_t* lampTextureFIlePath, AnimationClip* animationClips,
-		int numAnimationClips, EnModelUpAxis enModelUpAxis, bool isShadowCaster, bool isToon,bool isOutline)
+	void ModelRender::Init(const char* tkmFilePath, 
+		const wchar_t* lampTextureFIlePath,
+		AnimationClip* animationClips,int numAnimationClips, 
+		EnModelUpAxis enModelUpAxis,
+		bool isShadowCaster, bool isToon,bool isOutline, bool isShadowRender)
 	{
 		//スケルトンを初期化
 		InitSkeleton(tkmFilePath);
@@ -20,14 +23,13 @@ namespace nsK2EngineLow {
 		//ZPrepass描画用のモデルを初期化。
 		InitModelOnZprepass(tkmFilePath, enModelUpAxis);
 
-		if (isShadowCaster)
+		if (isShadowRender == true)
 		{
-			
+			//シャドウマップ描画用のモデルの初期化
+			InitModelOnShadowMap(
+				*g_renderingEngine, tkmFilePath, enModelUpAxis
+			);
 		}
-		//シャドウマップ描画用のモデルの初期化
-		InitModelOnShadowMap(
-			*g_renderingEngine, tkmFilePath, enModelUpAxis
-		);
 		
 	}
 
