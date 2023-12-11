@@ -419,7 +419,7 @@ void Summoner::InitModel()
 	m_animationClip[enAnimClip_Summon].SetLoopFlag(false);
 	m_animationClip[enAnimClip_Victory].Load(
 		"Assets/animData/character/Lich/Victory.tka");
-	m_animationClip[enAnimClip_Victory].SetLoopFlag(false);
+	m_animationClip[enAnimClip_Victory].SetLoopFlag(true);
 	m_animationClip[enAnimClip_Angry].Load(
 		"Assets/animData/character/Lich/Angry.tka");
 	m_animationClip[enAnimClip_Angry].SetLoopFlag(false);
