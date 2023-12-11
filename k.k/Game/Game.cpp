@@ -27,7 +27,7 @@
 namespace {
 
 	//スカイキューブの初期の明るさ
-	const float START_SKY_CUBE_LMINANCE = 1.05f;
+	const float START_SKY_CUBE_LMINANCE = 1.02f;
 
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.1f, 0.1f, 0.1f);
 
