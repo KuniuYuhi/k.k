@@ -281,7 +281,7 @@ namespace nsK2EngineLow {
 
 	void RenderingEngine::InitZPrepassRenderTarget()
 	{
-		float clearColor[] = { 1.0f,1.0f,1.0f,1.0f };
+		float clearColor[] = { 100.0f,100.0f,100.0f,1.0f };
 		m_zprepassRenderTarget.Create(
 			g_graphicsEngine->GetFrameBufferWidth(),
 			g_graphicsEngine->GetFrameBufferHeight(),
