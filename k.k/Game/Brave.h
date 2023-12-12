@@ -461,6 +461,14 @@ public:
 		SetKnockBackAttackFalg(flag);
 	}
 
+	/// <summary>
+	/// キャラを強制的にアイドル状態にする
+	/// </summary>
+	void ForciblyIdleAnim()
+	{
+		m_moveSpeed = g_vec3Zero;
+	}
+
 private:
 	/// <summary>
 	/// コンボ攻撃のコンボの処理
