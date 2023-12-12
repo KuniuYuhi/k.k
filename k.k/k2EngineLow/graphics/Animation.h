@@ -112,6 +112,22 @@ namespace nsK2EngineLow {
 		{
 			m_animationEventListeners.push_back(eventListener);
 		}
+		/*/// <summary>
+		/// アニメーションイベントリスナーを削除
+		/// </summary>
+		/// <param name="eventListener">削除するリスナー</param>
+		void RemoveAnimationEventListener(AnimationEventListener eventListener)
+		{
+			std::vector<AnimationEventListener>::iterator it = std::find(
+				m_animationEventListeners.begin(),
+				m_animationEventListeners.end(),
+				eventListener
+			);
+			if (it != m_animationEventListeners.end())
+			{
+				m_animationEventListeners.erase(it);
+			}
+		}*/
 
 		/// <summary>
 		/// アニメーションイベントをリスナーに通知。
