@@ -10,6 +10,8 @@ public:
 		Init();
 	}
 
+	~SummonerState_DarkBall();
+
 	/// <summary>
 	/// ‰Šú‰»
 	/// </summary>

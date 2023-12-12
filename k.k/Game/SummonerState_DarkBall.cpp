@@ -7,6 +7,15 @@
 //todo サモナーの中身がおかしくなる
 
 
+SummonerState_DarkBall::~SummonerState_DarkBall()
+{
+	/*m_summoner->GetModelRender().RemoveAnimationEvent(
+		[&](const wchar_t* clipName, const wchar_t* eventName) {
+			OnAnimationEvent(clipName, eventName);
+		}
+	);*/
+}
+
 void SummonerState_DarkBall::Init()
 {
 	static bool m_initFlag = false;
@@ -16,10 +25,10 @@ void SummonerState_DarkBall::Init()
 		return;
 	}
 
-	//m_summoner->GetModelRender().AddAnimationEvent(
-	//	[&](const wchar_t* clipName, const wchar_t* eventName) {
-	//	OnAnimationEvent(clipName, eventName);
-	//	});
+	m_summoner->GetModelRender().AddAnimationEvent(
+		[&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+		});
 	m_initFlag = true;
 }
 
@@ -39,13 +48,14 @@ void SummonerState_DarkBall::PlayAnimation()
 
 void SummonerState_DarkBall::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
-	m_summoner = FindGO<Summoner>("summoner");
+	
 
 	//ダークボール生成タイミング
 	if (wcscmp(eventName, L"Create_Ball") == 0)
 	{
+		m_summoner = FindGO<Summoner>("summoner");
 		//ボール生成
-		//CreateDarkBall();
+		CreateDarkBall();
 	}
 }
 
