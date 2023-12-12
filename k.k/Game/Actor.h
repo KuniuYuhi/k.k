@@ -325,6 +325,15 @@ public:
 		return m_knockBackPower;
 	}
 
+	/// <summary>
+	/// モデルドローフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetModelDrawFlag(bool flag)
+	{
+		m_modelDrawFlag = flag;
+	}
+
 protected:
 
 	/// <summary>
@@ -397,7 +406,7 @@ protected:
 	/// <returns>当たり判定をとるときはtrue、とらないときはfalse</returns>
 	bool IsDecisionCollision();
 
-
+	
 	
 protected:
 
