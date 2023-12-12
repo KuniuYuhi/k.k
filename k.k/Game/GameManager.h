@@ -24,7 +24,8 @@ public:
 		enGameSeenState_Game,
 		enGameSeenState_Pause,
 		enGameSeenState_GameOver,
-		enGameSeenState_GameClear
+		enGameSeenState_GameClear,
+		enGameSeenState_GameEnd
 	};
 	/// <summary>
 	/// 勝敗ステート
