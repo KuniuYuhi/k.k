@@ -217,6 +217,14 @@ namespace nsK2EngineLow {
 		{
 			m_animation.AddAnimationEventListener(eventListener);
 		}
+		/// <summary>
+		/// アニメーションイベントを削除する
+		/// </summary>
+		/// <param name="eventListener"></param>
+		/*void RemoveAnimationEvent(AnimationEventListener eventListener)
+		{
+			m_animation.RemoveAnimationEventListener(eventListener);
+		}*/
 
 		/// <summary>
 		/// アニメーション再生。
