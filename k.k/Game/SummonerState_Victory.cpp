@@ -5,10 +5,12 @@
 
 void SummonerState_Victory::ManageState()
 {
+	//モンスターの勝利！
+	GameManager::GetInstance()->SetGameFinishProcessEndFlag(true);
+
 	if (m_summoner->GetModelRender().IsPlayingAnimation() == false)
 	{
-		//モンスターの勝利！
-		GameManager::GetInstance()->SetGameFinishProcessEndFlag(true);
+		
 	}
 }
 
