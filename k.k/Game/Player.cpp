@@ -80,6 +80,10 @@ bool Player::IsInaction()
 	{
 		//勝敗決定
 		m_decisionOutComeFlag = true;
+		//アイドル状態に遷移
+		m_brave->ForciblyIdleAnim();
+		//モデルが点滅しないようにする
+		m_brave->SetInvicibleTimeFlag(false);
 		return true;
 	}
 	//ゲーム中でないなら
