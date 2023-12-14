@@ -48,8 +48,6 @@ void SummonerState_DarkBall::PlayAnimation()
 
 void SummonerState_DarkBall::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
-	
-
 	//ダークボール生成タイミング
 	if (wcscmp(eventName, L"Create_Ball") == 0)
 	{
