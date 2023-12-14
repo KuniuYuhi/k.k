@@ -45,7 +45,6 @@ public:
 		//enAnimClip_Attack_4,		// 6 : 
 		enAnimClip_Attack_DarkMeteorite_start,
 		enAnimClip_Attack_DarkMeteorite_main,
-		enAnimClip_Attack_DarkMeteorite_end,
 		enAnimClip_Summon,
 		enAnimClip_CriticalHit,
 		enAnimClip_Die,
@@ -72,7 +71,6 @@ public:
 		//enAnimationState_Attack_4,
 		enAnimationState_Attack_DarkMeteorite_start,
 		enAnimationState_Attack_DarkMeteorite_main,
-		enAnimationState_Attack_DarkMeteorite_end,
 		enAninationState_Summon,
 		enAnimationState_CriticalHit,
 		enAnimationState_Die,
