@@ -408,6 +408,7 @@
     </ClCompile>
     <ClCompile Include="SummonerState_DMeteo_Start.cpp" />
     <ClCompile Include="SummonerState_DMeteo_Main.cpp" />
+    <ClCompile Include="DarkMeteo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -785,5 +786,7 @@
     </ClInclude>
     <ClInclude Include="SummonerState_DMeteo_Start.h" />
     <ClInclude Include="SummonerState_DMeteo_Main.h" />
+    <ClInclude Include="DarkMeteo.h" />
+    <ClInclude Include="DecisionMeteoEndpoint.h" />
   </ItemGroup>
 </Project>

@@ -263,6 +263,7 @@
     <ClCompile Include="CharactersInfoManager.cpp" />
     <ClCompile Include="DamageFont.cpp" />
     <ClCompile Include="DarkBall.cpp" />
+    <ClCompile Include="DarkMeteo.cpp" />
     <ClCompile Include="DarkMeteorite.cpp" />
     <ClCompile Include="DarkWall.cpp" />
     <ClCompile Include="EventManager.cpp" />
@@ -404,8 +405,10 @@
     <ClInclude Include="CharactersInfoManager.h" />
     <ClInclude Include="DamageFont.h" />
     <ClInclude Include="DarkBall.h" />
+    <ClInclude Include="DarkMeteo.h" />
     <ClInclude Include="DarkMeteorite.h" />
     <ClInclude Include="DarkWall.h" />
+    <ClInclude Include="DecisionMeteoEndpoint.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="GameFinishCamera.h" />
     <ClInclude Include="HitDetection.h" />
