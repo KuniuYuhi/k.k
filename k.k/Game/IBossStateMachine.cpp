@@ -10,7 +10,7 @@
 //todo ProcessMeleeAttack(),ProcessLongRangeAttack()の引数にオーダーをいれる
 
 namespace {
-	const float WAIT_TIME = 5.0f;		//待機時間
+	const float WAIT_TIME = 2.0f;		//待機時間
 
 	const float MELEE_ATTACK_RANGE = 280.0f;	//近距離攻撃の範囲内
 
@@ -19,7 +19,7 @@ namespace {
 
 	const float KNOCKBACK_DISTANCE = 200.0f;
 
-	const float DARK_METEO_ACTION_POINT = 40.0f;
+	const float DARK_METEO_ACTION_POINT = 1.0f;
 
 }
 
@@ -142,6 +142,11 @@ void IBossStateMachine::ProcessWaitState()
 void IBossStateMachine::ProcessLongRangeAttack()
 {
 	//遠距離攻撃
+
+	//ダークメテオ
+	m_summoner->
+		SetNextAnimationState(Summoner::enAnimationState_Attack_DarkMeteorite_start);
+	return;
 
 	//前の行動がダークメテオでないなら
 	//ダークメテオを撃つか調べる
