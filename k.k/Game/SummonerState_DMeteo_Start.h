@@ -1,6 +1,8 @@
 #pragma once
 #include "ISummonerState.h"
 
+class DarkMeteo;
+
 class SummonerState_DMeteo_Start :public ISummonerState
 {
 public:
@@ -20,4 +22,6 @@ public:
 
 
 private:
+	DarkMeteo* m_darkMeteo = nullptr;
+
 };
