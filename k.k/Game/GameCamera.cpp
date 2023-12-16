@@ -13,7 +13,7 @@ namespace {
 	//150.0f
 	const float TARGETPOS_YUP = 100.0f;
 	
-	const Vector3 DEFAULT_TOCAMERAPOS = { 0.0f, 200.0f, -650.0f };
+	const Vector3 DEFAULT_TOCAMERAPOS = { 0.0f, 250.0f, -200.0f };
 	const Vector3 MAX_ZOOM_TOCAMERAPOS = { 0.0f,0.0f,-50.0f };
 
 }
@@ -34,7 +34,7 @@ bool GameCamera::Start()
 	m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
 
 
-	m_toCameraPosForBoss.Set(0.0f, 300.0f, 600.0f);
+	m_toCameraPosForBoss.Set(0.0f, 200.0f, 200.0f);
 	//注視点から視点までのベクトルを設定。300,400
 	m_toCameraPos.Set(DEFAULT_TOCAMERAPOS);
 	//カメラをプレイヤーの後ろにするときに使う
