@@ -17,10 +17,13 @@ namespace {
 	const int ENDURANCE = -1;		//•Ší‚Ì‘Ï‹v—Í(‘Ï‹v—ÍŠT”O‚È‚µ)
 
 	const float HITTABLE_TIME = 0.5f;
+
+	const float MOVE_FORWARD_SPEED = 150.0f;
 }
 
 BigSword::BigSword()
 {
+	SetMoveForwardSpeed(MOVE_FORWARD_SPEED);
 	SetWeaponPower(POWER);
 }
 
