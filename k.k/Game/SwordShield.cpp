@@ -2,6 +2,8 @@
 #include "SwordShield.h"
 #include "Brave.h"
 
+//todo アニメーションイベント追加
+//ジャンプ処理ｈ作る
 
 namespace {
 	//武器が収納状態の時の座標
@@ -17,10 +19,13 @@ namespace {
 	//ステータス
 	const int POWER = 30;
 	const int ENDURANCE = 70;		//武器の耐久力(盾の耐久力)。
+
+	const float MOVE_FORWARD_SPEED = 120.0f;
 }
 
 SwordShield::SwordShield()
 {
+	SetMoveForwardSpeed(MOVE_FORWARD_SPEED);
 	SetWeaponPower(POWER);
 }
 
@@ -242,10 +247,18 @@ void SwordShield::MoveWeapon()
 
 void SwordShield::MoveArmed()
 {
+	Vector3 swordPos = g_vec3Zero;
 	//剣と盾のワールド座標を設定
 	m_swordMatrix =
 		m_brave->GetModelRender().GetBone(m_armedSwordBoonId)->GetWorldMatrix();
-	m_modelSword.SetWorldMatrix(m_swordMatrix);
+	//m_modelSword.SetWorldMatrix(m_swordMatrix);
+
+
+	m_swordMatrix.Apply(swordPos);
+
+	m_modelSword.SetPosition(m_swordPos);
+	rot.SetRotation(m_swordMatrix);
+
 	m_shieldMatrix =
 		m_brave->GetModelRender().GetBone(m_armedShieldBoonId)->GetWorldMatrix();
 	m_modelShield.SetWorldMatrix(m_shieldMatrix);

@@ -96,6 +96,8 @@ private:
 
 	Vector3 m_skillAttackPosition = g_vec3Zero;
 
+	Quaternion rot;
+
 	const float m_jampSpeed = 3000.0f;
 
 	//•Ší‚ğ‚½‚¹‚é‚Ìƒ{[ƒ“ID
