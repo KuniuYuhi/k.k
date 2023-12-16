@@ -251,13 +251,13 @@ void SwordShield::MoveArmed()
 	//Œ•‚Æ‚‚Ìƒ[ƒ‹ƒhÀ•W‚ðÝ’è
 	m_swordMatrix =
 		m_brave->GetModelRender().GetBone(m_armedSwordBoonId)->GetWorldMatrix();
-	//m_modelSword.SetWorldMatrix(m_swordMatrix);
+	m_modelSword.SetWorldMatrix(m_swordMatrix);
 
 
-	m_swordMatrix.Apply(swordPos);
+	/*m_swordMatrix.Apply(swordPos);
 
 	m_modelSword.SetPosition(m_swordPos);
-	rot.SetRotation(m_swordMatrix);
+	rot.SetRotation(m_swordMatrix);*/
 
 	m_shieldMatrix =
 		m_brave->GetModelRender().GetBone(m_armedShieldBoonId)->GetWorldMatrix();
