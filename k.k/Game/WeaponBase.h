@@ -231,6 +231,40 @@ public:
 		return false;
 	}
 
+	/// <summary>
+	/// 前進するスピードを設定
+	/// </summary>
+	/// <param name="Speed"></param>
+	void SetMoveForwardSpeed(float Speed)
+	{
+		m_moveForwardSpeed = Speed;
+	}
+	/// <summary>
+	/// 前進するスピードを取得 
+	/// </summary>
+	/// <returns></returns>
+	const float& GetMoveForwardSpeed() const
+	{
+		return m_moveForwardSpeed;
+	}
+
+	/// <summary>
+	/// 後退するスピードを設定
+	/// </summary>
+	/// <param name="Speed"></param>
+	void SetMoveBackSpeed(float Speed)
+	{
+		m_moveForwardSpeed = Speed;
+	}
+	/// <summary>
+	/// 後退するスピードを取得
+	/// </summary>
+	/// <returns></returns>
+	const float& GetMoveBackSpeed() const
+	{
+		return m_moveForwardSpeed;
+	}
+
 protected:
 	/// <summary>
 	/// 武器の防御タイプを設定
@@ -270,6 +304,12 @@ protected:
 	bool				m_isDefendEnableFlag = true;			//防御可能かのフラグ。trueで可能
 
 	bool				m_isAttackEnableFlag = true;			//攻撃可能かのフラグ。trueで可能
+
+	float				m_moveForwardSpeed = 2.0f;				//前進するときのスピード
+
+	float				m_moveBackSpeed = 1.0f;					//後退するときのスピード
+
+	float m_knockBackSpeed = 1.0f;
 
 };
 
