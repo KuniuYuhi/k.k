@@ -263,6 +263,7 @@
     <ClCompile Include="CharactersInfoManager.cpp" />
     <ClCompile Include="DamageFont.cpp" />
     <ClCompile Include="DarkBall.cpp" />
+    <ClCompile Include="DarkMeteo.cpp" />
     <ClCompile Include="DarkMeteorite.cpp" />
     <ClCompile Include="DarkWall.cpp" />
     <ClCompile Include="EventManager.cpp" />
@@ -334,6 +335,8 @@
     <ClCompile Include="SummonerState_DarkBall.cpp" />
     <ClCompile Include="SummonerState_DarkWall.cpp" />
     <ClCompile Include="SummonerState_Die.cpp" />
+    <ClCompile Include="SummonerState_DMeteo_Main.cpp" />
+    <ClCompile Include="SummonerState_DMeteo_Start.cpp" />
     <ClCompile Include="SummonerState_Hit.cpp" />
     <ClCompile Include="SummonerState_Idle.cpp" />
     <ClCompile Include="SummonerState_KnockBack.cpp" />
@@ -402,8 +405,10 @@
     <ClInclude Include="CharactersInfoManager.h" />
     <ClInclude Include="DamageFont.h" />
     <ClInclude Include="DarkBall.h" />
+    <ClInclude Include="DarkMeteo.h" />
     <ClInclude Include="DarkMeteorite.h" />
     <ClInclude Include="DarkWall.h" />
+    <ClInclude Include="DecisionMeteoEndpoint.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="GameFinishCamera.h" />
     <ClInclude Include="HitDetection.h" />
@@ -477,6 +482,8 @@
     <ClInclude Include="SummonerState_DarkBall.h" />
     <ClInclude Include="SummonerState_DarkWall.h" />
     <ClInclude Include="SummonerState_Die.h" />
+    <ClInclude Include="SummonerState_DMeteo_Main.h" />
+    <ClInclude Include="SummonerState_DMeteo_Start.h" />
     <ClInclude Include="SummonerState_Hit.h" />
     <ClInclude Include="SummonerState_Idle.h" />
     <ClInclude Include="SummonerState_KnockBack.h" />

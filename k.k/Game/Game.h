@@ -78,6 +78,10 @@ public:
 	/// ポーズ画面
 	/// </summary>
 	void OnProcessPauseTransition();
+	/// <summary>
+	/// ゲームエンド
+	/// </summary>
+	void OnProcessGameEndTransition();
 
 
 	void OnProcessGame_FadeOutTransition();

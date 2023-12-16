@@ -105,10 +105,6 @@ void MobMonster::Move(CharacterController& charaCon)
 	{
 		//ˆÚ“®‚·‚é•ûŒü‚ğ”½“]‚·‚é
 		m_direction *= -1.0f;
-		/*m_moveSpeed = m_direction * m_status.defaultSpeed;
-		m_SaveMoveSpeed = m_moveSpeed;
-
-		m_position = charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);*/
 		return;
 	}
 
@@ -145,6 +141,11 @@ Vector3 MobMonster::SetRamdomDirection(int range)
 	randomPos.z += Z;
 	randomPos.Normalize();
 
+	if ((randomPos.x == 0.0f) && (randomPos.z==0.0f))
+	{
+		int a = 0;
+	}
+
 	return randomPos;
 }
 
@@ -165,18 +166,23 @@ bool MobMonster::IsBumpedForest(float pos2Length)
 		return false;
 	}*/
 
+	if (m_direction.LengthSq() == 0.0f)
+	{
+		return false;
+	}
+
 	//‚»‚Ìê‚Å’â~‚µ‚Ä‚¢‚é‚Ì‚Åˆ—‚µ‚È‚¢
 	if (forward.x == 0.0f && forward.y == 0.0f && forward.z == 0.0f)
 	{
 		return false;
 	}
-
+	//‚±‚±‚ª0‚¾‚ÆƒŒƒC‚Ì’·‚³‚ª0‚É‚È‚é
 	Vector3 endPos;
 	endPos = m_direction;
 	endPos.Normalize();
 	endPos *= pos2Length;
 	endPos += m_position;
-
+	
 	SphereCollider m_sphereCollider;
 	m_sphereCollider.Create(1.0f);
 

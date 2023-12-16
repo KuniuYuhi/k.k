@@ -22,6 +22,7 @@ public:
 	{
 		bool isActionFlag = false;		//アクションフラグ
 		bool moveforwardFlag = false;	//前進攻撃フラグ
+		bool moveBackFlag = false;		//後退フラグ。ノックバック時も使う
 		bool nextComboFlag = false;		//次のコンボ攻撃をするかのフラグ
 		bool isComboReceptionFlag = false;	//コンボ受付可能フラグ
 		bool isCollisionPossibleFlag = false;	//当たり判定が有効かの判定フラグ。
@@ -137,10 +138,16 @@ public:
 	const bool& IsInaction() const;
 
 	/// <summary>
-	/// 攻撃時に前進する時に使う
+	/// 前進する
 	/// </summary>
-	/// <param name="Speed">前進する速さ</param>
+	/// <param name="Speed">前進する速さ。武器のスピードによって変える</param>
 	void MoveForward(float Speed);
+
+	/// <summary>
+	/// 後退する
+	/// </summary>
+	/// <param name="backSpeed"></param>
+	void MoveBack(float backSpeed);
 
 	/// <summary>
 	///	武器の切り替え処理
@@ -257,6 +264,7 @@ public:
 	{
 		m_infoAboutActionFlag.isActionFlag = flag;
 		m_infoAboutActionFlag.moveforwardFlag = flag;
+		m_infoAboutActionFlag.moveBackFlag = flag;
 		m_infoAboutActionFlag.nextComboFlag = flag;
 		m_infoAboutActionFlag.isComboReceptionFlag = flag;
 		m_infoAboutActionFlag.isCollisionPossibleFlag = flag;
@@ -294,6 +302,23 @@ public:
 	{
 		return m_infoAboutActionFlag.moveforwardFlag;
 	}
+	/// <summary>
+	/// 後退するフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetMoveBackFlag(bool flag)
+	{
+		m_infoAboutActionFlag.moveBackFlag = flag;
+	}
+	/// <summary>
+	/// 後退する攻撃フラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetMoveBackFlag() const
+	{
+		return m_infoAboutActionFlag.moveBackFlag;
+	}
+
 	/// <summary>
 	/// 次のコンボ攻撃をするかのフラグを設定
 	/// </summary>
@@ -459,6 +484,14 @@ public:
 		SetKnockBackPower(power);
 		//ノックバック攻撃フラグをセット
 		SetKnockBackAttackFalg(flag);
+	}
+
+	/// <summary>
+	/// キャラを強制的にアイドル状態にする
+	/// </summary>
+	void ForciblyIdleAnim()
+	{
+		m_moveSpeed = g_vec3Zero;
 	}
 
 private:

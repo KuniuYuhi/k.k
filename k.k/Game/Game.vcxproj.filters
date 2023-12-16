@@ -406,6 +406,9 @@
     <ClCompile Include="SummonerState_Warp.cpp">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
     </ClCompile>
+    <ClCompile Include="SummonerState_DMeteo_Start.cpp" />
+    <ClCompile Include="SummonerState_DMeteo_Main.cpp" />
+    <ClCompile Include="DarkMeteo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -781,5 +784,9 @@
     <ClInclude Include="SummonerState_Walk.h">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
     </ClInclude>
+    <ClInclude Include="SummonerState_DMeteo_Start.h" />
+    <ClInclude Include="SummonerState_DMeteo_Main.h" />
+    <ClInclude Include="DarkMeteo.h" />
+    <ClInclude Include="DecisionMeteoEndpoint.h" />
   </ItemGroup>
 </Project>

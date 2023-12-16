@@ -1,12 +1,16 @@
 #include "stdafx.h"
 #include "SummonerState_Victory.h"
 #include "Summoner.h"
+#include "GameManager.h"
 
 void SummonerState_Victory::ManageState()
 {
+	//モンスターの勝利！
+	GameManager::GetInstance()->SetGameFinishProcessEndFlag(true);
+
 	if (m_summoner->GetModelRender().IsPlayingAnimation() == false)
 	{
-		//モンスターの勝利！
+		
 	}
 }
 

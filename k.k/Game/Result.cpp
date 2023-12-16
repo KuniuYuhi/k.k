@@ -90,23 +90,19 @@ void ResultSeen::ManageState()
 
 void ResultSeen::WinState()
 {
-	if (m_resultEndFlag == true)
+	switch (m_enResultStep)
 	{
-		ResultEnd();
-		return;
-	}
-	else
-	{
-		//円形ワイプを次フレームから開始
-		//タイトルに戻るようにする
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			m_resultEndFlag = true;
-		}
+	case ResultSeen::enResultStep_main:
+		OnProcessGameClearMainTranstion();
+		break;
+	case ResultSeen::enResultStep_end:
+		OnProcessEndTranstion();
+		break;
+	default:
+		break;
 	}
 
-
-
+	//ライトの回転
 	m_rightRotation.AddRotationDegZ(g_gameTime->GetFrameDeltaTime() * RIGHT_SPEED);
 	m_rightRender.SetRotation(m_rightRotation);
 	m_rightRender.Update();
@@ -114,28 +110,27 @@ void ResultSeen::WinState()
 
 void ResultSeen::LoseState()
 {
-	if (m_resultEndFlag == true)
+	switch (m_enResultStep)
 	{
-		ResultEnd();
-		return;
-	}
-	else
-	{
-		//タイトルに戻るようにする
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			m_resultEndFlag = true;
-		}
+	case ResultSeen::enResultStep_main:
+		OnProcessGameOverMainTranstion();
+		break;
+	case ResultSeen::enResultStep_end:
+		OnProcessEndTranstion();
+		break;
+	default:
+		break;
 	}
 }
 
 void ResultSeen::ResultEnd()
 {
+	//画面が黒くなるまで円を小さくしていく
 	if (m_roundWipeEndFlag != true)
 	{
 		m_resultSprite.SetWipeSize(m_wipeSize);
 		m_wipeSize -= WIPE_SPEED;
-
+		//画面全体が黒くなったら
 		if (m_wipeSize < 0.0)
 		{
 			m_roundWipeEndFlag = true;
@@ -144,17 +139,43 @@ void ResultSeen::ResultEnd()
 	//円形ワイプが終わったら
 	else
 	{
-		if (m_goToTitleTime <= 0.0f)
-		{
-			Title* title = NewGO<Title>(0, "title");
-			DeleteGO(this);
-		}
-		else
-		{
-			m_goToTitleTime -= g_gameTime->GetFrameDeltaTime();
-		}
+		//ゲームを終わってタイトルに戻る
+		m_resultEndFlag = true;
+	}
+}
 
-		
+void ResultSeen::OnProcessGameClearMainTranstion()
+{
+	if (g_soundManager->GetSoundSource(enSoundName_GameClear)->IsPlaying() == false)
+	{
+		//音の再生が終わったら次のステップに進む
+		m_enResultStep = enResultStep_end;
+	}
+}
+
+void ResultSeen::OnProcessGameOverMainTranstion()
+{
+	if (g_soundManager->GetSoundSource(enSoundName_GameOver)->IsDead())
+	{
+		//音の再生が終わったら次のステップに進む
+		m_enResultStep = enResultStep_end;
+	}
+}
+
+void ResultSeen::OnProcessEndTranstion()
+{
+	if (m_roundWipeStartFlag == true)
+	{
+		ResultEnd();
+		return;
+	}
+	else
+	{
+		//タイトルに戻るようにするために円形ワイプを開始
+		if (g_pad[0]->IsTrigger(enButtonA))
+		{
+			m_roundWipeStartFlag = true;
+		}
 	}
 }
 

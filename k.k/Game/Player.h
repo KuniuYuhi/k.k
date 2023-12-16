@@ -232,10 +232,28 @@ public:
 		return m_isPlayerDeadFlag;
 	}
 
+	/// <summary>
+	/// 現在の武器の耐久値の取得
+	/// </summary>
+	/// <returns></returns>
+	const int& GetNowWeaponEndrance() const
+	{
+		return m_brave->GetWeapon(enWeapon_Main)->GetStatus().GetEndurance();
+	}
+
+	/// <summary>
+	/// 現在の武器の耐久値の最大値の取得
+	/// </summary>
+	/// <returns></returns>
+	const int& GetNowWeaponMaxEndrance() const
+	{
+		return m_brave->GetWeapon(enWeapon_Main)->GetStatus().GetMaxEndrance();
+	}
+
 
 private:
 	/// <summary>
-	/// プレイヤーがやられたか後の処理
+	/// プレイヤーがやられた後の処理
 	/// </summary>
 	void ProcessPlayerDead();
 

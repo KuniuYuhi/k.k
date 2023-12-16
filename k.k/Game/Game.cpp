@@ -27,7 +27,7 @@
 namespace {
 
 	//スカイキューブの初期の明るさ
-	const float START_SKY_CUBE_LMINANCE = 1.05f;
+	const float START_SKY_CUBE_LMINANCE = 1.02f;
 
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.1f, 0.1f, 0.1f);
 
@@ -73,6 +73,8 @@ Game::~Game()
 	{
 		DeleteGO(m_gameUI);
 	}
+
+	DeleteGO(m_result);
 }
 
 bool Game::Start()
@@ -155,10 +157,20 @@ void Game::GoResult()
 	//画面がリザルトの画像になった
 	//円形ワイプが終わったら
 	//todo円形ワイプの間音を小さくしていく
-	if (m_result->GetRoundWipeEndFlag() == true)
+	/*if (m_result->GetRoundWipeEndFlag() == true)
 	{
 		DeleteGO(this);
+	}*/
+
+	//リザルトの処理が終わったら、ゲームを終わる処理をする
+	if (m_result->GetResultEndFlag() == true)
+	{
+		//最後のステートに進む
+		GameManager::GetInstance()->
+			SetGameSeenState(GameManager::enGameSeenState_GameEnd);
 	}
+
+
 }
 
 bool Game::IsWinnerDecision()
@@ -220,6 +232,10 @@ void Game::ManageState()
 		//ゲームクリア
 	case GameManager::enGameSeenState_GameClear:
 		OnProcessGameClearTransition();
+		break;
+		//ゲームエンド
+	case GameManager::enGameSeenState_GameEnd:
+		OnProcessGameEndTransition();
 		break;
 	default:
 		break;
@@ -317,6 +333,8 @@ void Game::OnProcessPauseTransition()
 	{
 		//ローディング画面挟んでタイトルに戻る
 		Title* title = NewGO<Title>(0, "title");
+		//ゲームマネージャーの削除
+		GameManager::DeleteInstance();
 		DeleteGO(this);
 		return;
 	}
@@ -331,6 +349,15 @@ void Game::OnProcessPauseTransition()
 			GameManager::enGameSeenState_Game);
 		return;
 	}
+}
+
+void Game::OnProcessGameEndTransition()
+{
+	//todo ローディング画面の生成
+
+	//タイトルの生成
+	Title* title = NewGO<Title>(0, "title");
+	DeleteGO(this);
 }
 
 void Game::OnProcessGame_FadeOutTransition()

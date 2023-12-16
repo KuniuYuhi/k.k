@@ -183,6 +183,7 @@ private:
 	CollisionObject* m_arrowCollision = nullptr;
 
 	Vector3 m_arrowPos = g_vec3Zero;
+	Vector3 m_oldArrowPos = g_vec3Zero;
 	Vector3 m_forward = g_vec3Zero;
 	Vector3 m_shotStartPosition = g_vec3Zero;
 	Vector3 m_targetPosition = g_vec3Zero;			//–î‚ª—Ž‚¿‚é’n“_

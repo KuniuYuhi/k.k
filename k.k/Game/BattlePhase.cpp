@@ -21,7 +21,7 @@
 namespace {
 	//const int SUMMON_MONSTERS_CONUT = 10;
 
-	const int SUMMMON_RADIUS = 1200.0;
+	const int SUMMMON_RADIUS = 900.0;
 
 	const float SUMMON_POS_DISTANCE = 320.0f;
 
@@ -122,15 +122,14 @@ void BattlePhase::CreateMobMonsters(const int createCount)
 
 void BattlePhase::DeleteMobMonsters()
 {
-	while (CharactersInfoManager::GetInstance()->GetMobMonsters().size()!=0)
+	//生成する前に要素を全て削除
+	for (auto monster : CharactersInfoManager::GetInstance()->GetMobMonsters())
 	{
-		for (auto monster : CharactersInfoManager::GetInstance()->GetMobMonsters())
-		{
-			monster->ProcessDead(false);
-			DeleteGO(monster);
-			CharactersInfoManager::GetInstance()->RemoveMobMonsterFormList(monster);
-		}
+		monster->ProcessDead(false);
+		DeleteGO(monster);
 	}
+	//リストをクリア
+	CharactersInfoManager::GetInstance()->GetMobMonsters().clear();
 }
 
 void BattlePhase::SetSummonRandomPosition(const int radius)

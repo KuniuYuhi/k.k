@@ -13,14 +13,17 @@ namespace nsK2EngineLow {
 	class ModelRender:public IRenderer
 	{
 	public:
-		
 		/// <summary>
 		/// 通常の初期化
 		/// </summary>
-		/// <param name="tkmFilepath">tkmファイルパス</param>
+		/// <param name="tkmFilePath">tkmファイルパス</param>
+		/// <param name="lampTextureFIlePath">ランプテクスチャファイルパス</param>
 		/// <param name="animationClips">アニメーションクリップ</param>
 		/// <param name="numAnimationClips">アニメーションクリップの数</param>
 		/// <param name="enModelUpAxis">モデルの上方向</param>
+		/// <param name="isShadowCaster">シャドウキャスター(このモデルの影を落とす)か</param>
+		/// <param name="isToon">トゥーン調にするか</param>
+		/// <param name="isOutline">輪郭線を描画するか</param>
 		void Init(
 			const char* tkmFilePath,
 			const wchar_t* lampTextureFIlePath,
@@ -29,7 +32,8 @@ namespace nsK2EngineLow {
 			EnModelUpAxis enModelUpAxis = enModelUpAxisZ,
 			bool isShadowCaster = true,
 			bool isToon = true,
-			bool isOutline = true
+			bool isOutline = true,
+			bool isShadowRender = true
 		);
 
 		/// <summary>
@@ -213,6 +217,14 @@ namespace nsK2EngineLow {
 		{
 			m_animation.AddAnimationEventListener(eventListener);
 		}
+		/// <summary>
+		/// アニメーションイベントを削除する
+		/// </summary>
+		/// <param name="eventListener"></param>
+		/*void RemoveAnimationEvent(AnimationEventListener eventListener)
+		{
+			m_animation.RemoveAnimationEventListener(eventListener);
+		}*/
 
 		/// <summary>
 		/// アニメーション再生。

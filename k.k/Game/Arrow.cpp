@@ -4,7 +4,7 @@
 
 
 //todo　矢を回転させて飛ばす
-
+//todo 前方向を回転に適応して線形補間で回転
 
 namespace {
 	//武器が収納状態の時の座標
@@ -24,7 +24,7 @@ namespace {
 	const float DEFAULT_DELETE_RANGE = 400.0f;	//矢が消える距離
 	const float DEFAULT_ARROW_SPEED = 450.0f;
 
-	const float GRAVITY = 9.8f;					//重力
+	const float GRAVITY = 11.8f;					//重力
 }
 
 Arrow::Arrow()
@@ -152,6 +152,7 @@ void Arrow::SetShotArrowSetting(
 	m_flightDuration = distance / m_shotArrowVerocity.Vx;
 	//5.物体の向きの調整
 
+	m_oldArrowPos = m_arrowPos;
 }
 
 void Arrow::SetTargetPosition()
@@ -222,34 +223,67 @@ void Arrow::NormalShot()
 	//6.移動
 	if (m_deleteTimer < m_flightDuration)
 	{
-		float X = m_forward.x * m_shotArrowVerocity.Vx * g_gameTime->GetFrameDeltaTime() * 7.0f;
-		float Z = m_forward.z * m_shotArrowVerocity.Vx * g_gameTime->GetFrameDeltaTime() * 7.0f;
+		float X = m_forward.x * m_shotArrowVerocity.Vx * g_gameTime->GetFrameDeltaTime() * 10.0f;
+		float Z = m_forward.z * m_shotArrowVerocity.Vx * g_gameTime->GetFrameDeltaTime() * 10.0f;
 
 		//新しい座標
 		m_arrowPos += {
 			X,
-			(m_shotArrowVerocity.Vy - (GRAVITY * m_deleteTimer)) * g_gameTime->GetFrameDeltaTime(),
+			(m_shotArrowVerocity.Vy - (GRAVITY * m_deleteTimer)) * g_gameTime->GetFrameDeltaTime()*1.5f,
 			Z
 		};
 		m_deleteTimer += g_gameTime->GetFrameDeltaTime() * 6.0f;
+
 		//回転
-		/*float angle = atan2(X, Z);
-		m_rotation = {
-			1.0f,
-			angle,
-			1.0f,
-			1.0f
-		};*/
+		
+		Vector3 Axis;
+		Axis.Cross(m_shotStartPosition, m_arrowPos);
+		
+		//角度の計算
+		//内積
+		Vector3 dot1 = m_shotStartPosition;
+		Vector3 dot2 = m_arrowPos;
+		
+		float vec1 = m_shotStartPosition.Length();
+		float vec2 = m_arrowPos.Length();
+
+		dot1.Normalize();
+		dot2.Normalize();
+		float dotProduct = Dot(dot1,dot2);
+		//ノルム(ベクトルの大きさ)
+		
+		//アークコサインの計算
+		float acos = std::acos(dotProduct / (vec1 * vec2));
+		//ラジアンから度に変換
+		float rotationAngle = Math::RadToDeg(acos);
+
+		//////////////////////////////////////////////////
+
+		Quaternion rot = g_quatIdentity;
+		//rot.SetRotation(m_arrowMatrix);
+		Vector3 a = m_arrowPos;
+		a.Normalize();
+		Vector3 direction = m_arrowPos - m_shotStartPosition;
+		/*direction.x *= a.x;
+		direction.y *= a.y;
+		direction.z *= a.z;*/
+
+		rot.SetRotation(direction, g_vec3AxisX);
+
+		m_rotation = rot;
 	}
 	else
 	{
 		//消滅
 		DeleteGO(this);
 	}
-
-	//m_arrowPos += (m_forward * DEFAULT_ARROW_SPEED) * g_gameTime->GetFrameDeltaTime();
+	//m_modelArrow.SetWorldMatrix(aa);
+	
 	m_modelArrow.SetPosition(m_arrowPos);
 	m_modelArrow.SetRotation(m_rotation);
+
+	//前フレームの矢の座標を取得
+	m_oldArrowPos = m_arrowPos;
 }
 
 void Arrow::SkillShot()

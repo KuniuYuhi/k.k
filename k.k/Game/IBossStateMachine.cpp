@@ -3,17 +3,24 @@
 #include "Summoner.h"
 #include "ISummonerState.h"
 
+#include "Player.h"
 #include "CharactersInfoManager.h"
 
 
 //todo ProcessMeleeAttack(),ProcessLongRangeAttack()の引数にオーダーをいれる
 
 namespace {
-	const float WAIT_TIME = 5.0f;		//待機時間
+	const float WAIT_TIME = 1000.0f;		//待機時間
 
 	const float MELEE_ATTACK_RANGE = 280.0f;	//近距離攻撃の範囲内
 
-	const float STAY_PLAYER_LIMMIT_TIME = 6.0f;		//プレイヤーが近くにとどまっているタイマーの上限
+	const float STAY_PLAYER_LIMMIT_TIME = 10.0f;		//プレイヤーが近くにとどまっているタイマーの上限
+
+
+	const float KNOCKBACK_DISTANCE = 200.0f;
+
+	const float DARK_METEO_ACTION_POINT = 40.0f;
+
 }
 
 IBossStateMachine* IBossStateMachine::m_stateMachineInstance = nullptr;
@@ -114,82 +121,47 @@ void IBossStateMachine::ProcessWaitState()
 	m_waitTimer += g_gameTime->GetFrameDeltaTime();
 
 	//怒りモード
-	if (m_summoner->GetNowSpecialActionState() !=
-		Summoner::enSpecialActionState_AngryMode)
-	{
-		if (m_angryCount > 3)
-		{
-			m_summoner->
-				SetNextAnimationState(Summoner::enAnimationState_Angry);
-			//タイマーリセット
-			m_angryCount = 0;
-			return;
-		}
-	}
+	//if (m_summoner->GetNowSpecialActionState() !=
+	//	Summoner::enSpecialActionState_AngryMode)
+	//{
+	//	if (m_angryCount > 3)
+	//	{
+	//		m_summoner->
+	//			SetNextAnimationState(Summoner::enAnimationState_Angry);
+	//		//タイマーリセット
+	//		m_angryCount = 0;
+	//		return;
+	//	}
+	//}
 	
+	//ノックバックするか決める、決まったら即ノックバック
+	ProcessIsKnockBack();
 
-
-	//長い間勇者が近くにいるなら
-	//逃げるかノックバックで引き離す
-	if (m_toPlayer.Length() < 200.0f)
-	{
-		AddStayPlayerTimer();
-	}
-	else
-	{
-		//範囲外ならタイマーリセット
-		m_stayPlayerTimer = 0.0f;
-	}
-	//とどまっている時間が上限をこえたら
-	if (m_stayPlayerTimer > STAY_PLAYER_LIMMIT_TIME)
-	{
-		//強制的に攻撃ステート決めに移る
-		//近距離攻撃
-		ProcessMeleeAttack();
-		//とどまっているタイマーリセット
-		m_stayPlayerTimer = 0.0f;
-		//waitタイマーリセットする？
-	}
-
-
-
-	//前の行動がダークボールなら
-	//if (m_oldActionName == enActionName_Darkball&& m_lotteryChance>0)
-	//{
-	//	SetRandomActionValue();
-	//	m_lotteryChance--;
-	//}
-
-	////もう一度行動する度に確率を下げる
-	//if (m_randomValue > attackRetryProbability)
-	//{
-	//	//もう一度行動するので待機時間の短縮
-	//	m_waitTimer = WAIT_TIME;
-	//	DecideNextAction();
-	//	return;
-	//}
 }
 
 void IBossStateMachine::ProcessLongRangeAttack()
 {
-	//
+	//遠距離攻撃
 
-
-
+	//ダークメテオ
 	m_summoner->
-		SetNextAnimationState(Summoner::enAnimationState_DarkBall);
+		SetNextAnimationState(Summoner::enAnimationState_Attack_DarkMeteorite_start);
+	return;
 
-	int chance = rand() % 10;
-	if (chance > attackRetryProbability && m_lotteryChanceFlag == false)
+	//前の行動がダークメテオでないなら
+	//ダークメテオを撃つか調べる
+	if (IsNextActionDarkMeteo() == true&& m_oldActionName != enActionName_DarkMeteo_Start)
 	{
-		//もう一度攻撃するチャンスあり
-		m_lotteryChanceFlag = true;
-		/*attackRetryProbability *= 2;
-		if (attackRetryProbability > 10)
-			attackRetryProbability = 10;*/
+		//ダークメテオ
+		m_summoner->
+			SetNextAnimationState(Summoner::enAnimationState_Attack_DarkMeteorite_start);
 		return;
 	}
 
+	//ダークボール
+	ProcessPlayAnimDarkBall();
+
+	//二回以上連続攻撃はしない
 	if (m_lotteryChanceFlag == true)
 	{
 		m_lotteryChanceFlag = false;
@@ -198,6 +170,8 @@ void IBossStateMachine::ProcessLongRangeAttack()
 
 void IBossStateMachine::ProcessMeleeAttack()
 {
+	//近距離攻撃
+
 	if (m_lotteryChanceFlag == true)
 	{
 		m_lotteryChanceFlag = false;
@@ -209,8 +183,11 @@ void IBossStateMachine::ProcessMeleeAttack()
 	//自身の周囲にモブがいない、長い間近くにいるならノックバック
 	if (m_stayPlayerTimer > STAY_PLAYER_LIMMIT_TIME)
 	{
+		//ノックバック
 		m_summoner->
 			SetNextAnimationState(Summoner::enAnimationState_KnockBack);
+		//ノックバック加速タイマーリセット
+		m_accelerateStayPlayerTimer = 1.0f;
 		return;
 	}
 
@@ -233,12 +210,111 @@ void IBossStateMachine::ProcessMeleeAttack()
 
 void IBossStateMachine::AddStayPlayerTimer()
 {
+	//条件によってタイマーを加速させる
+	IsKnockBackTimerAccelerate();
 	//タイマーを加算
 	m_stayPlayerTimer += g_gameTime->GetFrameDeltaTime() * m_accelerateStayPlayerTimer;
 	//何らかの要因でさらにタイマーを加速-＞m_accelerateStayPlayerTimer
-	
+}
 
+void IBossStateMachine::ProcessPlayAnimDarkBall()
+{
+	//二連続で撃ったり、追尾するダークボールにしたりする
+	m_summoner->
+		SetNextAnimationState(Summoner::enAnimationState_DarkBall);
 
+	int chance = rand() % 10;
+	if (chance > attackRetryProbability && m_lotteryChanceFlag == false)
+	{
+		//もう一度攻撃するチャンスあり
+		m_lotteryChanceFlag = true;
+		/*attackRetryProbability *= 2;
+		if (attackRetryProbability > 10)
+			attackRetryProbability = 10;*/
+		return;
+	}
 
+	//二回以上連続攻撃はしない
+	if (m_lotteryChanceFlag == true)
+	{
+		m_lotteryChanceFlag = false;
+	}
+}
 
+bool IBossStateMachine::IsNextActionDarkMeteo()
+{
+	//このポイントが一定以上になったら、次の行動はダークメテオにする
+	float point = 0;
+
+	//プレイヤーの座標
+	Vector3 playerPos = CharactersInfoManager::GetInstance()->GetPlayerInstance()->GetPosition();
+	//離れている距離をポイントに換算する
+	Vector3 diff = m_summoner->GetPosition() - playerPos;
+	//ポイントを加算。ベクトルの十分の一の長さを加算
+	point += (diff.Length() / 100);
+
+	//プレイヤーの周りにモブモンスターがどのくらいいないか確かめる
+	int count = 0;
+	for (auto monster : CharactersInfoManager::GetInstance()->GetMobMonsters())
+	{
+		Vector3 mobToPlayer = playerPos - monster->GetPosition();
+		//プレイヤーから一定の距離内にモンスターがいないなら
+		if (mobToPlayer.Length() > 300.0f)
+		{
+			//カウントを加算
+			count++;
+		}
+	}
+
+	//範囲内にいないカウントをポイントに加算
+	point += count;
+
+	//被ダメージカウントをポイントに加算
+	point += m_summoner->GetDamageCount();
+
+	//計算したポイントが一定値をこえたら
+	if (point >= DARK_METEO_ACTION_POINT)
+	{
+		//ダークメテオを撃つのでカウントをリセット
+		m_summoner->SetDamageCount(0);
+		return true;
+	}
+	return false;
+}
+
+void IBossStateMachine::ProcessIsKnockBack()
+{
+	//長い間勇者が近くにいるなら
+	//逃げるかノックバックで引き離す
+	if (m_toPlayer.Length() < KNOCKBACK_DISTANCE)
+	{
+		//タイマーを加算。攻撃させたりするとタイマーがさらに加速
+		AddStayPlayerTimer();
+	}
+	else
+	{
+		//範囲外ならタイマーリセット
+		m_stayPlayerTimer = 0.0f;
+	}
+	//とどまっている時間が上限をこえたら
+	if (m_stayPlayerTimer > STAY_PLAYER_LIMMIT_TIME)
+	{
+		//強制的に攻撃ステート決めに移る
+		//近距離攻撃
+		ProcessMeleeAttack();
+		//とどまっているタイマーリセット
+		m_stayPlayerTimer = 0.0f;
+		//waitタイマーリセットする？
+		//ノックバックした後の攻撃は一秒は空ける
+		if (m_waitTimer > 1.0f)
+		{
+			m_waitTimer = 1.0f;
+		}
+	}
+}
+
+void IBossStateMachine::IsKnockBackTimerAccelerate()
+{
+
+	//if()
 }

@@ -36,7 +36,7 @@ namespace {
 	int MAXHP = 200;
 	int MAXMP = 100;
 	int ATK = 40;
-	float SPEED = 200.0f;
+	float SPEED = 260.0f;
 	const char* NAME = "Brave";
 
 	const int SKILL_ATTACK_POWER = 30;
@@ -109,6 +109,7 @@ void Brave::Move()
 	m_moveSpeed = calcVelocity(GetStatus());
 	m_moveSpeed.y = 0.0f;
 
+
 	//特定のアニメーションが再生中なら移動なし
 	if (isAnimationEntable() != true)
 	{
@@ -125,7 +126,16 @@ void Brave::Move()
 	}
 
 
+	m_moveSpeed.y *= -50.0f * g_gameTime->GetFrameDeltaTime();
+	//m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+
+	if (m_charaCon.IsOnGround() == true)
+	{
+		m_moveSpeed.y = 0.0f;
+	}
+
 	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+
 }
 
 void Brave::ProcessRotation()
@@ -254,10 +264,22 @@ const bool& Brave::IsInaction() const
 
 void Brave::MoveForward(float Speed)
 {
-	//攻撃する方向
-	Vector3 attackDirection = m_forward;
+	//前進する方向
+	Vector3 Direction = m_forward;
 	//移動する速度
-	Vector3 MoveSpeed = attackDirection * Speed;
+	Vector3 MoveSpeed = Direction * Speed;
+	MoveSpeed.y = 0.0f;
+	m_position = m_charaCon.Execute(MoveSpeed, 1.0f / 60.0f);
+	m_modelRender.SetPosition(m_position);
+}
+
+void Brave::MoveBack(float backSpeed)
+{
+	//後退する方向
+	Vector3 Direction = m_forward;
+	Direction *= -1.0f;
+	//移動する速度
+	Vector3 MoveSpeed = Direction * backSpeed;
 	MoveSpeed.y = 0.0f;
 	m_position = m_charaCon.Execute(MoveSpeed, 1.0f / 60.0f);
 	m_modelRender.SetPosition(m_position);
@@ -299,20 +321,20 @@ void Brave::ProcessWin()
 void Brave::ProcessSwordShieldSkill(bool UpOrDownFlag)
 {
 	Vector3 Y = g_vec3AxisY;
-	float mulYPos = 0.0f;
+	float addYPos = 0.0f;
 	if (UpOrDownFlag == true)
 	{
 		//Up処理
-		mulYPos += 
+		addYPos += 
 			g_gameTime->GetFrameDeltaTime() * m_mainUseWeapon.weapon->GetJampSpeed();
-		Y.y += mulYPos;
+		Y.y += addYPos;
 	}
 	else
 	{
 		//Down処理
-		mulYPos += 
+		addYPos += 
 			g_gameTime->GetFrameDeltaTime() * m_mainUseWeapon.weapon->GetJampSpeed() * 1.2f;
-		Y.y -= mulYPos;
+		Y.y -= addYPos;
 	}
 	
 	m_position = m_charaCon.Execute(Y, 1.0f / 30.0f);
@@ -855,7 +877,7 @@ void Brave::InitModel()
 
 
 	//モデルの初期化
-	m_modelRender.Init("Assets/modelData/character/Player/NewHero/Hero_Smile.tkm",
+	m_modelRender.Init("Assets/modelData/character/Player/NewHero/Hero_Smile_Selllook.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 		m_animationClip,
 		enAnimClip_Num * AnimationClipGroup_Num,
@@ -894,6 +916,7 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	//前進する始まり
 	if (wcscmp(eventName, L"MoveForwardStart") == 0)
 	{
+		//向いている方向に前進するために前方向を計算
 		CalcForward(m_moveSpeed);
 		SetMoveforwardFlag(true);
 	}
@@ -901,6 +924,19 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	if (wcscmp(eventName, L"MoveForwardEnd") == 0)
 	{
 		SetMoveforwardFlag(false);
+	}
+
+	//後退する始まり
+	if (wcscmp(eventName, L"MoveBackStart") == 0)
+	{
+		//向いている方向に前進するために前方向を計算
+		CalcForward(m_moveSpeed);
+		SetMoveBackFlag(true);
+	}
+	//後退する終わり
+	if (wcscmp(eventName, L"MoveBackEnd") == 0)
+	{
+		SetMoveBackFlag(false);
 	}
 
 	//武器入れ替え

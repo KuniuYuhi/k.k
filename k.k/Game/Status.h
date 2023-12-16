@@ -13,7 +13,7 @@ private:
 	const char* characterName = nullptr;		//キャラクターの名前
 
 	int maxEndurance = 0;		//耐久値の最大値
-	int endurance = 0;		//耐久値
+	int endurance = 0;		//耐久値。耐久値の概念が必要ないなら-1に設定する
 
 public:
 
@@ -105,6 +105,11 @@ public:
 	const int& GetEndurance() const
 	{
 		return endurance;
+	}
+
+	const int& GetMaxEndrance() const
+	{
+		return maxEndurance;
 	}
 
 

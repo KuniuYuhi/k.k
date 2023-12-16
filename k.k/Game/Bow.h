@@ -60,6 +60,8 @@ public:
 		return m_enWeaponState;
 	}
 
+	const Vector3& GetPlayerForward() const;
+
 	/// <summary>
 	/// 攻撃がヒットしたかのフラグを設定
 	/// </summary>
@@ -128,6 +130,8 @@ private:
 	/// </summary>
 	void CreateArrow();
 
+
+
 private:
 
 	Arrow* m_arrow = nullptr;
@@ -136,8 +140,12 @@ private:
 
 	Vector3 m_bowPos = g_vec3Zero;
 
+	Vector3 m_playerForward = g_vec3Zero;
+
 	Matrix m_bowMatrix = g_matIdentity;
 	Matrix m_arrowMatrix = g_matIdentity;
+
+
 
 	//武器を持たせる時のボーンID
 	int m_armedBowBoonId = -1;

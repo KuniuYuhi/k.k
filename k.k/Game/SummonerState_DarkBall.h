@@ -10,6 +10,8 @@ public:
 		Init();
 	}
 
+	~SummonerState_DarkBall();
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -24,6 +26,7 @@ public:
 	/// </summary>
 	void PlayAnimation();
 
+	
 
 private:
 	/// <summary>
@@ -37,4 +40,9 @@ private:
 	/// ダークボールの生成
 	/// </summary>
 	void CreateDarkBall();
+
+private:
+
+	
+
 };

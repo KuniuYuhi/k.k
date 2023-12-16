@@ -12,15 +12,15 @@ public:
 	GameUI();
 	~GameUI();
 
+	struct WeaponSprits
+	{
+		SpriteRender* m_weaponRender = nullptr;
+		SpriteRender* m_weaponEndranceRender = nullptr;
+	};
+
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
-
-
-	struct WeaponSprits
-	{
-		SpriteRender* m_weaponSprite=nullptr;
-	};
 
 	/// <summary>
 	/// プレイヤーインスタンスの取得
@@ -128,10 +128,12 @@ private:
 	/// <summary>
 	/// 武器切り替え処理
 	/// </summary>
-	void ChangeWeapon(
-		WeaponSprits& changeWeaponSprite
-	);
+	void ChangeWeapon(WeaponSprits& changeWeaponSprite);
 
+	/// <summary>
+	/// 耐久値のフォントの処理
+	/// </summary>
+	void ProcessWeaponEndranceFont();
 
 	/// <summary>
 	/// スプライトレンダーの初期化。
@@ -151,6 +153,7 @@ private:
 		Vector3 scale = g_vec3One,
 		Quaternion rotation = g_quatIdentity
 	);
+	
 	/// <summary>
 	/// フォントレンダーの初期化。
 	/// </summary>
@@ -170,7 +173,7 @@ private:
 		float shadowOffset = 1.8f,
 		Vector4 shadowColor = g_vec4Black
 	);
-
+	
 private:
 
 	struct MonsterUI
@@ -214,12 +217,12 @@ private:
 		SpriteRender m_sub2WeaponCommandRender;		//サブ武器２のコマンド
 
 		SpriteRender m_weaponRender[enWeapon_num];
+		SpriteRender m_weaponEndranceRender[enWeapon_num];
+		FontRender m_weaponEndranceFont;
+
 	};
 
-	
 	WeaponSprits m_weaponSprits[enWeapon_num];
-
-
 
 	Vector3 m_weaponIconPos[enWeapon_num] = {
 		{720.0f,-330.0f,0.0f},

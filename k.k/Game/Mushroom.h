@@ -41,7 +41,8 @@ public:
 	bool isAnimationEnable() const
 	{
 		return m_enAnimationState != enAnimationState_Damage &&
-			m_enAnimationState != enAnimationState_Die;
+			m_enAnimationState != enAnimationState_Die &&
+			m_enAnimationState != enAnimationState_Victory;
 	}
 
 	/// <summary>
@@ -162,6 +163,8 @@ private:
 	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
 
 	ModelRender m_modelRender;
+
+	CollisionObject* m_headCollision = nullptr;
 
 	CharacterController m_charaCon;
 

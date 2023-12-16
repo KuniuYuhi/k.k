@@ -4,6 +4,21 @@
 
 void BraveStateAttack_2::ManageState()
 {
+	//前進するフラグが立っている間は処理
+	if (m_brave->GetMoveForwardFlag() == true)
+	{
+		//向いている方向に移動
+		//武器のスピードにする
+		m_brave->MoveForward(m_brave->GetWeapon(enWeapon_Main)->GetMoveForwardSpeed());
+	}
+	//後退するフラグが立っていたら処理する
+	else if (m_brave->GetMoveBackFlag() == true)
+	{
+		//向いている方向に移動
+		//武器のスピードにする
+		m_brave->MoveBack(m_brave->GetWeapon(enWeapon_Main)->GetMoveBackSpeed());
+	}
+
 	m_brave->ProcessNormalAttackStateTransition();
 }
 

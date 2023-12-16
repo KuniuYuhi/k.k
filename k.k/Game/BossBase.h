@@ -79,6 +79,29 @@ public:
 		return m_modelRender;
 	}
 
+	/// <summary>
+	/// スーパーアーマーの増減の計算
+	/// </summary>
+	/// <param name="addOrSub">trueで加算、falseで減算</param>
+	/// <param name="value"></param>
+	void CalcSuperArmor(bool addOrSub,float value);
+	/// <summary>
+	/// スーパーアーマーブレイクフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetBreakSuperArmorFlag(bool flag)
+	{
+		m_BreakSuperArmorFlag = flag;
+	}
+	/// <summary>
+	/// スーパーアーマーブレイクフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetBreakSuperArmorFlag() const
+	{
+		return m_BreakSuperArmorFlag;
+	}
+
 protected:
 	/// <summary>
 	/// モデルの初期化
@@ -95,8 +118,34 @@ protected:
 	/// </summary>
 	virtual void ManageState() override = 0;
 
+	/// <summary>
+	/// スーパーアーマーの加算
+	/// </summary>
+	/// <param name="addValue"></param>
+	void AddSuperArmorPoint(float addValue);
+	/// <summary>
+	/// スーパーアーマーの減算
+	/// </summary>
+	/// <param name="addValue"></param>
+	void SubSuperArmorPoint(float subValue);
+
+	/// <summary>
+	/// 怯むかどうか
+	/// </summary>
+	/// <returns>trueで怯む</returns>
+	bool IsFlinch();
+
 protected:
 	ModelRender m_modelRender;
+
+	float m_superArmorPoint = 0.0f;		//スーパーアーマーのポイント
+	float m_maxSuperArmorPoint = 0.0f;	//スーパーアーマーの最大値
+
+	bool m_BreakSuperArmorFlag = false; //スーパーアーマーが割れたかのフラグ
+
+
+
+
 
 };
 

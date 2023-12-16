@@ -3,24 +3,29 @@
 #include "Brave.h"
 #include "Arrow.h"
 
+//矢を撃ったら後ろに下がる
+
 namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
 
 	//ステータス
 	const int POWER = 10;
-	const int ENDURANCE = 10;		//武器の耐久力(矢のストック)。
+	const int ENDURANCE = 50;		//武器の耐久力(矢のストック)。
 
 	const float HITTABLE_TIME = 0.15f;
 
 	const float CHARGE_COMPLETE_TIME = 1.0f;
 
 	const float SHOT_ARROW_ANGLE = 40.0f;			//矢を撃つときの角度
+
+	const float MOVE_BACK_SPEED = 100.0f;			//矢を撃った後の後退するスピード
 }
 
 Bow::Bow()
 {
 	SetWeaponPower(POWER);
+	SetMoveBackSpeed(MOVE_BACK_SPEED);
 }
 
 Bow::~Bow()
@@ -54,6 +59,7 @@ bool Bow::Start()
 	m_brave->GetModelRender().AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
+
 
 	return true;
 }
@@ -131,6 +137,11 @@ void Bow::ProcessSkillAttack()
 		m_brave->SetAllInfoAboutActionFlag(false);
 		m_brave->ProcessCommonStateTransition();
 	}
+}
+
+const Vector3& Bow::GetPlayerForward() const
+{
+	return m_brave->GetForward();
 }
 
 void Bow::SetAttackHitFlag(bool flag)
@@ -277,6 +288,7 @@ void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	{
 		SkillShot();
 	}
+
 
 	
 }
