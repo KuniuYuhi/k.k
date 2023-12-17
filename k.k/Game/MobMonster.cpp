@@ -332,4 +332,14 @@ void MobMonster::CreateHitEffect()
 	hitEffect->Update();
 }
 
+bool MobMonster::IsFoundPlayer()
+{
+	return false;
+}
+
+bool MobMonster::IsPlayerInAttackRange()
+{
+	return false;
+}
+
 

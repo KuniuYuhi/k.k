@@ -106,6 +106,37 @@ public:
 		m_lich = lich;
 	}
 
+
+	///////////////////////////////////////////////////////////
+	///取得、設定関数
+	///////////////////////////////////////////////////////////
+
+	/// <summary>
+	/// 敵を見つけたか
+	/// </summary>
+	/// <returns>見つけたらtrue</returns>
+	bool IsFoundPlayer();
+
+	/// <summary>
+	/// 攻撃範囲内にプレイヤーがいるか
+	/// </summary>
+	/// <returns></returns>
+	bool IsPlayerInAttackRange();
+
+	//巡回方向を変えるタイマー
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+
+
+
+
+
 protected:
 
 	/// <summary>
