@@ -409,6 +409,8 @@
     <ClCompile Include="SummonerState_DMeteo_Start.cpp" />
     <ClCompile Include="SummonerState_DMeteo_Main.cpp" />
     <ClCompile Include="DarkMeteo.cpp" />
+    <ClCompile Include="IMobStateMachine.cpp" />
+    <ClCompile Include="MobMonsterActionList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -788,5 +790,7 @@
     <ClInclude Include="SummonerState_DMeteo_Main.h" />
     <ClInclude Include="DarkMeteo.h" />
     <ClInclude Include="DecisionMeteoEndpoint.h" />
+    <ClInclude Include="IMobStateMachine.h" />
+    <ClInclude Include="MobMonsterActionList.h" />
   </ItemGroup>
 </Project>

@@ -297,6 +297,8 @@
     <ClCompile Include="MagicBall.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ManagerPreCompile.cpp" />
+    <ClCompile Include="IMobStateMachine.cpp" />
+    <ClCompile Include="MobMonsterActionList.cpp" />
     <ClCompile Include="MonsterBase.cpp" />
     <ClCompile Include="MushroomStateAppear.cpp" />
     <ClCompile Include="Meteo.cpp" />
@@ -446,6 +448,8 @@
     <ClInclude Include="LichStateWarp.h" />
     <ClInclude Include="MagicBall.h" />
     <ClInclude Include="ManagerPreCompile.h" />
+    <ClInclude Include="IMobStateMachine.h" />
+    <ClInclude Include="MobMonsterActionList.h" />
     <ClInclude Include="MonsterBase.h" />
     <ClInclude Include="MushroomStateAppear.h" />
     <ClInclude Include="Meteo.h" />
