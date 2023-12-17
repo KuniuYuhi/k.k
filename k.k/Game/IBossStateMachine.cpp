@@ -40,8 +40,6 @@ IBossStateMachine::~IBossStateMachine()
 
 void IBossStateMachine::Execute()
 {
-
-
 	//s“®‚ğŒˆ‚ß‚é
 	ProcessDecideAction();
 
