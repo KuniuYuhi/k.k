@@ -136,7 +136,6 @@ void Summon::SummonMonster(Vector3 summonPosition)
 	//召喚時の設定
 	m_mobMonster->SetPosition(summonPosition);
 	m_mobMonster->SetRotation(m_lich->GetRotation());
-	m_mobMonster->SetLich(m_lich);
 	//マネージャーのモブモンスターリストに追加
 	CharactersInfoManager::GetInstance()->AddMobMonsterFromList(m_mobMonster);
 
