@@ -124,8 +124,10 @@ private:
 
 private:
 	static IBossStateMachine* m_stateMachineInstance;
-
-	EnActionName m_oldActionName;
+	/// <summary>
+	/// ///////////////////////////////////////
+	/// </summary>
+	SummonerActions::EnActionName m_oldActionName = SummonerActions::enActionName_Idle;
 
 
 	Summoner* m_summoner = nullptr;

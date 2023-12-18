@@ -9,5 +9,5 @@ void SlimeStateDamage::ManageState()
 
 void SlimeStateDamage::PlayAnimation()
 {
-	m_slime->GetModelRender().PlayAnimation(Slime::enAnimClip_Damage);
+	m_slime->GetModelRender().PlayAnimation(enAnimationClip_Hit);
 }

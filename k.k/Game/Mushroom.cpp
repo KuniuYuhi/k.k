@@ -172,7 +172,7 @@ void Mushroom::Attack()
 	}
 
 	//攻撃した後のインターバルなら抜け出す
-	if (m_attackFlag == true)
+	if (m_attackEnableFlag == true)
 	{
 		return;
 	}
@@ -191,13 +191,13 @@ void Mushroom::Attack()
 				//攻撃
 				SetNextAnimationState(enAnimationState_Attack_1);
 				//攻撃したのでフラグをtrueにしてインターバルに入る
-				m_attackFlag = true;
+				m_attackEnableFlag = true;
 				break;
 			case enAttackName_2:
 				//攻撃
 				SetNextAnimationState(enAnimationState_Attack_2);
 				//攻撃したのでフラグをtrueにしてインターバルに入る
-				m_attackFlag = true;
+				m_attackEnableFlag = true;
 				break;
 			default:
 				break;

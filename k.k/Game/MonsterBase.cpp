@@ -81,26 +81,45 @@ bool MonsterBase::IsFindPlayer(float distance)
 
 bool MonsterBase::AttackInterval(const float attackintarvaltime)
 {
-	//攻撃したら
-	if (m_attackFlag == true)
+	//攻撃可能な間は処理しない
+	if (m_attackEnableFlag == true)
 	{
-		//タイマーがインターバルを超えたら
-		if (attackintarvaltime < m_attackIntervalTimer)
-		{
-			//攻撃可能にする
-			m_attackFlag = false;
-			//タイマーをリセット
-			m_attackIntervalTimer = 0.0f;
-		}
-		else
-		{
-			m_attackIntervalTimer += g_gameTime->GetFrameDeltaTime();
-			//攻撃不可能
-			return false;
-		}
+		return true;
 	}
-	//攻撃可能
-	return true;
+
+	if (m_attackIntervalTimer > attackintarvaltime)
+	{
+		//攻撃可能にする
+		m_attackEnableFlag = true;
+		//タイマーをリセット
+		m_attackIntervalTimer = 0.0f;
+		return true;
+	}
+	else
+	{
+		m_attackIntervalTimer += g_gameTime->GetFrameDeltaTime();
+	}
+	return false;
+	//攻撃したら
+	//if (m_attackEnableFlag == true)
+	//{
+	//	//タイマーがインターバルを超えたら
+	//	if (attackintarvaltime < m_attackIntervalTimer)
+	//	{
+	//		//攻撃可能にする
+	//		m_attackEnableFlag = false;
+	//		//タイマーをリセット
+	//		m_attackIntervalTimer = 0.0f;
+	//	}
+	//	else
+	//	{
+	//		m_attackIntervalTimer += g_gameTime->GetFrameDeltaTime();
+	//		//攻撃不可能
+	//		return false;
+	//	}
+	//}
+	////攻撃可能
+	//return true;
 }
 
 bool MonsterBase::AngleChangeTimeIntarval(float LimitTime)

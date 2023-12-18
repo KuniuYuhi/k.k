@@ -9,5 +9,5 @@ void SlimeStateWalk::ManageState()
 
 void SlimeStateWalk::PlayAnimation()
 {
-	m_slime->GetModelRender().PlayAnimation(Slime::enAnimClip_Walk);
+	//m_slime->GetModelRender().PlayAnimation(Slime::enAnimClip_Walk);
 }

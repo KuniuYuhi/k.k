@@ -9,6 +9,8 @@
 
 //todo ProcessMeleeAttack(),ProcessLongRangeAttack()の引数にオーダーをいれる
 
+using namespace SummonerActions;
+
 namespace {
 	const float WAIT_TIME = 1000.0f;		//待機時間
 
@@ -40,8 +42,6 @@ IBossStateMachine::~IBossStateMachine()
 
 void IBossStateMachine::Execute()
 {
-
-
 	//行動を決める
 	ProcessDecideAction();
 

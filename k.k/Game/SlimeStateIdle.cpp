@@ -9,5 +9,5 @@ void SlimeStateIdle::ManageState()
 
 void SlimeStateIdle::PlayAnimation()
 {
-	m_slime->GetModelRender().PlayAnimation(Slime::enAnimClip_Idle,0.4f);
+	m_slime->GetModelRender().PlayAnimation(enAninationClip_Idle,0.4f);
 }

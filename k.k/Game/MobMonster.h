@@ -2,7 +2,9 @@
 #include "MonsterBase.h"
 #include "KnockBack.h"
 
-class Lich;
+
+#include "MobMonsterActionList.h"
+
 
 class MobMonster:public MonsterBase
 {
@@ -13,6 +15,19 @@ public:
 	/// </summary>
 	/// <param name="charaCon">移動させたいオブジェクトのキャラクターコントローラー</param>
 	void Move(CharacterController& charaCon);
+
+	/// <summary>
+	/// パトロール時の移動処理
+	/// </summary>
+	/// <param name="charaCon"></param>
+	void MovePatrol(CharacterController& charaCon);
+	
+	/// <summary>
+	/// プレイヤーを追いかけるときの移動処理
+	/// </summary>
+	/// <param name="charaCon"></param>
+	void MoveChasePlayer(CharacterController& charaCon);
+
 
 	/// <summary>
 	/// 向かうベクトルを設定
@@ -97,14 +112,75 @@ public:
 		return m_knockBackFlag;
 	}
 
+
+	///////////////////////////////////////////////////////////
+	///取得、設定関数
+	///////////////////////////////////////////////////////////
+
 	/// <summary>
-	/// リッチのインスタンスを代入
+	/// プレイヤーが近くにいるかフラグを設定
 	/// </summary>
-	/// <param name="lich"></param>
-	void SetLich(Lich* lich)
+	/// <param name="flag"></param>
+	void SetPlayerNearbyFlag(bool flag)
 	{
-		m_lich = lich;
+		m_playerNearbyFlag = flag;
 	}
+	/// <summary>
+	/// プレイヤーが近くにいるかフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetPlayerNearbyFlag() const
+	{
+		return m_playerNearbyFlag;
+	}
+
+
+	/// <summary>
+	/// 敵を見つけたか
+	/// オーバーライドしなければ視野角判定で判断
+	/// </summary>
+	/// <returns>見つけたらtrue</returns>
+	virtual bool IsFoundPlayerFlag();
+
+	/// <summary>
+	/// 攻撃範囲内にプレイヤーがいるか。
+	/// オーバーライドしなかったら
+	/// </summary>
+	/// <returns></returns>
+	virtual bool IsPlayerInAttackRange();
+
+	//巡回方向を変えるタイマー
+	//
+	//攻撃間隔のタイマー
+	
+	/// <summary>
+	/// 攻撃可能か。一定間隔で攻撃するため
+	/// </summary>
+	/// <returns></returns>
+	bool IsProcessAttackEnable();
+
+	//
+	//方向を切り替えるタイマー
+	//
+	//
+	
+	/// <summary>
+	/// スキル使用可能かタイマー
+	/// </summary>
+	/// <returns>使用可能ならtrue</returns>
+	bool IsSkillUsable();
+	
+	/// <summary>
+	/// スキルのインターバルの計算
+	/// </summary>
+	void CalcSkillAttackIntarval();
+
+	/// <summary>
+	/// 次のアニメーションステートを作成する。
+	/// </summary>
+	/// <param name="nextState"></param>
+	virtual void SetNextAnimationState(MobMonsterInfo::EnAnimationState nextState){}
+
 
 protected:
 
@@ -130,7 +206,8 @@ protected:
 	virtual bool RotationOnly();
 
 
-	Lich*					m_lich = nullptr;
+protected:
+
 
 	Vector3					m_passPower = g_vec3One;		//はじくときの力
 
@@ -140,6 +217,7 @@ protected:
 
 	float					m_distanceToPlayer = 0.0f;		//プレイヤーとの距離
 	float					m_attackRange = 0.0f;			//攻撃できる範囲
+	float					m_skillAttackRange = 0.0f;		//スキル攻撃ができる範囲
 	float					m_stayRange = 0.0f;				//移動しない範囲
 
 	float					m_ramdomAngle = 0.0f;			//ランダムなアングル。移動方向を決めるときに使う
@@ -155,5 +233,15 @@ protected:
 	bool					m_knockBackFlag = false;		//ノックバックするかのフラグ
 
 	float					m_knockBackTimer = 0.0f;
+
+	bool					m_playerNearbyFlag = false;
+
+
+	//スキル使用可能かのタイマー
+	float m_skillUsableLimmit = 5.0f;
+	float m_skillUsableTimer = 0.0f;
+	bool m_skillUsableFlag = true;
+
+
 };
 

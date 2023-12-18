@@ -465,7 +465,7 @@ void Lich::DecideNextAction()
 	}
 
 	//UŒ‚‰Â”\‚È‚ç
-	if (m_attackFlag == false)
+	if (m_attackEnableFlag == false)
 	{
 		SetTargetPosition();
 		m_toPlayerDir =  m_targetPosition - m_position;
@@ -475,7 +475,7 @@ void Lich::DecideNextAction()
 			//ŽŸ‚Ìs“®‚ð‘I‚Ô
 			m_lichAction->NextAction();
 
-			m_attackFlag = true;
+			m_attackEnableFlag = true;
 		}
 	}
 }

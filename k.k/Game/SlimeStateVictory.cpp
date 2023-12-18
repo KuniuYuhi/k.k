@@ -9,5 +9,5 @@ void SlimeStateVictory::ManageState()
 
 void SlimeStateVictory::PlayAnimation()
 {
-	m_slime->GetModelRender().PlayAnimation(Slime::enAnimClip_Victory);
+	m_slime->GetModelRender().PlayAnimation(enAnimationClip_Victory);
 }

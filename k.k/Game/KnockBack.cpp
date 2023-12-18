@@ -7,6 +7,9 @@ const Vector3 SetKnockBackDirection(
 	//始点から終点に向かうベクトルを計算
 	Vector3 finalPos;
 	finalPos = startPosition - endPosition;
+
+
+
 	//正規化
 	finalPos.y = 0.0f;
 	finalPos.Normalize();

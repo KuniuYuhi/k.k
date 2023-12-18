@@ -297,6 +297,8 @@
     <ClCompile Include="MagicBall.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ManagerPreCompile.cpp" />
+    <ClCompile Include="IMobStateMachine.cpp" />
+    <ClCompile Include="MobMonsterActionList.cpp" />
     <ClCompile Include="MonsterBase.cpp" />
     <ClCompile Include="MushroomStateAppear.cpp" />
     <ClCompile Include="Meteo.cpp" />
@@ -316,9 +318,12 @@
     <ClCompile Include="Slime.cpp" />
     <ClCompile Include="SlimeStateAppear.cpp" />
     <ClCompile Include="SlimeStateAttack.cpp" />
+    <ClCompile Include="SlimeStateChase.cpp" />
     <ClCompile Include="SlimeStateDamage.cpp" />
     <ClCompile Include="SlimeStateDie.cpp" />
     <ClCompile Include="SlimeStateIdle.cpp" />
+    <ClCompile Include="SlimeStatePatrol.cpp" />
+    <ClCompile Include="SlimeStateSkill.cpp" />
     <ClCompile Include="SlimeStateVictory.cpp" />
     <ClCompile Include="SlimeStateWalk.cpp" />
     <ClCompile Include="SoundFile.cpp" />
@@ -446,6 +451,8 @@
     <ClInclude Include="LichStateWarp.h" />
     <ClInclude Include="MagicBall.h" />
     <ClInclude Include="ManagerPreCompile.h" />
+    <ClInclude Include="IMobStateMachine.h" />
+    <ClInclude Include="MobMonsterActionList.h" />
     <ClInclude Include="MonsterBase.h" />
     <ClInclude Include="MushroomStateAppear.h" />
     <ClInclude Include="Meteo.h" />
@@ -466,9 +473,12 @@
     <ClInclude Include="Slime.h" />
     <ClInclude Include="SlimeStateAppear.h" />
     <ClInclude Include="SlimeStateAttack.h" />
+    <ClInclude Include="SlimeStateChase.h" />
     <ClInclude Include="SlimeStateDamage.h" />
     <ClInclude Include="SlimeStateDie.h" />
     <ClInclude Include="SlimeStateIdle.h" />
+    <ClInclude Include="SlimeStatePatrol.h" />
+    <ClInclude Include="SlimeStateSkill.h" />
     <ClInclude Include="SlimeStateVictory.h" />
     <ClInclude Include="SlimeStateWalk.h" />
     <ClInclude Include="SoundFile.h" />

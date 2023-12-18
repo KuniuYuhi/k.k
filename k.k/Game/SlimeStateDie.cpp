@@ -9,5 +9,5 @@ void SlimeStateDie::ManageState()
 
 void SlimeStateDie::PlayAnimation()
 {
-	m_slime->GetModelRender().PlayAnimation(Slime::enAnimClip_Die);
+	m_slime->GetModelRender().PlayAnimation(enAnimationClip_Die);
 }

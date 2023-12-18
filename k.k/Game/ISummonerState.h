@@ -4,6 +4,7 @@
 
 class Summoner;
 
+using namespace SummonerActions;
 
 /// <summary>
 /// ボスのステートの基底クラス
