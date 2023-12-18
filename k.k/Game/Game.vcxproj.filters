@@ -168,9 +168,6 @@
     <ClCompile Include="CactusStateAttack_1.cpp">
       <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClCompile>
-    <ClCompile Include="CactusStateAttack_2.cpp">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClCompile>
     <ClCompile Include="CactusStateDamage.cpp">
       <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClCompile>
@@ -178,12 +175,6 @@
       <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClCompile>
     <ClCompile Include="CactusStateIdle.cpp">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClCompile>
-    <ClCompile Include="CactusStatePlant.cpp">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClCompile>
-    <ClCompile Include="CactusStatePlantToBattle.cpp">
       <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClCompile>
     <ClCompile Include="CactusStateRun.cpp">
@@ -411,9 +402,18 @@
     <ClCompile Include="DarkMeteo.cpp" />
     <ClCompile Include="IMobStateMachine.cpp" />
     <ClCompile Include="MobMonsterActionList.cpp" />
-    <ClCompile Include="SlimeStatePatrol.cpp" />
-    <ClCompile Include="SlimeStateChase.cpp" />
-    <ClCompile Include="SlimeStateSkill.cpp" />
+    <ClCompile Include="SlimeStateChase.cpp">
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStatePatrol.cpp">
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStateSkill.cpp">
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateChase.cpp" />
+    <ClCompile Include="CactusStatePatrol.cpp" />
+    <ClCompile Include="CactusStateSkill.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -535,9 +535,6 @@
     <ClInclude Include="CactusStateAttack_1.h">
       <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClInclude>
-    <ClInclude Include="CactusStateAttack_2.h">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClInclude>
     <ClInclude Include="CactusStateDamage.h">
       <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClInclude>
@@ -545,12 +542,6 @@
       <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClInclude>
     <ClInclude Include="CactusStateIdle.h">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClInclude>
-    <ClInclude Include="CactusStatePlant.h">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClInclude>
-    <ClInclude Include="CactusStatePlantToBattle.h">
       <Filter>Character\Monster\MobMonster\Cactus</Filter>
     </ClInclude>
     <ClInclude Include="CactusStateRun.h">
@@ -795,8 +786,17 @@
     <ClInclude Include="DecisionMeteoEndpoint.h" />
     <ClInclude Include="IMobStateMachine.h" />
     <ClInclude Include="MobMonsterActionList.h" />
-    <ClInclude Include="SlimeStatePatrol.h" />
-    <ClInclude Include="SlimeStateChase.h" />
-    <ClInclude Include="SlimeStateSkill.h" />
+    <ClInclude Include="SlimeStateChase.h">
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStatePatrol.h">
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStateSkill.h">
+      <Filter>Character\Monster\MobMonster\Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateChase.h" />
+    <ClInclude Include="CactusStatePatrol.h" />
+    <ClInclude Include="CactusStateSkill.h" />
   </ItemGroup>
 </Project>
