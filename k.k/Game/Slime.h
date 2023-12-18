@@ -1,8 +1,11 @@
 #pragma once
 #include "MobMonster.h"
 
+using namespace MobMonsterInfo;
+
 class Lich;
 class ISlimeState;
+class IMobStateMachine;
 
 class Slime :public MobMonster
 {
@@ -14,8 +17,6 @@ public:
 	void Update();
 	void Render(RenderContext& rc);
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
-
-	void Attack();
 
 	/// <summary>
 	/// 処理を止めるか
@@ -43,7 +44,7 @@ public:
 	/// <returns></returns>
 	bool isAnimationEnable() const override
 	{
-		return m_enAnimationState != enAnimationState_Damage &&
+		return m_enAnimationState != enAnimationState_Hit &&
 			m_enAnimationState != enAnimationState_Die;
 	}
 
@@ -62,7 +63,8 @@ public:
 	/// <returns></returns>
 	bool IsAttackEnable() const override
 	{
-		return m_enAnimationState != enAnimationState_Attack_1;
+		return m_enAnimationState != enAnimationState_Attack &&
+			m_enAnimationState != enAnimationState_Skill;
 	}
 
 
@@ -70,20 +72,6 @@ public:
 	/// 被ダメージ時処理
 	/// </summary>
 	void Damage(int attack);
-
-
-	// アニメーションクリップの番号を表す列挙型。
-	enum EnAnimationClip {
-		enAnimClip_Idle,			// 0 : 待機アニメーション
-		enAnimClip_Walk,			// 1 : 歩きアニメーション
-		enAnimClip_Run,				// 2 : 走りアニメーション
-		enAnimClip_Attack_1,		// 3 : 
-		enAnimClip_Damage,
-		enAnimClip_Die,
-		enAnimClip_Victory,
-		enAnimClip_Appear,
-		enAnimClip_Num,				// 7 :アニメーションクリップの数
-	};
 
 	/// <summary>
 	/// 共通のステート遷移処理を実行
@@ -110,23 +98,29 @@ public:
 	/// </summary>
 	void OnProcessAppearStateTransition();
 
-	//アニメーションステート
-	enum EnAnimationState {
-		enAninationState_Idle,
-		enAninationState_Walk,
-		enAninationState_Run,
-		enAnimationState_Attack_1,
-		enAnimationState_Damage,
-		enAnimationState_Die,
-		enAnimationState_Victory,
-		enAnimationState_Appear
-	};
-
 	/// <summary>
 	/// 次のアニメーションステートを作成する。
 	/// </summary>
 	/// <param name="nextState"></param>
-	void SetNextAnimationState(EnAnimationState nextState);
+	void SetNextAnimationState(EnAnimationState nextState) override;
+
+	/// <summary>
+	/// キャラクターコントローラーの取得
+	/// </summary>
+	/// <returns></returns>
+	CharacterController& GetCharacterController()
+	{
+		return m_charaCon;
+	}
+
+	/// <summary>
+	/// 当たり判定生成フラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetCreateAttackCollisionFlag() const
+	{
+		return m_createAttackCollisionFlag;
+	}
 
 private:
 	/// <summary>
@@ -150,11 +144,12 @@ private:
 	void PlayAttackSound();
 
 
+	IMobStateMachine* m_stateMachine = nullptr;
 	
 	ISlimeState* m_state = nullptr;
 
 	Animation m_animation;	// アニメーション
-	AnimationClip m_animationClip[enAnimClip_Num];	// アニメーションクリップ 
+	AnimationClip m_animationClip[enAnimationClip_Num];	// アニメーションクリップ 
 
 	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
 
@@ -164,8 +159,6 @@ private:
 
 	ModelRender m_modelRender;
 	CharacterController m_charaCon;
-
-	//Vector3 m_direction= Vector3::Zero;
 
 	int m_attackBoonId = -1;					//攻撃で使うボーンID
 
