@@ -130,6 +130,15 @@ public:
 		return m_enOutCome;
 	}
 
+	/// <summary>
+	/// ˆÚ“®•ûŒü‚ð‘¬“x‚ðŽæ“¾
+	/// </summary>
+	/// <returns></returns>
+	const Vector3& GetMoveSpeed() const
+	{
+		return m_moveSpeed;
+	}
+
 protected:
 
 	/// <summary>
