@@ -16,32 +16,6 @@ public:
 	~IMobStateMachine();
 
 	/// <summary>
-	/// インスタンスを生成
-	/// </summary>
-	/// <param name="bossInstance"></param>
-	static void CreateInstance(MobMonster* mobInstance)
-	{
-		m_stateMachineInstance = new IMobStateMachine(mobInstance);
-	}
-	/// <summary>
-	/// インスタンスの削除
-	/// </summary>
-	static void DeleteInstance()
-	{
-		delete m_stateMachineInstance;
-		m_stateMachineInstance = nullptr;
-	}
-
-	/// <summary>
-	/// インスタンスの取得
-	/// </summary>
-	/// <returns></returns>
-	static IMobStateMachine* GetInstance()
-	{
-		return m_stateMachineInstance;
-	}
-
-	/// <summary>
 	/// 毎フレーム行う処理
 	/// </summary>
 	void Execute();
@@ -75,7 +49,6 @@ private:
 
 
 private:
-	static IMobStateMachine* m_stateMachineInstance;
 
 	MobMonster* m_mobMonster = nullptr;
 

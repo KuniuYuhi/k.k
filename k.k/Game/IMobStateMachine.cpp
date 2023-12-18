@@ -3,8 +3,18 @@
 #include "MobMonster.h"
 
 //アニメーションステート統一してもよいかも
+using namespace MobMonsterInfo;
 
-IMobStateMachine* IMobStateMachine::m_stateMachineInstance = nullptr;
+//				
+//
+//				追いかける	＜―――――――――＞	巡回
+//					|								  |
+//					|								  |		
+//				   攻撃								待機
+//					|
+//		通常攻撃―――――スキル				 
+// 
+
 
 IMobStateMachine::IMobStateMachine(MobMonster* mobMonsterInstance)
 {
@@ -13,7 +23,6 @@ IMobStateMachine::IMobStateMachine(MobMonster* mobMonsterInstance)
 
 IMobStateMachine::~IMobStateMachine()
 {
-	m_stateMachineInstance = nullptr;
 }
 
 void IMobStateMachine::Execute()
@@ -29,6 +38,10 @@ void IMobStateMachine::ProcessDecideAction()
 	{
 		return;
 	}
+	if (m_mobMonster->isAnimationEnable() != true)
+	{
+		return;
+	}
 
 
 	//これから行動を決める
@@ -38,22 +51,26 @@ void IMobStateMachine::ProcessDecideAction()
 void IMobStateMachine::DecideNextAction()
 {
 	//プレイヤーを見つけたか判定
-	if (m_mobMonster->IsFoundPlayer() == true)
+
+	//todo 既にプレイヤーの周りに敵が複数体いるなら近よらない
+
+	if (m_mobMonster->IsFoundPlayerFlag() == true)
 	{
 		//プレイヤーを見つけたら追いかける
 		ProcessChase();
 	}
 	else
 	{
-		//プレイヤーを見つけていないならパトロール
+		//プレイヤーを見つけていないならパトロールor待機
 		ProcessPatrol();
 	}
-	
+
 }
 
 void IMobStateMachine::ProcessPatrol()
 {
-
+	//巡回する
+	m_mobMonster->SetNextAnimationState(enAninationState_Patrol);
 }
 
 void IMobStateMachine::ProcessChase()
@@ -67,11 +84,33 @@ void IMobStateMachine::ProcessChase()
 	else
 	{
 		//追いかける
+		m_mobMonster->SetNextAnimationState(enAninationState_Chase);
 	}
 }
 
 void IMobStateMachine::ProcessAttackState()
 {
-
+	//まず攻撃ができるか
+	if (m_mobMonster->IsProcessAttackEnable() == true)
+	{
+		//スキル攻撃ができる状態なら
+		if (m_mobMonster->IsSkillUsable() == true)
+		{
+			//スキル攻撃
+			m_mobMonster->SetNextAnimationState(enAnimationState_Skill);
+		}
+		else
+		{
+			//通常攻撃
+			m_mobMonster->SetNextAnimationState(enAnimationState_Attack);
+		}
+	}
+	else
+	{
+		//攻撃できないならその場で待機
+		m_mobMonster->SetNextAnimationState(enAninationState_Idle);
+	}
 }
+
+	
 
