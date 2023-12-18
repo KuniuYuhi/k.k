@@ -9,6 +9,8 @@
 
 //todo ProcessMeleeAttack(),ProcessLongRangeAttack()の引数にオーダーをいれる
 
+using namespace SummonerActions;
+
 namespace {
 	const float WAIT_TIME = 1000.0f;		//待機時間
 

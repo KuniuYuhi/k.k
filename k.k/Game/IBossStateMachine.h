@@ -127,7 +127,7 @@ private:
 	/// <summary>
 	/// ///////////////////////////////////////
 	/// </summary>
-	EnActionName m_oldActionName = enActionName_Idle;
+	SummonerActions::EnActionName m_oldActionName = SummonerActions::enActionName_Idle;
 
 
 	Summoner* m_summoner = nullptr;
