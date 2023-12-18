@@ -116,6 +116,7 @@ public:
 	bool IsInFieldOfView(Vector3 toPlayerDir, Vector3 forward, float angle);
 	/// <summary>
 	/// プレイヤーを見つける
+	/// 円形で検索
 	/// </summary>
 	/// <param name="distance">プレイヤーを見つけることができる上限の距離</param>
 	/// <returns>距離内だったらtrueを返す</returns>
@@ -162,7 +163,7 @@ protected:
 	int							m_damage = 0;							//受けたダメージを代入する
 
 	bool						m_dashFlag = false;						//ダッシュするかのフラグ
-	bool						m_attackFlag = true;					//攻撃していいかのフラグ。falseで攻撃可能
+	bool						m_attackEnableFlag = true;					//攻撃していいかのフラグ。falseで攻撃可能
 	bool						m_damageFlag = false;					//ダメージを受けられるかのフラグ。falseで被ダメージ可能
 
 	float						m_attackIntervalTimer = 0.0f;			//アタックのインターバルタイマー
