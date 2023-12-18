@@ -45,6 +45,9 @@ bool MobMonster::RotationOnly()
 
 void MobMonster::Move(CharacterController& charaCon)
 {
+	//chaseかpatrolのときだけ移動処理
+
+
 	if (isAnimationEnable() != true)
 	{
 		return;
@@ -108,6 +111,76 @@ void MobMonster::Move(CharacterController& charaCon)
 		return;
 	}
 
+
+	//プレイヤーとの距離が近くないなら移動する
+	if (IsFindPlayer(m_stayRange) != true)
+	{
+		//移動速度の計算
+		m_moveSpeed = CalcVelocity(m_status, m_direction, m_chasePlayerFlag);
+		m_SaveMoveSpeed = m_moveSpeed;
+		//弾き処理
+		//IsBumpedMonster();
+		//はじきパワーを小さくする
+		SubPassPower();
+		//はじく力を合わせる
+		//m_moveSpeed += m_passPower;
+		//座標を移動
+		m_position = charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	}
+	else
+	{
+		//範囲内にいるので移動しない
+		m_moveSpeed = Vector3::Zero;
+	}
+}
+
+void MobMonster::MovePatrol(CharacterController& charaCon)
+{
+	//ランダムな方向に移動
+	m_chasePlayerFlag = false;
+	//数秒間隔で向かうベクトルを変える
+	if (m_angleChangeTimeFlag == false)
+	{
+		m_direction = SetRamdomDirection(m_angleRange);
+
+		m_direction = m_position + (m_direction * 1000.0f);
+
+		m_angleChangeTimeFlag = true;
+	}
+
+	//壁にぶつかったら反転
+	if (IsBumpedForest(m_pos2Length) == true)
+	{
+		//移動する方向を反転する
+		m_direction *= -1.0f;
+		return;
+	}
+
+	//移動速度の計算
+	m_moveSpeed = CalcVelocity(m_status, m_direction, m_chasePlayerFlag);
+	m_SaveMoveSpeed = m_moveSpeed;
+	//弾き処理
+	//IsBumpedMonster();
+	//はじきパワーを小さくする
+	SubPassPower();
+	//はじく力を合わせる
+	//m_moveSpeed += m_passPower;
+	//座標を移動
+	m_position = charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+}
+
+void MobMonster::MoveChasePlayer(CharacterController& charaCon)
+{
+	Vector3 toPlayerDir = m_toTarget;
+
+	//視野角内にはいないが攻撃可能距離にいるなら
+	//	if (IsFindPlayer(FIND_DISTANCE) == true)
+	//	{
+	//		m_chasePlayerFlag = true;
+	//		m_direction = m_targetPosition;
+	//	}
+
+	m_direction = m_targetPosition;
 
 	//プレイヤーとの距離が近くないなら移動する
 	if (IsFindPlayer(m_stayRange) != true)
@@ -278,49 +351,6 @@ void MobMonster::ProcessDead(bool seFlag)
 	deadEffect->Update();
 }
 
-//Quaternion MobMonster::Rotation(float rotSpeed, float rotOnlySpeed)
-//{
-//	if (RotationOnly() == true)
-//	{
-//		//xかzの移動速度があったら(スティックの入力があったら)。
-//		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
-//		{
-//			m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotOnlySpeed, m_rotMove, m_SaveMoveSpeed);
-//			m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
-//
-//			//前方向を設定
-//			//m_forward = m_rotMove;
-//			
-//		}
-//		//前方向を設定
-//		m_forward = m_rotMove;
-//		m_forward.Normalize();
-//		//m_rotation.Apply(m_forward);
-//
-//		//Vector3 diff = m_direction-
-//
-//		return m_rotation;
-//	}
-//
-//	//xかzの移動速度があったら
-//	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
-//	{
-//		//緩やかに回転させる
-//		m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotSpeed, m_rotMove, m_moveSpeed);
-//		m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
-//
-//		
-//		//m_forward.Normalize();
-//	}
-//	//前方向を設定
-//	m_forward = m_rotMove;
-//	m_forward.Normalize();
-//	/*m_forward = Vector3::AxisZ;
-//	m_rotation.Apply(m_forward);*/
-//
-//	return m_rotation;
-//}
-
 void MobMonster::CreateHitEffect()
 {
 	//todo exeだと何故か画像がなくなる
@@ -332,14 +362,101 @@ void MobMonster::CreateHitEffect()
 	hitEffect->Update();
 }
 
-bool MobMonster::IsFoundPlayer()
+bool MobMonster::IsFoundPlayerFlag()
 {
+	//まずプレイヤーとの距離が近いか
+	if (IsFindPlayer(m_distanceToPlayer) == true)
+	{
+		//追いかけている時は視野角判定なし
+		if (m_chasePlayerFlag == true)
+		{
+			return true;
+		}
+
+		//攻撃後で、まだ近くにプレイヤーがいるなら
+		if (GetPlayerNearbyFlag() == true)
+		{
+			SetPlayerNearbyFlag(false);
+			return true;
+		}
+
+		Vector3 toPlayerDir = m_toTarget;
+		//視野角内にプレイヤーがいるなら
+		if (IsInFieldOfView(toPlayerDir, m_forward, m_angle) == true)
+		{
+			return true;
+		}
+	}
+	
+
 	return false;
 }
 
 bool MobMonster::IsPlayerInAttackRange()
 {
+	//自身からプレイヤーに向かうベクトルの計算
+	Vector3 diff = m_player->GetPosition() - m_position;
+
+	//接近しながら攻撃するスキルもあるため
+	//スキル用の判定をする
+	if (m_skillUsableFlag == true)
+	{
+		//スキル攻撃可能な範囲内なら
+		if (diff.Length() < m_skillAttackRange)
+		{
+			return true;
+		}
+	}
+	//ベクトルが通常攻撃範囲内なら
+	else if (diff.Length() < m_attackRange)
+	{
+		return true;
+	}
 	return false;
+
+	
+}
+
+bool MobMonster::IsProcessAttackEnable()
+{
+	//アタックフラグがセットされていたら攻撃可能
+	if (m_attackEnableFlag == true)
+	{
+		return true;
+	}
+	//攻撃不可能
+	return false;
+}
+
+bool MobMonster::IsSkillUsable()
+{
+	//スキル攻撃可能フラグがセットされていたらスキル攻撃可能
+	if (m_skillUsableFlag == true)
+	{
+		//スキル攻撃可能
+		return true;
+	}
+	//スキル攻撃不可能
+	return false;
+}
+
+void MobMonster::CalcSkillAttackIntarval()
+{
+	//スキル攻撃可能なら処理しない
+	if (m_skillUsableFlag == true)
+	{
+		return;
+	}
+
+	if (m_skillUsableTimer > m_skillUsableLimmit)
+	{
+		m_skillUsableTimer = 0.0f;
+		m_skillUsableFlag = true;
+	}
+	else
+	{
+		m_skillUsableTimer += g_gameTime->GetFrameDeltaTime();
+	}
 }
 
 
