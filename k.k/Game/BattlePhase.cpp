@@ -15,8 +15,6 @@
 #include "Mushroom.h"
 #include "Cactus.h"
 
-//todo モンスターのリストがちゃんと消せない
-//エラーあり！！！！！！！！！！！！！！
 
 namespace {
 	//const int SUMMON_MONSTERS_CONUT = 10;
