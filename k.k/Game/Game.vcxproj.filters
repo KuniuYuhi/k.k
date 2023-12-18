@@ -411,6 +411,9 @@
     <ClCompile Include="DarkMeteo.cpp" />
     <ClCompile Include="IMobStateMachine.cpp" />
     <ClCompile Include="MobMonsterActionList.cpp" />
+    <ClCompile Include="SlimeStatePatrol.cpp" />
+    <ClCompile Include="SlimeStateChase.cpp" />
+    <ClCompile Include="SlimeStateSkill.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -792,5 +795,8 @@
     <ClInclude Include="DecisionMeteoEndpoint.h" />
     <ClInclude Include="IMobStateMachine.h" />
     <ClInclude Include="MobMonsterActionList.h" />
+    <ClInclude Include="SlimeStatePatrol.h" />
+    <ClInclude Include="SlimeStateChase.h" />
+    <ClInclude Include="SlimeStateSkill.h" />
   </ItemGroup>
 </Project>
