@@ -9,5 +9,5 @@ void CactusStateAppear::ManageState()
 
 void CactusStateAppear::PlayAnimation()
 {
-	m_cactus->GetModelRender().PlayAnimation(Cactus::enAnimClip_Appear);
+	m_cactus->GetModelRender().PlayAnimation(enAnimationClip_Appear);
 }

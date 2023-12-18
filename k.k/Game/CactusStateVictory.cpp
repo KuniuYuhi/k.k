@@ -9,5 +9,5 @@ void CactusStateVictory::ManageState()
 
 void CactusStateVictory::PlayAnimation()
 {
-	m_cactus->GetModelRender().PlayAnimation(Cactus::enAnimClip_Victory);
+	m_cactus->GetModelRender().PlayAnimation(enAnimationClip_Victory);
 }

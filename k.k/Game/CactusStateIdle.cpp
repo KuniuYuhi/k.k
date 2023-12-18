@@ -4,10 +4,10 @@
 
 void CactusStateIdle::ManageState()
 {
-	m_cactus->ProcessCommonStateTransition();
+	//m_cactus->ProcessCommonStateTransition();
 }
 
 void CactusStateIdle::PlayAnimation()
 {
-	m_cactus->GetModelRender().PlayAnimation(Cactus::enAnimClip_Idle,0.4f);
+	m_cactus->GetModelRender().PlayAnimation(enAninationClip_Idle,0.4f);
 }
