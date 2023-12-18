@@ -58,7 +58,7 @@ public:
 	}
 
 	/// <summary>
-	/// UŒ‚’†‚È‚ç
+	/// UŒ‚’†‚©
 	/// </summary>
 	/// <returns></returns>
 	bool IsAttackEnable() const override

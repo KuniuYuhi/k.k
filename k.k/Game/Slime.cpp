@@ -23,7 +23,7 @@ namespace {
 	const float ANGLE = 70.0f;				//視野角
 	const float DISTANCE_TO_PLAYER = 300.0f;			//プレイヤーとの距離
 	const float ATTACK_RANGE = 50.0f;					//攻撃できる距離
-	const float SKILL_ATTACK_RANGE = 70.0f;					//スキル攻撃できる距離
+	const float SKILL_ATTACK_RANGE = 70.0f;				//スキル攻撃できる距離
 	const float STAY_RANGR = 45.0f;						//停止する距離
 	const float ATTACK_INTAERVALE_TIME = 2.0f;			//攻撃する間隔
 	const float PLAYER_NEARBY_RANGE = 120.0f;			//攻撃した後のプレイヤーを索敵できる範囲
@@ -61,13 +61,12 @@ Slime::Slime()
 Slime::~Slime()
 {
 	delete m_stateMachine;
+	DeleteGO(m_headCollision);
 }
 
 bool Slime::Start()
 {
-	//初期のアニメーションステートを待機状態にする。
-	SetNextAnimationState(enAninationState_Idle);
-
+	//ステータスの初期化
 	m_status.InitCharacterStatus(
 		MAXHP,
 		MAXMP,
@@ -75,12 +74,10 @@ bool Slime::Start()
 		SPEED,
 		NAME
 	);
-
+	//モデルの初期化
 	InitModel();
-
 	//ステートマシンの生成
 	m_stateMachine = new IMobStateMachine(this);
-
 	//まず召喚アニメーション。その後行動
 	SetNextAnimationState(enAnimationState_Appear);
 
@@ -148,6 +145,7 @@ void Slime::Update()
 {
 	if (IsStopProcessing() != true)
 	{
+		//スキル攻撃のインターバルの計算
 		CalcSkillAttackIntarval();
 		//攻撃間隔インターバル
 		AttackInterval(m_attackIntervalTime);
