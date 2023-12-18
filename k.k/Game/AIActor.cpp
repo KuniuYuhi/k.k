@@ -3,6 +3,7 @@
 
 AIActor::AIActor()
 {
+	//todo ‚±‚ê‚â‚ß‚é
 	m_player = FindGO<Player>("player");
 }
 
