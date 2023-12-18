@@ -4,7 +4,7 @@
 
 void SlimeStateIdle::ManageState()
 {
-	m_slime->ProcessCommonStateTransition();
+	//m_slime->ProcessCommonStateTransition();
 }
 
 void SlimeStateIdle::PlayAnimation()
