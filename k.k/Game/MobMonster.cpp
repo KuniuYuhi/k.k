@@ -173,13 +173,6 @@ void MobMonster::MoveChasePlayer(CharacterController& charaCon)
 {
 	Vector3 toPlayerDir = m_toTarget;
 
-	//視野角内にはいないが攻撃可能距離にいるなら
-	//	if (IsFindPlayer(FIND_DISTANCE) == true)
-	//	{
-	//		m_chasePlayerFlag = true;
-	//		m_direction = m_targetPosition;
-	//	}
-
 	m_direction = m_targetPosition;
 
 	//プレイヤーとの距離が近くないなら移動する
