@@ -22,6 +22,8 @@
 #include "GameFinishCamera.h"
 #include "BattlePhase.h"
 
+#include "Slime.h"
+
 //todo リッチが消える時に送られる勝敗がいじってないのに変わっている
 
 namespace {
@@ -267,6 +269,9 @@ void Game::OnProcessAppearanceBossTransition()
 		DeleteGO(m_entryBoss);
 		//ボスのアクティブ化
 		CreateBoss();
+
+		
+
 		//ステートを切り替える
 		GameManager::GetInstance()->SetGameSeenState(
 			GameManager::enGameSeenState_Game);
@@ -494,6 +499,18 @@ void Game::InitGameObject()
 	{
 		//ボスの生成
 		CreateBoss();
+		//スライム生成
+		Slime* slime = NewGO<Slime>(0, "slime");
+		slime->SetPosition(g_vec3Zero);
+		//スライム生成
+		Slime* slime1 = NewGO<Slime>(0, "slime");
+		slime1->SetPosition({100.0f,0.0f,100.0f});
+		//スライム生成
+		Slime* slime2 = NewGO<Slime>(0, "slime");
+		slime2->SetPosition({ 200.0f,0.0f,100.0f });
+		//スライム生成
+		Slime* slime3 = NewGO<Slime>(0, "slime");
+		slime3->SetPosition({ 100.0f,0.0f,200.0f });
 	}
 
 	//ゲームカメラの生成
