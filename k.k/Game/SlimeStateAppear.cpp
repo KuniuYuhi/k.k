@@ -9,5 +9,5 @@ void SlimeStateAppear::ManageState()
 
 void SlimeStateAppear::PlayAnimation()
 {
-	m_slime->GetModelRender().PlayAnimation(Slime::enAnimClip_Appear);
+	m_slime->GetModelRender().PlayAnimation(enAnimationClip_Appear);
 }
