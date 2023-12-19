@@ -370,7 +370,6 @@ void Slime::OnProcessAttack_1StateTransition()
 			//プレイヤーが近くにいるかフラグをセット
 			SetPlayerNearbyFlag(true);
 		}
-
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}

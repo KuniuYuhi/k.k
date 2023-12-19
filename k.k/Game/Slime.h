@@ -153,8 +153,6 @@ private:
 
 	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
 
-	RigidBody m_rigidBody;		//剛体。
-
 	CollisionObject* m_headCollision = nullptr;
 
 	ModelRender m_modelRender;
