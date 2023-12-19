@@ -24,6 +24,7 @@
 
 #include "Slime.h"
 #include "Cactus.h"
+#include "Mushroom.h"
 
 //todo ƒŠƒbƒ`‚ªÁ‚¦‚é‚É‘—‚ç‚ê‚éŸ”s‚ª‚¢‚¶‚Á‚Ä‚È‚¢‚Ì‚É•Ï‚í‚Á‚Ä‚¢‚é
 
@@ -515,6 +516,9 @@ void Game::InitGameObject()
 
 		Cactus* cactus = NewGO<Cactus>(0, "cactus");
 		cactus->SetPosition(g_vec3Zero);*/
+
+		/*Mushroom* mush = NewGO<Mushroom>(0, "mush");
+		mush->SetPosition(g_vec3Zero);*/
 
 	}
 
