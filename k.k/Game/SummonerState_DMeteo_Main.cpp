@@ -11,7 +11,7 @@
 
 void SummonerState_DMeteo_Main::Init()
 {
-	//ProcessShotMeteo();
+	ProcessShotMeteo();
 
 	static bool m_initMeteoFlag = false;
 
