@@ -9,5 +9,5 @@ void MushroomStateIdle::ManageState()
 
 void MushroomStateIdle::PlayAnimation()
 {
-	m_mushroom->GetModelRender().PlayAnimation(Mushroom::enAnimClip_Idle, 0.3f);
+	m_mushroom->GetModelRender().PlayAnimation(enAninationClip_Idle, 0.3f);
 }

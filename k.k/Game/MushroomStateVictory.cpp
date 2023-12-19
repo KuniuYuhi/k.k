@@ -9,5 +9,5 @@ void MushroomStateVictory::ManageState()
 
 void MushroomStateVictory::PlayAnimation()
 {
-	m_mushroom->GetModelRender().PlayAnimation(Mushroom::enAnimClip_Victory);
+	m_mushroom->GetModelRender().PlayAnimation(enAnimationClip_Victory);
 }

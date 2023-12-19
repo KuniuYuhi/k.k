@@ -9,5 +9,5 @@ void MashroomStateAppear::ManageState()
 
 void MashroomStateAppear::PlayAnimation()
 {
-	m_mushroom->GetModelRender().PlayAnimation(Mushroom::enAnimationState_Appear);
+	m_mushroom->GetModelRender().PlayAnimation(enAnimationClip_Appear);
 }
