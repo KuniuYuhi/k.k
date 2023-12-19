@@ -57,7 +57,11 @@ DarkMeteo::~DarkMeteo()
 		m_darkMeteoriteEffect->Stop();
 	}
 
-	
+	//技を撃ち終わってからの削除なのでメテオは削除しない
+	if (m_endFlag == true)
+	{
+		return;
+	}
 
 	//メテオを削除
 	if (m_meteoList.size() != 0)
@@ -214,6 +218,8 @@ void DarkMeteo::OnProcessShotDarkMeteoTranstion()
 
 void DarkMeteo::OnProcessEndTranstion()
 {
+
+
 	m_endFlag = true;
 
 }
