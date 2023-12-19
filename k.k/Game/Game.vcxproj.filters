@@ -147,9 +147,6 @@
     <ClCompile Include="MushroomStateAttack_1.cpp">
       <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClCompile>
-    <ClCompile Include="MushroomStateAttack_2.cpp">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClCompile>
     <ClCompile Include="MushroomStateDamage.cpp">
       <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClCompile>
@@ -414,6 +411,9 @@
     <ClCompile Include="CactusStateChase.cpp" />
     <ClCompile Include="CactusStatePatrol.cpp" />
     <ClCompile Include="CactusStateSkill.cpp" />
+    <ClCompile Include="MushroomStateChase.cpp" />
+    <ClCompile Include="MushroomStatePatrol.cpp" />
+    <ClCompile Include="MushroomStateSkill.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -509,9 +509,6 @@
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="MushroomStateAttack_1.h">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClInclude>
-    <ClInclude Include="MushroomStateAttack_2.h">
       <Filter>Character\Monster\MobMonster\Mushroom</Filter>
     </ClInclude>
     <ClInclude Include="MushroomStateDamage.h">
@@ -798,5 +795,8 @@
     <ClInclude Include="CactusStateChase.h" />
     <ClInclude Include="CactusStatePatrol.h" />
     <ClInclude Include="CactusStateSkill.h" />
+    <ClInclude Include="MushroomStateChase.h" />
+    <ClInclude Include="MushroomStatePatrol.h" />
+    <ClInclude Include="MushroomStateSkill.h" />
   </ItemGroup>
 </Project>
