@@ -132,30 +132,6 @@ public:
 	}
 
 	/// <summary>
-	///　ノックバック攻撃フラグを取得
-	/// </summary>
-	/// <returns></returns>
-	const bool& GetKnockBackAttackFlag() const
-	{
-		return m_brave->GetKnockBackAttackFalg();
-	}
-	/// <summary>
-	/// 攻撃の中心座標を設定
-	/// </summary>
-	/// <param name="attackPosition"></param>
-	void SetAttackPosition(Vector3 attackPosition)
-	{
-		m_attackPosition = attackPosition;
-	}
-	/// <summary>
-	/// 攻撃の中心座標を取得
-	/// </summary>
-	/// <returns></returns>
-	const Vector3& GetAttackPosition() const
-	{
-		return m_attackPosition;
-	}
-	/// <summary>
 	/// ノックバックパワーを取得
 	/// </summary>
 	/// <returns></returns>
