@@ -25,6 +25,7 @@
 #include "Slime.h"
 #include "Cactus.h"
 #include "Mushroom.h"
+#include "TurtleShell.h"
 
 //todo リッチが消える時に送られる勝敗がいじってないのに変わっている
 
@@ -139,7 +140,7 @@ void Game::CreateBoss()
 void Game::CreateBattlePhase()
 {
 	//バトルフェーズ処理クラス生成
-	m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
+	//m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
 }
 
 void Game::InitSkyCube()
@@ -511,14 +512,17 @@ void Game::InitGameObject()
 		//Slime* slime2 = NewGO<Slime>(0, "slime");
 		//slime2->SetPosition({ 200.0f,0.0f,100.0f });
 		////スライム生成
-		/*Slime* slime3 = NewGO<Slime>(0, "slime");
+		Slime* slime3 = NewGO<Slime>(0, "slime");
 		slime3->SetPosition({ 100.0f,0.0f,200.0f });
 
-		Cactus* cactus = NewGO<Cactus>(0, "cactus");
+		/*Cactus* cactus = NewGO<Cactus>(0, "cactus");
 		cactus->SetPosition(g_vec3Zero);*/
 
 		/*Mushroom* mush = NewGO<Mushroom>(0, "mush");
 		mush->SetPosition(g_vec3Zero);*/
+
+		TurtleShell* tu = NewGO<TurtleShell>(0, "aa");
+		tu->SetPosition(g_vec3Zero);
 
 	}
 
