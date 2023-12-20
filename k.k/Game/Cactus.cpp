@@ -91,12 +91,12 @@ bool Cactus::Start()
 
 void Cactus::InitModel()
 {
-	m_animationClip[enAninationClip_Idle].Load("Assets/animData/character/Cactus/Idle.tka");
-	m_animationClip[enAninationClip_Idle].SetLoopFlag(true);
-	m_animationClip[enAninationClip_Patrol].Load("Assets/animData/character/Cactus/Walk.tka");
-	m_animationClip[enAninationClip_Patrol].SetLoopFlag(true);
-	m_animationClip[enAninationClip_Chase].Load("Assets/animData/character/Cactus/Run.tka");
-	m_animationClip[enAninationClip_Chase].SetLoopFlag(true);
+	m_animationClip[enAnimationClip_Idle].Load("Assets/animData/character/Cactus/Idle.tka");
+	m_animationClip[enAnimationClip_Idle].SetLoopFlag(true);
+	m_animationClip[enAnimationClip_Patrol].Load("Assets/animData/character/Cactus/Walk.tka");
+	m_animationClip[enAnimationClip_Patrol].SetLoopFlag(true);
+	m_animationClip[enAnimationClip_Chase].Load("Assets/animData/character/Cactus/Run.tka");
+	m_animationClip[enAnimationClip_Chase].SetLoopFlag(true);
 	m_animationClip[enAnimationClip_Attack].Load("Assets/animData/character/Cactus/Attack1.tka");
 	m_animationClip[enAnimationClip_Attack].SetLoopFlag(false);
 	m_animationClip[enAnimationClip_Skill].Load("Assets/animData/character/Cactus/Attack2.tka");
@@ -120,7 +120,7 @@ void Cactus::InitModel()
 	
 	m_charaCon.Init(
 		22.0f,
-		6.5f,
+		9.0f,
 		m_position
 	);
 
@@ -162,56 +162,6 @@ void Cactus::Update()
 	m_modelRender.Update();
 }
 
-//void Cactus::Attack()
-//{
-//	//被ダメージ、デス時は処理をしない
-//	if (isAnimationEnable() != true)
-//	{
-//		return;
-//	}
-//	//攻撃中は処理しない
-//	if (IsAttackEnable() != true)
-//	{
-//		return;
-//	}
-//
-//	//攻撃した後のインターバルなら抜け出す
-//	if (m_attackEnableFlag == true)
-//	{
-//		return;
-//	}
-//
-//	//一定の距離にターゲットがいたら
-//	if (IsFindPlayer(m_attackRange) == true)
-//	{
-//		Vector3 toPlayerDir = m_toTarget;
-//		//視野角内にターゲットがいたら
-//		if (IsInFieldOfView(toPlayerDir, m_forward, m_angle) == true)
-//		{
-//			int i = rand() % 2;
-//			switch (i)
-//			{
-//			case enAttackName_1:
-//				//攻撃1
-//				SetNextAnimationState(enAnimationState_Attack_1);
-//				//攻撃したのでフラグをtrueにしてインターバルに入る
-//				m_attackEnableFlag = true;
-//				m_enAttackName = enAttackName_1;
-//				break;
-//			case enAttackName_2:
-//				//攻撃2
-//				SetNextAnimationState(enAnimationState_Attack_2);
-//				//攻撃したのでフラグをtrueにしてインターバルに入る
-//				m_attackEnableFlag = true;
-//				m_enAttackName = enAttackName_2;
-//				break;
-//			default:
-//				break;
-//			}
-//		}
-//	}
-//}
-
 bool Cactus::IsStopProcessing()
 {
 	//ゲームステート以外なら
@@ -221,18 +171,10 @@ bool Cactus::IsStopProcessing()
 		return true;
 	}
 
-	//勝敗が決まったら
-	if (m_enOutCome != enOutCome_None)
-	{
-		return true;
-	}
-
 	//勝利したら
 	if (GameManager::GetInstance()->GetOutComeState()
 		== GameManager::enOutComeState_PlayerLose)
 	{
-		//勝敗ステートの設定
-		SetEnOutCome(enOutCome_Win);
 		SetWinFlag(true);
 		//攻撃中でなければ
 		SetNextAnimationState(enAnimationState_Victory);
@@ -300,7 +242,7 @@ void Cactus::Damage(int attack)
 	m_moveSpeed = SetKnockBackDirection(
 		m_position,
 		m_player->GetPosition(),
-		150.0f
+		m_player->GetKnockBackPower()
 	);
 
 	//HPが0以下なら

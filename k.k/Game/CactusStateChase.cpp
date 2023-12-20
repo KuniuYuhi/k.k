@@ -10,5 +10,5 @@ void CactusStateChase::ManageState()
 
 void CactusStateChase::PlayAnimation()
 {
-	m_cactus->GetModelRender().PlayAnimation(enAninationClip_Chase, 0.3f);
+	m_cactus->GetModelRender().PlayAnimation(enAnimationClip_Chase, 0.3f);
 }

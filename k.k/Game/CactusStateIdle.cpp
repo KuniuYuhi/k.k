@@ -9,5 +9,5 @@ void CactusStateIdle::ManageState()
 
 void CactusStateIdle::PlayAnimation()
 {
-	m_cactus->GetModelRender().PlayAnimation(enAninationClip_Idle,0.4f);
+	m_cactus->GetModelRender().PlayAnimation(enAnimationClip_Idle,0.4f);
 }
