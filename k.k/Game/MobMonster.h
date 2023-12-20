@@ -83,14 +83,6 @@ public:
 	void ProcessDead(bool seFlag = true) override;
 
 	/// <summary>
-	/// 回転処理
-	/// </summary>
-	/// <param name="rotSpeed">回転する速度(移動)</param>
-	/// <param name="rotOnlySpeed">回転する速度(移動しない時)</param>
-	/// <returns></returns>
-	//Quaternion Rotation(float rotSpeed, float rotOnlySpeed);
-
-	/// <summary>
 	/// ヒットエフェクト生成
 	/// </summary>
 	void CreateHitEffect();
@@ -148,27 +140,18 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	virtual bool IsPlayerInAttackRange();
-
-	//巡回方向を変えるタイマー
-	//
-	//攻撃間隔のタイマー
 	
 	/// <summary>
 	/// 攻撃可能か。一定間隔で攻撃するため
 	/// </summary>
 	/// <returns></returns>
 	bool IsProcessAttackEnable();
-
-	//
-	//方向を切り替えるタイマー
-	//
-	//
 	
 	/// <summary>
-	/// スキル使用可能かタイマー
+	/// スキル使用可能か
 	/// </summary>
 	/// <returns>使用可能ならtrue</returns>
-	bool IsSkillUsable();
+	virtual bool IsSkillUsable();
 	
 	/// <summary>
 	/// スキルのインターバルの計算
