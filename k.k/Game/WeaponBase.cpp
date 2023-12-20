@@ -47,3 +47,23 @@ void WeaponBase::CalcEndurance(int value, bool addOrSubFlag)
 		ProcessOnEndurance();
 	}
 }
+
+const float& WeaponBase::GetKnockBackPower(int num)
+{
+	switch (num)
+	{
+	case enKnockBackPowerNumber_1combo:
+		return m_knockPower_1combo;
+	case enKnockBackPowerNumber_2combo:
+		return m_knockPower_2combo;
+	case enKnockBackPowerNumber_3combo:
+		return m_knockPower_3combo;
+	case enKnockBackPowerNumber_Skill:
+		return m_knockPower_Skill;
+	default:
+		std::abort();
+		break;
+	}
+
+	// TODO: return ステートメントをここに挿入します
+}

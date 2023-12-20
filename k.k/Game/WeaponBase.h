@@ -265,6 +265,14 @@ public:
 		return m_moveForwardSpeed;
 	}
 
+	/// <summary>
+	/// ノックバックパワーの取得
+	/// </summary>
+	/// <param name="num">取得したいパワーの番号</param>
+	/// <returns></returns>
+	const float& GetKnockBackPower(int num);
+
+
 protected:
 	/// <summary>
 	/// 武器の防御タイプを設定
@@ -286,6 +294,16 @@ protected:
 	
 
 protected:
+
+	enum EnKnockBackPowerNumber
+	{
+		enKnockBackPowerNumber_None,
+		enKnockBackPowerNumber_1combo,
+		enKnockBackPowerNumber_2combo,
+		enKnockBackPowerNumber_3combo,
+		enKnockBackPowerNumber_Skill,
+	};
+
 	Status              m_status;
 	Brave*				m_brave = nullptr;
 
@@ -310,6 +328,12 @@ protected:
 	float				m_moveBackSpeed = 1.0f;					//後退するときのスピード
 
 	float m_knockBackSpeed = 1.0f;
+
+	//ノックバックパワー。デフォルトの値
+	float m_knockPower_1combo = 150.0f;
+	float m_knockPower_2combo = 170.0f;
+	float m_knockPower_3combo = 190.0f;
+	float m_knockPower_Skill = 200.0f;
 
 };
 
