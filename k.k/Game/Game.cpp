@@ -512,8 +512,8 @@ void Game::InitGameObject()
 		//Slime* slime2 = NewGO<Slime>(0, "slime");
 		//slime2->SetPosition({ 200.0f,0.0f,100.0f });
 		////ÉXÉâÉCÉÄê∂ê¨
-		Slime* slime3 = NewGO<Slime>(0, "slime");
-		slime3->SetPosition({ 100.0f,0.0f,200.0f });
+		/*Slime* slime3 = NewGO<Slime>(0, "slime");
+		slime3->SetPosition({ 100.0f,0.0f,200.0f });*/
 
 		/*Cactus* cactus = NewGO<Cactus>(0, "cactus");
 		cactus->SetPosition(g_vec3Zero);*/
@@ -521,8 +521,8 @@ void Game::InitGameObject()
 		/*Mushroom* mush = NewGO<Mushroom>(0, "mush");
 		mush->SetPosition(g_vec3Zero);*/
 
-		TurtleShell* tu = NewGO<TurtleShell>(0, "aa");
-		tu->SetPosition(g_vec3Zero);
+		/*TurtleShell* tu = NewGO<TurtleShell>(0, "aa");
+		tu->SetPosition(g_vec3Zero);*/
 
 	}
 
