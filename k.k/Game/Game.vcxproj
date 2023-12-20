@@ -360,14 +360,13 @@
     <ClCompile Include="TurtleShell.cpp" />
     <ClCompile Include="TurtleShellStateAppear.cpp" />
     <ClCompile Include="TurtleShellStateAttack_1.cpp" />
-    <ClCompile Include="TurtleShellStateAttack_2.cpp" />
+    <ClCompile Include="TurtleShellStateChase.cpp" />
     <ClCompile Include="TurtleShellStateDamage.cpp" />
     <ClCompile Include="TurtleShellStateDie.cpp" />
-    <ClCompile Include="TurtleShellStateDifence.cpp" />
-    <ClCompile Include="TurtleShellStateDifenceDamage.cpp" />
     <ClCompile Include="TurtleShellStateIdle.cpp" />
+    <ClCompile Include="TurtleShellStatePatrol.cpp" />
+    <ClCompile Include="TurtleShellStateSkill.cpp" />
     <ClCompile Include="TurtleShellStateVictory.cpp" />
-    <ClCompile Include="TurtleShellStateWalk.cpp" />
     <ClCompile Include="WeaponBase.cpp" />
     <ClCompile Include="WeaponManager.cpp" />
   </ItemGroup>
@@ -514,14 +513,13 @@
     <ClInclude Include="TurtleShell.h" />
     <ClInclude Include="TurtleShellStateAppear.h" />
     <ClInclude Include="TurtleShellStateAttack_1.h" />
-    <ClInclude Include="TurtleShellStateAttack_2.h" />
+    <ClInclude Include="TurtleShellStateChase.h" />
     <ClInclude Include="TurtleShellStateDamage.h" />
     <ClInclude Include="TurtleShellStateDie.h" />
-    <ClInclude Include="TurtleShellStateDifence.h" />
-    <ClInclude Include="TurtleShellStateDifenceDamage.h" />
     <ClInclude Include="TurtleShellStateIdle.h" />
+    <ClInclude Include="TurtleShellStatePatrol.h" />
+    <ClInclude Include="TurtleShellStateSkill.h" />
     <ClInclude Include="TurtleShellStateVictory.h" />
-    <ClInclude Include="TurtleShellStateWalk.h" />
     <ClInclude Include="WeaponBase.h" />
     <ClInclude Include="WeaponManager.h" />
   </ItemGroup>

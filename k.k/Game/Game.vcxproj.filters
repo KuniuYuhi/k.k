@@ -66,7 +66,6 @@
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="Status.cpp" />
     <ClCompile Include="BossStage1.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="Lich.cpp">
@@ -120,28 +119,16 @@
     <ClCompile Include="TurtleShellStateAttack_1.cpp">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
-    <ClCompile Include="TurtleShellStateAttack_2.cpp">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClCompile>
     <ClCompile Include="TurtleShellStateDamage.cpp">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="TurtleShellStateDie.cpp">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
-    <ClCompile Include="TurtleShellStateDifence.cpp">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClCompile>
-    <ClCompile Include="TurtleShellStateDifenceDamage.cpp">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClCompile>
     <ClCompile Include="TurtleShellStateIdle.cpp">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="TurtleShellStateVictory.cpp">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClCompile>
-    <ClCompile Include="TurtleShellStateWalk.cpp">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="MushroomStateAttack_1.cpp">
@@ -394,8 +381,6 @@
     <ClCompile Include="SummonerState_Warp.cpp">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
     </ClCompile>
-    <ClCompile Include="SummonerState_DMeteo_Start.cpp" />
-    <ClCompile Include="SummonerState_DMeteo_Main.cpp" />
     <ClCompile Include="DarkMeteo.cpp" />
     <ClCompile Include="IMobStateMachine.cpp" />
     <ClCompile Include="MobMonsterActionList.cpp" />
@@ -408,12 +393,36 @@
     <ClCompile Include="SlimeStateSkill.cpp">
       <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClCompile>
-    <ClCompile Include="CactusStateChase.cpp" />
-    <ClCompile Include="CactusStatePatrol.cpp" />
-    <ClCompile Include="CactusStateSkill.cpp" />
-    <ClCompile Include="MushroomStateChase.cpp" />
-    <ClCompile Include="MushroomStatePatrol.cpp" />
-    <ClCompile Include="MushroomStateSkill.cpp" />
+    <ClCompile Include="CactusStateChase.cpp">
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStatePatrol.cpp">
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateSkill.cpp">
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateChase.cpp">
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStatePatrol.cpp">
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateSkill.cpp">
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_DMeteo_Main.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_DMeteo_Start.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateChase.cpp" />
+    <ClCompile Include="TurtleShellStatePatrol.cpp" />
+    <ClCompile Include="TurtleShellStateSkill.cpp" />
+    <ClCompile Include="Player.cpp">
+      <Filter>Character\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -424,7 +433,6 @@
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="Status.h" />
     <ClInclude Include="BossStage1.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="Lich.h">
@@ -481,28 +489,16 @@
     <ClInclude Include="TurtleShellStateAttack_1.h">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
-    <ClInclude Include="TurtleShellStateAttack_2.h">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClInclude>
     <ClInclude Include="TurtleShellStateDamage.h">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="TurtleShellStateDie.h">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
-    <ClInclude Include="TurtleShellStateDifence.h">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClInclude>
-    <ClInclude Include="TurtleShellStateDifenceDamage.h">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClInclude>
     <ClInclude Include="TurtleShellStateIdle.h">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="TurtleShellStateVictory.h">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClInclude>
-    <ClInclude Include="TurtleShellStateWalk.h">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="ITurtleShellState.h">
@@ -777,8 +773,6 @@
     <ClInclude Include="SummonerState_Walk.h">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
     </ClInclude>
-    <ClInclude Include="SummonerState_DMeteo_Start.h" />
-    <ClInclude Include="SummonerState_DMeteo_Main.h" />
     <ClInclude Include="DarkMeteo.h" />
     <ClInclude Include="DecisionMeteoEndpoint.h" />
     <ClInclude Include="IMobStateMachine.h" />
@@ -792,11 +786,35 @@
     <ClInclude Include="SlimeStateSkill.h">
       <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClInclude>
-    <ClInclude Include="CactusStateChase.h" />
-    <ClInclude Include="CactusStatePatrol.h" />
-    <ClInclude Include="CactusStateSkill.h" />
-    <ClInclude Include="MushroomStateChase.h" />
-    <ClInclude Include="MushroomStatePatrol.h" />
-    <ClInclude Include="MushroomStateSkill.h" />
+    <ClInclude Include="CactusStateChase.h">
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStatePatrol.h">
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateSkill.h">
+      <Filter>Character\Monster\MobMonster\Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateChase.h">
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStatePatrol.h">
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateSkill.h">
+      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_DMeteo_Main.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_DMeteo_Start.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateChase.h" />
+    <ClInclude Include="TurtleShellStatePatrol.h" />
+    <ClInclude Include="TurtleShellStateSkill.h" />
+    <ClInclude Include="Player.h">
+      <Filter>Character\Player</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
