@@ -229,7 +229,7 @@ void Arrow::NormalShot()
 		//V‚µ‚¢À•W
 		m_arrowPos += {
 			X,
-			(m_shotArrowVerocity.Vy - (GRAVITY * m_deleteTimer)) * g_gameTime->GetFrameDeltaTime()*1.5f,
+			(m_shotArrowVerocity.Vy - (GRAVITY * m_deleteTimer)) * g_gameTime->GetFrameDeltaTime()*4.0f,
 			Z
 		};
 		m_deleteTimer += g_gameTime->GetFrameDeltaTime() * 6.0f;
@@ -270,7 +270,7 @@ void Arrow::NormalShot()
 
 		rot.SetRotation(direction, g_vec3AxisX);
 
-		m_rotation = rot;
+		//m_rotation = rot;
 	}
 	else
 	{
