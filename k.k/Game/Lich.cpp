@@ -241,25 +241,16 @@ bool Lich::IsStopProcessing()
 		return true;
 	}
 
-	//勝敗が決まったら
-	if (m_enOutCome != enOutCome_None)
-	{
-		return true;
-	}
-
+	
 	switch (GameManager::GetInstance()->GetOutComeState())
 	{
 		//負けた
 	case GameManager::enOutComeState_PlayerWin:
-		//勝敗ステートの設定
-		SetEnOutCome(enOutCome_Lose);
 		return true;
 		break;
 
 		//勝った
 	case GameManager::enOutComeState_PlayerLose:
-		//勝敗ステートの設定
-		SetEnOutCome(enOutCome_Win);
 		//ダークメテオの削除
 		DeleteDarkMeteo();
 		//勝利アニメーション再生
@@ -277,7 +268,7 @@ bool Lich::IsStopProcessing()
 void Lich::Move()
 {
 	//プレイヤーの座標を取得
-	SetTargetPosition();
+	//SetTargetPosition();
 	//移動処理
 	m_moveSpeed = CalcVelocity(m_status, m_targetPosition);
 	//被ダメージ時は処理をしない
@@ -467,7 +458,7 @@ void Lich::DecideNextAction()
 	//攻撃可能なら
 	if (m_attackEnableFlag == false)
 	{
-		SetTargetPosition();
+		//SetTargetPosition();
 		m_toPlayerDir =  m_targetPosition - m_position;
 		//プレイヤーが視野角内にいるなら
 		if (IsInFieldOfView(m_toPlayerDir, m_forward, 10.0f))
@@ -1020,7 +1011,7 @@ void Lich::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	if (wcscmp(eventName, L"createMeteo") == 0)
 	{
 		m_darkMeteorite->SetShotStartFlag(true);
-		SetTargetPosition();
+		//SetTargetPosition();
 		m_darkMeteorite->SetTargetPosition(m_targetPosition);
 	}
 
