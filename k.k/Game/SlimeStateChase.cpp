@@ -10,5 +10,5 @@ void SlimeStateChase::ManageState()
 
 void SlimeStateChase::PlayAnimation()
 {
-	m_slime->GetModelRender().PlayAnimation(enAninationClip_Chase,0.1f);
+	m_slime->GetModelRender().PlayAnimation(enAnimationClip_Chase,0.1f);
 }

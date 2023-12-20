@@ -3,7 +3,6 @@
 
 using namespace MobMonsterInfo;
 
-class Lich;
 class ISlimeState;
 class IMobStateMachine;
 

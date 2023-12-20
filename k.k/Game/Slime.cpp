@@ -26,7 +26,7 @@ namespace {
 	const float SKILL_ATTACK_RANGE = 70.0f;				//ƒXƒLƒ‹UŒ‚‚Å‚«‚é‹——£
 	const float STAY_RANGR = 45.0f;						//’âŽ~‚·‚é‹——£
 	const float ATTACK_INTAERVALE_TIME = 2.0f;			//UŒ‚‚·‚éŠÔŠu
-	const float PLAYER_NEARBY_RANGE = 120.0f;			//UŒ‚‚µ‚½Œã‚ÌƒvƒŒƒCƒ„[‚ðõ“G‚Å‚«‚é”ÍˆÍ
+	const float PLAYER_NEARBY_RANGE = 140.0f;			//UŒ‚‚µ‚½Œã‚ÌƒvƒŒƒCƒ„[‚ðõ“G‚Å‚«‚é”ÍˆÍ
 	const float ANGLE_RANGE = 2.0f;						//ˆÚ“®‚·‚éƒAƒ“ƒOƒ‹‚Ì”ÍˆÍ
 	const float POS2_LENGTH = 30.0f;
 	const float ROT_SPEED = 7.5f;
@@ -53,6 +53,8 @@ Slime::Slime()
 	m_angleRange = ANGLE_RANGE;
 
 	m_pos2Length = POS2_LENGTH;
+
+	m_scale *= 1.3f;
 
 	m_skillUsableLimmit = SKILL_TIMER_LIMMIT;
 	m_skillAttackRange = SKILL_ATTACK_RANGE;
@@ -94,12 +96,12 @@ bool Slime::Start()
 
 void Slime::InitModel()
 {
-	m_animationClip[enAninationClip_Idle].Load("Assets/animData/character/Slime/Idle_Normal.tka");
-	m_animationClip[enAninationClip_Idle].SetLoopFlag(true);
-	m_animationClip[enAninationClip_Patrol].Load("Assets/animData/character/Slime/Walk.tka");
-	m_animationClip[enAninationClip_Patrol].SetLoopFlag(true);
-	m_animationClip[enAninationClip_Chase].Load("Assets/animData/character/Slime/Run.tka");
-	m_animationClip[enAninationClip_Chase].SetLoopFlag(true);
+	m_animationClip[enAnimationClip_Idle].Load("Assets/animData/character/Slime/Idle_Normal.tka");
+	m_animationClip[enAnimationClip_Idle].SetLoopFlag(true);
+	m_animationClip[enAnimationClip_Patrol].Load("Assets/animData/character/Slime/Walk.tka");
+	m_animationClip[enAnimationClip_Patrol].SetLoopFlag(true);
+	m_animationClip[enAnimationClip_Chase].Load("Assets/animData/character/Slime/Run.tka");
+	m_animationClip[enAnimationClip_Chase].SetLoopFlag(true);
 	m_animationClip[enAnimationClip_Attack].Load("Assets/animData/character/Slime/Attack1.tka");
 	m_animationClip[enAnimationClip_Attack].SetLoopFlag(false);
 	m_animationClip[enAnimationClip_Skill].Load("Assets/animData/character/Slime/Skill.tka");
@@ -122,8 +124,8 @@ void Slime::InitModel()
 	);
 	
 	m_charaCon.Init(
-		16.0f,
-		4.0f,
+		22.0f,
+		9.0f,
 		m_position
 	);
 
@@ -178,18 +180,10 @@ bool Slime::IsStopProcessing()
 		return true;
 	}
 
-	//Ÿ”s‚ªŒˆ‚Ü‚Á‚½‚ç
-	if (m_enOutCome != enOutCome_None)
-	{
-		return true;
-	}
-
 	//Ÿ—˜‚µ‚½‚ç
 	if (GameManager::GetInstance()->GetOutComeState()
 		== GameManager::enOutComeState_PlayerLose)
 	{
-		//Ÿ”sƒXƒe[ƒg‚ÌÝ’è
-		SetEnOutCome(enOutCome_Win);
 		SetWinFlag(true);
 		//UŒ‚’†‚Å‚È‚¯‚ê‚Î
 		SetNextAnimationState(enAnimationState_Victory);
@@ -258,7 +252,7 @@ void Slime::Damage(int attack)
 	m_moveSpeed = SetKnockBackDirection(
 		m_position,
 		m_player->GetPosition(),
-		150.0f
+		m_player->GetKnockBackPower()
 	);
 
 	//HP‚ª0ˆÈ‰º‚È‚ç
