@@ -161,6 +161,8 @@ void Brave::ProcessAttack()
 	{
 		//アクションフラグをセット
 		SetIsActionFlag(true);
+		//ノックバックパワーを設定
+		SetKnockBackPower(m_mainUseWeapon.weapon->GetKnockBackPower(4));
 		SetNextAnimationState(enAnimationState_Skill_start);
 	}
 }
@@ -318,6 +320,7 @@ void Brave::ProcessWin()
 	SetNextAnimationState(enAnimationState_Win_Start);
 }
 
+//todo それぞれの武器に入れる
 void Brave::ProcessSwordShieldSkill(bool UpOrDownFlag)
 {
 	Vector3 Y = g_vec3AxisY;
@@ -425,11 +428,6 @@ void Brave::ManageState()
 	m_BraveState->ManageState();
 }
 
-void Brave::SetAttackPosition(Vector3 attackPosition)
-{
-	m_player->SetAttackPosition(attackPosition);
-}
-
 void Brave::ProcessComboAttack()
 {
 	//パターンステートを一つ進める
@@ -446,12 +444,18 @@ void Brave::ProcessComboAttack()
 		break;
 	case Brave::enAttackPattern_1:
 		SetNowComboState(enNowCombo_1);
+		//ノックバックパワーを設定
+		SetKnockBackPower(m_mainUseWeapon.weapon->GetKnockBackPower(1));
 		break;
 	case Brave::enAttackPattern_2:
 		SetNowComboState(enNowCombo_2);
+		//ノックバックパワーを設定
+		SetKnockBackPower(m_mainUseWeapon.weapon->GetKnockBackPower(2));
 		break;
 	case Brave::enAttackPattern_3:
 		SetNowComboState(enNowCombo_3);
+		//ノックバックパワーを設定
+		SetKnockBackPower(m_mainUseWeapon.weapon->GetKnockBackPower(3));
 		break;
 	case Brave::enAttackPattern_End:
 		break;

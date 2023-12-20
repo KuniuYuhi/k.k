@@ -465,28 +465,6 @@ public:
 	}
 
 	/// <summary>
-	/// 攻撃の中心座標を設定
-	/// </summary>
-	/// <param name="attackPosition"></param>
-	void SetAttackPosition(Vector3 attackPosition);
-	/// <summary>
-	/// ノックバックする時の設定をまとめたもの
-	/// </summary>
-	/// <param name="attackPosition">攻撃の中心座標</param>
-	/// <param name="power">ノックバックパワー</param>
-	/// <param name="flag">ノックバックするかのフラグ</param>
-	void SetKnockBackInfo(
-		Vector3 attackPosition, float power, bool flag)
-	{
-		//攻撃の中心座標を設定
-		SetAttackPosition(attackPosition);
-		//ノックバックパワーを設定
-		SetKnockBackPower(power);
-		//ノックバック攻撃フラグをセット
-		SetKnockBackAttackFalg(flag);
-	}
-
-	/// <summary>
 	/// キャラを強制的にアイドル状態にする
 	/// </summary>
 	void ForciblyIdleAnim()
