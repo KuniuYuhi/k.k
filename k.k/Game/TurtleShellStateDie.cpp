@@ -9,5 +9,5 @@ void TurtleShellStateDie::ManageState()
 
 void TurtleShellStateDie::PlayAnimation()
 {
-	m_turtleShell->GetModelRender().PlayAnimation(TurtleShell::enAnimClip_Die);
+	m_turtleShell->GetModelRender().PlayAnimation(enAnimationClip_Die);
 }

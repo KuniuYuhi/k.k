@@ -9,5 +9,5 @@ void TurtleShellStateDamage::ManageState()
 
 void TurtleShellStateDamage::PlayAnimation()
 {
-	m_turtleShell->GetModelRender().PlayAnimation(TurtleShell::enAnimClip_Damage);
+	m_turtleShell->GetModelRender().PlayAnimation(enAnimationClip_Hit);
 }

@@ -9,5 +9,5 @@ void TurtleShellStateAppear::ManageState()
 
 void TurtleShellStateAppear::PlayAnimation()
 {
-	m_turtleShell->GetModelRender().PlayAnimation(TurtleShell::enAnimClip_Appear);
+	m_turtleShell->GetModelRender().PlayAnimation(enAnimationClip_Appear);
 }
