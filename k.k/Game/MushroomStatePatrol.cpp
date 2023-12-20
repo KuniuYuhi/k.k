@@ -11,10 +11,10 @@ void MushroomStatePatrol::PlayAnimation()
 {
 	if (fabsf(m_mushroom->GetMoveSpeed().x) >= 0.001f || fabsf(m_mushroom->GetMoveSpeed().z) >= 0.001f)
 	{
-		m_mushroom->GetModelRender().PlayAnimation(enAninationClip_Patrol, 0.2f);
+		m_mushroom->GetModelRender().PlayAnimation(enAnimationClip_Patrol, 0.2f);
 	}
 	else
 	{
-		m_mushroom->GetModelRender().PlayAnimation(enAninationClip_Idle, 0.3f);
+		m_mushroom->GetModelRender().PlayAnimation(enAnimationClip_Idle, 0.3f);
 	}
 }

@@ -10,5 +10,5 @@ void MushroomStateChase::ManageState()
 
 void MushroomStateChase::PlayAnimation()
 {
-	m_mushroom->GetModelRender().PlayAnimation(enAninationClip_Chase, 0.1f);
+	m_mushroom->GetModelRender().PlayAnimation(enAnimationClip_Chase, 0.1f);
 }

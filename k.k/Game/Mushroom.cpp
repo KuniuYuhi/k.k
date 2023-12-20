@@ -92,12 +92,12 @@ bool Mushroom::Start()
 
 void Mushroom::InitModel()
 {
-	m_animationClip[enAninationClip_Idle].Load("Assets/animData/character/Mushroom/Idle_normal.tka");
-	m_animationClip[enAninationClip_Idle].SetLoopFlag(true);
-	m_animationClip[enAninationClip_Patrol].Load("Assets/animData/character/Mushroom/Walk.tka");
-	m_animationClip[enAninationClip_Patrol].SetLoopFlag(true);
-	m_animationClip[enAninationClip_Chase].Load("Assets/animData/character/Mushroom/Run.tka");
-	m_animationClip[enAninationClip_Chase].SetLoopFlag(true);
+	m_animationClip[enAnimationClip_Idle].Load("Assets/animData/character/Mushroom/Idle_normal.tka");
+	m_animationClip[enAnimationClip_Idle].SetLoopFlag(true);
+	m_animationClip[enAnimationClip_Patrol].Load("Assets/animData/character/Mushroom/Walk.tka");
+	m_animationClip[enAnimationClip_Patrol].SetLoopFlag(true);
+	m_animationClip[enAnimationClip_Chase].Load("Assets/animData/character/Mushroom/Run.tka");
+	m_animationClip[enAnimationClip_Chase].SetLoopFlag(true);
 	m_animationClip[enAnimationClip_Attack].Load("Assets/animData/character/Mushroom/Attack1.tka");
 	m_animationClip[enAnimationClip_Attack].SetLoopFlag(false);
 	m_animationClip[enAnimationClip_Skill].Load("Assets/animData/character/Mushroom/Attack2.tka");
@@ -121,7 +121,7 @@ void Mushroom::InitModel()
 
 	m_charaCon.Init(
 		22.0f,
-		6.0f,
+		9.0f,
 		m_position
 	);
 
@@ -188,19 +188,11 @@ bool Mushroom::IsStopProcessing()
 	{
 		return true;
 	}
-
-	//Ÿ”s‚ªŒˆ‚Ü‚Á‚½‚ç
-	if (m_enOutCome != enOutCome_None)
-	{
-		return true;
-	}
 	
 	//Ÿ—˜‚µ‚½‚ç
 	if (GameManager::GetInstance()->GetOutComeState()
 		== GameManager::enOutComeState_PlayerLose)
 	{
-		//Ÿ”sƒXƒe[ƒg‚ÌÝ’è
-		SetEnOutCome(enOutCome_Win);
 		SetWinFlag(true);
 		//UŒ‚’†‚Å‚È‚¯‚ê‚Î
 		SetNextAnimationState(enAnimationState_Victory);
@@ -254,7 +246,7 @@ void Mushroom::Damage(int attack)
 	m_moveSpeed = SetKnockBackDirection(
 		m_position,
 		m_player->GetPosition(),
-		150.0f
+		m_player->GetKnockBackPower()
 	);
 
 	//HP‚ª0ˆÈ‰º‚È‚ç
