@@ -23,12 +23,6 @@ void AIActor::SetTransForm(Vector3 position, Quaternion rotation, Vector3 scale)
 	m_scale = scale;
 }
 
-void AIActor::SetTargetPosition()
-{
-	//ターゲット(プレイヤー)の座標を取得
-	m_targetPosition = m_player->GetPosition();
-}
-
 void AIActor::PlayAttackSound()
 {
 	g_soundManager->InitAndPlaySoundSource(enSoundName_Attack1, g_soundManager->GetSEVolume());

@@ -9,16 +9,6 @@ public:
 	virtual ~AIActor();
 
 	/// <summary>
-	/// 勝敗ステート
-	/// </summary>
-	enum EnOutComeForMonsters
-	{
-		enOutCome_Win,
-		enOutCome_Lose,
-		enOutCome_None
-	};
-
-	/// <summary>
 	/// モデルの座標、回転、サイズの設定
 	/// </summary>
 	/// <param name="modelRender"></param>
@@ -114,23 +104,6 @@ public:
 	}
 
 	/// <summary>
-	/// 勝敗ステートの設定
-	/// </summary>
-	/// <param name="outCome"></param>
-	void SetEnOutCome(EnOutComeForMonsters outCome)
-	{
-		m_enOutCome = outCome;
-	}
-	/// <summary>
-	/// 勝敗ステートの取得
-	/// </summary>
-	/// <returns></returns>
-	const EnOutComeForMonsters& GetEnOutCome() const
-	{
-		return m_enOutCome;
-	}
-
-	/// <summary>
 	/// 移動方向を速度を取得
 	/// </summary>
 	/// <returns></returns>
@@ -155,11 +128,6 @@ protected:
 	/// ステート管理
 	/// </summary>
 	virtual void ManageState() = 0;
-
-	/// <summary>
-	/// ターゲットの座標をm_targetPsitionに代入するtodo　なくす
-	/// </summary>
-	void SetTargetPosition();
 
 	/// <summary>
 	/// 特定のアニメーションが再生中か
@@ -187,8 +155,6 @@ protected:
 
 	Quaternion					m_rotation = Quaternion::Identity;
 	Vector3						m_scale = Vector3::One;
-
-	EnOutComeForMonsters					m_enOutCome = enOutCome_None;
 
 
 	bool						m_winFlag = false;						//勝ったかのフラグ
