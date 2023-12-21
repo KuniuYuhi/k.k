@@ -9,5 +9,5 @@ void MushroomStateDamage::ManageState()
 
 void MushroomStateDamage::PlayAnimation()
 {
-	m_mushroom->GetModelRender().PlayAnimation(Mushroom::enAnimationState_Damage);
+	m_mushroom->GetModelRender().PlayAnimation(enAnimationClip_Hit);
 }

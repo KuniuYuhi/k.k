@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "MushroomStateAttack_1.h"
+#include "MushroomStateSkill.h"
 #include "Mushroom.h"
 
-void MushroomStateAttack_1::ManageState()
+void MushroomStateSkill::ManageState()
 {
 	//当たり判定生成フラグがセットされていたら当たり判定生成
 	if (m_mushroom->GetCreateAttackCollisionFlag() == true)
@@ -13,7 +13,7 @@ void MushroomStateAttack_1::ManageState()
 	m_mushroom->OnProcessAttack_1StateTransition();
 }
 
-void MushroomStateAttack_1::PlayAnimation()
+void MushroomStateSkill::PlayAnimation()
 {
-	m_mushroom->GetModelRender().PlayAnimation(enAnimationClip_Attack);
+	m_mushroom->GetModelRender().PlayAnimation(enAnimationClip_Skill);
 }

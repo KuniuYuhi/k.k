@@ -9,5 +9,5 @@ void MushroomStateDie::ManageState()
 
 void MushroomStateDie::PlayAnimation()
 {
-	m_mushroom->GetModelRender().PlayAnimation(Mushroom::enAnimClip_Die);
+	m_mushroom->GetModelRender().PlayAnimation(enAnimationClip_Die);
 }

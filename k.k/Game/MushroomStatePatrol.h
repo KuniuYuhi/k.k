@@ -1,11 +1,11 @@
 #pragma once
-#include "ICactusState.h"
+#include "IMushroomState.h"
 
-class CactusStatePlantToBattle :public ICactusState
+class MushroomStatePatrol :public IMushroomState
 {
 public:
-	CactusStatePlantToBattle(Cactus* cactus)
-		:ICactusState(cactus)
+	MushroomStatePatrol(Mushroom* mushroom)
+		:IMushroomState(mushroom)
 	{
 	}
 

@@ -40,9 +40,9 @@ namespace MobMonsterInfo {
 	/// </summary>
 	enum EnAnimationClip
 	{
-		enAninationClip_Idle,		//待機状態
-		enAninationClip_Patrol,		//巡回
-		enAninationClip_Chase,		//追いかける
+		enAnimationClip_Idle,		//待機状態
+		enAnimationClip_Patrol,		//巡回
+		enAnimationClip_Chase,		//追いかける
 		enAnimationClip_Attack,		//攻撃
 		enAnimationClip_Skill,		//スキル
 		enAnimationClip_Hit,		//被ダメージ

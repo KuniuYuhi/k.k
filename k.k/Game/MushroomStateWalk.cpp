@@ -9,5 +9,5 @@ void MushroomStateWalk::ManageState()
 
 void MushroomStateWalk::PlayAnimation()
 {
-	m_mushroom->GetModelRender().PlayAnimation(Mushroom::enAnimClip_Walk);
+	//m_mushroom->GetModelRender().PlayAnimation(enAni);
 }

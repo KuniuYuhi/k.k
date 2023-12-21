@@ -1,6 +1,7 @@
 #pragma once
 #include "Status.h"
 #include "DamageFont.h"
+#include "KnockBack.h"
 
 class AIActor;
 
@@ -292,23 +293,6 @@ public:
 	}
 
 	/// <summary>
-	/// ノックバック攻撃フラグを設定
-	/// </summary>
-	/// <param name="flag"></param>
-	void SetKnockBackAttackFalg(bool flag)
-	{
-		m_knockBackAttackFalg = flag;
-	}
-	/// <summary>
-	/// ノックバック攻撃フラグを取得
-	/// </summary>
-	/// <returns></returns>
-	const bool& GetKnockBackAttackFalg() const
-	{
-		return m_knockBackAttackFalg;
-	}
-
-	/// <summary>
 	/// ノックバックパワーを設定
 	/// </summary>
 	/// <param name="power"></param>
@@ -323,6 +307,22 @@ public:
 	const float& GetKnockBackPower() const
 	{
 		return m_knockBackPower;
+	}
+	/// <summary>
+	/// ノックバックヒットフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetHitKnockBackFlag(bool flag)
+	{
+		m_hitKnockBackFlag = flag;
+	}
+	/// <summary>
+	/// ノックバックヒットフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetHitKnockBackFlag() const
+	{
+		return m_hitKnockBackFlag;
 	}
 
 	/// <summary>
@@ -447,7 +447,9 @@ protected:
 	int								m_hitDamage = 0;									//攻撃されたときのダメージを記憶
 
 	float							m_knockBackPower = 0.0f;							//ノックバックの強さ
-	bool							m_knockBackAttackFalg = false;						//ノックバックの効果がある攻撃か
+
+	bool							m_hitKnockBackFlag = false;							//自身がノックバックするか
+
 
 };
 

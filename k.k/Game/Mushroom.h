@@ -1,8 +1,11 @@
 #pragma once
 #include "MobMonster.h"
 
+using namespace MobMonsterInfo;
+
 class Lich;
 class IMushroomState;
+class IMobStateMachine;
 
 class Mushroom :public MobMonster
 {
@@ -15,8 +18,9 @@ public:
 	void Render(RenderContext& rc);
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
-	void Attack();
-
+	/// <summary>
+	/// 当たり判定生成
+	/// </summary>
 	void CreateCollision();
 
 	/// <summary>
@@ -40,7 +44,7 @@ public:
 	/// <returns></returns>
 	bool isAnimationEnable() const
 	{
-		return m_enAnimationState != enAnimationState_Damage &&
+		return m_enAnimationState != enAnimationState_Hit &&
 			m_enAnimationState != enAnimationState_Die &&
 			m_enAnimationState != enAnimationState_Victory;
 	}
@@ -55,33 +59,19 @@ public:
 	}
 
 	/// <summary>
-	/// 
+	/// 攻撃中か
 	/// </summary>
 	/// <returns></returns>
 	bool IsAttackEnable() const
 	{
-		return m_enAnimationState != enAnimationState_Attack_1 &&
-			m_enAnimationState != enAnimationState_Attack_2;
+		return m_enAnimationState != enAnimationState_Attack &&
+			m_enAnimationState != enAnimationState_Skill;
 	}
 
 	/// <summary>
 	/// 被ダメージ時処理
 	/// </summary>
 	void Damage(int attack);
-
-	// アニメーションクリップの番号を表す列挙型。
-	enum EnAnimationClip {
-		enAnimClip_Idle,			// 0 : 待機アニメーション
-		enAnimClip_Walk,			// 1 : 歩きアニメーション
-		enAnimClip_Run,				// 2 : 走りアニメーション
-		enAnimClip_Attack_1,		// 3 : 
-		enAnimClip_Attack_2,
-		enAnimClip_Damage,
-		enAnimClip_Die,
-		enAnimClip_Victory,
-		enAnimClip_Appear,
-		enAnimClip_Num,				// 7 :アニメーションクリップの数
-	};
 
 	/// <summary>
 	/// 共通のステート遷移処理を実行
@@ -112,24 +102,29 @@ public:
 	/// </summary>
 	void OnProcessAppearStateTransition();
 
-	//アニメーションステート
-	enum EnAnimationState {
-		enAninationState_Idle,
-		enAninationState_Walk,
-		enAninationState_Run,
-		enAnimationState_Attack_1,
-		enAnimationState_Attack_2,
-		enAnimationState_Damage,
-		enAnimationState_Die,
-		enAnimationState_Victory,
-		enAnimationState_Appear
-	};
-
 	/// <summary>
 	/// 次のアニメーションステートを作成する。
 	/// </summary>
 	/// <param name="nextState"></param>
 	void SetNextAnimationState(EnAnimationState nextState);
+
+	/// <summary>
+	/// キャラクターコントローラーの取得
+	/// </summary>
+	/// <returns></returns>
+	CharacterController& GetCharacterController()
+	{
+		return m_charaCon;
+	}
+
+	/// <summary>
+	/// 当たり判定生成フラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetCreateAttackCollisionFlag() const
+	{
+		return m_createAttackCollisionFlag;
+	}
 
 private:
 	/// <summary>
@@ -154,11 +149,12 @@ private:
 		enAttackName_2
 	};
 
-	//Lich* m_lich = nullptr;
+	IMobStateMachine* m_stateMachine = nullptr;
+
 	IMushroomState* m_state = nullptr;
 
 	Animation m_animation;	// アニメーション
-	AnimationClip m_animationClip[enAnimClip_Num];	// アニメーションクリップ 
+	AnimationClip m_animationClip[enAnimationClip_Num];	// アニメーションクリップ 
 
 	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
 

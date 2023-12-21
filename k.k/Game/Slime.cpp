@@ -23,10 +23,10 @@ namespace {
 	const float ANGLE = 70.0f;				//視野角
 	const float DISTANCE_TO_PLAYER = 300.0f;			//プレイヤーとの距離
 	const float ATTACK_RANGE = 50.0f;					//攻撃できる距離
-	const float SKILL_ATTACK_RANGE = 70.0f;					//スキル攻撃できる距離
+	const float SKILL_ATTACK_RANGE = 70.0f;				//スキル攻撃できる距離
 	const float STAY_RANGR = 45.0f;						//停止する距離
 	const float ATTACK_INTAERVALE_TIME = 2.0f;			//攻撃する間隔
-	const float PLAYER_NEARBY_RANGE = 120.0f;			//攻撃した後のプレイヤーを索敵できる範囲
+	const float PLAYER_NEARBY_RANGE = 140.0f;			//攻撃した後のプレイヤーを索敵できる範囲
 	const float ANGLE_RANGE = 2.0f;						//移動するアングルの範囲
 	const float POS2_LENGTH = 30.0f;
 	const float ROT_SPEED = 7.5f;
@@ -54,6 +54,8 @@ Slime::Slime()
 
 	m_pos2Length = POS2_LENGTH;
 
+	m_scale *= 1.3f;
+
 	m_skillUsableLimmit = SKILL_TIMER_LIMMIT;
 	m_skillAttackRange = SKILL_ATTACK_RANGE;
 }
@@ -61,13 +63,12 @@ Slime::Slime()
 Slime::~Slime()
 {
 	delete m_stateMachine;
+	DeleteGO(m_headCollision);
 }
 
 bool Slime::Start()
 {
-	//初期のアニメーションステートを待機状態にする。
-	SetNextAnimationState(enAninationState_Idle);
-
+	//ステータスの初期化
 	m_status.InitCharacterStatus(
 		MAXHP,
 		MAXMP,
@@ -75,12 +76,10 @@ bool Slime::Start()
 		SPEED,
 		NAME
 	);
-
+	//モデルの初期化
 	InitModel();
-
 	//ステートマシンの生成
 	m_stateMachine = new IMobStateMachine(this);
-
 	//まず召喚アニメーション。その後行動
 	SetNextAnimationState(enAnimationState_Appear);
 
@@ -97,12 +96,12 @@ bool Slime::Start()
 
 void Slime::InitModel()
 {
-	m_animationClip[enAninationClip_Idle].Load("Assets/animData/character/Slime/Idle_Normal.tka");
-	m_animationClip[enAninationClip_Idle].SetLoopFlag(true);
-	m_animationClip[enAninationClip_Patrol].Load("Assets/animData/character/Slime/Walk.tka");
-	m_animationClip[enAninationClip_Patrol].SetLoopFlag(true);
-	m_animationClip[enAninationClip_Chase].Load("Assets/animData/character/Slime/Run.tka");
-	m_animationClip[enAninationClip_Chase].SetLoopFlag(true);
+	m_animationClip[enAnimationClip_Idle].Load("Assets/animData/character/Slime/Idle_Normal.tka");
+	m_animationClip[enAnimationClip_Idle].SetLoopFlag(true);
+	m_animationClip[enAnimationClip_Patrol].Load("Assets/animData/character/Slime/Walk.tka");
+	m_animationClip[enAnimationClip_Patrol].SetLoopFlag(true);
+	m_animationClip[enAnimationClip_Chase].Load("Assets/animData/character/Slime/Run.tka");
+	m_animationClip[enAnimationClip_Chase].SetLoopFlag(true);
 	m_animationClip[enAnimationClip_Attack].Load("Assets/animData/character/Slime/Attack1.tka");
 	m_animationClip[enAnimationClip_Attack].SetLoopFlag(false);
 	m_animationClip[enAnimationClip_Skill].Load("Assets/animData/character/Slime/Skill.tka");
@@ -125,8 +124,8 @@ void Slime::InitModel()
 	);
 	
 	m_charaCon.Init(
-		16.0f,
-		4.0f,
+		22.0f,
+		9.0f,
 		m_position
 	);
 
@@ -148,6 +147,7 @@ void Slime::Update()
 {
 	if (IsStopProcessing() != true)
 	{
+		//スキル攻撃のインターバルの計算
 		CalcSkillAttackIntarval();
 		//攻撃間隔インターバル
 		AttackInterval(m_attackIntervalTime);
@@ -180,18 +180,10 @@ bool Slime::IsStopProcessing()
 		return true;
 	}
 
-	//勝敗が決まったら
-	if (m_enOutCome != enOutCome_None)
-	{
-		return true;
-	}
-
 	//勝利したら
 	if (GameManager::GetInstance()->GetOutComeState()
 		== GameManager::enOutComeState_PlayerLose)
 	{
-		//勝敗ステートの設定
-		SetEnOutCome(enOutCome_Win);
 		SetWinFlag(true);
 		//攻撃中でなければ
 		SetNextAnimationState(enAnimationState_Victory);
@@ -216,7 +208,7 @@ bool Slime::IsStopProcessing()
 	{
 		//ノックバックの処理をするなら
 		if (IsProcessKnockBack(
-			m_knockBackTimer, m_moveSpeed) == true)
+			m_moveSpeed, m_knockBackTimer) == true)
 		{
 			//座標を移動
 			m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
@@ -260,7 +252,7 @@ void Slime::Damage(int attack)
 	m_moveSpeed = SetKnockBackDirection(
 		m_position,
 		m_player->GetPosition(),
-		150.0f
+		m_player->GetKnockBackPower()
 	);
 
 	//HPが0以下なら
@@ -372,7 +364,6 @@ void Slime::OnProcessAttack_1StateTransition()
 			//プレイヤーが近くにいるかフラグをセット
 			SetPlayerNearbyFlag(true);
 		}
-
 		//共通の状態遷移処理に移行
 		ProcessCommonStateTransition();
 	}

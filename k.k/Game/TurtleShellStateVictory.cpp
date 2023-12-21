@@ -9,5 +9,5 @@ void TurtleShellStateVictory::ManageState()
 
 void TurtleShellStateVictory::PlayAnimation()
 {
-	m_turtleShell->GetModelRender().PlayAnimation(TurtleShell::enAnimClip_Victory);
+	m_turtleShell->GetModelRender().PlayAnimation(enAnimationClip_Victory);
 }

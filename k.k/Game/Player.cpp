@@ -128,6 +128,14 @@ Actor::EnComboState Player::GetNowComboState() const
 	return m_brave->GetNowComboState();
 }
 
+void Player::SetKnockBackInfo(
+	bool flag, Vector3 endPos, float KnockBackPower, float knockBackLimmit)
+{
+	m_brave->SetHitKnockBackFlag(flag);
+	m_brave->SettingKnockBackInfo(endPos, KnockBackPower, knockBackLimmit);
+
+}
+
 void Player::ProcessPlayerDead()
 {
 	//‚â‚ç‚ê‚Ä‚¢‚È‚¢‚È‚çˆ—‚µ‚È‚¢

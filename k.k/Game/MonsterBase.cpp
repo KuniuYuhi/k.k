@@ -161,6 +161,7 @@ void MonsterBase::DamageCollision(CharacterController& characon)
 	{
 		return;
 	}
+
 	//通常攻撃の当たり判定
 	const auto& Attack_Collisions = g_collisionObjectManager->FindCollisionObjects("Attack");
 	for (auto collision : Attack_Collisions)
@@ -168,7 +169,6 @@ void MonsterBase::DamageCollision(CharacterController& characon)
 		//キャラコンと当たり判定が衝突したら
 		if (collision->IsHit(characon) == true)
 		{
-			CreateHitEffect();
 			HitNormalAttack();
 			return;
 		}
@@ -181,7 +181,6 @@ void MonsterBase::DamageCollision(CharacterController& characon)
 		//キャラコンと当たり判定が衝突したら
 		if (collision->IsHit(characon) == true)
 		{
-			CreateHitEffect();
 			HitSkillAttack();
 			return;
 		}
@@ -191,20 +190,24 @@ void MonsterBase::DamageCollision(CharacterController& characon)
 void MonsterBase::HitNormalAttack()
 {
 	m_damage = m_player->GetAtk();
-	//
+	//ダメージを受ける処理
 	Damage(m_damage);
+	//ダメージを表示
 	CreateDamageFont(m_damage);
-	//
+	//エフェクトを再生
+	CreateHitEffect();
 	m_player->SetAttackHitFlag(true);
 }
 
 void MonsterBase::HitSkillAttack()
 {
 	m_damage = m_player->GetAtk();
-	//
+	//ダメージを受ける処理
 	Damage(m_damage);
+	//ダメージを表示
 	CreateDamageFont(m_damage);
-	//
+	//エフェクトを再生
+	CreateHitEffect();
 	m_player->SetAttackHitFlag(true);
 }
 

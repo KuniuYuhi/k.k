@@ -17,15 +17,22 @@ namespace {
 
 	const float CHARGE_COMPLETE_TIME = 1.0f;
 
-	const float SHOT_ARROW_ANGLE = 40.0f;			//矢を撃つときの角度
+	const float SHOT_ARROW_ANGLE = 15.0f;			//矢を撃つときの角度
 
 	const float MOVE_BACK_SPEED = 100.0f;			//矢を撃った後の後退するスピード
+
+	const float NORMAL_ATTACK_KNOCKBACK_POWER = 150.0f;
+
 }
 
 Bow::Bow()
 {
 	SetWeaponPower(POWER);
 	SetMoveBackSpeed(MOVE_BACK_SPEED);
+
+	m_knockPower_1combo = NORMAL_ATTACK_KNOCKBACK_POWER;
+	m_knockPower_2combo = NORMAL_ATTACK_KNOCKBACK_POWER;
+	m_knockPower_3combo = NORMAL_ATTACK_KNOCKBACK_POWER;
 }
 
 Bow::~Bow()

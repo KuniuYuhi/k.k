@@ -132,30 +132,6 @@ public:
 	}
 
 	/// <summary>
-	///　ノックバック攻撃フラグを取得
-	/// </summary>
-	/// <returns></returns>
-	const bool& GetKnockBackAttackFlag() const
-	{
-		return m_brave->GetKnockBackAttackFalg();
-	}
-	/// <summary>
-	/// 攻撃の中心座標を設定
-	/// </summary>
-	/// <param name="attackPosition"></param>
-	void SetAttackPosition(Vector3 attackPosition)
-	{
-		m_attackPosition = attackPosition;
-	}
-	/// <summary>
-	/// 攻撃の中心座標を取得
-	/// </summary>
-	/// <returns></returns>
-	const Vector3& GetAttackPosition() const
-	{
-		return m_attackPosition;
-	}
-	/// <summary>
 	/// ノックバックパワーを取得
 	/// </summary>
 	/// <returns></returns>
@@ -163,6 +139,32 @@ public:
 	{
 		return m_brave->GetKnockBackPower();
 	}
+	/// <summary>
+	/// ノックバックヒットフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetHitKnockBackFlag(bool flag)
+	{
+		m_brave->SetHitKnockBackFlag(flag);
+	}
+	/// <summary>
+	/// ノックバックの情報を設定
+	/// </summary>
+	/// <param name="flag">ノックバックヒットフラグ</param>
+	/// <param name="endPos">終点</param>
+	/// <param name="KnockBackPower">ノックバックパワー</param>
+	void SetKnockBackInfo(
+		bool flag, Vector3 endPos, float KnockBackPower,float knockBackLimmit=1.0f);
+	/// <summary>
+	/// ノックバックヒットフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetHitKnockBackFlag() const
+	{
+		return m_brave->GetHitKnockBackFlag();
+	}
+
+
 
 	/// <summary>
 	/// 攻撃がヒットしたかのフラグを設定。通常攻撃

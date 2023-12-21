@@ -6,11 +6,9 @@ void SlimeStateChase::ManageState()
 {
 	//ƒvƒŒƒCƒ„[‚ð’Ç‚¢‚©‚¯‚é
 	m_slime->MoveChasePlayer(m_slime->GetCharacterController());
-
-	//m_slime->ProcessCommonStateTransition();
 }
 
 void SlimeStateChase::PlayAnimation()
 {
-	m_slime->GetModelRender().PlayAnimation(enAninationClip_Chase,0.1f);
+	m_slime->GetModelRender().PlayAnimation(enAnimationClip_Chase,0.1f);
 }

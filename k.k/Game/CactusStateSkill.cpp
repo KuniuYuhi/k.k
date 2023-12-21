@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "CactusStateAttack_1.h"
+#include "CactusStateSkill.h"
 #include "Cactus.h"
 
-void CactusStateAttack_1::ManageState()
+void CactusStateSkill::ManageState()
 {
 	//当たり判定生成フラグがセットされていたら当たり判定生成
 	if (m_cactus->GetCreateAttackCollisionFlag() == true)
@@ -13,7 +13,7 @@ void CactusStateAttack_1::ManageState()
 	m_cactus->OnProcessAttack_1StateTransition();
 }
 
-void CactusStateAttack_1::PlayAnimation()
+void CactusStateSkill::PlayAnimation()
 {
-	m_cactus->GetModelRender().PlayAnimation(enAnimationClip_Attack);
+	m_cactus->GetModelRender().PlayAnimation(enAnimationClip_Skill);
 }

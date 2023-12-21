@@ -53,7 +53,7 @@ public:
 	//通常攻撃に当たった時の処理
 	virtual void HitNormalAttack();
 
-	//ヒーローのスキルに当たった時の処理
+	//スキルに当たった時の処理
 	virtual void HitSkillAttack();
 	/// <summary>
 	/// ウィザードのファイヤーボールに当たった時の処理。派生クラスで実装

@@ -1,11 +1,11 @@
 #pragma once
-#include "ITurtleShellState.h"
+#include "ICactusState.h"
 
-class TurtleShellStateWalk :public ITurtleShellState
+class CactusStateChase :public ICactusState
 {
 public:
-	TurtleShellStateWalk(TurtleShell* turtleShell)
-		:ITurtleShellState(turtleShell)
+	CactusStateChase(Cactus* cactus)
+		:ICactusState(cactus)
 	{
 	}
 

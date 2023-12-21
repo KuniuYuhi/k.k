@@ -21,11 +21,12 @@ const Vector3 SetKnockBackDirection(
 }
 
 bool IsProcessKnockBack(
+	Vector3& moveSpeed,
 	float& timer, 
-	Vector3& moveSpeed
+	const float timerLimmit
 )
 {
-	if (timer >= 1.0f)
+	if (timer >= timerLimmit)
 	{
 		//タイマーをリセット
 		timer = 0.0f;

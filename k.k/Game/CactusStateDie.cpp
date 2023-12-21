@@ -9,5 +9,5 @@ void CactusStateDie::ManageState()
 
 void CactusStateDie::PlayAnimation()
 {
-	m_cactus->GetModelRender().PlayAnimation(Cactus::enAnimClip_Die);
+	m_cactus->GetModelRender().PlayAnimation(enAnimationClip_Die);
 }

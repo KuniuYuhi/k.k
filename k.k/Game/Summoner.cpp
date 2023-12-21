@@ -148,15 +148,11 @@ bool Summoner::IsStopProcessing()
 	{
 		//負けた
 	case GameManager::enOutComeState_PlayerWin:
-		//勝敗ステートの設定
-		SetEnOutCome(enOutCome_Lose);
 		return true;
 		break;
 
 		//勝った
 	case GameManager::enOutComeState_PlayerLose:
-		//勝敗ステートの設定
-		SetEnOutCome(enOutCome_Win);
 		//勝利アニメーション再生
 		SetNextAnimationState(enAnimationState_Victory);
 		return true;

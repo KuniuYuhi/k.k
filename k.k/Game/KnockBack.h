@@ -20,9 +20,19 @@ const Vector3 SetKnockBackDirection(
 /// <param name="timer"></param>
 /// <param name="moveSpeed"></param>
 /// <returns>処理中はtrue、timerが上限に達するとfalse</returns>
+
+/// <summary>
+/// ノックバックの移動方向の処理。
+/// </summary>
+/// <param name="moveSpeed">移動方向</param>
+/// <param name="timer">進行時間</param>
+/// <param name="timerLimmit">ノックバックする制限時間</param>
+/// <param name=""></param>
+/// <returns>処理中はtrue、timerが上限に達するとfalse</returns>
 bool IsProcessKnockBack(
+	Vector3& moveSpeed,
 	float &timer,
-	Vector3& moveSpeed
+	const float timerLimmit=1.0f
 );
 
 

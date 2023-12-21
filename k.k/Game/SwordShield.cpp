@@ -21,12 +21,22 @@ namespace {
 	const int ENDURANCE = 70;		//•Ší‚Ì‘Ï‹v—Í(‚‚Ì‘Ï‹v—Í)B
 
 	const float MOVE_FORWARD_SPEED = 120.0f;
+
+	const float ATTACK_1COMBO_KNOCKBACK_POWER = 120.0f;
+	const float ATTACK_2COMBO_KNOCKBACK_POWER = 130.0f;
+	const float ATTACK_3COMBO_KNOCKBACK_POWER = 140.0f;
+	const float SKILL_KNOCKBACK_POWER = 180.0f;
 }
 
 SwordShield::SwordShield()
 {
 	SetMoveForwardSpeed(MOVE_FORWARD_SPEED);
 	SetWeaponPower(POWER);
+
+	m_knockPower_1combo = ATTACK_1COMBO_KNOCKBACK_POWER;
+	m_knockPower_2combo = ATTACK_2COMBO_KNOCKBACK_POWER;
+	m_knockPower_3combo = ATTACK_3COMBO_KNOCKBACK_POWER;
+	m_knockPower_Skill = SKILL_KNOCKBACK_POWER;
 }
 
 SwordShield::~SwordShield()
@@ -165,13 +175,6 @@ void SwordShield::ProcessSkillAttack()
 		m_skillAttackPosition,
 		g_quatIdentity,
 		SKILL_RADIUS
-	);
-
-	//ƒmƒbƒNƒoƒbƒN‚ÌÝ’è
-	m_brave->SetKnockBackInfo(
-		m_skillAttackPosition,
-		m_knockBackPower,
-		true
 	);
 }
 

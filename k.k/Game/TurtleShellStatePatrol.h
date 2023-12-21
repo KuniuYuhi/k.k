@@ -1,10 +1,10 @@
 #pragma once
 #include "ITurtleShellState.h"
 
-class TurtleShellStateDifenceDamage :public ITurtleShellState
+class TurtleShellStatePatrol :public ITurtleShellState
 {
 public:
-	TurtleShellStateDifenceDamage(TurtleShell* turtleShell)
+	TurtleShellStatePatrol(TurtleShell* turtleShell)
 		:ITurtleShellState(turtleShell)
 	{
 	}
@@ -18,4 +18,3 @@ public:
 	/// </summary>
 	void PlayAnimation();
 };
-

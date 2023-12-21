@@ -1,11 +1,11 @@
 #pragma once
-#include "ITurtleShellState.h"
+#include "IMushroomState.h"
 
-class TurtleShellStateDifence :public ITurtleShellState
+class MushroomStateChase :public IMushroomState
 {
 public:
-	TurtleShellStateDifence(TurtleShell* turtleShell)
-		:ITurtleShellState(turtleShell)
+	MushroomStateChase(Mushroom* mushroom)
+		:IMushroomState(mushroom)
 	{
 	}
 
@@ -18,4 +18,3 @@ public:
 	/// </summary>
 	void PlayAnimation();
 };
-

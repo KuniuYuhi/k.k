@@ -9,5 +9,5 @@ void CactusStateDamage::ManageState()
 
 void CactusStateDamage::PlayAnimation()
 {
-	m_cactus->GetModelRender().PlayAnimation(Cactus::enAnimClip_Damage);
+	m_cactus->GetModelRender().PlayAnimation(enAnimationClip_Hit);
 }

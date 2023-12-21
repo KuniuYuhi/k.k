@@ -9,5 +9,5 @@ void TurtleShellStateIdle::ManageState()
 
 void TurtleShellStateIdle::PlayAnimation()
 {
-	m_turtleShell->GetModelRender().PlayAnimation(TurtleShell::enAnimClip_Idle,0.3f);
+	m_turtleShell->GetModelRender().PlayAnimation(enAnimationClip_Idle,0.3f);
 }

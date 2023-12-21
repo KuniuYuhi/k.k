@@ -3,7 +3,6 @@
 
 using namespace MobMonsterInfo;
 
-class Lich;
 class ISlimeState;
 class IMobStateMachine;
 
@@ -58,7 +57,7 @@ public:
 	}
 
 	/// <summary>
-	/// 攻撃中なら
+	/// 攻撃中か
 	/// </summary>
 	/// <returns></returns>
 	bool IsAttackEnable() const override
@@ -152,8 +151,6 @@ private:
 	AnimationClip m_animationClip[enAnimationClip_Num];	// アニメーションクリップ 
 
 	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
-
-	RigidBody m_rigidBody;		//剛体。
 
 	CollisionObject* m_headCollision = nullptr;
 

@@ -15,8 +15,6 @@
 #include "Mushroom.h"
 #include "Cactus.h"
 
-//todo モンスターのリストがちゃんと消せない
-//エラーあり！！！！！！！！！！！！！！
 
 namespace {
 	//const int SUMMON_MONSTERS_CONUT = 10;
@@ -58,6 +56,13 @@ bool BattlePhase::Start()
 
 void BattlePhase::Update()
 {
+	//勝敗が決まったら処理を止める
+	if (GameManager::GetInstance()->GetOutComeState() !=
+		GameManager::enOutComeState_None)
+	{
+		return;
+	}
+
 	//フェーズが変わったときにモブモンスターを生成
 	//モンスターを生成ステートなら
 	if (GameManager::GetInstance()->GetDAndCMonstersState() == 
@@ -267,6 +272,12 @@ void BattlePhase::processHardDifficulty(const int summonMonstersCount)
 {
 	for (int num = 0; num < summonMonstersCount; num++)
 	{
+		//Cactus* cactus = NewGO<Cactus>(0, "cactus");
+		//cactus->SetPosition(m_createPos[num]);
+		//CharactersInfoManager::GetInstance()->AddMobMonsterFromList(cactus);
+		////召喚時の光のエフェクトの再生
+		//CreateSummonLightEffect(m_createPos[num]);
+
 		Mushroom* mushroom = NewGO<Mushroom>(0, "mushroom");
 		mushroom->SetPosition(m_createPos[num]);
 		CharactersInfoManager::GetInstance()->AddMobMonsterFromList(mushroom);

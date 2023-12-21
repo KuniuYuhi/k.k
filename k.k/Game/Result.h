@@ -110,7 +110,7 @@ private:
 	SpriteRender m_resultSprite;
 
 
-	EnOutcomeState m_enOutComeState;
+	EnOutcomeState m_enOutComeState = enOutcomeNone;
 	EnResultStep m_enResultStep = enResultStep_main;
 
 	float m_wipeSize = 1200.0f;

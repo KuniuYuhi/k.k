@@ -12,7 +12,7 @@
 using namespace SummonerActions;
 
 namespace {
-	const float WAIT_TIME = 1000.0f;		//‘Ò‹@ŠÔ
+	const float WAIT_TIME = 5000.0f;		//‘Ò‹@ŠÔ
 
 	const float MELEE_ATTACK_RANGE = 280.0f;	//‹ß‹——£UŒ‚‚Ì”ÍˆÍ“à
 

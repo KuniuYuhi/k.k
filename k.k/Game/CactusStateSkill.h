@@ -1,10 +1,10 @@
 #pragma once
 #include "ICactusState.h"
 
-class CactusStatePlant :public ICactusState
+class CactusStateSkill :public ICactusState
 {
 public:
-	CactusStatePlant(Cactus* cactus)
+	CactusStateSkill(Cactus* cactus)
 		:ICactusState(cactus)
 	{
 	}

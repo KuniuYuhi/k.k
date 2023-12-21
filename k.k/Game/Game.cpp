@@ -23,6 +23,9 @@
 #include "BattlePhase.h"
 
 #include "Slime.h"
+#include "Cactus.h"
+#include "Mushroom.h"
+#include "TurtleShell.h"
 
 //todo リッチが消える時に送られる勝敗がいじってないのに変わっている
 
@@ -145,7 +148,7 @@ void Game::InitSkyCube()
 	m_skyCube = NewGO<SkyCube>(0, "skycube");
 	m_skyCube->SetScale(800.0f);
 	m_skyCube->SetPosition(m_skyPos);
-	m_skyCube->SetLuminance(1.07f);
+	m_skyCube->SetLuminance(1.01f);
 	m_skyCube->SetType(enSkyCubeType_DayToon_3);
 	m_skyCube->Update();
 }
@@ -500,17 +503,27 @@ void Game::InitGameObject()
 		//ボスの生成
 		CreateBoss();
 		//スライム生成
-		Slime* slime = NewGO<Slime>(0, "slime");
-		slime->SetPosition(g_vec3Zero);
-		//スライム生成
-		Slime* slime1 = NewGO<Slime>(0, "slime");
-		slime1->SetPosition({100.0f,0.0f,100.0f});
-		//スライム生成
-		Slime* slime2 = NewGO<Slime>(0, "slime");
-		slime2->SetPosition({ 200.0f,0.0f,100.0f });
-		//スライム生成
-		Slime* slime3 = NewGO<Slime>(0, "slime");
-		slime3->SetPosition({ 100.0f,0.0f,200.0f });
+		//Slime* slime = NewGO<Slime>(0, "slime");
+		//slime->SetPosition(g_vec3Zero);
+		////スライム生成
+		//Slime* slime1 = NewGO<Slime>(0, "slime");
+		//slime1->SetPosition({100.0f,0.0f,100.0f});
+		////スライム生成
+		//Slime* slime2 = NewGO<Slime>(0, "slime");
+		//slime2->SetPosition({ 200.0f,0.0f,100.0f });
+		////スライム生成
+		/*Slime* slime3 = NewGO<Slime>(0, "slime");
+		slime3->SetPosition({ 100.0f,0.0f,200.0f });*/
+
+		/*Cactus* cactus = NewGO<Cactus>(0, "cactus");
+		cactus->SetPosition(g_vec3Zero);*/
+
+		/*Mushroom* mush = NewGO<Mushroom>(0, "mush");
+		mush->SetPosition(g_vec3Zero);*/
+
+		/*TurtleShell* tu = NewGO<TurtleShell>(0, "aa");
+		tu->SetPosition(g_vec3Zero);*/
+
 	}
 
 	//ゲームカメラの生成
