@@ -213,7 +213,7 @@ bool TurtleShell::IsStopProcessing()
 	{
 		//ノックバックの処理をするなら
 		if (IsProcessKnockBack(
-			m_knockBackTimer, m_moveSpeed) == true)
+			m_moveSpeed, m_knockBackTimer) == true)
 		{
 			//座標を移動
 			m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
