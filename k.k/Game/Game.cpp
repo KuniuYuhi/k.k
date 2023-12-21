@@ -148,7 +148,7 @@ void Game::InitSkyCube()
 	m_skyCube = NewGO<SkyCube>(0, "skycube");
 	m_skyCube->SetScale(800.0f);
 	m_skyCube->SetPosition(m_skyPos);
-	m_skyCube->SetLuminance(1.07f);
+	m_skyCube->SetLuminance(1.01f);
 	m_skyCube->SetType(enSkyCubeType_DayToon_3);
 	m_skyCube->Update();
 }
