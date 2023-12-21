@@ -7,6 +7,7 @@ public:
 	SummonerState_KnockBack(Summoner* summoner)
 		:ISummonerState(summoner, enActionName_KnockBack)
 	{
+		Init();
 	}
 
 	~SummonerState_KnockBack();
