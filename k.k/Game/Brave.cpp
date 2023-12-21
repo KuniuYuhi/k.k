@@ -14,9 +14,9 @@
 #include "BraveStateChangeSwordShield.h"
 #include "BraveStateWin_Start.h"
 #include "BraveStateWin_Main.h"
+#include "BraveStateKnockBack.h"
 
 #include "Player.h"
-#include "KnockBack.h"
 
 #include "SwordShield.h"
 #include "BigSword.h"
@@ -32,6 +32,9 @@ namespace {
 
 	const float SWORD_EFFECT_SIZE = 10.0f;
 	const Vector3 DASH_EFFECT_SIZE = { 10.0f,20.0f,8.0f };
+
+	const float KNOCKBACK_TIMER = 1.0f;
+
 
 	int MAXHP = 200;
 	int MAXMP = 100;
@@ -127,8 +130,7 @@ void Brave::Move()
 
 
 	m_moveSpeed.y *= -50.0f * g_gameTime->GetFrameDeltaTime();
-	//m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-
+	
 	if (m_charaCon.IsOnGround() == true)
 	{
 		m_moveSpeed.y = 0.0f;
@@ -242,7 +244,7 @@ void Brave::Damage(int damage)
 	}
 }
 
-const bool& Brave::IsInaction() const
+bool Brave::IsInaction()
 {
 	//行動出来なくなる条件
 	//プレイヤークラスの関数の動けない条件がtrueなら
@@ -260,6 +262,27 @@ const bool& Brave::IsInaction() const
 	{
 		return true;
 	}
+
+	if (m_enAnimationState == enAnimationState_KnockBack)
+	{
+		return true;
+	}
+
+	//ノックバック中なら
+	//if (GetHitKnockBackFlag() == true)
+	//{
+	//	if (IsProcessKnockBack(m_moveSpeed,m_knockbackTimer)==true)
+	//	{
+	//		//座標を移動
+	//		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	//		return true;
+	//	}
+	//	else
+	//	{
+	//		SetHitKnockBackFlag(false);
+	//	}
+	//}
+	
 	//ここまできたら行動可能
 	return false;
 }
@@ -352,6 +375,22 @@ void Brave::ProcessSwordShieldSkill(bool UpOrDownFlag)
 	m_modelRender.SetPosition(m_position);
 }
 
+bool Brave::IsKnockBack()
+{
+	if (IsProcessKnockBack(m_moveSpeed, m_knockbackTimer, m_KnockBackTimerLimmit) == true)
+	{
+		//座標を移動
+		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+		return true;
+	}
+	else
+	{
+		SetHitKnockBackFlag(false);
+		return false;
+	}
+	
+}
+
 void Brave::SetNextAnimationState(int nextState)
 {
 	if (m_BraveState != nullptr) {
@@ -371,9 +410,8 @@ void Brave::SetNextAnimationState(int nextState)
 	case Brave::enAninationState_Sprint:
 		m_BraveState = new BraveStateSprint(this);
 		break;
-	case Brave::enAninationState_DashForward:
-		break;
 	case Brave::enAnimationState_KnockBack:
+		m_BraveState = new BraveStateKnockBack(this);
 		break;
 	case Brave::enAnimationState_Hit:
 		m_BraveState = new BraveStateHit(this);
@@ -426,6 +464,20 @@ void Brave::ManageState()
 {
 	//派生クラスのManageState関数を実行
 	m_BraveState->ManageState();
+}
+
+void Brave::SettingKnockBackInfo(
+	Vector3 endPos, float knockBackPower, float knockBackLimmit)
+{
+	m_moveSpeed = SetKnockBackDirection(m_position, endPos, knockBackPower);
+	//ノックバックする制限時間を設定
+	m_KnockBackTimerLimmit = knockBackLimmit;
+	//前方向の計算
+	CalcForward(m_moveSpeed * -1.0f);
+	//回転処理
+	m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed*-1.0f);
+	//ステートをノックバックステートに遷移
+	SetNextAnimationState(enAnimationState_KnockBack);
 }
 
 void Brave::ProcessComboAttack()
@@ -568,13 +620,6 @@ void Brave::ProcessSkillMainStateTransition()
 	{
 		//todo 無敵状態フラグのリセット
 		SetInvicibleFlag(false);
-
-		//ノックバック攻撃フラグが立っていたらリセット
-		if (GetKnockBackAttackFalg() == true)
-		{
-			SetKnockBackAttackFalg(false);
-		}
-
 		//攻撃アニメーションが終わったのでアクション構造体のフラグを全てリセット
 		SetAllInfoAboutActionFlag(false);
 		//ステート共通の状態遷移処理に遷移

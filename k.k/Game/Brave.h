@@ -135,7 +135,7 @@ public:
 	/// 行動不可能かどうかの判定可能
 	/// </summary>
 	/// <returns>trueで不可能、falseで可能</returns>
-	const bool& IsInaction() const;
+	bool IsInaction();
 
 	/// <summary>
 	/// 前進する
@@ -158,6 +158,13 @@ public:
 	/// </summary>
 	/// <param name="UpOrDownFlag">trueでUp、falseDown</param>
 	void ProcessSwordShieldSkill(bool UpOrDownFlag);
+
+	/// <summary>
+	/// ノックバック中か
+	/// </summary>
+	/// <returns></returns>
+	bool IsKnockBack();
+
 
 	// アニメーションクリップの番号を表す列挙型。
 	enum EnAnimationClip {
@@ -471,6 +478,12 @@ public:
 	{
 		m_moveSpeed = g_vec3Zero;
 	}
+	/// <summary>
+	/// ノックバック方向を設定
+	/// </summary>
+	/// <param name="endPos">ノックバックの終点</param>
+	/// <param name="knockBackPower">ノックバックパワー</param>
+	void SettingKnockBackInfo(Vector3 endPos, float knockBackPower,float knockBackLimmit=1.0f);
 
 private:
 	/// <summary>
@@ -587,6 +600,9 @@ private:
 	const float					m_avoidSpeed = 230.0f;
 
 	bool						m_changeWeaponCompleteFlag = false;			//武器切り替え完了フラグ
+
+	float						m_knockbackTimer = 0.0f;
+	float						m_KnockBackTimerLimmit = 1.0f;
 
 };
 
