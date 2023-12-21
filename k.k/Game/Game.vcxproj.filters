@@ -423,6 +423,7 @@
     <ClCompile Include="Player.cpp">
       <Filter>Character\Player</Filter>
     </ClCompile>
+    <ClCompile Include="BraveStateKnockBack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -816,5 +817,6 @@
     <ClInclude Include="Player.h">
       <Filter>Character\Player</Filter>
     </ClInclude>
+    <ClInclude Include="BraveStateKnockBack.h" />
   </ItemGroup>
 </Project>

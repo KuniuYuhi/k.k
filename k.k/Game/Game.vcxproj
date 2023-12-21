@@ -242,6 +242,7 @@
     <ClCompile Include="BraveStateDie.cpp" />
     <ClCompile Include="BraveStateHit.cpp" />
     <ClCompile Include="BraveStateIdle.cpp" />
+    <ClCompile Include="BraveStateKnockBack.cpp" />
     <ClCompile Include="BraveStateSkill_Main.cpp" />
     <ClCompile Include="BraveStateSkill_Start.cpp" />
     <ClCompile Include="BraveStateSprint.cpp" />
@@ -390,6 +391,7 @@
     <ClInclude Include="BraveStateDie.h" />
     <ClInclude Include="BraveStateHit.h" />
     <ClInclude Include="BraveStateIdle.h" />
+    <ClInclude Include="BraveStateKnockBack.h" />
     <ClInclude Include="BraveStateSkill_Main.h" />
     <ClInclude Include="BraveStateSkill_Start.h" />
     <ClInclude Include="BraveStateSprint.h" />
