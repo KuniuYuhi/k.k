@@ -83,9 +83,6 @@
     <ClCompile Include="DarkWall.cpp">
       <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClCompile>
-    <ClCompile Include="Meteo.cpp">
-      <Filter>Character\Monster\BossMonster\Lich</Filter>
-    </ClCompile>
     <ClCompile Include="TurtleShell.cpp">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
@@ -381,7 +378,6 @@
     <ClCompile Include="SummonerState_Warp.cpp">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
     </ClCompile>
-    <ClCompile Include="DarkMeteo.cpp" />
     <ClCompile Include="IMobStateMachine.cpp" />
     <ClCompile Include="MobMonsterActionList.cpp" />
     <ClCompile Include="SlimeStateChase.cpp">
@@ -423,7 +419,15 @@
     <ClCompile Include="Player.cpp">
       <Filter>Character\Player</Filter>
     </ClCompile>
-    <ClCompile Include="BraveStateKnockBack.cpp" />
+    <ClCompile Include="Meteo.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    </ClCompile>
+    <ClCompile Include="DarkMeteo.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateKnockBack.cpp">
+      <Filter>Character\Player\Brave\BraveState</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -449,9 +453,6 @@
       <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClInclude>
     <ClInclude Include="DarkWall.h">
-      <Filter>Character\Monster\BossMonster\Lich</Filter>
-    </ClInclude>
-    <ClInclude Include="Meteo.h">
       <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClInclude>
     <ClInclude Include="TurtleShell.h">
@@ -774,8 +775,6 @@
     <ClInclude Include="SummonerState_Walk.h">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
     </ClInclude>
-    <ClInclude Include="DarkMeteo.h" />
-    <ClInclude Include="DecisionMeteoEndpoint.h" />
     <ClInclude Include="IMobStateMachine.h" />
     <ClInclude Include="MobMonsterActionList.h" />
     <ClInclude Include="SlimeStateChase.h">
@@ -817,6 +816,17 @@
     <ClInclude Include="Player.h">
       <Filter>Character\Player</Filter>
     </ClInclude>
-    <ClInclude Include="BraveStateKnockBack.h" />
+    <ClInclude Include="Meteo.h">
+      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    </ClInclude>
+    <ClInclude Include="DecisionMeteoEndpoint.h">
+      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    </ClInclude>
+    <ClInclude Include="DarkMeteo.h">
+      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateKnockBack.h">
+      <Filter>Character\Player\Brave\BraveState</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
