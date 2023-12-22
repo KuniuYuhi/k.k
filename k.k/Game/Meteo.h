@@ -15,6 +15,7 @@ public:
 
 	bool Start();
 	void Update();
+	void Render(RenderContext& rc);
 	
 	void ManageState();
 
@@ -46,11 +47,6 @@ public:
 		m_position = position;
 	}
 
-	void SetRotation(Quaternion rotation)
-	{
-		m_rotation = rotation;
-	}
-
 	void SetTargetPosition(Vector3 targetpos)
 	{
 		m_targetPosition = targetpos;
@@ -78,12 +74,28 @@ public:
 
 private:
 
+	/// <summary>
+	/// メテオのエフェクト初期化
+	/// </summary>
+	void PlayMeteoEffect();
+
+	/// <summary>
+	/// メテオのルート(放物線を描くため)の設定
+	/// </summary>
+	void SettingMeteoRoute();
+
+private:
+
 	ModelRender					m_model;
 	EffectEmitter*				m_meteoEffect;
 	EffectEmitter*				m_ExplosionEffect;
 
 	CollisionObject*			m_collision;
 	CollisionObject*			m_explosionCollision;
+
+
+	Vector3 m_meteoVerocity = g_vec3Zero;
+	Vector3 m_forward = g_vec3Zero;
 
 	Vector3						m_scale = g_vec3One;
 	Vector3						m_moveSpeed = g_vec3Zero;
@@ -92,13 +104,13 @@ private:
 	Vector3						m_startPosition = g_vec3Zero;		//始点
 	Vector3						m_centerPosition = g_vec3Zero;	//中間点
 	Vector3						m_targetPosition = g_vec3Zero;		//終点
-	Quaternion					m_rotation = Quaternion::Identity;
-	Quaternion					m_addRotation = Quaternion::Identity;
 
 	Vector3						StartToCenter = g_vec3Zero;
 	Vector3						CenterToEnd = g_vec3Zero;
 
 	EnExplosionState			m_state;
+
+	float m_flightDuration = 0.0f;
 
 	bool						m_explosionFlag = false;
 
@@ -113,5 +125,8 @@ private:
 	const int					m_explosionAttack = 40;
 
 	bool						m_explosionEffectFlag = false;
+
+	float m_angle = 0.0f;
+	float m_deleteTimer = 0.0f;
 };
 

@@ -24,6 +24,8 @@ namespace {
 	const float GROUND_CHECK_COLLISION_SIZE = 4.0f;
 
 	const float CENTER_POS_ADD_Y = 200.0f;
+
+	const float GRAVITY = 20.0f;
 }
 
 Meteo::Meteo()
@@ -69,38 +71,20 @@ struct IsGroundResult :public btCollisionWorld::ConvexResultCallback
 
 bool Meteo::Start()
 {
-	m_movePos = m_position;
-	//始点を決める
-	m_startPosition = m_position;
-	//中間点を決める
-	m_centerPosition = (m_targetPosition + m_position) / 2.0f;
-
-	//中間点のY座標を上げる
-	m_centerPosition.y = m_startPosition.y + CENTER_POS_ADD_Y;
-
 	m_scale = SCALE;
 
-	m_meteoEffect = NewGO<EffectEmitter>(0);
-	m_meteoEffect->Init(InitEffect::enEffect_Meteo);
-	m_meteoEffect->Play();
-	m_meteoEffect->SetScale(g_vec3One * METEO_EFFECT_SIZE);
-	m_meteoEffect->SetPosition(m_position);
-	m_meteoEffect->Update();
+	SettingMeteoRoute();
 
-
-	//メテオの当たり判定の生成
-	/*m_collision = NewGO<CollisionObject>(0, "meteo");
-	m_collision->CreateSphere(
-		m_position,
-		m_rotation,
-		METEO_COLLISION_SIZE
-	);
-	m_collision->SetIsEnableAutoDelete(false);
-	m_collision->SetPosition(m_position);
-	m_collision->Update();*/
+	//メテオエフェクト再生
+	PlayMeteoEffect();
 
 	//ステート設定
 	m_state = enMoveState;
+
+	m_model.Init("Assets/modelData/character/Slime/slime.tkm",
+		L"Assets/shader/ToonTextrue/lamp_Slime.DDS");
+	m_model.SetPosition(m_targetPosition);
+	m_model.Update();
 
     return true;
 }
@@ -108,6 +92,11 @@ bool Meteo::Start()
 void Meteo::Update()
 {
 	ManageState();
+}
+
+void Meteo::Render(RenderContext& rc)
+{
+	m_model.Draw(rc);
 }
 
 int Meteo::CalcDamageToDistance(const Vector3 targetPosition)
@@ -133,6 +122,44 @@ int Meteo::CalcDamageToDistance(const Vector3 targetPosition)
 
 void Meteo::Move()
 {
+	//if (m_deleteTimer < m_flightDuration)
+	//{
+	//	float X = m_forward.x * m_meteoVerocity.x *
+	//		g_gameTime->GetFrameDeltaTime() * 1.0f;
+	//	float Z = m_forward.z * m_meteoVerocity.x *
+	//		g_gameTime->GetFrameDeltaTime() * 1.0f;
+
+	//	m_movePos += {
+	//		X,
+	//			(m_meteoVerocity.y - (GRAVITY * m_deleteTimer))*
+	//			g_gameTime->GetFrameDeltaTime() * 5.0f,
+	//			Z
+	//	};
+
+	//	m_deleteTimer += g_gameTime->GetFrameDeltaTime() * 1.0f;
+	//}
+	//else
+	//{
+	//	//地面についた
+	//	//爆発用当たり判定の生成
+	//	CreateExplosionCollision();
+	//	//爆発した
+	//	SetExplosionFlag(true);
+
+	//	//爆発エフェクトの生成
+	//	while (m_ExplosionEffect == nullptr)
+	//	{
+	//		//爆発する
+	//		m_explosionEffectFlag = true;
+	//		Explosion();
+	//	}
+
+	//	//次のステートに遷移
+	//	m_state = enExplosionState;
+	//	return;
+	//}
+	
+
 	//線形補間を使って移動する
 	//視点から中点
 	StartToCenter.Lerp(m_timer, m_startPosition, m_centerPosition);
@@ -144,10 +171,6 @@ void Meteo::Move()
 	m_timer += ADD_TIMER;
 
 	//設定と更新
-	//爆発していない間メテオの当たり判定の座標を更新する
-	/*m_collision->SetPosition(m_movePos);
-	m_collision->Update();*/
-
 	m_meteoEffect->SetPosition(m_movePos);
 	m_meteoEffect->Update();
 	
@@ -160,7 +183,7 @@ void Meteo::CreateExplosionCollision()
 	auto explosionCollision = NewGO<CollisionObject>(0, "explosion");
 	explosionCollision->CreateSphere(
 		m_position,
-		m_rotation,
+		g_quatIdentity,
 		EXPLOSION_COLLISION_SIZE
 	);
 	explosionCollision->SetPosition(m_position);
@@ -206,6 +229,50 @@ void Meteo::Explosion()
 	m_ExplosionEffect->Update();
 }
 
+void Meteo::PlayMeteoEffect()
+{
+	m_meteoEffect = NewGO<EffectEmitter>(0);
+	m_meteoEffect->Init(InitEffect::enEffect_Meteo);
+	m_meteoEffect->Play();
+	m_meteoEffect->SetScale(g_vec3One * METEO_EFFECT_SIZE);
+	m_meteoEffect->SetPosition(m_position);
+	m_meteoEffect->Update();
+}
+
+void Meteo::SettingMeteoRoute()
+{
+	m_movePos = m_position;
+	//始点を決める
+	m_startPosition = m_position;
+	//中間点を決める
+	m_centerPosition = (m_targetPosition + m_position) / 2.0f;
+
+	//中間点のY座標を上げる
+	m_centerPosition.y = m_startPosition.y + CENTER_POS_ADD_Y;
+
+	//1.目標に向かう距離の計算
+	//終点-始点
+	//Vector3 targetDistance = m_targetPosition - m_startPosition;
+	////前方向を設定
+	//m_forward = targetDistance;
+	//m_forward.Normalize();
+	//float distance = targetDistance.Length();
+	////メテオが撃ちあがる角度を決める
+	//Vector3 toAngle = targetDistance;
+	//toAngle.Normalize();
+	//toAngle.Length();
+	//m_angle = Math::Lerp(toAngle.Length(), 60.0f, 30.0f);
+
+	////2.初速度の計算
+	//float verocity = distance / (sin(Math::DegToRad(2 * m_angle)) / GRAVITY);
+	////3.初速度の分解
+	//m_meteoVerocity.x = sqrt(verocity) * cos(Math::DegToRad(m_angle));
+	//m_meteoVerocity.y = sqrt(verocity) * sin(Math::DegToRad(m_angle));
+	////4.飛行時間の計算
+	//m_flightDuration = distance / m_meteoVerocity.x;
+
+}
+
 void Meteo::ManageState()
 {
 	switch (m_state)
@@ -231,9 +298,6 @@ void Meteo::OnProcessMoveTransition()
 		CreateExplosionCollision();
 		//爆発した
 		SetExplosionFlag(true);
-
-		//メテオ本体の当たり判定削除
-		//DeleteGO(m_collision);
 
 		//爆発エフェクトの生成
 		while (m_ExplosionEffect == nullptr)
