@@ -286,7 +286,6 @@ void DarkMeteorite::CreateMeteo(Vector3 targetposition)
 	createPos.y += 70.0f;
 	Meteo* meteo = NewGO<Meteo>(0, "meteo");
 	meteo->SetPosition(createPos);
-	meteo->SetRotation(m_rotation);
 	meteo->SetTargetPosition(targetposition);
 	//ƒŠƒXƒg‚É’Ç‰ÁB
 	m_meteos.emplace_back(meteo);

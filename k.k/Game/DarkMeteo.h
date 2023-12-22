@@ -10,7 +10,6 @@ public:
 
 	bool Start();
 	void Update();
-	void Render(RenderContext& rc);
 
 	/// <summary>
 	/// ƒƒeƒI‚ğŒ‚‚Âˆê˜A‚Ìˆ—‚Ì—¬‚ê
@@ -100,8 +99,6 @@ private:
 	bool IsShotMeteo();
 
 private:
-
-	ModelRender model[5];
 
 	std::vector<Meteo*>				m_meteoList;
 	

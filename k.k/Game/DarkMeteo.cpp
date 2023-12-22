@@ -18,7 +18,7 @@ namespace {
 	const float METEO_START_UP_POS = 20.0f;
 	const float METEO_END_UP_POS = -20.0f;
 
-	const float SHOT_METEO_TIMER_LIMMIT = 1.0f;
+	const float SHOT_METEO_TIMER_LIMMIT = 0.7f;
 
 }
 
@@ -82,17 +82,6 @@ bool DarkMeteo::Start()
 	//ダークメテオの初期化
 	InitDarkMeteoEffect();
 
-
-	for (int num = 0; num < CREATE_METEO_COUNT; num++)
-	{
-		model[num].Init("Assets/modelData/character/Slime/slime.tkm",
-			L"Assets/shader/ToonTextrue/lamp_Slime.DDS");
-
-		model[num].SetPosition(g_vec3Zero);
-		model[num].Update();
-	}
-
-
 	return true;
 }
 
@@ -108,14 +97,6 @@ void DarkMeteo::Update()
 
 
 	ManageState();
-}
-
-void DarkMeteo::Render(RenderContext& rc)
-{
-	for (int num = 0; num < CREATE_METEO_COUNT;num++)
-	{
-		model[num].Draw(rc);
-	}
 }
 
 void DarkMeteo::ManageState()
@@ -169,7 +150,7 @@ void DarkMeteo::OnProcessShotMeteoTranstion()
 	{
 		return;
 	}
-
+	//メテオの最大生成数に達していないなら生成処理
 	if (m_shotMeteoCounter < CREATE_METEO_COUNT)
 	{
 		while (true)
@@ -182,9 +163,6 @@ void DarkMeteo::OnProcessShotMeteoTranstion()
 			{
 				//メテオの生成とカウントを加算
 				CreateMeteo(meteoTargetPos);
-
-				model[m_shotMeteoCounter].SetPosition(meteoTargetPos);
-				model[m_shotMeteoCounter].Update();
 				//カウントを加算
 				m_shotMeteoCounter++;
 				break;
