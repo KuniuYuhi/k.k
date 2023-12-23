@@ -153,12 +153,7 @@ public:
 	///	武器の切り替え処理
 	/// </summary>
 	void ChangeWeapon();
-	/// <summary>
-	/// 武器が剣盾の時のスキルの処理
-	/// </summary>
-	/// <param name="UpOrDownFlag">trueでUp、falseDown</param>
-	void ProcessSwordShieldSkill(bool UpOrDownFlag);
-
+	
 	/// <summary>
 	/// ノックバック中か
 	/// </summary>
@@ -484,6 +479,12 @@ public:
 	/// <param name="endPos">ノックバックの終点</param>
 	/// <param name="knockBackPower">ノックバックパワー</param>
 	void SettingKnockBackInfo(Vector3 endPos, float knockBackPower,float knockBackLimmit=1.0f);
+
+	/// <summary>
+	/// キャラコンのExecute処理と更新処理
+	/// </summary>
+	/// <param name="executePosition"></param>
+	void ExecutePosition(Vector3& executePosition);
 
 private:
 	/// <summary>
