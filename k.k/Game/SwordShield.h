@@ -11,7 +11,7 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
-
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 	
 	/// <summary>
 	/// 武器の移動処理
@@ -81,6 +81,16 @@ private:
 	/// </summary>
 	void MoveStowed() override;
 
+	/// <summary>
+	/// 上昇処理
+	/// </summary>
+	void ProcessRising();
+
+	/// <summary>
+	/// 下降処理
+	/// </summary>
+	void ProcessFall();
+
 private:
 	ModelRender m_modelSword;		//剣モデル
 	ModelRender m_modelShield;		//盾モデル
@@ -88,6 +98,7 @@ private:
 	CollisionObject* m_swordCollision = nullptr;	//片手剣の当たり判定
 	CollisionObject* m_shieldCollision = nullptr;	//盾の当たり判定
 
+	Vector3 m_skillMovePos = g_vec3Zero;	//スキルを使うときの座標
 	Vector3 m_swordPos = g_vec3Zero;
 	Vector3 m_shieldPos = g_vec3Zero;
 
