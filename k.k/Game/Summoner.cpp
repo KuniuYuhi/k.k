@@ -23,6 +23,9 @@
 #include "SummonerState_Walk.h"
 #include "SummonerState_Warp.h"
 #include "SummonerState_Victory.h"
+#include "SummonerState_DarkSpearMain.h"
+#include "SummonerState_DarkSpearEnd.h"
+#include "SummonerState_DarkSpearStart.h"
 
 //todo スーパーアーマーがある間はのけぞらない
 //壊れたらたまにのけぞる
@@ -317,6 +320,15 @@ void Summoner::SetNextAnimationState(EnAnimationState nextState)
 	case Summoner::enAnimationState_DarkWall://ダークウォール
 		m_nowBossState = new SummonerState_DarkWall(this);
 		break;
+	case Summoner::enAnimationState_DarkSpear_Start://ダークスピアメイン
+		m_nowBossState = new SummonerState_DarkSpearStart(this);
+		break;
+	case Summoner::enAnimationState_DarkSpear_Main://ダークスピアメイン
+		m_nowBossState = new SummonerState_DarkSpearMain(this);
+		break;
+	case Summoner::enAnimationState_DarkSpear_End://ダークスピアエンド
+		m_nowBossState = new SummonerState_DarkSpearEnd(this);
+		break;
 	case Summoner::enAnimationState_KnockBack://ノックバック
 		m_nowBossState = new SummonerState_KnockBack(this);
 		break;
@@ -389,6 +401,15 @@ void Summoner::InitModel()
 	m_animationClip[enAnimClip_DarkWall].Load(
 		"Assets/animData/character/Lich/Attack2.tka");
 	m_animationClip[enAnimClip_DarkWall].SetLoopFlag(false);
+	m_animationClip[enAnimClip_DarkSpear_Start].Load(
+		"Assets/animData/character/Lich/DarkSpear_Start.tka");
+	m_animationClip[enAnimClip_DarkSpear_Start].SetLoopFlag(false);
+	m_animationClip[enAnimClip_DarkSpear_Main].Load(
+		"Assets/animData/character/Lich/DarkSpear_Main.tka");
+	m_animationClip[enAnimClip_DarkSpear_Main].SetLoopFlag(false);
+	m_animationClip[enAnimClip_DarkSpear_End].Load(
+		"Assets/animData/character/Lich/DarkSpear_End.tka");
+	m_animationClip[enAnimClip_DarkSpear_End].SetLoopFlag(false);
 	m_animationClip[enAnimClip_KnockBack].Load(
 		"Assets/animData/character/Lich/KnockBack.tka");
 	m_animationClip[enAnimClip_KnockBack].SetLoopFlag(false);

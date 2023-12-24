@@ -33,16 +33,16 @@ public:
 	/// アニメーションクリップの番号を表す列挙型。
 	/// </summary>
 	enum EnAnimationClip {
-		enAnimClip_Idle,			// 0 : 待機アニメーション
-		enAnimClip_Walk,			// 1 : 歩きアニメーション
-		enAnimClip_DarkBall,		// 3 : 
-		enAnimClip_DarkWall,		// 4 : 
+		enAnimClip_Idle,
+		enAnimClip_Walk,
+		enAnimClip_DarkBall,
+		enAnimClip_DarkWall,
+		enAnimClip_DarkSpear_Start,
+		enAnimClip_DarkSpear_Main,
+		enAnimClip_DarkSpear_End,
 		enAnimClip_NormalAttack_1,
 		enAnimClip_NormalAttack_2,
 		enAnimClip_NormalAttack_3,
-		//enAnimClip_Attack_3_start,		// 5 : 
-		//enAnimClip_Attack_3_main,
-		//enAnimClip_Attack_4,		// 6 : 
 		enAnimClip_Attack_DarkMeteorite_start,
 		enAnimClip_Attack_DarkMeteorite_main,
 		enAnimClip_Summon,
@@ -63,12 +63,12 @@ public:
 		enAninationState_Walk,
 		enAnimationState_DarkBall,
 		enAnimationState_DarkWall,
+		enAnimationState_DarkSpear_Start,
+		enAnimationState_DarkSpear_Main,
+		enAnimationState_DarkSpear_End,
 		enAnimationState_NormalAttack_1,
 		enAnimationState_NormalAttack_2,
 		enAnimationState_NormalAttack_3,
-		//enAnimationState_Attack_3_start,
-		//enAnimationState_Attack_3_main,
-		//enAnimationState_Attack_4,
 		enAnimationState_Attack_DarkMeteorite_start,
 		enAnimationState_Attack_DarkMeteorite_main,
 		enAninationState_Summon,
@@ -133,7 +133,9 @@ public:
 			m_enAnimationState != enAnimationState_NormalAttack_1 &&
 			m_enAnimationState != enAnimationState_NormalAttack_2 &&
 			m_enAnimationState != enAnimationState_NormalAttack_3 &&
-			m_enAnimationState != enAnimationState_CriticalHit;
+			m_enAnimationState != enAnimationState_CriticalHit &&
+			m_enAnimationState != enAnimationState_DarkSpear_Main &&
+			m_enAnimationState != enAnimationState_DarkSpear_End;
 	}
 	/// <summary>
 	/// 攻撃可能か
@@ -148,7 +150,10 @@ public:
 			m_enAnimationState != enAnimationState_NormalAttack_3 &&
 			m_enAnimationState != enAnimationState_KnockBack &&
 			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_start &&
-			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_main;
+			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_main &&
+			m_enAnimationState != enAnimationState_DarkSpear_Start &&
+			m_enAnimationState != enAnimationState_DarkSpear_Main &&
+			m_enAnimationState != enAnimationState_DarkSpear_End;
 
 	}
 
