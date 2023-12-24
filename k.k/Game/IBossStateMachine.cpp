@@ -144,9 +144,9 @@ void IBossStateMachine::ProcessLongRangeAttack()
 	//遠距離攻撃
 
 	//ダークメテオ
-	m_summoner->
-		SetNextAnimationState(Summoner::enAnimationState_Attack_DarkMeteorite_start);
-	return;
+	//m_summoner->
+	//	SetNextAnimationState(Summoner::enAnimationState_Attack_DarkMeteorite_start);
+	//return;
 
 	//前の行動がダークメテオでないなら
 	//ダークメテオを撃つか調べる
@@ -190,10 +190,22 @@ void IBossStateMachine::ProcessMeleeAttack()
 		m_accelerateStayPlayerTimer = 1.0f;
 		return;
 	}
+	//ダークスピア
+	m_summoner->
+		SetNextAnimationState(Summoner::enAnimationState_DarkSpear_Start);
+	return;
+	
 
 	int bb = rand() % 10;
 	//確率で変化
-	if (bb > 4)
+	if (bb > 7)
+	{
+		//ダークスピア
+		m_summoner->
+			SetNextAnimationState(Summoner::enAnimationState_DarkSpear_Start);
+		return;
+	}
+	else if (bb > 4)
 	{
 		//ダークウォール
 		m_summoner->
