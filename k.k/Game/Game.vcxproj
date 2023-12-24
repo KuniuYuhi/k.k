@@ -266,6 +266,7 @@
     <ClCompile Include="DarkBall.cpp" />
     <ClCompile Include="DarkMeteo.cpp" />
     <ClCompile Include="DarkMeteorite.cpp" />
+    <ClCompile Include="DarkSpear.cpp" />
     <ClCompile Include="DarkWall.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="GameFinishCamera.cpp" />
@@ -338,9 +339,13 @@
     </ClCompile>
     <ClCompile Include="Summon.cpp" />
     <ClCompile Include="Summoner.cpp" />
+    <ClCompile Include="SummonerState_DarkSpearEnd.cpp" />
+    <ClCompile Include="SummonerState_DarkSpearMain.cpp" />
+    <ClCompile Include="SummonerStateEat.cpp" />
     <ClCompile Include="SummonerState_Angry.cpp" />
     <ClCompile Include="SummonerState_Command.cpp" />
     <ClCompile Include="SummonerState_DarkBall.cpp" />
+    <ClCompile Include="SummonerState_DarkSpearStart.cpp" />
     <ClCompile Include="SummonerState_DarkWall.cpp" />
     <ClCompile Include="SummonerState_Die.cpp" />
     <ClCompile Include="SummonerState_DMeteo_Main.cpp" />
@@ -415,6 +420,7 @@
     <ClInclude Include="DarkBall.h" />
     <ClInclude Include="DarkMeteo.h" />
     <ClInclude Include="DarkMeteorite.h" />
+    <ClInclude Include="DarkSpear.h" />
     <ClInclude Include="DarkWall.h" />
     <ClInclude Include="DecisionMeteoEndpoint.h" />
     <ClInclude Include="EventManager.h" />
@@ -492,9 +498,13 @@
     <ClInclude Include="Summon.h" />
     <ClInclude Include="Summoner.h" />
     <ClInclude Include="SummonerActionList.h" />
+    <ClInclude Include="SummonerState_DarkSpearEnd.h" />
+    <ClInclude Include="SummonerState_DarkSpearMain.h" />
+    <ClInclude Include="SummonerStateEat.h" />
     <ClInclude Include="SummonerState_Angry.h" />
     <ClInclude Include="SummonerState_Command.h" />
     <ClInclude Include="SummonerState_DarkBall.h" />
+    <ClInclude Include="SummonerState_DarkSpearStart.h" />
     <ClInclude Include="SummonerState_DarkWall.h" />
     <ClInclude Include="SummonerState_Die.h" />
     <ClInclude Include="SummonerState_DMeteo_Main.h" />

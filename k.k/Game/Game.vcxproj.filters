@@ -413,9 +413,6 @@
     <ClCompile Include="SummonerState_DMeteo_Start.cpp">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
     </ClCompile>
-    <ClCompile Include="TurtleShellStateChase.cpp" />
-    <ClCompile Include="TurtleShellStatePatrol.cpp" />
-    <ClCompile Include="TurtleShellStateSkill.cpp" />
     <ClCompile Include="Player.cpp">
       <Filter>Character\Player</Filter>
     </ClCompile>
@@ -428,6 +425,28 @@
     <ClCompile Include="BraveStateKnockBack.cpp">
       <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
+    <ClCompile Include="SummonerState_DarkSpearEnd.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_DarkSpearMain.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_DarkSpearStart.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerStateEat.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateChase.cpp">
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStatePatrol.cpp">
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="TurtleShellStateSkill.cpp">
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
+    </ClCompile>
+    <ClCompile Include="DarkSpear.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -810,9 +829,6 @@
     <ClInclude Include="SummonerState_DMeteo_Start.h">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
     </ClInclude>
-    <ClInclude Include="TurtleShellStateChase.h" />
-    <ClInclude Include="TurtleShellStatePatrol.h" />
-    <ClInclude Include="TurtleShellStateSkill.h" />
     <ClInclude Include="Player.h">
       <Filter>Character\Player</Filter>
     </ClInclude>
@@ -828,5 +844,27 @@
     <ClInclude Include="BraveStateKnockBack.h">
       <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
+    <ClInclude Include="SummonerState_DarkSpearEnd.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_DarkSpearMain.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_DarkSpearStart.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerStateEat.h">
+      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateChase.h">
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStatePatrol.h">
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="TurtleShellStateSkill.h">
+      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
+    </ClInclude>
+    <ClInclude Include="DarkSpear.h" />
   </ItemGroup>
 </Project>
