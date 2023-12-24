@@ -90,17 +90,7 @@ namespace nsK2EngineLow {
 		/// 行列を設定。
 		/// </summary>
 		/// <param name="mairix">行列。</param>
-		void SetWorldMatrix(const Matrix& matrix)
-		{
-			Vector3 position;
-			position.x = matrix.m[3][0];
-			position.y = matrix.m[3][1];
-			position.z = matrix.m[3][2];
-			SetPosition(position);
-			Quaternion rotation;
-			rotation.SetRotation(matrix);
-			SetRotation(rotation);
-		}
+		void SetWorldMatrix(const Matrix& matrix);
 
 
 		/// <summary>
@@ -419,7 +409,7 @@ namespace nsK2EngineLow {
 		Model						m_shadowModels[NUM_SHADOW_MAP];	// シャドウマップに描画するモデル
 		ConstantBuffer				m_drawShadowMapCameraParamCB[NUM_SHADOW_MAP];// シャドウマップ作成時に必要なカメラパラメータ用の定数バッファ。
 		bool						m_isShadowCaster = true;			// シャドウキャスターフラグ
-
+		bool						m_setWorldMatrix = false;			// ワールド行列が外部から設定されている
 
 	};
 }

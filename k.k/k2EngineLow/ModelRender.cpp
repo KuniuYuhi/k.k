@@ -215,6 +215,24 @@ namespace nsK2EngineLow {
 		InitModelOnZprepass(tkmFilePath, enModelUpAxisZ);
 	}
 
+	void ModelRender::SetWorldMatrix(const Matrix& matrix)
+	{
+		m_setWorldMatrix = true;
+		m_frowardRenderModel.UpdateWorldMatrix(matrix);
+		//ZPrepassモデルのワールド行列の更新(座標、回転、大きさ)
+		m_zprepassModel.UpdateWorldMatrix(matrix);
+
+		//Gbuffer用のモデルが初期化されていたら
+		if (m_renderToGBufferModel.IsInited())
+		{
+			m_renderToGBufferModel.UpdateWorldMatrix(matrix);
+		}
+		//シャドウマップ描画モデル
+		//ファイル情報入ってない
+		for (auto& model : m_shadowModels) {
+			model.UpdateWorldMatrix(matrix);
+		}
+	}
 	//モデルの情報を更新
 	void ModelRender::Update()
 	{
@@ -234,6 +252,11 @@ namespace nsK2EngineLow {
 
 	void ModelRender::UpdateWorldMatrixInModes()
 	{
+		if (m_setWorldMatrix) {
+			// 外部で設定されているのでこのフレームは更新しない
+			m_setWorldMatrix = false;
+			return;
+		}
 		//モデルのワールド行列の更新(座標、回転、大きさ)
 		m_frowardRenderModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 		//ZPrepassモデルのワールド行列の更新(座標、回転、大きさ)
@@ -245,7 +268,6 @@ namespace nsK2EngineLow {
 			m_renderToGBufferModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 		}
 		//シャドウマップ描画モデル
-		//ファイル情報入ってない
 		for (auto& model : m_shadowModels) {
 			model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 		}
