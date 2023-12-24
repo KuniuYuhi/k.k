@@ -164,6 +164,7 @@ void BigSword::MoveArmed()
 	//Œ•‚Ìƒ[ƒ‹ƒhÀ•W‚ðÝ’è
 	m_swordMatrix =
 		m_brave->GetModelRender().GetBone(m_armedSwordBoonId)->GetWorldMatrix();
+
 	m_modelBigSword.SetWorldMatrix(m_swordMatrix);
 
 	

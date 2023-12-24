@@ -59,10 +59,7 @@ void Arrow::Update()
 		ProcessLongRangeAttack();
 	}
 
-	
-	
-
-	ArrowUpdate();
+	m_modelArrow.Update();
 }
 
 void Arrow::MoveWeapon()
@@ -269,9 +266,11 @@ void Arrow::NormalShot()
 		direction.y *= a.y;
 		direction.z *= a.z;*/
 
-		rot.SetRotation(direction, g_vec3AxisX);
+		//rot.SetRotation(direction, g_vec3AxisX);
 
-		//m_rotation = rot;
+		m_arrowMatrix.Apply(rot);
+
+		m_rotation = rot;
 	}
 	else
 	{
@@ -281,7 +280,7 @@ void Arrow::NormalShot()
 	//m_modelArrow.SetWorldMatrix(aa);
 	
 	m_modelArrow.SetPosition(m_arrowPos);
-	m_modelArrow.SetRotation(m_rotation);
+	//m_modelArrow.SetRotation(m_rotation);
 
 	//前フレームの矢の座標を取得
 	m_oldArrowPos = m_arrowPos;
