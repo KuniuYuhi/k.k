@@ -214,6 +214,12 @@ void SwordShield::InitSwordCollision()
 {
 	//Œ•‚Ì“–‚½‚è”»’è
 	m_swordCollision = NewGO<CollisionObject>(0, "Attack");
+	/*m_swordCollision->CreateMesh(
+		g_vec3Zero,
+		g_quatIdentity,
+		m_modelSword.GetModel(),
+		m_brave->GetModelRender().GetBone(m_armedSwordBoonId)->GetWorldMatrix()
+	);*/
 	m_swordCollision->CreateBox(
 		STOWEDS_POSITION,
 		Quaternion(0.0f, 90.0f, 180.0f, 1.0f),
@@ -261,11 +267,6 @@ void SwordShield::MoveArmed()
 		m_brave->GetModelRender().GetBone(m_armedSwordBoonId)->GetWorldMatrix();
 	m_modelSword.SetWorldMatrix(m_swordMatrix);
 
-
-	/*m_swordMatrix.Apply(swordPos);
-
-	m_modelSword.SetPosition(m_swordPos);
-	rot.SetRotation(m_swordMatrix);*/
 
 	m_shieldMatrix =
 		m_brave->GetModelRender().GetBone(m_armedShieldBoonId)->GetWorldMatrix();
