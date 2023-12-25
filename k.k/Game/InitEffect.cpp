@@ -31,6 +31,8 @@ void InitEffect::InitEFK()
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Meteo, u"Assets/effect/sprite/Meteo.efk");
 	//メテオの爆発エフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Meteo_Explosion, u"Assets/effect/sprite/Meteo_Explosion.efk");
+	//メテオの範囲エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Meteo_Range, u"Assets/effect/sprite/Range.efk");
 	//モブモンスターのやられエフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Mob_Dead, u"Assets/effect/sprite/Mob_Dead.efk");
 	//ダメージ無効エフェクトを読み込む
@@ -49,6 +51,8 @@ void InitEffect::InitEFK()
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_FlamePillar_Circle, u"Assets/effect/sprite/FlamePillar_Circle.efk");
 	//ダークウォールのエフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_DarkWall, u"Assets/effect/sprite/DarkWall.efk");
+	//ダークスピアのエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_DarkSpear, u"Assets/effect/sprite/DarkSpear.efk");
 	//ソードストームのエフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_SwordStorm, u"Assets/effect/sprite/SwordStorm.efk");
 	//ソードストームのチャージエフェクトを読み込む

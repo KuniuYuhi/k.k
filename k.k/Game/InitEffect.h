@@ -19,10 +19,12 @@ public:
 		enEffect_DarkBall,										//ダークボール
 		enEffect_DarkBall_Explosion,							//ダークボールの爆発
 		enEffect_DarkWall,										//ダークウォール
+		enEffect_DarkSpear,										//ダークスピア
 		enEffect_DarkMeteorite,									//ダークメテオ
 		enEffect_DarkMeteorite_Wind,							//ダークメテオの風
 		enEffect_Meteo,											//メテオ
 		enEffect_Meteo_Explosion,								//メテオの爆発
+		enEffect_Meteo_Range,									//メテオの範囲
 		enEffect_Mob_Dead,										//モブモンスターがやられたときのエフェクト
 		enEffect_Invalibation,									//ダメージが無効のときのエフェクト
 		enEffect_Dash,											//ダッシュ
