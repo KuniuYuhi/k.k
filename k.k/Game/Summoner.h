@@ -5,6 +5,7 @@
 
 class IBossStateMachine;
 class ISummonerState;
+class DarkWall;
 
 class Summoner:public BossBase
 {
@@ -119,7 +120,7 @@ public:
 	/// <returns></returns>
 	bool isAnimationEnable() const override
 	{
-		return true;
+		return m_enAnimationState != enAnimationState_KnockBack;
 	}
 	/// <summary>
 	/// 回転可能か
@@ -279,6 +280,15 @@ public:
 		return m_damageCount;
 	}
 
+	/// <summary>
+	/// ダークウォールのボーンIDの取得
+	/// </summary>
+	/// <returns></returns>
+	const int& GetDarkWallBoonId() const
+	{
+		return m_darkWallBoonId;
+	}
+
 private:
 	/// <summary>
 	/// モデルの初期化
@@ -313,6 +323,30 @@ private:
 	void RecoverySuperArmor();
 	
 
+	/// <summary>
+	/// ダークボール生成
+	/// </summary>
+	void CreateDarkBall();
+	/// <summary>
+	/// ダークウォール生成
+	/// </summary>
+	void CreateDarkWall();
+
+	/// <summary>
+	/// ノックバック処理
+	/// </summary>
+	void ProcessKnockBack();
+
+	/// <summary>
+	/// 通常攻撃の当たり判定生成
+	/// </summary>
+	void CreateNormalAttackCollision();
+
+	/// <summary>
+	/// 通常攻撃の当たり判定生成
+	/// </summary>
+	void NormalComboFinnish();
+
 private:
 	EnAnimationState				m_enAnimationState = enAninationState_Idle;				//アニメーションステート
 	EnSpecialActionState			m_enSpecialActionState = enSpecialActionState_Normal;	//特別な状態ステート(通常、怒りモード)
@@ -320,6 +354,8 @@ private:
 
 	Level3DRender					m_stageLevel;
 	AnimationClip					m_animationClip[enAnimClip_Num];						// アニメーションクリップ 
+
+	DarkWall* m_darkWall = nullptr;
 
 	CharacterController				m_charaCon;												//キャラクターコントローラー
 
@@ -331,6 +367,9 @@ private:
 
 	int								m_damageCount = 0;				//被ダメージした時に加算するカウント
 
+	int m_darkWallBoonId = -1;
+
+	bool m_oldBreakSuperArmorFlag = false;	//前フレームのスーパーアーマーブレイクフラグ
 
 };
 
