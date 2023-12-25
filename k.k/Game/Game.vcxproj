@@ -267,6 +267,7 @@
     <ClCompile Include="DarkMeteo.cpp" />
     <ClCompile Include="DarkMeteorite.cpp" />
     <ClCompile Include="DarkSpear.cpp" />
+    <ClCompile Include="DarkSpearObj.cpp" />
     <ClCompile Include="DarkWall.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="GameFinishCamera.cpp" />
@@ -421,6 +422,7 @@
     <ClInclude Include="DarkMeteo.h" />
     <ClInclude Include="DarkMeteorite.h" />
     <ClInclude Include="DarkSpear.h" />
+    <ClInclude Include="DarkSpearObj.h" />
     <ClInclude Include="DarkWall.h" />
     <ClInclude Include="DecisionMeteoEndpoint.h" />
     <ClInclude Include="EventManager.h" />

@@ -447,6 +447,7 @@
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="DarkSpear.cpp" />
+    <ClCompile Include="DarkSpearObj.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -866,5 +867,6 @@
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="DarkSpear.h" />
+    <ClInclude Include="DarkSpearObj.h" />
   </ItemGroup>
 </Project>
