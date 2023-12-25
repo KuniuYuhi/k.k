@@ -13,6 +13,8 @@ namespace {
 	const int CREATE_TIMER_LIMMIT = 1.0f;
 }
 
+class DarkSpearObj;
+
 class DarkSpear: public IGameObject
 {
 public:
@@ -84,6 +86,9 @@ private:
 
 private:
 	ModelRender m_model[SPEAR_CREATE_PLACE][SPEAR_ROWS];
+
+	DarkSpearObj* m_darkSpearObj[SPEAR_CREATE_PLACE][SPEAR_ROWS] = { nullptr };
+
 
 	Quaternion m_rotation = g_quatIdentity;
 

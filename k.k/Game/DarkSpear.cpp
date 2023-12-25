@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DarkSpear.h"
-
+#include "DarkSpearObj.h"
 #include "CharactersInfoManager.h"
 
 DarkSpear::DarkSpear()
@@ -13,6 +13,9 @@ DarkSpear::~DarkSpear()
 
 bool DarkSpear::Start()
 {
+
+
+
 	//¶¬‚·‚éÀ•W‚ğŒˆ‚ß‚é
 	DecideCreatePosition();
 
@@ -20,11 +23,15 @@ bool DarkSpear::Start()
 	{
 		for (int num2 = 0; num2 < SPEAR_ROWS; num2++)
 		{
-			m_model[num][num2].Init("Assets/modelData/character/Slime/slime.tkm",
+			m_model[num][num2].Init("Assets/modelData/character/Lich/DarkSpear.tkm",
 				L"Assets/shader/ToonTextrue/lamp_Slime.DDS");
 
 			m_model[num][num2].SetPosition(m_createPosition[num][num2]);
 			m_model[num][num2].Update();
+
+			//‰Šú‰»
+			m_darkSpearObj[num][num2] = nullptr;
+
 		}
 
 	
@@ -56,6 +63,10 @@ void DarkSpear::Update()
 			{
 				for (int num2 = 0; num2 < m_createCount; num2++)
 				{
+					m_darkSpearObj[num][num2] = NewGO<DarkSpearObj>(0, "darkspearobj");
+					m_darkSpearObj[num][num2]->SetPosition(m_createPosition[num][num]);
+
+
 					m_model[num][num2].SetScale(g_vec3One * 3.0f);
 					m_model[num][num2].Update();
 				}
