@@ -858,7 +858,6 @@ void Lich::OnProcessenWarpStepEnd()
 void Lich::CreateDarkWall()
 {
 	m_darkWall = NewGO<DarkWall>(0, "darkwall");
-	m_darkWall->SetLich(this);
 }
 
 void Lich::CreateDarkBall(bool AddBallFlag)
