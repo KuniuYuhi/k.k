@@ -15,7 +15,6 @@ public:
 
 	bool Start();
 	void Update();
-	void Render(RenderContext& rc);
 	
 	void ManageState();
 
@@ -84,11 +83,16 @@ private:
 	/// </summary>
 	void SettingMeteoRoute();
 
+	/// <summary>
+	/// 攻撃範囲のエフェクトをプレイ
+	/// </summary>
+	void PlayRangeEffect();
+
 private:
 
-	ModelRender					m_model;
 	EffectEmitter*				m_meteoEffect;
 	EffectEmitter*				m_ExplosionEffect;
+	EffectEmitter*				m_rangeEffect;
 
 	CollisionObject*			m_collision;
 	CollisionObject*			m_explosionCollision;

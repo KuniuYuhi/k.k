@@ -11,6 +11,7 @@ namespace {
 
 	const float METEO_COLLISION_SIZE = 30.0f;
 	const float METEO_EFFECT_SIZE = 8.0f;
+	const float RANGE_EFFECT_SIZE = 35.0f;
 	//0.0065f
 	const float ADD_TIMER = 0.0065f;
 
@@ -41,6 +42,10 @@ Meteo::~Meteo()
 	if (m_ExplosionEffect != nullptr)
 	{
 		m_ExplosionEffect->Stop();
+	}
+	if (m_rangeEffect != nullptr)
+	{
+		m_rangeEffect->Stop();
 	}
 
 	//DeleteGO(m_collision);
@@ -81,10 +86,7 @@ bool Meteo::Start()
 	//ステート設定
 	m_state = enMoveState;
 
-	m_model.Init("Assets/modelData/character/Slime/slime.tkm",
-		L"Assets/shader/ToonTextrue/lamp_Slime.DDS");
-	m_model.SetPosition(m_targetPosition);
-	m_model.Update();
+	PlayRangeEffect();
 
     return true;
 }
@@ -92,11 +94,6 @@ bool Meteo::Start()
 void Meteo::Update()
 {
 	ManageState();
-}
-
-void Meteo::Render(RenderContext& rc)
-{
-	m_model.Draw(rc);
 }
 
 int Meteo::CalcDamageToDistance(const Vector3 targetPosition)
@@ -271,6 +268,19 @@ void Meteo::SettingMeteoRoute()
 	////4.飛行時間の計算
 	//m_flightDuration = distance / m_meteoVerocity.x;
 
+}
+
+void Meteo::PlayRangeEffect()
+{
+	Vector3 pos = m_targetPosition;
+	pos.y += 3.0f;
+
+	m_rangeEffect = NewGO<EffectEmitter>(0);
+	m_rangeEffect->Init(InitEffect::enEffect_Meteo_Range);
+	m_rangeEffect->Play();
+	m_rangeEffect->SetScale(g_vec3One * RANGE_EFFECT_SIZE);
+	m_rangeEffect->SetPosition(pos);
+	m_rangeEffect->Update();
 }
 
 void Meteo::ManageState()
