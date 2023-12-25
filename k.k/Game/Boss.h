@@ -27,7 +27,6 @@ public:
 	{
 		m_position = position;
 	}
-
 	/// <summary>
 	/// À•W‚Ìİ’è
 	/// </summary>
@@ -51,6 +50,15 @@ public:
 	const Vector3& GetForward() const
 	{
 		return m_bossBase->GetForward();
+	}
+
+	/// <summary>
+	/// ‰ñ“]‚Ìæ“¾
+	/// </summary>
+	/// <returns></returns>
+	const Quaternion& GetRotation() const
+	{
+		return m_bossBase->GetRotation();
 	}
 
 	/// <summary>
