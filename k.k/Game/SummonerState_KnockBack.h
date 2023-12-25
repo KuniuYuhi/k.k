@@ -7,7 +7,7 @@ public:
 	SummonerState_KnockBack(Summoner* summoner)
 		:ISummonerState(summoner, enActionName_KnockBack)
 	{
-		Init();
+		//Init();
 	}
 
 	~SummonerState_KnockBack();
@@ -33,7 +33,7 @@ private:
 	/// </summary>
 	/// <param name="clipName"></param>
 	/// <param name="eventName"></param>
-	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
+	//void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	/// <summary>
 	/// ノックバック処理
