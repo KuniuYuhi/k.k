@@ -12,7 +12,7 @@
 using namespace SummonerActions;
 
 namespace {
-	const float WAIT_TIME = 500.0f;		//待機時間
+	const float WAIT_TIME = 5.0f;		//待機時間
 
 	const float MELEE_ATTACK_RANGE = 280.0f;	//近距離攻撃の範囲内
 
@@ -144,9 +144,9 @@ void IBossStateMachine::ProcessLongRangeAttack()
 	//遠距離攻撃
 
 	//ダークメテオ
-	//m_summoner->
-	//	SetNextAnimationState(Summoner::enAnimationState_Attack_DarkMeteorite_start);
-	//return;
+	m_summoner->
+		SetNextAnimationState(Summoner::enAnimationState_Attack_DarkMeteorite_start);
+	return;
 
 	//前の行動がダークメテオでないなら
 	//ダークメテオを撃つか調べる
@@ -190,15 +190,15 @@ void IBossStateMachine::ProcessMeleeAttack()
 		m_accelerateStayPlayerTimer = 1.0f;
 		return;
 	}
+	
 	//ダークスピア
 	m_summoner->
 		SetNextAnimationState(Summoner::enAnimationState_DarkSpear_Start);
 	return;
-	
 
 	int bb = rand() % 10;
 	//確率で変化
-	if (bb > 7)
+	if (bb > 8)
 	{
 		//ダークスピア
 		m_summoner->
