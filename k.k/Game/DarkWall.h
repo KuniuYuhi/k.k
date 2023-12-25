@@ -1,6 +1,6 @@
 #pragma once
 
-class Lich;
+class Summoner;
 
 class DarkWall:public IGameObject
 {
@@ -12,14 +12,18 @@ public:
 	void Update();
 	
 	/// <summary>
+	/// エフェクトの再生
+	/// </summary>
+	void PlayDarkWallEffect();
+	/// <summary>
+	/// 当たり判定生成
+	/// </summary>
+	void CreateCollision();
+
+	/// <summary>
 	/// 行列を座標に適応する
 	/// </summary>
 	Vector3 AppltMatrixToPosition();
-
-	void SetLich(Lich* lich)
-	{
-		m_lich = lich;
-	}
 
 	void SetAtk(int attack)
 	{
@@ -32,7 +36,7 @@ public:
 	}
 
 private:
-	Lich*							m_lich = nullptr;
+	Summoner*							m_summoner = nullptr;
 	EffectEmitter*					m_darkWallEffect = nullptr;
 
 	Vector3							m_position = Vector3::Zero;
@@ -47,6 +51,8 @@ private:
 
 	const float						m_deleteTime = 2.0f;
 	float							m_deleteTimer = 0.0f;
+
+	int m_darkWallBoonId = -1;
 
 };
 
