@@ -61,6 +61,11 @@ bool SwordShield::Start()
 	//防御タイプの設定
 	SetEnDefendTipe(enDefendTipe_Defence);
 
+	//アニメーションイベント用の関数を設定する。
+	m_brave->GetModelRender().AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+		});
+
 	return true;
 }
 
@@ -209,6 +214,12 @@ void SwordShield::InitSwordCollision()
 {
 	//剣の当たり判定
 	m_swordCollision = NewGO<CollisionObject>(0, "Attack");
+	/*m_swordCollision->CreateMesh(
+		g_vec3Zero,
+		g_quatIdentity,
+		m_modelSword.GetModel(),
+		m_brave->GetModelRender().GetBone(m_armedSwordBoonId)->GetWorldMatrix()
+	);*/
 	m_swordCollision->CreateBox(
 		STOWEDS_POSITION,
 		Quaternion(0.0f, 90.0f, 180.0f, 1.0f),
@@ -257,11 +268,6 @@ void SwordShield::MoveArmed()
 	m_modelSword.SetWorldMatrix(m_swordMatrix);
 
 
-	/*m_swordMatrix.Apply(swordPos);
-
-	m_modelSword.SetPosition(m_swordPos);
-	rot.SetRotation(m_swordMatrix);*/
-
 	m_shieldMatrix =
 		m_brave->GetModelRender().GetBone(m_armedShieldBoonId)->GetWorldMatrix();
 	m_modelShield.SetWorldMatrix(m_shieldMatrix);
@@ -296,6 +302,31 @@ void SwordShield::MoveStowed()
 	SetStowedFlag(true);
 }
 
+void SwordShield::ProcessRising()
+{
+	m_skillMovePos = g_vec3AxisY;
+	float addYPos = 0.0f;
+	//上昇処理
+	addYPos +=
+		g_gameTime->GetFrameDeltaTime() * GetJampSpeed();
+	m_skillMovePos.y += addYPos;
+	//プレイヤーの座標を更新
+	m_brave->ExecutePosition(m_skillMovePos);
+}
+
+void SwordShield::ProcessFall()
+{
+	m_skillMovePos = g_vec3AxisY;
+	float addYPos = 0.0f;
+	//上昇処理
+	addYPos +=
+		g_gameTime->GetFrameDeltaTime() * GetJampSpeed() * 1.2f;
+	m_skillMovePos.y -= addYPos;
+
+	//プレイヤーの座標を更新
+	m_brave->ExecutePosition(m_skillMovePos);
+}
+
 void SwordShield::Render(RenderContext& rc)
 {
 	if (GetWeaponState() == enWeaponState_Stowed)
@@ -311,4 +342,20 @@ void SwordShield::Render(RenderContext& rc)
 		return;
 	}
 	m_modelShield.Draw(rc);
+}
+
+void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+	//スキルのジャンプ処理
+	if (wcscmp(eventName, L"RisingSword") == 0)
+	{
+		//キーフレームがJampの間処理し続ける
+		ProcessRising();
+	}
+	//スキルのジャンプ処理
+	if (wcscmp(eventName, L"FallSword") == 0)
+	{
+		//キーフレームがJampの間処理し続ける
+		ProcessFall();
+	}
 }

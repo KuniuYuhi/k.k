@@ -1,7 +1,7 @@
 #pragma once
 
 namespace {
-	const int LENGTH = 600.0f;
+	const int LENGTH = 250.0f;
 }
 
 //メテオの終点の計算
@@ -22,14 +22,7 @@ Vector3 GetMeteoTargetPosition(Vector3 targetCenterPosition)
 
 		finalPos.x += X;
 		finalPos.z += Z;
+		finalPos.y = 0.0f;
 		return finalPos;
-		/*if (finalPos.Length() < LENGTH)
-		{
-			
-		}
-		else
-		{
-			continue;
-		}*/
 	}
 }

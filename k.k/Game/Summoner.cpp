@@ -23,6 +23,13 @@
 #include "SummonerState_Walk.h"
 #include "SummonerState_Warp.h"
 #include "SummonerState_Victory.h"
+#include "SummonerState_DarkSpearMain.h"
+#include "SummonerState_DarkSpearEnd.h"
+#include "SummonerState_DarkSpearStart.h"
+
+//技でだすオブジェクト
+#include "DarkBall.h"
+#include "DarkWall.h"
 
 //todo スーパーアーマーがある間はのけぞらない
 //壊れたらたまにのけぞる
@@ -31,7 +38,11 @@
 namespace {
 	const float SCALE_UP = 4.0f;		//キャラクターのサイズ
 
-	const float MAX_SUPERARMOR_POINT = 10.0f;
+	const float MAX_SUPERARMOR_POINT = 100.0f;
+
+	const float KNOCKBACK_RANGE = 300.0f;
+	const float KNOCKBACK_POWER = 400.0f;
+	const float KNOCKBACK_LIMMIT = 2.0f;
 
 	//ステータス
 	int MAXHP = 200;
@@ -169,7 +180,6 @@ void Summoner::Damage(int attack)
 	//ダメージを受ける処理
 	ProcessHit(attack);
 	
-
 	//やられたとき
 	if (m_status.GetHp() <= 0)
 	{
@@ -275,11 +285,20 @@ void Summoner::ProcessHit(int hitDamage)
 	if (GetBreakSuperArmorFlag() == true)
 	{
 		//一定確率で怯む
-		if (IsFlinch() == true)
+		//ブレイクした瞬間なら確定で怯む
+		if (IsFlinch() == true|| (m_oldBreakSuperArmorFlag!= GetBreakSuperArmorFlag()))
 		{
+			//技の途中かもしれないのでダークウォールを削除
+			if (m_darkWall != nullptr)
+			{
+				DeleteGO(m_darkWall);
+			}
+
 			SetNextAnimationState(enAnimationState_CriticalHit);
 		}
 	}
+
+	m_oldBreakSuperArmorFlag = GetBreakSuperArmorFlag();
 }
 
 void Summoner::RecoverySuperArmor()
@@ -316,6 +335,15 @@ void Summoner::SetNextAnimationState(EnAnimationState nextState)
 		break;
 	case Summoner::enAnimationState_DarkWall://ダークウォール
 		m_nowBossState = new SummonerState_DarkWall(this);
+		break;
+	case Summoner::enAnimationState_DarkSpear_Start://ダークスピアメイン
+		m_nowBossState = new SummonerState_DarkSpearStart(this);
+		break;
+	case Summoner::enAnimationState_DarkSpear_Main://ダークスピアメイン
+		m_nowBossState = new SummonerState_DarkSpearMain(this);
+		break;
+	case Summoner::enAnimationState_DarkSpear_End://ダークスピアエンド
+		m_nowBossState = new SummonerState_DarkSpearEnd(this);
 		break;
 	case Summoner::enAnimationState_KnockBack://ノックバック
 		m_nowBossState = new SummonerState_KnockBack(this);
@@ -389,6 +417,15 @@ void Summoner::InitModel()
 	m_animationClip[enAnimClip_DarkWall].Load(
 		"Assets/animData/character/Lich/Attack2.tka");
 	m_animationClip[enAnimClip_DarkWall].SetLoopFlag(false);
+	m_animationClip[enAnimClip_DarkSpear_Start].Load(
+		"Assets/animData/character/Lich/DarkSpear_Start.tka");
+	m_animationClip[enAnimClip_DarkSpear_Start].SetLoopFlag(false);
+	m_animationClip[enAnimClip_DarkSpear_Main].Load(
+		"Assets/animData/character/Lich/DarkSpear_Main.tka");
+	m_animationClip[enAnimClip_DarkSpear_Main].SetLoopFlag(false);
+	m_animationClip[enAnimClip_DarkSpear_End].Load(
+		"Assets/animData/character/Lich/DarkSpear_End.tka");
+	m_animationClip[enAnimClip_DarkSpear_End].SetLoopFlag(false);
 	m_animationClip[enAnimClip_KnockBack].Load(
 		"Assets/animData/character/Lich/KnockBack.tka");
 	m_animationClip[enAnimClip_KnockBack].SetLoopFlag(false);
@@ -448,15 +485,107 @@ void Summoner::InitModel()
 		m_position
 	);
 	//アニメーションイベント用の関数を設定する。
-	//m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
-	//	OnAnimationEvent(clipName, eventName);
-	//	});
+	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+	});
+
+	//ダークウォールに使うボーンID取得
+	m_darkWallBoonId = m_modelRender.FindBoneID(L"Staff");
+
 
 }
 
-
 void Summoner::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
+	//ノックバックタイミング
+	if (wcscmp(eventName, L"KnockBack") == 0)
+	{
+		////ノックバック
+		ProcessKnockBack();
+	}
+
+	//ダークウォール生成タイミング
+	if (wcscmp(eventName, L"Create_DarkWall") == 0)
+	{
+
+		CreateDarkWall();
+	}
+
+	//ダークウォール生成終わり
+	if (wcscmp(eventName, L"CreateEnd_DarkWall") == 0)
+	{
+		if (m_darkWall != nullptr)
+		{
+			DeleteGO(m_darkWall);
+		}
+	}
+	//ダークボール生成タイミング
+	if (wcscmp(eventName, L"Create_Ball") == 0)
+	{
+		//ボール生成
+		CreateDarkBall();
+	}
+
+	//通常攻撃当たり判定生成
+	if (wcscmp(eventName, L"Create_NormalAttackCollision") == 0)
+	{
+		//このアニメーションキーフレームの間当たり判定生成
+		CreateNormalAttackCollision();
+	}
+
+	//通常攻撃の最後の爆発
+	if (wcscmp(eventName, L"Combofinnish") == 0)
+	{
+		//このアニメーションキーフレームの間当たり判定生成
+		
+	}
+
+}
+
+void Summoner::CreateDarkBall()
+{
+	DarkBall* darkBall = NewGO<DarkBall>(0, "darkball");
+	darkBall->SetAtk(GetStatus().GetAtk());
+	darkBall->Setting(GetPosition(),GetRotation());
+}
+
+void Summoner::CreateDarkWall()
+{
+	m_darkWall = NewGO<DarkWall>(0, "darkwall");
+}
+
+void Summoner::ProcessKnockBack()
+{
+	//プレイヤーが範囲内にいたらノックバックするようにする
+	Vector3 diff = m_position -
+		CharactersInfoManager::GetInstance()->GetPlayerInstance()->GetPosition();
+	//ノックバック範囲内なら
+	if (diff.Length() < KNOCKBACK_RANGE)
+	{
+		CharactersInfoManager::GetInstance()->
+			GetPlayerInstance()->SetKnockBackInfo(
+				true, m_position, KNOCKBACK_POWER, KNOCKBACK_LIMMIT);
+	}
+}
+
+void Summoner::CreateNormalAttackCollision()
+{
+	CollisionObject* collision = NewGO<CollisionObject>(0, "monsterattack");
+	collision->CreateBox(
+		m_position,
+		g_quatIdentity,
+		{20.0f, 430.0f,100.0f}
+	);
+	collision->SetCreatorName(GetName());
+	collision->SetWorldMatrix(m_modelRender.GetBone(m_darkWallBoonId)->GetWorldMatrix());
+	collision->Update();
+}
+
+void Summoner::NormalComboFinnish()
+{
+	//爆発エフェクトと当たり判定生成
+
+
 }
 
 void Summoner::DeleteMobMonsters()

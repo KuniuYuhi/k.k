@@ -11,7 +11,7 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
-
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	/// <summary>
 	/// 武器の移動処理
@@ -50,12 +50,30 @@ private:
 	/// </summary>
 	void MoveStowed() override;
 
+	/// <summary>
+	/// 上昇処理
+	/// </summary>
+	void ProcessRising();
+
+	/// <summary>
+	/// 下降処理
+	/// </summary>
+	void ProcessFall();
+
+	/// <summary>
+	/// 地面との衝突判定
+	/// </summary>
+	bool IsGround();
+
 private:
 	ModelRender m_modelBigSword;		//剣モデル
 
 	CollisionObject* m_bigSwordCollision = nullptr;	//両手剣の当たり判定
 
 	Vector3 m_swordPos = g_vec3Zero;
+	Vector3 m_maxRisingPosition = g_vec3Zero;
+
+	Vector3 m_skillMovePos = g_vec3Zero;	//スキルを使うときの座標
 
 	Matrix m_swordMatrix = g_matIdentity;
 

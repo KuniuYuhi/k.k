@@ -12,7 +12,7 @@
 using namespace SummonerActions;
 
 namespace {
-	const float WAIT_TIME = 5000.0f;		//待機時間
+	const float WAIT_TIME = 5.0f;		//待機時間
 
 	const float MELEE_ATTACK_RANGE = 280.0f;	//近距離攻撃の範囲内
 
@@ -190,10 +190,22 @@ void IBossStateMachine::ProcessMeleeAttack()
 		m_accelerateStayPlayerTimer = 1.0f;
 		return;
 	}
+	
+	//ダークスピア
+	m_summoner->
+		SetNextAnimationState(Summoner::enAnimationState_DarkSpear_Start);
+	return;
 
 	int bb = rand() % 10;
 	//確率で変化
-	if (bb > 4)
+	if (bb > 8)
+	{
+		//ダークスピア
+		m_summoner->
+			SetNextAnimationState(Summoner::enAnimationState_DarkSpear_Start);
+		return;
+	}
+	else if (bb > 4)
 	{
 		//ダークウォール
 		m_summoner->

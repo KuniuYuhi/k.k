@@ -331,8 +331,6 @@ void Brave::ChangeWeapon()
 		SettingChangeWeapon(
 			m_subUseWeapon2.weaponAnimationStartIndexNo, enWeapon_Sub2);
 	}
-	
-
 }
 
 void Brave::ProcessWin()
@@ -341,38 +339,6 @@ void Brave::ProcessWin()
 	SetInvicibleTimeFlag(false);
 	//勝利スタートのステート
 	SetNextAnimationState(enAnimationState_Win_Start);
-}
-
-//todo それぞれの武器に入れる
-void Brave::ProcessSwordShieldSkill(bool UpOrDownFlag)
-{
-	Vector3 Y = g_vec3AxisY;
-	float addYPos = 0.0f;
-	if (UpOrDownFlag == true)
-	{
-		//Up処理
-		addYPos += 
-			g_gameTime->GetFrameDeltaTime() * m_mainUseWeapon.weapon->GetJampSpeed();
-		Y.y += addYPos;
-	}
-	else
-	{
-		//Down処理
-		addYPos += 
-			g_gameTime->GetFrameDeltaTime() * m_mainUseWeapon.weapon->GetJampSpeed() * 1.2f;
-		Y.y -= addYPos;
-	}
-	
-	m_position = m_charaCon.Execute(Y, 1.0f / 30.0f);
-	//地面についているなら
-
-
-	if (m_charaCon.IsOnGround() == true|| m_position.y < 0.0f)
-	{
-		m_position.y = 0.0f;
-	}
-
-	m_modelRender.SetPosition(m_position);
 }
 
 bool Brave::IsKnockBack()
@@ -478,6 +444,12 @@ void Brave::SettingKnockBackInfo(
 	m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed*-1.0f);
 	//ステートをノックバックステートに遷移
 	SetNextAnimationState(enAnimationState_KnockBack);
+}
+
+void Brave::ExecutePosition(Vector3& executePosition)
+{
+	m_position = m_charaCon.Execute(executePosition, 1.0f / 30.0f);
+	m_modelRender.SetPosition(m_position);
 }
 
 void Brave::ProcessComboAttack()
@@ -1022,21 +994,6 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		//メイン武器のスキル攻撃処理
 		m_mainUseWeapon.weapon->ProcessSkillAttack();
 	}
-	//スキルのジャンプ処理
-	if (wcscmp(eventName, L"Jamp") == 0)
-	{
-		//キーフレームがJampの間処理し続ける
-		ProcessSwordShieldSkill(true);
-	}
-	//スキルのジャンプ処理
-	if (wcscmp(eventName, L"Down") == 0)
-	{
-		//キーフレームがJampの間処理し続ける
-		ProcessSwordShieldSkill(false);
-	}
-
-	//武器固有の処理はそれぞれの武器クラスのアニメーションイベント関数にある
-
 }
 
 bool Brave::isCollisionEntable() const

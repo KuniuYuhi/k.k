@@ -59,10 +59,7 @@ void Arrow::Update()
 		ProcessLongRangeAttack();
 	}
 
-	
-	
-
-	ArrowUpdate();
+	m_modelArrow.Update();
 }
 
 void Arrow::MoveWeapon()
@@ -150,8 +147,7 @@ void Arrow::SetShotArrowSetting(
 	m_shotArrowVerocity.Vy = sqrt(verocity) * sin(Math::DegToRad(m_angle));
 	//4.飛行時間の計算
 	m_flightDuration = distance / m_shotArrowVerocity.Vx;
-	//5.物体の向きの調整
-
+	
 	m_oldArrowPos = m_arrowPos;
 }
 
@@ -223,8 +219,10 @@ void Arrow::NormalShot()
 	//6.移動
 	if (m_deleteTimer < m_flightDuration)
 	{
-		float X = m_forward.x * m_shotArrowVerocity.Vx * g_gameTime->GetFrameDeltaTime() * 10.0f;
-		float Z = m_forward.z * m_shotArrowVerocity.Vx * g_gameTime->GetFrameDeltaTime() * 10.0f;
+		float X = m_forward.x * m_shotArrowVerocity.Vx * 
+			g_gameTime->GetFrameDeltaTime() * 10.0f;
+		float Z = m_forward.z * m_shotArrowVerocity.Vx * 
+			g_gameTime->GetFrameDeltaTime() * 10.0f;
 
 		//新しい座標
 		m_arrowPos += {
@@ -268,9 +266,11 @@ void Arrow::NormalShot()
 		direction.y *= a.y;
 		direction.z *= a.z;*/
 
-		rot.SetRotation(direction, g_vec3AxisX);
+		//rot.SetRotation(direction, g_vec3AxisX);
 
-		//m_rotation = rot;
+		m_arrowMatrix.Apply(rot);
+
+		m_rotation = rot;
 	}
 	else
 	{
@@ -280,7 +280,7 @@ void Arrow::NormalShot()
 	//m_modelArrow.SetWorldMatrix(aa);
 	
 	m_modelArrow.SetPosition(m_arrowPos);
-	m_modelArrow.SetRotation(m_rotation);
+	//m_modelArrow.SetRotation(m_rotation);
 
 	//前フレームの矢の座標を取得
 	m_oldArrowPos = m_arrowPos;

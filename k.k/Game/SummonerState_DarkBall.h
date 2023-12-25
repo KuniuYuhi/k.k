@@ -7,7 +7,7 @@ public:
 	SummonerState_DarkBall(Summoner* summoner)
 		:ISummonerState(summoner,enActionName_Darkball)
 	{
-		Init();
+		//Init();
 	}
 
 	~SummonerState_DarkBall();
@@ -34,7 +34,7 @@ private:
 	/// </summary>
 	/// <param name="clipName"></param>
 	/// <param name="eventName"></param>
-	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
+	//void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	/// <summary>
 	/// ダークボールの生成

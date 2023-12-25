@@ -77,7 +77,10 @@ namespace nsK2EngineLow {
 		{
 			m_worldMatrix = CalcWorldMatrix(pos, rot, scale);
 		}
-
+		void UpdateWorldMatrix(const Matrix& mat)
+		{
+			m_worldMatrix = mat;
+		}
 		/// <summary>
 		/// ワールド行列を計算
 		/// </summary>

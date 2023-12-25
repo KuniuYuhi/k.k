@@ -21,6 +21,27 @@ namespace {
 	const float MOVE_FORWARD_SPEED = 150.0f;
 }
 
+struct IsGroundResult :public btCollisionWorld::ConvexResultCallback
+{
+	bool isHit = false;						//衝突フラグ。
+	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
+	{
+		//地面とぶつかってなかったら。
+		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Ground) {
+			//衝突したのは壁ではない。
+			isHit = false;
+			return 0.0f;
+		}
+		else
+		{
+			//地面とぶつかったら。
+		//フラグをtrueに。
+			isHit = true;
+			return 0.0f;
+		}
+	}
+};
+
 BigSword::BigSword()
 {
 	SetMoveForwardSpeed(MOVE_FORWARD_SPEED);
@@ -47,6 +68,11 @@ bool BigSword::Start()
 
 	//防御タイプの設定
 	SetEnDefendTipe(enDefendTipe_avoid);
+
+	//アニメーションイベント用の関数を設定する。
+	m_brave->GetModelRender().AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+		});
 
 	return true;
 }
@@ -138,6 +164,7 @@ void BigSword::MoveArmed()
 	//剣のワールド座標を設定
 	m_swordMatrix =
 		m_brave->GetModelRender().GetBone(m_armedSwordBoonId)->GetWorldMatrix();
+
 	m_modelBigSword.SetWorldMatrix(m_swordMatrix);
 
 	
@@ -170,6 +197,76 @@ void BigSword::MoveStowed()
 	SetStowedFlag(true);
 }
 
+void BigSword::ProcessRising()
+{
+	m_skillMovePos = g_vec3AxisY;
+	float addYPos = 0.0f;
+	//上昇処理
+	addYPos +=
+		g_gameTime->GetFrameDeltaTime() * GetJampSpeed();
+	m_skillMovePos.y += addYPos;
+	//プレイヤーの座標を更新
+	m_brave->ExecutePosition(m_skillMovePos);
+	//上昇した時の座標を設定
+	m_maxRisingPosition = m_brave->GetPosition();
+}
+
+void BigSword::ProcessFall()
+{
+	m_skillMovePos = g_vec3AxisY;
+	float addYPos = 0.0f;
+	//上昇処理
+	addYPos +=
+		g_gameTime->GetFrameDeltaTime() * GetJampSpeed()*1.2f;
+	m_skillMovePos.y -= addYPos;
+
+	//プレイヤーの座標を更新
+	m_brave->ExecutePosition(m_skillMovePos);
+
+	//地面との衝突判定をとる
+	if (IsGround() == true)
+	{
+		//座標を地面に合わせる
+		Vector3 Zero = m_brave->GetPosition();
+		Zero.y = 0.0f;
+		m_brave->SetPosition(Zero);
+	}
+}
+
+bool BigSword::IsGround()
+{
+	Vector3 endPosition = m_brave->GetPosition();
+
+	CCapsuleCollider m_capsuleCollider;
+	m_capsuleCollider.Init(20.0f, 30.0f);
+	btTransform start, end;
+	start.setIdentity();
+	end.setIdentity();
+	//始点はエネミーの座標。
+	start.setOrigin(btVector3(
+		m_maxRisingPosition.x, m_maxRisingPosition.y, m_maxRisingPosition.z));
+	//終点はプレイヤーの座標。
+	end.setOrigin(btVector3(
+		endPosition.x*1.1f, endPosition.y * 1.1f, endPosition.z * 1.1f));
+	//壁の判定を返す
+	IsGroundResult callback_Ground;
+	//コライダーを始点から終点まで動かして。
+	//壁と衝突するかどうかを調べる。
+	PhysicsWorld::GetInstance()->ConvexSweepTest(
+		(const btConvexShape*)m_capsuleCollider.GetBody(),
+		start, end, callback_Ground);
+	//地面に衝突した
+	if (callback_Ground.isHit == true)
+	{
+		return true;
+	}
+	else
+	{
+		//地面ではなかった
+		return false;
+	}
+}
+
 void BigSword::Render(RenderContext& rc)
 {
 	if (GetWeaponState() == enWeaponState_Stowed)
@@ -177,6 +274,22 @@ void BigSword::Render(RenderContext& rc)
 		return;
 	}
 	m_modelBigSword.Draw(rc);
+}
+
+void BigSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+	//スキルのジャンプ処理
+	if (wcscmp(eventName, L"RisingGreatSword") == 0)
+	{
+		//キーフレームがJampの間処理し続ける
+		ProcessRising();
+	}
+	//スキルのジャンプ処理
+	if (wcscmp(eventName, L"FallGreatSword") == 0)
+	{
+		//キーフレームがJampの間処理し続ける
+		ProcessFall();
+	}
 }
 
 

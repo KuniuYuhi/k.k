@@ -11,9 +11,9 @@ namespace {
 	const float MAX_CAMERA_TOP = -0.1f;
 	const float MAX_CAMERA_UNDER = 0.8f;
 	//150.0f
-	const float TARGETPOS_YUP = 100.0f;
+	const float TARGETPOS_YUP = 160.0f;
 	
-	const Vector3 DEFAULT_TOCAMERAPOS = { 0.0f, 250.0f, -600.0f };
+	const Vector3 DEFAULT_TOCAMERAPOS = { 0.0f, 200.0f, -400.0f };
 	const Vector3 MAX_ZOOM_TOCAMERAPOS = { 0.0f,0.0f,-50.0f };
 
 }
