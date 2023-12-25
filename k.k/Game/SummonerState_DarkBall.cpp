@@ -18,7 +18,7 @@ SummonerState_DarkBall::~SummonerState_DarkBall()
 
 void SummonerState_DarkBall::Init()
 {
-	static bool m_initFlag = false;
+	/*static bool m_initFlag = false;
 
 	if (m_initFlag == true)
 	{
@@ -29,7 +29,7 @@ void SummonerState_DarkBall::Init()
 		[&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
-	m_initFlag = true;
+	m_initFlag = true;*/
 }
 
 void SummonerState_DarkBall::ManageState()
@@ -46,16 +46,16 @@ void SummonerState_DarkBall::PlayAnimation()
 	m_summoner->GetModelRender().PlayAnimation(Summoner::enAnimClip_DarkBall);
 }
 
-void SummonerState_DarkBall::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
-{
-	//ダークボール生成タイミング
-	if (wcscmp(eventName, L"Create_Ball") == 0)
-	{
-		m_summoner = FindGO<Summoner>("summoner");
-		//ボール生成
-		CreateDarkBall();
-	}
-}
+//void SummonerState_DarkBall::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+//{
+//	//ダークボール生成タイミング
+//	if (wcscmp(eventName, L"Create_Ball") == 0)
+//	{
+//		m_summoner = FindGO<Summoner>("summoner");
+//		//ボール生成
+//		CreateDarkBall();
+//	}
+//}
 
 void SummonerState_DarkBall::CreateDarkBall()
 {
