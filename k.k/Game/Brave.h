@@ -547,9 +547,28 @@ private:
 	/// <summary>
 	/// 武器の種類に対応したアニメーションクリップのロード
 	/// </summary>
+	
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="weaponType"></param>
+	/// <param name="mainWeaponAnimationStartIndexNo"></param>
 	void RoadWeaponTypeAnimetionClip(EnWeaponType weaponType, int mainWeaponAnimationStartIndexNo);
+
+	/// <summary>
+	/// ソード＆シールドのアニメーションクリップのロード
+	/// </summary>
+	/// <param name="mainWeaponAnimationStartIndexNo">アニメーションクリップの最初の番号</param>
 	void RoadOneHandSwordAnimationClip(int mainWeaponAnimationStartIndexNo);
+	/// <summary>
+	/// グレイトソードのアニメーションクリップのロード
+	/// </summary>
+	/// <param name="mainWeaponAnimationStartIndexNo">アニメーションクリップの最初の番号</param>
 	void RoadTwoHandSwordAnimationClip(int mainWeaponAnimationStartIndexNo);
+	/// <summary>
+	/// ボウ＆アローのアニメーションクリップのロード
+	/// </summary>
+	/// <param name="mainWeaponAnimationStartIndexNo">アニメーションクリップの最初の番号</param>
 	void RoadBowAnimationClip(int mainWeaponAnimationStartIndexNo);
 private:
 	/// <summary>
@@ -563,8 +582,8 @@ private:
 	};
 	
 	const int m_mainWeaponAnimationStartIndexNo = 0;						//メイン武器のアニメーションクリップの最初の番号
-	const int m_subWeaponAnimationStartIndexNo = enAnimClip_Num * 1;		//サブ武器のアニメーションクリップの最初の番号
-	const int m_subWeapon2AnimationStartIndexNo = enAnimClip_Num * 2;
+	const int m_subWeaponAnimationStartIndexNo = enAnimClip_Num * AnimationClipGroup_TwoHandedSword;		//サブ武器のアニメーションクリップの最初の番号
+	const int m_subWeapon2AnimationStartIndexNo = enAnimClip_Num * AnimationClipGroup_Bow;		//サブ２武器のアニメーションクリップの最初の番号
 
 	//現在の武器のアニメーションの最初の番号
 	int m_currentAnimationStartIndexNo = m_mainWeaponAnimationStartIndexNo;
