@@ -336,7 +336,7 @@ namespace nsK2EngineLow {
 		CopyMainRenderTargetToFrameBuffer(rc);
 
 		//スプライトを描画
-		SpriteRendering(rc);
+		//SpriteRendering(rc);
 
 		// 登録されている描画オブジェクトをクリア
 		m_renderObjects.clear();

@@ -228,7 +228,6 @@ namespace nsK2EngineLow {
 			m_renderToGBufferModel.UpdateWorldMatrix(matrix);
 		}
 		//シャドウマップ描画モデル
-		//ファイル情報入ってない
 		for (auto& model : m_shadowModels) {
 			model.UpdateWorldMatrix(matrix);
 		}

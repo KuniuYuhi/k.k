@@ -378,8 +378,6 @@
     <ClCompile Include="SummonerState_Warp.cpp">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
     </ClCompile>
-    <ClCompile Include="IMobStateMachine.cpp" />
-    <ClCompile Include="MobMonsterActionList.cpp" />
     <ClCompile Include="SlimeStateChase.cpp">
       <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClCompile>
@@ -448,6 +446,12 @@
     </ClCompile>
     <ClCompile Include="DarkSpear.cpp" />
     <ClCompile Include="DarkSpearObj.cpp" />
+    <ClCompile Include="IMobStateMachine.cpp">
+      <Filter>Character\Monster\MobMonster</Filter>
+    </ClCompile>
+    <ClCompile Include="MobMonsterActionList.cpp">
+      <Filter>Character\Monster\MobMonster</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -795,8 +799,6 @@
     <ClInclude Include="SummonerState_Walk.h">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
     </ClInclude>
-    <ClInclude Include="IMobStateMachine.h" />
-    <ClInclude Include="MobMonsterActionList.h" />
     <ClInclude Include="SlimeStateChase.h">
       <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClInclude>
@@ -868,5 +870,11 @@
     </ClInclude>
     <ClInclude Include="DarkSpear.h" />
     <ClInclude Include="DarkSpearObj.h" />
+    <ClInclude Include="IMobStateMachine.h">
+      <Filter>Character\Monster\MobMonster</Filter>
+    </ClInclude>
+    <ClInclude Include="MobMonsterActionList.h">
+      <Filter>Character\Monster\MobMonster</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
