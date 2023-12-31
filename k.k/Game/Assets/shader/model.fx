@@ -232,6 +232,7 @@ SPSOut PSMainCore(SPSIn psIn, int isToon, int isShadowCaster) : SV_Target0
 		)*shadowParam;
 
         albedoColor.xyz *= (1.0f - shadow);
+        //albedoColor.xyz *= shadow;
     }
 	
     psOut.color = albedoColor;
