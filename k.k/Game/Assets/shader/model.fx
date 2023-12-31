@@ -465,8 +465,9 @@ float3 CalcNormalMap(SPSIn psIn)
 //////////////////////////////////////////////////////////////////////////////////
 float4 CalcToonMap(SPSIn psIn,float3 lightDirection)
 {
-	//ハーフランバート拡散照明による
+	//ハーフランバート拡散照明によるライティング計算
 	float p=dot(psIn.normal*-1.0f,lightDirection.xyz);
+	//内積の結果を0から1にする
 	p=saturate(p*0.5f+0.5f);
 	//ｐが0.3から0.7以内の値ならグラデーションになるようにする。
 	//0が黒
