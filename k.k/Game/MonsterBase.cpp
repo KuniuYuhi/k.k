@@ -225,13 +225,6 @@ bool MonsterBase::IsCollisionDetection()
 
 Quaternion MonsterBase::Rotation(float rotSpeed, float rotOnlySpeed)
 {
-	//ターゲット(プレイヤー)の座標を取得
-	m_targetPosition = m_player->GetPosition();
-	//自身からターゲットに向かうベクトルを計算する
-	Vector3 diff = m_targetPosition - m_position;
-
-	m_moveSpeed = diff;
-
 	if (RotationOnly() == true)
 	{
 		//xかzの移動速度があったら(スティックの入力があったら)。
