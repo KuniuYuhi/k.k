@@ -503,8 +503,8 @@ void Game::InitGameObject()
 		//ボスの生成
 		CreateBoss();
 		//スライム生成
-		//Slime* slime = NewGO<Slime>(0, "slime");
-		//slime->SetPosition(g_vec3Zero);
+		/*Slime* slime = NewGO<Slime>(0, "slime");
+		slime->SetPosition({ -150.0f, 0.0f, 500.0f });*/
 		////スライム生成
 		//Slime* slime1 = NewGO<Slime>(0, "slime");
 		//slime1->SetPosition({100.0f,0.0f,100.0f});
