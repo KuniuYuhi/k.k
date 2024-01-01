@@ -2,7 +2,6 @@
 #include "BossBase.h"
 #include "Level3DRender.h"
 
-
 class IBossStateMachine;
 class ISummonerState;
 class DarkWall;
@@ -101,6 +100,16 @@ public:
 		enWarpStep_Down,
 		enWarpStep_End
 	};
+
+	/// <summary>
+	/// ステートマシンステート
+	/// </summary>
+	enum EnStateMachineState
+	{
+		enStateMachineState_Vigilance,	//警戒ステートマシン
+		enStateMachineState_Attack		//攻撃ステートマシン
+	};
+
 	/////////////////////////////////////////////////////////////////////
 	//仮想関数、純粋仮想関数の宣言
 	/////////////////////////////////////////////////////////////////////
@@ -120,7 +129,11 @@ public:
 	/// <returns></returns>
 	bool isAnimationEnable() const override
 	{
-		return m_enAnimationState != enAnimationState_KnockBack;
+		return m_enAnimationState != enAnimationState_KnockBack &&
+			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_start &&
+			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_main &&
+			m_enAnimationState != enAnimationState_DarkSpear_Main &&
+			m_enAnimationState != enAnimationState_DarkSpear_End;
 	}
 	/// <summary>
 	/// 回転可能か
@@ -154,7 +167,8 @@ public:
 			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_main &&
 			m_enAnimationState != enAnimationState_DarkSpear_Start &&
 			m_enAnimationState != enAnimationState_DarkSpear_Main &&
-			m_enAnimationState != enAnimationState_DarkSpear_End;
+			m_enAnimationState != enAnimationState_DarkSpear_End &&
+			m_enAnimationState != enAnimationState_CriticalHit;
 
 	}
 
@@ -202,6 +216,23 @@ public:
 	/////////////////////////////////////////////////////////////////////
 
 	/// <summary>
+	/// 次のステートマシンを生成する
+	/// </summary>
+	/// <param name="nextStateMachine"></param>
+	void SetNextStateMachine(EnStateMachineState nextStateMachine);
+
+	/// <summary>
+	/// スタート時のステートマシンの作成
+	/// </summary>
+	/// <param name="nextStateMachine"></param>
+	void SetStartStateMachine(EnStateMachineState nextStateMachine);
+
+	/// <summary>
+	/// 攻撃が終わった後の一通りの処理
+	/// </summary>
+	void ProcessEndAttackState();
+
+	/// <summary>
 	/// モブモンスターを削除
 	/// </summary>
 	void DeleteMobMonsters();
@@ -225,6 +256,15 @@ public:
 	ISummonerState* GetNowSummonerState()
 	{
 		return m_nowBossState;
+	}
+
+	/// <summary>
+	/// 現在のステートマシンを取得
+	/// </summary>
+	/// <returns></returns>
+	IBossStateMachine* GetNowStateMachine()
+	{
+		return m_stateMachine;
 	}
 
 	/// <summary>
@@ -348,9 +388,12 @@ private:
 	void NormalComboFinnish();
 
 private:
+
 	EnAnimationState				m_enAnimationState = enAninationState_Idle;				//アニメーションステート
 	EnSpecialActionState			m_enSpecialActionState = enSpecialActionState_Normal;	//特別な状態ステート(通常、怒りモード)
 	EnWarpStepState					m_enWarpStep = enWarpStep_Up;
+
+	EnStateMachineState	m_stateMachineState = enStateMachineState_Vigilance;
 
 	Level3DRender					m_stageLevel;
 	AnimationClip					m_animationClip[enAnimClip_Num];						// アニメーションクリップ 
@@ -358,6 +401,9 @@ private:
 	DarkWall* m_darkWall = nullptr;
 
 	CharacterController				m_charaCon;												//キャラクターコントローラー
+
+	std::unique_ptr<IBossStateMachine> m_SummonerstateMachine = nullptr;
+
 
 	IBossStateMachine*				m_stateMachine = nullptr;
 
