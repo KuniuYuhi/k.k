@@ -35,6 +35,7 @@ void SummonerState_KnockBack::ManageState()
 	if (m_summoner->GetModelRender().IsPlayingAnimation() == false)
 	{
 		m_summoner->ProcessCommonStateTransition();
+		
 	}
 }
 
