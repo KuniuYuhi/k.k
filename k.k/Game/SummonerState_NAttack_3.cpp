@@ -6,7 +6,9 @@ void SummonerState_NAttack_3::ManageState()
 {
 	if (m_summoner->GetModelRender().IsPlayingAnimation() == false)
 	{
-		m_summoner->ProcessCommonStateTransition();
+		//攻撃ステートが終わった後の処理
+		m_summoner->ProcessEndAttackState();
+
 	}
 }
 
