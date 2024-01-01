@@ -15,7 +15,8 @@
 #include "CharactersInfoManager.h"
 #include "GameManager.h"
 
-#include "IMobStateMachine.h"
+#include "MobMonsterSM_Patrol.h"
+#include "MobMonsterSM_Chase.h"
 
 namespace {
 	const float ANGLE = 60.0f;				//視野角
@@ -60,7 +61,6 @@ Mushroom::Mushroom()
 
 Mushroom::~Mushroom()
 {
-	delete m_stateMachine;
 	DeleteGO(m_headCollision);
 }
 
@@ -77,7 +77,7 @@ bool Mushroom::Start()
 	//モデルの初期化
 	InitModel();
 	//ステートマシンの生成
-	m_stateMachine = new IMobStateMachine(this);
+	SetNextStateMachine(enStateMachineState_Patrol);
 	//まず召喚アニメーション。その後行動
 	SetNextAnimationState(enAnimationState_Appear);
 
@@ -150,7 +150,7 @@ void Mushroom::Update()
 		AngleChangeTimeIntarval(m_angleChangeTime);
 
 		//毎フレーム行う処理
-		m_stateMachine->Execute();
+		m_mobStateMachine->Execute();
 
 		//回転処理
 		Rotation(ROT_SPEED, ROT_SPEED);
@@ -324,6 +324,30 @@ void Mushroom::SetNextAnimationState(EnAnimationState nextState)
 		break;
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
+		std::abort();
+		break;
+	}
+}
+
+void Mushroom::SetNextStateMachine(EnStateMachineState nextStateMachine)
+{
+	if (m_mobStateMachine != nullptr)
+	{
+		delete m_mobStateMachine;
+		m_mobStateMachine = nullptr;
+	}
+
+	m_enStateMachineState = nextStateMachine;
+
+	switch (m_enStateMachineState)
+	{
+	case MobMonsterInfo::enStateMachineState_Patrol:
+		m_mobStateMachine = new MobMonsterSM_Patrol(this);
+		break;
+	case MobMonsterInfo::enStateMachineState_Chase:
+		m_mobStateMachine = new MobMonsterSM_Chase(this);
+		break;
+	default:
 		std::abort();
 		break;
 	}
