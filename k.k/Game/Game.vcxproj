@@ -340,6 +340,8 @@
     </ClCompile>
     <ClCompile Include="Summon.cpp" />
     <ClCompile Include="Summoner.cpp" />
+    <ClCompile Include="SummonerSM_Attack.cpp" />
+    <ClCompile Include="SummonerSM_Vigilance.cpp" />
     <ClCompile Include="SummonerState_DarkSpearEnd.cpp" />
     <ClCompile Include="SummonerState_DarkSpearMain.cpp" />
     <ClCompile Include="SummonerStateEat.cpp" />
@@ -500,6 +502,8 @@
     <ClInclude Include="Summon.h" />
     <ClInclude Include="Summoner.h" />
     <ClInclude Include="SummonerActionList.h" />
+    <ClInclude Include="SummonerSM_Attack.h" />
+    <ClInclude Include="SummonerSM_Vigilance.h" />
     <ClInclude Include="SummonerState_DarkSpearEnd.h" />
     <ClInclude Include="SummonerState_DarkSpearMain.h" />
     <ClInclude Include="SummonerStateEat.h" />

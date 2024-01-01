@@ -452,6 +452,8 @@
     <ClCompile Include="MobMonsterActionList.cpp">
       <Filter>Character\Monster\MobMonster</Filter>
     </ClCompile>
+    <ClCompile Include="SummonerSM_Attack.cpp" />
+    <ClCompile Include="SummonerSM_Vigilance.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -876,5 +878,7 @@
     <ClInclude Include="MobMonsterActionList.h">
       <Filter>Character\Monster\MobMonster</Filter>
     </ClInclude>
+    <ClInclude Include="SummonerSM_Attack.h" />
+    <ClInclude Include="SummonerSM_Vigilance.h" />
   </ItemGroup>
 </Project>
