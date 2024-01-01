@@ -13,9 +13,9 @@
 
 #include "CharactersInfoManager.h"
 #include "GameManager.h"
-#include "Lich.h"
 
-#include "IMobStateMachine.h"
+#include "MobMonsterSM_Patrol.h"
+#include "MobMonsterSM_Chase.h"
 
 namespace {
 	const float ANGLE = 65.0f;				//視野角
@@ -25,7 +25,7 @@ namespace {
 	const float STAY_RANGR = 45.0f;						//停止する距離
 	const float ATTACK_INTAERVALE_TIME = 2.5f;			//攻撃する間隔
 	const float PLAYER_NEARBY_RANGE = 150.0f;			//攻撃した後のプレイヤーを索敵できる範囲
-	const float ANGLE_RANGE = 2.0f;						//移動するアングルの範囲
+	const int ANGLE_RANGE = 2;						//移動するアングルの範囲
 	const float POS2_LENGTH = 30.0f;
 	const float ROT_SPEED = 7.0f;
 	const float SKILL_TIMER_LIMMIT = 10.0f;
@@ -61,7 +61,6 @@ TurtleShell::TurtleShell()
 
 TurtleShell::~TurtleShell()
 {
-	delete m_stateMachine;
 	DeleteGO(m_headCollision);
 }
 
@@ -78,7 +77,8 @@ bool TurtleShell::Start()
 	//モデルの初期化
 	InitModel();
 	//ステートマシンの生成
-	m_stateMachine = new IMobStateMachine(this);
+	SetNextStateMachine(enStateMachineState_Patrol);
+
 	//まず召喚アニメーション。その後行動
 	SetNextAnimationState(enAnimationState_Appear);
 
@@ -146,7 +146,7 @@ void TurtleShell::Update()
 		AngleChangeTimeIntarval(m_angleChangeTime);
 
 		//毎フレーム行う処理
-		m_stateMachine->Execute();
+		m_mobStateMachine->Execute();
 		
 		//回転処理
 		Rotation(ROT_SPEED, ROT_SPEED);
@@ -435,6 +435,30 @@ void TurtleShell::SetNextAnimationState(EnAnimationState nextState)
 		break;
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
+		std::abort();
+		break;
+	}
+}
+
+void TurtleShell::SetNextStateMachine(EnStateMachineState nextStateMachine)
+{
+	if (m_mobStateMachine != nullptr)
+	{
+		delete m_mobStateMachine;
+		m_mobStateMachine = nullptr;
+	}
+
+	m_enStateMachineState = nextStateMachine;
+
+	switch (m_enStateMachineState)
+	{
+	case MobMonsterInfo::enStateMachineState_Patrol:
+		m_mobStateMachine = new MobMonsterSM_Patrol(this);
+		break;
+	case MobMonsterInfo::enStateMachineState_Chase:
+		m_mobStateMachine = new MobMonsterSM_Chase(this);
+		break;
+	default:
 		std::abort();
 		break;
 	}

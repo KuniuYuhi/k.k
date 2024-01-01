@@ -133,6 +133,13 @@ public:
 	void SetNextAnimationState(EnAnimationState nextState);
 
 	/// <summary>
+	/// 次のステートマシンを作成する
+	/// </summary>
+	/// <param name="nextStateMachine"></param>
+	void SetNextStateMachine(EnStateMachineState nextStateMachine) override;
+
+
+	/// <summary>
 	/// キャラクターコントローラーの取得
 	/// </summary>
 	/// <returns></returns>
@@ -165,8 +172,6 @@ private:
 	/// ステート管理
 	/// </summary>
 	void ManageState();
-
-	IMobStateMachine* m_stateMachine = nullptr;
 	
 	ITurtleShellState* m_state = nullptr;
 
@@ -174,6 +179,8 @@ private:
 	AnimationClip m_animationClip[enAnimationClip_Num];	// アニメーションクリップ 
 
 	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
+
+	EnStateMachineState m_enStateMachineState = enStateMachineState_Patrol;
 
 	CollisionObject* m_headCollision = nullptr;
 	
