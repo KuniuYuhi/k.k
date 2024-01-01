@@ -516,12 +516,12 @@ void Game::InitGameObject()
 		slime3->SetPosition({ 100.0f,0.0f,200.0f });*/
 
 		/*Cactus* cactus = NewGO<Cactus>(0, "cactus");
-		cactus->SetPosition(g_vec3Zero);*/
+		cactus->SetPosition({ 0.0f, 0.0f, 200.0f });*/
 
 		/*Mushroom* mush = NewGO<Mushroom>(0, "mush");
-		mush->SetPosition(g_vec3Zero);*/
+		mush->SetPosition({ -150.0f, 0.0f, 200.0f });*/
 
-		/*TurtleShell* tu = NewGO<TurtleShell>(0, "aa");
+	/*	TurtleShell* tu = NewGO<TurtleShell>(0, "aa");
 		tu->SetPosition(g_vec3Zero);*/
 
 	}
