@@ -454,6 +454,8 @@
     </ClCompile>
     <ClCompile Include="SummonerSM_Attack.cpp" />
     <ClCompile Include="SummonerSM_Vigilance.cpp" />
+    <ClCompile Include="MobMonsterSM_Patrol.cpp" />
+    <ClCompile Include="MobMonsterSM_Chase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -880,5 +882,7 @@
     </ClInclude>
     <ClInclude Include="SummonerSM_Attack.h" />
     <ClInclude Include="SummonerSM_Vigilance.h" />
+    <ClInclude Include="MobMonsterSM_Patrol.h" />
+    <ClInclude Include="MobMonsterSM_Chase.h" />
   </ItemGroup>
 </Project>

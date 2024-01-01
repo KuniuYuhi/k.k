@@ -302,6 +302,8 @@
     <ClCompile Include="ManagerPreCompile.cpp" />
     <ClCompile Include="IMobStateMachine.cpp" />
     <ClCompile Include="MobMonsterActionList.cpp" />
+    <ClCompile Include="MobMonsterSM_Chase.cpp" />
+    <ClCompile Include="MobMonsterSM_Patrol.cpp" />
     <ClCompile Include="MonsterBase.cpp" />
     <ClCompile Include="MushroomStateAppear.cpp" />
     <ClCompile Include="Meteo.cpp" />
@@ -466,6 +468,8 @@
     <ClInclude Include="ManagerPreCompile.h" />
     <ClInclude Include="IMobStateMachine.h" />
     <ClInclude Include="MobMonsterActionList.h" />
+    <ClInclude Include="MobMonsterSM_Chase.h" />
+    <ClInclude Include="MobMonsterSM_Patrol.h" />
     <ClInclude Include="MonsterBase.h" />
     <ClInclude Include="MushroomStateAppear.h" />
     <ClInclude Include="Meteo.h" />
