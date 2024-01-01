@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "MobMonster.h"
 #include "InitEffect.h"
-#include "Lich.h"
+
+#include "MobMonsterSM_Patrol.h"
+#include "MobMonsterSM_Chase.h"
 
 //todo@V‚µ‚¢’e‚«ˆ—
 

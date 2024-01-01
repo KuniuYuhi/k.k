@@ -5,6 +5,7 @@
 
 #include "MobMonsterActionList.h"
 
+class IMobStateMachine;
 
 class MobMonster:public MonsterBase
 {
@@ -136,9 +137,8 @@ public:
 
 	/// <summary>
 	/// 攻撃範囲内にプレイヤーがいるか。
-	/// オーバーライドしなかったら
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>いたらtrue</returns>
 	virtual bool IsPlayerInAttackRange();
 	
 	/// <summary>
@@ -164,6 +164,11 @@ public:
 	/// <param name="nextState"></param>
 	virtual void SetNextAnimationState(MobMonsterInfo::EnAnimationState nextState){}
 
+	/// <summary>
+	/// 次のステートマシンを作成する
+	/// </summary>
+	/// <param name="nextStateMachine"></param>
+	virtual void SetNextStateMachine(MobMonsterInfo::EnStateMachineState nextStateMachine){}
 
 protected:
 
@@ -191,12 +196,13 @@ protected:
 
 protected:
 
-
+	IMobStateMachine* m_mobStateMachine = nullptr;
+	
 	Vector3					m_passPower = g_vec3One;		//はじくときの力
 
 	Vector3					m_direction = Vector3::Zero;	//移動する方向ベクトル
 
-	float					m_angleChangeTime = 0.0f;		//向かうベクトルを計算するタイマー
+	int					m_angleChangeTime = 0;		//向かうベクトルを計算するタイマー
 
 	float					m_distanceToPlayer = 0.0f;		//プレイヤーとの距離
 	float					m_attackRange = 0.0f;			//攻撃できる範囲
