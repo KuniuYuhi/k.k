@@ -320,6 +320,7 @@ void Summoner::SetNextAnimationState(EnAnimationState nextState)
 	if (m_nowBossState != nullptr)
 	{
 		delete m_nowBossState;
+		m_nowBossState = nullptr;
 	}
 	//新しいステートを作成
 	m_enAnimationState = nextState;
@@ -594,6 +595,7 @@ void Summoner::SetNextStateMachine(EnStateMachineState nextStateMachine)
 {
 	if (m_stateMachine != nullptr)
 	{
+		delete m_stateMachine;
 		m_stateMachine = nullptr;
 	}
 
