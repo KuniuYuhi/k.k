@@ -23,6 +23,7 @@
 #include "Bow.h"
 #include "ManagerPreCompile.h"
 
+#include "CalcCharacterForward.h"
 
 namespace {
 	const float ADD_SCALE = 1.2f;
@@ -74,6 +75,10 @@ bool Brave::Start()
 	m_charaCon.Init(12.0f, 33.0f, m_position);
 	//初期ステートを設定
 	SetNextAnimationState(enAninationState_Idle);
+
+	//前方向計算クラス生成
+	m_calcCharacterForward = std::make_unique<CalcCharacterForward>();
+
 	return true;
 }
 
@@ -121,10 +126,12 @@ void Brave::Move()
 			//前方向の計算
 			CalcForward(m_moveSpeed);
 		}
+		//移動量を0にする
 		m_moveSpeed = g_vec3Zero;
 	}
 	else
 	{
+		//前方向を計算
 		CalcForward(m_moveSpeed);
 	}
 
@@ -267,21 +274,6 @@ bool Brave::IsInaction()
 	{
 		return true;
 	}
-
-	//ノックバック中なら
-	//if (GetHitKnockBackFlag() == true)
-	//{
-	//	if (IsProcessKnockBack(m_moveSpeed,m_knockbackTimer)==true)
-	//	{
-	//		//座標を移動
-	//		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-	//		return true;
-	//	}
-	//	else
-	//	{
-	//		SetHitKnockBackFlag(false);
-	//	}
-	//}
 	
 	//ここまできたら行動可能
 	return false;
@@ -343,7 +335,7 @@ void Brave::ProcessWin()
 
 bool Brave::IsKnockBack()
 {
-	if (IsProcessKnockBack(m_moveSpeed, m_knockbackTimer, m_KnockBackTimerLimmit) == true)
+	if (IsKnockingBack(m_moveSpeed, m_knockbackTimer, m_KnockBackTimerLimmit) == true)
 	{
 		//座標を移動
 		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
@@ -550,13 +542,18 @@ void Brave::ProcessNormalAttackStateTransition()
 		//次のコンボの攻撃ステート設定
 		else
 		{
-			//次のコンボに移る前に回転する
-			if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
-			{
-				m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
-				m_forward = m_SaveMoveSpeed;
-				m_forward.Normalize();
-			}
+			////moveSpeedの取得
+			//m_moveSpeed = calcVelocity(GetStatus());
+			//m_moveSpeed.y = 0.0f;
+			////前方向を設定
+			//m_calcCharacterForward.get()->CalcForwardOfNearMonster(
+			//	m_position, m_forward, m_moveSpeed, 150.0f);
+			////次のコンボに移る前に回転する
+			//// 上限なら回転させない
+			//if (fabsf(m_forward.x) >= 0.001f || fabsf(m_forward.z) >= 0.001f)
+			//{
+			//	m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
+			//}
 			//次のコンボの処理
 			ProcessComboAttack();
 		}
@@ -641,6 +638,19 @@ void Brave::ProcessDefendStateTransition()
 		//ステート共通の状態遷移処理に遷移
 		ProcessCommonStateTransition();
 	}
+}
+
+void Brave::ProcessKnockBackStateTransition()
+{
+	//アクション中にダメージ受けたかもしれないので
+		// アクションフラグ関係を全てfalseにする
+	SetAllInfoAboutActionFlag(false);
+	//コンボ状態をリセット
+	SetComboStateNone();
+	//被ダメージによって戻せなかった変数をリセット
+	m_mainUseWeapon.weapon->ResetVariable();
+	//ステート共通の状態遷移処理に遷移
+	ProcessCommonStateTransition();
 }
 
 bool Brave::RotationOnly()
@@ -938,7 +948,22 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	if (wcscmp(eventName, L"MoveForwardStart") == 0)
 	{
 		//向いている方向に前進するために前方向を計算
-		CalcForward(m_moveSpeed);
+		
+		//moveSpeedの取得
+		m_moveSpeed = calcVelocity(GetStatus());
+		m_moveSpeed.y = 0.0f;
+		//前方向を設定
+		m_calcCharacterForward.get()->CalcForwardOfNearMonster(
+			m_position, m_forward, m_moveSpeed, 150.0f);
+		//次のコンボに移る前に回転する
+		if (fabsf(m_forward.x) >= 0.001f || fabsf(m_forward.z) >= 0.001f)
+		{
+			m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
+		}
+		
+		//近くに敵がいるか探して、いたら前方向を敵のほうに変更
+
+
 		SetMoveforwardFlag(true);
 	}
 	//前進する終わり
