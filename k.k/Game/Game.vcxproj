@@ -260,6 +260,7 @@
     <ClCompile Include="CactusStateRun.cpp" />
     <ClCompile Include="CactusStateSkill.cpp" />
     <ClCompile Include="CactusStateVictory.cpp" />
+    <ClCompile Include="CalcCharacterForward.cpp" />
     <ClCompile Include="CascadModel.cpp" />
     <ClCompile Include="CharactersInfoManager.cpp" />
     <ClCompile Include="DamageFont.cpp" />
@@ -419,6 +420,7 @@
     <ClInclude Include="CactusStateRun.h" />
     <ClInclude Include="CactusStateSkill.h" />
     <ClInclude Include="CactusStateVictory.h" />
+    <ClInclude Include="CalcCharacterForward.h" />
     <ClInclude Include="CascadModel.h" />
     <ClInclude Include="CharactersInfoManager.h" />
     <ClInclude Include="DamageFont.h" />
