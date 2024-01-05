@@ -10,7 +10,7 @@ namespace {
 
 	const float MELEE_ATTACK_RANGE = 280.0f;	//近距離攻撃の範囲内
 
-	const float STAY_PLAYER_LIMMIT_TIME = 5.0f;		//プレイヤーが近くにとどまっているタイマーの上限
+	const float STAY_PLAYER_LIMMIT_TIME = 500.0f;		//プレイヤーが近くにとどまっているタイマーの上限
 
 
 	const float KNOCKBACK_DISTANCE = 200.0f;
