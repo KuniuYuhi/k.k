@@ -29,6 +29,10 @@ public:
 	/// <param name="charaCon"></param>
 	void MoveChasePlayer(CharacterController& charaCon);
 
+	/// <summary>
+	/// ノックバック処理
+	/// </summary>
+	void ProcessKnockBack(CharacterController& charaCon);
 
 	/// <summary>
 	/// 向かうベクトルを設定
@@ -105,6 +109,11 @@ public:
 		return m_knockBackFlag;
 	}
 
+	/// <summary>
+	/// ノックバックによる硬直中か
+	/// </summary>
+	/// <returns>硬直中ならtrue</returns>
+	const bool& IsKnockBackStiffness();
 
 	///////////////////////////////////////////////////////////
 	///取得、設定関数
@@ -221,9 +230,11 @@ protected:
 
 	bool					m_knockBackFlag = false;		//ノックバックするかのフラグ
 
-	float					m_knockBackTimer = 0.0f;
+	float					m_knockBackTimer = 0.0f;		//ノックバックで移動する時間
 
 	bool					m_playerNearbyFlag = false;
+
+	float m_knockBackStiffnessTimer = 0.0f;
 
 
 	//スキル使用可能かのタイマー
