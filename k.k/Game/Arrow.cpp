@@ -10,7 +10,7 @@ namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
 	//通常攻撃の当たり判定のサイズ
-	const Vector3 ARROW_NORMAL_COLLISION_SIZE = { 100.0f,10.0f,10.0f };
+	const Vector3 ARROW_NORMAL_COLLISION_SIZE = { 110.0f,30.0f,10.0f };
 	//スキル攻撃の当たり判定のサイズ
 	const Vector3 ARROW_Skill_COLLISION_SIZE = { 150.0f,14.0f,20.0f };
 
@@ -270,17 +270,33 @@ void Arrow::NormalShot()
 
 		m_arrowMatrix.Apply(rot);
 
+		
+
 		m_rotation = rot;
+
+		m_rotation.SetRotation(m_arrowMatrix);
 	}
 	else
 	{
 		//消滅
 		DeleteGO(this);
 	}
-	//m_modelArrow.SetWorldMatrix(aa);
 	
 	m_modelArrow.SetPosition(m_arrowPos);
-	//m_modelArrow.SetRotation(m_rotation);
+	m_modelArrow.SetRotation(m_rotation);
+
+
+	float value = m_deleteTimer / m_flightDuration;
+	Vector3 collisionPos = m_arrowPos;
+	collisionPos.Normalize();
+	collisionPos.x *= 80.0f;
+	//collisionPos.y = 20.0f;
+	collisionPos.z *= 80.0f;
+	Vector3 finalPos = m_arrowPos;
+	finalPos.Add(collisionPos);
+
+	/*m_arrowCollision->SetPosition(finalPos);
+	m_arrowCollision->Update();*/
 
 	//前フレームの矢の座標を取得
 	m_oldArrowPos = m_arrowPos;

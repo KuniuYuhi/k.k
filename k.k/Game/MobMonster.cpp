@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "MobMonster.h"
 #include "InitEffect.h"
-#include "Lich.h"
 
 //todo　新しい弾き処理
 
@@ -10,6 +9,8 @@ namespace {
 	const float HIT_EFFECT_SIZE = 15.0f;
 
 	const float FIND_DISTANCE = 200.0f;
+
+	const float KNOCKBACK_SIFFNESS_TIMER_LIMMIT = 0.2f;
 }
 
 //衝突したときに呼ばれる関数オブジェクト(壁用)
@@ -197,6 +198,25 @@ void MobMonster::MoveChasePlayer(CharacterController& charaCon)
 	}
 }
 
+void MobMonster::ProcessKnockBack(CharacterController& charaCon)
+{
+	//ノックバック中なら
+	if (GetKnockBackFlag() == true)
+	{
+		//ノックバックの処理をするなら
+		if (IsKnockingBack(
+			m_moveSpeed, m_knockBackTimer) == true)
+		{
+			//座標を移動
+			m_position = charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+		}
+		else
+		{
+			SetKnockBackFlag(false);
+		}
+	}
+}
+
 Vector3 MobMonster::SetRamdomDirection(int range)
 {
 	Vector3 randomPos = g_vec3Zero;
@@ -355,6 +375,20 @@ void MobMonster::CreateHitEffect()
 	hitEffect->Update();
 }
 
+const bool& MobMonster::IsKnockBackStiffness()
+{
+	if (m_knockBackStiffnessTimer > KNOCKBACK_SIFFNESS_TIMER_LIMMIT)
+	{
+		m_knockBackStiffnessTimer = 0.0f;
+		return false;
+	}
+	else
+	{
+		m_knockBackStiffnessTimer += g_gameTime->GetFrameDeltaTime();
+		return true;
+	}
+}
+
 bool MobMonster::IsFoundPlayerFlag()
 {
 	//まずプレイヤーとの距離が近いか
@@ -375,6 +409,7 @@ bool MobMonster::IsFoundPlayerFlag()
 
 		Vector3 toPlayerDir = m_toTarget;
 		//視野角内にプレイヤーがいるなら
+		//前方向のせいで被ダメ後に追いかけない
 		if (IsInFieldOfView(toPlayerDir, m_forward, m_angle) == true)
 		{
 			return true;

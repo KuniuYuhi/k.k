@@ -108,7 +108,7 @@ bool Game::Start()
 	//被写界深度の無効化
 	g_renderingEngine->DisableDof();
 	//当たり判定の可視化
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 
 	return true;
@@ -503,8 +503,8 @@ void Game::InitGameObject()
 		//ボスの生成
 		CreateBoss();
 		//スライム生成
-		/*Slime* slime = NewGO<Slime>(0, "slime");
-		slime->SetPosition({ -150.0f, 0.0f, 500.0f });*/
+		Slime* slime = NewGO<Slime>(0, "slime");
+		slime->SetPosition({ -150.0f, 0.0f, 500.0f });
 		////スライム生成
 		//Slime* slime1 = NewGO<Slime>(0, "slime");
 		//slime1->SetPosition({100.0f,0.0f,100.0f});
@@ -515,11 +515,11 @@ void Game::InitGameObject()
 		/*Slime* slime3 = NewGO<Slime>(0, "slime");
 		slime3->SetPosition({ 100.0f,0.0f,200.0f });*/
 
-		/*Cactus* cactus = NewGO<Cactus>(0, "cactus");
-		cactus->SetPosition(g_vec3Zero);*/
+		Cactus* cactus = NewGO<Cactus>(0, "cactus");
+		cactus->SetPosition({ 0.0f, 0.0f, 200.0f });
 
-		/*Mushroom* mush = NewGO<Mushroom>(0, "mush");
-		mush->SetPosition(g_vec3Zero);*/
+		Mushroom* mush = NewGO<Mushroom>(0, "mush");
+		mush->SetPosition({ -150.0f, 0.0f, 200.0f });
 
 		/*TurtleShell* tu = NewGO<TurtleShell>(0, "aa");
 		tu->SetPosition(g_vec3Zero);*/

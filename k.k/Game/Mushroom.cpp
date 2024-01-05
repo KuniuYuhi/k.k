@@ -15,7 +15,8 @@
 #include "CharactersInfoManager.h"
 #include "GameManager.h"
 
-#include "IMobStateMachine.h"
+#include "MobMonsterSM_Patrol.h"
+#include "MobMonsterSM_Chase.h"
 
 namespace {
 	const float ANGLE = 60.0f;				//視野角
@@ -60,7 +61,6 @@ Mushroom::Mushroom()
 
 Mushroom::~Mushroom()
 {
-	delete m_stateMachine;
 	DeleteGO(m_headCollision);
 }
 
@@ -77,7 +77,7 @@ bool Mushroom::Start()
 	//モデルの初期化
 	InitModel();
 	//ステートマシンの生成
-	m_stateMachine = new IMobStateMachine(this);
+	SetNextStateMachine(enStateMachineState_Patrol);
 	//まず召喚アニメーション。その後行動
 	SetNextAnimationState(enAnimationState_Appear);
 
@@ -150,10 +150,14 @@ void Mushroom::Update()
 		AngleChangeTimeIntarval(m_angleChangeTime);
 
 		//毎フレーム行う処理
-		m_stateMachine->Execute();
+		m_mobStateMachine->Execute();
 
-		//回転処理
-		Rotation(ROT_SPEED, ROT_SPEED);
+		//ノックバック中でないなら回転処理
+		if (GetKnockBackFlag() != true)
+		{
+			//回転処理
+			Rotation(ROT_SPEED, ROT_SPEED);
+		}
 
 		//当たり判定
 		DamageCollision(m_charaCon);
@@ -213,21 +217,21 @@ bool Mushroom::IsStopProcessing()
 	}
 
 	//ノックバック中なら
-	if (GetKnockBackFlag() == true)
-	{
-		//ノックバックの処理をするなら
-		if (IsProcessKnockBack(
-			m_moveSpeed, m_knockBackTimer) == true)
-		{
-			//座標を移動
-			m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-			return true;
-		}
-		else
-		{
-			SetKnockBackFlag(false);
-		}
-	}
+	//if (GetKnockBackFlag() == true)
+	//{
+	//	//ノックバックの処理をするなら
+	//	if (IsKnockingBack(
+	//		m_moveSpeed, m_knockBackTimer) == true)
+	//	{
+	//		//座標を移動
+	//		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	//		return true;
+	//	}
+	//	else
+	//	{
+	//		SetKnockBackFlag(false);
+	//	}
+	//}
 
 	//それ以外なら
 	return false;
@@ -329,6 +333,30 @@ void Mushroom::SetNextAnimationState(EnAnimationState nextState)
 	}
 }
 
+void Mushroom::SetNextStateMachine(EnStateMachineState nextStateMachine)
+{
+	if (m_mobStateMachine != nullptr)
+	{
+		delete m_mobStateMachine;
+		m_mobStateMachine = nullptr;
+	}
+
+	m_enStateMachineState = nextStateMachine;
+
+	switch (m_enStateMachineState)
+	{
+	case MobMonsterInfo::enStateMachineState_Patrol:
+		m_mobStateMachine = new MobMonsterSM_Patrol(this);
+		break;
+	case MobMonsterInfo::enStateMachineState_Chase:
+		m_mobStateMachine = new MobMonsterSM_Chase(this);
+		break;
+	default:
+		std::abort();
+		break;
+	}
+}
+
 void Mushroom::ProcessCommonStateTransition()
 {
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
@@ -370,13 +398,27 @@ void Mushroom::OnProcessAttack_2StateTransition()
 
 void Mushroom::OnProcessDamageStateTransition()
 {
-	//アニメーションの再生が終わったら
-	if (m_modelRender.IsPlayingAnimation() == false)
+	if (GetKnockBackFlag() == false)
 	{
-
-		//共通の状態遷移処理に移行
-		ProcessCommonStateTransition();
+		//何フレームか硬直させてから
+		//硬直が終わったら
+		if (IsKnockBackStiffness() == false)
+		{
+			//共通の状態遷移処理に移行
+			ProcessCommonStateTransition();
+		}
+		return;
 	}
+	//ノックバック処理
+	ProcessKnockBack(m_charaCon);
+
+	//アニメーションの再生が終わったら
+	//if (m_modelRender.IsPlayingAnimation() == false)
+	//{
+
+	//	//共通の状態遷移処理に移行
+	//	ProcessCommonStateTransition();
+	//}
 }
 
 void Mushroom::OnProcessDieStateTransition()

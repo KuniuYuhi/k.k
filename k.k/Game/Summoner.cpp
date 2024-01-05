@@ -4,7 +4,9 @@
 #include "CharactersInfoManager.h"
 #include "GameManager.h"
 //ステートマシン
-#include "IBossStateMachine.h"
+//#include "IBossStateMachine.h"
+#include "SummonerSM_Attack.h"
+#include "SummonerSM_Vigilance.h"
 //各種ステート
 #include "SummonerState_Idle.h"
 #include "SummonerState_DarkBall.h"
@@ -38,14 +40,14 @@
 namespace {
 	const float SCALE_UP = 4.0f;		//キャラクターのサイズ
 
-	const float MAX_SUPERARMOR_POINT = 100.0f;
+	const float MAX_SUPERARMOR_POINT = 10000.0f;
 
 	const float KNOCKBACK_RANGE = 300.0f;
 	const float KNOCKBACK_POWER = 400.0f;
 	const float KNOCKBACK_LIMMIT = 2.0f;
 
 	//ステータス
-	int MAXHP = 200;
+	int MAXHP = 20000;
 	int MAXMP = 500;
 	int ATK = 20;
 	float SPEED = 160.0f;
@@ -61,7 +63,7 @@ Summoner::Summoner()
 Summoner::~Summoner()
 {
 	//ステートマシンの削除
-	IBossStateMachine::DeleteInstance();
+	//delete m_stateMachine;
 
 	//勝敗が決まったら場合でないなら処理しない。終わる時にエフェクトが再生されるためエラーがでるから
 	if (GameManager::GetInstance()->GetOutComeState() == GameManager::enOutComeState_None)
@@ -93,11 +95,11 @@ bool Summoner::Start()
 	//モデルの初期化
 	InitModel();
 	//ステートマシンの生成
-	IBossStateMachine::CreateInstance(this);
+	//m_stateMachine = new IBossStateMachine(this);
+	SetStartStateMachine(enStateMachineState_Vigilance);
+	//m_SummonerstateMachine = std::make_unique<IBossStateMachine>(this);
 
-	//使いやすくするために
-	//m_stateMachine = IBossStateMachine::GetInstance();
-
+	
 
 	//最初のアニメーション設定
 	SetNextAnimationState(enAninationState_Idle);
@@ -118,7 +120,7 @@ void Summoner::Update()
 		ProcessMove();
 
 		//ステートマシンの毎フレームの処理
-		IBossStateMachine::GetInstance()->Execute();
+		m_stateMachine->Execute();
 
 		//当たり判定の処理
 		DamageCollision(m_charaCon);
@@ -318,6 +320,7 @@ void Summoner::SetNextAnimationState(EnAnimationState nextState)
 	if (m_nowBossState != nullptr)
 	{
 		delete m_nowBossState;
+		m_nowBossState = nullptr;
 	}
 	//新しいステートを作成
 	m_enAnimationState = nextState;
@@ -586,6 +589,67 @@ void Summoner::NormalComboFinnish()
 	//爆発エフェクトと当たり判定生成
 
 
+}
+
+void Summoner::SetNextStateMachine(EnStateMachineState nextStateMachine)
+{
+	if (m_stateMachine != nullptr)
+	{
+		delete m_stateMachine;
+		m_stateMachine = nullptr;
+	}
+
+	m_stateMachineState = nextStateMachine;
+
+	switch (m_stateMachineState)
+	{
+	case Summoner::enStateMachineState_Vigilance:
+		
+		m_stateMachine = new SummonerSM_Vigilance(this);
+
+		break;
+	case Summoner::enStateMachineState_Attack:
+		m_stateMachine = new SummonerSM_Attack(this);
+		break;
+	default:
+		std::abort();
+		break;
+	}
+
+}
+
+void Summoner::SetStartStateMachine(EnStateMachineState nextStateMachine)
+{
+	if (m_stateMachine != nullptr)
+	{
+		m_stateMachine = nullptr;
+	}
+
+	m_stateMachineState = nextStateMachine;
+
+	switch (m_stateMachineState)
+	{
+	case Summoner::enStateMachineState_Vigilance:
+		//最初の生成なので、タイマーをリセットする
+		m_stateMachine = new SummonerSM_Vigilance(this, true);
+		break;
+	case Summoner::enStateMachineState_Attack:
+		m_stateMachine = new SummonerSM_Attack(this);
+		break;
+	default:
+		std::abort();
+		break;
+	}
+}
+
+void Summoner::ProcessEndAttackState()
+{
+	//警戒ステートマシンに変更
+	SetNextStateMachine(Summoner::enStateMachineState_Vigilance);
+	//攻撃がおわったので連続攻撃回数を0にリセットする
+	GetNowStateMachine()->SetContinuousAttackCount(0);
+	//共通ステート処理
+	ProcessCommonStateTransition();
 }
 
 void Summoner::DeleteMobMonsters()

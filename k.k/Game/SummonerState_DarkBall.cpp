@@ -5,7 +5,10 @@
 #include "DarkBall.h"
 
 //todo サモナーの中身がおかしくなる
-
+namespace {
+	const int CONTINUOUS_ATTACK_COUNT_LIMMIT = 2;
+	const int ONE_MORE_ATTACK_PROBABILITY = 5;
+}
 
 SummonerState_DarkBall::~SummonerState_DarkBall()
 {
@@ -37,7 +40,24 @@ void SummonerState_DarkBall::ManageState()
 	//アニメーションが終わったら
 	if (m_summoner->GetModelRender().IsPlayingAnimation() == false)
 	{
-		m_summoner->ProcessCommonStateTransition();
+		
+
+		//連続攻撃回数が上限以下なら
+		if (m_summoner->GetNowStateMachine()->GetContinuousAttackCount() <
+			CONTINUOUS_ATTACK_COUNT_LIMMIT)
+		{
+			//もう一度攻撃する確率を決める
+			int num = rand() % 10;
+			//もう一度攻撃する確率を上回ったら攻撃する
+			if (num > ONE_MORE_ATTACK_PROBABILITY)
+			{
+				m_summoner->ProcessCommonStateTransition();
+				return;
+			}
+		}
+		//攻撃ステートが終わった後の処理
+		m_summoner->ProcessEndAttackState();
+
 	}
 }
 

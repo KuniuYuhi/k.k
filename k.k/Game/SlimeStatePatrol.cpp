@@ -18,6 +18,4 @@ void SlimeStatePatrol::PlayAnimation()
 	{
 		m_slime->GetModelRender().PlayAnimation(enAnimationClip_Idle, 0.4f);
 	}
-
-	//m_slime->GetModelRender().PlayAnimation(enAninationClip_Patrol,0.3f);
 }

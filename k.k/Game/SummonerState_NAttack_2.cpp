@@ -66,7 +66,8 @@ void SummonerState_NAttack_2::NextAction()
 	}
 	else
 	{
-		//待機状態に遷移
-		m_summoner->ProcessCommonStateTransition();
+		//攻撃ステートが終わった後の処理
+		m_summoner->ProcessEndAttackState();
+
 	}
 }

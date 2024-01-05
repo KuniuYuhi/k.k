@@ -13,9 +13,9 @@
 
 #include "CharactersInfoManager.h"
 #include "GameManager.h"
-#include "Lich.h"
 
-#include "IMobStateMachine.h"
+#include "MobMonsterSM_Patrol.h"
+#include "MobMonsterSM_Chase.h"
 
 namespace {
 	const float ANGLE = 65.0f;				//視野角
@@ -25,7 +25,7 @@ namespace {
 	const float STAY_RANGR = 45.0f;						//停止する距離
 	const float ATTACK_INTAERVALE_TIME = 2.5f;			//攻撃する間隔
 	const float PLAYER_NEARBY_RANGE = 150.0f;			//攻撃した後のプレイヤーを索敵できる範囲
-	const float ANGLE_RANGE = 2.0f;						//移動するアングルの範囲
+	const int ANGLE_RANGE = 2;						//移動するアングルの範囲
 	const float POS2_LENGTH = 30.0f;
 	const float ROT_SPEED = 7.0f;
 	const float SKILL_TIMER_LIMMIT = 10.0f;
@@ -61,7 +61,6 @@ TurtleShell::TurtleShell()
 
 TurtleShell::~TurtleShell()
 {
-	delete m_stateMachine;
 	DeleteGO(m_headCollision);
 }
 
@@ -78,7 +77,8 @@ bool TurtleShell::Start()
 	//モデルの初期化
 	InitModel();
 	//ステートマシンの生成
-	m_stateMachine = new IMobStateMachine(this);
+	SetNextStateMachine(enStateMachineState_Patrol);
+
 	//まず召喚アニメーション。その後行動
 	SetNextAnimationState(enAnimationState_Appear);
 
@@ -146,10 +146,14 @@ void TurtleShell::Update()
 		AngleChangeTimeIntarval(m_angleChangeTime);
 
 		//毎フレーム行う処理
-		m_stateMachine->Execute();
+		m_mobStateMachine->Execute();
 		
-		//回転処理
-		Rotation(ROT_SPEED, ROT_SPEED);
+		//ノックバック中でないなら回転処理
+		if (GetKnockBackFlag() != true)
+		{
+			//回転処理
+			Rotation(ROT_SPEED, ROT_SPEED);
+		}
 
 		//当たり判定
 		DamageCollision(m_charaCon);
@@ -209,21 +213,21 @@ bool TurtleShell::IsStopProcessing()
 	}
 
 	//ノックバック中なら
-	if (GetKnockBackFlag() == true)
-	{
-		//ノックバックの処理をするなら
-		if (IsProcessKnockBack(
-			m_moveSpeed, m_knockBackTimer) == true)
-		{
-			//座標を移動
-			m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-			return true;
-		}
-		else
-		{
-			SetKnockBackFlag(false);
-		}
-	}
+	//if (GetKnockBackFlag() == true)
+	//{
+	//	//ノックバックの処理をするなら
+	//	if (IsKnockingBack(
+	//		m_moveSpeed, m_knockBackTimer) == true)
+	//	{
+	//		//座標を移動
+	//		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	//		return true;
+	//	}
+	//	else
+	//	{
+	//		SetKnockBackFlag(false);
+	//	}
+	//}
 
 	//それ以外なら
 	return false;
@@ -440,6 +444,30 @@ void TurtleShell::SetNextAnimationState(EnAnimationState nextState)
 	}
 }
 
+void TurtleShell::SetNextStateMachine(EnStateMachineState nextStateMachine)
+{
+	if (m_mobStateMachine != nullptr)
+	{
+		delete m_mobStateMachine;
+		m_mobStateMachine = nullptr;
+	}
+
+	m_enStateMachineState = nextStateMachine;
+
+	switch (m_enStateMachineState)
+	{
+	case MobMonsterInfo::enStateMachineState_Patrol:
+		m_mobStateMachine = new MobMonsterSM_Patrol(this);
+		break;
+	case MobMonsterInfo::enStateMachineState_Chase:
+		m_mobStateMachine = new MobMonsterSM_Chase(this);
+		break;
+	default:
+		std::abort();
+		break;
+	}
+}
+
 void TurtleShell::ProcessCommonStateTransition()
 {
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
@@ -470,15 +498,32 @@ void TurtleShell::OnProcessAttack_1StateTransition()
 
 void TurtleShell::OnProcessDamageStateTransition()
 {
-	//アニメーションが終わったら
-	if (m_modelRender.IsPlayingAnimation() == false)
+	if (GetKnockBackFlag() == false)
 	{
-		//ダメージを受けたのでスキルを使えるようにする
-		m_difenceEnableFlag = true;
-
-		//共通のステート遷移処理実行
-		ProcessCommonStateTransition();
+		//何フレームか硬直させてから
+		//硬直が終わったら
+		if (IsKnockBackStiffness() == false)
+		{
+			//ダメージを受けたのでスキルを使えるようにする
+			m_difenceEnableFlag = true;
+			//共通の状態遷移処理に移行
+			ProcessCommonStateTransition();
+		}
+		return;
 	}
+	//ノックバック処理
+	ProcessKnockBack(m_charaCon);
+
+
+	//アニメーションが終わったら
+	//if (m_modelRender.IsPlayingAnimation() == false)
+	//{
+	//	//ダメージを受けたのでスキルを使えるようにする
+	//	m_difenceEnableFlag = true;
+
+	//	//共通のステート遷移処理実行
+	//	ProcessCommonStateTransition();
+	//}
 }
 
 void TurtleShell::OnProcessDieStateTransition()

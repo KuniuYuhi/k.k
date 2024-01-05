@@ -109,6 +109,13 @@ public:
 	void SetNextAnimationState(EnAnimationState nextState);
 
 	/// <summary>
+	/// 次のステートマシンを作成する
+	/// </summary>
+	/// <param name="nextStateMachine"></param>
+	void SetNextStateMachine(EnStateMachineState nextStateMachine) override;
+
+
+	/// <summary>
 	/// キャラクターコントローラーの取得
 	/// </summary>
 	/// <returns></returns>
@@ -149,7 +156,7 @@ private:
 		enAttackName_2
 	};
 
-	IMobStateMachine* m_stateMachine = nullptr;
+	
 
 	IMushroomState* m_state = nullptr;
 
@@ -157,6 +164,8 @@ private:
 	AnimationClip m_animationClip[enAnimationClip_Num];	// アニメーションクリップ 
 
 	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
+
+	EnStateMachineState m_enStateMachineState = enStateMachineState_Patrol;
 
 	ModelRender m_modelRender;
 

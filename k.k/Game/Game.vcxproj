@@ -260,6 +260,7 @@
     <ClCompile Include="CactusStateRun.cpp" />
     <ClCompile Include="CactusStateSkill.cpp" />
     <ClCompile Include="CactusStateVictory.cpp" />
+    <ClCompile Include="CalcCharacterForward.cpp" />
     <ClCompile Include="CascadModel.cpp" />
     <ClCompile Include="CharactersInfoManager.cpp" />
     <ClCompile Include="DamageFont.cpp" />
@@ -302,6 +303,8 @@
     <ClCompile Include="ManagerPreCompile.cpp" />
     <ClCompile Include="IMobStateMachine.cpp" />
     <ClCompile Include="MobMonsterActionList.cpp" />
+    <ClCompile Include="MobMonsterSM_Chase.cpp" />
+    <ClCompile Include="MobMonsterSM_Patrol.cpp" />
     <ClCompile Include="MonsterBase.cpp" />
     <ClCompile Include="MushroomStateAppear.cpp" />
     <ClCompile Include="Meteo.cpp" />
@@ -340,6 +343,8 @@
     </ClCompile>
     <ClCompile Include="Summon.cpp" />
     <ClCompile Include="Summoner.cpp" />
+    <ClCompile Include="SummonerSM_Attack.cpp" />
+    <ClCompile Include="SummonerSM_Vigilance.cpp" />
     <ClCompile Include="SummonerState_DarkSpearEnd.cpp" />
     <ClCompile Include="SummonerState_DarkSpearMain.cpp" />
     <ClCompile Include="SummonerStateEat.cpp" />
@@ -415,6 +420,7 @@
     <ClInclude Include="CactusStateRun.h" />
     <ClInclude Include="CactusStateSkill.h" />
     <ClInclude Include="CactusStateVictory.h" />
+    <ClInclude Include="CalcCharacterForward.h" />
     <ClInclude Include="CascadModel.h" />
     <ClInclude Include="CharactersInfoManager.h" />
     <ClInclude Include="DamageFont.h" />
@@ -464,6 +470,8 @@
     <ClInclude Include="ManagerPreCompile.h" />
     <ClInclude Include="IMobStateMachine.h" />
     <ClInclude Include="MobMonsterActionList.h" />
+    <ClInclude Include="MobMonsterSM_Chase.h" />
+    <ClInclude Include="MobMonsterSM_Patrol.h" />
     <ClInclude Include="MonsterBase.h" />
     <ClInclude Include="MushroomStateAppear.h" />
     <ClInclude Include="Meteo.h" />
@@ -500,6 +508,8 @@
     <ClInclude Include="Summon.h" />
     <ClInclude Include="Summoner.h" />
     <ClInclude Include="SummonerActionList.h" />
+    <ClInclude Include="SummonerSM_Attack.h" />
+    <ClInclude Include="SummonerSM_Vigilance.h" />
     <ClInclude Include="SummonerState_DarkSpearEnd.h" />
     <ClInclude Include="SummonerState_DarkSpearMain.h" />
     <ClInclude Include="SummonerStateEat.h" />

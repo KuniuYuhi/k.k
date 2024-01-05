@@ -5,6 +5,7 @@
 
 #include "MobMonsterActionList.h"
 
+class IMobStateMachine;
 
 class MobMonster:public MonsterBase
 {
@@ -28,6 +29,10 @@ public:
 	/// <param name="charaCon"></param>
 	void MoveChasePlayer(CharacterController& charaCon);
 
+	/// <summary>
+	/// ノックバック処理
+	/// </summary>
+	void ProcessKnockBack(CharacterController& charaCon);
 
 	/// <summary>
 	/// 向かうベクトルを設定
@@ -104,6 +109,11 @@ public:
 		return m_knockBackFlag;
 	}
 
+	/// <summary>
+	/// ノックバックによる硬直中か
+	/// </summary>
+	/// <returns>硬直中ならtrue</returns>
+	const bool& IsKnockBackStiffness();
 
 	///////////////////////////////////////////////////////////
 	///取得、設定関数
@@ -136,9 +146,8 @@ public:
 
 	/// <summary>
 	/// 攻撃範囲内にプレイヤーがいるか。
-	/// オーバーライドしなかったら
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>いたらtrue</returns>
 	virtual bool IsPlayerInAttackRange();
 	
 	/// <summary>
@@ -164,6 +173,11 @@ public:
 	/// <param name="nextState"></param>
 	virtual void SetNextAnimationState(MobMonsterInfo::EnAnimationState nextState){}
 
+	/// <summary>
+	/// 次のステートマシンを作成する
+	/// </summary>
+	/// <param name="nextStateMachine"></param>
+	virtual void SetNextStateMachine(MobMonsterInfo::EnStateMachineState nextStateMachine){}
 
 protected:
 
@@ -191,12 +205,13 @@ protected:
 
 protected:
 
-
+	IMobStateMachine* m_mobStateMachine = nullptr;
+	
 	Vector3					m_passPower = g_vec3One;		//はじくときの力
 
 	Vector3					m_direction = Vector3::Zero;	//移動する方向ベクトル
 
-	float					m_angleChangeTime = 0.0f;		//向かうベクトルを計算するタイマー
+	int					m_angleChangeTime = 0;		//向かうベクトルを計算するタイマー
 
 	float					m_distanceToPlayer = 0.0f;		//プレイヤーとの距離
 	float					m_attackRange = 0.0f;			//攻撃できる範囲
@@ -215,9 +230,11 @@ protected:
 
 	bool					m_knockBackFlag = false;		//ノックバックするかのフラグ
 
-	float					m_knockBackTimer = 0.0f;
+	float					m_knockBackTimer = 0.0f;		//ノックバックで移動する時間
 
 	bool					m_playerNearbyFlag = false;
+
+	float m_knockBackStiffnessTimer = 0.0f;
 
 
 	//スキル使用可能かのタイマー

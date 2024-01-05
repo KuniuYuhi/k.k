@@ -6,6 +6,7 @@
 class Player;
 class IBraveState;
 class WeaponBase;
+class CalcCharacterForward;
 
 /// <summary>
 /// 勇者クラス
@@ -257,7 +258,12 @@ public:
 	/// 防御、回避のステートの状態遷移処理
 	/// </summary>
 	void ProcessDefendStateTransition();
-	
+	/// <summary>
+	/// ノックバックアニメーション後のステートの状態遷移管理
+	/// </summary>
+	void ProcessKnockBackStateTransition();
+
+
 	/// <summary>
 	/// アクションフラグ構造体の全てのフラグを設定
 	/// </summary>
@@ -486,6 +492,10 @@ public:
 	/// <param name="executePosition"></param>
 	void ExecutePosition(Vector3& executePosition);
 
+
+
+
+
 private:
 	/// <summary>
 	/// コンボ攻撃のコンボの処理
@@ -549,7 +559,7 @@ private:
 	/// </summary>
 	
 	/// <summary>
-	/// 
+	/// 武器のアニメーションクリップをロード
 	/// </summary>
 	/// <param name="weaponType"></param>
 	/// <param name="mainWeaponAnimationStartIndexNo"></param>
@@ -596,6 +606,8 @@ private:
 	UseWeapon					m_mainUseWeapon;		//メイン武器
 	UseWeapon					m_subUseWeapon;			//サブ武器
 	UseWeapon					m_subUseWeapon2;		//サブ２
+
+	std::unique_ptr<CalcCharacterForward> m_calcCharacterForward;	//前方向計算クラス
 
 
 	Player*						m_player = nullptr;

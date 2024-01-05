@@ -13,7 +13,7 @@ void SummonerState_DMeteo_Main::Init()
 {
 	ProcessShotMeteo();
 
-	static bool m_initMeteoFlag = false;
+	/*static bool m_initMeteoFlag = false;
 
 	if (m_initMeteoFlag == true)
 	{
@@ -27,7 +27,7 @@ void SummonerState_DMeteo_Main::Init()
 		});
 
 
-	m_initMeteoFlag = true;
+	m_initMeteoFlag = true;*/
 
 
 	
@@ -38,9 +38,12 @@ void SummonerState_DMeteo_Main::ManageState()
 	//全てのメテオを撃ち終わったらアニメーション終了
 	if (m_darkMeteo !=nullptr && m_darkMeteo->GetEndFlag() == true)
 	{
-		//ダークメテオの削除
+		//ダークメテオ本体の削除
 		DeleteGO(m_darkMeteo);
-		m_summoner->ProcessCommonStateTransition();
+		
+		//攻撃ステートが終わった後の処理
+		m_summoner->ProcessEndAttackState();
+
 		return;
 	}
 

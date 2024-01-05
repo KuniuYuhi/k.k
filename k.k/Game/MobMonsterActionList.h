@@ -51,6 +51,15 @@ namespace MobMonsterInfo {
 		enAnimationClip_Appear,		//出現時のアニメーション
 		enAnimationClip_Num
 	};
+
+	/// <summary>
+	/// ステートマシンステート
+	/// </summary>
+	enum EnStateMachineState
+	{
+		enStateMachineState_Patrol,		//巡回ステートマシン
+		enStateMachineState_Chase		//追跡ステートマシン
+	};
 }
 
 

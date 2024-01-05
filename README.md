@@ -107,6 +107,8 @@
 * ManagerPreCompile.h
 * WeaponManager.cpp
 * WeaponManager.h
+* SoundManager.cpp
+* SoundManager.h
 </details>
 <details><summary>
   プレイヤー
@@ -387,6 +389,75 @@
 
 </details>
 
+<details><summary>
+  エンジン
+  </summary>
+
+太文字は改造のみ
+* Bloom.cpp
+* Bloom.h
+* CameraCollisionSolver.cpp
+* CameraCollisionSolver.h
+* CascadeShadowMapMatrix.cpp
+* CascadeShadowMapMatrix.h
+* CollisionObject.cpp
+* CollisionObject.h
+* DoF.cpp
+* DoF.h
+* FontRender.cpp
+* FontRender.h
+* IRenderer.h
+* **k2EngineLow.cpp**
+* **k2EngineLow.h**
+* Level3DRender.cpp
+* Level3DRender.h
+* Light.cpp
+* Light.h
+* ModelRender.cpp
+* ModelRender.h
+* MyRenderer.h
+* PostEffect.cpp
+* PostEffect.h
+* PostEffectComponentBase.cpp
+* PostEffectComponentBase.h
+* RenderingEngine.cpp
+* RenderingEngine.h
+* Shadow.cpp
+* Shadow.h
+* SkyCube.cpp
+* SkyCube.h
+* SpringCamera.cpp
+* SpringCamera.h
+* SpriteRender.cpp
+* SpriteRender.h
+
+</details>
+
+<details><summary>
+  シェーダー
+  </summary>
+
+* debugWireFrame.fx
+* DeferredLighting.fx
+* DepthOfFeild.fx
+* DrawShadowMap.fx
+* gaussianBlur.fx
+* hexaBlur.fx
+* model.fx
+* Model_srv_uav_register.h
+* ModelVSCommon.h
+* postEffect.fx
+* RenderToGBufferFor3DModel.fx
+* Sampler.h
+* Shadowing.h
+* Shadowing_const.h
+* skyCubeMap.fx
+* sprite.fx
+* ZPrepass.fx
+
+
+</details>
+
 ## 3.操作説明
 
 
@@ -494,12 +565,13 @@ void SetWorldMatrix(const Matrix& matrix)
 	position.z = matrix.m[3][2];
 	SetPosition(position);
 	Quaternion rotation;
+  //回転成分を抽出して
 	rotation.SetRotation(matrix);
 	SetRotation(rotation);
 }
 ```
-原因は,rotation.SetRotation(matrix)で回転を設定する際のmatrixの回転成分が正規化されたものではないからでした。回転成分と拡大縮小行列は混じっているので、
-取得するボーンのrootボーンの拡大率が変更されていて、
+原因は,rotation.SetRotation(matrix)で回転を設定する際のmatrixの回転成分が正規化されたものではないからでした。読み込んだモデルのボーンの拡大率が変更されていたため、上記のコードの回転の設定の仕方では、回転成分に拡大縮小成分が混ざっていて、正規化されていなかったので武器の向きがおかしくなっていました。
+
 
 
 <div style="text-align: right;">
@@ -509,10 +581,17 @@ void SetWorldMatrix(const Matrix& matrix)
 
 ### 4.5 モンスターの挙動について
 モンスターの状態も主人公と同様ステートパターンで管理しています。
-そして、モンスターの行動を管理、調整、追加をしやすくするために、階層化ステートマシンを作成しました。
+そして、モンスターの行動を管理、調整、追加をしやすくするために、階層型ステートマシンを作成しました。階層型ステートマシンを作成した理由は、単にステートを増やしていくと遷移条件の管理や変更が大変だったためです。ステートを階層化することで、ステートを内包するより大きなステートを形成しました。その結果、状態の管理、追加、変更が容易くなりました。  
+画像  
+
 #### 1.モブモンスターの挙動
-モブモンスターは「追跡」と「巡回」の2つのステートマシンを作成しました。また、ステートマシン側での変更をなくすこと、で新しいモブモンスターの作成を容易にしました。
-画像
+モブモンスターは「追跡」と「巡回」の2つのステートマシンを作成しました。
+「巡回」ステートマシンでは、自由に移動します。敵を発見すると「追跡」ステートマシンに遷移し、敵を追いかけ、攻撃します。  
+また、全てのモブモンスターで共通のステートマシンを使うことで、追跡距離や視野角をモブモンスター側で変更するだけで、モンスターによって違った動きができます。
+<img src="README_IMAGE/mob_stateMachine.png" width="600" alt="モブモンスターのステートマシン図">  
+一定以上プレイヤーの周りに集まらないようにする  
+攻撃されたら振り向く
+
 
 <div style="text-align: right;">
 
@@ -520,9 +599,9 @@ void SetWorldMatrix(const Matrix& matrix)
 </div>
 
 #### 2.ボスの挙動
-ボスは基本的に移動しないので、「攻撃」と「警戒」の2つのステートマシンを作成しました。また、ボスの攻撃の行動パターンを増やしたり、行動の決め方を細かくすることで、プレイヤーが
-
-
+ボスは「警戒」と「攻撃」の2つのステートマシンを作成しました。「警戒」ステートマシンでは、ボスはその場から動かず、常にプレイヤーに目線を向けます。またプレイヤーがしばらくの間近くにいると、ノックバック攻撃を行ってプレイヤーを自身から遠ざけます。一定時間待機すると「攻撃」ステートマシンに遷移し、プレイヤーの距離によって違った攻撃を行います。
+<img src="README_IMAGE/Boss_stateMachine.png" width="600" alt="モブモンスターのステートマシン図">  
+特殊な行動を紹介
 
 <div style="text-align: right;">
 
@@ -587,8 +666,6 @@ albedoColor.xyz *= shadow;
 ---
 
 ### 5.2.カスケードシャドウ
-VSMのしたにする  
-
 デブスシャドウでは、フィールド全体に影を描画しようとするとレンダリングターゲットのサイズの外(特に遠方)は影が描画されなくなり不自然になるため、カスケードシャドウを実装しました。また、レンダリングターゲットを近影用、中影用、遠影用の3つを作成し、遠方に向かうほどレンダリングターゲットの解像度を落とすことで処理を軽減できました。  
 <img src="README_IMAGE/CascadeSadow.png" width="600" alt="カスケードシャドウ">  
 1.カメラからどこまでの距離を「近距離」「中距離」「遠距離」とするか、分割エリアを定義しました。そして、「近影」「中影」「遠影」のシャドウマップを書き込むレンダリングターゲットを用意しました。
@@ -739,7 +816,7 @@ e.作成した行列を使ってシェーダー側で座標変換し、シャド
 ---
 
 ### 5.3.VSM
-デプスシャドウを実装しましたが、影の境界線がジャギーになっていて見栄えがあまり良くなかったので、ソフトシャドウを実装しました。また、ソフトシャドウの中でも品質の高いVSM(Variance Shadow Maps)を実装しました。VSMとはシャドウマップに書き込まれた**深度値の局所的な分散**を利用してソフトシャドウを実現するアルゴリズムです。  
+影の境界線がジャギーになっていて見栄えがあまり良くなかったので、ソフトシャドウを実装しました。また、ソフトシャドウの中でも品質の高いVSM(Variance Shadow Maps)を実装しました。VSMとはシャドウマップに書き込まれた**深度値の局所的な分散**を利用してソフトシャドウを実現するアルゴリズムです。  
 <img src="README_IMAGE/VSM.png" width="600" alt="VSM">  
 
 1.シャドウマップにシャドウライトから見たピクセルまでの距離(深度値)と、先ほどの深度値の2乗を書き込みます。深度値を2乗した値は分散を計算するときに使われます。
@@ -855,7 +932,7 @@ smoothstep(min,max,x)関数を使って、xがminからmaxの間なら、minか�
 
 
   #### 2.アウトラインの描画
-アウトラインの描画はトゥーン調の表現を行うためによく行われるため、実装しました。
+アウトラインの描画はトゥーン調の表現を行うためによく行われるため、実装しました。アウトラインを描画することでキャラクターの存在感が強くなっていると思います。  
 ポストエフェクトでアウトラインの描画を行うと、シーン全体にアウトラインが発生し、望んでいない箇所にアウトラインが発生してしまいます。これらを解決するために、フォワードレンダリングでアウトラインの描画を行い、モデルごとにアウトラインを描画するか決められるようにしました。 
 アウトラインの描画のアルゴリズムは、隣り合うピクセル同士の深度値の差が一定以上なら「アウトラインが発生している」と判断し、ピクセルカラーを黒くして出力します。   
  <img src="README_IMAGE/outLine.png" width="600" alt="アウトライン">  
