@@ -32,7 +32,8 @@ Vector3 MonsterBase::CalcVelocity(Status status, Vector3 targetposition, bool da
 	//飛ばないようにする
 	moveSpeed.y = 0.0f;
 	//前方向を設定
-	m_forward = diff;
+	m_forward = moveSpeed;
+	m_forward.Normalize();
 	//値をセーブしておく
 	m_SaveMoveSpeed = moveSpeed;
 	return moveSpeed;
