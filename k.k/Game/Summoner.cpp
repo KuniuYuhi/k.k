@@ -40,14 +40,14 @@
 namespace {
 	const float SCALE_UP = 4.0f;		//キャラクターのサイズ
 
-	const float MAX_SUPERARMOR_POINT = 100.0f;
+	const float MAX_SUPERARMOR_POINT = 10000.0f;
 
 	const float KNOCKBACK_RANGE = 300.0f;
 	const float KNOCKBACK_POWER = 400.0f;
 	const float KNOCKBACK_LIMMIT = 2.0f;
 
 	//ステータス
-	int MAXHP = 200;
+	int MAXHP = 20000;
 	int MAXMP = 500;
 	int ATK = 20;
 	float SPEED = 160.0f;
