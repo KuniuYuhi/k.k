@@ -20,7 +20,7 @@ const Vector3 SetKnockBackDirection(
 	return finalPos;
 }
 
-bool IsProcessKnockBack(
+bool IsKnockingBack(
 	Vector3& moveSpeed,
 	float& timer, 
 	const float timerLimmit
