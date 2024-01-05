@@ -20,7 +20,7 @@ namespace {
 	const int POWER = 30;
 	const int ENDURANCE = 70;		//•Ší‚Ì‘Ï‹v—Í(‚‚Ì‘Ï‹v—Í)B
 
-	const float MOVE_FORWARD_SPEED = 120.0f;
+	const float MOVE_FORWARD_SPEED = 200.0f;
 
 	const float ATTACK_1COMBO_KNOCKBACK_POWER = 120.0f;
 	const float ATTACK_2COMBO_KNOCKBACK_POWER = 130.0f;
@@ -271,6 +271,22 @@ void SwordShield::MoveArmed()
 	m_shieldMatrix =
 		m_brave->GetModelRender().GetBone(m_armedShieldBoonId)->GetWorldMatrix();
 	m_modelShield.SetWorldMatrix(m_shieldMatrix);
+
+
+	//–hŒä‰Â”\‚©‚ÂYƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚Ä‚¢‚éŠÔ‚Í–hŒä
+	if (GetIsDefendEnableFlag()!=false && 
+		g_pad[0]->IsPress(enButtonY) == true)
+	{
+		//–hŒä‚µ‚Ä‚¢‚éŠÔ‚Í‰ñ“]‰Â”\
+		SetRotationDelectionFlag(true);
+	}
+	else
+	{
+		//–hŒä‚µ‚Ä‚¢‚È‚¢‚Ì‚Åƒtƒ‰ƒO‚ðƒŠƒZƒbƒg
+		SetRotationDelectionFlag(false);
+	}
+
+
 
 	//“–‚½‚è”»’è‚Ì—LŒø‰»–³Œø‰»‚Ìˆ—
 	if (m_brave->GetIsCollisionPossibleFlag() == true)
