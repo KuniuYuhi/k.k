@@ -158,8 +158,13 @@ void Slime::Update()
 		//毎フレーム行う処理
 		m_mobStateMachine->Execute();
 
-		//回転処理
-		Rotation(ROT_SPEED, ROT_SPEED);
+		//ノックバック中でないなら回転処理
+		if (GetKnockBackFlag() != true)
+		{
+			//回転処理
+			Rotation(ROT_SPEED, ROT_SPEED);
+		}
+		
 		
 		//当たり判定
 		DamageCollision(m_charaCon);
@@ -204,22 +209,22 @@ bool Slime::IsStopProcessing()
 		return true;
 	}
 
-	//ノックバック中なら
-	if (GetKnockBackFlag() == true)
-	{
-		//ノックバックの処理をするなら
-		if (IsProcessKnockBack(
-			m_moveSpeed, m_knockBackTimer) == true)
-		{
-			//座標を移動
-			m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-			return true;
-		}
-		else
-		{
-			SetKnockBackFlag(false);
-		}
-	}
+	////ノックバック中なら
+	//if (GetKnockBackFlag() == true)
+	//{
+	//	//ノックバックの処理をするなら
+	//	if (IsKnockingBack(
+	//		m_moveSpeed, m_knockBackTimer) == true)
+	//	{
+	//		//座標を移動
+	//		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	//		return true;
+	//	}
+	//	else
+	//	{
+	//		SetKnockBackFlag(false);
+	//	}
+	//}
 
 	//それ以外なら
 	return false;
@@ -400,13 +405,28 @@ void Slime::OnProcessAttack_1StateTransition()
 
 void Slime::OnProcessDamageStateTransition()
 {
-	//アニメーションの再生が終わったら
-	if (m_modelRender.IsPlayingAnimation() == false)
+	if (GetKnockBackFlag() == false)
 	{
+		//何フレームか硬直させてから
+		//硬直が終わったら
+		if (IsKnockBackStiffness() == false)
+		{
 
-		//共通の状態遷移処理に移行
-		ProcessCommonStateTransition();
+			//共通の状態遷移処理に移行
+			ProcessCommonStateTransition();
+		}
+		return;
 	}
+	//ノックバック処理
+	ProcessKnockBack(m_charaCon);
+
+	//アニメーションの再生が終わったら
+	//if (m_modelRender.IsPlayingAnimation() == false)
+	//{
+
+	//	//共通の状態遷移処理に移行
+	//	ProcessCommonStateTransition();
+	//}
 }
 
 void Slime::OnProcessDieStateTransition()
