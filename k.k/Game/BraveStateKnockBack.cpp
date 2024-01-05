@@ -8,20 +8,22 @@ namespace {
 
 void BraveStateKnockBack::ManageState()
 {
+	//ノックバックエンドフラグがセットされているなら
 	if (m_knockBackEndFlag == true)
 	{
 		//少しだけ硬直する
-		//硬直しなくなったら処理終わり
+		//硬直が終わったら処理終わり
 		if (IsStiffness() == false)
 		{
 			//ステート共通の状態遷移処理に遷移
-			m_brave->ProcessCommonStateTransition();
+			m_brave->ProcessKnockBackStateTransition();
 		}
 		return;
 	}
 
 	if (m_brave->IsKnockBack() != true)
 	{
+		//ノックバックがおわったのでフラグをセット
 		m_knockBackEndFlag = true;
 	}
 }
