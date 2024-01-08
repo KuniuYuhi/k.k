@@ -296,6 +296,10 @@ void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		SkillShot();
 	}
 
-
+	////’ÊíUŒ‚‚Å‹|‚ğŒ‚‚Á‚½
+	//if (wcscmp(eventName, L"MoveBackStart") == 0)
+	//{
+	//	
+	//}
 	
 }
