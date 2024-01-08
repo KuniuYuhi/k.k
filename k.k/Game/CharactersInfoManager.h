@@ -136,7 +136,7 @@ public:
 	}
 
 	/// <summary>
-	/// 
+	/// 指定した番号のモンスターを取得
 	/// </summary>
 	/// <param name="number"></param>
 	/// <returns></returns>
@@ -145,12 +145,43 @@ public:
 		return m_mobMonsters[number];
 	}
 
+	/// <summary>
+	/// プレイヤーに近いモンスターの数を取得
+	/// </summary>
+	/// <returns></returns>
+	const int& GetMonstersNearPlayerCount() const
+	{
+		return m_monstersNearPlayerCount;
+	}
+
+	/// <summary>
+	/// 毎フレーム行う処理
+	/// </summary>
+	void Execute();
+
+	/// <summary>
+	/// 指定したモンスターがプレイヤーに近いか調べる
+	/// </summary>
+	/// <param name="mobMonster"></param>
+	bool SearchMonsterNearPlayer(MobMonster* mobMonster);
 
 private:
-	Boss* m_bossInstance;
-	Player* m_playerInstance;		//プレイヤーのインスタンス
+
+	/// <summary>
+	/// プレイヤーに近いモンスターの数を調べる
+	/// </summary>
+	void SearchMonstersNearPlayer();
+
+	
+
+
+private:
+	Boss* m_bossInstance = nullptr;
+	Player* m_playerInstance = nullptr;		//プレイヤーのインスタンス
 
 	std::vector<MobMonster*> m_mobMonsters;			//モブモンスターのリスト
+
+	int m_monstersNearPlayerCount = 0;
 
 
 	static CharactersInfoManager* m_charactersInfoInstance;

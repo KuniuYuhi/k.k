@@ -189,6 +189,7 @@ private:
 	/// </summary>
 	void CalcMuteBGM();
 
+	//void Render(RenderContext& rc);
 	
 
 	EnGameStep					m_enGameStep = enGameStep_FadeOut;

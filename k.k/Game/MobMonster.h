@@ -15,7 +15,7 @@ public:
 	/// 移動処理
 	/// </summary>
 	/// <param name="charaCon">移動させたいオブジェクトのキャラクターコントローラー</param>
-	void Move(CharacterController& charaCon);
+	void MoveMonster(CharacterController& charaCon);
 
 	/// <summary>
 	/// パトロール時の移動処理

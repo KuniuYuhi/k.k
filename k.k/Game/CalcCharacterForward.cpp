@@ -162,10 +162,10 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
         Vector3 rightangleX = forwardDiff;
         //rightangleX *= -1.0f;
 
-       /* float X = rightangleX.x;
+        float X = rightangleX.x;
         rightangleX.x = rightangleX.z;
         rightangleX.z = X;
-        rightangleX.y = 0.0f;*/
+        rightangleX.y = 0.0f;
 
         Quaternion rot90 = g_quatIdentity;
 

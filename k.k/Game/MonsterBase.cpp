@@ -229,9 +229,9 @@ Quaternion MonsterBase::Rotation(float rotSpeed, float rotOnlySpeed)
 	if (RotationOnly() == true)
 	{
 		//xかzの移動速度があったら(スティックの入力があったら)。
-		if (fabsf(m_SaveMoveSpeed.x) >= 0.001f || fabsf(m_SaveMoveSpeed.z) >= 0.001f)
+		if (fabsf(m_forward.x) >= 0.001f || fabsf(m_forward.z) >= 0.001f)
 		{
-			m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotOnlySpeed, m_rotMove, m_SaveMoveSpeed);
+			m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotOnlySpeed, m_rotMove, m_forward);
 			m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
 		}
 		//前方向を設定
@@ -243,10 +243,10 @@ Quaternion MonsterBase::Rotation(float rotSpeed, float rotOnlySpeed)
 	}
 
 	//xかzの移動速度があったら
-	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+	if (fabsf(m_forward.x) >= 0.001f || fabsf(m_forward.z) >= 0.001f)
 	{
 		//緩やかに回転させる
-		m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotSpeed, m_rotMove, m_moveSpeed);
+		m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotSpeed, m_rotMove, m_forward);
 		m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
 	}
 	//前方向を設定
