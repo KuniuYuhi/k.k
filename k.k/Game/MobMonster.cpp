@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "MobMonster.h"
 #include "InitEffect.h"
+#include "CharactersInfoManager.h"
+#include "Boss.h"
 
 //todo　新しい弾き処理
 
@@ -11,6 +13,11 @@ namespace {
 	const float FIND_DISTANCE = 200.0f;
 
 	const float KNOCKBACK_SIFFNESS_TIMER_LIMMIT = 0.2f;
+
+	const int MONSTER_NEAR_PLAYER_COUNT_LIMMIT = 2;
+
+	const float MOB_MONSTER_DISTANCE = 40.0f;
+	const float BOSS_DISTANCE = 150.0f;
 }
 
 //衝突したときに呼ばれる関数オブジェクト(壁用)
@@ -44,95 +51,15 @@ bool MobMonster::RotationOnly()
 	return false;
 }
 
-void MobMonster::Move(CharacterController& charaCon)
+void MobMonster::MoveMonster(CharacterController& charaCon)
 {
-	//chaseかpatrolのときだけ移動処理
-
-
-	if (isAnimationEnable() != true)
-	{
-		return;
-	}
-	//攻撃中は処理しない
-	if (IsAttackEnable() != true)
-	{
-		return;
-	}
+	//移動速度の計算
+	m_moveSpeed = CalcVelocity(m_status, m_direction, m_chasePlayerFlag);
+	//はじきパワーを小さくする
+	//SubPassPower();
+	//はじく力を合わせる
+	//m_moveSpeed += m_passPower;
 	
-	//視界にターゲットを見つけたら
-	if (IsFindPlayer(m_distanceToPlayer) == true)
-	{
-		Vector3 toPlayerDir = m_toTarget;
-		//視野角内にターゲットがいたら
-		if (IsInFieldOfView(toPlayerDir, m_forward, m_angle) == true)
-		{
-			m_chasePlayerFlag = true;
-			m_direction = m_targetPosition;
-			//toPlayerDir.Normalize();
-			////追いかける
-			//m_direction = toPlayerDir;
-			/*m_moveSpeed = CalcVelocity(m_status, m_direction*(-1.0f),true);
-			m_SaveMoveSpeed = m_moveSpeed;*/
-		}
-		else
-		{
-			//視野角内にはいないが攻撃可能距離にいるなら
-			if (IsFindPlayer(FIND_DISTANCE) == true)
-			{
-				m_chasePlayerFlag = true;
-				m_direction = m_targetPosition;
-				/*m_moveSpeed = CalcVelocity(m_status, m_targetPosition,true);
-				m_SaveMoveSpeed = m_moveSpeed;*/
-			}
-		}
-	}
-	else
-	{
-		//ランダムな方向に移動
-		m_chasePlayerFlag = false;
-		//数秒間隔で向かうベクトルを変える
-		if (m_angleChangeTimeFlag == false)
-		{
-			m_direction = SetRamdomDirection(m_angleRange);
-
-			m_direction = m_position + (m_direction * 1000.0f);
-
-			m_angleChangeTimeFlag = true;
-		}
-		
-		/*m_moveSpeed = m_direction * m_status.defaultSpeed;
-		m_SaveMoveSpeed = m_moveSpeed;*/
-	}
-
-	//壁にぶつかったら反転
-	if (IsBumpedForest(m_pos2Length) == true)
-	{
-		//移動する方向を反転する
-		m_direction *= -1.0f;
-		return;
-	}
-
-
-	//プレイヤーとの距離が近くないなら移動する
-	if (IsFindPlayer(m_stayRange) != true)
-	{
-		//移動速度の計算
-		m_moveSpeed = CalcVelocity(m_status, m_direction, m_chasePlayerFlag);
-		m_SaveMoveSpeed = m_moveSpeed;
-		//弾き処理
-		//IsBumpedMonster();
-		//はじきパワーを小さくする
-		SubPassPower();
-		//はじく力を合わせる
-		//m_moveSpeed += m_passPower;
-		//座標を移動
-		m_position = charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-	}
-	else
-	{
-		//範囲内にいるので移動しない
-		m_moveSpeed = Vector3::Zero;
-	}
 }
 
 void MobMonster::MovePatrol(CharacterController& charaCon)
@@ -143,8 +70,8 @@ void MobMonster::MovePatrol(CharacterController& charaCon)
 	if (m_angleChangeTimeFlag == false)
 	{
 		m_direction = SetRamdomDirection(m_angleRange);
-
-		m_direction = m_position + (m_direction * 1000.0f);
+		//速度を掛ける
+		m_direction *= m_status.GetDefaultSpeed();
 
 		m_angleChangeTimeFlag = true;
 	}
@@ -157,17 +84,21 @@ void MobMonster::MovePatrol(CharacterController& charaCon)
 		return;
 	}
 
-	//移動速度の計算
-	m_moveSpeed = CalcVelocity(m_status, m_direction, m_chasePlayerFlag);
-	m_SaveMoveSpeed = m_moveSpeed;
 	//弾き処理
-	//IsBumpedMonster();
-	//はじきパワーを小さくする
-	SubPassPower();
-	//はじく力を合わせる
-	//m_moveSpeed += m_passPower;
+	if (IsBumpedMonster() == true)
+	{
+		//反転
+		m_direction *= -1.0f;
+	}
+
+	//移動速度の計算
+	//MoveMonster(charaCon);
 	//座標を移動
-	m_position = charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	m_position = charaCon.Execute(m_direction, 1.0f / 60.0f);
+	m_moveSpeed = m_direction;
+	m_SaveMoveSpeed = m_moveSpeed;
+	m_forward = m_direction;
+	m_forward.Normalize();
 }
 
 void MobMonster::MoveChasePlayer(CharacterController& charaCon)
@@ -176,26 +107,29 @@ void MobMonster::MoveChasePlayer(CharacterController& charaCon)
 
 	m_direction = m_targetPosition;
 
-	//プレイヤーとの距離が近くないなら移動する
-	if (IsFindPlayer(m_stayRange) != true)
+	//移動速度の計算
+	MoveMonster(charaCon);
+
+	//プレイヤーの周りに既にモンスターがたくさんいたら
+	if (CharactersInfoManager::GetInstance()->GetMonstersNearPlayerCount() >
+		MONSTER_NEAR_PLAYER_COUNT_LIMMIT)
 	{
-		//移動速度の計算
-		m_moveSpeed = CalcVelocity(m_status, m_direction, m_chasePlayerFlag);
-		m_SaveMoveSpeed = m_moveSpeed;
-		//弾き処理
-		//IsBumpedMonster();
-		//はじきパワーを小さくする
-		SubPassPower();
-		//はじく力を合わせる
-		//m_moveSpeed += m_passPower;
-		//座標を移動
-		m_position = charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+		//本来のm_stayRangeより遠くで止まる
+		if (IsFindPlayer(250.0f) == true)
+		{
+			//範囲内にいるので移動しない
+			m_moveSpeed = Vector3::Zero;
+		}
 	}
-	else
+	//プレイヤーとの距離が近く、止まる距離なら45
+	else if (IsFindPlayer(m_stayRange) == true)
 	{
 		//範囲内にいるので移動しない
 		m_moveSpeed = Vector3::Zero;
 	}
+
+	//座標を移動
+	m_position = charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 }
 
 void MobMonster::ProcessKnockBack(CharacterController& charaCon)
@@ -227,10 +161,10 @@ Vector3 MobMonster::SetRamdomDirection(int range)
 	randomPos.z += Z;
 	randomPos.Normalize();
 
-	if ((randomPos.x == 0.0f) && (randomPos.z==0.0f))
+	/*if ((randomPos.x == 0.0f) && (randomPos.z==0.0f))
 	{
 		int a = 0;
-	}
+	}*/
 
 	return randomPos;
 }
@@ -302,38 +236,34 @@ bool MobMonster::IsBumpedForest(float pos2Length)
 
 bool MobMonster::IsBumpedMonster()
 {
+	Vector3 diff = g_vec3Zero;
+
 	//フィールド上の敵のリストを取得
-	//std::vector<AIActor*> monsters = m_lich->GetMonsters();
+	for (auto monster : CharactersInfoManager::GetInstance()->GetMobMonsters())
+	{
+		//リストの中身が自身と同じなら処理しない
+		if (this == monster)
+		{
+			continue;
+		}
 
-	//for (auto monster : monsters)
-	//{
-	//	//リストのモンスターの座標を取得
-	//	Vector3 mosterPos = monster->GetPosition();
-	//	Vector3 diff = mosterPos - m_position;
-	//	//
-	//	if (diff.Length() <= 30.0f)
-	//	{
-	//		diff.Normalize();
-	//		m_passPower += diff * 12.0f;
-	//	}
+		//自身の座標から他のモンスターに向かうベクトルを計算
+		diff = monster->GetPosition() - m_position;
+		//ベクトルの長さが一定値以下なら
+		if (diff.Length() < MOB_MONSTER_DISTANCE)
+		{
+			return true;
+		}
+	}
+	//ボスに向かうベクトルを計算
+	diff = CharactersInfoManager::GetInstance()->GetBossInstance()->GetPosition()
+		- m_position;
+	//ベクトルの長さが一定値以下なら
+	if (diff.Length() < BOSS_DISTANCE)
+	{
+		return true;
+	}
 
-	//}
-
-	////リッチとの距離を計算
-	//Vector3 lichPos = m_lich->GetPosition();
-	//Vector3 diff = lichPos - m_position;
-	//if (diff.Length() <= 80.0f)
-	//{
-	//	Vector3 direction;
-	//	//todo 向かう座標を少しずらす
-	//	direction = SetRamdomDirection(m_angleRange);
-
-	//	diff.Normalize();
-	//	m_passPower += direction * 400.0f;
-	//	m_passPower += diff * 30.0f;
-	//}
-
-	//m_passPower.y = 0.0f;
 	return false;
 }
 
@@ -422,6 +352,12 @@ bool MobMonster::IsFoundPlayerFlag()
 
 bool MobMonster::IsPlayerInAttackRange()
 {
+	//攻撃できない状態でも範囲外とする
+	/*if (IsProcessAttackEnable() != true)
+	{
+		return false;
+	}*/
+
 	//自身からプレイヤーに向かうベクトルの計算
 	Vector3 diff = m_player->GetPosition() - m_position;
 
@@ -440,13 +376,29 @@ bool MobMonster::IsPlayerInAttackRange()
 	{
 		return true;
 	}
-	return false;
 
-	
+
+	return false;
 }
 
 bool MobMonster::IsProcessAttackEnable()
 {
+	/*if (CharactersInfoManager::GetInstance()->SearchMonsterNearPlayer(this) == true)
+	{
+		return false;
+	}*/
+
+	//if (CharactersInfoManager::GetInstance()->GetMonstersNearPlayerCount() >=
+	//	MONSTER_NEAR_PLAYER_COUNT_LIMMIT)
+	//{
+	//	//プレイヤーとの距離が近く、止まる距離なら
+	//	if (IsFindPlayer(120.0f) == true)
+	//	{
+	//		//
+	//		return false;
+	//	}
+	//}
+
 	//アタックフラグがセットされていたら攻撃可能
 	if (m_attackEnableFlag == true)
 	{
