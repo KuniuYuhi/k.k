@@ -960,8 +960,6 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		{
 			m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
 		}
-		
-		//‹ß‚­‚É“G‚ª‚¢‚é‚©’T‚µ‚ÄA‚¢‚½‚ç‘O•ûŒü‚ğ“G‚Ì‚Ù‚¤‚É•ÏX
 
 
 		SetMoveforwardFlag(true);
