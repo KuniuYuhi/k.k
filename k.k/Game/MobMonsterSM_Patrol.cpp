@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MobMonsterSM_Patrol.h"
 #include "MobMonster.h"
+#include "CharactersInfoManager.h"
 
 using namespace MobMonsterInfo;
 
@@ -36,8 +37,6 @@ void MobMonsterSM_Patrol::ProcessDecideAction()
 
 void MobMonsterSM_Patrol::ProcessPatrol()
 {
-
-
 	//„‰ñ‚·‚é
 	m_mobMonster->SetNextAnimationState(enAninationState_Patrol);
 }
