@@ -19,7 +19,7 @@ namespace {
 	const float ADD_FORWARD = 30.0f;
 
 	const float SKILL_DELETE_RANGE = 600.0f;
-	const float SKILL_ARROW_SPEED = 550.0f;
+	const float SKILL_ARROW_SPEED = 700.0f;
 
 	const float DEFAULT_DELETE_RANGE = 400.0f;	//矢が消える距離
 	const float DEFAULT_ARROW_SPEED = 450.0f;
@@ -255,26 +255,6 @@ void Arrow::NormalShot()
 		//ラジアンから度に変換
 		float rotationAngle = Math::RadToDeg(acos);
 
-		//////////////////////////////////////////////////
-
-		Quaternion rot = g_quatIdentity;
-		//rot.SetRotation(m_arrowMatrix);
-		Vector3 a = m_arrowPos;
-		a.Normalize();
-		Vector3 direction = m_arrowPos - m_shotStartPosition;
-		/*direction.x *= a.x;
-		direction.y *= a.y;
-		direction.z *= a.z;*/
-
-		//rot.SetRotation(direction, g_vec3AxisX);
-
-		m_arrowMatrix.Apply(rot);
-
-		
-
-		m_rotation = rot;
-
-		m_rotation.SetRotation(m_arrowMatrix);
 	}
 	else
 	{
@@ -282,8 +262,14 @@ void Arrow::NormalShot()
 		DeleteGO(this);
 	}
 	
-	m_modelArrow.SetPosition(m_arrowPos);
-	m_modelArrow.SetRotation(m_rotation);
+	Matrix arrowMatrix = m_arrowMatrix;
+	//行列に座標を適応
+	ApplyVector3ToMatirx(arrowMatrix, m_arrowPos);
+	//行列を設定
+	m_modelArrow.SetWorldMatrix(arrowMatrix);
+
+	/*m_modelArrow.SetPosition(m_arrowPos);
+	m_modelArrow.SetRotation(m_rotation);*/
 
 
 	float value = m_deleteTimer / m_flightDuration;
@@ -318,7 +304,20 @@ void Arrow::SkillShot()
 	}
 	//矢の座標を設定
 	m_arrowPos += (m_forward * SKILL_ARROW_SPEED) * g_gameTime->GetFrameDeltaTime();
-	m_modelArrow.SetPosition(m_arrowPos);
+
+	Matrix arrowMatrix = m_arrowMatrix;
+	//行列に座標を適応
+	ApplyVector3ToMatirx(arrowMatrix, m_arrowPos);
+	//行列を設定
+	m_modelArrow.SetWorldMatrix(arrowMatrix);
+}
+
+void Arrow::ApplyVector3ToMatirx(Matrix& baseMatrix, Vector3 position)
+{
+	Matrix matrix = baseMatrix;
+	baseMatrix.m[3][0] = position.x;
+	baseMatrix.m[3][1] = position.y;
+	baseMatrix.m[3][2] = position.z;
 }
 
 void Arrow::Render(RenderContext& rc)

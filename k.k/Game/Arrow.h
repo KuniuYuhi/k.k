@@ -176,6 +176,14 @@ private:
 	/// スキル攻撃
 	/// </summary>
 	void SkillShot();
+
+	/// <summary>
+	/// 座標を行列に適応
+	/// </summary>
+	/// <param name="matrix">行列</param>
+	/// <param name="position">座標</param>
+	void ApplyVector3ToMatirx(Matrix& baseMatrix, Vector3 position);
+
 	
 	Bow* m_bow = nullptr;
 
