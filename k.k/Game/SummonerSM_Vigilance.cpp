@@ -6,11 +6,11 @@
 #include "CharactersInfoManager.h"
 
 namespace {
-	const float WAIT_TIME = 500.0f;		//待機時間
+	const float WAIT_TIME = 400.0f;		//待機時間
 
 	const float MELEE_ATTACK_RANGE = 280.0f;	//近距離攻撃の範囲内
 
-	const float STAY_PLAYER_LIMMIT_TIME = 500.0f;		//プレイヤーが近くにとどまっているタイマーの上限
+	const float STAY_PLAYER_LIMMIT_TIME = 100.0f;		//プレイヤーが近くにとどまっているタイマーの上限
 
 
 	const float KNOCKBACK_DISTANCE = 200.0f;
