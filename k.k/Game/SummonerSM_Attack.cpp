@@ -10,7 +10,7 @@ namespace {
 
 	const float STAY_PLAYER_LIMMIT_TIME = 10.0f;		//プレイヤーが近くにとどまっているタイマーの上限
 
-	const float DARK_METEO_ACTION_POINT = 40.0f;
+	const float DARK_METEO_ACTION_POINT = 30.0f;
 
 }
 

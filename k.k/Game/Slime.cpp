@@ -411,6 +411,8 @@ void Slime::OnProcessDamageStateTransition()
 		//硬直が終わったら
 		if (IsKnockBackStiffness() == false)
 		{
+			//todo ノックバックで動いた方向と逆を向く
+			//m_moveSpeed *= -1.0f;
 
 			//共通の状態遷移処理に移行
 			ProcessCommonStateTransition();

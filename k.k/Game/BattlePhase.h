@@ -1,7 +1,7 @@
 #pragma once
 
 namespace {
-	const int SUMMON_MONSTERS_CONUT = 8;
+	const int SUMMON_MONSTERS_CONUT = 5;
 }
 
 class BattlePhase:public IGameObject
