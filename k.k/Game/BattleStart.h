@@ -15,23 +15,21 @@ public:
 	void Update();
 	void Render(RenderContext& rc);
 
-	/// <summary>
-	/// 画像の移動処理
-	/// </summary>
-	/// <param name="spriteRender"></param>
-	/// <param name="startPos"></param>
-	/// <param name="endPos"></param>
-	void MoveText(SpriteRender& spriteRender,Vector3 startPos,Vector3 endPos);
+private:
 
 	/// <summary>
-	/// 透明化
+	/// 勇者登場の流れステート
 	/// </summary>
-	void CalcAlpha();
-	/// <summary>
-	/// 画像の初期化
-	/// </summary>
-	void InitSprite();
+	enum EnBraveState
+	{
+		enBraveState_Complete,
+		enBraveState_Fall,			//落ちる
+		enBraveState_Landing,		//着地
+		enBraveState_Idle,			//アイドル状態
+		enBraveState_End			//終わり
+	};
 
+	
 	/// <summary>
 	/// ゲームスタート時のカメラ
 	/// </summary>
@@ -59,28 +57,70 @@ public:
 		spriterender.Update();
 	}
 
+	/// <summary>
+	/// モデルの初期化
+	/// </summary>
+	void InitModel();
+	/// <summary>
+	/// 勇者モデルの移動処理
+	/// </summary>
+	void ProcessMoveBrave();
+
+	/// <summary>
+	/// 勇者の状態管理
+	/// </summary>
+	void ManageBraveState();
+	/// <summary>
+	/// 落ちる状態遷移処理
+	/// </summary>
+	void ProcessFallStateTransition();
+	/// <summary>
+	/// 着地状態遷移処理
+	/// </summary>
+	void ProcessLandingStateTransition();
+	/// <summary>
+	/// アイドル状態遷移処理
+	/// </summary>
+	void ProcessIdleStateTransition();
+	/// <summary>
+	/// 全て終了状態遷移処理
+	/// </summary>
+	void ProcessEndStateTransition();
+
+
+
 private:
 	Fade* m_fade = nullptr;
 
-	SpriteRender m_battleTextRender;
-	SpriteRender m_startTextRender;
+	enum EnAnimationClip {
+		enAnimClip_Idle,
+		enAnimClip_Fall,
+		enAnimClip_Landing,
+		enAnimClip_Num
+	};
+
+	ModelRender m_braveModel;
+	AnimationClip m_animationClip[enAnimClip_Num];
+
+	EnBraveState m_enBraveState = enBraveState_Fall;
 
 	CameraCollisionSolver	m_cameraCollisionSolver;
 	SpringCamera			m_springCamera;
 
 	Vector3				m_target = Vector3::Zero;		//カメラ注視点
-	Vector4 m_color = g_vec4White;
+
+	Vector3 m_bravePosition = g_vec3Zero;
 
 	float m_timer = 0.0f;
 
-	float m_alpha = 0.0f;
-	bool m_calcAlphaEndFlag = false;
-
 	bool m_fadeStartFlag = false;
 
-	const float					m_cameraZoomOutTime = 2.0f;
-	float						m_cameraZoomOutTimer = 0.0f;
+	const float					m_fadeTime = 2.0f;
+	float						m_fadeTimer = 0.0f;
 
-	float m_count = 1.0f;
+
+	float m_addYPos = 0.0f;
+	float m_mulXZPos = 0.0f;
+
 };
 
