@@ -1,4 +1,7 @@
 #pragma once
+#include "Level3DRender.h"
+
+#include "SpringCamera.h"
 
 class Fade;
 class Title :public IGameObject
@@ -28,7 +31,6 @@ public:
 
 	void GoToPlayMode();
 	void HowToPlayMode();
-	void ActionMode();
 	void GameEndMode();
 
 
@@ -76,12 +78,66 @@ public:
 	{
 		enMode_GoToPlay,
 		enMode_HowToPlay,
-		enMode_Action,
 		enMode_GameEnd,
 		enMode_Num
 	};
 
+
 private:
+	/// <summary>
+	/// 各種モデルの初期化
+	/// </summary>
+	void InitModel();
+	/// <summary>
+	/// スカイキューブの初期化
+	/// </summary>
+	void InitSkyCube();
+	/// <summary>
+	/// タイトルのカメラの初期化
+	/// </summary>
+	void InitTitleCamera();
+
+
+	/// <summary>
+	/// 「Aボタンを押す」の指示に従ったか
+	/// </summary>
+	/// <returns>従ったらtrue</returns>
+	bool IsTriggerPushAButton();
+
+
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	bool IsDirectionWipeEnd();
+	/// <summary>
+	/// 
+	/// </summary>
+	void ProcessDirectionWipe();
+
+private:
+
+	enum EnAnimationClip {
+		enAnimClip_Idle,
+		enAnimClip_DashJamp,
+		enAnimClip_Num
+	};
+
+	ModelRender m_braveModel;
+	AnimationClip				m_animationClip[enAnimClip_Num];
+
+
+	ModelRender m_cliffModel;
+	ModelRender m_mountainModel;
+
+	SkyCube* m_skyCube;
+
+	Level3DRender m_titleLevel;
+
+	SpringCamera			m_springCamera;
+
+
 
 	SpriteRender			m_titleNameRender;
 	SpriteRender			m_backRender;
@@ -89,11 +145,10 @@ private:
 	SpriteRender			m_pushAButtonTextRender;
 	SpriteRender			m_goToPlayTextRender;
 	SpriteRender			m_howToPlayTextRender;
-	SpriteRender			m_actionTextRender;
 	SpriteRender			m_gameEndTextRender;
 	SpriteRender			m_cursorRender;
 	SpriteRender			m_howToPlayRender;
-	SpriteRender			m_actionRender;
+	SpriteRender			m_blackOutRender;
 
 	Fade*					m_fade = nullptr;
 
@@ -103,8 +158,11 @@ private:
 
 	Vector3					m_gTPScale = g_vec3One;
 	Vector3					m_hTPScale = g_vec3One;
-	Vector3					m_actionScale = g_vec3One;
 	Vector3					m_gameEndScale = g_vec3One;
+
+
+	Vector3				m_toCameraPos = Vector3::Zero;		//カメラ位置から注視点に向かうベクトル
+	Vector3				m_target = Vector3::Zero;		//カメラ注視点
 
 
 	float					m_wipeSize = 860.0f;
@@ -129,11 +187,13 @@ private:
 	bool					m_SelectModeFlag = false;				//モードを決めているかのフラグ
 
 	bool					m_drawHowToPlayFlag = false;
-	bool					m_drawActionFlag = false;
 
 	bool					m_goToGameFlag = false;				//ゲームが始まるかのフラグ
 
 	bool					m_muteBGMFlag = false;
+
+	bool					m_drawSpriteFlag = true;
+
 
 	float					m_bgmVolume = 0.0f;
 
