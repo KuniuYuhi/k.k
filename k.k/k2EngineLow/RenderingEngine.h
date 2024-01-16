@@ -309,6 +309,14 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight.SetAmbient(ambient);
 		}
+		/// <summary>
+		/// 環境光を取得
+		/// </summary>
+		/// <returns></returns>
+		const Vector3& GetAmbient() const
+		{
+			return m_sceneLight.GetAmbient();
+		}
 
 		/////////////////////////////////////////////////////////////
 		///ポイントライトの関数
