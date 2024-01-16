@@ -33,15 +33,14 @@ bool GameCamera::Start()
 
 	m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
 
+	g_camera3D->SetNear(1.0f);
+	g_camera3D->SetFar(10000.0f);
 
 	m_toCameraPosForBoss.Set(0.0f, 200.0f, 200.0f);
 	//注視点から視点までのベクトルを設定。300,400
 	m_toCameraPos.Set(DEFAULT_TOCAMERAPOS);
 	//カメラをプレイヤーの後ろにするときに使う
 	m_position = m_toCameraPos;
-
-	g_camera3D->SetNear(1.0f);
-	g_camera3D->SetFar(10000.0f);
 
 	m_cameraCollisionSolver.Init(1.0f);
 
