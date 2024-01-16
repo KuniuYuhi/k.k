@@ -82,6 +82,7 @@ namespace nsK2EngineLow {
 	{
 	public:
 		void Init();
+
 		Light& GetSceneLight()
 		{
 			return m_light;
@@ -154,6 +155,14 @@ namespace nsK2EngineLow {
 		void SetAmbient(Vector3 ambient)
 		{
 			m_light.ambientLight = ambient;
+		}
+		/// <summary>
+		/// ŠÂ‹«Œõ‚ðŽæ“¾
+		/// </summary>
+		/// <returns></returns>
+		const Vector3& GetAmbient() const
+		{
+			return m_light.ambientLight;
 		}
 
 		////////////////////////////////////////////////////////
