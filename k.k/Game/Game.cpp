@@ -89,7 +89,7 @@ bool Game::Start()
 
 	//ゲーム進行マネージャークラスの生成
 	//ゲームシーンステートの設定
-	GameManager::CreateInstance(GameManager::enGameSeenState_Game);
+	GameManager::CreateInstance(GameManager::enGameSeenState_GameStart);
 	//初期化処理
 	GameManager::GetInstance()->Init();
 
@@ -137,6 +137,15 @@ void Game::CreateBoss()
 	m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
 	//モンスターが一定以上近づかないように毎フレーム調べる
 	//数を取得できるようにする
+}
+
+void Game::CreatePlayerAndCamera()
+{
+	//プレイヤークラスの生成
+	GameManager::GetInstance()->CreatePlayerClass();
+	m_player = CharactersInfoManager::GetInstance()->GetPlayerInstance();
+	//ゲームカメラの生成
+	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 }
 
 void Game::CreateBattlePhase()
@@ -275,8 +284,6 @@ void Game::OnProcessAppearanceBossTransition()
 		//ボスのアクティブ化
 		CreateBoss();
 
-		
-
 		//ステートを切り替える
 		GameManager::GetInstance()->SetGameSeenState(
 			GameManager::enGameSeenState_Game);
@@ -290,6 +297,9 @@ void Game::OnProcessAppearanceBossTransition()
 		m_entryBoss->SetPosition(BOSS_CREATE_POSITION);
 		m_entryBoss->SetGame(this);
 		m_entryBoss->SetSkyCube(m_skyCube);
+
+		//プレイヤーとカメラの生成
+		CreatePlayerAndCamera();
 	}
 }
 
@@ -490,9 +500,7 @@ void Game::InitGameObject()
 	InitSkyCube();
 	//ボスステージの生成
 	m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
-	//プレイヤークラスの生成
-	GameManager::GetInstance()->CreatePlayerClass();
-	m_player = CharactersInfoManager::GetInstance()->GetPlayerInstance();
+
 	//ゲームシーンステートがゲームスタートなら
 	if (GameManager::GetInstance()->GetGameSeenState() ==
 		GameManager::enGameSeenState_GameStart)
@@ -529,10 +537,11 @@ void Game::InitGameObject()
 		/*TurtleShell* tu = NewGO<TurtleShell>(0, "aa");
 		tu->SetPosition(g_vec3Zero);*/
 
+		CreatePlayerAndCamera();
+
 	}
 
-	//ゲームカメラの生成
-	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
+	
 }
 
 void Game::InitLighting()

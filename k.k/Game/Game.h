@@ -177,6 +177,10 @@ private:
 	/// </summary>
 	void CreateBoss();
 	/// <summary>
+	/// プレイヤーとカメラの生成
+	/// </summary>
+	void CreatePlayerAndCamera();
+	/// <summary>
 	/// バトルフェーズクラス生成
 	/// </summary>
 	void CreateBattlePhase();
