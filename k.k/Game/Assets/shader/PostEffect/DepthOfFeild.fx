@@ -48,14 +48,14 @@ float4 PSMain(PSInput In) : SV_Target0
 
     //カメラ空間での深度値が800以下ならピクセルキル
     //ボケ画像を書き込まない
-    clip(depth - 1000.0f);
+    clip(depth - 1500.0f);
 
     //ボケ画像をサンプリング
     float4 boke = bokeTexture.Sample(Sampler, In.uv);
 
     //深度値から不透明度を計算する
     //深度値800から始まり、深度値2000で最大のボケ具合になる
-    boke.a = min(1.0f, (depth - 1000.0f) / 1500.0f);
+    boke.a = min(1.0f, (depth - 1500.0f) / 1700.0f);
 
     return boke;
 }
