@@ -457,6 +457,7 @@
     <ClCompile Include="MobMonsterSM_Patrol.cpp" />
     <ClCompile Include="MobMonsterSM_Chase.cpp" />
     <ClCompile Include="CalcCharacterForward.cpp" />
+    <ClCompile Include="Loading.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -886,5 +887,6 @@
     <ClInclude Include="MobMonsterSM_Patrol.h" />
     <ClInclude Include="MobMonsterSM_Chase.h" />
     <ClInclude Include="CalcCharacterForward.h" />
+    <ClInclude Include="Loading.h" />
   </ItemGroup>
 </Project>
