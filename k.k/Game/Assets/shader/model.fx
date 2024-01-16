@@ -190,12 +190,16 @@ SPSOut PSMainCore(SPSIn psIn, int isToon, int isShadowCaster) : SV_Target0
 		hemiLig = CalcLigFromhemiSphereLight(psIn);
 	}
 
+	
     float3 finalAmbient = ambient;
+	
+	
 	//リムライトの処理
     float limLight = 0.0f;
     if (isShadowCaster)
     {
         limLight = CalcLimLight(psIn);
+		//リムライトを使うときはアンビエントを弱める
         finalAmbient = 0.7f;
     }
 	
