@@ -1,4 +1,4 @@
-9
+10
 17,Title_BackGround2,59,../../Game/Assets/sprite/InGame/Title/Title_BackGround2.png,0.0,1.1368683772161603e-13,1920,1080,10,1.0,1.0,0.5,0.5,21,Title_BackGround2.dds
 12,GoToGameText,54,../../Game/Assets/sprite/InGame/Title/GoToGameText.png,0.0,-140.0,428,64,10,1.0,1.0,0.5,0.5,16,GoToGameText.dds
 13,HowToPlayText,55,../../Game/Assets/sprite/InGame/Title/HowToPlayText.png,0.0,-215.0,428,64,10,1.0,1.0,0.5,0.5,17,HowToPlayText.dds
@@ -8,3 +8,4 @@
 9,TitleName,51,../../Game/Assets/sprite/InGame/Title/TitleName.png,0.0,229.99999999999994,1490,420,10,1.0,1.0,0.5,0.5,13,TitleName.dds
 4,Star,46,../../Game/Assets/sprite/InGame/Title/Star.png,269.2307692307693,134.61538461538458,55,55,10,1.0,1.0,1.0,1.0,8,Star.dds
 6,Cursor,48,../../Game/Assets/sprite/InGame/Title/Cursor.png,-176.9230769230769,-142.30769230769226,76,76,10,1.0,1.0,0.5,0.5,10,Cursor.dds
+7,Cursor2,49,../../Game/Assets/sprite/InGame/Title/Cursor2.png,1.9230769230770193,-144.23076923076928,299,50,10,1.0,1.0,0.5,0.5,11,Cursor2.dds
