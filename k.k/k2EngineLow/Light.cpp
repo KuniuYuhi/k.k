@@ -23,5 +23,9 @@ void nsK2EngineLow::SceneLight::Init()
 	//半球ライトの地面の法線
 	m_light.hemiSphereLight.groundNormal = Vector3(0.0f, 1.0f, 0.0f);
 
+	//リムライトの明るさの強さ
+	m_light.limLight.lightPower = 1.5f;
+
+	//カメラの座標
 	m_light.cameraEyePos = g_camera3D->GetPosition();
 }

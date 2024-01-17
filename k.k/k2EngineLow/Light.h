@@ -63,7 +63,7 @@ namespace nsK2EngineLow {
 
 	struct LimLight
 	{
-		float lightPower = 1.5f;	//リムライトの強さ
+		float lightPower;	//リムライトの強さ
 		int isUse = false;			//使用フラグ
 		float pad;
 		float pad2;
@@ -90,6 +90,9 @@ namespace nsK2EngineLow {
 	class SceneLight
 	{
 	public:
+		/// <summary>
+		/// 初期化
+		/// </summary>
 		void Init();
 
 		Light& GetSceneLight()
