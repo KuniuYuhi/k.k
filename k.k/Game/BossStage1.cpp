@@ -52,7 +52,7 @@ bool BossStage1::Start()
 				//êX
 				m_forest.Init(
 					"Assets/modelData/BackGround/Tree2.tkm",
-					L"Assets/shader/ToonTextrue/lamp_glay.DDS",
+					L"Assets/shader/ToonTextrue/lamp_Forest.DDS",
 					0,
 					0,
 					enModelUpAxisZ,
