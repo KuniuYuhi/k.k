@@ -89,7 +89,7 @@ bool Game::Start()
 
 	//ゲーム進行マネージャークラスの生成
 	//ゲームシーンステートの設定
-	GameManager::CreateInstance(GameManager::enGameSeenState_GameStart);
+	GameManager::CreateInstance(GameManager::enGameSeenState_Game);
 	//初期化処理
 	GameManager::GetInstance()->Init();
 
@@ -107,6 +107,9 @@ bool Game::Start()
 	m_fade->StartFadeOut(2.0f);
 	//被写界深度の無効化
 	g_renderingEngine->DisableDof();
+	//リムライトの有効化
+	g_renderingEngine->UseLimLight();
+
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
