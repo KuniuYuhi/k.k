@@ -38,7 +38,7 @@ namespace {
     const Vector3 TARGET_CAMERA_POS = { 0.0f,190.0f,0.0f };
 
 
-    const Vector3 DEFAULT_AMBIENT = { 3.0f,3.0f,3.0f };
+    const Vector3 DEFAULT_AMBIENT = { 1.0f,1.0f,1.0f };
     const Vector3 DEFAULT_DIRECTION_LIGHT_COLOR = { 0.5f,0.5f,0.5f };
     const Vector3 DEFAULT_DIRECTION_LIGHT_DIRECTION = { 0.57f,-0.57f,-0.57f };
 
@@ -76,6 +76,7 @@ bool Title::Start()
     g_renderingEngine->SetDirLightColor(DEFAULT_DIRECTION_LIGHT_COLOR);
     g_renderingEngine->SetDirLightDirection(DEFAULT_DIRECTION_LIGHT_DIRECTION);
 
+    g_renderingEngine->UseLimLight();
 
     //”íŽÊŠE[“x‚Ì–³Œø‰»
     //g_renderingEngine->DisableDof();
