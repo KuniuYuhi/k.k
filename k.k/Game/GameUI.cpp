@@ -6,7 +6,6 @@
 #include "Game.h"
 #include "Player.h"
 #include "Boss.h"
-#include "Lich.h"
 #include "GameManager.h"
 
 namespace {
@@ -29,18 +28,14 @@ namespace {
 	/// プレイヤー側
 	/// </summary>
 
-	const Vector2 HP_OR_MP_PIBOT = { 0.0f,0.5f };							//HPかMPのピボット
+	const Vector2 HP_PIBOT = { 0.0f,0.5f };							//HPかMPのピボット
 
 	//ステータスバー
-	const Vector3 MAIN_ICON_POS = { -835.0f, -411.0f, 0.0f };
-	const Vector3 MAIN_ICON_BASE_POS = { -835.0f, -411.0f, 0.0f };
-	const Vector3 MAIN_STATUS_BAR = { -504.0f, -432.0f, 0.0f };
-	const Vector3 MAIN_HP_FRONT_BAR = { -706.0f, -469.0f, 0.0f };
-	const Vector3 MAIN_HP_BACK_BAR = { -439.0f, -468.0f, 0.0f };
-	const Vector3 MAIN_MP_FRONT_BAR = { -708.5f, -394.0f, 0.0f };
-	const Vector3 MAIN_MP_BACK_BAR = { -467.0f, -394.0f, 0.0f };
-	const Vector2 HP_FONT_POS = { -704.0f,-425.0f };
-	const Vector2 MP_FONT_POS = { -704.0f, -354.0f };
+	const Vector3 MAIN_STATUS_BAR = { -650.0f, -470.0f, 0.0f };
+	//ピボットを設定したHPのバー
+	const Vector3 MAIN_HP_BAR = { -940.0f, -470.0f, 0.0f };
+	
+	const Vector2 HP_FONT_POS = { -930.0f,-428.0f };
 
 	//+10+10
 	const Vector3 SKILL_CENTER_POS = { 755.0f,-396.0f,0.0f };
@@ -122,8 +117,6 @@ void GameUI::PlayerUIUpdate()
 	ProcessPhase();
 	//ステータス
 	UpdateMainStatus();
-	//キャラアイコン
-	UpdateCharaIcon();
 	//ウェポン
 	UpdateWeapon();
 }
@@ -132,19 +125,7 @@ void GameUI::UpdateMainStatus()
 {
 	//HPの処理
 	ProcessPlayerHp();
-	//MPの処理
-	ProcessPlayerMp();
-
 	
-}
-
-void GameUI::UpdateCharaIcon()
-{
-	//やられたキャラのアイコンをグレースケールにする
-	if (m_player->GetNowActorDieFlag()==true)
-	{
-		m_playerUI.m_characterIconRender.SetGrayScale(true);
-	}
 }
 
 void GameUI::UpdateWeapon()
@@ -225,17 +206,12 @@ void GameUI::DrawPlayerUI(RenderContext& rc)
 
 	
 	m_playerUI.m_hpFrontRender.Draw(rc);
-	//メインMP
-	m_playerUI.m_mpBackRender.Draw(rc);
-	m_playerUI.m_mpFrontRender.Draw(rc);
 	
-	//メインステータスバー
-	m_playerUI.m_statusBarRender.Draw(rc);
-	//メインアイコンベース
-	m_playerUI.m_iconBaseRender.Draw(rc);
-	//HPとMPのフォント
+	//メイン
+	m_playerUI.m_hpFlameRender.Draw(rc);
+	
+	//HPのフォント
 	m_playerUI.m_hpFont.Draw(rc);
-	m_playerUI.m_mpFont.Draw(rc);
 
 
 	//メイン武器のフレーム
@@ -314,47 +290,28 @@ void GameUI::InitPlayerUI()
 
 	//HPの値
 	InitFontRender(m_playerUI.m_hpFont, HP_FONT_POS, 1.3f);
-	//MPの値
-	InitFontRender(m_playerUI.m_mpFont, MP_FONT_POS, 1.2f);
-
-	//キャラアイコン
-	InitSpriteRender(
-		m_playerUI.m_characterIconRender, "Assets/sprite/InGame/Character/Icon_Hero.DDS", 219, 219, MAIN_ICON_POS);
-
-	//アイコンベース
-	InitSpriteRender(
-		m_playerUI.m_iconBaseRender, "Assets/sprite/InGame/Character/Icon_Base_Main.DDS", 250, 250, MAIN_ICON_BASE_POS);
-
+	
 	//ステータスバー
 	InitSpriteRender(
-		m_playerUI.m_statusBarRender, "Assets/sprite/InGame/Character/StatusBar_Main.DDS", 720, 206, MAIN_STATUS_BAR);
+		m_playerUI.m_hpFlameRender, "Assets/sprite/InGame/Character/Player_HP_Flame.DDS", 608, 88, MAIN_STATUS_BAR);
 
 	//HPバー
 	InitSpriteRender(
-		m_playerUI.m_hpFrontRender, "Assets/sprite/InGame/Character/HP_Front_Main.DDS", 550, 72, MAIN_HP_FRONT_BAR);
+		m_playerUI.m_hpFrontRender, "Assets/sprite/InGame/Character/Player_HP_Front.DDS", 588, 78, MAIN_HP_BAR);
 	//ピボットの設定
-	m_playerUI.m_hpFrontRender.SetPivot(HP_OR_MP_PIBOT);
+	m_playerUI.m_hpFrontRender.SetPivot(HP_PIBOT);
 
 	//白いHPバー
 	InitSpriteRender(
-		m_playerUI.m_hpWhiteRender, "Assets/sprite/InGame/Character/HP_White.DDS", 550, 72, MAIN_HP_FRONT_BAR);
+		m_playerUI.m_hpWhiteRender, "Assets/sprite/InGame/Character/Player_HP_White.DDS", 588, 78, MAIN_HP_BAR);
 	//ピボットの設定
-	m_playerUI.m_hpWhiteRender.SetPivot(HP_OR_MP_PIBOT);
+	m_playerUI.m_hpWhiteRender.SetPivot(HP_PIBOT);
 
 	//HPバーの裏側
 	InitSpriteRender(
-		m_playerUI.m_hpBackRender, "Assets/sprite/InGame/Character/HP_Back_Main.DDS", 585, 63, MAIN_HP_BACK_BAR);
+		m_playerUI.m_hpBackRender, "Assets/sprite/InGame/Character/Player_HP_Back.DDS", 600, 80, MAIN_STATUS_BAR);
 
-	//MPバー
-	InitSpriteRender(
-		m_playerUI.m_mpFrontRender, "Assets/sprite/InGame/Character/MP_Front_Main.DDS", 483, 53, MAIN_MP_FRONT_BAR);
-	//ピボットの設定
-	m_playerUI.m_mpFrontRender.SetPivot(HP_OR_MP_PIBOT);
-
-	//MPバーの裏側
-	InitSpriteRender(
-		m_playerUI.m_mpBackRender, "Assets/sprite/InGame/Character/MP_Back_Main.DDS", 483, 53, MAIN_MP_BACK_BAR);
-
+	
 	//スキル１のフレーム
 	InitSpriteRender(
 		m_playerUI.m_Skill_1FlameRender, "Assets/sprite/InGame/Character/SkillFlame.DDS", 181, 181, SKILL_1__POS, g_vec3One);
@@ -456,13 +413,13 @@ void GameUI::InitMonsterUI()
 	InitSpriteRender(
 		m_monsterUI.m_HpFrontRender, "Assets/sprite/InGame/Character/HP_Front_Boss.DDS", 978, 47, BOSS_HP_FRONT_POS);
 	//ピボットの設定
-	m_monsterUI.m_HpFrontRender.SetPivot(HP_OR_MP_PIBOT);
+	m_monsterUI.m_HpFrontRender.SetPivot(HP_PIBOT);
 	
 	//ボスの白いHPバー
 	InitSpriteRender(
 		m_monsterUI.m_HpWhiteRender, "Assets/sprite/InGame/Character/HP_White_Boss.DDS", 978, 47, BOSS_HP_FRONT_POS);
 	//ピボットの設定
-	m_monsterUI.m_HpWhiteRender.SetPivot(HP_OR_MP_PIBOT);
+	m_monsterUI.m_HpWhiteRender.SetPivot(HP_PIBOT);
 
 	//HPバーの裏側
 	InitSpriteRender(
@@ -543,24 +500,6 @@ void GameUI::ProcessPlayerHp()
 	//更新
 	m_playerUI.m_hpFrontRender.Update();
 	m_playerUI.m_hpWhiteRender.Update();
-}
-
-void GameUI::ProcessPlayerMp()
-{
-	int maxMP = m_player->GetNowActorStatus().GetMaxMp();
-	int nowMP = m_player->GetNowActorStatus().GetMp();
-
-	//MPバーの減っていく割合。
-	Vector3 MpScale = Vector3::One;
-	MpScale = CalcGaugeScale(maxMP, nowMP);
-	m_playerUI.m_mpFrontRender.SetScale(MpScale);
-	//MPフォント
-	wchar_t MP[255];
-	swprintf_s(MP, 255, L"MP     %3d", nowMP);
-	m_playerUI.m_mpFont.SetText(MP);
-
-	//更新
-	m_playerUI.m_mpFrontRender.Update();
 }
 
 void GameUI::ProcessBossHP()

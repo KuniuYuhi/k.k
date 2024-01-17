@@ -3,7 +3,6 @@
 
 class Game;
 class Player;
-class Lich;
 class Boss;
 
 class GameUI:public IGameObject
@@ -41,14 +40,6 @@ public:
 	}
 
 	/// <summary>
-	/// リッチ(ボス)のインスタンスの取得
-	/// </summary>
-	/// <param name="lich"></param>
-	void GetLich(Lich* lich)
-	{
-		m_lich = lich;
-	}
-	/// <summary>
 	/// ゲームインスタンスの取得
 	/// </summary>
 	/// <param name="game"></param>
@@ -76,10 +67,7 @@ private:
 	/// メインキャラのステータスの更新処理
 	/// </summary>
 	void UpdateMainStatus();
-	/// <summary>
-	/// キャラアイコンの更新処理
-	/// </summary>
-	void UpdateCharaIcon();
+	
 	/// <summary>
 	/// 武器の更新処理
 	/// </summary>
@@ -110,11 +98,7 @@ private:
 	/// プレイヤーのHPの処理
 	/// </summary>
 	void ProcessPlayerHp();
-	/// <summary>
-	/// プレイヤーのMPの処理
-	/// </summary>
-	void ProcessPlayerMp();
-
+	
 	/// <summary>
 	/// ボスのHPの処理
 	/// </summary>
@@ -192,20 +176,13 @@ private:
 	struct PlayerUI
 	{
 		FontRender m_hpFont;						//HPの値
-		FontRender m_mpFont;						//MPの値
-
-		SpriteRender m_characterIconRender;			//キャラアイコン
-
-		SpriteRender m_iconBaseRender;				//キャラアイコンのベース
-
-		SpriteRender m_statusBarRender;			//ステータスバー
+		
+		SpriteRender m_hpFlameRender;			//ステータスバー
 
 		SpriteRender m_hpFrontRender;			//変動するHPバー
 		SpriteRender m_hpBackRender;			//HPバーの裏側
 		SpriteRender m_hpWhiteRender;			//遅れて減らす白いHPバー
-		SpriteRender m_mpFrontRender;			//変動するMPバー
-		SpriteRender m_mpBackRender;			//MPバーの裏側
-
+	
 		SpriteRender m_Skill_1FlameRender;			//スキル1のフレーム
 
 		SpriteRender m_mainWeaponFlameRender;		//メイン武器のフレーム
@@ -244,7 +221,6 @@ private:
 
 	Game* m_game = nullptr;
 	Player* m_player = nullptr;
-	Lich* m_lich = nullptr;
 	Boss* m_boss = nullptr;
 
 	PlayerUI m_playerUI;			//プレイヤーの情報のUI
