@@ -61,6 +61,14 @@ namespace nsK2EngineLow {
 		float pad1;
 	};
 
+	struct LimLight
+	{
+		float lightPower = 1.5f;	//リムライトの強さ
+		int isUse = false;			//使用フラグ
+		float pad;
+		float pad2;
+	};
+
 	/// <summary>
 	/// ライト構造体
 	/// </summary>
@@ -70,6 +78,7 @@ namespace nsK2EngineLow {
 		PointLight			pointLight;				//ポイントライト
 		SpotLight			spotLight;				//スポットライト				
 		HemiSphereLight		hemiSphereLight;		//半球ライト
+		LimLight            limLight;				//リムライト
 		Vector3             ambientLight;			//環境光(アンビエントライト)
 		float				pad1;					//パティング１
 		Vector3				cameraEyePos;			//カメラの座標
@@ -495,6 +504,52 @@ namespace nsK2EngineLow {
 		{
 			return m_light.hemiSphereLight.isUse;
 		}
+
+		////////////////////////////////////////////////////////
+		///リムライトの関数
+		////////////////////////////////////////////////////////
+
+		/// <summary>
+		/// リムライトの強さを設定
+		/// </summary>
+		/// <param name="power"></param>
+		void SetLimLIghtPower(float power)
+		{
+			m_light.limLight.lightPower = power;
+		}
+		/// <summary>
+		/// リムライトの強さを取得
+		/// </summary>
+		/// <returns></returns>
+		const float& GetLimLightPower() const
+		{
+			return m_light.limLight.lightPower;
+		}
+
+		/// <summary>
+		/// リムライトを使用する
+		/// </summary>
+		void UseLimLight()
+		{
+			m_light.limLight.isUse = true;
+		}
+		/// <summary>
+		/// リムライトを使用しない
+		/// </summary>
+		void UnUseLimLight()
+		{
+			m_light.limLight.isUse = false;
+		}
+
+		/// <summary>
+		/// リムライトは使用中?
+		/// </summary>
+		/// <returns>使用中のときtrue</returns>
+		const int LimLightIsUse() const
+		{
+			return m_light.limLight.isUse;
+		}
+
 
 		////////////////////////////////////////////////////////
 		///カメラの位置の関数
