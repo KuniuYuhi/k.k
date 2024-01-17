@@ -151,6 +151,7 @@ bool EntryBoss::Start()
 
 	//リムライトの無効化
 	//g_renderingEngine->UnUseLimLight();
+	g_renderingEngine->SetLimLIghtPower(5.0f);
 
 	//ばねカメラの初期化。
 	m_springCamera.Init(
@@ -321,7 +322,9 @@ void EntryBoss::SlowlyBrightScreen()
 		return;
 	}
 
-	m_lightTimer += g_gameTime->GetFrameDeltaTime() * 0.03f;
+	m_lightTimer += g_gameTime->GetFrameDeltaTime() * m_mulBrightTimer;
+
+	m_mulBrightTimer += m_mulBrightTimer*0.1f;
 
 	//画面を明るくする
 	m_ambientColor = Math::Lerp(m_lightTimer, m_ambientColor, START_AMBIENT_COLOR);
@@ -337,6 +340,7 @@ void EntryBoss::SlowlyBrightScreen()
 	if (m_ambientColor >= START_AMBIENT_COLOR)
 	{
 		m_SlowlyBrightScreenEndFlag = true;
+		g_renderingEngine->SetLimLIghtPower(1.5f);
 	}
 }
 
@@ -569,7 +573,7 @@ void EntryBoss::DeleteTask()
 	//スカイキューブの明るさを戻す
 	m_skyCube->SetLuminance(START_SKY_CUBE_LMINANCE);
 	//リムライトの有効化
-	//g_renderingEngine->UseLimLight();
+	g_renderingEngine->SetLimLIghtPower(1.5f);
 }
 
 void EntryBoss::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
@@ -594,6 +598,8 @@ void EntryBoss::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNa
 
 		//リムライトの有効化
 		g_renderingEngine->UseLimLight();
+
+		
 	}
 }
 
