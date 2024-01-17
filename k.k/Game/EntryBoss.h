@@ -180,6 +180,11 @@ private:
 	/// </summary>
 	void BossMovieSkip();
 
+	/// <summary>
+	/// Á‚·‚Æ‚«‚Ìì‹Æ
+	/// </summary>
+	void DeleteTask();
+
 private:
 
 

@@ -47,7 +47,7 @@ namespace {
 	//環境光の初期カラーと最終的なカラー
 	//0.6
 	const float START_AMBIENT_COLOR = 1.0f;
-	const float END_AMBIENT_COLOR = 0.1f;
+	const float END_AMBIENT_COLOR = 0.01f;
 
 	//ポイントライト
 	const Vector3 ADD_POINT_LIGHT_POS = { 0.0f,50.0f,-140.0f };
@@ -62,7 +62,7 @@ namespace {
 	const Vector3 CENTER_POS = { 700.0f,470.0f,0.0f };
 	const Vector3 END_POS = { 160.0f,230.0f,-550.0f };
 
-	const float BOSS_MOVIE_SKIP_TIME = 3.0f;
+	const float BOSS_MOVIE_SKIP_TIME = 2.0f;
 }
 
 EntryBoss::EntryBoss()
@@ -71,29 +71,7 @@ EntryBoss::EntryBoss()
 
 EntryBoss::~EntryBoss()
 {
-	//音の停止
-	g_soundManager->StopSound(enSoundName_FogRemoval);
-	g_soundManager->StopSound(enSoundName_Gogogo);
-
-	//エフェクトの停止
-	if (m_CircleEffect != nullptr)
-	{
-		m_CircleEffect->Stop();
-	}
-	
-	if (m_FogRemovalEffect != nullptr)
-	{
-		m_FogRemovalEffect->Stop();
-	}
-
-	//ライトを元に戻す
-	g_renderingEngine->SetDirLightColor(DIRECTION_RIGHT_COLOR);
-	//環境光
-	g_renderingEngine->SetAmbient(g_vec3One * START_AMBIENT_COLOR);
-	//ポイントライトを消す
-	g_renderingEngine->UnUsePointLight();
-	//スカイキューブの明るさを戻す
-	m_skyCube->SetLuminance(START_SKY_CUBE_LMINANCE);
+	DeleteTask();
 }
 
 bool EntryBoss::Start()
@@ -162,14 +140,17 @@ bool EntryBoss::Start()
 
 
 	//環境光
-	g_renderingEngine->SetAmbient(g_vec3One);
+	g_renderingEngine->SetAmbient({0.1f,0.1f,0.1f});
 	//初期の環境光のカラーを設定
-	m_ambientColor = START_AMBIENT_COLOR;
+	m_ambientColor = END_AMBIENT_COLOR;
 
 	//ゴゴゴゴゴゴゴの再生
 	g_soundManager->InitAndPlaySoundSource(enSoundName_Gogogo, g_soundManager->GetSEVolume());
 	//被写界深度の無効化
 	g_renderingEngine->DisableDof();
+
+	//リムライトの無効化
+	//g_renderingEngine->UnUseLimLight();
 
 	//ばねカメラの初期化。
 	m_springCamera.Init(
@@ -193,11 +174,6 @@ void EntryBoss::Update()
 		m_game->SetBossMovieFlag(true);
 		return;
 	}
-	//処理は終わっているのでする必要ない
-	/*else if(m_completeFlag == true)
-	{
-		return;
-	}*/
 
 	//ムービースキップ処理
 	BossMovieSkip();
@@ -357,7 +333,7 @@ void EntryBoss::SlowlyBrightScreen()
 	m_skyCube->SetLuminance(m_skyLuminance);
 	m_skyCube->Update();
 
-	//環境光が最大まで小さくなったら
+	//環境光が最大までおおきくなったら
 	if (m_ambientColor >= START_AMBIENT_COLOR)
 	{
 		m_SlowlyBrightScreenEndFlag = true;
@@ -567,6 +543,35 @@ void EntryBoss::BossMovieSkip()
 	}
 }
 
+void EntryBoss::DeleteTask()
+{
+	//音の停止
+	g_soundManager->StopSound(enSoundName_FogRemoval);
+	g_soundManager->StopSound(enSoundName_Gogogo);
+
+	//エフェクトの停止
+	if (m_CircleEffect != nullptr)
+	{
+		m_CircleEffect->Stop();
+	}
+
+	if (m_FogRemovalEffect != nullptr)
+	{
+		m_FogRemovalEffect->Stop();
+	}
+
+	//ライトを元に戻す
+	g_renderingEngine->SetDirLightColor(DIRECTION_RIGHT_COLOR);
+	//環境光
+	g_renderingEngine->SetAmbient(g_vec3One * START_AMBIENT_COLOR);
+	//ポイントライトを消す
+	g_renderingEngine->UnUsePointLight();
+	//スカイキューブの明るさを戻す
+	m_skyCube->SetLuminance(START_SKY_CUBE_LMINANCE);
+	//リムライトの有効化
+	//g_renderingEngine->UseLimLight();
+}
+
 void EntryBoss::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
 	//霧払いエフェクトの再生
@@ -586,6 +591,9 @@ void EntryBoss::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNa
 		m_gogogoVolume = g_soundManager->GetDefaultSEVolume();
 		//ポイントライトを消す
 		g_renderingEngine->UnUsePointLight();
+
+		//リムライトの有効化
+		g_renderingEngine->UseLimLight();
 	}
 }
 
