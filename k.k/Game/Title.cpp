@@ -6,6 +6,8 @@
 
 #include "SelectWeapon.h"
 
+#include "Loading.h"
+
 namespace {
     const float SPRITE_OFFSET = -400.0f;
 
@@ -289,9 +291,13 @@ void Title::GoToPlayMode()
         //フェードが終わったらゲーム生成。自身を削除
         if (m_fade->GetCurrentAlpha() >= 1.0f)
         {
-            Game* game = NewGO<Game>(0, "game");
+            Loading* loading = NewGO<Loading>(7, "loading");
+            loading->SetLoadingRoot(Loading::enLoadingRoot_TitleToGame);
+
+            //Game* game = NewGO<Game>(0, "game");
             DeleteGO(this);
         }
+
         //勇者モデルのアニメーションが終わったら
         if (m_braveModel.IsPlayingAnimation() == false&&
             m_fade->IsFade()==false)
