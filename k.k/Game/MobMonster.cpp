@@ -110,9 +110,8 @@ void MobMonster::MoveChasePlayer(CharacterController& charaCon)
 	//移動速度の計算
 	MoveMonster(charaCon);
 
-	//プレイヤーの周りに既にモンスターがたくさんいたら
-	if (CharactersInfoManager::GetInstance()->GetMonstersNearPlayerCount() >
-		MONSTER_NEAR_PLAYER_COUNT_LIMMIT)
+	//プレイヤーを追いかけられないなら本来より遠い所で止まる
+	if (GetEnableChasePlayerFag() == false)
 	{
 		//本来のm_stayRangeより遠くで止まる
 		if (IsFindPlayer(250.0f) == true)
@@ -127,6 +126,27 @@ void MobMonster::MoveChasePlayer(CharacterController& charaCon)
 		//範囲内にいるので移動しない
 		m_moveSpeed = Vector3::Zero;
 	}
+
+	//プレイヤーの周りに既にモンスターがたくさんいたら
+	//if (CharactersInfoManager::GetInstance()->GetMonstersNearPlayerCount() >
+	//	MONSTER_NEAR_PLAYER_COUNT_LIMMIT)
+	//{
+	//	//本来のm_stayRangeより遠くで止まる
+	//	if (IsFindPlayer(250.0f) == true)
+	//	{
+	//		//範囲内にいるので移動しない
+	//		m_moveSpeed = Vector3::Zero;
+	//	}
+	//}
+	////プレイヤーとの距離が近く、止まる距離なら45
+	//else if (IsFindPlayer(m_stayRange) == true)
+	//{
+	//	//範囲内にいるので移動しない
+	//	m_moveSpeed = Vector3::Zero;
+	//}
+
+
+	SetEnableChasePlayerFag(false);
 
 	//座標を移動
 	m_position = charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
@@ -238,31 +258,31 @@ bool MobMonster::IsBumpedMonster()
 {
 	Vector3 diff = g_vec3Zero;
 
-	//フィールド上の敵のリストを取得
-	for (auto monster : CharactersInfoManager::GetInstance()->GetMobMonsters())
-	{
-		//リストの中身が自身と同じなら処理しない
-		if (this == monster)
-		{
-			continue;
-		}
+	////フィールド上の敵のリストを取得
+	//for (auto monster : CharactersInfoManager::GetInstance()->GetMobMonsters())
+	//{
+	//	//リストの中身が自身と同じなら処理しない
+	//	if (this == monster)
+	//	{
+	//		continue;
+	//	}
 
-		//自身の座標から他のモンスターに向かうベクトルを計算
-		diff = monster->GetPosition() - m_position;
-		//ベクトルの長さが一定値以下なら
-		if (diff.Length() < MOB_MONSTER_DISTANCE)
-		{
-			return true;
-		}
-	}
-	//ボスに向かうベクトルを計算
-	diff = CharactersInfoManager::GetInstance()->GetBossInstance()->GetPosition()
-		- m_position;
-	//ベクトルの長さが一定値以下なら
-	if (diff.Length() < BOSS_DISTANCE)
-	{
-		return true;
-	}
+	//	//自身の座標から他のモンスターに向かうベクトルを計算
+	//	diff = monster->GetPosition() - m_position;
+	//	//ベクトルの長さが一定値以下なら
+	//	if (diff.Length() < MOB_MONSTER_DISTANCE)
+	//	{
+	//		return true;
+	//	}
+	//}
+	////ボスに向かうベクトルを計算
+	//diff = CharactersInfoManager::GetInstance()->GetBossInstance()->GetPosition()
+	//	- m_position;
+	////ベクトルの長さが一定値以下なら
+	//if (diff.Length() < BOSS_DISTANCE)
+	//{
+	//	return true;
+	//}
 
 	return false;
 }

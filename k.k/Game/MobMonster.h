@@ -136,6 +136,22 @@ public:
 		return m_playerNearbyFlag;
 	}
 
+	/// <summary>
+	/// プレイヤーを追いかけられるかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetEnableChasePlayerFag(bool flag)
+	{
+		m_enableChasePlayerFag = flag;
+	}
+	/// <summary>
+	/// プレイヤーを追いかけられるかのフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetEnableChasePlayerFag() const
+	{
+		return m_enableChasePlayerFag;
+	}
 
 	/// <summary>
 	/// 敵を見つけたか
@@ -236,6 +252,7 @@ protected:
 
 	float m_knockBackStiffnessTimer = 0.0f;
 
+	bool m_enableChasePlayerFag = false;					//プレイヤーを追いかけてもいいかのフラグ
 
 	//スキル使用可能かのタイマー
 	float m_skillUsableLimmit = 5.0f;
