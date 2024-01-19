@@ -47,7 +47,7 @@ namespace {
 	const float KNOCKBACK_LIMMIT = 2.0f;
 
 	//ステータス
-	int MAXHP = 300;
+	int MAXHP = 30;
 	int MAXMP = 500;
 	int ATK = 20;
 	float SPEED = 160.0f;
@@ -78,7 +78,7 @@ Summoner::~Summoner()
 	}
 
 	//モブモンスターを削除
-	DeleteMobMonsters();
+	DeleteMobMonsters(false);
 }
 
 bool Summoner::Start()
@@ -652,16 +652,22 @@ void Summoner::ProcessEndAttackState()
 	ProcessCommonStateTransition();
 }
 
-void Summoner::DeleteMobMonsters()
+void Summoner::DeleteMobMonsters(bool processDeadFlag)
 {
 	//モブモンスターが0体でないならリスト内のモブモンスターを死亡
 	int mobMonsterNum = CharactersInfoManager::GetInstance()->GetMobMonsters().size();
 	if (mobMonsterNum == 0)
 		return;
-
+	//存在しているモンスターを削除
 	for (auto monster : CharactersInfoManager::GetInstance()->GetMobMonsters())
 	{
-		monster->ProcessDead(false);
+		//死亡時処理フラグがセットされているなら
+		if (processDeadFlag == true)
+		{
+			//エフェクトの生成(効果音なし)
+			monster->ProcessDead(false);
+		}
+		//モブモンスターの削除
 		DeleteGO(monster);
 	}
 	//リストをクリア

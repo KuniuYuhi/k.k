@@ -233,9 +233,10 @@ public:
 	void ProcessEndAttackState();
 
 	/// <summary>
-	/// モブモンスターを削除
+	/// モブモンスターの削除
 	/// </summary>
-	void DeleteMobMonsters();
+	/// <param name="processDeadFlag">モブモンスターの死亡時処理をするかのフラグ</param>
+	void DeleteMobMonsters(bool processDeadFlag = true);
 
 	/// <summary>
 	/// 次のアニメーションステートを作成する。
