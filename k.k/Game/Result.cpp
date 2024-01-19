@@ -147,7 +147,7 @@ void ResultSeen::ResultEnd()
 void ResultSeen::OnProcessGameClearMainTranstion()
 {
 	//todo ここ確実じゃない
-	if (g_soundManager->GetSoundSource(enSoundName_GameClear)->IsPlaying() == true)
+	if (g_soundManager->GetSoundSource(enSoundName_GameClear) == nullptr)
 	{
 		//音の再生が終わったら次のステップに進む
 		m_enResultStep = enResultStep_end;
@@ -156,7 +156,7 @@ void ResultSeen::OnProcessGameClearMainTranstion()
 
 void ResultSeen::OnProcessGameOverMainTranstion()
 {
-	if (g_soundManager->GetSoundSource(enSoundName_GameOver)->IsDead())
+	if (g_soundManager->GetSoundSource(enSoundName_GameOver) == nullptr)
 	{
 		//音の再生が終わったら次のステップに進む
 		m_enResultStep = enResultStep_end;

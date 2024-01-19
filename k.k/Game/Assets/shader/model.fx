@@ -76,6 +76,13 @@ struct HemiSphereLight
 	float3 groundNormal;	//地面の法線
 };
 
+//リムライト構造体
+struct LimLight
+{
+    float limLightPower;
+    int isUse;
+};
+
 ////////////////////////////////////////////////
 // 定数バッファ。
 ////////////////////////////////////////////////
@@ -86,6 +93,7 @@ cbuffer LightCB:register(b1){
 	PointLight			pointLight;			//ポイントライト
 	SpotLight			spotLight;			//スポットライト
 	HemiSphereLight		hemiSphereLight;	//半球ライト
+    LimLight			limLight;
 	float3				ambient;			//環境光
 	float3				eyepos;				//視点の位置
     float4x4			mLVP[NUM_SHADOW_MAP]; //ライトビュープロジェクション行列
@@ -190,18 +198,27 @@ SPSOut PSMainCore(SPSIn psIn, int isToon, int isShadowCaster) : SV_Target0
 		hemiLig = CalcLigFromhemiSphereLight(psIn);
 	}
 
+	//環境光
     float3 finalAmbient = ambient;
+	
+	
 	//リムライトの処理
-    float limLight = 0.0f;
-    if (isShadowCaster)
+    float limLig = 0.0f;
+    if (limLight.isUse)
     {
-        limLight = CalcLimLight(psIn);
-        finalAmbient = 0.7f;
+        if (isShadowCaster)
+        {
+            limLig = CalcLimLight(psIn);
+			//リムライトを使うときはアンビエントを弱める
+            finalAmbient *= 0.7f;
+        }
     }
+	
+    
 	
 	//ディレクションライトと環境光をたす				
     float3 lig = directionLig + pointLig + 
-						spotLig + hemiLig + finalAmbient + limLight;
+						spotLig + hemiLig + finalAmbient + limLig;
 	
 	//アルベドカラーをサンプリング
 	float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
@@ -531,11 +548,11 @@ float3 CalcLimLight(SPSIn psIn)
 	// サーフェイスの法線を利用してリムライトの強さを求める。
     //カメラ空間でのZ値の値を使って、リムライトの強さを計算する
     //psIn.normalInView=カメラ空間での法線
-    float limLight = 1.0f - max(0.0f, psIn.normalInView.z * -1.0f);
+    float limLig = 1.0f - max(0.0f, psIn.normalInView.z * -1.0f);
 	// pow()を使用して、強さの変化を指数関数的にする
-    limLight = pow(limLight, 1.5f) * 1.1f;
+    limLig = pow(limLig, limLight.limLightPower) * 1.1f;
 	
-    return limLight;
+    return limLig;
 }
 
 

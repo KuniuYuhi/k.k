@@ -298,6 +298,7 @@
     <ClCompile Include="LichStateVictory.cpp" />
     <ClCompile Include="LichStateWalk.cpp" />
     <ClCompile Include="LichStateWarp.cpp" />
+    <ClCompile Include="Loading.cpp" />
     <ClCompile Include="MagicBall.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ManagerPreCompile.cpp" />
@@ -466,6 +467,7 @@
     <ClInclude Include="LichStateVictory.h" />
     <ClInclude Include="LichStateWalk.h" />
     <ClInclude Include="LichStateWarp.h" />
+    <ClInclude Include="Loading.h" />
     <ClInclude Include="MagicBall.h" />
     <ClInclude Include="ManagerPreCompile.h" />
     <ClInclude Include="IMobStateMachine.h" />

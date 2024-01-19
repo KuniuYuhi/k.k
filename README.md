@@ -482,15 +482,14 @@ enum EnAnimationClip {
 	enAnimClip_Num
 };
 
-//武器のアニメーションクリップの最初の番号
-const int m_mainWeaponAnimationStartIndexNo = 0;						
 //メイン武器のアニメーションクリップの最初の番号
-const int m_subWeaponAnimationStartIndexNo = enAnimClip_Num * 1;		
+const int m_mainWeaponAnimationStartIndexNo = 0;						
 //サブ武器のアニメーションクリップの最初の番号
-const int m_subWeapon2AnimationStartIndexNo = enAnimClip_Num * 2;		
+const int m_subWeaponAnimationStartIndexNo = enAnimClip_Num * 1;		
 //サブ２武器のアニメーションクリップの最初の番号
-
-AnimationClip	m_animationClip[enAnimClip_Num * AnimationClipGroup_Num];// アニメーションクリップ。アニメーションの数×武器の数。
+const int m_subWeapon2AnimationStartIndexNo = enAnimClip_Num * 2;
+// アニメーションクリップ。アニメーションの数×武器の数。
+AnimationClip	m_animationClip[enAnimClip_Num * AnimationClipGroup_Num];
 ```  
 アニメーションクリップの総数に武器のアニメーションクリップの最初の番号を足してアニメーションをロードしました。
 ```c++
@@ -516,7 +515,7 @@ void Brave::RoadOneHandSwordAnimationClip(int mainWeaponAnimationStartIndexNo)
   }
 }
 ```
-この関数が武器ごとに存在しています。  
+この関数が武器ごとに存在しています。mainWeaponAnimationStartIndexNoの値がそれぞれの武器のアニメーションクリップの最初の番号になっています。  
 最終的にm_animationClip[]にはこのように格納されます。  
 ```c++
 m_animationClip[]={

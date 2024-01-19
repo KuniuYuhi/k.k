@@ -22,6 +22,8 @@
 #include "GameFinishCamera.h"
 #include "BattlePhase.h"
 
+#include "Loading.h"
+
 #include "Slime.h"
 #include "Cactus.h"
 #include "Mushroom.h"
@@ -67,8 +69,9 @@ Game::~Game()
 
 	if (m_gameCamera != nullptr)
 	{
-		DeleteGO(m_gameCamera);
+		
 	}
+	DeleteGO(m_gameCamera);
 
 	DeleteGO(m_gameFinishCamera);
 	DeleteGO(m_battlePhase);
@@ -76,8 +79,9 @@ Game::~Game()
 
 	if (m_gameUI != nullptr)
 	{
-		DeleteGO(m_gameUI);
+		
 	}
+	DeleteGO(m_gameUI);
 
 	DeleteGO(m_result);
 }
@@ -105,8 +109,14 @@ bool Game::Start()
 	m_fade = FindGO<Fade>("fade");
 	//画面を明るくする
 	m_fade->StartFadeOut(2.0f);
+
+
+
 	//被写界深度の無効化
 	g_renderingEngine->DisableDof();
+	//リムライトの有効化
+	g_renderingEngine->UseLimLight();
+
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
@@ -137,6 +147,15 @@ void Game::CreateBoss()
 	m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
 	//モンスターが一定以上近づかないように毎フレーム調べる
 	//数を取得できるようにする
+}
+
+void Game::CreatePlayerAndCamera()
+{
+	//プレイヤークラスの生成
+	GameManager::GetInstance()->CreatePlayerClass();
+	m_player = CharactersInfoManager::GetInstance()->GetPlayerInstance();
+	//ゲームカメラの生成
+	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 }
 
 void Game::CreateBattlePhase()
@@ -275,8 +294,6 @@ void Game::OnProcessAppearanceBossTransition()
 		//ボスのアクティブ化
 		CreateBoss();
 
-		
-
 		//ステートを切り替える
 		GameManager::GetInstance()->SetGameSeenState(
 			GameManager::enGameSeenState_Game);
@@ -290,6 +307,9 @@ void Game::OnProcessAppearanceBossTransition()
 		m_entryBoss->SetPosition(BOSS_CREATE_POSITION);
 		m_entryBoss->SetGame(this);
 		m_entryBoss->SetSkyCube(m_skyCube);
+
+		//プレイヤーとカメラの生成
+		CreatePlayerAndCamera();
 	}
 }
 
@@ -364,9 +384,11 @@ void Game::OnProcessPauseTransition()
 void Game::OnProcessGameEndTransition()
 {
 	//todo ローディング画面の生成
+	Loading* loading = NewGO<Loading>(0, "loading");
+	loading->SetLoadingRoot(Loading::enLoadingRoot_GameToTitle);
 
 	//タイトルの生成
-	Title* title = NewGO<Title>(0, "title");
+	//Title* title = NewGO<Title>(0, "title");
 	DeleteGO(this);
 }
 
@@ -467,13 +489,14 @@ void Game::ProcessWin()
 
 void Game::ProcessLose()
 {
+	//ゲームUIの削除
 	DeleteGO(m_gameUI);
-	//ステートを切り替える
-	GameManager::GetInstance()->SetGameSeenState(
-		GameManager::enGameSeenState_GameOver);
 	//BGMを消し始める
 	m_muteBGMFlag = true;
 	m_bgmVolume = g_soundManager->GetBGMVolume();
+	//ステートを切り替える
+	GameManager::GetInstance()->SetGameSeenState(
+		GameManager::enGameSeenState_GameOver);
 }
 
 void Game::CreateGameUI()
@@ -490,9 +513,7 @@ void Game::InitGameObject()
 	InitSkyCube();
 	//ボスステージの生成
 	m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
-	//プレイヤークラスの生成
-	GameManager::GetInstance()->CreatePlayerClass();
-	m_player = CharactersInfoManager::GetInstance()->GetPlayerInstance();
+
 	//ゲームシーンステートがゲームスタートなら
 	if (GameManager::GetInstance()->GetGameSeenState() ==
 		GameManager::enGameSeenState_GameStart)
@@ -529,10 +550,11 @@ void Game::InitGameObject()
 		/*TurtleShell* tu = NewGO<TurtleShell>(0, "aa");
 		tu->SetPosition(g_vec3Zero);*/
 
+		CreatePlayerAndCamera();
+
 	}
 
-	//ゲームカメラの生成
-	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
+	
 }
 
 void Game::InitLighting()

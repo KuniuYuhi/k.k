@@ -309,6 +309,14 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight.SetAmbient(ambient);
 		}
+		/// <summary>
+		/// 環境光を取得
+		/// </summary>
+		/// <returns></returns>
+		const Vector3& GetAmbient() const
+		{
+			return m_sceneLight.GetAmbient();
+		}
 
 		/////////////////////////////////////////////////////////////
 		///ポイントライトの関数
@@ -632,6 +640,52 @@ namespace nsK2EngineLow {
 		{
 			return m_sceneLight.HemiLightIsUse();
 		}
+
+		//////////////////////////////////////////////////////////////
+		///リムライトの関数
+		//////////////////////////////////////////////////////////////
+
+			/// <summary>
+		/// リムライトの強さを設定
+		/// </summary>
+		/// <param name="power"></param>
+		void SetLimLIghtPower(float power)
+		{
+			m_sceneLight.SetLimLIghtPower(power);
+		}
+		/// <summary>
+		/// リムライトの強さを取得
+		/// </summary>
+		/// <returns></returns>
+		const float& GetLimLightPower() const
+		{
+			return m_sceneLight.GetLimLightPower();
+		}
+
+		/// <summary>
+		/// リムライトを使用する
+		/// </summary>
+		void UseLimLight()
+		{
+			m_sceneLight.UseLimLight();
+		}
+		/// <summary>
+		/// リムライトを使用しない
+		/// </summary>
+		void UnUseLimLight()
+		{
+			m_sceneLight.UnUseLimLight();
+		}
+
+		/// <summary>
+		/// リムライトは使用中?
+		/// </summary>
+		/// <returns>使用中のときtrue</returns>
+		const int LimLightIsUse() const
+		{
+			return m_sceneLight.LimLightIsUse();
+		}
+
 
 		/////////////////////////////////////////////////////////////
 		///カメラの位置の関数

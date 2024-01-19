@@ -101,6 +101,7 @@ void CalcSimpleWipe(PSInput psin)
 void CalcWipeWithDirection(PSInput psin)
 {
 	float t=dot(wipeDirection,psin.pos.xy);
+	//0未満ならピクセルキル
 	clip(t-wipeSize);
 }
 

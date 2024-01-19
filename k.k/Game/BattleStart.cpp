@@ -13,6 +13,15 @@ namespace {
 
     const float TARGETPOS_GAMESTART_YUP = 38.0f;
     const float STARTCAMERA_YUP = 60.0f;
+    const float START_MULXZ = 120.0f;
+
+    const float LANDING_CAMERA_YUP = -200.0f;
+    const float IDLE_MULXZ = 200.0f;
+
+    const float FALL_SPEED = 140.0f;
+    const float ADD_YPOS_SPEED = 30.0f;
+
+    const Vector3 BRAVE_START_POSITION = { 0.0f,200.0f,-400.0f };
 }
 
 BattleStart::BattleStart()
@@ -28,15 +37,26 @@ bool BattleStart::Start()
     //フェードのインスタンスを探す
     m_fade = FindGO<Fade>("fade");
 
+    g_camera3D->SetNear(1.0f);
+    g_camera3D->SetFar(10000.0f);
+
     //ばねカメラの初期化。
     m_springCamera.Init(
         *g_camera3D,		//ばねカメラの処理を行うカメラを指定する。
-        1000.0f,			//カメラの移動速度の最大値。
+        180.0f,			//カメラの移動速度の最大値。
         false,				//カメラと地形とのあたり判定を取るかどうかのフラグ。trueだとあたり判定を行う。
         1.0f				//カメラに設定される球体コリジョンの半径。第３引数がtrueの時に有効になる。
     );
 
-    InitSprite();
+    m_addYPos = STARTCAMERA_YUP;
+    m_mulXZPos = START_MULXZ;
+
+    //リムライトの無効化
+   // g_renderingEngine->Use
+
+    InitModel();
+
+   
     //バトルスタートの音再生
     g_soundManager->InitAndPlaySoundSource(enSoundName_BattleStart, g_soundManager->GetBGMVolume());
     return true;
@@ -44,96 +64,36 @@ bool BattleStart::Start()
 
 void BattleStart::Update()
 {
-    if (m_fadeStartFlag != true)
-    {
-        CalcCameraZoomOutTime();
-    }
-    
     //ゲームスタート時のカメラ処理
     GameStartCamera();
 
-    //見えるようになったらもうやらない
-    if (m_calcAlphaEndFlag != true)
-    {
-        CalcAlpha();
-    }
-    else
-    {
-        //BATTLEの移動
-        MoveText(m_battleTextRender, BATTLE_TEXT_START_POS, BATTLE_TEXT_END_POS);
-        //STARTの移動
-        MoveText(m_startTextRender, START_TEXT_START_POS, START_TEXT_END_POS);
-
-        m_timer += g_gameTime->GetFrameDeltaTime() * 0.4f;
-    }
+    //勇者の状態遷移管理
+    ManageBraveState();
 }
 
 void BattleStart::Render(RenderContext& rc)
 {
-    m_battleTextRender.Draw(rc);
-    m_startTextRender.Draw(rc);
-}
-
-void BattleStart::MoveText(SpriteRender& spriteRender, Vector3 startPos, Vector3 endPos)
-{
-    Vector3 pos;
-    pos.Lerp(m_timer, startPos, endPos);
-    spriteRender.SetPosition(pos);
-    spriteRender.Update();
-}
-
-void BattleStart::CalcAlpha()
-{
-    m_alpha += g_gameTime->GetFrameDeltaTime() * 0.7f;
-
-    if (m_alpha > 1.0f)
-    {
-        //不透明になった
-        m_calcAlphaEndFlag = true;
-        m_alpha = 1.0f;
-    }
-
-    m_color.w = m_alpha;
-
-    m_battleTextRender.SetMulColor(m_color);
-    m_startTextRender.SetMulColor(m_color);
-
-    m_battleTextRender.Update();
-    m_startTextRender.Update();
-}
-
-void BattleStart::InitSprite()
-{
-    m_battleTextRender.Init("Assets/sprite/InGame/BattleStart/Battle.DDS", 1416, 265);
-    m_battleTextRender.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, 0.0f));
-    SettingSpriteRender(m_battleTextRender, BATTLE_TEXT_START_POS, g_vec3One, g_quatIdentity);
-
-    m_startTextRender.Init("Assets/sprite/InGame/BattleStart/Start.DDS", 1236, 265);
-    SettingSpriteRender(m_startTextRender, START_TEXT_START_POS, g_vec3One, g_quatIdentity);
+    m_braveModel.Draw(rc);
 
 }
 
 void BattleStart::GameStartCamera()
 {
     //注視点の計算
-    m_target =
-        CharactersInfoManager::GetInstance()->GetPlayerInstance()->GetPosition();
-    m_target.y += TARGETPOS_GAMESTART_YUP;
+    m_target = m_braveModel.GetPosition();
+    m_target.y += m_addYPos;
     //前方向の取得
-    Vector3 CameraPosXZ = 
-        CharactersInfoManager::GetInstance()->GetPlayerInstance()->GetForward();
-    CameraPosXZ.y = 0.0f;
-
-    //XZ方向の
-    CameraPosXZ *= 100.0f + m_count;
-    //Y方向の
+    Vector3 CameraPosXZ = g_vec3AxisZ;
+    CameraPosXZ *= m_mulXZPos;
+    //Y方向
     Vector3 CameraPosY = Vector3::AxisY;
-    CameraPosY *= STARTCAMERA_YUP + (m_count * 0.5f);
+    CameraPosY *= STARTCAMERA_YUP;
 
     //カメラの座標
     Vector3 newCameraPos = CameraPosXZ + CameraPosY;
 
     Vector3 finalCameraPos = newCameraPos + m_target;
+    finalCameraPos.y = STARTCAMERA_YUP;
 
     //視点と注視点を設定
     m_springCamera.SetTarget(m_target);
@@ -141,13 +101,11 @@ void BattleStart::GameStartCamera()
 
     //カメラの更新。
     m_springCamera.Update();
-
-    m_count++;
 }
 
 bool BattleStart::CalcCameraZoomOutTime()
 {
-    if (m_cameraZoomOutTimer > m_cameraZoomOutTime)
+    if (m_fadeTimer > m_fadeTime)
     {
         //フェードイン開始
         //フェードイン仕切ったらゲーム側がゲームスタートクラスを削除する
@@ -158,10 +116,132 @@ bool BattleStart::CalcCameraZoomOutTime()
     else
     {
         //タイマーを加算
-        m_cameraZoomOutTimer += g_gameTime->GetFrameDeltaTime();
+        m_fadeTimer += g_gameTime->GetFrameDeltaTime();
     }
 
    
 
     return false;
+}
+
+void BattleStart::InitModel()
+{
+    m_bravePosition = BRAVE_START_POSITION;
+
+    //アニメーションのロード
+    m_animationClip[enAnimClip_Idle].Load(
+        "Assets/animData/character/Player/GameStart/Idle.tka"
+    );
+    m_animationClip[enAnimClip_Idle].SetLoopFlag(true);
+    m_animationClip[enAnimClip_Fall].Load(
+        "Assets/animData/character/Player/GameStart/Fall.tka"
+    );
+    m_animationClip[enAnimClip_Fall].SetLoopFlag(true);
+    m_animationClip[enAnimClip_Landing].Load(
+        "Assets/animData/character/Player/GameStart/Landing.tka"
+    );
+    m_animationClip[enAnimClip_Landing].SetLoopFlag(false);
+
+    //勇者モデルの初期化
+    m_braveModel.Init("Assets/modelData/Title/brave.tkm",
+        L"Assets/shader/ToonTextrue/lamp_glay.DDS",
+        m_animationClip,
+        enAnimClip_Num,
+        enModelUpAxisZ);
+    //トランスフォームの設定と更新
+    m_braveModel.SetTransform(
+        m_bravePosition,
+        g_quatIdentity,
+        g_vec3One
+    );
+    m_braveModel.PlayAnimation(enAnimClip_Fall);
+    m_braveModel.Update();
+}
+
+void BattleStart::ProcessMoveBrave()
+{
+    //落ちていく処理
+    m_bravePosition.y -= g_gameTime->GetFrameDeltaTime() * FALL_SPEED;
+
+    m_addYPos -= g_gameTime->GetFrameDeltaTime() * ADD_YPOS_SPEED;
+
+    //地面に着いたら
+    if (m_bravePosition.y < 0.0f)
+    {
+        m_bravePosition.y = 0.0f;
+        //カメラのY座標を一気に下げる
+        m_addYPos = LANDING_CAMERA_YUP;
+        //勇者からカメラを少し離す
+        m_mulXZPos = IDLE_MULXZ;
+
+        //次のステートに進む
+        m_enBraveState = enBraveState_Landing;
+    }
+
+    m_braveModel.SetPosition(m_bravePosition);
+
+}
+
+void BattleStart::ManageBraveState()
+{
+    switch (m_enBraveState)
+    {
+    case BattleStart::enBraveState_Fall:
+        ProcessFallStateTransition();
+        break;
+    case BattleStart::enBraveState_Landing:
+        ProcessLandingStateTransition();
+        break;
+    case BattleStart::enBraveState_Idle:
+        ProcessIdleStateTransition();
+        break;
+    case BattleStart::enBraveState_End:
+        ProcessEndStateTransition();
+        break;
+    default:
+        break;
+    }
+
+
+    m_braveModel.Update();
+}
+
+void BattleStart::ProcessFallStateTransition()
+{
+    ProcessMoveBrave();
+}
+
+void BattleStart::ProcessLandingStateTransition()
+{
+    //カメラのターゲットのY座標を最初と同じに戻す
+    m_addYPos = STARTCAMERA_YUP;
+
+    //着地アニメーション再生
+    m_braveModel.PlayAnimation(enAnimClip_Landing,0.1f);
+
+    if (m_braveModel.IsPlayingAnimation() == false)
+    {
+        //次のステートに進む
+        m_enBraveState = enBraveState_Idle;
+    }
+
+
+}
+
+void BattleStart::ProcessIdleStateTransition()
+{
+    //アイドルアニメーション再生
+    m_braveModel.PlayAnimation(enAnimClip_Idle,0.3f);
+
+    //次のステートに進む
+    m_enBraveState = enBraveState_End;
+}
+
+void BattleStart::ProcessEndStateTransition()
+{
+    //
+    if (m_fadeStartFlag != true)
+    {
+        CalcCameraZoomOutTime();
+    }
 }

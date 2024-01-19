@@ -122,6 +122,7 @@ namespace nsK2EngineLow
 			}
 		}
 
+		return nullptr;
 	}
 
 	void SoundManager::SetSoundVolume(float mulVolume, bool bgmFlag)

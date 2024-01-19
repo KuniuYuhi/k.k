@@ -180,6 +180,11 @@ private:
 	/// </summary>
 	void BossMovieSkip();
 
+	/// <summary>
+	/// 消すときの作業
+	/// </summary>
+	void DeleteTask();
+
 private:
 
 
@@ -257,6 +262,8 @@ private:
 	float						m_gogogoVolume = 0.0f;
 
 	bool						m_muteFlag = false;
+
+	float m_mulBrightTimer = 0.01f;
 
 	bool						m_SlowlyDarkScreenEndFlag = false;				//画面を暗くしたかのフラグ
 	bool						m_SlowlyBrightScreenEndFlag = false;			//画面を明るくしたかのフラグ

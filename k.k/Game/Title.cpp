@@ -6,29 +6,44 @@
 
 #include "SelectWeapon.h"
 
+#include "Loading.h"
+
 namespace {
-    const Vector3 TITLE_NAME_POS = { 0.0f,230.0f,0.0f };
+    const float SPRITE_OFFSET = -400.0f;
 
-    const Vector3 STAR_POS = { 249.0f,134.0f,0.0f };
+    const Vector3 TITLE_NAME_POS = { SPRITE_OFFSET,230.0f,0.0f };
 
-    const Vector3 PUSH_A_POS = { 0.0f,-340.0f,0.0f };
-    const Vector3 GO_TO_PLAY_POS = { 0.0f,-140.0f,0.0f };
-    const Vector3 HOW_TO_PLAY_POS = { 0.0f,-230.0f,0.0f };
-    const Vector3 ACTION_POS = { 0.0f,-320.0f,0.0f };
-    const Vector3 GAME_END_POS = { 0.0f,-410.0f,0.0f };
+    const Vector3 STAR_POS = { SPRITE_OFFSET + 170.0f ,134.0f,0.0f};
+
+    const Vector3 PUSH_A_POS = { SPRITE_OFFSET,-340.0f,0.0f };
+
+    const Vector3 GO_TO_PLAY_POS = { SPRITE_OFFSET,-140.0f,0.0f };
+    const Vector3 HOW_TO_PLAY_POS = { SPRITE_OFFSET,-230.0f,0.0f };
+    const Vector3 GAME_END_POS = { SPRITE_OFFSET,-320.0f,0.0f };
 
 
-    const Vector3 CURSOR_GO_TO_PLAY_POS = { -200.0f,-140.0f,0.0f };
-    const Vector3 CURSOR_HOW_TO_PLAY_POS = { -200.0f,-230.0f,0.0f };
-    const Vector3 CURSOR_ACTION_POS = { -200.0f,-320.0f,0.0f };
-    const Vector3 CURSOR_GAME_END_POS = { -300.0f,-410.0f,0.0f };
+    const Vector3 CURSOR_GO_TO_PLAY_SCALE = { 1.2f,1.0f,1.0f };
+    const Vector3 CURSOR_HOW_TO_PLAY_SCALE = { 1.0f,1.0f,1.0f };
+    const Vector3 CURSOR_GAME_END_SCALE = { 2.0f,1.0f,1.0f };
 
     const Vector3 DICIDE_SCALE = { 1.2f,1.2f,1.0f };
 
+    const Vector3 DEFEULT_SPRITE_SCALE = { 0.7f,0.7f,1.0f };
 
     const float STAR_MAX_SCALE = 2.0f;
 
     const float DEFAULT_TITLE_BGM = 2.5f;
+
+
+
+    const Vector3 DEFAULT_TO_CAMERAPOS = { 0.0f, -210.0f, -900.0f };
+    const Vector3 TARGET_CAMERA_POS = { 0.0f,190.0f,0.0f };
+
+
+    const Vector3 DEFAULT_AMBIENT = { 1.0f,1.0f,1.0f };
+    const Vector3 DEFAULT_DIRECTION_LIGHT_COLOR = { 0.5f,0.5f,0.5f };
+    const Vector3 DEFAULT_DIRECTION_LIGHT_DIRECTION = { 0.57f,-0.57f,-0.57f };
+
 
 }
 
@@ -38,14 +53,35 @@ Title::Title()
 
 Title::~Title()
 {
+    DeleteGO(m_skyCube);
+
     g_soundManager->StopSound(enSoundName_TitleBGM);
 }
 
 bool Title::Start()
 {
+    //被写界深度の有効化
+    g_renderingEngine->EnableDof();
+
+    //画像の初期化
     InitSprite();
-  
+    //モデルの初期化
+    InitModel();
+    //スカイキューブの初期化
+    InitSkyCube();
+    //カメラの初期化
+    InitTitleCamera();
+
     m_fade = FindGO<Fade>("fade");
+
+    g_renderingEngine->SetAmbient(DEFAULT_AMBIENT);
+    g_renderingEngine->SetDirLightColor(DEFAULT_DIRECTION_LIGHT_COLOR);
+    g_renderingEngine->SetDirLightDirection(DEFAULT_DIRECTION_LIGHT_DIRECTION);
+
+    g_renderingEngine->UseLimLight();
+
+    //被写界深度の無効化
+    //g_renderingEngine->DisableDof();
 
     return true;
 }
@@ -55,6 +91,9 @@ void Title::Update()
     StepManage();
 
     CalcAlphaAButtonText();
+
+    
+    m_braveModel.Update();
 }
 
 void Title::StepManage()
@@ -62,9 +101,11 @@ void Title::StepManage()
     switch (m_step)
     {
     case Title::enStep1_TitleTextAlpha:
+        //タイトルの名前を徐々に不透明にする
         CalcAlpha();
         break;
     case Title::enStep2_ShineStar:
+        //タイトルの☆を表示
         ShineStar();
         break;
     case Title::enStep_End:
@@ -78,19 +119,8 @@ void Title::StepManage()
 
 void Title::SelectMode()
 {
-    //Aボタンを押したらテキストが変わる
-    if (m_pushAButtonFlag == false)
-    {
-        if (g_pad[0]->IsTrigger(enButtonA))
-        {
-            g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
-            m_pushAButtonFlag = true;
-            return;
-        }
-
-    }
-    //Aボタンが押されていなかったら先の処理をしない
-    if (m_pushAButtonFlag != true)
+    //「Aボタンを押す」を達成していないなら処理しない
+    if (IsTriggerPushAButton() != true)
     {
         return;
     }
@@ -98,38 +128,39 @@ void Title::SelectMode()
     //カーソルの移動
     MoveCursor();
 
+    //選ばれているモードによってカーソルの位置を変更
     switch (m_selectCursor)
     {
+        //ゲームを始める
     case enMode_GoToPlay:
-        m_cursorRender.SetPosition(CURSOR_GO_TO_PLAY_POS);
+        m_cursorRender.SetPosition(GO_TO_PLAY_POS);
+        m_cursorRender.SetScale(CURSOR_GO_TO_PLAY_SCALE);
         GoToPlayMode();
         break;
+        //遊び方
     case enMode_HowToPlay:
-        m_cursorRender.SetPosition(CURSOR_HOW_TO_PLAY_POS);
+        m_cursorRender.SetPosition(HOW_TO_PLAY_POS);
+        m_cursorRender.SetScale(CURSOR_HOW_TO_PLAY_SCALE);
         HowToPlayMode();
         break;
-    case enMode_Action:
-        m_cursorRender.SetPosition(CURSOR_ACTION_POS);
-        ActionMode();
-        break;
+        //ゲームを終わる
     case enMode_GameEnd:
-        m_cursorRender.SetPosition(CURSOR_GAME_END_POS);
+        m_cursorRender.SetPosition(GAME_END_POS);
+        m_cursorRender.SetScale(CURSOR_GAME_END_SCALE);
         GameEndMode();
         break;
     default:
         break;
     }
-
+    //選択されているテキストを大きくする
     SetScaleModeText();
 
     m_goToPlayTextRender.SetScale(m_gTPScale);
     m_howToPlayTextRender.SetScale(m_hTPScale);
-    m_actionTextRender.SetScale(m_actionScale);
     m_gameEndTextRender.SetScale(m_gameEndScale);
 
     m_goToPlayTextRender.Update();
     m_howToPlayTextRender.Update();
-    m_actionTextRender.Update();
     m_gameEndTextRender.Update();
 
     m_cursorRender.Update();
@@ -161,6 +192,8 @@ void Title::CalcAlpha()
 
 void Title::CalcAlphaAButtonText()
 {
+    //チカチカさせる
+
     if (m_Flag == false)
     {
         m_alphaAButtonTimer += g_gameTime->GetFrameDeltaTime();
@@ -220,55 +253,78 @@ void Title::MoveCursor()
 
 void Title::CalcMuteBGMVolume()
 {
+    //ゲームに遷移するフラグがセットされていないなら処理しない
     if (m_goToGameFlag != true)
     {
         return;
     }
-
+    //ミュートできているなら処理しない
     if (m_muteBGMFlag == true)
     {
         return;
     }
 
-    if (m_goToGameFlag == true)
+    if (m_bgmVolume > 0.0f)
     {
-        if (m_bgmVolume > 0.0f)
-        {
-            m_bgmVolume = Math::Lerp(g_gameTime->GetFrameDeltaTime() * 5.0f, m_bgmVolume, -0.1f);
-        }
-        else
-        {
-            m_muteBGMFlag = true;
-            return;
-        }
-
-        //BGMを小さくしていく
-        g_soundManager->GetSoundSource(enSoundName_TitleBGM)->SetVolume(m_bgmVolume);
+        m_bgmVolume = Math::Lerp(
+            g_gameTime->GetFrameDeltaTime() * 5.0f, m_bgmVolume, -0.1f);
     }
+    else
+    {
+        m_muteBGMFlag = true;
+        return;
+    }
+
+    //BGMを小さくしていく
+    g_soundManager->GetSoundSource(
+        enSoundName_TitleBGM)->SetVolume(m_bgmVolume);
 }
 
 void Title::GoToPlayMode()
 {
-    //バトルに入ることが決まったら
-    CalcMuteBGMVolume();
-
-    //フェードが終わったら消す
-    if (m_fade->GetCurrentAlpha() >= 1.0f && m_muteBGMFlag == true)
+    //
+    if (m_goToGameFlag==true)
     {
-        //SelectWeapon* selectweapon = NewGO<SelectWeapon>(0, "s");
-        Game* game = NewGO<Game>(0, "game");
-        DeleteGO(this);
+        //バトルに入ることが決まったらBGMを徐々にミュートにする
+        CalcMuteBGMVolume();
+
+        //フェードが終わったらゲーム生成。自身を削除
+        if (m_fade->GetCurrentAlpha() >= 1.0f)
+        {
+            Loading* loading = NewGO<Loading>(7, "loading");
+            loading->SetLoadingRoot(Loading::enLoadingRoot_TitleToGame);
+
+            //Game* game = NewGO<Game>(0, "game");
+            DeleteGO(this);
+        }
+
+        //勇者モデルのアニメーションが終わったら
+        if (m_braveModel.IsPlayingAnimation() == false&&
+            m_fade->IsFade()==false)
+        {
+            //フェード開始
+            m_fade->StartFadeIn(2.0f);
+
+            m_blackOutRender.SetWipeWithDirection(true);
+        }
+
+        return;
     }
 
-    if (g_pad[0]->IsTrigger(enButtonA)&& m_goToGameFlag != true)
+    
+
+    //ゲームに移るの決定
+    if (g_pad[0]->IsTrigger(enButtonA))
     {
         m_goToGameFlag = true;
-
+        //BGMボリュームを取得
         m_bgmVolume = g_soundManager->GetBGMVolume();
-
+        //決定音再生
         g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
-        //フェード開始
-        m_fade->StartFadeIn(2.0f);
+        //崖から飛び降りるアニメーション再生
+        m_braveModel.PlayAnimation(enAnimClip_DashJamp);
+        //画像を表示しないようにする
+        m_drawSpriteFlag = false;
     }
 }
 
@@ -281,18 +337,6 @@ void Title::HowToPlayMode()
         m_SelectModeFlag = !m_SelectModeFlag;
         //遊び方の表示
         m_drawHowToPlayFlag = !m_drawHowToPlayFlag;
-    }
-}
-
-void Title::ActionMode()
-{
-    if (g_pad[0]->IsTrigger(enButtonA))
-    {
-        g_soundManager->InitAndPlaySoundSource(enSoundName_Decision, g_soundManager->GetSEVolume());
-        //モード決定
-        m_SelectModeFlag = !m_SelectModeFlag;
-        //操作説明の表示
-        m_drawActionFlag = !m_drawActionFlag;
     }
 }
 
@@ -376,14 +420,6 @@ void Title::SetScaleModeText()
     {
         m_hTPScale = g_vec3One;
     }
-    if (m_selectCursor == enMode_Action)
-    {
-        m_actionScale = DICIDE_SCALE;
-    }
-    else
-    {
-        m_actionScale = g_vec3One;
-    }
     if (m_selectCursor == enMode_GameEnd)
     {
         m_gameEndScale = DICIDE_SCALE;
@@ -394,10 +430,148 @@ void Title::SetScaleModeText()
     }
 }
 
+void Title::InitModel()
+{
+    //レベルで配置
+    m_titleLevel.Init(
+        "Assets/level3D/TitleLevel.tkl",
+        [&](LevelObjectData& objData)
+        {
+            if (objData.EqualObjectName(L"mountain") == true) {
+                //山モデルの初期化
+                m_mountainModel.Init("Assets/modelData/Title/mountain.tkm",
+                    L"Assets/shader/ToonTextrue/lamp_glay.DDS",
+                    0,
+                    0,
+                    enModelUpAxisZ);
+                //トランスフォームの設定と更新
+                m_mountainModel.SetTransform(
+                    objData.position,
+                    objData.rotation,
+                    objData.scale
+                );
+                m_mountainModel.Update();
+            }
+
+            if (objData.EqualObjectName(L"Cliff") == true) {
+                //崖モデルの初期化
+                m_cliffModel.Init("Assets/modelData/Title/Cliff.tkm",
+                    L"Assets/shader/ToonTextrue/lamp_glay.DDS",
+                    0,
+                    0,
+                    enModelUpAxisZ);
+                //トランスフォームの設定と更新
+                m_cliffModel.SetTransform(
+                    objData.position,
+                    objData.rotation,
+                    objData.scale
+                );
+                m_cliffModel.Update();
+
+            }
+
+            if (objData.EqualObjectName(L"brave") == true) {
+                //アニメーションのロード
+                m_animationClip[enAnimClip_Idle].Load(
+                    "Assets/animData/character/Player/Title/Idle.tka"
+                );
+                m_animationClip[enAnimClip_Idle].SetLoopFlag(true);
+                m_animationClip[enAnimClip_DashJamp].Load(
+                    "Assets/animData/character/Player/Title/DashJamp.tka"
+                );
+                m_animationClip[enAnimClip_DashJamp].SetLoopFlag(false);
+
+                //勇者モデルの初期化
+                m_braveModel.Init("Assets/modelData/Title/brave.tkm",
+                    L"Assets/shader/ToonTextrue/lamp_glay.DDS",
+                    m_animationClip,
+                    enAnimClip_Num,
+                    enModelUpAxisZ);
+                //トランスフォームの設定と更新
+                m_braveModel.SetTransform(
+                    objData.position,
+                    objData.rotation,
+                    g_vec3One*2.0f
+                );
+                m_braveModel.Update();
+            }
+
+            return false;
+        });
+}
+
+void Title::InitSkyCube()
+{
+    m_skyCube = NewGO<SkyCube>(0, "skycube");
+    m_skyCube->SetScale(100.0f);
+    m_skyCube->SetPosition(g_vec3Zero);
+    m_skyCube->SetLuminance(1.01f);
+    m_skyCube->SetType(enSkyCubeType_DayToon_3);
+    m_skyCube->Update();
+}
+
+void Title::InitTitleCamera()
+{
+    //注視点から視点までのベクトルを設定。300,400
+    m_toCameraPos.Set(DEFAULT_TO_CAMERAPOS);
+
+    g_camera3D->SetNear(1.0f);
+    g_camera3D->SetFar(5000.0f);
+
+    //ばねカメラの初期化。
+    m_springCamera.Init(
+        *g_camera3D,		//ばねカメラの処理を行うカメラを指定する。
+        1000.0f,			//カメラの移動速度の最大値。
+        false,				//カメラと地形とのあたり判定を取るかどうかのフラグ。trueだとあたり判定を行う。
+        1.0f				//カメラに設定される球体コリジョンの半径。第３引数がtrueの時に有効になる。
+    );
+
+    m_target = TARGET_CAMERA_POS;
+    Vector3 finalCameraPos = m_toCameraPos + m_target;
+
+    //視点と注視点を設定
+    m_springCamera.SetTarget(m_target);
+    m_springCamera.SetPosition(finalCameraPos);
+
+    //カメラの更新。
+    m_springCamera.Update();
+}
+
+bool Title::IsTriggerPushAButton()
+{
+    //「Aボタンを押す」が押されていたら処理しない
+    if (m_pushAButtonFlag == true)
+    {
+        //押されているのでtrue
+        return true;
+    }
+
+    if (g_pad[0]->IsTrigger(enButtonA))
+    {
+        //決定音の再生
+        g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
+        m_pushAButtonFlag = true;
+    }
+    
+    //押されていないのでfalse
+    return false;
+}
+
+bool Title::IsDirectionWipeEnd()
+{
+
+
+    return false;
+}
+
+void Title::ProcessDirectionWipe()
+{
+}
+
 void Title::InitSprite()
 {
     m_titleNameRender.Init("Assets/sprite/InGame/Title/TitleName.DDS", 1490, 420);
-    SettingSpriteRender(m_titleNameRender, TITLE_NAME_POS, g_vec3One, g_quatIdentity);
+    SettingSpriteRender(m_titleNameRender, TITLE_NAME_POS, DEFEULT_SPRITE_SCALE, g_quatIdentity);
 
     m_backRender.Init("Assets/sprite/InGame/Title/Title_BackGround2.DDS", 1920, 1080);
     SettingSpriteRender(m_backRender, g_vec3Zero, g_vec3One, g_quatIdentity);
@@ -414,36 +588,45 @@ void Title::InitSprite()
     m_howToPlayTextRender.Init("Assets/sprite/InGame/Title/HowToPlayText.DDS", 428, 64);
     SettingSpriteRender(m_howToPlayTextRender, HOW_TO_PLAY_POS, m_hTPScale, g_quatIdentity);
 
-    m_actionTextRender.Init("Assets/sprite/InGame/Title/actionText.DDS", 428, 64);
-    SettingSpriteRender(m_actionTextRender, ACTION_POS, m_actionScale, g_quatIdentity);
-
     m_gameEndTextRender.Init("Assets/sprite/InGame/Title/GameEndText.DDS", 428, 64);
     SettingSpriteRender(m_gameEndTextRender, GAME_END_POS, m_gameEndScale, g_quatIdentity);
 
-    m_cursorRender.Init("Assets/sprite/InGame/Title/Cursor.DDS", 76, 76);
-    SettingSpriteRender(m_cursorRender, CURSOR_GO_TO_PLAY_POS, g_vec3One, g_quatIdentity);
+    m_cursorRender.Init("Assets/sprite/InGame/Title/Cursor2.DDS", 310, 80);
+    SettingSpriteRender(m_cursorRender, GO_TO_PLAY_POS, g_vec3One, g_quatIdentity);
 
-    m_howToPlayRender.Init("Assets/sprite/InGame/Title/HowToPlay.DDS", 1920, 1080);
+    m_howToPlayRender.Init("Assets/sprite/InGame/Title/action.DDS", 1920, 1080);
     SettingSpriteRender(m_howToPlayRender, g_vec3Zero, g_vec3One, g_quatIdentity);
 
-    m_actionRender.Init("Assets/sprite/InGame/Title/action.DDS", 1920, 1080);
-    SettingSpriteRender(m_actionRender, g_vec3Zero, g_vec3One, g_quatIdentity);
+ 
+    m_blackOutRender.Init("Assets/sprite/Fade/Fade_Black.DDS", 1920.0f, 1080.0f);
+    SettingSpriteRender(m_blackOutRender, g_vec3Zero, g_vec3One, g_quatIdentity);
+    m_blackOutRender.SetDirection(0.0f, -1.0f);
+    m_blackOutRender.SetWipeSize(1080.0f);
+    m_blackOutRender.SetWipeWithDirection(true);
+    m_blackOutRender.SetRoundWipe(true);
+
 }
 
 void Title::Render(RenderContext& rc)
 {
+   // m_blackOutRender.Draw(rc);
+
     if (m_drawHowToPlayFlag == true)
     {
         m_howToPlayRender.Draw(rc);
         return;
     }
-    if (m_drawActionFlag == true)
+
+    m_mountainModel.Draw(rc);
+    m_cliffModel.Draw(rc);
+    m_braveModel.Draw(rc);
+
+
+    if (m_drawSpriteFlag == false)
     {
-        m_actionRender.Draw(rc);
         return;
     }
 
-    m_backRender.Draw(rc);
     m_titleNameRender.Draw(rc);
     m_starRender.Draw(rc);
 
@@ -453,13 +636,10 @@ void Title::Render(RenderContext& rc)
         return;
     }
 
-
+    m_cursorRender.Draw(rc);
     m_goToPlayTextRender.Draw(rc);
     m_howToPlayTextRender.Draw(rc);
-    m_actionTextRender.Draw(rc);
+
     m_gameEndTextRender.Draw(rc);
-
-    m_cursorRender.Draw(rc);
-
 }
 

@@ -244,7 +244,7 @@ void Brave::Damage(int damage)
 		//HPを0に固定する
 		m_status.SetHp(0);
 
-		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 30);
+		//g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 30);
 		m_modelRender.SetAnimationSpeed(0.5f);
 		//死亡ステートに遷移
 		SetNextAnimationState(enAnimationState_Die);
@@ -444,6 +444,21 @@ void Brave::ExecutePosition(Vector3& executePosition)
 	m_modelRender.SetPosition(m_position);
 }
 
+void Brave::CalcAttackMoveSpeed()
+{
+	//moveSpeedの取得
+	m_moveSpeed = calcVelocity(GetStatus());
+	m_moveSpeed.y = 0.0f;
+	//前方向を設定
+	m_calcCharacterForward.get()->CalcForwardOfNearMonster(
+		m_position, m_forward, m_moveSpeed, 150.0f);
+	//次のコンボに移る前に回転する
+	/*if (fabsf(m_forward.x) >= 0.001f || fabsf(m_forward.z) >= 0.001f)
+	{
+		m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
+	}*/
+}
+
 void Brave::ProcessComboAttack()
 {
 	//パターンステートを一つ進める
@@ -620,7 +635,7 @@ void Brave::ProcessDieStateTransition()
 		SetDieFlag(true);
 		//バトル終了後の処理終わり
 		GameManager::GetInstance()->SetGameFinishProcessEndFlag(true);
-		g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 60);
+		//g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 60);
 	}
 }
 
@@ -948,19 +963,7 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	if (wcscmp(eventName, L"MoveForwardStart") == 0)
 	{
 		//向いている方向に前進するために前方向を計算
-		
-		//moveSpeedの取得
-		m_moveSpeed = calcVelocity(GetStatus());
-		m_moveSpeed.y = 0.0f;
-		//前方向を設定
-		m_calcCharacterForward.get()->CalcForwardOfNearMonster(
-			m_position, m_forward, m_moveSpeed, 150.0f);
-		//次のコンボに移る前に回転する
-		if (fabsf(m_forward.x) >= 0.001f || fabsf(m_forward.z) >= 0.001f)
-		{
-			m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
-		}
-
+		CalcAttackMoveSpeed();
 
 		SetMoveforwardFlag(true);
 	}

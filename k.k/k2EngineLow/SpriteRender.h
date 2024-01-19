@@ -9,6 +9,7 @@ namespace nsK2EngineLow {
 		Vector2 wipeDirection = Vector2(0.0f, 0.0f);		//ワイプする方向
 		bool simpleWipe = false;				//単純なリニアワイプをするかどうか
 		float wipeSize = 0;						//ワイプサイズ
+
 		bool RoundWipe = false;					//円形ワイプを使用するかどうか
 		bool WipeWithDirection = false;			//方向を指定するリニアワイプをするかどうか
 	};
@@ -279,7 +280,7 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
-		/// 方向を指定するリニアワイプを設定する
+		/// 方向を指定するリニアワイプのフラグを設定する
 		/// </summary>
 		/// <param name="flag"></param>
 		void SetWipeWithDirection(bool flag)
