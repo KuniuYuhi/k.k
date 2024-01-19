@@ -6,6 +6,16 @@ public:
 	~Loading();
 
 	/// <summary>
+	/// 
+	/// </summary>
+	enum EnLoadingRoot
+	{
+		enLoadingRoot_None,
+		enLoadingRoot_TitleToGame,
+		enLoadingRoot_GameToTitle,
+	};
+
+	/// <summary>
 	/// ローディングの方法
 	/// </summary>
 	enum EnMethodLoading
@@ -82,17 +92,55 @@ public:
 	/// <param name="loadingState">ステート</param>
 	void ProcessRoundWipe(EnLoadingState loadingState);
 
+	/// <summary>
+	/// ローディングルートの設定
+	/// </summary>
+	/// <param name="loadingRoot"></param>
+	void SetLoadingRoot(EnLoadingRoot loadingRoot)
+	{
+		m_enLoadingRoot = loadingRoot;
+	}
+
+	/// <summary>
+	/// 次のシーンを生成
+	/// </summary>
+	/// <param name="loadingRoot"></param>
+	void CreateNextSeen(EnLoadingRoot loadingRoot);
 
 private:
+
+	/// <summary>
+	/// ゲームクラスを生成
+	/// </summary>
+	void CreateGame();
+	/// <summary>
+	/// タイトルクラスを生成
+	/// </summary>
+	void CreateTitle();
+
+	/// <summary>
+	/// α値の処理
+	/// </summary>
+	void ProcessSpriteAlpha();
+
+private:
+
 	SpriteRender m_backSprite;
 	SpriteRender m_loadTextSprite;
 
 	EnLoadingState m_enLoadingState = enLoadingState_None;
 	EnMethodLoading m_enMethodLoading = enMethodLoading_None;
 
+	EnLoadingRoot m_enLoadingRoot = enLoadingRoot_None;
+
 	float m_currentAlpha = 0.0f;
 
 	bool m_drawLoadSpriteFlag = false;
+
+
+	float m_seenChangeTimer = 0.0f;
+
+	float m_fadeSpeed = 2.0f;
 
 };
 

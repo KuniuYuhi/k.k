@@ -1,6 +1,13 @@
 #include "stdafx.h"
 #include "Loading.h"
 
+#include "Title.h"
+#include "Game.h"
+
+namespace {
+	const float TIMER_LIMMIT = 2.0f;
+}
+
 Loading::Loading()
 {
 }
@@ -12,21 +19,39 @@ Loading::~Loading()
 bool Loading::Start()
 {
 	m_backSprite.Init(
-		"Assets/sprite/Fade/Fade_Black.DDS", 1920.0f, 1080.0f
+		"Assets/sprite/Loading/loading.DDS", 1920.0f, 1080.0f
 	);
 	m_backSprite.SetPosition(g_vec3Zero);
 	m_backSprite.Update();
+
+
+	if (m_enLoadingRoot == enLoadingRoot_None)
+	{
+		return false;
+	}
 
 	return true;
 }
 
 void Loading::Update()
 {
+	//“ñ•bŒo‚Á‚½‚ç“]Š·
 
+	if (m_seenChangeTimer > TIMER_LIMMIT)
+	{
+		//ŽŸ‚ÌƒV[ƒ“‚ð¶¬
+		CreateNextSeen(m_enLoadingRoot);
+		DeleteGO(this);
+	}
+	else
+	{
+		m_seenChangeTimer += g_gameTime->GetFrameDeltaTime();
+	}
 }
 
 void Loading::Render(RenderContext& rc)
 {
+	m_backSprite.Draw(rc);
 }
 
 void Loading::StartLoading(EnMethodLoading methodLoading)
@@ -142,4 +167,60 @@ void Loading::ProcessRoundWipe(EnLoadingState loadingState)
 	default:
 		break;
 	}
+}
+
+void Loading::CreateNextSeen(EnLoadingRoot loadingRoot)
+{
+	switch (loadingRoot)
+	{
+	case Loading::enLoadingRoot_TitleToGame:
+		CreateGame();
+		break;
+	case Loading::enLoadingRoot_GameToTitle:
+		CreateTitle();
+		break;
+	default:std::abort();
+		break;
+	}
+}
+
+void Loading::CreateGame()
+{
+	Game* game = NewGO<Game>(0, "game");
+}
+
+void Loading::CreateTitle()
+{
+	Title* title = NewGO<Title>(0, "title");
+}
+
+void Loading::ProcessSpriteAlpha()
+{
+	switch (m_enLoadingState)
+	{
+	case enLoadingState_In:
+		m_currentAlpha += m_fadeSpeed * g_gameTime->GetFrameDeltaTime();
+
+		if (m_currentAlpha >= 1.0f)
+		{
+			m_currentAlpha = 1.0f;
+			m_enLoadingState = enLoadingState_None;
+		}
+
+		break;
+
+	case enLoadingState_Out:
+		m_currentAlpha -= m_fadeSpeed * g_gameTime->GetFrameDeltaTime();
+
+		if (m_currentAlpha <= 0.0f)
+		{
+			m_currentAlpha = 0.0f;
+			m_enLoadingState = enLoadingState_None;
+		}
+		break;
+
+	default:
+		break;
+	}
+
 }
