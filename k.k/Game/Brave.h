@@ -492,8 +492,10 @@ public:
 	/// <param name="executePosition"></param>
 	void ExecutePosition(Vector3& executePosition);
 
-
-
+	/// <summary>
+	/// UŒ‚‚ÌmoveSpeed‚ÌŒvZ
+	/// </summary>
+	void CalcAttackMoveSpeed();
 
 
 private:
