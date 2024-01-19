@@ -173,6 +173,7 @@ private:
 	void SearchMonstersNearPlayer();
 
 	
+	void SortMonsterToPlayerLength(float array[][2], int maxValue);
 
 
 private:
