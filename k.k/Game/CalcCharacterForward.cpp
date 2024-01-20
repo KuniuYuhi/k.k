@@ -41,16 +41,16 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
         //ベクトルの長さが追跡距離内だったら
         if (diff.Length() < chaseDistance)
         {
+            //一番近い敵に向かうベクトルになる
             temporaryForward = diff;
             count++;
         }
     }
 
-    //何にもないならforawrdいじらない
-
-    //前方向を正規化
+    //敵に向かうベクトルを正規化
     temporaryForward.Normalize();
 
+    //前方向ベクトルの設定
     Vector3 forwardVector = charPosition;
     forwardVector.y = 0.0f;
     forwardVector.Add(forward * 20.0f);
@@ -60,7 +60,7 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
     forwardDiff.Normalize();
 
     
-
+    //移動方向に向かうベクトル
     Vector3 moveSpeedVector = charPosition;
     moveSpeedVector.y = 0.0f;
     moveSpeedVector.Add(moveSpeed);
@@ -87,28 +87,11 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
     // 
     //敵の方向と前方向の内積の相似が0.0以上なら前方向を変更！！
 
-
-    // //X方向で直角のベクトル
-    //Vector3 rightangleX = forwardDiff;
-    ////rightangleX *= -1.0f;
-    //float X = rightangleX.x;
-    //rightangleX.x = rightangleX.z;
-    //rightangleX.z = X;
-    //rightangleX.y = 0.0f;
-
-    //rightangleX.x *= moveSpeedDiff.x;
-   
-    //rightangleX.z *= moveSpeedDiff.z;
-
-    //forward = rightangleX;
-    //forward.Normalize();
-
-    //return;
-
     //移動方向の入力がないなら敵の方向を優先する
     if (fabsf(moveSpeed.x) < 0.1f && fabsf(moveSpeed.z) < 0.1f)
     {
         //敵に向かうベクトルが真横までなら
+        // 前方向を敵に向かうベクトルに変更
         if (t1 >= 0.0f)
         {
             //前方向を正規化
@@ -123,15 +106,18 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
 
     //単位ベクトル同士の内積は-1から1の範囲。1になるほど似ている
     //内積が0.0f以上なら前方向を変更する
+    
+    //前方向と移動方向のベクトルの相似性が0.0ｆより大きいなら
     if (t2 >= 0.0f)
     {
         //敵を一体も見つけていなかったら
-        if (count == 0)
-        {
-            forward = moveSpeed;
-            forward.Normalize();
-            return;
-        }
+        //if (count == 0)
+        //{
+        //    //移動方向が前方向になる。真横まで
+        //    forward = moveSpeed;
+        //    forward.Normalize();
+        //    return;
+        //}
 
         //移動方向の内積と敵に向かう内積がかなり似ていたら、
         //前方向を敵に向かうベクトルに書き換える
@@ -197,8 +183,13 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
         //}
 
        
-
+        //出来てない
         forward = rightangleX;
+        forward.Normalize();
+
+
+        //似ていなかったら引数の移動方向を前方向に設定
+        forward = moveSpeed;
         forward.Normalize();
 
         return;
