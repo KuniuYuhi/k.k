@@ -3,7 +3,6 @@
 #include "Brave.h"
 
 //todo アニメーションイベント追加
-//ジャンプ処理ｈ作る
 
 namespace {
 	//武器が収納状態の時の座標
