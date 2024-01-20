@@ -446,7 +446,7 @@ void Brave::ExecutePosition(Vector3& executePosition)
 
 void Brave::CalcAttackMoveSpeed()
 {
-	//moveSpeed‚Ìæ“¾
+	//moveSpeed(ˆÚ“®•ûŒü)‚Ìæ“¾
 	m_moveSpeed = calcVelocity(GetStatus());
 	m_moveSpeed.y = 0.0f;
 	//‘O•ûŒü‚ğİ’è
