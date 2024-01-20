@@ -15,7 +15,7 @@ void nsK2EngineLow::DoF::OnRender(RenderContext& rc, RenderTarget& mainRenderTar
 	if (m_isEnable == false) {
 		return;
 	}
-
+	
 	//2枚のレンダリングターゲットを設定してモデルを描画する
 	RenderTarget* rts[] = {
 		&mainRenderTarget,
