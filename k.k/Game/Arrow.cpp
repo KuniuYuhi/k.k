@@ -19,7 +19,7 @@ namespace {
 	const float ADD_FORWARD = 30.0f;
 
 	const float SKILL_DELETE_RANGE = 600.0f;
-	const float SKILL_ARROW_SPEED = 700.0f;
+	const float SKILL_ARROW_SPEED = 1000.0f;
 
 	const float DEFAULT_DELETE_RANGE = 400.0f;	//ñÓÇ™è¡Ç¶ÇÈãóó£
 	const float DEFAULT_ARROW_SPEED = 450.0f;
