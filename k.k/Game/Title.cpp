@@ -68,7 +68,7 @@ bool Title::Start()
     //モデルの初期化
     InitModel();
     //スカイキューブの初期化
-    InitSkyCube();
+    //InitSkyCube();
     //カメラの初期化
     InitTitleCamera();
 
@@ -617,7 +617,7 @@ void Title::Render(RenderContext& rc)
         return;
     }
 
-    m_mountainModel.Draw(rc);
+   // m_mountainModel.Draw(rc);
     m_cliffModel.Draw(rc);
     m_braveModel.Draw(rc);
 
