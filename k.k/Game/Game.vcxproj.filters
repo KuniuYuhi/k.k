@@ -452,12 +452,16 @@
     <ClCompile Include="MobMonsterActionList.cpp">
       <Filter>Character\Monster\MobMonster</Filter>
     </ClCompile>
-    <ClCompile Include="SummonerSM_Attack.cpp" />
-    <ClCompile Include="SummonerSM_Vigilance.cpp" />
     <ClCompile Include="MobMonsterSM_Patrol.cpp" />
     <ClCompile Include="MobMonsterSM_Chase.cpp" />
     <ClCompile Include="CalcCharacterForward.cpp" />
     <ClCompile Include="Loading.cpp" />
+    <ClCompile Include="SummonerSM_Attack.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerSM_Vigilance.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -882,11 +886,15 @@
     <ClInclude Include="MobMonsterActionList.h">
       <Filter>Character\Monster\MobMonster</Filter>
     </ClInclude>
-    <ClInclude Include="SummonerSM_Attack.h" />
-    <ClInclude Include="SummonerSM_Vigilance.h" />
     <ClInclude Include="MobMonsterSM_Patrol.h" />
     <ClInclude Include="MobMonsterSM_Chase.h" />
     <ClInclude Include="CalcCharacterForward.h" />
     <ClInclude Include="Loading.h" />
+    <ClInclude Include="SummonerSM_Attack.h">
+      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerSM_Vigilance.h">
+      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
