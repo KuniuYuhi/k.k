@@ -17,7 +17,7 @@ namespace {
 
 	const float CHARGE_COMPLETE_TIME = 1.0f;
 
-	const float SHOT_ARROW_ANGLE = 15.0f;			//–î‚ðŒ‚‚Â‚Æ‚«‚ÌŠp“x
+	const float SHOT_ARROW_ANGLE = 11.0f;			//–î‚ðŒ‚‚Â‚Æ‚«‚ÌŠp“x
 
 	const float MOVE_BACK_SPEED = 100.0f;			//–î‚ðŒ‚‚Á‚½Œã‚ÌŒã‘Þ‚·‚éƒXƒs[ƒh
 
@@ -199,7 +199,6 @@ void Bow::MoveArmed()
 	//–î‚Ìƒ[ƒ‹ƒhÀ•W‚ðÝ’è
 	m_arrowMatrix = 
 		m_brave->GetModelRender().GetBone(m_armedArrowBoonId)->GetWorldMatrix();
-	m_modelBow.SetWorldMatrix(m_bowMatrix);
 
 	if (m_arrow != nullptr)
 	{
@@ -287,6 +286,7 @@ void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	//‰“‹——£UŒ‚ˆ—
 	if (wcscmp(eventName, L"LongRangeAttack") == 0)
 	{
+		
 		ProcessLongRangeAttack();
 	}
 
@@ -296,10 +296,13 @@ void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		SkillShot();
 	}
 
-	////’ÊíUŒ‚‚Å‹|‚ðŒ‚‚Á‚½Žž
-	//if (wcscmp(eventName, L"MoveBackStart") == 0)
-	//{
-	//	
-	//}
-	
+	//’ÊíUŒ‚‚Å‹|‚ðŒ‚‚Á‚½Žž
+	/*if (wcscmp(eventName, L"MoveBackStart") == 0)
+	{
+		
+	}*/
+	if (wcscmp(eventName, L"ComboAcceptable") == 0)
+	{
+		m_brave->CalcAttackMoveSpeed();
+	}
 }
