@@ -51,14 +51,6 @@ public:
 
 	//ヒーローのスキルに当たった時の処理
 	virtual void HitSkillAttack() override;
-	/// <summary>
-	/// ウィザードのファイヤーボールに当たった時の処理。派生クラスで実装
-	/// </summary>
-	virtual void HitFireBall() override {}
-	/// <summary>
-	/// ウィザードのフレイムピラーに当たった時の処理。派生クラスで実装
-	/// </summary>
-	virtual void HitFlamePillar(bool damageFlag = false) override {}
 	
 	/// <summary>
 	/// 回転のみを行う処理条件
