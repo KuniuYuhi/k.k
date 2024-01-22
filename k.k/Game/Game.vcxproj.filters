@@ -55,6 +55,9 @@
     <Filter Include="Character\Monster\BossMonster\Summoner\SummonerState">
       <UniqueIdentifier>{8823fa93-d69b-4b1f-9b47-a660d16975f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AttackObject">
+      <UniqueIdentifier>{a090d90b-7c4f-43ec-840f-cc22bf5e55b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -68,19 +71,10 @@
     <ClCompile Include="BossStage1.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Result.cpp" />
-    <ClCompile Include="Lich.cpp">
-      <Filter>Character\Monster\BossMonster\Lich</Filter>
-    </ClCompile>
-    <ClCompile Include="LichAction.cpp">
-      <Filter>Character\Monster\BossMonster\Lich</Filter>
-    </ClCompile>
     <ClCompile Include="Slime.cpp">
       <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClCompile>
     <ClCompile Include="DarkMeteorite.cpp">
-      <Filter>Character\Monster\BossMonster\Lich</Filter>
-    </ClCompile>
-    <ClCompile Include="DarkWall.cpp">
       <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClCompile>
     <ClCompile Include="TurtleShell.cpp">
@@ -185,10 +179,6 @@
     <ClCompile Include="TurtleShellStateAppear.cpp">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
-    <ClCompile Include="MagicBall.cpp" />
-    <ClCompile Include="DarkBall.cpp">
-      <Filter>Character\Monster\BossMonster\Lich</Filter>
-    </ClCompile>
     <ClCompile Include="SoundFile.cpp" />
     <ClCompile Include="CascadModel.cpp" />
     <ClCompile Include="Brave.cpp">
@@ -221,45 +211,6 @@
       <Filter>Weapons</Filter>
     </ClCompile>
     <ClCompile Include="HitDetection.cpp" />
-    <ClCompile Include="LichStateAngry.cpp">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClCompile>
-    <ClCompile Include="LichStateAttack_1.cpp">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClCompile>
-    <ClCompile Include="LichStateAttack_2.cpp">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClCompile>
-    <ClCompile Include="LichStateDamage.cpp">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClCompile>
-    <ClCompile Include="LichStateDarkMeteorite_End.cpp">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClCompile>
-    <ClCompile Include="LichStateDarkMeteorite_Main.cpp">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClCompile>
-    <ClCompile Include="LichStateDarkMeteorite_Start.cpp">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClCompile>
-    <ClCompile Include="LichStateDie.cpp">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClCompile>
-    <ClCompile Include="LichStateIdle.cpp">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClCompile>
-    <ClCompile Include="LichStateSummon.cpp">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClCompile>
-    <ClCompile Include="LichStateVictory.cpp">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClCompile>
-    <ClCompile Include="LichStateWalk.cpp">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClCompile>
-    <ClCompile Include="LichStateWarp.cpp">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClCompile>
     <ClCompile Include="BraveStateAttack_1.cpp">
       <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
@@ -414,9 +365,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>Character\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Meteo.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner</Filter>
-    </ClCompile>
     <ClCompile Include="DarkMeteo.cpp">
       <Filter>Character\Monster\BossMonster\Summoner</Filter>
     </ClCompile>
@@ -444,16 +392,12 @@
     <ClCompile Include="TurtleShellStateSkill.cpp">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
-    <ClCompile Include="DarkSpear.cpp" />
-    <ClCompile Include="DarkSpearObj.cpp" />
     <ClCompile Include="IMobStateMachine.cpp">
       <Filter>Character\Monster\MobMonster</Filter>
     </ClCompile>
     <ClCompile Include="MobMonsterActionList.cpp">
       <Filter>Character\Monster\MobMonster</Filter>
     </ClCompile>
-    <ClCompile Include="MobMonsterSM_Patrol.cpp" />
-    <ClCompile Include="MobMonsterSM_Chase.cpp" />
     <ClCompile Include="CalcCharacterForward.cpp" />
     <ClCompile Include="Loading.cpp" />
     <ClCompile Include="SummonerSM_Attack.cpp">
@@ -462,6 +406,34 @@
     <ClCompile Include="SummonerSM_Vigilance.cpp">
       <Filter>Character\Monster\BossMonster\Summoner</Filter>
     </ClCompile>
+    <ClCompile Include="DarkSpear.cpp">
+      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    </ClCompile>
+    <ClCompile Include="MobMonsterSM_Chase.cpp">
+      <Filter>Character\Monster\MobMonster</Filter>
+    </ClCompile>
+    <ClCompile Include="MobMonsterSM_Patrol.cpp">
+      <Filter>Character\Monster\MobMonster</Filter>
+    </ClCompile>
+    <ClCompile Include="DarkBall.cpp">
+      <Filter>AttackObject</Filter>
+    </ClCompile>
+    <ClCompile Include="DarkSpearObj.cpp">
+      <Filter>AttackObject</Filter>
+    </ClCompile>
+    <ClCompile Include="DarkWall.cpp">
+      <Filter>AttackObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Meteo.cpp">
+      <Filter>AttackObject</Filter>
+    </ClCompile>
+    <ClCompile Include="MagicBall.cpp">
+      <Filter>AttackObject</Filter>
+    </ClCompile>
+    <ClCompile Include="IAttackObject.cpp">
+      <Filter>AttackObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ComboFinishBomb.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -474,19 +446,10 @@
     <ClInclude Include="BossStage1.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Result.h" />
-    <ClInclude Include="Lich.h">
-      <Filter>Character\Monster\BossMonster\Lich</Filter>
-    </ClInclude>
-    <ClInclude Include="LichAction.h">
-      <Filter>Character\Monster\BossMonster\Lich</Filter>
-    </ClInclude>
     <ClInclude Include="Slime.h">
       <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClInclude>
     <ClInclude Include="DarkMeteorite.h">
-      <Filter>Character\Monster\BossMonster\Lich</Filter>
-    </ClInclude>
-    <ClInclude Include="DarkWall.h">
       <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClInclude>
     <ClInclude Include="TurtleShell.h">
@@ -603,10 +566,6 @@
     <ClInclude Include="TurtleShellStateAppear.h">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
-    <ClInclude Include="MagicBall.h" />
-    <ClInclude Include="DarkBall.h">
-      <Filter>Character\Monster\BossMonster\Lich</Filter>
-    </ClInclude>
     <ClInclude Include="SoundFile.h" />
     <ClInclude Include="CascadModel.h" />
     <ClInclude Include="Brave.h">
@@ -640,48 +599,6 @@
       <Filter>Weapons</Filter>
     </ClInclude>
     <ClInclude Include="HitDetection.h" />
-    <ClInclude Include="LichStateAngry.h">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClInclude>
-    <ClInclude Include="LichStateAttack_1.h">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClInclude>
-    <ClInclude Include="LichStateAttack_2.h">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClInclude>
-    <ClInclude Include="LichStateDamage.h">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClInclude>
-    <ClInclude Include="LichStateDarkMeteorite_End.h">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClInclude>
-    <ClInclude Include="LichStateDarkMeteorite_Main.h">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClInclude>
-    <ClInclude Include="LichStateDarkMeteorite_Start.h">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClInclude>
-    <ClInclude Include="LichStateDie.h">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClInclude>
-    <ClInclude Include="LichStateIdle.h">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClInclude>
-    <ClInclude Include="LichStateSummon.h">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClInclude>
-    <ClInclude Include="LichStateVictory.h">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClInclude>
-    <ClInclude Include="LichStateWalk.h">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClInclude>
-    <ClInclude Include="LichStateWarp.h">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClInclude>
-    <ClInclude Include="ILichState.h">
-      <Filter>Character\Monster\BossMonster\Lich\LichState</Filter>
-    </ClInclude>
     <ClInclude Include="BraveStateAttack_1.h">
       <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
@@ -845,9 +762,6 @@
     <ClInclude Include="Player.h">
       <Filter>Character\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Meteo.h">
-      <Filter>Character\Monster\BossMonster\Summoner</Filter>
-    </ClInclude>
     <ClInclude Include="DecisionMeteoEndpoint.h">
       <Filter>Character\Monster\BossMonster\Summoner</Filter>
     </ClInclude>
@@ -878,16 +792,12 @@
     <ClInclude Include="TurtleShellStateSkill.h">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
-    <ClInclude Include="DarkSpear.h" />
-    <ClInclude Include="DarkSpearObj.h" />
     <ClInclude Include="IMobStateMachine.h">
       <Filter>Character\Monster\MobMonster</Filter>
     </ClInclude>
     <ClInclude Include="MobMonsterActionList.h">
       <Filter>Character\Monster\MobMonster</Filter>
     </ClInclude>
-    <ClInclude Include="MobMonsterSM_Patrol.h" />
-    <ClInclude Include="MobMonsterSM_Chase.h" />
     <ClInclude Include="CalcCharacterForward.h" />
     <ClInclude Include="Loading.h" />
     <ClInclude Include="SummonerSM_Attack.h">
@@ -896,5 +806,33 @@
     <ClInclude Include="SummonerSM_Vigilance.h">
       <Filter>Character\Monster\BossMonster\Summoner</Filter>
     </ClInclude>
+    <ClInclude Include="DarkSpear.h">
+      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    </ClInclude>
+    <ClInclude Include="MobMonsterSM_Chase.h">
+      <Filter>Character\Monster\MobMonster</Filter>
+    </ClInclude>
+    <ClInclude Include="MobMonsterSM_Patrol.h">
+      <Filter>Character\Monster\MobMonster</Filter>
+    </ClInclude>
+    <ClInclude Include="DarkBall.h">
+      <Filter>AttackObject</Filter>
+    </ClInclude>
+    <ClInclude Include="DarkSpearObj.h">
+      <Filter>AttackObject</Filter>
+    </ClInclude>
+    <ClInclude Include="DarkWall.h">
+      <Filter>AttackObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Meteo.h">
+      <Filter>AttackObject</Filter>
+    </ClInclude>
+    <ClInclude Include="MagicBall.h">
+      <Filter>AttackObject</Filter>
+    </ClInclude>
+    <ClInclude Include="IAttackObject.h">
+      <Filter>AttackObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboFinishBomb.h" />
   </ItemGroup>
 </Project>
