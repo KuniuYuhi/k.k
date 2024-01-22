@@ -4,8 +4,13 @@
 #include "DarkBall.h"
 #include "Meteo.h"
 #include "DarkMeteorite.h"
+#include "DarkSpearObj.h"
+
 #include "AIActor.h"
 #include "MagicBall.h"
+
+#include "IAttackObject.h"
+
 
 Actor::Actor()
 {
@@ -50,27 +55,6 @@ bool Actor::IsFlashing()
 		//無敵時間でないなら表示
 		return false;
 	}	
-}
-
-void Actor::RecoveryMP()
-{
-	//MP回復状態なら
-	if (m_recoveryMpFlag != true)
-	{
-		return;
-	}
-		
-	if (m_status.GetMp() < m_status.GetMaxMp())
-	{
-		//MPを足す
-		m_status.CalcMp(g_gameTime->GetFrameDeltaTime(), true);
-		//MPとMaxMPが同じになったら
-		if (m_status.GetMp() >= m_status.GetMaxMp())
-		{
-			//MP回復状態をなしにする
-			m_recoveryMpFlag = false;
-		}
-	}
 }
 
 Vector3 Actor::calcVelocity(Status status)
@@ -132,6 +116,7 @@ void Actor::CalcForward(Vector3 moveSpeed)
 
 bool Actor::CalcInvincibleTime()
 {
+	//無敵時間フラグがセットされていないなら処理しない
 	if (m_invincibleTimeFlag != true)
 	{
 		return false;
@@ -148,6 +133,7 @@ bool Actor::CalcInvincibleTime()
 	else
 	{
 		m_invincbleTimer += g_gameTime->GetFrameDeltaTime();
+		//無敵時間なのでtrueをかえす
 		return true;
 
 	}
@@ -161,70 +147,128 @@ void Actor::DamageCollision(CharacterController& characon)
 		return;
 	}
 
-	//ダークボールの当たり判定
-	const auto& DarkBallCollisions = g_collisionObjectManager->FindCollisionObjects("darkball");
+	//アタックオブジェクトの当たり判定
+	const auto& DarkBallCollisions = 
+		g_collisionObjectManager->FindCollisionObjects("attackobject");
 	//コリジョンの配列をfor文で回す
 	for (auto collision : DarkBallCollisions)
 	{
 		//自身のキャラコンと衝突したら
 		if (collision->IsHit(characon) == true)
 		{
-			//todo 常に真ん中で判定をとってしまう
-			DarkBall* darkball = FindGO<DarkBall>("darkball");
-			//ぶつかったのでフラグを立てる
-			darkball->SetHitFlag(true);
-			Damage(darkball->GetAtk());
+			//当たったオブジェクトの製作者のインスタンスを取得
+			auto* attackObject = 
+				FindGO<IAttackObject>(collision->GetCreatorName());
+			int attack = attackObject->GetAttack();
+			//被ダメージ処理
+			Damage(attack);
+			//フォント生成
 			CreateDamageFont(m_hitDamage);
+
 			return;
 		}
 	}
 
-	//ダークウォールの当たり判定
-	const auto& DarkWallCollisions = g_collisionObjectManager->FindCollisionObjects("DarkWall");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : DarkWallCollisions)
-	{
-		//自身のキャラコンと衝突したら
-		if (collision->IsHit(characon) == true)
-		{
-			DarkWall* darkwall = FindGO<DarkWall>("darkwall");
-			Damage(darkwall->GetAtk());
-			CreateDamageFont(m_hitDamage);
-			return;
-		}
-	}
 
-	//メテオの当たり判定
-	const auto& MeteoCollisions = g_collisionObjectManager->FindCollisionObjects("meteo");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : MeteoCollisions)
-	{
-		//自身のキャラコンと衝突したら
-		if (collision->IsHit(characon) == true)
-		{
-			Meteo* meteo = FindGO<Meteo>("meteo");
-			Damage(meteo->GetAtk());
-			CreateDamageFont(m_hitDamage);
-			//メテオに当たったので強制的に爆発させる
-			meteo->Explosion();
-			return;
-		}
-	}
-	//メテオの爆発の当たり判定
-	const auto& MeteoExplosionCollisions = g_collisionObjectManager->FindCollisionObjects("explosion");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : MeteoExplosionCollisions)
-	{
-		//自身のキャラコンと衝突したら
-		if (collision->IsHit(characon) == true)
-		{
-			Meteo* meteo = FindGO<Meteo>("meteo");
-			int damage = meteo->CalcDamageToDistance(m_position);
-			Damage(damage);
-			CreateDamageFont(m_hitDamage);
-			return;
-		}
-	}
+
+
+	///////////////////////////////////////////////
+
+	//ダークボールの当たり判定
+	//const auto& DarkBallCollisions = g_collisionObjectManager->FindCollisionObjects("darkball");
+	////コリジョンの配列をfor文で回す
+	//for (auto collision : DarkBallCollisions)
+	//{
+	//	//自身のキャラコンと衝突したら
+	//	if (collision->IsHit(characon) == true)
+	//	{
+	//		//todo 常に真ん中で判定をとってしまう
+	//		DarkBall* darkball = FindGO<DarkBall>("darkball");
+	//		//ぶつかったのでフラグを立てる
+	//		darkball->SetHitFlag(true);
+	//		Damage(darkball->GetAtk());
+	//		CreateDamageFont(m_hitDamage);
+	//		return;
+	//	}
+	//}
+
+	////ダークウォールの当たり判定
+	//const auto& DarkWallCollisions = g_collisionObjectManager->FindCollisionObjects("DarkWall");
+	////コリジョンの配列をfor文で回す
+	//for (auto collision : DarkWallCollisions)
+	//{
+	//	//自身のキャラコンと衝突したら
+	//	if (collision->IsHit(characon) == true)
+	//	{
+	//		DarkWall* darkwall = FindGO<DarkWall>("darkwall");
+	//		Damage(darkwall->GetAtk());
+	//		CreateDamageFont(m_hitDamage);
+	//		return;
+	//	}
+	//}
+
+	////ダークスピアの当たり判定
+	//const auto& DarkSpearCollisions = g_collisionObjectManager->FindCollisionObjects("darkspear");
+	////コリジョンの配列をfor文で回す
+	//for (auto collision : DarkSpearCollisions)
+	//{
+	//	//自身のキャラコンと衝突したら
+	//	if (collision->IsHit(characon) == true)
+	//	{
+	//		DarkSpearObj* darkSpearObj = FindGO<DarkSpearObj>("darkspearobj");
+	//		Damage(darkSpearObj->GetAtk());
+	//		CreateDamageFont(m_hitDamage);
+	//		return;
+	//	}
+	//}
+
+	////メテオの当たり判定
+	//const auto& MeteoCollisions = g_collisionObjectManager->FindCollisionObjects("meteo");
+	////コリジョンの配列をfor文で回す
+	//for (auto collision : MeteoCollisions)
+	//{
+	//	//自身のキャラコンと衝突したら
+	//	if (collision->IsHit(characon) == true)
+	//	{
+	//		Meteo* meteo = FindGO<Meteo>("meteo");
+	//		Damage(meteo->GetAtk());
+	//		CreateDamageFont(m_hitDamage);
+	//		//メテオに当たったので強制的に爆発させる
+	//		meteo->Explosion();
+	//		return;
+	//	}
+	//}
+	////メテオの爆発の当たり判定
+	//const auto& MeteoExplosionCollisions = g_collisionObjectManager->FindCollisionObjects("explosion");
+	////コリジョンの配列をfor文で回す
+	//for (auto collision : MeteoExplosionCollisions)
+	//{
+	//	//自身のキャラコンと衝突したら
+	//	if (collision->IsHit(characon) == true)
+	//	{
+	//		Meteo* meteo = FindGO<Meteo>("meteo");
+	//		int damage = meteo->CalcDamageToDistance(m_position);
+	//		Damage(damage);
+	//		CreateDamageFont(m_hitDamage);
+	//		return;
+	//	}
+	//}
+
+	//ダークメテオの攻撃の当たり判定
+	//const auto& DarkMeteoCollisions = g_collisionObjectManager->FindCollisionObjects("bigmeteo");
+	////コリジョンの配列をfor文で回す
+	//for (auto collision : DarkMeteoCollisions)
+	//{
+	//	//自身のキャラコンと衝突したら
+	//	if (collision->IsHit(characon) == true)
+	//	{
+	//		DarkMeteorite* darkMeteo = FindGO<DarkMeteorite>("darkmeteorite");
+	//		Damage(darkMeteo->GetAtk());
+	//		CreateDamageFont(m_hitDamage);
+	//		darkMeteo->SetChaseFlag(true);
+	//		return;
+	//	}
+	//}
 
 	//モンスターの攻撃の当たり判定
 	const auto& MonsterCollisions = g_collisionObjectManager->FindCollisionObjects("monsterattack");
@@ -243,21 +287,7 @@ void Actor::DamageCollision(CharacterController& characon)
 		}
 	}
 
-	//ダークメテオの攻撃の当たり判定
-	const auto& DarkMeteoCollisions = g_collisionObjectManager->FindCollisionObjects("bigmeteo");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : DarkMeteoCollisions)
-	{
-		//自身のキャラコンと衝突したら
-		if (collision->IsHit(characon) == true)
-		{
-			DarkMeteorite* darkMeteo = FindGO<DarkMeteorite>("darkmeteorite");
-			Damage(darkMeteo->GetAtk());
-			CreateDamageFont(m_hitDamage);
-			darkMeteo->SetChaseFlag(true);
-			return;
-		}
-	}
+	
 
 }
 
