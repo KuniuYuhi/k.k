@@ -7,32 +7,20 @@ void nsK2EngineLow::DoF::OnInit(
 	//各種レンダリングターゲットの初期化
 	InitRenderTarget(mainRenderTarget);
 	//六角形ブラーをするための各種スプライトの初期化
-	InitBlurSprite(mainRenderTarget);
+	InitBlurSprite(mainRenderTarget, zprepassRenderTarget);
 }
 
 void nsK2EngineLow::DoF::OnRender(RenderContext& rc, RenderTarget& mainRenderTarget)
 {
+	
+}
+
+void nsK2EngineLow::DoF::Render(
+	RenderContext& rc, RenderTarget& mainRenderTarget, RenderTarget& zprepassRenderTarget)
+{
 	if (m_isEnable == false) {
 		return;
 	}
-	
-	//2枚のレンダリングターゲットを設定してモデルを描画する
-	RenderTarget* rts[] = {
-		&mainRenderTarget,
-		&m_depthRenderTarget
-	};
-
-	//被写界深度用のレンダリングターゲットに変更
-	//レンダリングターゲットとして利用できるまで待つ
-	rc.WaitUntilToPossibleSetRenderTargets(2, rts);
-	//レンダリングターゲットを設定
-	rc.SetRenderTargetsAndViewport(2, rts);
-	// レンダリングターゲットをクリア
-	rc.ClearRenderTargetViews(2, rts);
-	//モデルを描画
-	g_renderingEngine->ModelRendering(rc);
-	//レンダリングターゲットへの書き込み終了待ち
-	rc.WaitUntilFinishDrawingToRenderTargets(2, rts);
 
 	//垂直、対角線ブラーをかける
 	RenderTarget* blurRts[] = {
@@ -66,36 +54,8 @@ void nsK2EngineLow::DoF::OnRender(RenderContext& rc, RenderTarget& mainRenderTar
 	rc.WaitUntilFinishDrawingToRenderTarget(mainRenderTarget);
 }
 
-void nsK2EngineLow::DoF::Render(RenderContext& rc, RenderTarget& mainRenderTarget, RenderTarget& zprepassRenderTarget)
-{
-	///////////////////////////////////////////////////////////////////
-	////メインレンダリングターゲットのボケ画像を作成
-	//m_blur.ExecuteOnGPU(rc, 10);
-
-	////ボケ画像と深度テクスチャを利用して、ボケ画像を描きこんでいく
-	////メインレンダリングターゲットを設定
-	//rc.WaitUntilToPossibleSetRenderTarget(mainRenderTarget);
-	//rc.SetRenderTargetAndViewport(mainRenderTarget);
-
-	//m_combineBokeImageSprite.Draw(rc);
-
-	////レンダリングターゲットへの書き込み終了待ち
-	//rc.WaitUntilFinishDrawingToRenderTarget(mainRenderTarget);
-}
-
 void nsK2EngineLow::DoF::InitRenderTarget(RenderTarget& mainRenderTarget)
 {
-	//シーンのカメラ空間でのZ値を書き込むレンダリングターゲットを作成
-	float clearColor[4] = { 10000.0f,10000.0f,10000.0f,1.0f };
-	m_depthRenderTarget.Create(
-		mainRenderTarget.GetWidth(),
-		mainRenderTarget.GetHeight(),
-		1,
-		1,
-		DXGI_FORMAT_R32_FLOAT,
-		DXGI_FORMAT_UNKNOWN,
-		clearColor
-	);
 	
 	//垂直ブラーをかけるためのレンダリングターゲット
 	m_rtVerticalBlur.Create(
@@ -127,7 +87,8 @@ void nsK2EngineLow::DoF::InitRenderTarget(RenderTarget& mainRenderTarget)
 
 }
 
-void nsK2EngineLow::DoF::InitBlurSprite(RenderTarget& mainRenderTarget)
+void nsK2EngineLow::DoF::InitBlurSprite(
+	RenderTarget& mainRenderTarget, RenderTarget& zprepassRenderTarget)
 {
 	//垂直、対角線ブラーをかけるためのスプライトを初期化
 	SpriteInitData vertDiagonalBlurSpriteInitData;
@@ -160,7 +121,7 @@ void nsK2EngineLow::DoF::InitBlurSprite(RenderTarget& mainRenderTarget)
 	SpriteInitData  combineBokeImageSpriteInitData;
 	//使用するテクスチャは2枚
 	combineBokeImageSpriteInitData.m_textures[0] = &m_rtPhomboidBlur.GetRenderTargetTexture();
-	combineBokeImageSpriteInitData.m_textures[1] = &m_depthRenderTarget.GetRenderTargetTexture();
+	combineBokeImageSpriteInitData.m_textures[1] = &zprepassRenderTarget.GetRenderTargetTexture();
 	combineBokeImageSpriteInitData.m_width = mainRenderTarget.GetWidth();
 	combineBokeImageSpriteInitData.m_height = mainRenderTarget.GetHeight();
 	//合成用のシェーダーを指定する
