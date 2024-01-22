@@ -3,14 +3,12 @@
 #include "Brave.h"
 #include "Arrow.h"
 
-//矢を撃ったら後ろに下がる
-
 namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
 
 	//ステータス
-	const int POWER = 10;
+	const int POWER = 30;
 	const int ENDURANCE = 50;		//武器の耐久力(矢のストック)。
 
 	const float HITTABLE_TIME = 0.15f;
