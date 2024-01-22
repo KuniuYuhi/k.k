@@ -36,12 +36,7 @@ namespace {
 
 	const float KNOCKBACK_TIMER = 1.0f;
 
-
-	int MAXHP = 200;
-	int MAXMP = 100;
-	int ATK = 40;
-	float SPEED = 260.0f;
-	const char* NAME = "Brave";
+	const float GRAVITY = 50.0f;
 
 	const int SKILL_ATTACK_POWER = 30;
 }
@@ -59,14 +54,10 @@ Brave::~Brave()
 bool Brave::Start()
 {
 	m_player = FindGO<Player>("player");
+
 	//ステータスの初期化
-	m_status.InitCharacterStatus(
-		MAXHP,
-		MAXMP,
-		ATK,
-		SPEED,
-		NAME
-	);
+	m_status.Init(GetName());
+
 	//装備する武器の設定
 	SettingWeapons();
 	//モデルの初期化
@@ -84,11 +75,16 @@ bool Brave::Start()
 
 void Brave::Update()
 {
+	//ポーズ画面なら処理をしない
+	if (GameManager::GetInstance()->GetGameSeenState() ==
+		GameManager::enGameSeenState_Pause)
+	{
+		return;
+	}
+
 	//行動不可能な状態でないなら
 	if (IsInaction() != true)
 	{
-		//MPの回復
-		RecoveryMP();
 		//武器の切り替え処理
 		ChangeWeapon();
 		//移動処理
@@ -114,16 +110,17 @@ void Brave::Update()
 
 void Brave::Move()
 {
+	//移動方向を計算
 	m_moveSpeed = calcVelocity(GetStatus());
 	m_moveSpeed.y = 0.0f;
-
 
 	//特定のアニメーションが再生中なら移動なし
 	if (isAnimationEntable() != true)
 	{
+		//現在の武器が回転可能なら
 		if (m_mainUseWeapon.weapon->GetRotationDelectionFlag() == true)
 		{
-			//前方向の計算
+			//前方向を計算する
 			CalcForward(m_moveSpeed);
 		}
 		//移動量を0にする
@@ -135,16 +132,15 @@ void Brave::Move()
 		CalcForward(m_moveSpeed);
 	}
 
-
-	m_moveSpeed.y *= -50.0f * g_gameTime->GetFrameDeltaTime();
-	
+	//重力をかける
+	m_moveSpeed.y *= -GRAVITY * g_gameTime->GetFrameDeltaTime();
+	//キャラコンが地面に着いているなら、Y座標を0にする
 	if (m_charaCon.IsOnGround() == true)
 	{
 		m_moveSpeed.y = 0.0f;
 	}
-
+	//移動方向に座標を移動
 	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-
 }
 
 void Brave::ProcessRotation()
@@ -243,8 +239,7 @@ void Brave::Damage(int damage)
 		SetInvicibleTimeFlag(false);
 		//HPを0に固定する
 		m_status.SetHp(0);
-
-		//g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 30);
+		//アニメーションのスピードを遅くする
 		m_modelRender.SetAnimationSpeed(0.5f);
 		//死亡ステートに遷移
 		SetNextAnimationState(enAnimationState_Die);
@@ -841,9 +836,9 @@ void Brave::RoadOneHandSwordAnimationClip(int mainWeaponAnimationStartIndexNo)
 		{"Assets/animData/character/Player/OneHandSword/Sprint.tka",true},
 		{"Assets/animData/character/Player/OneHandSword/KnockBack.tka",false},
 		{"Assets/animData/character/Player/OneHandSword/Hit.tka",false},
-		{ "Assets/animData/character/Player/OneHandSword/Defend.tka", true },
-		{ "Assets/animData/character/Player/OneHandSword/DefendHit.tka", false },
-		{ "Assets/animData/character/Player/OneHandSword/Die.tka", false },
+		{"Assets/animData/character/Player/OneHandSword/Defend.tka", true },
+		{"Assets/animData/character/Player/OneHandSword/DefendHit.tka", false },
+		{"Assets/animData/character/Player/OneHandSword/Die.tka", false },
 		{"Assets/animData/character/Player/OneHandSword/ChangeSwordShield.tka",false},
 		{"Assets/animData/character/Player/OneHandSword/Win_start.tka",false},
 		{"Assets/animData/character/Player/OneHandSword/Win_main.tka",true},
@@ -867,9 +862,9 @@ void Brave::RoadTwoHandSwordAnimationClip(int mainWeaponAnimationStartIndexNo)
 		{"Assets/animData/character/Player/TwoHandSword/Sprint.tka",true},
 		{"Assets/animData/character/Player/TwoHandSword/KnockBack.tka",false},
 		{"Assets/animData/character/Player/TwoHandSword/Hit.tka",false},
-		{ "Assets/animData/character/Player/TwoHandSword/Rool.tka", false },
-		{ "Assets/animData/character/Player/TwoHandSword/Rool.tka", false },
-		{ "Assets/animData/character/Player/TwoHandSword/Die.tka", false },
+		{"Assets/animData/character/Player/TwoHandSword/Rool.tka", false },
+		{"Assets/animData/character/Player/TwoHandSword/Rool.tka", false },
+		{"Assets/animData/character/Player/TwoHandSword/Die.tka", false },
 		{"Assets/animData/character/Player/TwoHandSword/ChangeTwoHandSword.tka",false},
 		{"Assets/animData/character/Player/TwoHandSword/Win_Start.tka",false},
 		{"Assets/animData/character/Player/TwoHandSword/Win_Main.tka",true},
@@ -893,9 +888,9 @@ void Brave::RoadBowAnimationClip(int mainWeaponAnimationStartIndexNo)
 		{"Assets/animData/character/Player/Bow/Sprint.tka",true},
 		{"Assets/animData/character/Player/Bow/KnockBack.tka",false},
 		{"Assets/animData/character/Player/Bow/Hit.tka",false},
-		{ "Assets/animData/character/Player/Bow/Rool.tka", false },
-		{ "Assets/animData/character/Player/Bow/Rool.tka", false },
-		{ "Assets/animData/character/Player/Bow/Die.tka", false },
+		{"Assets/animData/character/Player/Bow/Rool.tka", false },
+		{"Assets/animData/character/Player/Bow/Rool.tka", false },
+		{"Assets/animData/character/Player/Bow/Die.tka", false },
 		{"Assets/animData/character/Player/Bow/ChangeBow.tka",false},
 		{"Assets/animData/character/Player/Bow/Win_Start.tka",false},
 		{"Assets/animData/character/Player/Bow/Win_Main.tka",true},
@@ -920,8 +915,6 @@ void Brave::InitModel()
 	RoadWeaponTypeAnimetionClip(m_subWeaponType, m_subWeaponAnimationStartIndexNo);
 	//サブ武器2に対応するアニメーションクリップを読み込む
 	RoadWeaponTypeAnimetionClip(m_subWeapon2Type, m_subWeapon2AnimationStartIndexNo);
-
-
 	//モデルの初期化
 	m_modelRender.Init("Assets/modelData/character/Player/NewHero/Hero_Smile_Selllook.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
@@ -929,12 +922,11 @@ void Brave::InitModel()
 		enAnimClip_Num * AnimationClipGroup_Num,
 		enModelUpAxisZ
 	);
-	
+	//座標の設定と更新
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
-
-	m_charaCenterBoonId = m_modelRender.FindBoneID(L"root");
-
+	//
+	//m_charaCenterBoonId = m_modelRender.FindBoneID(L"root");
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
@@ -964,12 +956,13 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	{
 		//向いている方向に前進するために前方向を計算
 		CalcAttackMoveSpeed();
-
+		//前方向に移動フラグをセット
 		SetMoveforwardFlag(true);
 	}
 	//前進する終わり
 	if (wcscmp(eventName, L"MoveForwardEnd") == 0)
 	{
+		//前方向に移動フラグをリセット
 		SetMoveforwardFlag(false);
 	}
 
@@ -984,6 +977,21 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	if (wcscmp(eventName, L"MoveBackEnd") == 0)
 	{
 		SetMoveBackFlag(false);
+	}
+
+	//回避時の移動の始まり
+	if (wcscmp(eventName, L"AvoidMoveStart") == 0)
+	{
+		//前方向を計算
+		CalcForward(m_moveSpeed);
+		//前方向に移動フラグをセット
+		SetMoveforwardFlag(true);
+	}
+	//回避時の移動の終わり
+	if (wcscmp(eventName, L"AvoidMoveEnd") == 0)
+	{
+		//前方向に移動フラグをリセット
+		SetMoveforwardFlag(false);
 	}
 
 	//武器入れ替え
