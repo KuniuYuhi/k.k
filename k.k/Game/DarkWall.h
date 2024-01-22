@@ -1,8 +1,9 @@
 #pragma once
+#include "IAttackObject.h"
 
 class Summoner;
 
-class DarkWall:public IGameObject
+class DarkWall:public IAttackObject
 {
 public:
 	DarkWall();
@@ -25,16 +26,6 @@ public:
 	/// </summary>
 	Vector3 AppltMatrixToPosition();
 
-	void SetAtk(int attack)
-	{
-		m_attak = attack;
-	}
-
-	const int GetAtk() const
-	{
-		return m_attak;
-	}
-
 private:
 	Summoner*							m_summoner = nullptr;
 	EffectEmitter*					m_darkWallEffect = nullptr;
@@ -44,8 +35,6 @@ private:
 	Quaternion						m_rotation = Quaternion::Identity;
 
 	CollisionObject*				m_collision;
-
-	int								m_attak = 20;
 
 	const float						m_speed = 50.0f;
 
