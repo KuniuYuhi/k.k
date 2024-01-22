@@ -59,8 +59,8 @@ public:
 	/// アニメーションステート
 	/// </summary>
 	enum EnAnimationState {
-		enAninationState_Idle,
-		enAninationState_Walk,
+		enAnimationState_Idle,
+		enAnimationState_Walk,
 		enAnimationState_DarkBall,
 		enAnimationState_DarkWall,
 		enAnimationState_DarkSpear_Start,
@@ -144,7 +144,7 @@ public:
 		return m_enAnimationState != enAnimationState_DarkBall &&
 			m_enAnimationState != enAnimationState_DarkWall &&
 			m_enAnimationState != enAnimationState_KnockBack &&
-			m_enAnimationState != enAnimationState_NormalAttack_1 &&
+			//m_enAnimationState != enAnimationState_NormalAttack_1 &&
 			m_enAnimationState != enAnimationState_NormalAttack_2 &&
 			m_enAnimationState != enAnimationState_NormalAttack_3 &&
 			m_enAnimationState != enAnimationState_CriticalHit &&
@@ -188,15 +188,6 @@ public:
 	void HitSkillAttack() override;
 
 	/// <summary>
-	/// ウィザードのファイヤーボールに当たった時の処理。派生クラスで実装
-	/// </summary>
-	void HitFireBall() override {}
-	/// <summary>
-	/// ウィザードのフレイムピラーに当たった時の処理。派生クラスで実装
-	/// </summary>
-	void HitFlamePillar(bool damageFlag = false) override {}
-
-	/// <summary>
 	/// 回転のみを行う処理条件
 	/// </summary>
 	/// <returns></returns>
@@ -214,6 +205,11 @@ public:
 	/////////////////////////////////////////////////////////////////////
 	//その他の関数
 	/////////////////////////////////////////////////////////////////////
+
+	/// <summary>
+	/// 警戒ステート時の処理
+	/// </summary>
+	void ProcessVigilance();
 
 	/// <summary>
 	/// 次のステートマシンを生成する
@@ -330,6 +326,23 @@ public:
 		return m_darkWallBoonId;
 	}
 
+	/// <summary>
+	/// プレイヤーをノックバックしたかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetPlayerKnockedBackFlag(bool flag)
+	{
+		m_playerKnockedBackFlag = flag;
+	}
+	/// <summary>
+	/// プレイヤーをノックバックしたかのフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetPlayerKnockedBackFlag() const
+	{
+		return m_playerKnockedBackFlag;
+	}
+
 private:
 	/// <summary>
 	/// モデルの初期化
@@ -344,10 +357,6 @@ private:
 	/// </summary>
 	void ManageState()  override;
 
-	/// <summary>
-	/// 移動処理
-	/// </summary>
-	void ProcessMove();
 	/// <summary>
 	/// 回転処理
 	/// </summary>
@@ -390,7 +399,7 @@ private:
 
 private:
 
-	EnAnimationState				m_enAnimationState = enAninationState_Idle;				//アニメーションステート
+	EnAnimationState				m_enAnimationState = enAnimationState_Idle;				//アニメーションステート
 	EnSpecialActionState			m_enSpecialActionState = enSpecialActionState_Normal;	//特別な状態ステート(通常、怒りモード)
 	EnWarpStepState					m_enWarpStep = enWarpStep_Up;
 
@@ -417,6 +426,8 @@ private:
 	int m_darkWallBoonId = -1;
 
 	bool m_oldBreakSuperArmorFlag = false;	//前フレームのスーパーアーマーブレイクフラグ
+
+	bool m_playerKnockedBackFlag = false;	//プレイヤーのノックバックしたかのフラグ
 
 };
 
