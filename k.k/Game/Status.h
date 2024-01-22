@@ -1,11 +1,13 @@
 #pragma once
+
+/// <summary>
+/// ステータスの構造体
+/// </summary>
 struct Status
 {
 private:
 	int maxHp = 0;					//HPの最大値
-	int hp = 0;					//HP
-	int maxMp = 0;					//MPの最大値
-	int mp = 0;					//MP
+	int hp = 0;						//HP
 	int defaultAtk = 0;				//基礎攻撃力
 	int atk = 0;					//攻撃力
 	float dashSpeed = 0.0f;			//加速時のスピード
@@ -21,16 +23,13 @@ public:
 	/// キャラクターの全てのステータスの初期化
 	/// </summary>
 	/// <param name="MaxHp"></param>
-	/// <param name="MaxMp"></param>
 	/// <param name="Atk"></param>
 	/// <param name="Speed"></param>
 	/// <param name="name"></param>
-	void InitCharacterStatus(int MaxHp,int MaxMp,int Atk, float Speed,const char* name)
+	void InitCharacterStatus(int MaxHp,int Atk, float Speed,const char* name)
 	{
 		maxHp = MaxHp;
 		hp = maxHp;
-		maxMp = MaxMp;
-		mp = maxMp;
 		defaultAtk = Atk;
 		atk = defaultAtk;
 		defaultSpeed = Speed;
@@ -67,46 +66,61 @@ public:
 	{
 		return hp;
 	}
-
+	/// <summary>
+	/// 最大HPの取得
+	/// </summary>
+	/// <returns></returns>
 	const int& GetMaxHp() const
 	{
 		return maxHp;
 	}
 
-	const int& GetMp() const
-	{
-		return mp;
-	}
-
-	const int& GetMaxMp() const
-	{
-		return maxMp;
-	}
-
+	/// <summary>
+	/// 攻撃力の設定
+	/// </summary>
+	/// <param name="setAtk"></param>
 	void SetAtk(const int setAtk)
 	{
 		atk = setAtk;
 	}
-
+	/// <summary>
+	/// 攻撃力の取得
+	/// </summary>
+	/// <returns></returns>
 	const int& GetAtk() const
 	{
 		return atk;
 	}
 
+	/// <summary>
+	/// 基礎スピードの取得
+	/// </summary>
+	/// <returns></returns>
 	const int& GetDefaultSpeed() const
 	{
 		return defaultSpeed;
 	}
+	/// <summary>
+	/// ダッシュスピードの取得
+	/// </summary>
+	/// <returns></returns>
 	const int& GetDashSpeed() const
 	{
 		return dashSpeed;
 	}
 
+	/// <summary>
+	/// 耐久値の取得
+	/// </summary>
+	/// <returns></returns>
 	const int& GetEndurance() const
 	{
 		return endurance;
 	}
-
+	/// <summary>
+	/// 耐久値の最大値を取得
+	/// </summary>
+	/// <returns></returns>
 	const int& GetMaxEndrance() const
 	{
 		return maxEndurance;
@@ -129,25 +143,6 @@ public:
 		{
 			//引き算
 			SubHp(value);
-		}
-	}
-
-	/// <summary>
-	/// MPの増減の計算。0以下になったら0になる。最大HPより大きくならない
-	/// </summary>
-	/// <param name="value">計算する値</param>
-	/// <param name="UpOrDownFlag">足すか引くかのフラグ。trueで足す、falseで引く</param>
-	void CalcMp(int value, bool UpOrDownFlag)
-	{
-		if (UpOrDownFlag == true)
-		{
-			//足し算
-			AddMp(value);
-		}
-		else
-		{
-			//引き算
-			SubMp(value);
 		}
 	}
 
@@ -177,9 +172,17 @@ static std::unordered_map<std::string, Status> StatusDataMAP;
 static const std::string csvFilePath;
 static bool IsLoadedCSVFile;
 
+/// <summary>
+/// 初期化。これを使ってステータスを初期化
+/// </summary>
+/// <param name="name">初期化したいキャラの名前</param>
 void Init(const std::string& name);
 
 private:
+	/// <summary>
+	/// csvファイルの読み込み
+	/// </summary>
+	/// <param name="name">読み込みたいキャラの名前</param>
 	void LoadCSV(const std::string& name);
 
 	/// <summary>
@@ -204,31 +207,6 @@ private:
 		if (hp <= 0)
 		{
 			hp = 0;
-		}
-	}
-
-	/// <summary>
-	/// MPを足す
-	/// </summary>
-	/// <param name="addMp"></param>
-	void AddMp(float addMp)
-	{
-		mp += addMp;
-		if (mp >= maxMp)
-		{
-			mp = maxMp;
-		}
-	}
-	/// <summary>
-	/// MPを引く
-	/// </summary>
-	/// <param name="subMp"></param>
-	void SubMp(float subMp)
-	{
-		mp -= subMp;
-		if (mp <= 0)
-		{
-			mp = 0;
 		}
 	}
 

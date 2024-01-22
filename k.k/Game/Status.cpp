@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 
+//ステータスを記載したファイルパス
 const std::string Status::csvFilePath = "Status.csv";
 std::unordered_map<std::string, Status> Status::StatusDataMAP = {};
 bool Status::IsLoadedCSVFile = false;
@@ -14,13 +15,14 @@ void Status::Init(const std::string& name)
 
 		LoadCSV(name);
 	}
+	//キーがnameである要素を探す
 	auto itr = StatusDataMAP.find(name);
 	//名前がない
 	if (itr == StatusDataMAP.end())
 	{
 		return;
 	}
-
+	//引数と同じ名前のデータを代入
 	*this = itr->second;
 
 	return;
@@ -28,7 +30,9 @@ void Status::Init(const std::string& name)
 
 void Status::LoadCSV(const std::string& name) {
 
+	//読み込んだcsvファイルのデータを格納するstring型
 	std::string str_buf;
+	//「,」までを読み込んで格納するstring型
 	std::string buf;
 
 	// 読み込むcsvファイルを開く(std::ifstreamのコンストラクタで開く)
@@ -51,17 +55,25 @@ void Status::LoadCSV(const std::string& name) {
 		statusData.maxHp = stoi(buf);
 		//Attackを読み込む。
 		getline(i_stream, buf, ',');
-		statusData.atk = stoi(buf);
+		statusData.defaultAtk = stoi(buf);
 		//Speedを読み込む。
 		getline(i_stream, buf, ',');
 		statusData.defaultSpeed = stoi(buf);
 
+		//名前を設定
+		const char* di = statusData.name.c_str();
+		statusData.characterName = di;
+		//HPを設定
 		statusData.hp = statusData.maxHp;
+		//攻撃力を設定
+		statusData.atk = statusData.defaultAtk;
 
+
+		//マップに取得したデータを代入
 		StatusDataMAP[statusData.name] = statusData;
 
 	}
-
+	//ロードした
 	IsLoadedCSVFile = true;
 	return;
 
