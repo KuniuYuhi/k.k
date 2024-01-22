@@ -75,11 +75,6 @@ public:
 	void HitSkillAttack() override;
 
 	/// <summary>
-	/// ウィザードのフレイムピラーに当たった時の処理。派生クラスで実装
-	/// </summary>
-	void HitFlamePillar(bool damageFlag = false)  override;
-
-	/// <summary>
 	/// ダークウォールの生成
 	/// </summary>
 	void CreateDarkWall();

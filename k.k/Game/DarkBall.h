@@ -1,15 +1,18 @@
 #pragma once
 #include "MagicBall.h"
 
+class Player;
+
 class DarkBall:public MagicBall
 {
 public:
 	DarkBall();
 	~DarkBall();
 
-	bool Start();
-	void Update();
+	bool Start() override;
+	void Update() override;
 
+private:
 	/// <summary>
 	/// 移動処理
 	/// </summary>
@@ -26,38 +29,25 @@ public:
 	void Explosion();
 
 	/// <summary>
-	/// 攻撃力を設定
+	/// ダークボールのエフェクト再生
 	/// </summary>
-	/// <param name="attack"></param>
-	void SetAtk(const int attack)
-	{
-		m_attack = attack;
-	}
+	void PlayDarkBallEffect();
 
-	/// <summary>
-	/// 攻撃力を返す
-	/// </summary>
-	/// <returns></returns>
-	const int& GetBallAtk() const
-	{
-		return m_attack;
-	}
-
+	bool IsHit();
 
 private:
 
-	CollisionObject*		m_BallCollision;
+	CollisionObject* m_BallCollision = nullptr;
 
-	EffectEmitter*			m_darkBallEffect;
+	EffectEmitter* m_darkBallEffect = nullptr;
+
+	Player* m_player = nullptr;
 
 	Vector3					m_collisionPosition = g_vec3Zero;
-	Vector3					m_forLichBallScale = { 2.3f,2.3f,2.3f };
+	
+	
 
 	const int				m_moveLimitTimer = 5;		//移動の制限時間
-
-	int				m_attack = 0;
-
-
 
 };
 

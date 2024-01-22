@@ -2,8 +2,7 @@
 #include "SwordShield.h"
 #include "Brave.h"
 
-//todo アニメーションイベント追加
-//ジャンプ処理ｈ作る
+#include "IAttackObject.h"
 
 namespace {
 	//武器が収納状態の時の座標
@@ -87,49 +86,16 @@ void SwordShield::Update()
 
 bool SwordShield::IsHitCollision()
 {
-	//ダークボールの当たり判定
-	const auto& DarkBallCollisions = g_collisionObjectManager->FindCollisionObjects("darkball");
+	//アタックオブジェクトの当たり判定
+	const auto& DarkBallCollisions =
+		g_collisionObjectManager->FindCollisionObjects("attackobject");
 	//コリジョンの配列をfor文で回す
 	for (auto collision : DarkBallCollisions)
 	{
-		//自身のキャラコンと衝突したら
-		if (collision->IsHit(m_shieldCollision) == true)
-		{	
-			return true;
-		}
-	}
-
-	//ダークウォールの当たり判定
-	const auto& DarkWallCollisions = g_collisionObjectManager->FindCollisionObjects("DarkWall");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : DarkWallCollisions)
-	{
-		//自身のキャラコンと衝突したら
-		if (collision->IsHit(m_shieldCollision) == true)
-		{	
-			return true;
-		}
-	}
-
-	//メテオの当たり判定
-	const auto& MeteoCollisions = g_collisionObjectManager->FindCollisionObjects("meteo");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : MeteoCollisions)
-	{
-		//自身のキャラコンと衝突したら
+		//自身の当たり判定と衝突したら
 		if (collision->IsHit(m_shieldCollision) == true)
 		{
-			return true;
-		}
-	}
-	//メテオの爆発の当たり判定
-	const auto& MeteoExplosionCollisions = g_collisionObjectManager->FindCollisionObjects("explosion");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : MeteoExplosionCollisions)
-	{
-		//自身のキャラコンと衝突したら
-		if (collision->IsHit(m_shieldCollision) == true)
-		{	
+			//当たった
 			return true;
 		}
 	}
@@ -139,25 +105,15 @@ bool SwordShield::IsHitCollision()
 	//コリジョンの配列をfor文で回す
 	for (auto collision : MonsterCollisions)
 	{
-		//自身のキャラコンと衝突したら
+		//自身の当たり判定と衝突したら
 		if (collision->IsHit(m_shieldCollision) == true)
 		{
+			//当たった
 			return true;
 		}
 	}
 
-	//ダークメテオの攻撃の当たり判定
-	const auto& DarkMeteoCollisions = g_collisionObjectManager->FindCollisionObjects("bigmeteo");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : DarkMeteoCollisions)
-	{
-		//自身のキャラコンと衝突したら
-		if (collision->IsHit(m_shieldCollision) == true)
-		{	
-			return true;
-		}
-	}
-
+	//ここまで来たら当たってない
 	return false;
 }
 
@@ -225,7 +181,9 @@ void SwordShield::InitSwordCollision()
 		Quaternion(0.0f, 90.0f, 180.0f, 1.0f),
 		SWORD_COLLISION_SIZE
 	);
+	//当たり判定を自動で削除しないようにする
 	m_swordCollision->SetIsEnableAutoDelete(false);
+	//当たり判定を無効化
 	m_swordCollision->SetIsEnable(false);
 }
 

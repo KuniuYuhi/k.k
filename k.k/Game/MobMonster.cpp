@@ -72,7 +72,7 @@ void MobMonster::MovePatrol(CharacterController& charaCon)
 		m_direction = SetRamdomDirection(m_angleRange);
 		//速度を掛ける
 		m_direction *= m_status.GetDefaultSpeed();
-
+		//アングルを切り替えたのでフラグをセット
 		m_angleChangeTimeFlag = true;
 	}
 
@@ -91,12 +91,12 @@ void MobMonster::MovePatrol(CharacterController& charaCon)
 		m_direction *= -1.0f;
 	}
 
-	//移動速度の計算
-	//MoveMonster(charaCon);
-	//座標を移動
+	//決めた方向に座標を移動
 	m_position = charaCon.Execute(m_direction, 1.0f / 60.0f);
+
 	m_moveSpeed = m_direction;
 	m_SaveMoveSpeed = m_moveSpeed;
+	//前方向の設定
 	m_forward = m_direction;
 	m_forward.Normalize();
 }
@@ -171,21 +171,36 @@ void MobMonster::ProcessKnockBack(CharacterController& charaCon)
 	}
 }
 
-Vector3 MobMonster::SetRamdomDirection(int range)
+Vector3 MobMonster::SetRamdomDirection(int range, bool zeroLoopFlag)
 {
+	//ランダムな方向の設定
 	Vector3 randomPos = g_vec3Zero;
-	randomPos.y = 0.0f;
-	float X = (rand() % (range - (-range) + 1)) + (-range);
-	float Z = (rand() % (range - (-range) + 1)) + (-range);
-	randomPos.x += X;
-	randomPos.z += Z;
-	randomPos.Normalize();
 
-	/*if ((randomPos.x == 0.0f) && (randomPos.z==0.0f))
+	while (true)
 	{
-		int a = 0;
-	}*/
+		randomPos.y = 0.0f;
+		float X = (rand() % (range - (-range) + 1)) + (-range);
+		float Z = (rand() % (range - (-range) + 1)) + (-range);
+		randomPos.x += X;
+		randomPos.z += Z;
+		//正規化
+		randomPos.Normalize();
 
+		//0ループフラグがセットされているなら
+		if (zeroLoopFlag == true)
+		{
+			//移動方向が0(g_vec3Zero)の時
+			if (randomPos.Length() <= 0.0f)
+			{
+				//やり直し
+				continue;
+			}
+		}
+		//フラグがセットされていないならループから抜ける
+		break;
+	}
+
+	//移動方向を返す
 	return randomPos;
 }
 
@@ -306,12 +321,12 @@ void MobMonster::ProcessDead(bool seFlag)
 	}
 
 	//死亡時エフェクトの再生
-	EffectEmitter* deadEffect = NewGO<EffectEmitter>(0);
+	/*EffectEmitter* deadEffect = NewGO<EffectEmitter>(0);
 	deadEffect->Init(InitEffect::enEffect_Mob_Dead);
 	deadEffect->Play();
 	deadEffect->SetPosition(m_position);
 	deadEffect->SetScale(g_vec3One * DEAD_EFFECT_SIZE);
-	deadEffect->Update();
+	deadEffect->Update();*/
 }
 
 void MobMonster::CreateHitEffect()
@@ -357,10 +372,10 @@ bool MobMonster::IsFoundPlayerFlag()
 			return true;
 		}
 
-		Vector3 toPlayerDir = m_toTarget;
+		m_forward.Normalize();
 		//視野角内にプレイヤーがいるなら
 		//前方向のせいで被ダメ後に追いかけない
-		if (IsInFieldOfView(toPlayerDir, m_forward, m_angle) == true)
+		if (IsInFieldOfView(m_toTarget, m_forward, m_angle) == true)
 		{
 			return true;
 		}
@@ -448,13 +463,16 @@ void MobMonster::CalcSkillAttackIntarval()
 		return;
 	}
 
+	//制限時間に達したら
 	if (m_skillUsableTimer > m_skillUsableLimmit)
 	{
+		//スキル使用可能にする
 		m_skillUsableTimer = 0.0f;
 		m_skillUsableFlag = true;
 	}
 	else
 	{
+		//タイマーを加算
 		m_skillUsableTimer += g_gameTime->GetFrameDeltaTime();
 	}
 }

@@ -11,7 +11,6 @@ void SummonerState_DarkSpearStart::ManageState()
 		DarkSpear* darkSpear = NewGO<DarkSpear>(0, "darkspear");
 		darkSpear->SetPosition(m_summoner->GetPosition());
 		darkSpear->SetForward(m_summoner->GetForward());
-		darkSpear->SetRotation(m_summoner->GetRotation());
 		//ダークスピアメインアニメーションに移る
 		m_summoner->SetNextAnimationState(
 			Summoner::enAnimationState_DarkSpear_Main);
