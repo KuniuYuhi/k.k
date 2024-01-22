@@ -33,7 +33,7 @@ Arrow::Arrow()
 
 Arrow::~Arrow()
 {
-	DeleteGO(m_arrowCollision);
+	
 }
 
 bool Arrow::Start()
@@ -201,8 +201,6 @@ void Arrow::InitCollision(
 		collisionSize
 	);
 	m_arrowCollision->SetIsEnableAutoDelete(false);
-	//m_arrowCollision->SetIsEnable(false);
-
 	m_arrowCollision->SetWorldMatrix(m_arrowMatrix);
 	m_arrowCollision->Update();
 }
@@ -214,6 +212,9 @@ void Arrow::NormalShot()
 	{
 		//ヒットしたので、攻撃がヒットしたかのフラグをリセット
 		m_bow->SetAttackHitFlag(false);
+		//当たり判定の削除
+		DeleteGO(m_arrowCollision);
+		//矢が当たったので削除
 		DeleteGO(this);
 	}
 	//6.移動
@@ -233,7 +234,6 @@ void Arrow::NormalShot()
 		m_deleteTimer += g_gameTime->GetFrameDeltaTime() * 6.0f;
 
 		//回転
-		
 		Vector3 Axis;
 		Axis.Cross(m_shotStartPosition, m_arrowPos);
 		
