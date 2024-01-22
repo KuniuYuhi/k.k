@@ -32,13 +32,6 @@ namespace {
 	const float POS2_LENGTH = 30.0f;
 	const float ROT_SPEED = 7.5f;
 	const float SKILL_TIMER_LIMMIT = 8.0f;
-
-	//ステータス
-	int MAXHP = 150;
-	int MAXMP = 500;
-	int ATK = 10;
-	float SPEED = 110.0f;
-	const char* NAME = "Slime";
 }
 
 Slime::Slime()
@@ -68,14 +61,12 @@ Slime::~Slime()
 
 bool Slime::Start()
 {
+	//　乱数を初期化。
+	srand((unsigned)time(NULL));
+
 	//ステータスの初期化
-	m_status.InitCharacterStatus(
-		MAXHP,
-		MAXMP,
-		ATK,
-		SPEED,
-		NAME
-	);
+	m_status.Init(GetName());
+
 	//モデルの初期化
 	InitModel();
 	//ステートマシンの生成
@@ -84,14 +75,9 @@ bool Slime::Start()
 	//まず召喚アニメーション。その後行動
 	SetNextAnimationState(enAnimationState_Appear);
 
-	//　乱数を初期化。
-	srand((unsigned)time(NULL));
-
-
 	//4から６の範囲のインターバル
 	m_angleChangeTime = rand() % 3 + 4;
 
-	
 	return true;
 }
 
@@ -115,7 +101,7 @@ void Slime::InitModel()
 	m_animationClip[enAnimationClip_Victory].SetLoopFlag(true);
 	m_animationClip[enAnimationClip_Appear].Load("Assets/animData/character/Slime/Appear.tka");
 	m_animationClip[enAnimationClip_Appear].SetLoopFlag(false);
-
+	//モデルを初期化
 	m_modelRender.Init(
 		"Assets/modelData/character/Slime/slime.tkm",
 		L"Assets/shader/ToonTextrue/lamp_Slime.DDS",
@@ -123,14 +109,21 @@ void Slime::InitModel()
 		enAnimationClip_Num,
 		enModelUpAxisZ
 	);
-	
+	//キャラコン初期化
 	m_charaCon.Init(
 		22.0f,
 		9.0f,
 		m_position
 	);
 
-	//座標の設定
+	//登場時の前方向の設定
+	m_direction = SetRamdomDirection(m_angleRange,true);
+	m_forward = m_direction;
+	m_forward.Normalize();
+	//回転の設定
+	Rotation(ROT_SPEED, ROT_SPEED);
+
+	//TRSの設定
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
 
@@ -146,6 +139,13 @@ void Slime::InitModel()
 
 void Slime::Update()
 {
+	//ポーズ画面なら処理をしない
+	if (GameManager::GetInstance()->GetGameSeenState() ==
+		GameManager::enGameSeenState_Pause)
+	{
+		return;
+	}
+
 	if (IsStopProcessing() != true)
 	{
 		//スキル攻撃のインターバルの計算
@@ -155,22 +155,24 @@ void Slime::Update()
 		//アングル切り替えインターバル
 		AngleChangeTimeIntarval(m_angleChangeTime);
 
-		//毎フレーム行う処理
-		m_mobStateMachine->Execute();
-
 		//ノックバック中でないなら回転処理
 		if (GetKnockBackFlag() != true)
 		{
-			//回転処理
+			//回転処理と前方向の設定
 			Rotation(ROT_SPEED, ROT_SPEED);
 		}
-		
 		
 		//当たり判定
 		DamageCollision(m_charaCon);
 	}
 
+	//ステートマシンの毎フレーム行う処理
+	m_mobStateMachine->Execute();
+	//状態管理
 	ManageState();
+
+
+	//アニメーション
 	PlayAnimation();
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
@@ -374,14 +376,7 @@ void Slime::SetNextStateMachine(EnStateMachineState nextStateMachine)
 
 void Slime::ProcessCommonStateTransition()
 {
-	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
-	{
-		SetNextAnimationState(enAninationState_Patrol);
-	}
-	else
-	{
-		SetNextAnimationState(enAninationState_Idle);
-	}
+	SetNextAnimationState(enAninationState_Patrol);
 }
 
 void Slime::OnProcessAttack_1StateTransition()
