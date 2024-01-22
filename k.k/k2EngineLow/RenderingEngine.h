@@ -168,11 +168,6 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
-		/// トゥーンマップのテクスチャを設定する
-		/// </summary>
-		void SetToonTextureDDS();
-
-		/// <summary>
 	   /// ZPrepassの描画パスにモデルを追加
 	   /// </summary>
 	   /// <param name="model"></param>
