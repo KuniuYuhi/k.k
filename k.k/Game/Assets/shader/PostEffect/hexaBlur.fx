@@ -9,7 +9,7 @@ static const float BLUR_TEX_W = 1920.0f;
 static const float BLUR_TEX_H = 1080.0f;
 
 // ブラー半径。この数値を大きくすると六角形ボケが大きくなる
-static const float BLUR_RADIUS = 10.0f;
+static const float BLUR_RADIUS = 6.0f;
 
 cbuffer cb : register(b0)
 {
@@ -127,14 +127,13 @@ float4 PSRhomboidBlur(PSInput pIn) : SV_Target0
    // ブラーステップの長さを求める
     float blurStepLen = BLUR_RADIUS / 4.0f;
 
-    //斜め下方向へのUVオフセットを計算する
+    //右斜め下方向へのUVオフセットを計算する
     float2 uvOffset;
     uvOffset.x = 0.86602f / BLUR_TEX_W;
     uvOffset.y = -0.5f / BLUR_TEX_H;
     uvOffset *= blurStepLen;
 
     //右斜め下方向にカラーをサンプリングする
-    
     //1ステップ進める
     float4 color = blurTexture_0.Sample(g_sampler, pIn.uv + uvOffset);
      //2ステップ進める
