@@ -1,7 +1,7 @@
 #pragma once
+#include "IAttackObject.h"
 
-
-class Meteo:public IGameObject
+class Meteo:public IAttackObject
 {
 public:
 	Meteo();
@@ -61,15 +61,6 @@ public:
 		return m_explosionFlag;
 	}
 
-	const int& GetAtk() const
-	{
-		return m_attack;
-	}
-
-	const int& GetExplosionAttack() const
-	{
-		return m_explosionAttack;
-	}
 
 private:
 
@@ -90,12 +81,12 @@ private:
 
 private:
 
-	EffectEmitter*				m_meteoEffect;
-	EffectEmitter*				m_ExplosionEffect;
-	EffectEmitter*				m_rangeEffect;
+	EffectEmitter* m_meteoEffect = nullptr;
+	EffectEmitter*				m_ExplosionEffect = nullptr;
+	EffectEmitter*				m_rangeEffect = nullptr;
 
-	CollisionObject*			m_collision;
-	CollisionObject*			m_explosionCollision;
+	CollisionObject*			m_collision = nullptr;
+	CollisionObject*			m_explosionCollision = nullptr;
 
 
 	Vector3 m_meteoVerocity = g_vec3Zero;
@@ -112,7 +103,7 @@ private:
 	Vector3						StartToCenter = g_vec3Zero;
 	Vector3						CenterToEnd = g_vec3Zero;
 
-	EnExplosionState			m_state;
+	EnExplosionState			m_state = enMoveState;
 
 	float m_flightDuration = 0.0f;
 
@@ -125,8 +116,8 @@ private:
 	const float					m_explosionEndTime = 0.5f;
 	float						m_explosionEndTimer = 0.0f;
 	
-	const int					m_attack = 60;
-	const int					m_explosionAttack = 40;
+	/*const int					m_attack = 60;
+	const int					m_explosionAttack = 40;*/
 
 	bool						m_explosionEffectFlag = false;
 
