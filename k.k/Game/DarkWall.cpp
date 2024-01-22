@@ -25,10 +25,10 @@ DarkWall::~DarkWall()
 
 bool DarkWall::Start()
 {
+    //ボスのインスタンスを探す
     m_summoner = FindGO<Summoner>("summoner");
-
-    //攻撃力を設定
-    m_attak = m_summoner->GetStatus().GetAtk();
+    //攻撃力の設定
+    SetAttack(m_summoner->GetStatus().GetAtk());
 
     //ボーンIDを取得
     m_darkWallBoonId = m_summoner->GetDarkWallBoonId();
@@ -36,8 +36,6 @@ bool DarkWall::Start()
     m_position = AppltMatrixToPosition();
     m_rotation = m_summoner->GetRotation();
     
-   
-
     //当たり判定生成
     CreateCollision();
     //エフェクトの再生
@@ -48,25 +46,30 @@ bool DarkWall::Start()
 
 void DarkWall::Update()
 {
+    //消去する時間に達したら削除
     if (m_deleteTime < m_deleteTimer)
     {
         DeleteGO(this);
     }
     else
     {
+        //タイマーを加算
         m_deleteTimer += g_gameTime->GetFrameDeltaTime();
     }
 
-    m_collisionPosition.y -= DOWN;
 
+    //当たり判定のＹ座標を下げる
+    m_collisionPosition.y -= DOWN;
+    //ボーンのワールド行列を座標に乗算
     m_position = AppltMatrixToPosition();
+    //ボスの回転を設定
     m_rotation = m_summoner->GetRotation();
 
-
+    //エフェクトの座標、回転の設定と更新
     m_darkWallEffect->SetRotation(m_rotation);
     m_darkWallEffect->SetPosition(m_position);
     m_darkWallEffect->Update();
-
+    //当たり判定の座標の設定と更新
     m_collision->SetPosition(m_collisionPosition);
     m_collision->Update();
 }
@@ -87,13 +90,17 @@ void DarkWall::CreateCollision()
     //当たり判定用の座標取得
     m_collisionPosition = m_position;
     //当たり判定作成
-    m_collision = NewGO<CollisionObject>(0, "DarkWall");
+    m_collision = NewGO<CollisionObject>(0,GetCollisionName());
     m_collision->CreateSphere(
         m_collisionPosition,
         Quaternion::Identity,
         80.0f
     );
+    //当たり判定を生成した作成者の設定
+    m_collision->SetCreatorName(GetName());
+    //自動で削除するようにする
     m_collision->SetIsEnableAutoDelete(false);
+    
     m_collision->SetPosition(m_collisionPosition);
     m_collision->Update();
 }

@@ -52,13 +52,6 @@ namespace nsK2EngineLow {
 		m_copyToFrameBufferSprite.Init(spriteInitData);
 	}
 
-	//トゥーンテクスチャを設定する
-	void RenderingEngine::SetToonTextureDDS()
-	{
-		const wchar_t* toontexture = L"Assets/shader/ToonTextrue/lamp_glay.DDS";
-		m_toontexture.InitFromDDSFile(toontexture);
-	}
-
 	void RenderingEngine::InitGBuffer()
 	{
 		int frameBuffer_w = g_graphicsEngine->GetFrameBufferWidth();
@@ -250,7 +243,7 @@ namespace nsK2EngineLow {
 	{
 		BeginGPUEvent("PostEffect");
 
-		m_postEffect.Render(rc, m_mainRenderTarget);
+		m_postEffect.Render(rc, m_mainRenderTarget,m_zprepassRenderTarget);
 
 		EndGPUEvent();
 	}

@@ -343,19 +343,6 @@ protected:
 	bool IsFlashing();
 
 	/// <summary>
-	/// MPの回復
-	/// m_recoveryMpFlagがtrueの時に処理を実行
-	/// </summary>
-	void RecoveryMP();
-	/// <summary>
-	/// MPを回復するかのフラグを設定する
-	/// </summary>
-	/// <param name="flag"></param>
-	void SetRecoveryMpFlag(bool flag)
-	{
-		m_recoveryMpFlag = flag;
-	}
-	/// <summary>
 	/// 移動時の回転
 	/// </summary>
 	/// <returns></returns>
@@ -431,8 +418,6 @@ protected:
 
 	bool							m_dieFlag = false;									//やられたらtrueにする
 	
-	bool							m_recoveryMpFlag = false;							//スキルを打ち終わったあとにtrueにする。打つ前はfalse
-
 	bool							m_invicibleFlag = false;							//無敵状態フラグ(アクション時に無敵状態にしたいとき使う)
 
 	bool							m_invincibleTimeFlag = false;						//無敵時間であるかのフラグ(ダメージを受けた後などに使う)

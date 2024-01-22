@@ -28,7 +28,7 @@ bool DamageFont::Start()
 	InitFont();
 
 
-	
+	//todo 与えるダメージの文字サイズによってオフセット
 		
 
 	return true;

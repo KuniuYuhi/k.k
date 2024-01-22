@@ -108,7 +108,7 @@ public:
 		m_enGameSeenState = setGameSeenState;
 	}
 	/// <summary>
-	/// ゲームシーンステートを設定
+	/// ゲームシーンステートを取得
 	/// </summary>
 	/// <returns></returns>
 	const EnGameSeenState& GetGameSeenState() const

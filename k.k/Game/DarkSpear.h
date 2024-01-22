@@ -2,7 +2,7 @@
 
 namespace {
 	const int SPEAR_ROWS = 3;		//槍の列の数
-	const int SPEAR_CREATE_PLACE = 8;	//8槍を生成する場所の数
+	const int SPEAR_CREATE_PLACE = 8;	//8 一列に槍を生成する場所の数
 
 	const int SPEARS = SPEAR_ROWS * SPEAR_CREATE_PLACE;
 
@@ -21,10 +21,9 @@ public:
 	DarkSpear();
 	~DarkSpear();
 
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
-
+	bool Start() override;
+	void Update() override;
+	
 	/// <summary>
 	/// 座標の設定
 	/// </summary>
@@ -32,14 +31,6 @@ public:
 	void SetPosition(Vector3 position)
 	{
 		m_position = position;
-	}
-	/// <summary>
-	/// 回転を設定
-	/// </summary>
-	/// <param name="rotation"></param>
-	void SetRotation(Quaternion rotation)
-	{
-		m_rotation = rotation;
 	}
 
 	/// <summary>
@@ -77,20 +68,30 @@ private:
 	void DecideCreatePosition();
 
 	/// <summary>
+	/// ダークスピアのオブジェクトを生成
+	/// </summary>
+	void CreateDarkSpearObj();
+
+	/// <summary>
 	/// 生成するタイミングか
 	/// </summary>
 	/// <returns></returns>
 	bool IsCreateTiming();
 
-
+	/// <summary>
+	/// 範囲エフェクトを再生
+	/// </summary>
+	void PlayRangeEffect();
+	/// <summary>
+	/// 範囲エフェクトを削除
+	/// </summary>
+	void DeleteRangeEffect();
 
 private:
-	ModelRender m_model[SPEAR_CREATE_PLACE][SPEAR_ROWS];
+
+	EffectEmitter* m_rangeEffect[SPEAR_CREATE_PLACE][SPEAR_ROWS] = { nullptr };
 
 	DarkSpearObj* m_darkSpearObj[SPEAR_CREATE_PLACE][SPEAR_ROWS] = { nullptr };
-
-
-	Quaternion m_rotation = g_quatIdentity;
 
 	Vector3 m_position = g_vec3Zero;
 	Vector3 m_forward = g_vec3Zero;
@@ -98,6 +99,7 @@ private:
 	Vector3 m_createPosition[SPEAR_CREATE_PLACE][SPEAR_ROWS];
 
 
+	bool m_playRangeEffectFlag = false;
 
 	bool m_createEndFlag = false;
 
@@ -105,7 +107,7 @@ private:
 
 	float m_timer = 0.0f;
 
-	int m_createCount = 0;
+	int m_rowsCount = 0;
 
 	float m_createTimer = CREATE_TIMER_LIMMIT;
 

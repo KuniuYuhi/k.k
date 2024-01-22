@@ -13,18 +13,21 @@ namespace nsK2EngineLow {
 		m_depthOfFeild.Init(mainRenderTarget, zprepassRenderTarget);
 	}
 
-	void PostEffect::Render(RenderContext& rc, RenderTarget& mainRenderTarget)
+	void PostEffect::Render(
+		RenderContext& rc, 
+		RenderTarget& mainRenderTarget,
+		RenderTarget& zprepassRenderTarget)
 	{
 		BeginGPUEvent("Bloom");
-		//ƒuƒ‹[ƒ€
+		//ƒuƒ‹[ƒ€‚Ì•`‰æˆ—
 		OnRenderBloom(rc, mainRenderTarget);
 		EndGPUEvent();
 
 		g_renderingEngine->SetMainRenderTargetAndDepthStencilBuffer(rc);
 
 		BeginGPUEvent("Dof");
-		//”íÊŠE[“x
-		OnRenderDof(rc, mainRenderTarget);
+		//”íÊŠE[“x‚Ì•`‰æˆ—
+		OnRenderDof(rc, mainRenderTarget, zprepassRenderTarget);
 		EndGPUEvent();
 		
 
@@ -42,10 +45,18 @@ namespace nsK2EngineLow {
 		m_bloom.OnRender(rc, mainRenderTarget);
 	}
 
-	void PostEffect::OnRenderDof(RenderContext& rc, RenderTarget& mainRenderTarget)
+	void PostEffect::OnRenderDof(
+		RenderContext& rc, 
+		RenderTarget& mainRenderTarget,
+		RenderTarget& zprepassRenderTarget
+	)
 	{
 		//”íÊŠE[“x
-		m_depthOfFeild.OnRender(rc, mainRenderTarget);
+		m_depthOfFeild.Render(
+			rc,
+			mainRenderTarget,
+			zprepassRenderTarget
+		);
 	}
 
 	

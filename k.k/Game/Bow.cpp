@@ -3,21 +3,19 @@
 #include "Brave.h"
 #include "Arrow.h"
 
-//矢を撃ったら後ろに下がる
-
 namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
 
 	//ステータス
-	const int POWER = 10;
+	const int POWER = 30;
 	const int ENDURANCE = 50;		//武器の耐久力(矢のストック)。
 
 	const float HITTABLE_TIME = 0.15f;
 
 	const float CHARGE_COMPLETE_TIME = 1.0f;
 
-	const float SHOT_ARROW_ANGLE = 15.0f;			//矢を撃つときの角度
+	const float SHOT_ARROW_ANGLE = 11.0f;			//矢を撃つときの角度
 
 	const float MOVE_BACK_SPEED = 100.0f;			//矢を撃った後の後退するスピード
 
@@ -199,7 +197,6 @@ void Bow::MoveArmed()
 	//矢のワールド座標を設定
 	m_arrowMatrix = 
 		m_brave->GetModelRender().GetBone(m_armedArrowBoonId)->GetWorldMatrix();
-	m_modelBow.SetWorldMatrix(m_bowMatrix);
 
 	if (m_arrow != nullptr)
 	{
@@ -287,6 +284,7 @@ void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	//遠距離攻撃処理
 	if (wcscmp(eventName, L"LongRangeAttack") == 0)
 	{
+		
 		ProcessLongRangeAttack();
 	}
 
@@ -296,10 +294,13 @@ void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		SkillShot();
 	}
 
-	////通常攻撃で弓を撃った時
-	//if (wcscmp(eventName, L"MoveBackStart") == 0)
-	//{
-	//	
-	//}
-	
+	//通常攻撃で弓を撃った時
+	/*if (wcscmp(eventName, L"MoveBackStart") == 0)
+	{
+		
+	}*/
+	if (wcscmp(eventName, L"ComboAcceptable") == 0)
+	{
+		m_brave->CalcAttackMoveSpeed();
+	}
 }

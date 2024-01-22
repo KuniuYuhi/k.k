@@ -23,8 +23,17 @@ namespace nsK2EngineLow {
 		/// <param name="mainRenderTarget">メインレンダリングターゲット</param>
 		void OnRender(RenderContext& rc, RenderTarget& mainRenderTarget) override;
 
-
-		void Render(RenderContext& rc, RenderTarget& mainRenderTarget, RenderTarget& zprepassRenderTarget);
+		/// <summary>
+		/// 描画処理
+		/// </summary>
+		/// <param name="rc"></param>
+		/// <param name="mainRenderTarget"></param>
+		/// <param name="zprepassRenderTarget"></param>
+		void Render(
+			RenderContext& rc, 
+			RenderTarget& mainRenderTarget, 
+			RenderTarget& zprepassRenderTarget
+		);
 
 		/// <summary>
 		/// ポストエフェクトを実行した結果となるテクスチャを取得。
@@ -45,7 +54,7 @@ namespace nsK2EngineLow {
 		/// ぼかしテクスチャの初期化処理
 		/// </summary>
 		/// <param name="mainRenderTarget"></param>
-		void InitBlurSprite(RenderTarget& mainRenderTarget);
+		void InitBlurSprite(RenderTarget& mainRenderTarget, RenderTarget& zprepassRenderTarget);
 
 
 
@@ -53,7 +62,7 @@ namespace nsK2EngineLow {
 		RenderTarget m_rtVerticalBlur;		//垂直ブラーをかけるためのレンダリングターゲット
 		RenderTarget m_rtDiagonalBlur;		//対角線ブラーをかけるためのレンダリングターゲット
 		RenderTarget m_rtPhomboidBlur;		//六角形ブラーをかけるためのレンダリングターゲット
-		RenderTarget m_depthRenderTarget;
+		
 		Sprite m_combineBokeImageSprite;	//ボケ画像をメインレンダリングターゲットに合成するためのスプライト
 		Sprite m_vertDIagonalBlurSprite;	//垂直、対角線ブラー用のスプライト
 		Sprite m_phomboidBlurSprite;		//六角形ブラ用のスプライト

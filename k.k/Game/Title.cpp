@@ -503,7 +503,7 @@ void Title::InitModel()
 void Title::InitSkyCube()
 {
     m_skyCube = NewGO<SkyCube>(0, "skycube");
-    m_skyCube->SetScale(100.0f);
+    m_skyCube->SetScale(130.0f);
     m_skyCube->SetPosition(g_vec3Zero);
     m_skyCube->SetLuminance(1.01f);
     m_skyCube->SetType(enSkyCubeType_DayToon_3);

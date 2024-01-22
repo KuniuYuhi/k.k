@@ -18,22 +18,30 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// 描画
 		/// </summary>
-		/// <param name="rc"></param>
-		/// <param name="mainRenderTarget"></param>
-		void Render(RenderContext& rc, RenderTarget& mainRenderTarget);
+		/// <param name="rc">レンダーコンテキスト</param>
+		/// <param name="mainRenderTarget">メインレンダリングターゲット</param>
+		void Render(
+			RenderContext& rc, 
+			RenderTarget& mainRenderTarget,
+			RenderTarget& zprepassRenderTarget
+		);
 
 		/// <summary>
 		/// ブルーム
 		/// </summary>
-		/// <param name="rc"></param>
-		/// <param name="mainRenderTarget"></param>
+		/// <param name="rc"><レンダーコンテキスト/param>
+		/// <param name="mainRenderTarget">メインレンダリングターゲット</param>
 		void OnRenderBloom(RenderContext& rc, RenderTarget& mainRenderTarget);
 		/// <summary>
 		/// 被写界深度
 		/// </summary>
-		/// <param name="rc"></param>
-		/// <param name="mainRenderTarget"></param>
-		void OnRenderDof(RenderContext& rc, RenderTarget& mainRenderTarget);
+		/// <param name="rc">レンダーコンテキスト</param>
+		/// <param name="mainRenderTarget">メインレンダリングターゲット</param>
+		void OnRenderDof(
+			RenderContext& rc, 
+			RenderTarget& mainRenderTarget,
+			RenderTarget& zprepassRenderTarget
+		);
 
 		/// <summary>
 		/// 被写界深度の有効化

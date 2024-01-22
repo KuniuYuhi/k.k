@@ -13,6 +13,12 @@ void MobMonsterSM_Patrol::Execute()
 
 void MobMonsterSM_Patrol::ProcessDecideAction()
 {
+	//処理を止めないといけないなら
+	if (m_mobMonster->IsStopProcessing() == true)
+	{
+		return;
+	}
+
 	//一定のアニメーション中は処理しない
 	if (m_mobMonster->IsAttackEnable() != true)
 	{

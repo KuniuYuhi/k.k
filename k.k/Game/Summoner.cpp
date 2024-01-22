@@ -28,6 +28,7 @@
 #include "SummonerState_DarkSpearMain.h"
 #include "SummonerState_DarkSpearEnd.h"
 #include "SummonerState_DarkSpearStart.h"
+//#include "SummonerState_Vigilance.h"
 
 //技でだすオブジェクト
 #include "DarkBall.h"
@@ -46,12 +47,8 @@ namespace {
 	const float KNOCKBACK_POWER = 400.0f;
 	const float KNOCKBACK_LIMMIT = 2.0f;
 
-	//ステータス
-	int MAXHP = 30;
-	int MAXMP = 500;
-	int ATK = 20;
-	float SPEED = 160.0f;
-	const char* NAME = "Summoner";
+	const float ROT_SPEED = 5.0f;
+	const float ROT_ONLY_SPEED = 5.0f;
 }
 
 Summoner::Summoner()
@@ -83,14 +80,11 @@ Summoner::~Summoner()
 
 bool Summoner::Start()
 {
+	//　乱数を初期化。
+	srand((unsigned)time(NULL));
+
 	//ステータスの初期化
-	m_status.InitCharacterStatus(
-		MAXHP,
-		MAXMP,
-		ATK,
-		SPEED,
-		NAME
-	);
+	m_status.Init(GetName());
 
 	//モデルの初期化
 	InitModel();
@@ -102,7 +96,7 @@ bool Summoner::Start()
 	
 
 	//最初のアニメーション設定
-	SetNextAnimationState(enAninationState_Idle);
+	SetNextAnimationState(enAnimationState_Idle);
 
 	//プレイヤーのインスタンスの代入
 	m_player = CharactersInfoManager::GetInstance()->GetPlayerInstance();
@@ -112,16 +106,17 @@ bool Summoner::Start()
 
 void Summoner::Update()
 {
+	//ポーズ画面なら処理をしない
+	if (GameManager::GetInstance()->GetGameSeenState() ==
+		GameManager::enGameSeenState_Pause)
+	{
+		return;
+	}
+
 	if (IsStopProcessing() != true)
 	{
 		//回転処理
 		ProcessRotation();
-		//移動処理。怒りモードの時のみ
-		ProcessMove();
-
-		//ステートマシンの毎フレームの処理
-		m_stateMachine->Execute();
-
 		//当たり判定の処理
 		DamageCollision(m_charaCon);
 	}
@@ -129,10 +124,14 @@ void Summoner::Update()
 	//スーパーアーマーの回復
 	RecoverySuperArmor();
 
+	//ステートマシンの毎フレームの処理
+	m_stateMachine->Execute();
 	//状態管理
 	ManageState();
+
 	//アニメーション
 	PlayAnimation();
+
 	//モデルのTRSと設定と更新
 	SetTransFormModel(m_modelRender);
 	m_modelRender.Update();
@@ -161,6 +160,9 @@ bool Summoner::IsStopProcessing()
 	{
 		//負けた
 	case GameManager::enOutComeState_PlayerWin:
+		//やられアニメーションステート
+		SetNextAnimationState(enAnimationState_Die);
+		m_modelRender.SetAnimationSpeed(0.7f);
 		return true;
 		break;
 
@@ -235,22 +237,19 @@ void Summoner::ProcessDead(bool seFlag)
 	{
 
 	}
-
-	//やられステート
-	SetNextAnimationState(enAnimationState_Die);
-	m_modelRender.SetAnimationSpeed(0.7f);
-}
-
-void Summoner::ProcessMove()
-{
-
 }
 
 void Summoner::ProcessRotation()
 {
+	//プレイヤーに向かって移動
+	//プレイヤーの座標を取得
 	m_targetPosition = m_player->GetPosition();
+	//移動方向を設定
+	m_moveSpeed = CalcVelocity(m_status, m_targetPosition);
 
-	m_moveSpeed= CalcVelocity(m_status, m_targetPosition);
+	//前方向の設定
+	m_forward = m_moveSpeed;
+	m_forward.Normalize();
 
 	//回転可能でないなら
 	if (isRotationEnable() == false)
@@ -258,20 +257,8 @@ void Summoner::ProcessRotation()
 		//回転しない
 		return;
 	}
-
-	//xかzの移動速度があったら
-	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
-	{
-		//緩やかに回転させる
-		m_rotMove = Math::Lerp(
-			g_gameTime->GetFrameDeltaTime() * 5.0f, m_rotMove, m_moveSpeed);
-		m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
-		//todo
-	}
-	//前方向を設定
-	m_forward = m_rotMove;
-	m_forward.Normalize();
-	m_moveSpeed= g_vec3Zero;
+	//前方向を使って回転の設定
+	Rotation(ROT_SPEED, ROT_ONLY_SPEED);
 }
 
 void Summoner::ProcessHit(int hitDamage)
@@ -327,11 +314,11 @@ void Summoner::SetNextAnimationState(EnAnimationState nextState)
 
 	switch (nextState)
 	{
-	case Summoner::enAninationState_Idle://待機状態
+	case Summoner::enAnimationState_Idle://待機状態
 		m_nowBossState = new SummonerState_Idle(this);
 		break;
-	case Summoner::enAninationState_Walk://歩き状態
-		m_nowBossState = new SummonerState_Idle(this);
+	case Summoner::enAnimationState_Walk://歩き状態
+		m_nowBossState = new SummonerState_Walk(this);
 		break;
 	case Summoner::enAnimationState_DarkBall://ダークボール
 		m_nowBossState = new SummonerState_DarkBall(this);
@@ -384,6 +371,7 @@ void Summoner::SetNextAnimationState(EnAnimationState nextState)
 	case Summoner::enAnimationState_Victory://勝利
 		m_nowBossState = new SummonerState_Victory(this);
 		break;
+
 	default:
 		// ここに来たらステートのインスタンス作成処理の追加忘れ。
 		std::abort();
@@ -394,15 +382,7 @@ void Summoner::SetNextAnimationState(EnAnimationState nextState)
 
 void Summoner::ProcessCommonStateTransition()
 {
-	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
-	{
-		SetNextAnimationState(enAninationState_Walk);
-	}
-	else
-	{
-		SetNextAnimationState(enAninationState_Idle);
-	}
-
+	SetNextAnimationState(enAnimationState_Idle);
 }
 
 void Summoner::InitModel()
@@ -473,6 +453,13 @@ void Summoner::InitModel()
 		enModelUpAxisZ
 	);
 
+	m_targetPosition = m_player->GetPosition();
+	m_moveSpeed= CalcVelocity(m_status, m_targetPosition);
+	m_forward = m_moveSpeed;
+	m_forward.Normalize();
+	//プレイヤーの方向に回転
+	Rotation(ROT_SPEED, ROT_ONLY_SPEED);
+
 	//モデルのTRSの設定
 	m_modelRender.SetTransform(
 		m_position,
@@ -540,7 +527,7 @@ void Summoner::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	if (wcscmp(eventName, L"Combofinnish") == 0)
 	{
 		//このアニメーションキーフレームの間当たり判定生成
-		
+		NormalComboFinnish();
 	}
 
 }
@@ -548,7 +535,7 @@ void Summoner::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 void Summoner::CreateDarkBall()
 {
 	DarkBall* darkBall = NewGO<DarkBall>(0, "darkball");
-	darkBall->SetAtk(GetStatus().GetAtk());
+	darkBall->SetAttack(GetStatus().GetAtk());
 	darkBall->Setting(GetPosition(),GetRotation());
 }
 
@@ -559,12 +546,21 @@ void Summoner::CreateDarkWall()
 
 void Summoner::ProcessKnockBack()
 {
+	//既にプレイヤーをノックバックさせたなら
+	if (GetPlayerKnockedBackFlag() == true)
+	{
+		return;
+	}
+
 	//プレイヤーが範囲内にいたらノックバックするようにする
 	Vector3 diff = m_position -
 		CharactersInfoManager::GetInstance()->GetPlayerInstance()->GetPosition();
 	//ノックバック範囲内なら
 	if (diff.Length() < KNOCKBACK_RANGE)
 	{
+		//プレイヤーをノックバックしたのでフラグをセット
+		SetPlayerKnockedBackFlag(true);
+		//プレイヤーがノックバックするための情報を設定
 		CharactersInfoManager::GetInstance()->
 			GetPlayerInstance()->SetKnockBackInfo(
 				true, m_position, KNOCKBACK_POWER, KNOCKBACK_LIMMIT);
@@ -591,8 +587,28 @@ void Summoner::NormalComboFinnish()
 
 }
 
+void Summoner::ProcessVigilance()
+{
+	m_position = m_charaCon.Execute(
+		m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+	return;
+
+	//プレイヤーに向かって移動
+	//プレイヤーの座標を取得
+	m_targetPosition = m_player->GetPosition();
+	//移動方向を設定
+	m_moveSpeed = CalcVelocity(m_status, m_targetPosition);
+
+
+	
+	//前方向の設定
+	m_forward = m_moveSpeed;
+	m_forward.Normalize();
+}
+
 void Summoner::SetNextStateMachine(EnStateMachineState nextStateMachine)
 {
+	//現在のステートマシンの中身を削除する
 	if (m_stateMachine != nullptr)
 	{
 		delete m_stateMachine;
@@ -604,11 +620,11 @@ void Summoner::SetNextStateMachine(EnStateMachineState nextStateMachine)
 	switch (m_stateMachineState)
 	{
 	case Summoner::enStateMachineState_Vigilance:
-		
+		//警戒ステートマシンの生成
 		m_stateMachine = new SummonerSM_Vigilance(this);
-
 		break;
 	case Summoner::enStateMachineState_Attack:
+		//攻撃ステートマシンの生成
 		m_stateMachine = new SummonerSM_Attack(this);
 		break;
 	default:
