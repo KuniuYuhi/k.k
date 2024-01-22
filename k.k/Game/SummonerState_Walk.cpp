@@ -5,12 +5,11 @@
 void SummonerState_Walk::ManageState()
 {
 	//ˆÚ“®ˆ—
-	//m_summoner->ProcessMove();
-
-	m_summoner->ProcessCommonStateTransition();
+	m_summoner->ProcessVigilance();
 }
 
 void SummonerState_Walk::PlayAnimation()
 {
-	m_summoner->GetModelRender().PlayAnimation(Summoner::enAnimClip_Walk);
+	m_summoner->GetModelRender().PlayAnimation(
+		Summoner::enAnimClip_Walk,0.2f);
 }
