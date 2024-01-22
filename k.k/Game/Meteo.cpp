@@ -27,6 +27,10 @@ namespace {
 	const float CENTER_POS_ADD_Y = 200.0f;
 
 	const float GRAVITY = 20.0f;
+
+
+
+	const int ATTACK = 20;
 }
 
 Meteo::Meteo()
@@ -76,15 +80,15 @@ struct IsGroundResult :public btCollisionWorld::ConvexResultCallback
 
 bool Meteo::Start()
 {
+	//攻撃力の設定
+	SetAttack(ATTACK);
+
 	m_scale = SCALE;
 
 	SettingMeteoRoute();
 
 	//メテオエフェクト再生
 	PlayMeteoEffect();
-
-	//ステート設定
-	m_state = enMoveState;
 
 	PlayRangeEffect();
 
@@ -184,6 +188,12 @@ void Meteo::CreateExplosionCollision()
 		EXPLOSION_COLLISION_SIZE
 	);
 	explosionCollision->SetPosition(m_position);
+	//当たり判定を生成した作成者の設定
+	explosionCollision->SetCreatorName(GetName());
+	//自動で削除するようにする
+	explosionCollision->SetIsEnableAutoDelete(true);
+
+	explosionCollision->Update();
 }
 
 bool Meteo::IsGroundCheck(const float downValue)

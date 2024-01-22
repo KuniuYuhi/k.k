@@ -14,43 +14,45 @@ public:
 	/// <summary>
 	/// 移動処理
 	/// </summary>
-	/// <param name="charaCon">移動させたいオブジェクトのキャラクターコントローラー</param>
+	/// <param name="charaCon">キャラクターコントローラー</param>
 	void MoveMonster(CharacterController& charaCon);
 
 	/// <summary>
 	/// パトロール時の移動処理
 	/// </summary>
-	/// <param name="charaCon"></param>
+	/// <param name="charaCon">キャラクターコントローラー</param>
 	void MovePatrol(CharacterController& charaCon);
 	
 	/// <summary>
 	/// プレイヤーを追いかけるときの移動処理
 	/// </summary>
-	/// <param name="charaCon"></param>
+	/// <param name="charaCon">キャラクターコントローラー</param>
 	void MoveChasePlayer(CharacterController& charaCon);
 
 	/// <summary>
 	/// ノックバック処理
 	/// </summary>
+	/// <param name="charaCon">キャラクターコントローラー</param>
 	void ProcessKnockBack(CharacterController& charaCon);
 
 	/// <summary>
 	/// 向かうベクトルを設定
 	/// </summary>
-	/// <param name="range"></param>
-	/// <returns></returns>
-	Vector3 SetRamdomDirection(int range);
+	/// <param name="range">半径</param>
+	/// <param name="zeroLoop">結果、移動方向が0の時ループするか</param>
+	/// <returns>移動方向のベクトル</returns>
+	Vector3 SetRamdomDirection(int range,bool zeroLoopFlag = false);
 
 	/// <summary>
 	/// 壁(森)にぶつかったか
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>ぶつかったらtrue</returns>
 	virtual bool IsBumpedForest(float pos2Length);
 
 	/// <summary>
 	/// モンスターにぶつかったか
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>ぶつかったらtrue</returns>
 	bool IsBumpedMonster();
 
 	/// <summary>

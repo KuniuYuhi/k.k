@@ -14,6 +14,11 @@ void MobMonsterSM_Chase::Execute()
 
 void MobMonsterSM_Chase::ProcessDecideAction()
 {
+	//処理を止めないといけないなら
+	if (m_mobMonster->IsStopProcessing() == true)
+	{
+		return;
+	}
 	//一定のアニメーション中は処理しない
 	if (m_mobMonster->IsAttackEnable() != true)
 	{
@@ -23,7 +28,7 @@ void MobMonsterSM_Chase::ProcessDecideAction()
 	{
 		return;
 	}
-
+	//行動を決める
 	DecideNextAction();
 }
 

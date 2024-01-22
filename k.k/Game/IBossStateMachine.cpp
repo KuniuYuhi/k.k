@@ -6,9 +6,6 @@
 #include "Player.h"
 #include "CharactersInfoManager.h"
 
-
-//todo ProcessMeleeAttack(),ProcessLongRangeAttack()の引数にオーダーをいれる
-
 using namespace SummonerActions;
 
 float IBossStateMachine::m_stayPlayerTimer = 0;

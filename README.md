@@ -13,9 +13,12 @@
   - [3.操作説明](#3操作説明)
   - [4.ゲーム説明](#4ゲーム説明)
     - [4.1 ゲーム詳細](#41-ゲーム詳細)
-    - [4.2 プレイヤーについて](#42-プレイヤーについて)
-    - [4.3 武器について](#43-武器について)
-    - [4.4 モンスターについて](#44-モンスターについて)
+    - [4.2 演出について](#42-演出について)
+      - [1.タイトルとバトル開始時](#1タイトルとバトル開始時) 
+      - [2.ボスの登場](#2ボスの登場)
+    - [4.3 プレイヤーについて](#43-プレイヤーについて)
+    - [4.4 武器について](#44-武器について)
+    - [4.5 モンスターについて](#45-モンスターについて)
       - [1.モブモンスターの挙動](#1モブモンスターの挙動)
       - [2.ボスの挙動](#2ボスの挙動)
   - [5.その他](#5その他)
@@ -27,6 +30,7 @@
       - [1.ランプシェーディング](#1ランプシェーディング)
       - [2.アウトラインの描画](#2アウトラインの描画)
       - [3.簡易リムライト](#3簡易リムライト)
+    - [5.6.被写界深度](#56被写界深度)
 
 
 ## 1.作品概要
@@ -35,7 +39,7 @@
 * 制作人数
   * 1人
 * 製作期間
-  * 2023年6月～1月
+  * 2023年6月～2024年1月
 * ゲームジャンル
   * 3Dアクションゲーム
 * プレイ人数
@@ -468,7 +472,40 @@
 バトルにはフェーズが存在し、一定時間ごとにフェーズが進み、敵を生成します。フェーズが進行すると、前のフェーズに存在したモブモンスターは消滅します。第4フェーズに進行すると、モブモンスターが出現しない時間となりフェーズ終了後、第1フェーズに戻り以降ループします。
 #### [目次に戻る](#目次)
 
-### 4.2 プレイヤーについて
+### 4.2 演出について
+
+
+
+#### 1.タイトルとバトル開始時
+
+タイトル画面はゲームを始めたときに一番最初に見る画面なので、少しでも遊んでくれた方の印象に残って欲しいと思ったので、3Dにしました。
+そして、手前の主人公に注目してもらうため、[被写界深度](#56被写界深度)を利用し、主人公を強調したほか、遠近感を表現しました。  
+<img src="README_IMAGE/Title.png" width="600" alt="タイトル画面">  
+
+ゲームを始めるときに主人公が崖から飛び降りる演出を入れたことで、これから主人公が戦いに行くという状況が伝わりやすくなったと思います。  
+<img src="README_IMAGE/movie\CliffJamp.gif" width="600" alt="タイトル画面">   
+
+ローディングが終わると、主人公が地上に着地します。タイトル画面からの繋がりを感じられるようにしました。。
+<img src="README_IMAGE/movie\Landing.gif" width="600" alt="タイトル画面">  
+
+#### [目次に戻る](#目次)
+
+#### 2.ボスの登場
+
+ボスが登場するときに背景を暗くすることでボスの怖そうな雰囲気を表現しました。ポイントライトを使って、魔法陣の光がボスに当たっているようにしたり、ボスが風を巻き起こして画面が見えなくなって、風がなくなったら画面が明るくなるようにしたりして、工夫しました。  
+<img src="README_IMAGE/movie\Landing.gif" width="600" alt="タイトル画面">  
+
+
+
+
+  <div style="text-align: right;">
+
+#### [目次に戻る](#目次)
+</div>
+
+---
+
+### 4.3 プレイヤーについて
 プレイヤーの状態はステートパターンを利用してステートで管理しています。また、ポリモーフィズムを利用することで同じ変数で違う処理を行えるようにし、行動の追加を容易にしました。
 同じステートが武器の数だけあると、状態遷移する際に武器の違いによる処理が複雑になるため、全ての武器で同じステートを利用できるようにしました。  
 ```c++
@@ -537,18 +574,19 @@ m_animationClip[]={
 | 〃              | 攻撃  | 8       | 
 
 アニメーションを再生する際に、再生したいアニメーションクリップの番号と現在の武器のアニメーションクリップの最初の番号を足すことで、武器ごとに使うステートを変えずにアニメーションを再生できるようにしました。  
-<img src="README_IMAGE/StateCycle.png" width="600" alt="武器切り替えの処理">  
+<img src="README_IMAGE/movie/weaponWorldPos.gif" width="600" alt="武器切り替えの処理">  
+
+  <div style="text-align: right;">
 
 #### [目次に戻る](#目次)
+</div>
 
-### 4.3 武器について
+---
+
+### 4.4 武器について
 
 武器の座標、回転は、主人公のモデルの手のボーンからワールド座標を取得して設定しています。ですが、主人公の向きによって回転の仕方がおかしくなっていました。  
-動画  
-<video width="320" height="240" controls>
-  <source src="README_IMAGE\movie\Game.exe 2024.01.08 - 15.26.16.02.DVR.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+<img src="README_IMAGE/movie\weaponWorldPos.gif" width="600" alt="武器のワールド座標(失敗)">  
 
 この時点でのワールド座標の設定の仕方
 ```c++
@@ -579,7 +617,9 @@ void SetWorldMatrix(const Matrix& matrix)
 #### [目次に戻る](#目次)
 </div>
 
-### 4.4 モンスターについて
+---
+
+### 4.5 モンスターについて
 モンスターは、ボスモンスターとモブモンスターの2種類が存在しています。  
 
 モブモンスター
@@ -945,7 +985,7 @@ smoothstep(min,max,x)関数を使って、xがminからmaxの間なら、minか�
 アウトラインの描画のアルゴリズムは、隣り合うピクセル同士の深度値の差が一定以上なら「アウトラインが発生している」と判断し、ピクセルカラーを黒くして出力します。   
  <img src="README_IMAGE/outLine.png" width="600" alt="アウトライン">  
 1.まず、ピクセル同士の深度値を比べるために、ZPrepassと呼ばれるシーンの深度値を書き込んだレンダリングターゲットを作成します。  
-画像  
+<img src="README_IMAGE/Zprepass2.png" width="600" alt="Zprepass">  
 2.ピクセルの正規化スクリーン座標系の座標が必要になるので、頂点シェーダーから透視変換後の座標を出力します。
 ```h
 //頂点の正規化スクリーン座標系の座標をピクセルシェーダーに渡す
@@ -1049,3 +1089,147 @@ albedoColor.xyz*=lig;
 </div>
 
 ---
+
+### 5.6.被写界深度
+
+被写界深度は、カメラのピントが合っているように見える「範囲」のことで、リアルタイムCGでは、カメラのピンボケ現象全般を指します。
+被写界深度の中でも、六角形のボケが発生する六角形ブラーをポストエフェクトで実装しました。  
+六角形ブラーは、高輝度のピクセルをぼかしたときに、そのピクセル周辺で六角形のボケを発生させるものです。ピクセルの明るさがすべて近い場合は六角形ブラーは発生せず全体的にボケた画像が生成されます。  
+アルゴリズムは、シーンを描画したメインレンダリングターゲットのシーンテクスチャに垂直、対角線ブラーをかけて、さらに六角形ブラーをかけたテクスチャを作成し、深度値を書き込んだレンダリングターゲットを利用してボケ画像を書き込みます。  
+
+被写界深度あり  
+<img src="README_IMAGE/Title.png" width="600" alt="タイトル画面Dofあり">  
+被写界深度なし  
+<img src="README_IMAGE/Title_No_Dof.png" width="600" alt="タイトル画面DoFなし">  
+
+1.カメラ空間での深度値を利用するので、深度値を書き込んだレンダリングターゲットをを用意します。今回は、アウトラインの描画でも使ったZPrepassを利用しました。  
+<img src="README_IMAGE/DoF_ZPrepass.png" width="600" alt="ZPrepass">  
+2.現在のシーンを書き込んだメインレンダリングターゲットのシーンテクスチャを利用して垂直方向にブラーをかけたレンダリングターゲットと垂直方向と対角線方向にブラーをかけたレンダリングターゲットを作成します。  
+図  
+
+
+a.垂直方向へのぼかし方  
+```h
+//ブラー半径（BLUR_RADIUS＝10）からブラーステップの長さを求める
+//ブラー半径が大きいほど六角形が大きくなる
+float blurStepLen = BLUR_RADIUS / 4.0f;
+//垂直方向のUVオフセットを計算
+float2 uvOffset = float2(0.0f, 1.0f / BLUR_TEX_H);
+uvOffset *= blurStepLen;
+
+//垂直方向にカラーをサンプリングして平均する
+// 上方向に1ステップ進める
+psOut.color_0 += srcTexture.Sample(
+    g_sampler, pIn.uv + uvOffset);
+// 上方向に2ステップ進める
+psOut.color_0 += srcTexture.Sample(
+    g_sampler, pIn.uv + uvOffset * 2);
+// 上方向に3ステップ進める
+psOut.color_0 += srcTexture.Sample(
+    g_sampler, pIn.uv + uvOffset * 3);
+// 上方向に4ステップ進める
+psOut.color_0 += srcTexture.Sample(
+    g_sampler, pIn.uv + uvOffset * 4);
+// 平均化
+psOut.color_0 /= 4.0f;
+```
+垂直ブラーをかけたテクスチャ  
+<img src="README_IMAGE/Dof_Blur_suityoku.png" width="600" alt="垂直ブラー">  
+
+b.垂直方向と対角線方向へのぼかし方
+```h
+//対角線方向のuvオフセットを計算
+uvOffset.x = 0.86602f / BLUR_TEX_W;
+uvOffset.y = -0.5f / BLUR_TEX_H;
+uvOffset *= blurStepLen;
+
+//対角線方向にカラーをサンプリングして平均化する
+//対角線方向に1ステップ進める
+psOut.color_1 = srcTexture.Sample(
+    g_sampler, pIn.uv + uvOffset);
+//対角線方向に2ステップ進める
+psOut.color_1 += srcTexture.Sample(
+    g_sampler, pIn.uv + uvOffset * 2);
+//対角線方向に3ステップ進める
+psOut.color_1 += srcTexture.Sample(
+    g_sampler, pIn.uv + uvOffset * 3);
+//対角線方向に4ステップ進める
+psOut.color_1 += srcTexture.Sample(
+    g_sampler, pIn.uv + uvOffset * 4);
+
+// ブラーをかけるテクスチャ(現在のシーンのテクスチャ)のカラーを取得
+float4 srcColor = srcTexture.Sample(g_sampler, pIn.uv);
+psOut.color_1 += srcColor;
+psOut.color_1 /= 5.0f;
+// 垂直方向にぼかしたピクセルのカラーを足して平均化
+psOut.color_1 += psOut.color_0;
+psOut.color_1 /= 2.0f;
+```
+垂直ブラーをかけたテクスチャ  
+<img src="README_IMAGE/Dof_Blur_taikaku.png" width="600" alt="対角線ブラー">  
+
+3.2で作成した二つのレンダリングターゲットのテクスチャを利用して、六角形ブラーをかけたテクスチャを作成します。  
+<img src="README_IMAGE/hexaBlurCreate.png" width="400" alt="六角形ブラーの作成">  
+```h
+//右斜め下方向へのUVオフセットを計算する
+float2 uvOffset;
+uvOffset.x = 0.86602f / BLUR_TEX_W;
+uvOffset.y = -0.5f / BLUR_TEX_H;
+uvOffset *= blurStepLen;
+
+//垂直方向にブラーをかけたテクスチャを右斜め下方向にカラーをサンプリングする
+//1ステップ進める
+float4 color = blurTexture_0.Sample(g_sampler, pIn.uv + uvOffset);
+ //2ステップ進める
+color += blurTexture_0.Sample(g_sampler, pIn.uv + uvOffset * 2);
+ //3ステップ進める
+color += blurTexture_0.Sample(g_sampler, pIn.uv + uvOffset * 3);
+ //4ステップ進める
+color += blurTexture_0.Sample(g_sampler, pIn.uv + uvOffset * 4);
+
+//左斜め下方向へのUVオフセットを計算する
+uvOffset.x = -0.86602f / BLUR_TEX_W * blurStepLen;
+
+//垂直方向と対角線方向にブラーをかけたテクスチャを左斜め下方向にカラーをサンプリングする
+color += blurTexture_1.Sample(g_sampler, pIn.uv);
+ //1ステップ進める
+color += blurTexture_1.Sample(g_sampler, pIn.uv + uvOffset);
+ //2ステップ進める
+color += blurTexture_1.Sample(g_sampler, pIn.uv + uvOffset * 2);
+ //3ステップ進める
+color += blurTexture_1.Sample(g_sampler, pIn.uv + uvOffset * 3);
+ //4ステップ進める
+color += blurTexture_1.Sample(g_sampler, pIn.uv + uvOffset * 4);
+
+//平均化
+color /= 9.0f;
+```  
+作成した六角形ブラーのテクスチャ  
+<img src="README_IMAGE/Dof_blur_Hexa.png" width="600" alt="六角形ブラー">  
+
+
+4.六角形ブラーのテクスチャとZPrepassのテクスチャを利用してボケ画像を書き込みます。カメラ空間の深度値が一定値以上なら徐々にボケていくようにします。  
+```h
+//カメラ空間での深度値をサンプリング
+float depth = depthTexture.Sample(Sampler, In.uv).z;
+//カメラ空間での深度値が400以下ならピクセルキル。ボケ画像を書き込まない
+clip(depth - 400.0f);
+//ボケ画像をサンプリング
+float4 boke = bokeTexture.Sample(Sampler, In.uv);
+//深度値から不透明度を計算する
+//深度値400から始まり、深度値1000で最大のボケ具合になる
+boke.a = min(1.0f, (depth - 400.0f) / 1000.0f);
+```
+<img src="README_IMAGE/Dof_blur_complete.png" width="600" alt="Dof完成">  
+
+
+
+
+
+  <div style="text-align: right;">
+
+#### [目次に戻る](#目次)
+</div>
+
+---
+

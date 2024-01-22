@@ -30,13 +30,6 @@ namespace {
 	const float ROT_SPEED = 7.5f;						//回転速度
 	const float PLAYER_NEARBY_RANGE = 120.0f;			//攻撃した後のプレイヤーを索敵できる範囲
 	const float SKILL_TIMER_LIMMIT = 6.0f;
-
-	//ステータス
-	int MAXHP = 120;
-	int MAXMP = 500;
-	int ATK = 15;
-	float SPEED = 120.0f;
-	const char* NAME = "Cactus";
 }
 
 Cactus::Cactus()
@@ -66,14 +59,12 @@ Cactus::~Cactus()
 
 bool Cactus::Start()
 {
+	//　乱数を初期化。
+	srand((unsigned)time(NULL));
+
 	//ステータスの初期化
-	m_status.InitCharacterStatus(
-		MAXHP,
-		MAXMP,
-		ATK,
-		SPEED,
-		NAME
-	);
+	m_status.Init(GetName());
+
 	//モデルの初期化
 	InitModel();
 	//ステートマシンの生成
@@ -81,8 +72,7 @@ bool Cactus::Start()
 	//まず召喚アニメーション。その後行動
 	SetNextAnimationState(enAnimationState_Appear);
 	
-	//　乱数を初期化。
-	srand((unsigned)time(NULL));
+	
 
 	//4から5の範囲のインターバル
 	m_angleChangeTime = rand() % 2 + 4;
@@ -110,7 +100,7 @@ void Cactus::InitModel()
 	m_animationClip[enAnimationClip_Victory].SetLoopFlag(true);
 	m_animationClip[enAnimationClip_Appear].Load("Assets/animData/character/Cactus/Appear.tka");
 	m_animationClip[enAnimationClip_Appear].SetLoopFlag(false);
-
+	//モデルを初期化
 	m_modelRender.Init(
 		"Assets/modelData/character/Cactus/Cactus.tkm",
 		L"Assets/shader/ToonTextrue/lamp_Cactus.DDS",
@@ -118,27 +108,41 @@ void Cactus::InitModel()
 		enAnimationClip_Num,
 		enModelUpAxisZ
 	);
-	
+	//キャラコン初期化
 	m_charaCon.Init(
 		22.0f,
 		9.0f,
 		m_position
 	);
 
-	//アニメーションイベント用の関数を設定する。
-	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
-		OnAnimationEvent(clipName, eventName);
-		});
-
-	m_attackBoonId = m_modelRender.FindBoneID(L"cactus_head");
+	//登場時の前方向の設定
+	m_direction = SetRamdomDirection(m_angleRange,true);
+	m_forward = m_direction;
+	m_forward.Normalize();
+	//回転の設定
+	Rotation(ROT_SPEED, ROT_SPEED);
 
 	//座標の設定
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
+
+	//アニメーションイベント用の関数を設定する。
+	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+		});
+	//攻撃に使うボーンIdの取得
+	m_attackBoonId = m_modelRender.FindBoneID(L"cactus_head");
 }
 
 void Cactus::Update()
 {
+	//ポーズ画面なら処理をしない
+	if (GameManager::GetInstance()->GetGameSeenState() ==
+		GameManager::enGameSeenState_Pause)
+	{
+		return;
+	}
+
 	if (IsStopProcessing() != true)
 	{
 		//スキル攻撃のインターバルの計算
@@ -147,9 +151,7 @@ void Cactus::Update()
 		AttackInterval(m_attackIntervalTime);
 		//アングル切り替えインターバル
 		AngleChangeTimeIntarval(m_angleChangeTime);
-		//毎フレーム行う処理
-		m_mobStateMachine->Execute();
-
+		
 		//ノックバック中でないなら回転処理
 		if (GetKnockBackFlag() != true)
 		{
@@ -161,7 +163,12 @@ void Cactus::Update()
 		DamageCollision(m_charaCon);
 	}
 
+	//毎フレーム行う処理
+	m_mobStateMachine->Execute();
+	//状態管理
 	ManageState();
+
+	//アニメーション
 	PlayAnimation();
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
@@ -371,14 +378,7 @@ void Cactus::SetNextStateMachine(EnStateMachineState nextStateMachine)
 
 void Cactus::ProcessCommonStateTransition()
 {
-	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
-	{
-		SetNextAnimationState(enAninationState_Patrol);
-	}
-	else
-	{
-		SetNextAnimationState(enAninationState_Idle);
-	}
+	SetNextAnimationState(enAninationState_Patrol);
 }
 
 void Cactus::OnProcessAttack_1StateTransition()

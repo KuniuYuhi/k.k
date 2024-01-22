@@ -25,6 +25,16 @@ namespace nsK2EngineLow {
 		enSkyCubeType_Num,
 	};
 
+	/*/// <summary>
+	/// 
+	/// </summary>
+	struct skyCubeInfo
+	{
+		float m_luminance = 1.0f;
+		float scrollSpeed = 1.0f;
+
+	};*/
+
 	class SkyCube :public IGameObject
 	{
 	public:

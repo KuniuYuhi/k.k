@@ -16,6 +16,11 @@ namespace {
 
 void SummonerSM_Attack::Execute()
 {
+	//処理を止めているなら処理をしない
+	if (m_summoner->IsStopProcessing() == true)
+	{
+		return;
+	}
 
 	ProcessDecideAction();
 	
@@ -101,6 +106,11 @@ void SummonerSM_Attack::ProcessLongRangeAttack()
 void SummonerSM_Attack::ProcessMeleeAttack()
 {
 	//近距離攻撃
+	//m_summoner->
+	//	SetNextAnimationState(Summoner::enAnimationState_DarkSpear_Start);
+	////ダークスピア攻撃行動した後の連続攻撃タイマー
+	//m_continuousAttackTimer = 1.5f; 
+	//return;
 
 	//近距離攻撃カウントを増やす
 	m_meleeCount++;

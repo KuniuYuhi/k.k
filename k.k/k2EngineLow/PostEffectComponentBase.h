@@ -11,6 +11,11 @@ namespace nsK2EngineLow {
 		/// <param name="depthRenderTarget">ZPrepaseレンダリングターゲット</param>
 		void Init(RenderTarget& mainRenderTarget, RenderTarget& zprepassRenderTarget);
 
+		/// <summary>
+		/// ポストエフェクト全体の描画処理
+		/// </summary>
+		/// <param name="rc"></param>
+		/// <param name="mainRenderTarget"></param>
 		void Render(RenderContext& rc, RenderTarget& mainRenderTarget);
 
 		/// <summary>
@@ -46,13 +51,23 @@ namespace nsK2EngineLow {
 			RenderTarget& depthRenderTarget
 		) = 0;
 
+		/// <summary>
+		/// ポストエフェクトの描画処理
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		/// <param name="mainRenderTarget">メインレンダリングターゲット</param>
 		virtual void OnRender(RenderContext& rc, RenderTarget& mainRenderTarget) = 0;
 
+		/// <summary>
+		/// テクスチャの取得
+		/// </summary>
+		/// <returns></returns>
 		virtual Texture& GetResultTexture()
 		{
 			static Texture nullTexture;
 			return nullTexture;
 		}
+
 		/// <summary>
 		/// ポストの結果をメインレンダリングターゲットにコピーする？
 		/// </summary>

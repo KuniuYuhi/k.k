@@ -6,18 +6,22 @@
 #include "CharactersInfoManager.h"
 
 namespace {
-	const float WAIT_TIME = 400.0f;		//待機時間
+	const float WAIT_TIME = 4.0f;		//待機時間
 
 	const float MELEE_ATTACK_RANGE = 280.0f;	//近距離攻撃の範囲内
 
-	const float STAY_PLAYER_LIMMIT_TIME = 100.0f;		//プレイヤーが近くにとどまっているタイマーの上限
+	const float STAY_PLAYER_LIMMIT_TIME = 5.0f;		//プレイヤーが近くにとどまっているタイマーの上限
 
 
-	const float KNOCKBACK_DISTANCE = 200.0f;
+	const float KNOCKBACK_DISTANCE = 300.0f;
 
 	const float DARK_METEO_ACTION_POINT = 40.0f;
 
+	const float START_DECIDE_ACTION_TIMER = 5.0f;
+
 }
+
+float SummonerSM_Vigilance::m_decideActionTimer = START_DECIDE_ACTION_TIMER;
 
 SummonerSM_Vigilance::~SummonerSM_Vigilance()
 {
@@ -25,6 +29,18 @@ SummonerSM_Vigilance::~SummonerSM_Vigilance()
 
 void SummonerSM_Vigilance::Execute()
 {
+	//処理を止めているなら処理をしない
+	if (m_summoner->IsStopProcessing() == true)
+	{
+		return;
+	}
+
+	if (m_summoner->isAnimationEnable() != true)
+	{
+		return;
+	}
+
+	//行動を決める
 	ProcessDecideAction();
 }
 
@@ -32,8 +48,10 @@ void SummonerSM_Vigilance::Init(bool saveTimerlesetFlag)
 {
 	if (saveTimerlesetFlag == true)
 	{
-		//タイマーをリセット
+		//各種タイマーをリセット
 		m_stayPlayerTimer = 0.0f;
+
+		m_decideActionTimer = START_DECIDE_ACTION_TIMER;
 	}	
 }
 
@@ -56,14 +74,39 @@ void SummonerSM_Vigilance::ProcessDecideAction()
 
 void SummonerSM_Vigilance::ProcessWaitState()
 {
-	//タイマーを加算
+	//待機タイマーを加算
 	m_waitTimer += g_gameTime->GetFrameDeltaTime();
 
 	//ノックバックするか決める、決まったら即ノックバック
-	ProcessIsKnockBack();
+	if (IsKnockBack() == true)
+	{
+		//ノックバックアニメーションステート
+		m_summoner->
+			SetNextAnimationState(Summoner::enAnimationState_KnockBack);
+		return;
+	}
+	
+
+
+	//追いかけるかその場で待機するか決める
+	if (IsChasePlayer() == true)
+	{
+		//歩きアニメーションステート
+		m_summoner->
+			SetNextAnimationState(Summoner::enAnimationState_Walk);
+		return;
+	}
+	else
+	{
+		//待機アニメーションステート
+		m_summoner->
+			SetNextAnimationState(Summoner::enAnimationState_Idle);
+		return;
+	}
+	
 }
 
-void SummonerSM_Vigilance::ProcessIsKnockBack()
+bool SummonerSM_Vigilance::IsKnockBack()
 {
 	//サモナーから勇者に向かうベクトルを計算する
 	m_toPlayer = m_summoner->GetPosition() -
@@ -94,12 +137,11 @@ void SummonerSM_Vigilance::ProcessIsKnockBack()
 			m_waitTimer = 1.0f;
 		}
 
-		//ノックバックする
-		m_summoner->
-			SetNextAnimationState(Summoner::enAnimationState_KnockBack);
-		return;
+		return true;
 
 	}
+
+	return false;
 }
 
 void SummonerSM_Vigilance::IsKnockBackTimerAccelerate()
@@ -116,4 +158,44 @@ void SummonerSM_Vigilance::AddStayPlayerTimer()
 
 
 	//何らかの要因でさらにタイマーを加速-＞m_accelerateStayPlayerTimer
+}
+
+bool SummonerSM_Vigilance::IsChasePlayer()
+{
+	//一定の距離内にプレイヤーがいるなら確定で待機
+	if (m_summoner->IsFindPlayer(400.0f) == true)
+	{
+		//待機
+		return false;
+	}
+
+	//一度待機したら一定時間そのまま
+	if (m_decideActionTimer < 5.0f)
+	{
+		m_decideActionTimer += g_gameTime->GetFrameDeltaTime();
+	}
+	else
+	{
+		m_decideActionTimer = 0.0f;
+
+		//確率で待機にする
+		int probability = rand() % 10;
+
+		//確率が一定値より大きかったらその場で待機
+		if (probability > 4)
+		{
+			m_idleStateFlag = false;
+			//待機
+			return false;
+		}
+		else
+		{
+			m_idleStateFlag = true;
+			//移動
+			return true;
+		}
+	}
+
+	return m_idleStateFlag;
+	
 }

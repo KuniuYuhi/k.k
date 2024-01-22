@@ -30,13 +30,6 @@ namespace {
 	const float ROT_SPEED = 7.0f;
 	const float SKILL_TIMER_LIMMIT = 10.0f;
 	const float DEFENCE_RANGE = 1200.0f;
-
-	//ステータス
-	int MAXHP = 200;
-	int MAXMP = 500;
-	int ATK = 15;
-	float SPEED = 80.0f;
-	const char* NAME = "TurtleShell";
 }
 
 TurtleShell::TurtleShell()
@@ -66,14 +59,12 @@ TurtleShell::~TurtleShell()
 
 bool TurtleShell::Start()
 {
+	//　乱数を初期化。
+	srand((unsigned)time(NULL));
+
 	//ステータスの初期化
-	m_status.InitCharacterStatus(
-		MAXHP,
-		MAXMP,
-		ATK,
-		SPEED,
-		NAME
-	);
+	m_status.Init(GetName());
+
 	//モデルの初期化
 	InitModel();
 	//ステートマシンの生成
@@ -107,7 +98,7 @@ void TurtleShell::InitModel()
 	m_animationClip[enAnimationClip_Victory].SetLoopFlag(true);
 	m_animationClip[enAnimationClip_Appear].Load("Assets/animData/character/TurtleShell/Appear.tka");
 	m_animationClip[enAnimationClip_Appear].SetLoopFlag(false);
-
+	//モデルを初期化
 	m_modelRender.Init(
 		"Assets/modelData/character/TurtleShell/TurtleShell.tkm",
 		L"Assets/shader/ToonTextrue/lamp_TurltleShell.DDS",
@@ -115,12 +106,19 @@ void TurtleShell::InitModel()
 		enAnimationClip_Num,
 		enModelUpAxisZ
 	);
-	
+	//キャラコン初期化
 	m_charaCon.Init(
 		23.6f,
 		9.0f,
 		m_position
 	);
+
+	//登場時の前方向の設定
+	m_direction = SetRamdomDirection(m_angleRange,true);
+	m_forward = m_direction;
+	m_forward.Normalize();
+	//回転の設定
+	Rotation(ROT_SPEED, ROT_SPEED);
 
 	//座標の設定
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
@@ -130,12 +128,19 @@ void TurtleShell::InitModel()
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
-
+	//攻撃に使うボーンIdの取得
 	m_attackBoonId = m_modelRender.FindBoneID(L"Head");
 }
 
 void TurtleShell::Update()
 {
+	//ポーズ画面なら処理をしない
+	if (GameManager::GetInstance()->GetGameSeenState() ==
+		GameManager::enGameSeenState_Pause)
+	{
+		return;
+	}
+
 	if (IsStopProcessing() != true)
 	{
 		//スキルのインターバルの計算
@@ -144,14 +149,11 @@ void TurtleShell::Update()
 		AttackInterval(m_attackIntervalTime);
 		//アングル切り替えインターバル
 		AngleChangeTimeIntarval(m_angleChangeTime);
-
-		//毎フレーム行う処理
-		m_mobStateMachine->Execute();
 		
 		//ノックバック中でないなら回転処理
 		if (GetKnockBackFlag() != true)
 		{
-			//回転処理
+			//回転処理と前方向の設定
 			Rotation(ROT_SPEED, ROT_SPEED);
 		}
 
@@ -159,7 +161,12 @@ void TurtleShell::Update()
 		DamageCollision(m_charaCon);
 	}
 
+	//毎フレーム行う処理
+	m_mobStateMachine->Execute();
+	//状態管理
 	ManageState();
+
+	//アニメーション
 	PlayAnimation();
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
@@ -470,14 +477,7 @@ void TurtleShell::SetNextStateMachine(EnStateMachineState nextStateMachine)
 
 void TurtleShell::ProcessCommonStateTransition()
 {
-	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
-	{
-		SetNextAnimationState(enAninationState_Patrol);
-	}
-	else
-	{
-		SetNextAnimationState(enAninationState_Idle);
-	}
+	SetNextAnimationState(enAninationState_Patrol);
 }
 
 void TurtleShell::OnProcessAttack_1StateTransition()
