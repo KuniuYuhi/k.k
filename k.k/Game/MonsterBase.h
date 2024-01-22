@@ -55,14 +55,6 @@ public:
 
 	//スキルに当たった時の処理
 	virtual void HitSkillAttack();
-	/// <summary>
-	/// ウィザードのファイヤーボールに当たった時の処理。派生クラスで実装
-	/// </summary>
-	virtual void HitFireBall(){}
-	/// <summary>
-	/// ウィザードのフレイムピラーに当たった時の処理。派生クラスで実装
-	/// </summary>
-	virtual void HitFlamePillar(bool damageFlag = false){}
 
 	/// <summary>
 	/// 当たり判定の処理をするか

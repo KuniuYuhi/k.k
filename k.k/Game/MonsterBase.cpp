@@ -234,9 +234,7 @@ Quaternion MonsterBase::Rotation(float rotSpeed, float rotOnlySpeed)
 			m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotOnlySpeed, m_rotMove, m_forward);
 			m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
 		}
-		//前方向を設定
-		/*m_forward = Vector3::AxisZ;
-		m_rotation.Apply(m_forward);*/
+		//前方向をキャラが向いている方向に設定
 		m_forward = m_rotMove;
 		m_forward.Normalize();
 		return m_rotation;
@@ -249,9 +247,7 @@ Quaternion MonsterBase::Rotation(float rotSpeed, float rotOnlySpeed)
 		m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotSpeed, m_rotMove, m_forward);
 		m_rotation.SetRotationYFromDirectionXZ(m_rotMove);
 	}
-	//前方向を設定
-	/*m_forward = Vector3::AxisZ;
-	m_rotation.Apply(m_forward);*/
+	//前方向をキャラが向いている方向に設定
 	m_forward = m_rotMove;
 	m_forward.Normalize();
 	return m_rotation;
