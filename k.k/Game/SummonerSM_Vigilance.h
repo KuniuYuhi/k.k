@@ -54,7 +54,8 @@ private:
 	/// <summary>
 	/// ノックバックするか決める処理
 	/// </summary>
-	void ProcessIsKnockBack();
+	/// <returns>ノックバックするならtrue</returns>
+	bool IsKnockBack();
 	/// <summary>
 	/// ノックバックタイマーを加速させるか
 	/// </summary>
@@ -65,9 +66,21 @@ private:
 	/// </summary>
 	void AddStayPlayerTimer();
 
+	/// <summary>
+	/// プレイヤーを追いかけるか
+	/// </summary>
+	/// <returns>追いかけるならtrue,待機ならfalse</returns>
+	bool IsChasePlayer();
+
+	
+
+
 private:
 	Vector3 m_toPlayer = g_vec3Zero;
 
+	bool m_idleStateFlag = true;
+
+	static float m_decideActionTimer;
 
 
 	float m_waitTimer = 0.0f;		//待機時間を計算するタイマー
