@@ -1,5 +1,7 @@
-name,hp,attack,Speed,GetExp
-Enemy,1,20,100,5
-Knight,150,35,140,0
-Wizard,100,40,80,0
-Rabbit,2,0,160,0
+name,hp,attack,Speed,endurance
+brave,300,30,240,-1
+summoner,500,20,50,-1
+slime,150,10,110,-1
+cactus,120,15,120,-1
+mushroom,100,7,130,-1
+turtleshell,200,15,80,-1
