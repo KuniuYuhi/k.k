@@ -17,7 +17,8 @@ namespace {
 
 	const float DARK_METEO_ACTION_POINT = 40.0f;
 
-	const float START_DECIDE_ACTION_TIMER = 5.0f;
+	//タイマーを0にしない
+	const float START_DECIDE_ACTION_TIMER = 1.0f;
 
 }
 
@@ -172,10 +173,12 @@ bool SummonerSM_Vigilance::IsChasePlayer()
 	//一度待機したら一定時間そのまま
 	if (m_decideActionTimer < 5.0f)
 	{
+		//行動決定タイマーを加算
 		m_decideActionTimer += g_gameTime->GetFrameDeltaTime();
 	}
 	else
 	{
+		//タイマーをリセット
 		m_decideActionTimer = 0.0f;
 
 		//確率で待機にする
@@ -186,16 +189,16 @@ bool SummonerSM_Vigilance::IsChasePlayer()
 		{
 			m_idleStateFlag = false;
 			//待機
-			return false;
+			return m_idleStateFlag;
 		}
 		else
 		{
 			m_idleStateFlag = true;
 			//移動
-			return true;
+			return m_idleStateFlag;
 		}
 	}
-
+	//ここに来たら前フレームの行動と同じ
 	return m_idleStateFlag;
 	
 }

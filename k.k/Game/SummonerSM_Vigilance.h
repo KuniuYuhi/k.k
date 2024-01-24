@@ -78,7 +78,7 @@ private:
 private:
 	Vector3 m_toPlayer = g_vec3Zero;
 
-	bool m_idleStateFlag = true;
+	bool m_idleStateFlag = false;
 
 	static float m_decideActionTimer;
 
