@@ -10,7 +10,7 @@ namespace {
 
 	const float STAY_PLAYER_LIMMIT_TIME = 10.0f;		//プレイヤーが近くにとどまっているタイマーの上限
 
-	const float DARK_METEO_ACTION_POINT = 30.0f;
+	const float DARK_METEO_ACTION_POINT = 25.0f;
 
 }
 
@@ -81,6 +81,12 @@ void SummonerSM_Attack::DecideNextAction()
 void SummonerSM_Attack::ProcessLongRangeAttack()
 {
 	//遠距離攻撃
+
+	////ダークメテオ
+	//m_summoner->
+	//	SetNextAnimationState(
+	//		Summoner::enAnimationState_Attack_DarkMeteorite_start);
+	//return;
 
 	//前の行動がダークメテオでないなら
 	//ダークメテオを撃つか調べる
