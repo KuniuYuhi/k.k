@@ -64,6 +64,9 @@ bool Slime::Start()
 	//　乱数を初期化。
 	srand((unsigned)time(NULL));
 
+	//プレイヤーのインスタンスを探す
+	m_player = FindGO<Player>("player");
+
 	//ステータスの初期化
 	m_status.Init(GetName());
 
