@@ -59,6 +59,7 @@ Game::Game()
 
 Game::~Game()
 {
+	//全ての音をストップ
 	g_soundManager->StopAllSound();
 
 	DeleteGO(m_skyCube);
@@ -67,20 +68,12 @@ Game::~Game()
 	DeleteGO(m_player);
 	DeleteGO(m_boss);
 
-	if (m_gameCamera != nullptr)
-	{
-		
-	}
 	DeleteGO(m_gameCamera);
 
 	DeleteGO(m_gameFinishCamera);
 	DeleteGO(m_battlePhase);
 	DeleteGO(m_pause);
 
-	if (m_gameUI != nullptr)
-	{
-		
-	}
 	DeleteGO(m_gameUI);
 
 	DeleteGO(m_result);
@@ -93,7 +86,7 @@ bool Game::Start()
 
 	//ゲーム進行マネージャークラスの生成
 	//ゲームシーンステートの設定
-	GameManager::CreateInstance(GameManager::enGameSeenState_Game);
+	GameManager::CreateInstance(GameManager::enGameSeenState_GameStart);
 	//初期化処理
 	GameManager::GetInstance()->Init();
 
@@ -161,7 +154,7 @@ void Game::CreatePlayerAndCamera()
 void Game::CreateBattlePhase()
 {
 	//バトルフェーズ処理クラス生成
-	m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
+	//m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
 }
 
 void Game::InitSkyCube()
@@ -275,6 +268,14 @@ void Game::OnProcessGameStartTransition()
 	{
 		//バトルスタートクラス削除
 		DeleteGO(m_battleStart);
+		//ボス登場クラス作成
+		m_entryBoss = NewGO<EntryBoss>(0, "entryboss");
+		m_entryBoss->SetPosition(BOSS_CREATE_POSITION);
+		m_entryBoss->SetGame(this);
+		m_entryBoss->SetSkyCube(m_skyCube);
+		//プレイヤーとカメラの生成
+		CreatePlayerAndCamera();
+
 		//次のステップのステートに切り替える
 		GameManager::GetInstance()->SetGameSeenState(
 			GameManager::enGameSeenState_AppearanceBoss);
@@ -301,16 +302,16 @@ void Game::OnProcessAppearanceBossTransition()
 	}
 
 	//ボスの登場ムービークラス生成
-	if (m_entryBoss == nullptr)
-	{
-		m_entryBoss = NewGO<EntryBoss>(0, "entryboss");
-		m_entryBoss->SetPosition(BOSS_CREATE_POSITION);
-		m_entryBoss->SetGame(this);
-		m_entryBoss->SetSkyCube(m_skyCube);
+	//if (m_entryBoss == nullptr)
+	//{
+	//	m_entryBoss = NewGO<EntryBoss>(0, "entryboss");
+	//	m_entryBoss->SetPosition(BOSS_CREATE_POSITION);
+	//	m_entryBoss->SetGame(this);
+	//	m_entryBoss->SetSkyCube(m_skyCube);
 
-		//プレイヤーとカメラの生成
-		CreatePlayerAndCamera();
-	}
+	//	//プレイヤーとカメラの生成
+	//	CreatePlayerAndCamera();
+	//}
 }
 
 void Game::OnProcessGameTransition()
