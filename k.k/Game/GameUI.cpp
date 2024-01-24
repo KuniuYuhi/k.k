@@ -37,15 +37,11 @@ namespace {
 	
 	const Vector2 HP_FONT_POS = { -930.0f,-428.0f };
 
-	//+10+10
-	const Vector3 SKILL_CENTER_POS = { 755.0f,-396.0f,0.0f };
-	const Vector3 SKILL_1__POS = { 592.0f,-376.0f,0.0f };
-
-	const Vector3 SKILL_1_X_POS = { 674.0f,-376.0f,0.0f };
-
 	const Vector3 ENDURANCE_SPRITE_POS = { 835.0f,-450.0f,0.0f };
 	const Vector2 ENDURANCE_FONT_POS = { 800.0f,-405.0f };
 
+	const Vector3 COMMAND_LB = { 740.0f,38.0f,0.0f };
+	const Vector3 COMMAND_RB = { 740.0f,-110.0f,0.0f };
 
 	const Vector3 TIME_FLAME_POS = { 0.0f,509.0f,0.0f };
 
@@ -311,12 +307,6 @@ void GameUI::InitPlayerUI()
 	InitSpriteRender(
 		m_playerUI.m_hpBackRender, "Assets/sprite/InGame/Character/Player_HP_Back.DDS", 600, 80, MAIN_STATUS_BAR);
 
-	
-	//スキル１のフレーム
-	InitSpriteRender(
-		m_playerUI.m_Skill_1FlameRender, "Assets/sprite/InGame/Character/SkillFlame.DDS", 181, 181, SKILL_1__POS, g_vec3One);
-
-
 	//メイン武器のアイコン
 	InitSpriteRender(
 		m_playerUI.m_weaponRender[enWeapon_Main],
@@ -346,8 +336,8 @@ void GameUI::InitPlayerUI()
 	);
 	//サブ武器１のコマンド
 	InitSpriteRender(
-		m_playerUI.m_subWeaponCommandRender, "Assets/sprite/InGame/Character/SkillKye.DDS", 60, 56,
-		{ 750.0f,38.0f,0.0f }, g_vec3One
+		m_playerUI.m_subWeaponCommandRender, "Assets/sprite/InGame/Character/Button_LB.DDS", 80, 60,
+		COMMAND_LB, g_vec3One
 	);
 
 	//サブ武器２のアイコン
@@ -364,11 +354,9 @@ void GameUI::InitPlayerUI()
 		m_weaponIconPos[enWeapon_Sub2], g_vec3One * 0.9f
 	);
 	//サブ武器２のコマンド
-	Quaternion rot;
-	rot.SetRotationDegZ(180.0f);
 	InitSpriteRender(
-		m_playerUI.m_sub2WeaponCommandRender, "Assets/sprite/InGame/Character/SkillKye.DDS", 60, 56,
-		{ 750.0f,-110.0f,0.0f }, g_vec3One, rot
+		m_playerUI.m_sub2WeaponCommandRender, "Assets/sprite/InGame/Character/Button_RB.DDS", 80, 60,
+		COMMAND_RB, g_vec3One
 	);	
 
 	//メイン武器(ソード＆シールド)の耐久値の背景
@@ -386,9 +374,7 @@ void GameUI::InitPlayerUI()
 	InitFontRender(
 		m_playerUI.m_weaponEndranceFont, ENDURANCE_FONT_POS,1.5f
 	);
-
-	//wchar_t srr = m_playerUI.m_weaponEndranceFont.GetText();
-
+	//耐久値のオフセット
 	m_playerUI.m_weaponEndranceFont.SetOffset({ 20.0f,0.0f });
 
 }
