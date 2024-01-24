@@ -83,6 +83,9 @@ bool Summoner::Start()
 	//　乱数を初期化。
 	srand((unsigned)time(NULL));
 
+	//プレイヤーのインスタンスを探す
+	m_player = FindGO<Player>("player");
+
 	//ステータスの初期化
 	m_status.Init(GetName());
 
@@ -92,8 +95,6 @@ bool Summoner::Start()
 	//m_stateMachine = new IBossStateMachine(this);
 	SetStartStateMachine(enStateMachineState_Vigilance);
 	//m_SummonerstateMachine = std::make_unique<IBossStateMachine>(this);
-
-	
 
 	//最初のアニメーション設定
 	SetNextAnimationState(enAnimationState_Idle);
@@ -213,6 +214,7 @@ void Summoner::HitSkillAttack()
 	//スキル攻撃を受けられないなら
 	if (m_player->GetHittableFlag() != true)
 	{
+		m_player->SetHittableFlag(true);
 		return;
 	}
 	m_damageFlag = true;
