@@ -33,7 +33,7 @@ Arrow::Arrow()
 
 Arrow::~Arrow()
 {
-	
+	DeleteGO(m_arrowCollision);
 }
 
 bool Arrow::Start()
@@ -291,7 +291,6 @@ void Arrow::NormalShot()
 void Arrow::SkillShot()
 {
 	//敵にダメージを与えられるタイミングを設定
-
 
 
 	//射撃開始座標から現在の座標に向かうベクトルを計算
