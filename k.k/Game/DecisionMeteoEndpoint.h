@@ -1,7 +1,7 @@
 #pragma once
 
 namespace {
-	const int LENGTH = 250.0f;
+	const int LENGTH = 800.0f;
 }
 
 //メテオの終点の計算
