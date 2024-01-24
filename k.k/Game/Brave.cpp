@@ -305,14 +305,14 @@ void Brave::ChangeWeapon()
 		return;
 	}
 	//サブ１と武器切り替え
-	if (g_pad[0]->IsTrigger(enButtonUp))
+	if (g_pad[0]->IsTrigger(enButtonLB1))
 	{
 		//武器切り替えのための前準備
 		SettingChangeWeapon(
 			m_subUseWeapon.weaponAnimationStartIndexNo, enWeapon_Sub);
 	}
 	//サブ２と武器切り替え
-	if (g_pad[0]->IsTrigger(enButtonDown))
+	if (g_pad[0]->IsTrigger(enButtonRB1))
 	{
 		//武器切り替えのための前準備
 		SettingChangeWeapon(
