@@ -2,6 +2,8 @@
 #include "Meteo.h"
 #include "InitEffect.h"
 
+#include "Player.h"
+
 namespace {
 	const float EXPLOSION_SCALE = 12.0f;
 	const Vector3 SCALE = { 16.0f,16.0f,16.0f };
@@ -29,8 +31,11 @@ namespace {
 	const float GRAVITY = 20.0f;
 
 
+	const float DIV_DISTANCE = 200.0f;
 
-	const int ATTACK = 20;
+
+	const int ATTACK = 60;
+	const int LOWEAT_ATTACK = 20;
 }
 
 Meteo::Meteo()
@@ -107,15 +112,16 @@ int Meteo::CalcDamageToDistance(const Vector3 targetPosition)
 	diff.y = 0.0f;
 	float length = diff.Length();
 
-	//200ごとにダメージを減らす
-	float reduce = length / 200.0f;
+	//距離が200ごとにダメージを減らす
+	float reduce = length / DIV_DISTANCE;
 
 	int attack = m_attack; 
 	attack -= reduce * 10.0f;
 
-	if (attack <= 0)
+	//最低でも20ダメージになるようにする
+	if (attack < LOWEAT_ATTACK)
 	{
-		attack = 20;
+		attack = LOWEAT_ATTACK;
 	}
 
 	return attack;
@@ -181,7 +187,7 @@ void Meteo::Move()
 void Meteo::CreateExplosionCollision()
 {
 	//爆発範囲の当たり判定作成
-	auto explosionCollision = NewGO<CollisionObject>(0, "explosion");
+	auto explosionCollision = NewGO<CollisionObject>(0, GetCollisionName());
 	explosionCollision->CreateSphere(
 		m_position,
 		g_quatIdentity,
@@ -234,6 +240,14 @@ void Meteo::Explosion()
 	m_ExplosionEffect->Play();
 	m_ExplosionEffect->SetPosition(m_position);
 	m_ExplosionEffect->Update();
+}
+
+const int Meteo::GetAttack()
+{
+	//プレイヤーの座標を取得
+	Vector3 playerPos = FindGO<Player>("player")->GetPosition();
+	//プレイヤーの座標によってダメージ変更
+	return CalcDamageToDistance(playerPos);
 }
 
 void Meteo::PlayMeteoEffect()
