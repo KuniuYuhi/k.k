@@ -478,10 +478,7 @@
 プレイヤーは、ソード＆シールド、グレイトソード、ボウ＆アローの3つの武器を使い分けて戦います。  
 バトルにはフェーズが存在し、一定時間ごとにフェーズが進み、敵を生成します。フェーズが進行すると、前のフェーズに存在したモブモンスターは消滅します。第4フェーズに進行すると、モブモンスターが出現しない時間(休憩時間)となりフェーズ終了後、第1フェーズに戻り以降ループします。  
 
-<video width="640" height="450" controls>
-  <source src="README_IMAGE\movie\FantasyBattle.mp4" type="video/mp4">
-  <source src="README_IMAGE\movie\FantasyBattle.mp3" type="audio/mp3">
-</video>  
+[![](https://img.youtube.com/vi/qej_o-bO8EI/0.jpg)](https://www.youtube.com/watch?v=qej_o-bO8EI)
 
   <div style="text-align: right;">
 
