@@ -6,7 +6,7 @@
 
 namespace {
     const int ADD_CREATE_POS = 100;
-    const float SPEED = 900.0f;
+    const float SPEED = 600.0f;
     const float RADIUS = 45.0f;
     const float Y_UP = 60.0f;
 
