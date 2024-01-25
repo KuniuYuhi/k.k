@@ -109,7 +109,7 @@ private:
 
 	Quaternion rot;
 
-	const float m_jampSpeed = 3000.0f;
+	const float m_jampSpeed = 7000.0f;
 
 	//•Ší‚ğ‚½‚¹‚é‚Ìƒ{[ƒ“ID
 	int m_armedSwordBoonId = -1;
