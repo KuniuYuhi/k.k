@@ -127,29 +127,16 @@ void MobMonster::MoveChasePlayer(CharacterController& charaCon)
 		m_moveSpeed = Vector3::Zero;
 	}
 
-	//プレイヤーの周りに既にモンスターがたくさんいたら
-	//if (CharactersInfoManager::GetInstance()->GetMonstersNearPlayerCount() >
-	//	MONSTER_NEAR_PLAYER_COUNT_LIMMIT)
-	//{
-	//	//本来のm_stayRangeより遠くで止まる
-	//	if (IsFindPlayer(250.0f) == true)
-	//	{
-	//		//範囲内にいるので移動しない
-	//		m_moveSpeed = Vector3::Zero;
-	//	}
-	//}
-	////プレイヤーとの距離が近く、止まる距離なら45
-	//else if (IsFindPlayer(m_stayRange) == true)
-	//{
-	//	//範囲内にいるので移動しない
-	//	m_moveSpeed = Vector3::Zero;
-	//}
-
-
+	//追いかけられるかのフラグをリセット
 	SetEnableChasePlayerFag(false);
 
 	//座標を移動
-	m_position = charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	m_position = charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+	//キャラコンが地面に着いているなら、Y座標を0にする
+	if (charaCon.IsOnGround() == true)
+	{
+		m_moveSpeed.y = 0.0f;
+	}
 }
 
 void MobMonster::ProcessKnockBack(CharacterController& charaCon)
@@ -321,12 +308,12 @@ void MobMonster::ProcessDead(bool seFlag)
 	}
 
 	//死亡時エフェクトの再生
-	/*EffectEmitter* deadEffect = NewGO<EffectEmitter>(0);
+	EffectEmitter* deadEffect = NewGO<EffectEmitter>(0);
 	deadEffect->Init(InitEffect::enEffect_Mob_Dead);
 	deadEffect->Play();
 	deadEffect->SetPosition(m_position);
 	deadEffect->SetScale(g_vec3One * DEAD_EFFECT_SIZE);
-	deadEffect->Update();*/
+	deadEffect->Update();
 }
 
 void MobMonster::CreateHitEffect()
