@@ -59,6 +59,7 @@ Game::Game()
 
 Game::~Game()
 {
+	//全ての音をストップ
 	g_soundManager->StopAllSound();
 
 	DeleteGO(m_skyCube);
@@ -67,20 +68,12 @@ Game::~Game()
 	DeleteGO(m_player);
 	DeleteGO(m_boss);
 
-	if (m_gameCamera != nullptr)
-	{
-		
-	}
 	DeleteGO(m_gameCamera);
 
 	DeleteGO(m_gameFinishCamera);
 	DeleteGO(m_battlePhase);
 	DeleteGO(m_pause);
 
-	if (m_gameUI != nullptr)
-	{
-		
-	}
 	DeleteGO(m_gameUI);
 
 	DeleteGO(m_result);
@@ -93,7 +86,7 @@ bool Game::Start()
 
 	//ゲーム進行マネージャークラスの生成
 	//ゲームシーンステートの設定
-	GameManager::CreateInstance(GameManager::enGameSeenState_Game);
+	GameManager::CreateInstance(GameManager::enGameSeenState_GameStart);
 	//初期化処理
 	GameManager::GetInstance()->Init();
 
@@ -275,6 +268,14 @@ void Game::OnProcessGameStartTransition()
 	{
 		//バトルスタートクラス削除
 		DeleteGO(m_battleStart);
+		//ボス登場クラス作成
+		m_entryBoss = NewGO<EntryBoss>(0, "entryboss");
+		m_entryBoss->SetPosition(BOSS_CREATE_POSITION);
+		m_entryBoss->SetGame(this);
+		m_entryBoss->SetSkyCube(m_skyCube);
+		//プレイヤーとカメラの生成
+		CreatePlayerAndCamera();
+
 		//次のステップのステートに切り替える
 		GameManager::GetInstance()->SetGameSeenState(
 			GameManager::enGameSeenState_AppearanceBoss);
@@ -301,16 +302,16 @@ void Game::OnProcessAppearanceBossTransition()
 	}
 
 	//ボスの登場ムービークラス生成
-	if (m_entryBoss == nullptr)
-	{
-		m_entryBoss = NewGO<EntryBoss>(0, "entryboss");
-		m_entryBoss->SetPosition(BOSS_CREATE_POSITION);
-		m_entryBoss->SetGame(this);
-		m_entryBoss->SetSkyCube(m_skyCube);
+	//if (m_entryBoss == nullptr)
+	//{
+	//	m_entryBoss = NewGO<EntryBoss>(0, "entryboss");
+	//	m_entryBoss->SetPosition(BOSS_CREATE_POSITION);
+	//	m_entryBoss->SetGame(this);
+	//	m_entryBoss->SetSkyCube(m_skyCube);
 
-		//プレイヤーとカメラの生成
-		CreatePlayerAndCamera();
-	}
+	//	//プレイヤーとカメラの生成
+	//	CreatePlayerAndCamera();
+	//}
 }
 
 void Game::OnProcessGameTransition()
@@ -525,33 +526,10 @@ void Game::InitGameObject()
 	else if (GameManager::GetInstance()->GetGameSeenState() ==
 		GameManager::enGameSeenState_Game)
 	{
-
 		//ボスの生成
 		CreateBoss();
-		//スライム生成
-		/*Slime* slime = NewGO<Slime>(0, "slime");
-		slime->SetPosition({ -150.0f, 0.0f, 500.0f });*/
-		////スライム生成
-		//Slime* slime1 = NewGO<Slime>(0, "slime");
-		//slime1->SetPosition({100.0f,0.0f,100.0f});
-		////スライム生成
-		//Slime* slime2 = NewGO<Slime>(0, "slime");
-		//slime2->SetPosition({ 200.0f,0.0f,100.0f });
-		////スライム生成
-		/*Slime* slime3 = NewGO<Slime>(0, "slime");
-		slime3->SetPosition({ 100.0f,0.0f,200.0f });*/
-
-		/*Cactus* cactus = NewGO<Cactus>(0, "cactus");
-		cactus->SetPosition({ 0.0f, 0.0f, 200.0f });*/
-
-		/*Mushroom* mush = NewGO<Mushroom>(0, "mush");
-		mush->SetPosition({ -150.0f, 0.0f, 200.0f });*/
-
-		/*TurtleShell* tu = NewGO<TurtleShell>(0, "aa");
-		tu->SetPosition(g_vec3Zero);*/
-
+		//プレイヤーとカメラクラスの生成
 		CreatePlayerAndCamera();
-
 	}
 
 	

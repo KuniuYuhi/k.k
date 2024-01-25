@@ -112,7 +112,6 @@ void Brave::Move()
 {
 	//移動方向を計算
 	m_moveSpeed = calcVelocity(GetStatus());
-	m_moveSpeed.y = 0.0f;
 
 	//特定のアニメーションが再生中なら移動なし
 	if (isAnimationEntable() != true)
@@ -124,7 +123,8 @@ void Brave::Move()
 			CalcForward(m_moveSpeed);
 		}
 		//移動量を0にする
-		m_moveSpeed = g_vec3Zero;
+		m_moveSpeed.x = 0.0f;
+		m_moveSpeed.z = 0.0f;
 	}
 	else
 	{
@@ -133,14 +133,16 @@ void Brave::Move()
 	}
 
 	//重力をかける
-	m_moveSpeed.y *= -GRAVITY * g_gameTime->GetFrameDeltaTime();
+	m_moveSpeed.y -= GRAVITY;
+	
+	//移動方向に座標を移動
+	m_position = m_charaCon.Execute(
+		m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 	//キャラコンが地面に着いているなら、Y座標を0にする
 	if (m_charaCon.IsOnGround() == true)
 	{
 		m_moveSpeed.y = 0.0f;
 	}
-	//移動方向に座標を移動
-	m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 }
 
 void Brave::ProcessRotation()
@@ -193,16 +195,9 @@ void Brave::Damage(int damage)
 	//HPが0より大きいなら被ダメージ処理
 	if (GetStatus().GetHp() > 0)
 	{
-		//コンボが繋がっている時にダメージを受けたかもしれないのでリセット
-		m_attackPatternState = enAttackPattern_None;
+		//武器切り替え中にダメージを受けたら、武器切り替え前の情報に戻す
+		BeforeWeaponInfo();
 
-		//武器切り替え中にダメージを受けたら
-		if (m_enAnimationState == enAnimationState_ChangeWeapon)
-		{
-			//武器切り替え前の武器のアニメーションが再生されるようにする
-			m_currentAnimationStartIndexNo
-				= m_mainUseWeapon.weaponAnimationStartIndexNo;
-		}
 		//盾にヒットしたなら
 		if (IsDefendHit() == true)
 		{
@@ -221,7 +216,6 @@ void Brave::Damage(int damage)
 			//ヒットステートに遷移
 			SetNextAnimationState(enAnimationState_Hit);
 		}
-
 		//受けるダメージを決定
 		m_hitDamage = damage;
 		m_status.CalcHp(m_hitDamage, false);
@@ -264,12 +258,11 @@ bool Brave::IsInaction()
 	{
 		return true;
 	}
-
+	//ノックバックステートなら
 	if (m_enAnimationState == enAnimationState_KnockBack)
 	{
 		return true;
 	}
-	
 	//ここまできたら行動可能
 	return false;
 }
@@ -299,20 +292,20 @@ void Brave::MoveBack(float backSpeed)
 
 void Brave::ChangeWeapon()
 {
-	//アクションフラグがtrueなら攻撃処理をしない
+	//アクションフラグがtrueなら処理をしない
 	if (GetIsActionFlag() == true)
 	{
 		return;
 	}
 	//サブ１と武器切り替え
-	if (g_pad[0]->IsTrigger(enButtonUp))
+	if (g_pad[0]->IsTrigger(enButtonLB1))
 	{
 		//武器切り替えのための前準備
 		SettingChangeWeapon(
 			m_subUseWeapon.weaponAnimationStartIndexNo, enWeapon_Sub);
 	}
 	//サブ２と武器切り替え
-	if (g_pad[0]->IsTrigger(enButtonDown))
+	if (g_pad[0]->IsTrigger(enButtonRB1))
 	{
 		//武器切り替えのための前準備
 		SettingChangeWeapon(
@@ -333,11 +326,12 @@ bool Brave::IsKnockBack()
 	if (IsKnockingBack(m_moveSpeed, m_knockbackTimer, m_KnockBackTimerLimmit) == true)
 	{
 		//座標を移動
-		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+		m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 		return true;
 	}
 	else
 	{
+		//ノックバック終了
 		SetHitKnockBackFlag(false);
 		return false;
 	}
@@ -422,13 +416,16 @@ void Brave::ManageState()
 void Brave::SettingKnockBackInfo(
 	Vector3 endPos, float knockBackPower, float knockBackLimmit)
 {
+	//武器切り替え中にダメージを受けたら、武器切り替え前の情報に戻す
+	BeforeWeaponInfo();
+	//ノックバックする移動方向を設定
 	m_moveSpeed = SetKnockBackDirection(m_position, endPos, knockBackPower);
 	//ノックバックする制限時間を設定
 	m_KnockBackTimerLimmit = knockBackLimmit;
 	//前方向の計算
 	CalcForward(m_moveSpeed * -1.0f);
 	//回転処理
-	m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed*-1.0f);
+	m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed * -1.0f);
 	//ステートをノックバックステートに遷移
 	SetNextAnimationState(enAnimationState_KnockBack);
 }
@@ -443,15 +440,23 @@ void Brave::CalcAttackMoveSpeed()
 {
 	//moveSpeed(移動方向)の取得
 	m_moveSpeed = calcVelocity(GetStatus());
-	m_moveSpeed.y = 0.0f;
+	//m_moveSpeed.y = 0.0f;
 	//前方向を設定
 	m_calcCharacterForward.get()->CalcForwardOfNearMonster(
 		m_position, m_forward, m_moveSpeed, 150.0f);
-	//次のコンボに移る前に回転する
-	/*if (fabsf(m_forward.x) >= 0.001f || fabsf(m_forward.z) >= 0.001f)
+}
+
+void Brave::BeforeWeaponInfo()
+{
+	//コンボが繋がっている時にダメージを受けたかもしれないのでリセット
+	m_attackPatternState = enAttackPattern_None;
+	//武器切り替え中にダメージを受けたら
+	if (m_enAnimationState == enAnimationState_ChangeWeapon)
 	{
-		m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
-	}*/
+		//武器切り替え前の武器のアニメーションが再生されるようにする
+		m_currentAnimationStartIndexNo
+			= m_mainUseWeapon.weaponAnimationStartIndexNo;
+	}
 }
 
 void Brave::ProcessComboAttack()
@@ -459,7 +464,6 @@ void Brave::ProcessComboAttack()
 	//パターンステートを一つ進める
 	m_attackPatternState =
 		static_cast<EnAttackPattern>(m_attackPatternState + 1);
-
 	//通常攻撃ステート設定
 	SetNextAnimationState(m_attackPatternState);
 	//敵のためのコンボステートを設定
@@ -493,7 +497,6 @@ void Brave::ProcessComboAttack()
 	{
 		m_attackPatternState = enAttackPattern_None;
 	}
-
 	//アクションフラグをセット
 	SetIsActionFlag(true);
 }
@@ -504,12 +507,12 @@ void Brave::ProcessCommonStateTransition()
 		fabsf(GetMoveSpeed().z) >= 0.001f
 		)
 	{
-		//走る
+		//走るアニメーションステート
 		SetNextAnimationState(enAninationState_Sprint);
 	}
 	else
 	{
-		//歩く
+		//待機アニメーションステート
 		SetNextAnimationState(enAninationState_Idle);
 	}
 }
@@ -552,18 +555,6 @@ void Brave::ProcessNormalAttackStateTransition()
 		//次のコンボの攻撃ステート設定
 		else
 		{
-			////moveSpeedの取得
-			//m_moveSpeed = calcVelocity(GetStatus());
-			//m_moveSpeed.y = 0.0f;
-			////前方向を設定
-			//m_calcCharacterForward.get()->CalcForwardOfNearMonster(
-			//	m_position, m_forward, m_moveSpeed, 150.0f);
-			////次のコンボに移る前に回転する
-			//// 上限なら回転させない
-			//if (fabsf(m_forward.x) >= 0.001f || fabsf(m_forward.z) >= 0.001f)
-			//{
-			//	m_rotation.SetRotationYFromDirectionXZ(m_SaveMoveSpeed);
-			//}
 			//次のコンボの処理
 			ProcessComboAttack();
 		}
@@ -653,7 +644,7 @@ void Brave::ProcessDefendStateTransition()
 void Brave::ProcessKnockBackStateTransition()
 {
 	//アクション中にダメージ受けたかもしれないので
-		// アクションフラグ関係を全てfalseにする
+	// アクションフラグ関係を全てfalseにする
 	SetAllInfoAboutActionFlag(false);
 	//コンボ状態をリセット
 	SetComboStateNone();
@@ -703,7 +694,7 @@ void Brave::ReverseWeapon(EnWeapons changeTargetWeaponType)
 	ChangeUseSubWeapon->weapon->ReverseWeaponState();
 	//逆参照あった
 	//攻撃力を現在の武器のものに変更。
-	m_status.SetAtk(m_mainUseWeapon.weapon->GetWeaponPower());
+	m_status.SetAtk(m_mainUseWeapon.weapon->GetStatus().GetAtk());
 	//多段ヒット判定フラグをセット
 	m_mainUseWeapon.weapon->SetHittableFlag(true);
 	//武器を切り替えた
@@ -770,6 +761,7 @@ void Brave::SettingWeapons()
 	//現在の武器のアニメーションクリップの最初の番号
 	m_currentAnimationStartIndexNo
 		= m_mainUseWeapon.weaponAnimationStartIndexNo;
+
 	//武器の攻撃力を自身の攻撃力に設定
 	m_status.SetAtk(m_mainUseWeapon.weapon->GetWeaponPower());
 }
@@ -845,8 +837,8 @@ void Brave::RoadOneHandSwordAnimationClip(int mainWeaponAnimationStartIndexNo)
 		{"Assets/animData/character/Player/OneHandSword/Attack_1.tka",false},
 		{"Assets/animData/character/Player/OneHandSword/Attack_2.tka",false},
 		{"Assets/animData/character/Player/OneHandSword/Attack_3.tka",false},
-		{"Assets/animData/character/Player/OneHandSword/Attack_4.tka",false},
-		{"Assets/animData/character/Player/OneHandSword/Attack_5.tka",false},
+		{"Assets/animData/character/Player/OneHandSword/Skill_Start.tka",false},
+		{"Assets/animData/character/Player/OneHandSword/Skill_Main.tka",false},
 		{"None",false}
 	};
 	for (int i = 0; i < enAnimClip_Num; i++) {
@@ -871,8 +863,8 @@ void Brave::RoadTwoHandSwordAnimationClip(int mainWeaponAnimationStartIndexNo)
 		{"Assets/animData/character/Player/TwoHandSword/Attack_1.tka",false},
 		{"Assets/animData/character/Player/TwoHandSword/Attack_2.tka",false},
 		{"Assets/animData/character/Player/TwoHandSword/Attack_3.tka",false},
-		{"Assets/animData/character/Player/TwoHandSword/Skill_Start.tka",false},
-		{"Assets/animData/character/Player/TwoHandSword/Skill_Main.tka",false},
+		{"Assets/animData/character/Player/TwoHandSword/Skill_Start2.tka",false},
+		{"Assets/animData/character/Player/TwoHandSword/Skill_Main2.tka",false},
 		{"None",false}
 	};
 	for (int i = 0; i < enAnimClip_Num; i++) {
@@ -925,12 +917,11 @@ void Brave::InitModel()
 	//座標の設定と更新
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
-	//
-	//m_charaCenterBoonId = m_modelRender.FindBoneID(L"root");
+	
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
-		});
+	});
 }
 
 void Brave::Render(RenderContext& rc)
@@ -1022,12 +1013,12 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		SetInvicibleFlag(false);
 	}
 
-	//スキル使用時の攻撃処理
-	if (wcscmp(eventName, L"SkillAttack") == 0)
-	{
-		//メイン武器のスキル攻撃処理
-		m_mainUseWeapon.weapon->ProcessSkillAttack();
-	}
+	////スキル使用時の攻撃処理
+	//if (wcscmp(eventName, L"SkillAttack") == 0)
+	//{
+	//	//メイン武器のスキル攻撃処理
+	//	m_mainUseWeapon.weapon->ProcessSkillAttack();
+	//}
 }
 
 bool Brave::isCollisionEntable() const

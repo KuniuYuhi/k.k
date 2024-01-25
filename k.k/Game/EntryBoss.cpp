@@ -17,24 +17,43 @@ namespace {
 	//Y座標の加算量
 	const float ADD_MODEL_Y_UP = 45.0f;
 
-	//L、I、C、H、の表示タイミング
+	//L、I、C、H、の表示タイミングのY座標
 	const float LICH_SPRITE_DRAW_TIMING = -20.0f;
 
-	//L、I、C、H、の初期座標と最終的な座標
-	const Vector3 L_START_POS = { -707.0f,430.0f,0.0f };
-	const Vector3 L_END_POS = { -407.0f,-268.0f,0.0f };
-	const Vector3 I_START_POS = { -488.0f,430.0f,0.0f };
-	const Vector3 I_END_POS = { -188.0f,-268.0f,0.0f };
-	const Vector3 C_START_POS = { 361.0f,430.0f,0.0f };
-	const Vector3 C_END_POS = { 61.0f,-268.0f,0.0f };
-	const Vector3 H_START_POS = { 676.0f,430.0f,0.0f };
-	const Vector3 H_END_POS = { 376.0f,-268.0f,0.0f };
+	const float LERP_START_Y = 430.0f;
+
+	const float LERP_END_Y = -268.0f;
+	//S,U,M,M,O,N,E,R,の初期座標と最終的な座標
+	const Vector3 S_START_POS = { -1100.0f,LERP_START_Y,0.0f };
+	const Vector3 S_END_POS = { -757.0f,LERP_END_Y,0.0f };
+
+	const Vector3 U_START_POS = { -900.0f,LERP_START_Y,0.0f };
+	const Vector3 U_END_POS = { -538.0f,LERP_END_Y,0.0f };
+
+	const Vector3 M_1_START_POS = { -600.0f,LERP_START_Y,0.0f };
+	const Vector3 M_1_END_POS = { -342.0f,LERP_END_Y,0.0f };
+
+	const Vector3 M_2_START_POS = { 400.0f,LERP_START_Y,0.0f };
+	const Vector3 M_2_END_POS = { -115.0f,LERP_END_Y,0.0f };
+
+	const Vector3 O_START_POS = { 450.0f,LERP_START_Y,0.0f };
+	const Vector3 O_END_POS = { 123.0f,LERP_END_Y,0.0f };
+
+	const Vector3 N_START_POS = { 650.0f,LERP_START_Y,0.0f };
+	const Vector3 N_END_POS = { 336.0f,LERP_END_Y,0.0f };
+
+	const Vector3 E_START_POS = { 900.0f,LERP_START_Y,0.0f };
+	const Vector3 E_END_POS = { 542.0f,LERP_END_Y,0.0f };
+
+	const Vector3 R_START_POS = { 1100.0f,LERP_START_Y,0.0f };
+	const Vector3 R_END_POS = { 740.0f,LERP_END_Y,0.0f };
+
 	//LICH画像のサイズ
 	const Vector3 START_SCALE = { 4.0f,4.0f,4.0f };
 	const Vector3 END_SCALE = g_vec3One;
 
 	//BOSSテキスト画像の座標
-	const Vector3 BOSS_TEXT_POS = { 0.0f,-98.0f,0.0f };
+	const Vector3 BOSS_TEXT_POS = { 0.0f,-63.0f,0.0f };
 
 	//Aボタンを押すとスキップの画像の座標とサイズ
 	const Vector3 PRESS_A_POS = { 723.0f,-501.0f ,0.0f };
@@ -173,20 +192,24 @@ void EntryBoss::Update()
 	{
 		//登場ムービーが終わったことゲームに伝える
 		m_game->SetBossMovieFlag(true);
-		return;
 	}
+	else
+	{
+		//ムービースキップ処理
+		BossMovieSkip();
+		//画面を徐々に暗くする。暗くなったら処理が止まる
+		slowlyDarkScreen();
+		//ステート管理
+		ManageState();
+		//カメラ処理
+		ChaseBossCamera();
 
-	//ムービースキップ処理
-	BossMovieSkip();
-	//画面を徐々に暗くする。暗くなったら処理が止まる
-	slowlyDarkScreen();
-	//ステート管理
-	ManageState();
-	//カメラ処理
-	ChaseBossCamera();
+		MamageActionBossState();
 
-	MamageActionBossState();
-	Animation();
+		Animation();
+	}
+	
+	
 	m_model.Update();
 }
 
@@ -221,14 +244,22 @@ void EntryBoss::positionUp()
 
 void EntryBoss::InitSprite()
 {
-	m_lichCharInfo[L].m_CharRender.Init("Assets/sprite/InGame/BossAppearance/L.DDS", 243, 290);
-	SettingSpriteRender(m_lichCharInfo[L].m_CharRender, L_START_POS, START_SCALE, g_quatIdentity);
-	m_lichCharInfo[I].m_CharRender.Init("Assets/sprite/InGame/BossAppearance/I.DDS", 167, 290);
-	SettingSpriteRender(m_lichCharInfo[I].m_CharRender, I_START_POS, START_SCALE, g_quatIdentity);
-	m_lichCharInfo[C].m_CharRender.Init("Assets/sprite/InGame/BossAppearance/C.DDS", 280, 290);
-	SettingSpriteRender(m_lichCharInfo[C].m_CharRender, C_START_POS, START_SCALE, g_quatIdentity);
-	m_lichCharInfo[H].m_CharRender.Init("Assets/sprite/InGame/BossAppearance/H.DDS", 307, 290);
-	SettingSpriteRender(m_lichCharInfo[H].m_CharRender, H_START_POS, START_SCALE, g_quatIdentity);
+	m_summonerCharInfo[S].m_CharRender.Init("Assets/sprite/InGame/BossAppearance/S.DDS", 310, 300);
+	SettingSpriteRender(m_summonerCharInfo[S].m_CharRender, S_START_POS, START_SCALE, g_quatIdentity);
+	m_summonerCharInfo[U].m_CharRender.Init("Assets/sprite/InGame/BossAppearance/U.DDS", 280, 280);
+	SettingSpriteRender(m_summonerCharInfo[U].m_CharRender, U_START_POS, START_SCALE, g_quatIdentity);
+	m_summonerCharInfo[M_1].m_CharRender.Init("Assets/sprite/InGame/BossAppearance/M_1.DDS", 290, 280);
+	SettingSpriteRender(m_summonerCharInfo[M_1].m_CharRender, M_1_START_POS, START_SCALE, g_quatIdentity);
+	m_summonerCharInfo[M_2].m_CharRender.Init("Assets/sprite/InGame/BossAppearance/M_2.DDS", 270, 280);
+	SettingSpriteRender(m_summonerCharInfo[M_2].m_CharRender, M_2_START_POS, START_SCALE, g_quatIdentity);
+	m_summonerCharInfo[O].m_CharRender.Init("Assets/sprite/InGame/BossAppearance/O.DDS", 240, 290);
+	SettingSpriteRender(m_summonerCharInfo[O].m_CharRender, O_START_POS, START_SCALE, g_quatIdentity);
+	m_summonerCharInfo[N].m_CharRender.Init("Assets/sprite/InGame/BossAppearance/N.DDS", 280, 280);
+	SettingSpriteRender(m_summonerCharInfo[N].m_CharRender, N_START_POS, START_SCALE, g_quatIdentity);
+	m_summonerCharInfo[E].m_CharRender.Init("Assets/sprite/InGame/BossAppearance/E.DDS", 320, 280);
+	SettingSpriteRender(m_summonerCharInfo[E].m_CharRender, E_START_POS, START_SCALE, g_quatIdentity);
+	m_summonerCharInfo[R].m_CharRender.Init("Assets/sprite/InGame/BossAppearance/R.DDS", 330, 280);
+	SettingSpriteRender(m_summonerCharInfo[R].m_CharRender, R_START_POS, START_SCALE, g_quatIdentity);
 	
 	m_bossTextRender.Init("Assets/sprite/InGame/BossAppearance/Boss.DDS", 284, 84);
 	SettingSpriteRender(m_bossTextRender, BOSS_TEXT_POS, g_vec3One, g_quatIdentity);
@@ -239,50 +270,63 @@ void EntryBoss::InitSprite()
 
 void EntryBoss::InitLerpPosition()
 {
-	//「L」の始点と終点
-	m_lichCharInfo[L].m_startPosition = L_START_POS;
-	m_lichCharInfo[L].m_endPosition = L_END_POS;
-	//「I」の始点と終点
-	m_lichCharInfo[I].m_startPosition = I_START_POS;
-	m_lichCharInfo[I].m_endPosition = I_END_POS;
-	//「C」の始点と終点
-	m_lichCharInfo[C].m_startPosition = C_START_POS;
-	m_lichCharInfo[C].m_endPosition = C_END_POS;
-	//「I」の始点と終点
-	m_lichCharInfo[H].m_startPosition = H_START_POS;
-	m_lichCharInfo[H].m_endPosition = H_END_POS;
+	//「S」の始点と終点
+	m_summonerCharInfo[S].m_startPosition = S_START_POS;
+	m_summonerCharInfo[S].m_endPosition = S_END_POS;
+	//「U」の始点と終点
+	m_summonerCharInfo[U].m_startPosition = U_START_POS;
+	m_summonerCharInfo[U].m_endPosition = U_END_POS;
+	//「M_1」の始点と終点
+	m_summonerCharInfo[M_1].m_startPosition = M_1_START_POS;
+	m_summonerCharInfo[M_1].m_endPosition = M_1_END_POS;
+	//「M_2」の始点と終点
+	m_summonerCharInfo[M_2].m_startPosition = M_2_START_POS;
+	m_summonerCharInfo[M_2].m_endPosition = M_2_END_POS;
+	//「O」の始点と終点
+	m_summonerCharInfo[O].m_startPosition = O_START_POS;
+	m_summonerCharInfo[O].m_endPosition = O_END_POS;
+	//「N」の始点と終点
+	m_summonerCharInfo[N].m_startPosition = N_START_POS;
+	m_summonerCharInfo[N].m_endPosition = N_END_POS;
+	//「E」の始点と終点
+	m_summonerCharInfo[E].m_startPosition = E_START_POS;
+	m_summonerCharInfo[E].m_endPosition = E_END_POS;
+	//「R」の始点と終点
+	m_summonerCharInfo[R].m_startPosition = R_START_POS;
+	m_summonerCharInfo[R].m_endPosition = R_END_POS;
 }
 
 void EntryBoss::SpriteMove()
 {
-	if (m_lichTextCount == END)
+	//文字カウントが最後に達したら
+	if (m_summonerTextCount == END)
 	{
+		//フラグをセット
 		m_drawBOSSTextFlag = true;
 		return;
 	}
 	//補間率の計算
-	m_time += g_gameTime->GetFrameDeltaTime() * 3.8f;
+	m_time += g_gameTime->GetFrameDeltaTime() * 5.0f;
 
 	//文字の座標の線形補間
 	Vector3 LerpPos;
-	LerpPos.Lerp(m_time, m_lichCharInfo[m_lichTextCount].m_startPosition, m_lichCharInfo[m_lichTextCount].m_endPosition);
+	LerpPos.Lerp(m_time, m_summonerCharInfo[m_summonerTextCount].m_startPosition, m_summonerCharInfo[m_summonerTextCount].m_endPosition);
 	//文字のサイズの線形補間
 	Vector3 size;
 	size.Lerp(m_time, START_SCALE, END_SCALE);
 	//回転
 	Quaternion rot = g_quatIdentity;
 
-	//更新
-	m_lichCharInfo[m_lichTextCount].m_CharRender.SetTransForm(LerpPos, size, rot);
-	m_lichCharInfo[m_lichTextCount].m_CharRender.Update();
-
-
 	//一秒超えたら次の文字に切り替える
 	if (m_time >= 1.0f)
 	{
-		m_lichTextCount++;
+		m_summonerTextCount++;
 		m_time = 0.0f;
 	}
+	//座標の設定
+	m_summonerCharInfo[m_summonerTextCount].m_CharRender.SetTransForm(LerpPos, size, rot);
+	//更新
+	m_summonerCharInfo[m_summonerTextCount].m_CharRender.Update();
 }
 
 void EntryBoss::slowlyDarkScreen()
@@ -406,6 +450,7 @@ void EntryBoss::OnProcessRiseBossTransition()
 	// になったら次のステートに遷移
 	if (m_drawBOSSTextFlag == true)
 	{
+		//霧払いステートに遷移
 		m_enWholeState = enWholeState_FogRemoval;
 		return;
 	}
@@ -506,7 +551,7 @@ void EntryBoss::ChaseBossCamera()
 	m_toCameraPosForBoss.Lerp(m_chaseBossTime, m_pos1, m_pos2);
 
 	m_chaseBossTime += g_gameTime->GetFrameDeltaTime() * 0.12f;
-
+	//カメラの注視点を設定
 	Vector3 finalCameraPos = m_toCameraPosForBoss + m_target;
 
 	//視点と注視点を設定
@@ -558,7 +603,7 @@ void EntryBoss::DeleteTask()
 	{
 		m_CircleEffect->Stop();
 	}
-
+	//霧払いエフェクトの停止
 	if (m_FogRemovalEffect != nullptr)
 	{
 		m_FogRemovalEffect->Stop();
@@ -622,20 +667,36 @@ void EntryBoss::Render(RenderContext& rc)
 		return;
 	}
 
-	if (m_lichTextCount >= L)
+	if (m_summonerTextCount >= S)
 	{
-		m_lichCharInfo[L].m_CharRender.Draw(rc);
+		m_summonerCharInfo[S].m_CharRender.Draw(rc);
 	}
-	if (m_lichTextCount >= I)
+	if (m_summonerTextCount >= U)
 	{
-		m_lichCharInfo[I].m_CharRender.Draw(rc);
+		m_summonerCharInfo[U].m_CharRender.Draw(rc);
 	}
-	if (m_lichTextCount >= C)
+	if (m_summonerTextCount >= M_1)
 	{
-		m_lichCharInfo[C].m_CharRender.Draw(rc);
+		m_summonerCharInfo[M_1].m_CharRender.Draw(rc);
 	}
-	if (m_lichTextCount >= H)
+	if (m_summonerTextCount >= M_2)
 	{
-		m_lichCharInfo[H].m_CharRender.Draw(rc);
+		m_summonerCharInfo[M_2].m_CharRender.Draw(rc);
+	}
+	if (m_summonerTextCount >= O)
+	{
+		m_summonerCharInfo[O].m_CharRender.Draw(rc);
+	}
+	if (m_summonerTextCount >= N)
+	{
+		m_summonerCharInfo[N].m_CharRender.Draw(rc);
+	}
+	if (m_summonerTextCount >= E)
+	{
+		m_summonerCharInfo[E].m_CharRender.Draw(rc);
+	}
+	if (m_summonerTextCount >= R)
+	{
+		m_summonerCharInfo[R].m_CharRender.Draw(rc);
 	}
 }

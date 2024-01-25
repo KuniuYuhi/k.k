@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Arrow.h"
 #include "Bow.h"
+#include "Player.h"
 
 
 //todo　矢を回転させて飛ばす
@@ -33,11 +34,15 @@ Arrow::Arrow()
 
 Arrow::~Arrow()
 {
-	
+	DeleteGO(m_arrowCollision);
 }
 
 bool Arrow::Start()
 {
+	//勇者のインスタンスを探す
+	m_player = FindGO<Player>("player");
+
+	//モデルを初期化
 	InitModel();
 	
 	//装備
@@ -216,6 +221,7 @@ void Arrow::NormalShot()
 		DeleteGO(m_arrowCollision);
 		//矢が当たったので削除
 		DeleteGO(this);
+		return;
 	}
 	//6.移動
 	if (m_deleteTimer < m_flightDuration)
@@ -291,8 +297,10 @@ void Arrow::NormalShot()
 void Arrow::SkillShot()
 {
 	//敵にダメージを与えられるタイミングを設定
-
-
+	if (m_player->GetHittableFlag() != true)
+	{
+		m_player->SetHittableFlag(true);
+	}
 
 	//射撃開始座標から現在の座標に向かうベクトルを計算
 	Vector3 diff = m_arrowPos - m_shotStartPosition;

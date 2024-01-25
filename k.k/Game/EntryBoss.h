@@ -189,22 +189,26 @@ private:
 
 
 	/// <summary>
-	/// リッチの文字列ステート
+	/// サモナーの文字列
 	/// </summary>
-	enum EnLichName
+	enum EnCharSumonerName
 	{
-		L,
-		I,
-		C,
-		H,
+		S,
+		U,
+		M_1,
+		M_2,
+		O,
+		N,
+		E,
+		R,
 		END
 	};
 
 	struct LichCharInfo
 	{
-		SpriteRender m_CharRender;
-		Vector3 m_startPosition = g_vec3Zero;
-		Vector3 m_endPosition = g_vec3Zero;
+		SpriteRender m_CharRender;				//文字の画像
+		Vector3 m_startPosition = g_vec3Zero;	//線形補間開始座標
+		Vector3 m_endPosition = g_vec3Zero;		//線形補間終了座標
 	};
 
 	CameraCollisionSolver	m_cameraCollisionSolver;
@@ -235,7 +239,7 @@ private:
 	SpriteRender				m_bossTextRender;								//BOSS
 	SpriteRender				m_PressAButton;									//右下のテキストの画像
 
-	LichCharInfo				m_lichCharInfo[END];							//線形補間で使う始点と終点
+	LichCharInfo				m_summonerCharInfo[END];							//線形補間で使う始点と終点
 
 	float m_chaseBossTime = 0.0f;
 
@@ -245,7 +249,7 @@ private:
 	float						m_time = 0.0f;				
 
 	bool						m_GoTextFlag = false;							//文字画像の処理を始めるかのフラグ
-	int							m_lichTextCount = 0;
+	int							m_summonerTextCount = 0;	//ボスの文字のカウント
 
 	bool						m_drawBOSSTextFlag = false;
 

@@ -8,7 +8,7 @@
 #include "DecisionMeteoEndpoint.h"
 
 namespace {
-	const float DARK_METEO_MAX_SIZE = 30.0f;
+	const float DARK_METEO_MAX_SIZE = 20.0f;
 
 	const Vector3 DARK_METEO_POSITION = { 0.0f,550.0f,0.0f };
 
@@ -153,6 +153,32 @@ void DarkMeteo::OnProcessShotMeteoTranstion()
 	//メテオの最大生成数に達していないなら生成処理
 	if (m_shotMeteoCounter < CREATE_METEO_COUNT)
 	{
+		//for (m_shotMeteoCounter; 
+		//	m_shotMeteoCounter < CREATE_METEO_COUNT; 
+		//	m_shotMeteoCounter++)
+		//{
+		//	while (true)
+		//	{
+		//		//座標の設定
+		//		Vector3 meteoTargetPos = GetMeteoTargetPosition(
+		//			CharactersInfoManager::GetInstance()->GetPlayerInstance()->GetPosition());
+		//		//壁に落ちないならメテオを生成する
+		//		if (IsMeteoHitWall(meteoTargetPos) == false)
+		//		{
+		//			//メテオの生成とカウントを加算
+		//			CreateMeteo(meteoTargetPos);
+		//			//カウントを加算
+		//			//m_shotMeteoCounter++;
+		//			break;
+		//		}
+		//		else
+		//		{
+		//			//やり直し
+		//			continue;
+		//		}
+		//	}
+		//}
+
 		while (true)
 		{
 			//座標の設定
@@ -173,7 +199,6 @@ void DarkMeteo::OnProcessShotMeteoTranstion()
 				continue;
 			}
 		}
-
 		return;
 	}
 
@@ -255,7 +280,7 @@ bool DarkMeteo::IsShotMeteo()
 void DarkMeteo::InitDarkMeteoEffect()
 {
 	m_darkMeteoriteEffect = NewGO<EffectEmitter>(0);
-	m_darkMeteoriteEffect->Init(InitEffect::enEffect_DarkMeteorite);
+	m_darkMeteoriteEffect->Init(InitEffect::enEffect_Meteo);
 	m_darkMeteoriteEffect->Play();
 	m_darkMeteoriteEffect->SetPosition(m_darkMeteoPositon);
 	m_darkMeteoriteEffect->Update();

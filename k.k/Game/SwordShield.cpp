@@ -8,7 +8,7 @@ namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
 
-	const Vector3 SWORD_COLLISION_SIZE = { 12.0f,100.0f,5.0f };
+	const Vector3 SWORD_COLLISION_SIZE = { 12.0f,150.0f,5.0f };
 	const Vector3 SHIELD_COLLISION_SIZE = { 22.0f,40.0f,16.0f };
 
 	const float SKILL_RADIUS = 60.0f;
@@ -17,14 +17,15 @@ namespace {
 
 	//ステータス
 	const int POWER = 30;
+	const int SKILL_POWER = 50;
 	const int ENDURANCE = 70;		//武器の耐久力(盾の耐久力)。
 
 	const float MOVE_FORWARD_SPEED = 200.0f;
 
-	const float ATTACK_1COMBO_KNOCKBACK_POWER = 120.0f;
-	const float ATTACK_2COMBO_KNOCKBACK_POWER = 130.0f;
-	const float ATTACK_3COMBO_KNOCKBACK_POWER = 140.0f;
-	const float SKILL_KNOCKBACK_POWER = 180.0f;
+	const float ATTACK_1COMBO_KNOCKBACK_POWER = 140.0f;
+	const float ATTACK_2COMBO_KNOCKBACK_POWER = 160.0f;
+	const float ATTACK_3COMBO_KNOCKBACK_POWER = 180.0f;
+	const float SKILL_KNOCKBACK_POWER = 250.0f;
 }
 
 SwordShield::SwordShield()
@@ -48,7 +49,7 @@ bool SwordShield::Start()
 {
 	//武器のステータス初期化
 	m_status.InitWeaponStatus(
-		POWER, ENDURANCE
+		POWER, SKILL_POWER, ENDURANCE
 	);
 
 	//勇者のインスタンスを探す
@@ -320,16 +321,22 @@ void SwordShield::Render(RenderContext& rc)
 
 void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
+	//スキル使用時の攻撃処理
+	if (wcscmp(eventName, L"SwordShieldSkillAttack") == 0)
+	{
+		//メイン武器のスキル攻撃処理
+		ProcessSkillAttack();
+	}
 	//スキルのジャンプ処理
 	if (wcscmp(eventName, L"RisingSword") == 0)
 	{
 		//キーフレームがJampの間処理し続ける
-		ProcessRising();
+		//ProcessRising();
 	}
 	//スキルのジャンプ処理
 	if (wcscmp(eventName, L"FallSword") == 0)
 	{
 		//キーフレームがJampの間処理し続ける
-		ProcessFall();
+		//ProcessFall();
 	}
 }

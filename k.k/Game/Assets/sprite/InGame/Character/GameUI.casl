@@ -1,4 +1,4 @@
-23
+25
 9,Icon_Lich,55,../../Game/Assets/sprite/InGame/Character/Icon_Lich.png,-613.4615384615383,450.0,180,180,10,1.0,1.0,0.5,0.5,13,Icon_Lich.dds
 12,HP_Back_Boss,58,../../Game/Assets/sprite/InGame/Character/HP_Back_Boss.png,-9.615384615384528,448.07692307692304,978,57,10,1.0,1.0,0.5,0.5,16,HP_Back_Boss.dds
 13,HP_Front_Boss,59,../../Game/Assets/sprite/InGame/Character/HP_Front_Boss.png,-9.615384615384528,448.07692307692304,978,57,10,1.0,1.0,0.5,0.5,17,HP_Front_Boss.dds
@@ -22,3 +22,5 @@
 15,Player_HP_Flame,61,../../Game/Assets/sprite/InGame/Character/Player_HP_Flame.png,0.0,0.0,608,88,10,1.0,1.0,0.5,0.5,19,Player_HP_Flame.dds
 15,Player_HP_Front,61,../../Game/Assets/sprite/InGame/Character/Player_HP_Front.png,0.0,0.0,600,80,10,1.0,1.0,0.5,0.5,19,Player_HP_Front.dds
 15,Player_HP_White,61,../../Game/Assets/sprite/InGame/Character/Player_HP_White.png,0.0,0.0,600,80,10,1.0,1.0,0.5,0.5,19,Player_HP_White.dds
+9,Button_LB,55,../../Game/Assets/sprite/InGame/Character/Button_LB.png,709.6153846153848,17.307692307692264,80,66,10,1.0,1.0,0.5,0.5,13,Button_LB.dds
+9,Button_RB,55,../../Game/Assets/sprite/InGame/Character/Button_RB.png,711.5384615384617,-132.69230769230774,80,66,10,1.0,1.0,0.5,0.5,13,Button_RB.dds

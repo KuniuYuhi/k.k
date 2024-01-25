@@ -198,7 +198,6 @@ namespace nsK2EngineLow {
 		RenderTarget* rts[enGBufferNum] = {
 			&m_gBuffer[enGBufferAlbedoDepth],         // 0番目のレンダリングターゲット
 			&m_gBuffer[enGBufferNormal]             // 1番目のレンダリングターゲット
-			//& m_gBuffer[enGBufferWorldPos]              // 1番目のレンダリングターゲット
 		};
 
 		//まず、レンダリングターゲットとして設定できるようになるまで待つ

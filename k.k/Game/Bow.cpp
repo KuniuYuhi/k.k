@@ -9,6 +9,7 @@ namespace {
 
 	//ステータス
 	const int POWER = 30;
+	const int SKILL_POWER = 10;
 	const int ENDURANCE = 50;		//武器の耐久力(矢のストック)。
 
 	const float HITTABLE_TIME = 0.15f;
@@ -45,7 +46,7 @@ bool Bow::Start()
 {
 	//武器のステータス初期化
 	m_status.InitWeaponStatus(
-		POWER, ENDURANCE
+		POWER, SKILL_POWER, ENDURANCE
 	);
 
 	//勇者のインスタンスを探す
@@ -281,26 +282,27 @@ void Bow::Render(RenderContext& rc)
 
 void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
+	//攻撃方向を設定
+	if (wcscmp(eventName, L"AttackMoveSpeed") == 0)
+	{
+		m_brave->CalcAttackMoveSpeed();
+	}
+
 	//遠距離攻撃処理
 	if (wcscmp(eventName, L"LongRangeAttack") == 0)
 	{
-		
 		ProcessLongRangeAttack();
+	}
+
+	//スキルチャージ
+	if (wcscmp(eventName, L"SkillChage") == 0)
+	{
+		ProcessSkillAttack();
 	}
 
 	//スキルを撃った瞬間
 	if (wcscmp(eventName, L"SkillShot") == 0)
 	{
 		SkillShot();
-	}
-
-	//通常攻撃で弓を撃った時
-	/*if (wcscmp(eventName, L"MoveBackStart") == 0)
-	{
-		
-	}*/
-	if (wcscmp(eventName, L"ComboAcceptable") == 0)
-	{
-		m_brave->CalcAttackMoveSpeed();
 	}
 }
