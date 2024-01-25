@@ -92,6 +92,12 @@ public:
 	int GetAtk();
 
 	/// <summary>
+	/// 現在のキャラクターのスキルの攻撃力を返す
+	/// </summary>
+	/// <returns></returns>
+	int GetSkillAtk();
+
+	/// <summary>
 	/// 現在のコンボステートとダメージを受けた時のコンボステートが違うか
 	/// </summary>
 	/// <returns>違うならtrue,同じならfalse</returns>
