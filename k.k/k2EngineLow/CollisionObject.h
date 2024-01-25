@@ -134,6 +134,7 @@ namespace nsK2EngineLow {
 		/// <param name="rotation">çsóÒÅB</param>
 		void SetWorldMatrix(const Matrix& matrix)
 		{
+			
 			Vector3 position;
 			position.x = matrix.m[3][0];
 			position.y = matrix.m[3][1];
