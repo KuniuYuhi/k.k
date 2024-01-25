@@ -13,7 +13,7 @@ namespace {
 
 	const float METEO_COLLISION_SIZE = 30.0f;
 	const float METEO_EFFECT_SIZE = 8.0f;
-	const float RANGE_EFFECT_SIZE = 35.0f;
+	const float RANGE_EFFECT_SIZE = 40.0f;
 	//0.0065f
 	const float ADD_TIMER = 0.0065f;
 
@@ -94,7 +94,7 @@ bool Meteo::Start()
 
 	//メテオエフェクト再生
 	PlayMeteoEffect();
-
+	//メテオの爆発範囲エフェクト再生
 	PlayRangeEffect();
 
     return true;
