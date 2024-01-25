@@ -42,9 +42,9 @@ public:
 	Brave();
 	~Brave();
 
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
+	bool Start() override;
+	void Update() override;
+	void Render(RenderContext& rc) override;
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	//////////////////////////////////////////////////////////////
@@ -497,6 +497,19 @@ public:
 	/// </summary>
 	void CalcAttackMoveSpeed();
 
+	/// <summary>
+	/// 武器の情報を前の武器の情報に戻す。
+	/// </summary>
+	void BeforeWeaponInfo();
+
+	/// <summary>
+	/// 現在のスキルの攻撃力を取得
+	/// </summary>
+	/// <returns></returns>
+	int GetSkillAtk()
+	{
+		return m_mainUseWeapon.weapon->GetStatus().GetSkillAtk();
+	}
 
 private:
 	/// <summary>

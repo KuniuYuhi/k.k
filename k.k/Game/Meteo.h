@@ -29,11 +29,21 @@ public:
 	/// </summary>
 	int CalcDamageToDistance(const Vector3 targetPosition);
 
+	/// <summary>
+	/// メテオの移動処理
+	/// </summary>
 	void Move();
 
+	/// <summary>
+	/// 爆発当たり判定の生成
+	/// </summary>
 	void CreateExplosionCollision();
 
-
+	/// <summary>
+	/// 地面に触れたかの判定
+	/// </summary>
+	/// <param name="downValue">下にレイを飛ばすので、どのくらい下げるか</param>
+	/// <returns>触れたらtrue</returns>
 	bool IsGroundCheck(const float downValue);
 
 	/// <summary>
@@ -61,6 +71,11 @@ public:
 		return m_explosionFlag;
 	}
 
+	/// <summary>
+	/// ダメージを与える攻撃力の取得
+	/// </summary>
+	/// <returns></returns>
+	const int GetAttack() override;
 
 private:
 

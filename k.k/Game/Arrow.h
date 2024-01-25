@@ -3,6 +3,7 @@
 #include "WeaponBase.h"
 
 class Bow;
+class Player;
 
 class Arrow:public WeaponBase
 {
@@ -16,9 +17,9 @@ public:
 		enShotPatternState_Skill
 	};
 
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
+	bool Start() override;
+	void Update() override;
+	void Render(RenderContext& rc) override;
 
 	/// <summary>
 	/// •Ší‚ÌˆÚ“®ˆ—
@@ -184,6 +185,10 @@ private:
 	/// <param name="position">À•W</param>
 	void ApplyVector3ToMatirx(Matrix& baseMatrix, Vector3 position);
 
+
+private:
+
+	Player* m_player = nullptr;
 	
 	Bow* m_bow = nullptr;
 

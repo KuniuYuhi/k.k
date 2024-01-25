@@ -11,6 +11,9 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
     float chaseDistance
 )
 {
+    
+    forward.Normalize();
+
     //まずモンスターのリストクリア
     m_monstersPosition.clear();
 
@@ -29,8 +32,20 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
     //リストに追加
     m_monstersPosition.emplace_back(bossPos);
 
-    //仮の前方向
-    Vector3 temporaryForward = forward;
+    //モンスターに向かう前方向。初期値は移動方向
+    Vector3 monsterForward = forward;
+    //moveSpeedに相似性の高いベクトル
+    Vector3 NearmoveSpeedMonsterForward = moveSpeed;
+
+    //移動方向に向かうベクトル
+    Vector3 moveSpeedVector = charPosition;
+    moveSpeedVector.y = 0.0f;
+    moveSpeedVector.Add(moveSpeed);
+    //自身の座標から移動方向に向かうベクトル
+    Vector3 moveSpeedDiff = moveSpeedVector - charPosition;
+    //正規化
+    moveSpeedDiff.Normalize();
+
     //追跡距離内カウント
     int count = 0;
 
@@ -42,13 +57,25 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
         if (diff.Length() < chaseDistance)
         {
             //一番近い敵に向かうベクトルになる
-            temporaryForward = diff;
+            monsterForward = diff;
+
+            //正規化
+            diff.Normalize();
+            //移動方向と敵に向かうベクトルの相似性を調べる
+            float d = Dot(moveSpeedDiff,diff);
+            //相似性が0.5以上なら
+            if (d >= 0.5f)
+            {
+                //ベクトルを設定
+                NearmoveSpeedMonsterForward = diff;
+            }
+            //カウント加算
             count++;
         }
     }
 
     //敵に向かうベクトルを正規化
-    temporaryForward.Normalize();
+    monsterForward.Normalize();
 
     //前方向ベクトルの設定
     Vector3 forwardVector = charPosition;
@@ -60,21 +87,16 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
     forwardDiff.Normalize();
 
     
-    //移動方向に向かうベクトル
-    Vector3 moveSpeedVector = charPosition;
-    moveSpeedVector.y = 0.0f;
-    moveSpeedVector.Add(moveSpeed);
-    //自身の座標から移動方向に向かうベクトル
-    Vector3 moveSpeedDiff = moveSpeedVector - charPosition;
-    //正規化
-    moveSpeedDiff.Normalize();
+   
 
     //前方向と敵に向かう前方向の内積を求める
-    float t1 = Dot(temporaryForward, forwardDiff);
+    float t1 = Dot(monsterForward, forwardDiff);
    
     //前方向と移動方向の内積を求める
     float t2 = Dot(moveSpeedDiff, forwardDiff);
 
+    //敵に向かうベクトルと移動方向の内積を求める
+    float t3 = Dot(NearmoveSpeedMonsterForward, moveSpeedDiff);
 
 
     //敵の方向を調べる
@@ -90,18 +112,34 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
     //移動方向の入力がないなら敵の方向を優先する
     if (fabsf(moveSpeed.x) < 0.1f && fabsf(moveSpeed.z) < 0.1f)
     {
-        //敵に向かうベクトルが真横までなら
+        //入力がないかつ真横までに敵がいたら
         // 前方向を敵に向かうベクトルに変更
         if (t1 >= 0.0f)
         {
-            //前方向を正規化
-            temporaryForward.Normalize();
-            forward = temporaryForward;
+            //モンスターに向かう前方向を正規化
+            monsterForward.Normalize();
+            //前方向を代入
+            forward = monsterForward;
         }
-
         return;
     }
-
+    //移動方向の内積と敵に向かう内積がかなり似ているかつ
+    //敵が近くにいるカウント
+    //前方向を敵に向かうベクトルに書き換える
+    if (t3 >= 0.5 && count > 0)
+    {
+        //前方向を正規化
+        NearmoveSpeedMonsterForward.Normalize();
+        forward = NearmoveSpeedMonsterForward;
+        return;
+    }
+    else
+    {
+        //似ていなかったら引数の移動方向を前方向に設定
+        forward = moveSpeed;
+        forward.Normalize();
+        return;
+    }
     //移動の入力があったら
 
     //単位ベクトル同士の内積は-1から1の範囲。1になるほど似ている
@@ -110,30 +148,7 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
     //前方向と移動方向のベクトルの相似性が0.0ｆより大きいなら
     if (t2 >= 0.0f)
     {
-        //敵を一体も見つけていなかったら
-        //if (count == 0)
-        //{
-        //    //移動方向が前方向になる。真横まで
-        //    forward = moveSpeed;
-        //    forward.Normalize();
-        //    return;
-        //}
-
-        //移動方向の内積と敵に向かう内積がかなり似ていたら、
-        //前方向を敵に向かうベクトルに書き換える
-        if (abs(t1 - t2) < 0.5)
-        {
-            //前方向を正規化
-            temporaryForward.Normalize();
-            forward = temporaryForward;
-        }
-        else
-        {
-            //似ていなかったら引数の移動方向を前方向に設定
-            forward = moveSpeed;
-            forward.Normalize();
-            return;
-        }
+        
     }
     else
     {

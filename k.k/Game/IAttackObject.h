@@ -19,23 +19,21 @@ public:
 	{
 		m_attack = attack;
 	}
+
 	/// <summary>
-	/// UŒ‚—Í‚Ìæ“¾
+	/// ƒˆ‚ÈUŒ‚—Í‚ğæ“¾
 	/// </summary>
 	/// <returns></returns>
-	const int& GetAttack() const
+	const int& GetPureAttack()
 	{
 		return m_attack;
 	}
 
 	/// <summary>
-	/// •Ï“®‚·‚éUŒ‚—Í‚Ìæ“¾
+	/// ƒ_ƒ[ƒW‚ğ—^‚¦‚éUŒ‚—Í‚Ìæ“¾
 	/// </summary>
 	/// <returns></returns>
-	virtual const int& GetVariableAttack()
-	{
-		return 0;
-	}
+	virtual const int GetAttack();
 
 protected:
 

@@ -14,11 +14,17 @@ namespace {
 
 	//ステータス
 	const int POWER = 40;
+	const int SKILL_POWER = 70;
 	const int ENDURANCE = -1;		//武器の耐久力(耐久力概念なし)
 
 	const float HITTABLE_TIME = 0.5f;
 
 	const float MOVE_FORWARD_SPEED = 150.0f;
+
+	const float ATTACK_1COMBO_KNOCKBACK_POWER = 160.0f;
+	const float ATTACK_2COMBO_KNOCKBACK_POWER = 175.0f;
+	const float ATTACK_3COMBO_KNOCKBACK_POWER = 210.0f;
+	const float SKILL_KNOCKBACK_POWER = 320.0f;
 }
 
 struct IsGroundResult :public btCollisionWorld::ConvexResultCallback
@@ -46,6 +52,11 @@ BigSword::BigSword()
 {
 	SetMoveForwardSpeed(MOVE_FORWARD_SPEED);
 	SetWeaponPower(POWER);
+
+	m_knockPower_1combo = ATTACK_1COMBO_KNOCKBACK_POWER;
+	m_knockPower_2combo = ATTACK_2COMBO_KNOCKBACK_POWER;
+	m_knockPower_3combo = ATTACK_3COMBO_KNOCKBACK_POWER;
+	m_knockPower_Skill = SKILL_KNOCKBACK_POWER;
 }
 
 BigSword::~BigSword()
@@ -57,7 +68,7 @@ bool BigSword::Start()
 {
 	//武器のステータス初期化
 	m_status.InitWeaponStatus(
-		POWER, ENDURANCE
+		POWER, SKILL_POWER, ENDURANCE
 	);
 
 	//勇者のインスタンスを探す
@@ -114,6 +125,8 @@ void BigSword::ProcessSkillAttack()
 		g_quatIdentity,
 		SKILL_RADIUS
 	);
+	//
+	
 }
 
 void BigSword::InitModel()
@@ -247,7 +260,7 @@ bool BigSword::IsGround()
 		m_maxRisingPosition.x, m_maxRisingPosition.y, m_maxRisingPosition.z));
 	//終点はプレイヤーの座標。
 	end.setOrigin(btVector3(
-		endPosition.x*1.1f, endPosition.y * 1.1f, endPosition.z * 1.1f));
+		endPosition.x, endPosition.y * 3.0f, endPosition.z));
 	//壁の判定を返す
 	IsGroundResult callback_Ground;
 	//コライダーを始点から終点まで動かして。
@@ -278,17 +291,24 @@ void BigSword::Render(RenderContext& rc)
 
 void BigSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
+	//スキル使用時の攻撃処理
+	if (wcscmp(eventName, L"GreatSwordSkillAttack") == 0)
+	{
+		//メイン武器のスキル攻撃処理
+		ProcessSkillAttack();
+	}
+
 	//スキルのジャンプ処理
 	if (wcscmp(eventName, L"RisingGreatSword") == 0)
 	{
 		//キーフレームがJampの間処理し続ける
-		ProcessRising();
+		//ProcessRising();
 	}
 	//スキルのジャンプ処理
 	if (wcscmp(eventName, L"FallGreatSword") == 0)
 	{
 		//キーフレームがJampの間処理し続ける
-		ProcessFall();
+		//ProcessFall();
 	}
 }
 

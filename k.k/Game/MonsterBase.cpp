@@ -202,7 +202,7 @@ void MonsterBase::HitNormalAttack()
 
 void MonsterBase::HitSkillAttack()
 {
-	m_damage = m_player->GetAtk();
+	m_damage = m_player->GetSkillAtk();
 	//ダメージを受ける処理
 	Damage(m_damage);
 	//ダメージを表示

@@ -48,13 +48,10 @@ void CharactersInfoManager::SearchMonstersNearPlayer()
 		return;
 	}
 
-
-	//追いかけるモンスターの配列。モンスターの総数とm_mobMonstersの配列の番号
-	//行列
-	//float chaseMonsters[NUM_MONSTERS][2];
 	//モンスターの番号のカウント
 	int monsterNumberCount = 0;
 
+	//追いかけるモンスターの配列。モンスターの総数とm_mobMonstersの配列の番号
 	//列行
 	std::vector<std::vector<float>> array =
 	{ {-1.0f,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f,-1.0f,-1.0f,-1.0f,-1.0f },
@@ -73,18 +70,13 @@ void CharactersInfoManager::SearchMonstersNearPlayer()
 		//距離が一定以下なら
 		if (diff.Length() < MONSTER_NEAR_PLAYER_DISTANCE)
 		{
-			//座標とモンスターの番号を保存
-			//chaseMonsters[m_monstersNearPlayerCount][0] = diff.Length();
-			//chaseMonsters[m_monstersNearPlayerCount][1] = monsterNumberCount;
-		
+			//ベクトルとモンスターの配列の番号を設定
 			array[0][m_monstersNearPlayerCount] = diff.Length();
 			array[1][m_monstersNearPlayerCount] = monsterNumberCount;
 
 			//カウントを加算
 			m_monstersNearPlayerCount++;
 		}
-		
-
 		//カウント加算
 		monsterNumberCount++;
 	}
@@ -95,7 +87,7 @@ void CharactersInfoManager::SearchMonstersNearPlayer()
 		return;
 	}
 
-
+	//リストをモンスターが近い順に入れ替える
 	for (int i = 0; i < m_monstersNearPlayerCount; i++)
 	{
 		for (int j = i + 1; j < m_monstersNearPlayerCount; j++)
@@ -110,51 +102,21 @@ void CharactersInfoManager::SearchMonstersNearPlayer()
 				temp = array[1][i];
 				array[1][i] = array[1][j];
 				array[1][j] = temp;
-
 			}
-
-			//if (chaseMonsters[i][0] > chaseMonsters[j][0])
-			//{
-			//	//長さの入れ替え
-			//	int temp = chaseMonsters[i][0];
-			//	chaseMonsters[i][0] = chaseMonsters[j][0];
-			//	chaseMonsters[j][0] = temp;
-			//	//番号の入れ替え
-			//	temp = chaseMonsters[i][1];
-			//	chaseMonsters[i][1] = chaseMonsters[j][1];
-			//	chaseMonsters[j][1] = temp;
-
-			//}
 		}
 	}
-
-
-	
-
-
-
-	//for (int i = 0; i < NUM_ENABLE_CHASE_PLAYER; i++)
-	//{		
-	//	//-１の時はもうリストがないので処理を終わる
-	//	/*if (chaseMonsters[i][1] == -1)
-	//	{
-	//		break;
-	//	}*/
-
-	//	//このモンスターはプレイヤーを追いかけられる！
-	//	//m_mobMonsters[chaseMonsters[i][1]]->SetEnableChasePlayerFag(true);
-	//}
-	
-
+	//プレイヤーに近づけるモンスターの数繰り返す
 	for (int i = 0; i < m_monstersNearPlayerCount; i++)
 	{
+		//プレイヤーを追いかけることができる数
 		if (i < NUM_ENABLE_CHASE_PLAYER)
 		{
-			//int a = 0;
+			//このモンスターは追いかけられる
 			m_mobMonsters[array[1][i]]->SetEnableChasePlayerFag(true);
 		}
 		else
 		{
+			//追いかけられる数を超えたら終了
 			return;
 		}
 	}

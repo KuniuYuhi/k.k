@@ -57,6 +57,7 @@ void Player::Update()
 
 bool Player::IsInaction()
 {
+	//Ÿ”s‚ªŒˆ‚Ü‚Á‚Ä‚¢‚½‚ç
 	if (m_decisionOutComeFlag == true)
 	{
 		return true;
@@ -113,6 +114,11 @@ int Player::GetAtk()
 	return m_brave->GetStatus().GetAtk();
 }
 
+int Player::GetSkillAtk()
+{
+	return m_brave->GetSkillAtk();
+}
+
 bool Player::IsComboStateSame()
 {
 	return m_brave->IsComboStateSame();
@@ -143,10 +149,6 @@ void Player::ProcessPlayerDead()
 	{
 		return;
 	}
-
-
-
-
 }
 
 
