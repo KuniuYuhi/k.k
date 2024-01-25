@@ -1,11 +1,13 @@
 # FANTASY BATTLE
+
+
+<img src="README_IMAGE\TitleFull.png" width="600" alt="タイトル">  
+
+---
 河原電子ビジネス専門学校　
 ゲームクリエイター科2年<br>
 氏名：国宇雄飛<br>
-## 紹介動画
-動画<br>
 ## 目次
-- [紹介動画](#紹介動画)
 - [1.作品概要](#1作品概要)
 - [2.担当ソースコード](#2担当ソースコード)
 - [3.操作説明](#3操作説明)
@@ -474,7 +476,12 @@
   
 このゲームは、制限時間内にステージのボスを倒すとゲームクリアになります。  
 プレイヤーは、ソード＆シールド、グレイトソード、ボウ＆アローの3つの武器を使い分けて戦います。  
-バトルにはフェーズが存在し、一定時間ごとにフェーズが進み、敵を生成します。フェーズが進行すると、前のフェーズに存在したモブモンスターは消滅します。第4フェーズに進行すると、モブモンスターが出現しない時間となりフェーズ終了後、第1フェーズに戻り以降ループします。
+バトルにはフェーズが存在し、一定時間ごとにフェーズが進み、敵を生成します。フェーズが進行すると、前のフェーズに存在したモブモンスターは消滅します。第4フェーズに進行すると、モブモンスターが出現しない時間(休憩時間)となりフェーズ終了後、第1フェーズに戻り以降ループします。  
+
+<video width="640" height="450" controls>
+  <source src="README_IMAGE\movie\FantasyBattle.mp4" type="video/mp4">
+  <source src="README_IMAGE\movie\FantasyBattle.mp3" type="audio/mp3">
+</video>  
 
   <div style="text-align: right;">
 
@@ -485,8 +492,6 @@
 
 ### 4.2 演出について
 
-
-
 #### 1.タイトルとバトル開始時
 
 タイトル画面はゲームを始めたときに一番最初に見る画面なので、少しでも遊んでくれた方の印象に残って欲しいと思ったので、3Dにしました。
@@ -496,7 +501,7 @@
 ゲームを始めるときに主人公が崖から飛び降りる演出を入れたことで、これから主人公が戦いに行くという状況が伝わりやすくなったと思います。  
 <img src="README_IMAGE/movie/CliffJamp.gif" width="600" alt="タイトル画面">   
 
-ローディングが終わると、主人公が地上に着地します。タイトル画面からの繋がりを感じられるようにしました。。
+ローディングが終わると、主人公が地上に着地します。タイトル画面からの繋がりを感じられるようにしました。
 <img src="README_IMAGE/movie/Landing.gif" width="600" alt="タイトル画面">  
 
   <div style="text-align: right;">
@@ -522,54 +527,61 @@
 ---
 
 ### 4.3 プレイヤーについて
-プレイヤーの状態はステートパターンを利用してステートで管理しています。また、ポリモーフィズムを利用することで同じ変数で違う処理を行えるようにし、行動の追加を容易にしました。
-同じステートが武器の数だけあると、状態遷移する際に武器の違いによる処理が複雑になるため、全ての武器で同じステートを利用できるようにしました。  
+プレイヤーの状態はステートパターンを利用してステートで管理しています。また、ポリモーフィズムを利用することで、同じ関数で違う処理を行えるようにし、行動の追加を容易にしました。  
+同じステートが武器の数だけあると、状態遷移する際に武器の違いによる処理が複雑になるため、全ての武器で同じステートクラスを利用できるようにしました。  
+
+<video width="480" height="360" controls>
+  <source src="README_IMAGE\movie\WeaponMove.mp4" type="video/mp4">
+</video>  
+
+
+#### a.武器ごとのアニメーション処理の統一
+
+下記のコードはアニメーションを再生する処理で、引数のアニメーションクリップの番号のアニメーションを再生する処理です。武器ごとにこの関数があると処理が複雑になるので、引数の決め方を工夫して改善しました。
+```c++
+//Brave::enAnimClip_Sprint＝再生するアニメーション
+m_brave->GetModelRender().PlayAnimation(Brave::enSwordShieldAnimClip_Sprint);
+```
+
+まず、アニメーションクリップの総数に武器のアニメーションクリップの最初の番号を足してアニメーションをロードしました。アニメーションクリップは、アニメーションの名前を記した列挙型です。
 ```c++
 // アニメーションクリップの番号を表す列挙型。
 enum EnAnimationClip {
-	enAnimClip_Idle,
-	enAnimClip_Sprint,
+	enAnimClip_Idle,          //待機アニメーションクリップ
+	enAnimClip_Sprint,        //移動アニメーションクリップ
         ・
         ・
         ・
-	enAnimClip_Num
+	enAnimClip_Num            //アニメーションクリップの総数
 };
 
-//メイン武器のアニメーションクリップの最初の番号
+//メイン武器(剣＆盾)のアニメーションクリップの最初の番号
 const int m_mainWeaponAnimationStartIndexNo = 0;						
-//サブ武器のアニメーションクリップの最初の番号
+//サブ武器(両手剣)のアニメーションクリップの最初の番号。((剣＆盾)の最後のアニメーションクリップの次の番号)
 const int m_subWeaponAnimationStartIndexNo = enAnimClip_Num * 1;		
-//サブ２武器のアニメーションクリップの最初の番号
+//サブ２武器(弓＆矢)のアニメーションクリップの最初の番号。((両手剣)の最後のアニメーションクリップの次の番号)
 const int m_subWeapon2AnimationStartIndexNo = enAnimClip_Num * 2;
-// アニメーションクリップ。アニメーションの数×武器の数。
+
+// アニメーションクリップ。全てのアニメーションの番号を記録する
+//アニメーションクリップの配列＝アニメーションの総数×武器の数。
 AnimationClip	m_animationClip[enAnimClip_Num * AnimationClipGroup_Num];
 ```  
-アニメーションクリップの総数に武器のアニメーションクリップの最初の番号を足してアニメーションをロードしました。
+
+次に、アニメーションをロードします。
+mainWeaponAnimationStartIndexNoの値がそれぞれの武器のアニメーションクリップの最初の番号になっています。    
 ```c++
-/// <summary>
-/// ソード＆シールドのアニメーションクリップのロード
-/// </summary>
-/// <param name="mainWeaponAnimationStartIndexNo">アニメーションクリップの最初の番号</param>
-void Brave::RoadOneHandSwordAnimationClip(int mainWeaponAnimationStartIndexNo)
-{
-  // 片手剣のアニメーションクリップをロードするためのペアクラス
-  const std::pair<const char*, bool> oneHandedSwordAnimClipFilePaths[] = {  {"Assets/animData/character/Player/OneHandSword/Idle.tka",true},  {"Assets/animData/character/Player/OneHandSword/Sprint.tka",true},
-          ・
-          ・
-          ・
-{"None",false}
-  };
-  //設定したoneHandedSwordAnimClipFilePathsを使ってアニメーションクリップをロード、ループフラグを設定
-  //enAnimClip_Numはアニメーションクリップの数
-  //mainWeaponAnimationStartIndexNoは武器のアニメーションクリップの最初の番号
-  for (int i = 0; i < enAnimClip_Num; i++) {
-	  m_animationClip[mainWeaponAnimationStartIndexNo + i].Load(oneHandedSwordAnimClipFilePaths[i].first);
-	  m_animationClip[mainWeaponAnimationStartIndexNo + i].SetLoopFlag(oneHandedSwordAnimClipFilePaths[i].second);
-  }
+//oneHandedSwordAnimClipFilePaths.first＝アニメーションファイルのファイルパス
+//oneHandedSwordAnimClipFilePaths.second＝アニメーションのループフラグ
+//enAnimClip_Numはアニメーションクリップの数
+//mainWeaponAnimationStartIndexNoは武器のアニメーションクリップの最初の番号
+for (int i = 0; i < enAnimClip_Num; i++) {
+  //アニメーションのロード
+	m_animationClip[mainWeaponAnimationStartIndexNo + i].Load(oneHandedSwordAnimClipFilePaths[i].first);
+  //アニメーションのループフラグの設定
+	m_animationClip[mainWeaponAnimationStartIndexNo + i]SetLoopFlag(oneHandedSwordAnimClipFilePaths[i].second);
 }
 ```
-この関数が武器ごとに存在しています。mainWeaponAnimationStartIndexNoの値がそれぞれの武器のアニメーションクリップの最初の番号になっています。  
-最終的にm_animationClip[]にはこのように格納されます。  
+最終的にm_animationClip[]にはこのように格納されます。
 ```c++
 m_animationClip[]={
   ソード＆シールドの時のアニメーション × enAnimClip_Num,
@@ -589,8 +601,16 @@ m_animationClip[]={
 | 〃              | 移動  | 7       | 
 | 〃              | 攻撃  | 8       | 
 
-アニメーションを再生する際に、再生したいアニメーションクリップの番号と現在の武器のアニメーションクリップの最初の番号を足すことで、武器ごとに使うステートを変えずにアニメーションを再生できるようにしました。  
-<img src="README_IMAGE/movie/weaponWorldPos.gif" width="600" alt="武器切り替えの処理">  
+
+そして、アニメーションを再生する際に、再生したいアニメーションクリップの番号と現在の武器のアニメーションクリップの最初の番号を足すことで、どの武器でも同じ関数を使ってアニメーションを再生できるようにしました。  
+<img src="README_IMAGE/StateCycle.png" width="600" alt="武器切り替えの処理">  
+
+#### b.攻撃時の移動方向
+プレイヤーは、剣で攻撃するときに前進、弓で攻撃するときに後退します。ですが、モンスターの前で攻撃したときに、入力した方向によっては前進したときにモンスターとすれ違って攻撃が当たらないことがありました。  
+そのため、入力方向＞ボスモンスター＞モブモンスター＞前方向のように優先度をつけてモンスターの方向に向かって攻撃が当たるようにしました。また入力方向とモンスターに向かう方向の内積の相似性が高い場合にモンスターの方向に向かうようにしました。  
+<img src="README_IMAGE/AttackVector.png" width="600" alt="攻撃移動ベクトル">  
+
+<img src="README_IMAGE/movie/comboVector.gif" width="600" alt="攻撃移動ベクトル動画">  
 
   <div style="text-align: right;">
 
@@ -601,30 +621,49 @@ m_animationClip[]={
 
 ### 4.4 武器について
 
-武器の座標、回転は、主人公のモデルの手のボーンからワールド座標を取得して設定しています。ですが、主人公の向きによって回転の仕方がおかしくなっていました。  
+武器は主人公のモデルとは別で用意していて、武器の座標、回転を、主人公のモデルの手のボーンからワールド座標を取得して設定しています。  
+ですが、この方法では武器の回転の挙動がおかしくなっていました。  
 <img src="README_IMAGE/movie/weaponWorldPos.gif" width="600" alt="武器のワールド座標(失敗)">  
 
-この時点でのワールド座標の設定の仕方
+調べてみると、原因はrotation.SetRotation(matrix)で回転を設定する際のmatrixの回転成分が正規化されたものではないからでした。  
+ワールド座標の取得先のモデル(主人公)のrootボーンの拡大率が変更されていました。下記の関数では、回転成分を取得するときに拡大縮小成分が混ざって正規化されなかったので、武器の回転がおかしくなっていました。  
+
+設定に使う行列
+|        |       |         |      | 
+| ------ | ----- | ------- | ---- | 
+| 0.27   | 0.21  | -0.18   | 0.00 | 
+| 0.13   | -0.32 | -0.18   | 0.00 | 
+| -0.25  | 0.06  | -0.29   | 0.00 | 
+| -23.15 | 22.66 | -401.37 | 1.00 | 
+
 ```c++
 /// <summary>
-/// 行列を設定。
+/// 行列から座標と回転を設定。
 /// </summary>
-/// <param name="rotation">行列。</param>
+/// <param name="matrix">行列。</param>
 void SetWorldMatrix(const Matrix& matrix)
 {
 	Vector3 position;
 	position.x = matrix.m[3][0];
 	position.y = matrix.m[3][1];
 	position.z = matrix.m[3][2];
+  //座標の設定
 	SetPosition(position);
 	Quaternion rotation;
-  //回転成分を抽出して
+  //行列から回転成分を抽出して回転を設定
 	rotation.SetRotation(matrix);
 	SetRotation(rotation);
 }
 ```
-原因は,rotation.SetRotation(matrix)で回転を設定する際のmatrixの回転成分が正規化されたものではないからでした。読み込んだモデルのボーンの拡大率が変更されていたため、上記のコードの回転の設定の仕方では、回転成分に拡大縮小成分が混ざっていて、正規化されていなかったので武器の向きがおかしくなっていました。  
-画像
+混ざっている回転成分と拡大縮小成分を分けることが出来なかったので、今回は、モデルの情報を設定、更新しているmodelクラスの変数m_worldMatrixを使って直接ワールド座標を設定しました。  
+```c++
+//ワールド座標を更新
+void UpdateWorldMatrix(const Matrix& mat)
+{
+	m_worldMatrix = mat;
+}
+```
+<img src="README_IMAGE/movie/WeaponWorldPos_Success.gif" width="600" alt="武器のワールド座標(成功)">  
 
 
 
@@ -658,7 +697,7 @@ void SetWorldMatrix(const Matrix& matrix)
 
 モンスターの状態も主人公と同様ステートパターンで管理しています。
 そして、モンスターの行動を管理、調整、追加をしやすくするために、階層型ステートマシンを作成しました。階層型ステートマシンを作成した理由は、単にステートを増やしていくと遷移条件の管理や変更が大変だったためです。ステートを階層化することで、ステートを内包するより大きなステートを形成しました。その結果、状態の管理、追加、変更が容易くなりました。  
-画像  
+<img src="README_IMAGE/MonsterState.png" width="600" alt="モブモンスターのステートマシン図">  
 
 #### 1.モブモンスターの挙動
 モブモンスターは「追跡」と「巡回」の2つのステートマシンを作成しました。
@@ -666,6 +705,17 @@ void SetWorldMatrix(const Matrix& matrix)
 また、全てのモブモンスターで共通のステートマシンを使うことで、追跡距離や視野角をモブモンスター側で変更するだけで、モンスターによって違った動きができます。
 <img src="README_IMAGE/mob_stateMachine.png" width="600" alt="モブモンスターのステートマシン図">  
 
+#### a.モブモンスターのノックバック
+
+モブモンスターはプレイヤーに攻撃されると、ノックバックします。ノックバックすることで、プレイヤーから一方的に攻撃されないようにしました。  
+<img src="README_IMAGE/movie/KnockBack.gif" width="600" alt="モブモンスターが沢山ついてきている">  
+
+#### b.モブモンスターの追跡
+モンスターがプレイヤーを追いかけたときに、何体もモンスターがついてくると、プレイヤーがモンスターに囲まれて逃げられなくなったり、敵の列ができて見栄えが良くなくなってしまいます。  
+<img src="README_IMAGE/movie/Monsters.gif" width="600" alt="モブモンスターが沢山ついてきている">  
+そのため、プレイヤーに近づけるモンスターを制限して、プレイヤーの逃げ道を作れるようにしました。  
+今回は、プレイヤーに近づけるモンスターの数を3体にしています。  
+<img src="README_IMAGE/movie/MonsterAssembly.gif" width="600" alt="モブモンスターの近づける数制限">  
 
 
 <div style="text-align: right;">
@@ -677,10 +727,24 @@ void SetWorldMatrix(const Matrix& matrix)
 ボスは「警戒」と「攻撃」の2つのステートマシンを作成しました。「警戒」ステートマシンでは、ボスはその場から動かず、常にプレイヤーに目線を向けます。またプレイヤーがしばらくの間近くにいると、ノックバック攻撃を行ってプレイヤーを自身から遠ざけます。一定時間待機すると「攻撃」ステートマシンに遷移し、プレイヤーの距離によって違った攻撃を行います。
 <img src="README_IMAGE/Boss_stateMachine.png" width="600" alt="モブモンスターのステートマシン図">  
 
+#### a.ボスのアクション
+
+
+- ダークメテオ  
+プレイヤーの周囲に隕石を落とします。  
+この行動をする際の条件は、ボスがダメージを受けた回数やプレイヤーとの距離の遠さをポイントにして、合計したポイントが一定値に達したらこの行動に決定します。
+<img src="README_IMAGE/movie/DarkMeteo.gif" width="600" alt="ダークメテオ">  
+
+- ダークスピア  
+自身の周囲から棘を出現させてプレイヤーにダメージを与えます。出現する棘はsin曲線を利用して拡大率を変更しています。  
+<img src="README_IMAGE/movie/DarkSpear.gif" width="600" alt="ダークスピア">  
+
 <div style="text-align: right;">
 
 #### [目次に戻る](#目次)
 </div>
+
+---
 
 ## 5.その他
 
