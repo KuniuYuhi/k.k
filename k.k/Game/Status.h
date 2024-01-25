@@ -17,6 +17,8 @@ private:
 	int maxEndurance = 0;		//耐久値の最大値
 	int endurance = 0;		//耐久値。耐久値の概念が必要ないなら-1に設定する
 
+	int skillAtk = 0;		//スキルの攻撃力
+
 public:
 
 	/// <summary>
@@ -42,10 +44,11 @@ public:
 	/// </summary>
 	/// <param name="Atk"></param>
 	/// <param name="Endurance"></param>
-	void InitWeaponStatus(int Atk, int Endurance)
+	void InitWeaponStatus(int Atk, int SkillAtk, int Endurance)
 	{
 		defaultAtk = Atk;
-		atk = defaultAtk = Atk;
+		atk = defaultAtk;
+		skillAtk = SkillAtk;
 		maxEndurance = Endurance;
 		endurance = maxEndurance;
 	}
@@ -90,6 +93,23 @@ public:
 	const int& GetAtk() const
 	{
 		return atk;
+	}
+
+	/// <summary>
+	/// スキルの攻撃力を設定
+	/// </summary>
+	/// <param name="setSkillAtk"></param>
+	void SetSkillAtk(int setSkillAtk)
+	{
+		skillAtk = setSkillAtk;
+	}
+	/// <summary>
+	/// スキルの攻撃力を取得
+	/// </summary>
+	/// <returns></returns>
+	const int& GetSkillAtk() const
+	{
+		return skillAtk;
 	}
 
 	/// <summary>
