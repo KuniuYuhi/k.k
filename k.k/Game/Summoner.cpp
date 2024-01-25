@@ -211,15 +211,14 @@ void Summoner::HitNormalAttack()
 
 void Summoner::HitSkillAttack()
 {
-	//スキル攻撃を受けられないなら
+	//スキル攻撃を受けられないならダメージ処理をしない(多段ヒットのため)
 	if (m_player->GetHittableFlag() != true)
 	{
-		m_player->SetHittableFlag(true);
 		return;
 	}
 	m_damageFlag = true;
-	Damage(m_player->GetAtk());
-	CreateDamageFont(m_player->GetAtk());
+	Damage(m_player->GetSkillAtk());
+	CreateDamageFont(m_player->GetSkillAtk());
 	//多段ヒットしたのでフラグをリセット。多段ヒットでなくとも
 	m_player->SetHittableFlag(false);
 }
