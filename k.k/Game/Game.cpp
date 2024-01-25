@@ -154,7 +154,7 @@ void Game::CreatePlayerAndCamera()
 void Game::CreateBattlePhase()
 {
 	//バトルフェーズ処理クラス生成
-	//m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
+	m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
 }
 
 void Game::InitSkyCube()
@@ -526,33 +526,10 @@ void Game::InitGameObject()
 	else if (GameManager::GetInstance()->GetGameSeenState() ==
 		GameManager::enGameSeenState_Game)
 	{
-
 		//ボスの生成
 		CreateBoss();
-		//スライム生成
-		/*Slime* slime = NewGO<Slime>(0, "slime");
-		slime->SetPosition({ -150.0f, 0.0f, 500.0f });*/
-		////スライム生成
-		//Slime* slime1 = NewGO<Slime>(0, "slime");
-		//slime1->SetPosition({100.0f,0.0f,100.0f});
-		////スライム生成
-		//Slime* slime2 = NewGO<Slime>(0, "slime");
-		//slime2->SetPosition({ 200.0f,0.0f,100.0f });
-		////スライム生成
-		/*Slime* slime3 = NewGO<Slime>(0, "slime");
-		slime3->SetPosition({ 100.0f,0.0f,200.0f });*/
-
-		/*Cactus* cactus = NewGO<Cactus>(0, "cactus");
-		cactus->SetPosition({ 0.0f, 0.0f, 200.0f });*/
-
-		/*Mushroom* mush = NewGO<Mushroom>(0, "mush");
-		mush->SetPosition({ -150.0f, 0.0f, 200.0f });*/
-
-		/*TurtleShell* tu = NewGO<TurtleShell>(0, "aa");
-		tu->SetPosition(g_vec3Zero);*/
-
+		//プレイヤーとカメラクラスの生成
 		CreatePlayerAndCamera();
-
 	}
 
 	
