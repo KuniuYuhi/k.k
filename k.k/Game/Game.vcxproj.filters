@@ -433,7 +433,9 @@
     <ClCompile Include="IAttackObject.cpp">
       <Filter>AttackObject</Filter>
     </ClCompile>
-    <ClCompile Include="ComboFinishBomb.cpp" />
+    <ClCompile Include="ComboFinishBomb.cpp">
+      <Filter>AttackObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -833,6 +835,8 @@
     <ClInclude Include="IAttackObject.h">
       <Filter>AttackObject</Filter>
     </ClInclude>
-    <ClInclude Include="ComboFinishBomb.h" />
+    <ClInclude Include="ComboFinishBomb.h">
+      <Filter>AttackObject</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
