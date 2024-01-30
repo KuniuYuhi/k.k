@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "Summoner.h"
+
+#include "InitEffect.h"
 //マネージャー
 #include "CharactersInfoManager.h"
 #include "GameManager.h"
 //ステートマシン
-//#include "IBossStateMachine.h"
 #include "SummonerSM_Attack.h"
 #include "SummonerSM_Vigilance.h"
 //各種ステート
@@ -28,11 +29,10 @@
 #include "SummonerState_DarkSpearMain.h"
 #include "SummonerState_DarkSpearEnd.h"
 #include "SummonerState_DarkSpearStart.h"
-//#include "SummonerState_Vigilance.h"
-
 //技でだすオブジェクト
 #include "DarkBall.h"
 #include "DarkWall.h"
+#include "ComboFinishBomb.h"
 
 //todo スーパーアーマーがある間はのけぞらない
 //壊れたらたまにのけぞる
@@ -49,6 +49,11 @@ namespace {
 
 	const float ROT_SPEED = 5.0f;
 	const float ROT_ONLY_SPEED = 5.0f;
+
+	const Vector3 NORMAL_ATTACK_COLLISION_SIZE = { 20.0f, 430.0f,100.0f };
+	const float NORMAL_ATTACK_1_SIZE = 17.0f;
+	const float NORMAL_ATTACK_2_SIZE = 30.0f;
+	const Vector3 KNOCKBACK_EFFECT_SIZE = { 30.0f,17.0f,30.0f };
 }
 
 Summoner::Summoner()
@@ -482,27 +487,27 @@ void Summoner::InitModel()
 
 	//ダークウォールに使うボーンID取得
 	m_darkWallBoonId = m_modelRender.FindBoneID(L"Staff");
-
+	//通常攻撃３で使うボーンのID取得
+	m_comboFinishBoonId = m_modelRender.FindBoneID(L"Index_Proximal_R");
+	//ハンドLのボーンのID取得
+	m_handLBoonId = m_modelRender.FindBoneID(L"Hand_L");
 
 }
 
 void Summoner::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
-	//ノックバックタイミング
+	//ノックバックタイミングイベントキーフレーム
 	if (wcscmp(eventName, L"KnockBack") == 0)
 	{
-		////ノックバック
+		//ノックバック
 		ProcessKnockBack();
 	}
-
-	//ダークウォール生成タイミング
+	//ダークウォール生成イベントキーフレーム
 	if (wcscmp(eventName, L"Create_DarkWall") == 0)
 	{
-
 		CreateDarkWall();
 	}
-
-	//ダークウォール生成終わり
+	//ダークウォール生成終了イベントキーフレーム
 	if (wcscmp(eventName, L"CreateEnd_DarkWall") == 0)
 	{
 		if (m_darkWall != nullptr)
@@ -510,25 +515,51 @@ void Summoner::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 			DeleteGO(m_darkWall);
 		}
 	}
-	//ダークボール生成タイミング
+	//ダークボール生成イベントキーフレーム
 	if (wcscmp(eventName, L"Create_Ball") == 0)
 	{
 		//ボール生成
 		CreateDarkBall();
 	}
-
 	//通常攻撃当たり判定生成
 	if (wcscmp(eventName, L"Create_NormalAttackCollision") == 0)
 	{
 		//このアニメーションキーフレームの間当たり判定生成
 		CreateNormalAttackCollision();
 	}
-
-	//通常攻撃の最後の爆発
+	//通常攻撃１のイベントキーフレーム
+	if (wcscmp(eventName, L"PlayNormalAttack1Effect") == 0)
+	{
+		Vector3 pos = g_vec3Zero;
+		Quaternion rot = g_quatIdentity;
+		SettingEffectInfo(
+			pos, rot, m_modelRender.GetBone(m_handLBoonId)->GetWorldMatrix()
+		);
+		//攻撃エフェクト再生
+		PlayNormalAttack1Effect(pos,rot);
+	}
+	//通常攻撃２のイベントキーフレーム
+	if (wcscmp(eventName, L"PlayNormalAttack2Effect") == 0)
+	{
+		Vector3 pos = g_vec3Zero;
+		Quaternion rot = g_quatIdentity;
+		SettingEffectInfo(
+			pos, rot, m_modelRender.GetBone(m_handLBoonId)->GetWorldMatrix()
+		);
+		//攻撃エフェクト再生
+		PlayNormalAttack2Effect(pos, rot);
+	}
+	//通常攻撃の最後の爆発イベントキーフレーム
 	if (wcscmp(eventName, L"Combofinnish") == 0)
 	{
 		//このアニメーションキーフレームの間当たり判定生成
 		NormalComboFinnish();
+	}
+	//ノックバックエフェクトイベントキーフレーム
+	if (wcscmp(eventName, L"PlayKnockBackEffect") == 0)
+	{
+		//ノックバックエフェクト再生
+		PlayKnockBackEffect(m_position);
 	}
 
 }
@@ -574,7 +605,7 @@ void Summoner::CreateNormalAttackCollision()
 	collision->CreateBox(
 		m_position,
 		g_quatIdentity,
-		{20.0f, 430.0f,100.0f}
+		NORMAL_ATTACK_COLLISION_SIZE
 	);
 	collision->SetCreatorName(GetName());
 	collision->SetWorldMatrix(m_modelRender.GetBone(m_darkWallBoonId)->GetWorldMatrix());
@@ -583,9 +614,58 @@ void Summoner::CreateNormalAttackCollision()
 
 void Summoner::NormalComboFinnish()
 {
+	//爆発の中心座標のワールド座標を取得
+	Matrix matrix = m_modelRender.GetBone(m_comboFinishBoonId)->GetWorldMatrix();
+
 	//爆発エフェクトと当たり判定生成
+	ComboFinishBomb* comboFinishBomb = 
+		NewGO<ComboFinishBomb>(0, "combofinishbomb");
+	
+	//ワールド座標をローカル座標に適応
+	comboFinishBomb->ApplyPositionToMatrix(matrix);
 
+}
 
+void Summoner::SettingEffectInfo(
+	Vector3& effectPos, Quaternion& rot, Matrix matrix)
+{
+	effectPos = g_vec3Zero;
+	Vector3 forwardPos = GetForward();
+	matrix.Apply(effectPos);
+	rot = g_quatIdentity;
+	rot.SetRotationYFromDirectionXZ(forwardPos);
+}
+
+void Summoner::PlayNormalAttack1Effect(Vector3 position, Quaternion rotation)
+{
+	EffectEmitter* attack1Effect = NewGO<EffectEmitter>(0);
+	attack1Effect->Init(InitEffect::enEffect_Boss_Combo_1);
+	attack1Effect->Play();
+	attack1Effect->SetScale(g_vec3One * NORMAL_ATTACK_1_SIZE);
+	attack1Effect->SetPosition(position);
+	attack1Effect->SetRotation(rotation);
+	attack1Effect->Update();
+}
+
+void Summoner::PlayNormalAttack2Effect(Vector3 position, Quaternion rotation)
+{
+	EffectEmitter* attack1Effect = NewGO<EffectEmitter>(0);
+	attack1Effect->Init(InitEffect::enEffect_Boss_Combo_2);
+	attack1Effect->Play();
+	attack1Effect->SetScale(g_vec3One * NORMAL_ATTACK_2_SIZE);
+	attack1Effect->SetPosition(position);
+	attack1Effect->SetRotation(rotation);
+	attack1Effect->Update();
+}
+
+void Summoner::PlayKnockBackEffect(Vector3 position)
+{
+	EffectEmitter* KnockBackEffect = NewGO<EffectEmitter>(0);
+	KnockBackEffect->Init(InitEffect::enEffect_Boss_KnockBack);
+	KnockBackEffect->Play();
+	KnockBackEffect->SetScale(KNOCKBACK_EFFECT_SIZE);
+	KnockBackEffect->SetPosition(position);
+	KnockBackEffect->Update();
 }
 
 void Summoner::ProcessVigilance()

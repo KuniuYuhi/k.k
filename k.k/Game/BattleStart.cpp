@@ -3,6 +3,8 @@
 #include "Fade.h"
 #include "CharactersInfoManager.h"
 
+#include "InitEffect.h"
+
 namespace {
     const Vector3 BATTLE_TEXT_START_POS = { 0.0f,336.0f,0.0f };
     const Vector3 BATTLE_TEXT_END_POS = { 1650.0f,336.0f,0.0f };
@@ -22,6 +24,8 @@ namespace {
     const float ADD_YPOS_SPEED = 30.0f;
 
     const Vector3 BRAVE_START_POSITION = { 0.0f,200.0f,-400.0f };
+
+    const float LANDING_EFFECT_SIZE = 5.0f;
 }
 
 BattleStart::BattleStart()
@@ -103,7 +107,7 @@ void BattleStart::GameStartCamera()
     m_springCamera.Update();
 }
 
-bool BattleStart::CalcCameraZoomOutTime()
+bool BattleStart::IsFadeStart()
 {
     if (m_fadeTimer > m_fadeTime)
     {
@@ -118,8 +122,6 @@ bool BattleStart::CalcCameraZoomOutTime()
         //タイマーを加算
         m_fadeTimer += g_gameTime->GetFrameDeltaTime();
     }
-
-   
 
     return false;
 }
@@ -174,6 +176,9 @@ void BattleStart::ProcessMoveBrave()
         //勇者からカメラを少し離す
         m_mulXZPos = IDLE_MULXZ;
 
+        //着地エフェクト再生
+        PlayLandingEffect();
+
         //次のステートに進む
         m_enBraveState = enBraveState_Landing;
     }
@@ -224,8 +229,6 @@ void BattleStart::ProcessLandingStateTransition()
         //次のステートに進む
         m_enBraveState = enBraveState_Idle;
     }
-
-
 }
 
 void BattleStart::ProcessIdleStateTransition()
@@ -239,9 +242,19 @@ void BattleStart::ProcessIdleStateTransition()
 
 void BattleStart::ProcessEndStateTransition()
 {
-    //
+    //フェードスタートフラグがtrueでないなら処理する
     if (m_fadeStartFlag != true)
     {
-        CalcCameraZoomOutTime();
+        IsFadeStart();
     }
+}
+
+void BattleStart::PlayLandingEffect()
+{
+    EffectEmitter* landingEffect = NewGO<EffectEmitter>(0);
+    landingEffect->Init(InitEffect::enEffect_BraveLanding);
+    landingEffect->Play();
+    landingEffect->SetPosition(m_bravePosition);
+    landingEffect->SetScale(g_vec3One * LANDING_EFFECT_SIZE);
+    landingEffect->Update();
 }
