@@ -5,6 +5,9 @@ public:
 	InitEffect();
 	~InitEffect();
 
+	/// <summary>
+	/// 各種エフェクトの初期化
+	/// </summary>
 	void InitEFK();
 
 	/// <summary>
@@ -27,17 +30,53 @@ public:
 		enEffect_Meteo_Range,									//メテオの範囲
 		enEffect_Mob_Dead,										//モブモンスターがやられたときのエフェクト
 		enEffect_Invalibation,									//ダメージが無効のときのエフェクト
+		enEffect_Boss_Combo_1,									//ボスの通常攻撃１
+		enEffect_Boss_Combo_2,									//ボスの通常攻撃２
+		enEffect_ComboFinishExplosion,							//ボスの通常攻撃３の爆発
+		enEffect_Boss_KnockBack,								//ボスのノックバック攻撃
+
 		enEffect_Dash,											//ダッシュ
 		enEffect_Hit,											//ヒット
-		enEffect_FireBall,										//ファイヤーボール
-		enEffect_FireBall_Explosion,							//ファイヤーボールの爆発
-		enEffect_FlamePillar,									//フレイムピラー
-		enEffect_FlamePillar_Circle,							//フレイムピラーの魔法陣
-		enEffect_SwordStorm,									//ソードストーム
 		enEffect_SwordStorm_Charge,								//ソードストームのチャージ
 		
+		enEffect_BraveLanding,									//勇者登場時の着地
+
+		enEffect_SwordShieldCombo12,							//剣＆盾の通常攻撃１と２
+		enEffect_SwordShieldCombo3,								//剣＆盾の通常攻撃３
+		enEffect_SwordShieldSkillRising,						//剣＆盾のスキルの上昇
+		enEffect_SwordShieldSkillAttack,						//剣＆盾のスキル攻撃
+		enEffect_GreatSwordCombo12,								//両手剣の通常攻撃１と２
+		enEffect_GreatSwordCombo3,								//両手剣の通常攻撃３
+		enEffect_GreatSwordSkillRising,							//両手剣のスキルの上昇
+		enEffect_GreatSwordSkillAttack,							//両手剣のスキル攻撃
+		enEffect_BowArrowCombo,									//弓＆矢の通常攻撃
+		enEffect_Arrow,											//矢のエフェクト
+		enEffect_BowArrowSkillShot,								//弓＆矢のスキル攻撃
+
+
+
 
 	};
+
+
+private:
+	/// <summary>
+	/// プレイヤーに関するエフェクト初期化
+	/// </summary>
+	void InitPlayerEffect();
+	/// <summary>
+	/// モンスターに関するエフェクト初期化
+	/// </summary>
+	void InitMonsterEffect();
+	/// <summary>
+	/// ボスモンスターに関するエフェクト初期化
+	/// </summary>
+	void InitBossMonsterEffect();
+	/// <summary>
+	/// モブモンスターに関するエフェクト初期化
+	/// </summary>
+	void InitMobMonsterEffect();
+
 };
 
 

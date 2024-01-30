@@ -11,52 +11,205 @@ InitEffect::~InitEffect()
 
 void InitEffect::InitEFK()
 {
-	//ボスの魔法陣のエフェクト読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Boss_Summon_Circle, u"Assets/effect/sprite/Boss_Summon_circle.efk");
-	//モブモンスターの魔法陣のライトのエフェクト読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Boss_Summon_FogRemoval, u"Assets/effect/sprite/Boss_Summon_wind.efk");
-	//モブモンスターの魔法陣のエフェクト読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Mob_Summon_Circle, u"Assets/effect/sprite/Summon_circle.efk");
-	//モブモンスターの魔法陣のライトのエフェクト読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Mob_Summon_Right, u"Assets/effect/sprite/Summon_right.efk");
-	//ダークボールのエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_DarkBall, u"Assets/effect/sprite/DarkBall2.efk");
-	//ダークボールの爆発のエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_DarkBall_Explosion, u"Assets/effect/sprite/DarkBall_Explosion.efk");
-	//ダークメテオのエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_DarkMeteorite, u"Assets/effect/sprite/DarkMeteorite.efk");
-	//ダークメテオの風のエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_DarkMeteorite_Wind, u"Assets/effect/sprite/DarkMeteorite_wind.efk");
-	//メテオのエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Meteo, u"Assets/effect/sprite/Meteo.efk");
-	//メテオの爆発エフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Meteo_Explosion, u"Assets/effect/sprite/Meteo_Explosion.efk");
-	//メテオの範囲エフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Meteo_Range, u"Assets/effect/sprite/Range.efk");
-	//モブモンスターのやられエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Mob_Dead, u"Assets/effect/sprite/Mob_Dead.efk");
-	//ダメージ無効エフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Invalibation, u"Assets/effect/sprite/Invalibation.efk");
+	//プレイヤーに関するエフェクトを初期化
+	InitPlayerEffect();
+	//モンスターに関するエフェクトを初期化
+	InitMonsterEffect();
+}
+
+void InitEffect::InitPlayerEffect()
+{
+	//勇者の着地エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_BraveLanding,
+		u"Assets/effect/sprite/BraveLanding.efk"
+	);
 	//ダッシュエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Dash, u"Assets/effect/sprite/Dash.efk");
-	//ヒットエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Hit, u"Assets/effect/sprite/hit.efk");
-	//ファイヤーボールエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_FireBall, u"Assets/effect/sprite/FireBall.efk");
-	//ファイヤーボールの爆発エフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_FireBall_Explosion, u"Assets/effect/sprite/FireBall_Explosion.efk");
-	//フレイムピラーエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_FlamePillar, u"Assets/effect/sprite/FlamePillar.efk");
-	//フレイムピラーの魔法陣のエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_FlamePillar_Circle, u"Assets/effect/sprite/FlamePillar_Circle.efk");
-	//ダークウォールのエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_DarkWall, u"Assets/effect/sprite/DarkWall.efk");
-	//ダークスピアのエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_DarkSpear, u"Assets/effect/sprite/DarkSpear.efk");
-	//ソードストームのエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_SwordStorm, u"Assets/effect/sprite/SwordStorm.efk");
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_Dash, 
+		u"Assets/effect/sprite/Dash.efk"
+	);
 	//ソードストームのチャージエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_SwordStorm_Charge, u"Assets/effect/sprite/SwordStorm_Charge.efk");
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_SwordStorm_Charge, 
+		u"Assets/effect/sprite/SwordStorm_Charge.efk"
+	);
+
+	//剣＆盾の通常攻撃１、２エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_SwordShieldCombo12,
+		u"Assets/effect/sprite/SwordShieldComboSlash.efk"
+	);
+	//剣＆盾の通常攻撃３エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_SwordShieldCombo3,
+		u"Assets/effect/sprite/SwordShieldComboThrust.efk"
+	);
+	//剣＆盾のスキル上昇エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_SwordShieldSkillRising,
+		u"Assets/effect/sprite/SwordShieldSkillRising.efk"
+	);
+	//剣＆盾のスキル攻撃エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_SwordShieldSkillAttack,
+		u"Assets/effect/sprite/SwordShieldSkillAttack.efk"
+	);
 
 
+	//両手剣の通常攻撃１、２エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_GreatSwordCombo12,
+		u"Assets/effect/sprite/GreatSwordComboSlash.efk"
+	);
+	//両手剣の通常攻撃３エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_GreatSwordCombo3,
+		u"Assets/effect/sprite/GreatSwordComboThrust.efk"
+	);
+	//両手剣のスキル上昇エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_GreatSwordSkillRising,
+		u"Assets/effect/sprite/GreatSwordSkillRising.efk"
+	);
+	//両手剣のスキル攻撃エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_GreatSwordSkillAttack,
+		u"Assets/effect/sprite/GreatSwordSkillAttack.efk"
+	);
+
+	//弓＆矢の通常攻撃エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_BowArrowCombo,
+		u"Assets/effect/sprite/BowArrowCombo.efk"
+	);
+	//矢の攻撃エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_Arrow,
+		u"Assets/effect/sprite/Arrow.efk"
+	);
+	//弓＆矢のスキル攻撃エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_BowArrowSkillShot,
+		u"Assets/effect/sprite/BowArrowSkillShot.efk"
+	);
+}
+
+void InitEffect::InitMonsterEffect()
+{
+	//モンスターのやられエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_Mob_Dead, 
+		u"Assets/effect/sprite/Mob_Dead.efk"
+	);
+
+	//ヒットエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_Hit,
+		u"Assets/effect/sprite/hit.efk"
+	);
+
+	//モブモンスターに関するエフェクトを初期化
+	InitMobMonsterEffect();
+	//ボスに関するエフェクトを初期化
+	InitBossMonsterEffect();
+}
+
+void InitEffect::InitBossMonsterEffect()
+{
+	//ボスの魔法陣のエフェクト読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_Boss_Summon_Circle, 
+		u"Assets/effect/sprite/Boss_Summon_circle.efk"
+	);
+	//ダークボールのエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_DarkBall, 
+		u"Assets/effect/sprite/DarkBall2.efk"
+	);
+	//ダークボールの爆発のエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_DarkBall_Explosion, 
+		u"Assets/effect/sprite/DarkBall_Explosion.efk"
+	);
+	//ダークメテオのエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_DarkMeteorite, 
+		u"Assets/effect/sprite/DarkMeteorite.efk"
+	);
+	//ダークメテオの風のエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_DarkMeteorite_Wind, 
+		u"Assets/effect/sprite/DarkMeteorite_wind.efk"
+	);
+	//メテオのエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_Meteo, 
+		u"Assets/effect/sprite/Meteo.efk"
+	);
+	//メテオの爆発エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_Meteo_Explosion, 
+		u"Assets/effect/sprite/Meteo_Explosion.efk"
+	);
+	//メテオの範囲エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_Meteo_Range, 
+		u"Assets/effect/sprite/Range.efk"
+	);
+	//ダークウォールのエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_DarkWall,
+		u"Assets/effect/sprite/DarkWall.efk"
+	);
+	//ダークスピアのエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_DarkSpear,
+		u"Assets/effect/sprite/DarkSpear.efk"
+	);
+	//通常攻撃１のエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_Boss_Combo_1,
+		u"Assets/effect/sprite/Boss_Combo_1.efk"
+	);
+	//通常攻撃2のエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_Boss_Combo_2,
+		u"Assets/effect/sprite/Boss_Combo_2.efk"
+	);
+	//通常攻撃３の爆発エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_ComboFinishExplosion,
+		u"Assets/effect/sprite/ComboFinishExplosion.efk"
+	);
+	//ノックバックエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_Boss_KnockBack,
+		u"Assets/effect/sprite/Boss_KnockBack.efk"
+	);
+
+	//ダメージ無効エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_Invalibation, 
+		u"Assets/effect/sprite/Invalibation.efk"
+	);
+}
+
+void InitEffect::InitMobMonsterEffect()
+{
+	//モブモンスターの魔法陣のライトのエフェクト読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_Boss_Summon_FogRemoval, 
+		u"Assets/effect/sprite/Boss_Summon_wind.efk"
+	);
+	//モブモンスターの魔法陣のエフェクト読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_Mob_Summon_Circle, 
+		u"Assets/effect/sprite/Summon_circle.efk"
+	);
+	//モブモンスターの魔法陣のライトのエフェクト読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_Mob_Summon_Right, 
+		u"Assets/effect/sprite/Summon_right.efk"
+	);
 }
