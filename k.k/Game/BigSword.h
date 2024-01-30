@@ -51,19 +51,17 @@ private:
 	void MoveStowed() override;
 
 	/// <summary>
-	/// 上昇処理
+	/// スキル攻撃のエフェクト再生
 	/// </summary>
-	void ProcessRising();
+	void PlaySkillAttackEffect();
 
 	/// <summary>
-	/// 下降処理
+	/// エフェクト再生前の設定
 	/// </summary>
-	void ProcessFall();
-
-	/// <summary>
-	/// 地面との衝突判定
-	/// </summary>
-	bool IsGround();
+	/// <param name="effectPos">エフェクトを再生する場所</param>
+	/// <param name="rot">回転</param>
+	/// <param name="angle">回転量</param>
+	void SettingEffectInfo(Vector3& effectPos, Quaternion& rot, float angle);
 
 private:
 	ModelRender m_modelBigSword;		//剣モデル

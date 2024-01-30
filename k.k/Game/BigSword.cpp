@@ -2,6 +2,8 @@
 #include "BigSword.h"
 #include "Brave.h"
 
+
+
 namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
@@ -25,6 +27,15 @@ namespace {
 	const float ATTACK_2COMBO_KNOCKBACK_POWER = 175.0f;
 	const float ATTACK_3COMBO_KNOCKBACK_POWER = 210.0f;
 	const float SKILL_KNOCKBACK_POWER = 320.0f;
+
+	const float NORMAL_ATTACK_1_EFFECT_ANGLE = -270.0f;
+	const float NORMAL_ATTACK_2_EFFECT_ANGLE = 80.0f;
+
+	const float NORMAL_ATTACK_1_2_EFFECT_SIZE = 11.0f;
+	const float NORMAL_ATTACK_3_EFFECT_SIZE = 18.0f;
+
+	const float SKILL_ATTACK_EFFECT_SIZE = 10.0f;
+	const float SKILL_ATTACK_RISING_EFFECT_SIZE = 10.0f;
 }
 
 struct IsGroundResult :public btCollisionWorld::ConvexResultCallback
@@ -210,74 +221,26 @@ void BigSword::MoveStowed()
 	SetStowedFlag(true);
 }
 
-void BigSword::ProcessRising()
+void BigSword::PlaySkillAttackEffect()
 {
-	m_skillMovePos = g_vec3AxisY;
-	float addYPos = 0.0f;
-	//上昇処理
-	addYPos +=
-		g_gameTime->GetFrameDeltaTime() * GetJampSpeed();
-	m_skillMovePos.y += addYPos;
-	//プレイヤーの座標を更新
-	m_brave->ExecutePosition(m_skillMovePos);
-	//上昇した時の座標を設定
-	m_maxRisingPosition = m_brave->GetPosition();
+	//エフェクト再生のための座標と回転の設定
+	Vector3 pos;
+	Quaternion rot;
+	SettingEffectInfo(pos, rot, 0.0f);
+	//エフェクト再生
+	PlayEffect(
+		InitEffect::enEffect_GreatSwordSkillAttack,
+		pos, SKILL_ATTACK_EFFECT_SIZE
+	);
 }
 
-void BigSword::ProcessFall()
+void BigSword::SettingEffectInfo(Vector3& effectPos, Quaternion& rot, float angle)
 {
-	m_skillMovePos = g_vec3AxisY;
-	float addYPos = 0.0f;
-	//上昇処理
-	addYPos +=
-		g_gameTime->GetFrameDeltaTime() * GetJampSpeed()*1.2f;
-	m_skillMovePos.y -= addYPos;
-
-	//プレイヤーの座標を更新
-	m_brave->ExecutePosition(m_skillMovePos);
-
-	//地面との衝突判定をとる
-	if (IsGround() == true)
-	{
-		//座標を地面に合わせる
-		Vector3 Zero = m_brave->GetPosition();
-		Zero.y = 0.0f;
-		m_brave->SetPosition(Zero);
-	}
-}
-
-bool BigSword::IsGround()
-{
-	Vector3 endPosition = m_brave->GetPosition();
-
-	CCapsuleCollider m_capsuleCollider;
-	m_capsuleCollider.Init(20.0f, 30.0f);
-	btTransform start, end;
-	start.setIdentity();
-	end.setIdentity();
-	//始点はエネミーの座標。
-	start.setOrigin(btVector3(
-		m_maxRisingPosition.x, m_maxRisingPosition.y, m_maxRisingPosition.z));
-	//終点はプレイヤーの座標。
-	end.setOrigin(btVector3(
-		endPosition.x, endPosition.y * 3.0f, endPosition.z));
-	//壁の判定を返す
-	IsGroundResult callback_Ground;
-	//コライダーを始点から終点まで動かして。
-	//壁と衝突するかどうかを調べる。
-	PhysicsWorld::GetInstance()->ConvexSweepTest(
-		(const btConvexShape*)m_capsuleCollider.GetBody(),
-		start, end, callback_Ground);
-	//地面に衝突した
-	if (callback_Ground.isHit == true)
-	{
-		return true;
-	}
-	else
-	{
-		//地面ではなかった
-		return false;
-	}
+	effectPos = g_vec3Zero;
+	m_swordMatrix.Apply(effectPos);
+	rot = g_quatIdentity;
+	rot.SetRotationYFromDirectionXZ(m_brave->GetForward());
+	rot.AddRotationDegZ(angle);
 }
 
 void BigSword::Render(RenderContext& rc)
@@ -291,25 +254,56 @@ void BigSword::Render(RenderContext& rc)
 
 void BigSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
-	//スキル使用時の攻撃処理
+	//通常攻撃１のアニメーションキーフレーム
+	if (wcscmp(eventName, L"GreatSwordPlayCombo1Effect") == 0)
+	{
+		Vector3 pos;
+		Quaternion rot;
+		SettingEffectInfo(pos, rot, NORMAL_ATTACK_1_EFFECT_ANGLE);
+		//エフェクト再生
+		PlayEffect(InitEffect::enEffect_GreatSwordCombo12,
+			pos, NORMAL_ATTACK_1_2_EFFECT_SIZE, rot
+		);
+	}
+	//通常攻撃２のアニメーションキーフレーム
+	if (wcscmp(eventName, L"GreatSwordPlayCombo2Effect") == 0)
+	{
+		Vector3 pos;
+		Quaternion rot;
+		SettingEffectInfo(pos, rot, NORMAL_ATTACK_2_EFFECT_ANGLE);
+		//エフェクト再生
+		PlayEffect(InitEffect::enEffect_GreatSwordCombo12,
+			pos, NORMAL_ATTACK_1_2_EFFECT_SIZE, rot
+		);
+	}
+	//通常攻撃３のアニメーションキーフレーム
+	if (wcscmp(eventName, L"GreatSwordPlayCombo3Effect") == 0)
+	{
+		Vector3 pos;
+		Quaternion rot;
+		SettingEffectInfo(pos, rot, 0.0f);
+		//エフェクト再生
+		PlayEffect(InitEffect::enEffect_GreatSwordCombo3,
+			pos, NORMAL_ATTACK_3_EFFECT_SIZE, rot
+		);
+	}
+	//スキルの上昇アニメーションキーフレーム
+	if (wcscmp(eventName, L"GreatSwordSkillRising") == 0)
+	{
+		//エフェクト再生
+		PlayEffect(InitEffect::enEffect_GreatSwordSkillRising,
+			m_brave->GetPosition(), SKILL_ATTACK_RISING_EFFECT_SIZE
+		);
+	}
+	//スキル攻撃のアニメーションキーフレーム
 	if (wcscmp(eventName, L"GreatSwordSkillAttack") == 0)
 	{
 		//メイン武器のスキル攻撃処理
 		ProcessSkillAttack();
+		//スキル攻撃のエフェクト再生
+		PlaySkillAttackEffect();
 	}
-
-	//スキルのジャンプ処理
-	if (wcscmp(eventName, L"RisingGreatSword") == 0)
-	{
-		//キーフレームがJampの間処理し続ける
-		//ProcessRising();
-	}
-	//スキルのジャンプ処理
-	if (wcscmp(eventName, L"FallGreatSword") == 0)
-	{
-		//キーフレームがJampの間処理し続ける
-		//ProcessFall();
-	}
+	
 }
 
 
