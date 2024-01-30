@@ -133,7 +133,7 @@ void Brave::Move()
 	}
 
 	//重力をかける
-	m_moveSpeed.y -= GRAVITY;
+	m_moveSpeed.y = 0.0f;
 	
 	//移動方向に座標を移動
 	m_position = m_charaCon.Execute(
@@ -160,7 +160,10 @@ void Brave::ProcessAttack()
 	//通常攻撃
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
+		//コンボ攻撃の処理
 		ProcessComboAttack();
+		//攻撃エフェクトの表示
+
 		return;
 	}
 	//スキル
