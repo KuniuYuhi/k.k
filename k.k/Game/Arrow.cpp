@@ -4,6 +4,7 @@
 #include "Player.h"
 
 
+
 //todo　矢を回転させて飛ばす
 //todo 前方向を回転に適応して線形補間で回転
 
@@ -26,6 +27,8 @@ namespace {
 	const float DEFAULT_ARROW_SPEED = 450.0f;
 
 	const float GRAVITY = 11.8f;					//重力
+
+	const float HITTABLE_TIMER_LIMMIT = 0.1f;
 }
 
 Arrow::Arrow()
@@ -35,6 +38,11 @@ Arrow::Arrow()
 Arrow::~Arrow()
 {
 	DeleteGO(m_arrowCollision);
+
+	if (m_arrowAttackEffect != nullptr)
+	{
+		m_arrowAttackEffect->Stop();
+	}
 }
 
 bool Arrow::Start()
@@ -62,6 +70,8 @@ void Arrow::Update()
 	{
 		//射撃時の移動処理
 		ProcessLongRangeAttack();
+
+		
 	}
 
 	m_modelArrow.Update();
@@ -132,28 +142,29 @@ void Arrow::SetShotArrowSetting(
 	EnShotPatternState shotPatternState
 )
 {
+	//ショットフラグを設定
 	SetShotFlag(shotFlag);
+	//前方向を設定
 	SetForward(forward);
+	//ワールド座標をローカル座標に適応
 	ApplyMatrixToLocalPosition();
+	//ショット開始座標の設定
 	SetShotStartPosition(m_arrowPos, angle);
+	//ショットステートの設定
 	SetShotPatternState(shotPatternState);
 	//当たり判定の初期化
 	SelectInitCollision(shotPatternState);
 	//落下地点の設定
 	SetTargetPosition();
+	//通常攻撃の設定なら
+	if (shotPatternState == enShotPatternState_Normal)
+	{
+		//通常攻撃に必要な情報の設定
+		SetNormalShotInfo();
+	}
 
-	//1.目標に向かう距離の計算
-	Vector3 targetDistance = m_targetPosition - m_shotStartPosition;
-	float distance = targetDistance.Length();
-	//2.初速度の計算
-	float verocity = distance / (sin(Math::DegToRad(2 * m_angle)) / GRAVITY);
-	//3.初速度の分解
-	m_shotArrowVerocity.Vx = sqrt(verocity) * cos(Math::DegToRad(m_angle));
-	m_shotArrowVerocity.Vy = sqrt(verocity) * sin(Math::DegToRad(m_angle));
-	//4.飛行時間の計算
-	m_flightDuration = distance / m_shotArrowVerocity.Vx;
-	
-	m_oldArrowPos = m_arrowPos;
+	//攻撃方法によるエフェクト再生
+	PlayArrowEffect();
 }
 
 void Arrow::SetTargetPosition()
@@ -172,6 +183,34 @@ void Arrow::InitModel()
 		0,
 		enModelUpAxisZ
 	);
+}
+
+void Arrow::PlayArrowEffect()
+{
+	Quaternion rot = g_quatIdentity;
+	rot.SetRotationYFromDirectionXZ(m_forward);
+
+	if (m_enShotPatternState==enShotPatternState_Normal)
+	{
+		m_arrowAttackEffect = NewGO<EffectEmitter>(0);
+		m_arrowAttackEffect->Init(InitEffect::enEffect_Arrow);
+		m_arrowAttackEffect->Play();
+		m_arrowAttackEffect->SetScale(g_vec3One * 12.0f);
+		
+	}
+	else
+	{
+		m_arrowAttackEffect = NewGO<EffectEmitter>(0);
+		m_arrowAttackEffect->Init(InitEffect::enEffect_BowArrowSkillShot);
+		m_arrowAttackEffect->Play();
+		m_arrowAttackEffect->SetScale(g_vec3One * 10.0f);
+	}
+
+	m_arrowAttackEffect->SetPosition(m_shotStartPosition);
+	m_arrowAttackEffect->SetRotation(rot);
+	m_arrowAttackEffect->Update();
+
+	
 }
 
 void Arrow::SelectInitCollision(EnShotPatternState shotPatternState)
@@ -226,15 +265,15 @@ void Arrow::NormalShot()
 	//6.移動
 	if (m_deleteTimer < m_flightDuration)
 	{
-		float X = m_forward.x * m_shotArrowVerocity.Vx * 
+		float X = m_forward.x * m_shotArrowVerocity.x * 
 			g_gameTime->GetFrameDeltaTime() * 10.0f;
-		float Z = m_forward.z * m_shotArrowVerocity.Vx * 
+		float Z = m_forward.z * m_shotArrowVerocity.x * 
 			g_gameTime->GetFrameDeltaTime() * 10.0f;
 
 		//新しい座標
 		m_arrowPos += {
 			X,
-			(m_shotArrowVerocity.Vy - (GRAVITY * m_deleteTimer)) * g_gameTime->GetFrameDeltaTime()*4.0f,
+			(m_shotArrowVerocity.y - (GRAVITY * m_deleteTimer)) * g_gameTime->GetFrameDeltaTime()*4.0f,
 			Z
 		};
 		m_deleteTimer += g_gameTime->GetFrameDeltaTime() * 6.0f;
@@ -287,8 +326,9 @@ void Arrow::NormalShot()
 	Vector3 finalPos = m_arrowPos;
 	finalPos.Add(collisionPos);
 
-	/*m_arrowCollision->SetPosition(finalPos);
-	m_arrowCollision->Update();*/
+	//エフェクトの座標の設定と更新
+	m_arrowAttackEffect->SetPosition(m_arrowPos);
+	m_arrowAttackEffect->Update();
 
 	//前フレームの矢の座標を取得
 	m_oldArrowPos = m_arrowPos;
@@ -297,10 +337,17 @@ void Arrow::NormalShot()
 void Arrow::SkillShot()
 {
 	//敵にダメージを与えられるタイミングを設定
-	if (m_player->GetHittableFlag() != true)
+	if (m_player->GetHittableFlag() != true&&
+		HITTABLE_TIMER_LIMMIT< m_hittableTimer)
 	{
+		//多段ヒット攻撃可能
 		m_player->SetHittableFlag(true);
+		//多段ヒット攻撃タイマーをリセット
+		m_hittableTimer = 0.0f;
 	}
+
+	//多段ヒット攻撃タイマーを加算
+	m_hittableTimer += g_gameTime->GetFrameDeltaTime();
 
 	//射撃開始座標から現在の座標に向かうベクトルを計算
 	Vector3 diff = m_arrowPos - m_shotStartPosition;
@@ -318,6 +365,9 @@ void Arrow::SkillShot()
 	ApplyVector3ToMatirx(arrowMatrix, m_arrowPos);
 	//行列を設定
 	m_modelArrow.SetWorldMatrix(arrowMatrix);
+	//エフェクトの座標の設定と更新
+	m_arrowAttackEffect->SetPosition(m_arrowPos);
+	m_arrowAttackEffect->Update();
 }
 
 void Arrow::ApplyVector3ToMatirx(Matrix& baseMatrix, Vector3 position)
@@ -328,8 +378,25 @@ void Arrow::ApplyVector3ToMatirx(Matrix& baseMatrix, Vector3 position)
 	baseMatrix.m[3][2] = position.z;
 }
 
+void Arrow::SetNormalShotInfo()
+{
+	//1.目標に向かう距離の計算
+	Vector3 targetDistance = m_targetPosition - m_shotStartPosition;
+	float distance = targetDistance.Length();
+	//2.初速度の計算
+	float verocity = distance / (sin(Math::DegToRad(2 * m_angle)) / GRAVITY);
+	//3.初速度の分解
+	m_shotArrowVerocity.x = sqrt(verocity) * cos(Math::DegToRad(m_angle));
+	m_shotArrowVerocity.y = sqrt(verocity) * sin(Math::DegToRad(m_angle));
+	//4.飛行時間の計算
+	m_flightDuration = distance / m_shotArrowVerocity.x;
+
+	m_oldArrowPos = m_arrowPos;
+}
+
 void Arrow::Render(RenderContext& rc)
 {
+	//収納状態なら表示しない
 	if (GetWeaponState() == enWeaponState_Stowed)
 	{
 		return;

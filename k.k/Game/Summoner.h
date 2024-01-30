@@ -397,6 +397,28 @@ private:
 	/// </summary>
 	void NormalComboFinnish();
 
+	/// <summary>
+	/// エフェクト再生前の設定
+	/// </summary>
+	/// <param name="effectPos">エフェクトを再生する場所</param>
+	/// <param name="rot">回転</param>
+	/// <param name="matrix">ローカル座標に適応する行列</param>
+	void SettingEffectInfo(Vector3& effectPos, Quaternion& rot, Matrix matrix);
+
+	/// <summary>
+	/// 通常攻撃１エフェクト再生
+	/// </summary>
+	void PlayNormalAttack1Effect(Vector3 position,Quaternion rotation);
+	/// <summary>
+	/// 通常攻撃２エフェクト再生
+	/// </summary>
+	void PlayNormalAttack2Effect(Vector3 position, Quaternion rotation);
+	/// <summary>
+	/// ノックバックエフェクト再生
+	/// </summary>
+	void PlayKnockBackEffect(Vector3 position);
+
+
 private:
 
 	EnAnimationState				m_enAnimationState = enAnimationState_Idle;				//アニメーションステート
@@ -423,7 +445,9 @@ private:
 
 	int								m_damageCount = 0;				//被ダメージした時に加算するカウント
 
-	int m_darkWallBoonId = -1;
+	int m_darkWallBoonId = -1;										//ダークウォールで使うボーンのID
+	int m_handLBoonId = -1;											//ハンドLボーンのID
+	int m_comboFinishBoonId = -1;									//通常攻撃３で使うボーンのID
 
 	bool m_oldBreakSuperArmorFlag = false;	//前フレームのスーパーアーマーブレイクフラグ
 

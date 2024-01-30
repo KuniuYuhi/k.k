@@ -39,7 +39,7 @@ private:
 	/// カメラのズームアウトタイムの計算
 	/// </summary>
 	/// <returns></returns>
-	bool CalcCameraZoomOutTime();
+	bool IsFadeStart();
 
 	/// <summary>
 	/// スプライトの座標、サイズ、回転を設定
@@ -87,7 +87,10 @@ private:
 	/// </summary>
 	void ProcessEndStateTransition();
 
-
+	/// <summary>
+	/// 着地エフェクト再生
+	/// </summary>
+	void PlayLandingEffect();
 
 private:
 	Fade* m_fade = nullptr;

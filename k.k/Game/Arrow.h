@@ -11,10 +11,13 @@ public:
 	Arrow();
 	~Arrow();
 
+	/// <summary>
+	/// 攻撃パターンステート
+	/// </summary>
 	enum EnShotPatternState
 	{
-		enShotPatternState_Normal,
-		enShotPatternState_Skill
+		enShotPatternState_Normal,		//通常攻撃
+		enShotPatternState_Skill		//スキル攻撃
 	};
 
 	bool Start() override;
@@ -146,6 +149,11 @@ private:
 	/// </summary>
 	void InitModel() override;
 	/// <summary>
+	/// 矢の攻撃エフェクト再生
+	/// </summary>
+	void PlayArrowEffect();
+
+	/// <summary>
 	/// ショットパターンによって当たり判定を初期化
 	/// </summary>
 	/// <param name="shotPatternState">初期化したい当たり判定のステート</param>
@@ -185,6 +193,10 @@ private:
 	/// <param name="position">座標</param>
 	void ApplyVector3ToMatirx(Matrix& baseMatrix, Vector3 position);
 
+	/// <summary>
+	/// 通常攻撃をする時の情報の設定
+	/// </summary>
+	void SetNormalShotInfo();
 
 private:
 
@@ -194,6 +206,7 @@ private:
 
 	ModelRender m_modelArrow;		//矢モデル
 	CollisionObject* m_arrowCollision = nullptr;
+	EffectEmitter* m_arrowAttackEffect = nullptr;
 
 	Vector3 m_arrowPos = g_vec3Zero;
 	Vector3 m_oldArrowPos = g_vec3Zero;
@@ -201,6 +214,8 @@ private:
 	Vector3 m_shotStartPosition = g_vec3Zero;
 	Vector3 m_targetPosition = g_vec3Zero;			//矢が落ちる地点
 	Quaternion m_rotation = g_quatIdentity;
+
+	Vector2 m_shotArrowVerocity = g_vec2Zero;
 
 	Matrix m_arrowMatrix = g_matIdentity;
 
@@ -210,15 +225,10 @@ private:
 	bool m_shotFlag = false;			//矢を発射するかのフラグ
 
 	float m_angle = 0.0f;
-	float m_flightDuration = 0.0f;		//矢が落ちるまでの時間
-	float m_deleteTimer = 0.0f;
+	float m_flightDuration = 0.0f;		
+	float m_deleteTimer = 0.0f;			//消去するまでの時間(矢が落ちるまでの時間)
 
-	struct ShotArrowVerocity
-	{
-		float Vx = 0.0f;
-		float Vy = 0.0f;
-	};
-	ShotArrowVerocity m_shotArrowVerocity;
-
+	float m_hittableTimer = 0.0f;		//多段攻撃判定用タイマー
+	
 };
 

@@ -4,6 +4,7 @@
 
 #include "IAttackObject.h"
 
+
 namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
@@ -26,6 +27,14 @@ namespace {
 	const float ATTACK_2COMBO_KNOCKBACK_POWER = 160.0f;
 	const float ATTACK_3COMBO_KNOCKBACK_POWER = 180.0f;
 	const float SKILL_KNOCKBACK_POWER = 250.0f;
+
+	const float NORMAL_ATTACK_1_EFFECT_ANGLE = 225.0f;
+	
+	const float NORMAL_ATTACK_1_2_EFFECT_SIZE = 11.0f;
+	const float NORMAL_ATTACK_3_EFFECT_SIZE = 18.0f;
+
+	const float SKILL_ATTACK_EFFECT_SIZE = 17.0f;
+	const float SKILL_ATTACK_RISING_EFFECT_SIZE = 10.0f;
 }
 
 SwordShield::SwordShield()
@@ -277,33 +286,29 @@ void SwordShield::MoveStowed()
 	SetStowedFlag(true);
 }
 
-void SwordShield::ProcessRising()
+void SwordShield::SettingEffectInfo(
+	Vector3& effectPos, Quaternion& rot, float angle)
 {
-	m_skillMovePos = g_vec3AxisY;
-	float addYPos = 0.0f;
-	//上昇処理
-	addYPos +=
-		g_gameTime->GetFrameDeltaTime() * GetJampSpeed();
-	m_skillMovePos.y += addYPos;
-	//プレイヤーの座標を更新
-	m_brave->ExecutePosition(m_skillMovePos);
+	effectPos = g_vec3Zero;
+	Vector3 forwardPos = m_brave->GetForward();
+	m_swordMatrix.Apply(effectPos);
+	rot = g_quatIdentity;
+	rot.SetRotationYFromDirectionXZ(forwardPos);
+	rot.AddRotationDegZ(angle);
 }
 
-void SwordShield::ProcessFall()
+void SwordShield::PlaySkillAttackEffect()
 {
-	m_skillMovePos = g_vec3AxisY;
-	float addYPos = 0.0f;
-	//上昇処理
-	addYPos +=
-		g_gameTime->GetFrameDeltaTime() * GetJampSpeed() * 1.2f;
-	m_skillMovePos.y -= addYPos;
-
-	//プレイヤーの座標を更新
-	m_brave->ExecutePosition(m_skillMovePos);
+	//エフェクト再生
+	PlayEffect(
+		InitEffect::enEffect_SwordShieldSkillAttack,
+		m_skillAttackPosition, SKILL_ATTACK_EFFECT_SIZE
+	);
 }
 
 void SwordShield::Render(RenderContext& rc)
 {
+	//収納状態なら表示しない
 	if (GetWeaponState() == enWeaponState_Stowed)
 	{
 		return;
@@ -321,22 +326,82 @@ void SwordShield::Render(RenderContext& rc)
 
 void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
-	//スキル使用時の攻撃処理
+	//通常攻撃１のアニメーションキーフレーム
+	if (wcscmp(eventName, L"PlayCombo1Effect") == 0)
+	{
+		//エフェクト再生のための座標と回転設定
+		Vector3 pos = g_vec3Zero;
+		Quaternion rot = g_quatIdentity;
+		Vector3 forwardPos = m_brave->GetForward();
+		SettingEffectInfo(pos, rot, NORMAL_ATTACK_1_EFFECT_ANGLE);
+		forwardPos *= 15.0f;
+		pos.Add(forwardPos);
+		//エフェクト再生
+		PlayEffect(
+			InitEffect::enEffect_SwordShieldCombo12,
+			pos, NORMAL_ATTACK_1_2_EFFECT_SIZE,rot
+		);
+	}
+	//通常攻撃２のアニメーションキーフレーム
+	if (wcscmp(eventName, L"PlayCombo2Effect") == 0)
+	{
+		//エフェクト再生のための座標と回転設定
+		Vector3 pos = g_vec3Zero;
+		Quaternion rot = g_quatIdentity;
+		SettingEffectInfo(pos, rot, 0.0f);
+		//エフェクト再生
+		PlayEffect(
+			InitEffect::enEffect_SwordShieldCombo12,
+			pos, NORMAL_ATTACK_1_2_EFFECT_SIZE, rot
+		);
+	}
+	//通常攻撃３のアニメーションキーフレーム
+	if (wcscmp(eventName, L"PlayCombo3Effect") == 0)
+	{
+		//エフェクト再生のための座標と回転設定
+		Vector3 pos = g_vec3Zero;
+		Quaternion rot = g_quatIdentity;
+		SettingEffectInfo(pos, rot, 0.0f);
+		//エフェクト再生
+		PlayEffect(
+			InitEffect::enEffect_SwordShieldCombo3,
+			pos, NORMAL_ATTACK_3_EFFECT_SIZE,rot
+		);
+	}
+	//スキル攻撃のアニメーションキーフレーム
 	if (wcscmp(eventName, L"SwordShieldSkillAttack") == 0)
 	{
 		//メイン武器のスキル攻撃処理
 		ProcessSkillAttack();
+		//スキル攻撃のエフェクト再生
+		PlaySkillAttackEffect();
 	}
-	//スキルのジャンプ処理
-	if (wcscmp(eventName, L"RisingSword") == 0)
+	//スキルの上昇アニメーションキーフレーム
+	if (wcscmp(eventName, L"SwordShieldSkillRising") == 0)
 	{
-		//キーフレームがJampの間処理し続ける
-		//ProcessRising();
+		//エフェクト再生
+		PlayEffect(
+			InitEffect::enEffect_SwordShieldSkillRising,
+			m_brave->GetPosition(), SKILL_ATTACK_RISING_EFFECT_SIZE
+		);
 	}
-	//スキルのジャンプ処理
-	if (wcscmp(eventName, L"FallSword") == 0)
+	//防御ヒットのアニメーションキーフレーム
+	if (wcscmp(eventName, L"SwordShieldDifendHit") == 0)
 	{
-		//キーフレームがJampの間処理し続ける
-		//ProcessFall();
+		Vector3 pos = g_vec3Zero;
+		m_swordMatrix.Apply(pos);
+		Quaternion rot = g_quatIdentity;
+		rot.SetRotationYFromDirectionXZ(m_brave->GetForward());
+		rot.AddRotationDegZ(225.0f);
+
+		//メイン武器のスキル攻撃処理
+		EffectEmitter* hitEffect = NewGO<EffectEmitter>(0);
+		hitEffect->Init(InitEffect::enEffect_SwordShieldCombo12);
+		hitEffect->Play();
+		hitEffect->SetPosition(pos);
+		hitEffect->SetScale(g_vec3One * 11.0f);
+		hitEffect->SetRotation(rot);
+		hitEffect->Update();
 	}
+
 }

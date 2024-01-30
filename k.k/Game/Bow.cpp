@@ -3,13 +3,14 @@
 #include "Brave.h"
 #include "Arrow.h"
 
+
 namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
 
 	//ステータス
 	const int POWER = 30;
-	const int SKILL_POWER = 10;
+	const int SKILL_POWER = 15;
 	const int ENDURANCE = 50;		//武器の耐久力(矢のストック)。
 
 	const float HITTABLE_TIME = 0.15f;
@@ -21,6 +22,9 @@ namespace {
 	const float MOVE_BACK_SPEED = 100.0f;			//矢を撃った後の後退するスピード
 
 	const float NORMAL_ATTACK_KNOCKBACK_POWER = 150.0f;
+
+	const float NORMAL_ATTACK__EFFECT_SIZE = 12.0f;
+	const float SKILL_ATTACK_EFFECT_SIZE = 15.0f;
 
 }
 
@@ -140,6 +144,7 @@ void Bow::ProcessSkillAttack()
 	//チャージ完了できなかったら
 	else
 	{
+		//勇者の情報を攻撃前にリセット
 		m_brave->SetAllInfoAboutActionFlag(false);
 		m_brave->ProcessCommonStateTransition();
 	}
@@ -304,5 +309,33 @@ void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	if (wcscmp(eventName, L"SkillShot") == 0)
 	{
 		SkillShot();
+
+		Vector3 pos = g_vec3Zero;
+		m_bowMatrix.Apply(pos);
+		Quaternion rot = g_quatIdentity;
+		rot.SetRotationYFromDirectionXZ(m_brave->GetForward());
+
+		PlayEffect(
+			InitEffect::enEffect_BowArrowCombo,
+			pos,
+			SKILL_ATTACK_EFFECT_SIZE,
+			rot
+		);
 	}
+
+	if (wcscmp(eventName, L"BowArrowPlayComboEffect") == 0)
+	{
+		Vector3 pos = g_vec3Zero;
+		m_bowMatrix.Apply(pos);
+		Quaternion rot = g_quatIdentity;
+		rot.SetRotationYFromDirectionXZ(m_brave->GetForward());
+
+		PlayEffect(
+			InitEffect::enEffect_BowArrowCombo,
+			pos,
+			NORMAL_ATTACK__EFFECT_SIZE,
+			rot
+		);
+	}
+
 }

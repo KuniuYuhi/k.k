@@ -81,15 +81,19 @@ private:
 	/// </summary>
 	void MoveStowed() override;
 
+	
 	/// <summary>
-	/// 上昇処理
+	/// エフェクト再生前の設定
 	/// </summary>
-	void ProcessRising();
+	/// <param name="effectPos">エフェクトを再生する場所</param>
+	/// <param name="rot">回転</param>
+	/// <param name="angle">回転量</param>
+	void SettingEffectInfo(Vector3& effectPos, Quaternion& rot, float angle);
 
 	/// <summary>
-	/// 下降処理
+	/// スキル攻撃のエフェクトの再生
 	/// </summary>
-	void ProcessFall();
+	void PlaySkillAttackEffect();
 
 private:
 	ModelRender m_modelSword;		//剣モデル

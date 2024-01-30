@@ -2,6 +2,7 @@
 #include "IWeapon.h"
 #include "HitDetection.h"
 #include "Status.h"
+#include "InitEffect.h"
 
 class Brave;
 class HitDetection;
@@ -291,6 +292,12 @@ protected:
 		m_power = power;
 	}
 
+	void PlayEffect(
+		InitEffect::EnEFK enEffect,
+		Vector3 position,
+		float size,
+		Quaternion rotation = g_quatIdentity
+	);
 	
 
 protected:

@@ -64,6 +64,17 @@ const float& WeaponBase::GetKnockBackPower(int num)
 		std::abort();
 		break;
 	}
+}
 
-	// TODO: return ステートメントをここに挿入します
+void WeaponBase::PlayEffect(
+	InitEffect::EnEFK enEffect, 
+	Vector3 position, float size, Quaternion rotation)
+{
+	EffectEmitter* effect = NewGO<EffectEmitter>(0);
+	effect->Init(enEffect);
+	effect->Play();
+	effect->SetPosition(position);
+	effect->SetScale(g_vec3One * size);
+	effect->SetRotation(rotation);
+	effect->Update();
 }
