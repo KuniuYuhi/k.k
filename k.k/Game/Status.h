@@ -6,6 +6,52 @@
 struct Status
 {
 private:
+
+	/// <summary>
+	/// キャラクターの基本的なステータス
+	/// </summary>
+	struct CharacterStatus
+	{
+		int maxHp = 0;					//HPの最大値
+		int hp = 0;						//HP
+		int defaultAtk = 0;				//基礎攻撃力
+		int atk = 0;					//攻撃力
+		float dashSpeed = 0.0f;			//加速時のスピード
+		float defaultSpeed = 0.0f;		//基礎スピード
+	};
+
+	/// <summary>
+	/// 全てのキャラクターにはない追加のステータス
+	/// </summary>
+	struct ExtraStatus
+	{
+		float maxSuperArmorPoint = 0;	//スーパーアーマーのポイント
+		float superArmorPoint = 0;		//スーパーアーマーの最大値
+
+	};
+
+	/// <summary>
+	/// 武器のステータス
+	/// </summary>
+	struct WeaponStatus
+	{
+		int defaultAtk = 0;				//基礎攻撃力
+		int atk = 0;					//攻撃力
+		int maxEndurance = 0;			//耐久値の最大値
+		int endurance = 0;				//耐久値。耐久値の概念が必要ないなら-1に設定する
+		int skillAtk = 0;				//スキルの攻撃力
+
+		float comboKnockBackPower[3] = { 150.0f };	//通常攻撃のコンボでのノックバックパワー
+
+		float skillKnockBackPower = 200.0f;
+	};
+
+
+	CharacterStatus characterStatus;
+	ExtraStatus extraStatus;
+	WeaponStatus weaponStatus;
+
+
 	int maxHp = 0;					//HPの最大値
 	int hp = 0;						//HP
 	int defaultAtk = 0;				//基礎攻撃力
@@ -20,24 +66,33 @@ private:
 	int skillAtk = 0;		//スキルの攻撃力
 
 public:
+	/// <summary>
+	/// キャラクターのステータス構造体を取得
+	/// </summary>
+	/// <returns></returns>
+	const CharacterStatus& GetCharacterStatus()
+	{
+		return characterStatus;
+	}
+	/// <summary>
+	/// 武器のステータス構造体を取得
+	/// </summary>
+	/// <returns></returns>
+	const WeaponStatus& GetWeaponStatus()
+	{
+		return weaponStatus;
+	}
 
 	/// <summary>
-	/// キャラクターの全てのステータスの初期化
+	/// キャラクターのステータスの初期化。これを使ってステータスを初期化
 	/// </summary>
-	/// <param name="MaxHp"></param>
-	/// <param name="Atk"></param>
-	/// <param name="Speed"></param>
-	/// <param name="name"></param>
-	void InitCharacterStatus(int MaxHp,int Atk, float Speed,const char* name)
-	{
-		maxHp = MaxHp;
-		hp = maxHp;
-		defaultAtk = Atk;
-		atk = defaultAtk;
-		defaultSpeed = Speed;
-		dashSpeed = defaultSpeed;
-		characterName = name;
-	}
+	/// <param name="name">初期化したいキャラの名前</param>
+	void InitCharacterStatus(const std::string& name);
+	/// <summary>
+	/// 武器のステータスの初期化。
+	/// </summary>
+	/// <param name="weaponName"></param>
+	void InitWeaponStatus(const std::string& weaponName);
 
 	/// <summary>
 	/// 武器の全てのステータスの初期化
@@ -186,17 +241,16 @@ public:
 	}
 
 	//csvは使わない
-	std::string name;          //名前
+std::string name;          //名前
 
+//CSVの情報を保存したマップ
 static std::unordered_map<std::string, Status> StatusDataMAP;
+//キャラクターのステータスの初期化で使う静的な型
 static const std::string csvFilePath;
 static bool IsLoadedCSVFile;
-
-/// <summary>
-/// 初期化。これを使ってステータスを初期化
-/// </summary>
-/// <param name="name">初期化したいキャラの名前</param>
-void Init(const std::string& name);
+//武器のステータスの初期化で使う静的な型
+static const std::string weaponCsvFilePath;
+static bool IsLoadedWeaponCSVFile;
 
 private:
 	/// <summary>
@@ -204,6 +258,12 @@ private:
 	/// </summary>
 	/// <param name="name">読み込みたいキャラの名前</param>
 	void LoadCSV(const std::string& name);
+
+	/// <summary>
+	/// csvファイルの読み込み
+	/// </summary>
+	/// <param name="name">読み込みたいキャラの名前</param>
+	void LoadWeaponCSV(const std::string& name);
 
 	/// <summary>
 	/// HPを足す
