@@ -4,7 +4,7 @@
 #include <sstream>
 
 //ステータスを記載したファイルパス
-const std::string Status::csvFilePath = "Status.csv";
+const std::string Status::csvFilePath = "Assets/CSV/Status.csv";
 std::unordered_map<std::string, Status> Status::StatusDataMAP = {};
 bool Status::IsLoadedCSVFile = false;
 
