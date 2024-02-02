@@ -24,6 +24,9 @@ namespace {
 
 	const Vector2 BOSS_HP_FONT_POS = { -200.0f, 486.0f };
 
+	const Vector3 BOSS_SUPERARMOR_FLONT_BAR_POS = { -0.0f,400.0f,0.0f };
+	const Vector3 BOSS_SUPERARMOR_POS = { 0.0f,400.0f,0.0f };
+
 	/// <summary>
 	/// プレイヤー側
 	/// </summary>
@@ -97,20 +100,18 @@ bool GameUI::Start()
 
 void GameUI::Update()
 {
-	//プレイヤーのUIの処理
-	PlayerUIUpdate();
-	//ボスのUIの処理
-	MonsterUIUpdate();
-
-
-}
-
-void GameUI::PlayerUIUpdate()
-{
 	//制限時間
 	TimerUIUpdate();
 	//フェーズの処理
 	ProcessPhase();
+	//プレイヤーのUIの処理
+	PlayerUIUpdate();
+	//ボスのUIの処理
+	MonsterUIUpdate();
+}
+
+void GameUI::PlayerUIUpdate()
+{
 	//ステータス
 	UpdateMainStatus();
 	//ウェポン
@@ -121,7 +122,6 @@ void GameUI::UpdateMainStatus()
 {
 	//HPの処理
 	ProcessPlayerHp();
-	
 }
 
 void GameUI::UpdateWeapon()
@@ -159,6 +159,7 @@ void GameUI::UpdateWeapon()
 Vector3 GameUI::CalcGaugeScale(float Maxvalue, float value)
 {
 	Vector3 scale = g_vec3One;
+	//減っていく割合を計算
 	scale.x = value / Maxvalue;
 	return scale;
 }
@@ -173,8 +174,8 @@ void GameUI::MonsterUIUpdate()
 
 	//ボスのHPの処理
 	ProcessBossHP();
-
-	
+	//ボスのスーパーアーマーの処理
+	ProcessBossSuperArmor();
 }
 
 void GameUI::TimerUIUpdate()
@@ -186,267 +187,8 @@ void GameUI::TimerUIUpdate()
 
 	wchar_t time[256];
 	swprintf_s(time, 256, L"%d:%02d", minute, second);
-	
+	//テキストを設定
 	m_TimerFont.SetText(time);
-}
-
-void GameUI::DrawPlayerUI(RenderContext& rc)
-{
-	//メインHP
-	m_playerUI.m_hpBackRender.Draw(rc);
-
-	if (m_playerHpWhiteScale.x > 0.0f)
-	{
-		m_playerUI.m_hpWhiteRender.Draw(rc);
-	}
-
-	
-	m_playerUI.m_hpFrontRender.Draw(rc);
-	
-	//メイン
-	m_playerUI.m_hpFlameRender.Draw(rc);
-	
-	//HPのフォント
-	m_playerUI.m_hpFont.Draw(rc);
-
-
-	//メイン武器のフレーム
-	m_playerUI.m_mainWeaponFlameRender.Draw(rc);
-	////サブ武器１のフレーム
-	m_playerUI.m_subWeaponFlameRender.Draw(rc);
-	////サブ武器１のコマンド
-	m_playerUI.m_subWeaponCommandRender.Draw(rc);
-	////サブ武器２のフレーム
-	m_playerUI.m_sub2WeaponFlameRender.Draw(rc);
-	////サブ武器２のコマンド
-	m_playerUI.m_sub2WeaponCommandRender.Draw(rc);
-
-	//武器のアイコン
-	//耐久値の背景
-	for (int num = 0; num < enWeapon_num; num++)
-	{
-		m_weaponSprits[num].m_weaponRender->Draw(rc);
-	}
-
-	if (m_weaponSprits[enWeapon_Main].m_weaponEndranceRender != nullptr)
-	{
-		m_weaponSprits[enWeapon_Main].m_weaponEndranceRender->Draw(rc);
-	}
-
-	//武器の耐久値が-１より大きかったら描画
-	if (m_player->GetNowWeaponEndrance() > -1)
-	{
-		m_playerUI.m_weaponEndranceFont.Draw(rc);
-	}
-}
-
-void GameUI::DrawMonsterUI(RenderContext& rc)
-{
-	if (m_boss == nullptr)
-	{
-		return;
-	}
-	//アイコン
-	m_monsterUI.m_IconRender.Draw(rc);
-
-	//HP
-	
-
-	m_monsterUI.m_HpBackRender.Draw(rc);
-	if (m_BossHpWhiteScale.x > 0.0f)
-	{
-		m_monsterUI.m_HpWhiteRender.Draw(rc);
-	}
-	m_monsterUI.m_HpFrontRender.Draw(rc);
-
-	//HPのフレーム
-	m_monsterUI.m_HpFlameRender.Draw(rc);
-
-	//HPのフォント
-	m_monsterUI.m_hpFont.Draw(rc);
-	m_monsterUI.m_AccumulationDamageFont.Draw(rc);
-} 
-
-
-
-void GameUI::Render(RenderContext& rc)
-{
-	DrawPlayerUI(rc);
-	DrawMonsterUI(rc);
-
-	m_TimeFlameRender.Draw(rc);
-	m_TimerFont.Draw(rc);
-
-	m_PhaseFlameRender.Draw(rc);
-	m_PhadeFont.Draw(rc);
-}
-
-void GameUI::InitPlayerUI()
-{
-
-	//HPの値
-	InitFontRender(m_playerUI.m_hpFont, HP_FONT_POS, 1.3f);
-	
-	//ステータスバー
-	InitSpriteRender(
-		m_playerUI.m_hpFlameRender, "Assets/sprite/InGame/Character/Player_HP_Flame.DDS", 608, 88, MAIN_STATUS_BAR);
-
-	//HPバー
-	InitSpriteRender(
-		m_playerUI.m_hpFrontRender, "Assets/sprite/InGame/Character/Player_HP_Front.DDS", 588, 78, MAIN_HP_BAR);
-	//ピボットの設定
-	m_playerUI.m_hpFrontRender.SetPivot(HP_PIBOT);
-
-	//白いHPバー
-	InitSpriteRender(
-		m_playerUI.m_hpWhiteRender, "Assets/sprite/InGame/Character/Player_HP_White.DDS", 588, 78, MAIN_HP_BAR);
-	//ピボットの設定
-	m_playerUI.m_hpWhiteRender.SetPivot(HP_PIBOT);
-
-	//HPバーの裏側
-	InitSpriteRender(
-		m_playerUI.m_hpBackRender, "Assets/sprite/InGame/Character/Player_HP_Back.DDS", 600, 80, MAIN_STATUS_BAR);
-
-	//メイン武器のアイコン
-	InitSpriteRender(
-		m_playerUI.m_weaponRender[enWeapon_Main],
-		"Assets/sprite/InGame/Character/SwordShield.DDS", 256, 256,
-		m_weaponIconPos[enWeapon_Main], m_weaponIconScale[enWeapon_Main]
-	);
-	m_weaponSprits[enWeapon_Main].m_weaponRender = &m_playerUI.m_weaponRender[enWeapon_Main];
-
-	//メイン武器のフレーム
-	InitSpriteRender(
-		m_playerUI.m_mainWeaponFlameRender, "Assets/sprite/InGame/Character/MainWeaponFlame.DDS", 238, 237,
-		m_weaponIconPos[enWeapon_Main], g_vec3One*1.1f
-	);
-
-	//サブ武器１のアイコン
-	InitSpriteRender(
-		m_playerUI.m_weaponRender[enWeapon_Sub],
-		"Assets/sprite/InGame/Character/GreatSword.DDS", 300, 300,
-		m_weaponIconPos[enWeapon_Sub], m_weaponIconScale[enWeapon_Sub]
-	);
-	m_weaponSprits[enWeapon_Sub].m_weaponRender = &m_playerUI.m_weaponRender[enWeapon_Sub];
-
-	//サブ武器１のフレーム
-	InitSpriteRender(
-		m_playerUI.m_subWeaponFlameRender, "Assets/sprite/InGame/Character/SubWeaponFlame.DDS", 156, 155,
-		m_weaponIconPos[enWeapon_Sub], g_vec3One * 0.9f
-	);
-	//サブ武器１のコマンド
-	InitSpriteRender(
-		m_playerUI.m_subWeaponCommandRender, "Assets/sprite/InGame/Character/Button_LB.DDS", 80, 60,
-		COMMAND_LB, g_vec3One
-	);
-
-	//サブ武器２のアイコン
-	InitSpriteRender(
-		m_playerUI.m_weaponRender[enWeapon_Sub2],
-		"Assets/sprite/InGame/Character/BowArrow.DDS", 290, 290,
-		m_weaponIconPos[enWeapon_Sub2], m_weaponIconScale[enWeapon_Sub2]
-	);
-	m_weaponSprits[enWeapon_Sub2].m_weaponRender = &m_playerUI.m_weaponRender[enWeapon_Sub2];
-
-	//サブ武器２のフレーム
-	InitSpriteRender(
-		m_playerUI.m_sub2WeaponFlameRender, "Assets/sprite/InGame/Character/SubWeaponFlame.DDS", 156, 155,
-		m_weaponIconPos[enWeapon_Sub2], g_vec3One * 0.9f
-	);
-	//サブ武器２のコマンド
-	InitSpriteRender(
-		m_playerUI.m_sub2WeaponCommandRender, "Assets/sprite/InGame/Character/Button_RB.DDS", 80, 60,
-		COMMAND_RB, g_vec3One
-	);	
-
-	//メイン武器(ソード＆シールド)の耐久値の背景
-	InitSpriteRender(m_playerUI.m_weaponEndranceRender[enWeapon_Main],
-		"Assets/sprite/InGame/Character/Shield_Endurance.DDS", 134, 132,
-		ENDURANCE_SPRITE_POS, g_vec3One);
-	m_weaponSprits[enWeapon_Main].m_weaponEndranceRender = &m_playerUI.m_weaponEndranceRender[enWeapon_Main];
-	//サブ武器２(ボウ＆アロー)の耐久値の背景
-	InitSpriteRender(m_playerUI.m_weaponEndranceRender[enWeapon_Sub2],
-		"Assets/sprite/InGame/Character/ArrowStock.DDS", 177, 182,
-		ENDURANCE_SPRITE_POS, g_vec3One);
-	m_weaponSprits[enWeapon_Sub2].m_weaponEndranceRender = &m_playerUI.m_weaponEndranceRender[enWeapon_Sub2];
-
-	//耐久力のフォント
-	InitFontRender(
-		m_playerUI.m_weaponEndranceFont, ENDURANCE_FONT_POS,1.5f
-	);
-	//耐久値のオフセット
-	m_playerUI.m_weaponEndranceFont.SetOffset({ 20.0f,0.0f });
-
-}
-
-void GameUI::InitMonsterUI()
-{
-	//HPの値
-	InitFontRender(m_monsterUI.m_hpFont, BOSS_HP_FONT_POS, 1.1f);
-
-	//確認用
-	InitFontRender(m_monsterUI.m_AccumulationDamageFont, { 0.0f, 500.0f });
-	
-	//ボスのアイコン
-	InitSpriteRender(
-		m_monsterUI.m_IconRender, "Assets/sprite/InGame/Character/Icon_Lich.DDS", 180, 180, BOSS_ICON_POS, g_vec3One * 0.8f);
-
-	//ボスのHPのフレーム
-	InitSpriteRender(
-		m_monsterUI.m_HpFlameRender, "Assets/sprite/InGame/Character/HP_Flame_Boss.DDS", 1000, 60, BOSS_HP_FLAME_POS);
-
-	//ボスのHPバー
-	InitSpriteRender(
-		m_monsterUI.m_HpFrontRender, "Assets/sprite/InGame/Character/HP_Front_Boss.DDS", 978, 47, BOSS_HP_FRONT_POS);
-	//ピボットの設定
-	m_monsterUI.m_HpFrontRender.SetPivot(HP_PIBOT);
-	
-	//ボスの白いHPバー
-	InitSpriteRender(
-		m_monsterUI.m_HpWhiteRender, "Assets/sprite/InGame/Character/HP_White_Boss.DDS", 978, 47, BOSS_HP_FRONT_POS);
-	//ピボットの設定
-	m_monsterUI.m_HpWhiteRender.SetPivot(HP_PIBOT);
-
-	//HPバーの裏側
-	InitSpriteRender(
-		m_monsterUI.m_HpBackRender, "Assets/sprite/InGame/Character/HP_Back_Boss.DDS", 978, 47, BOSS_HP_BACK_POS);
-}
-
-
-void GameUI::InitSpriteRender(
-	SpriteRender& spriterender, 
-	const char* filePath, 
-	const float width, const float height,
-	Vector3 position, 
-	Vector3 scale,
-	Quaternion rotation
-)
-{
-	//初期化
-	spriterender.Init(filePath, width, height);
-	//座標、サイズ、回転の設定と更新
-	spriterender.SetPosition(position);
-	spriterender.SetScale(scale);
-	spriterender.SetRotation(rotation);
-	spriterender.Update();
-}
-
-void GameUI::InitFontRender(
-	FontRender& fontRender, 
-	Vector2 position, 
-	float scale,
-	Vector4 color, 
-	bool isShadowParam, float shadowOffset, Vector4 shadowColor)
-{
-	fontRender.SetPosition(position);
-	fontRender.SetScale(scale);
-	fontRender.SetColor(color);
-	if (isShadowParam)
-	{
-		fontRender.SetShadowParam(
-			isShadowParam, shadowOffset, shadowColor
-		);
-	}
 }
 
 void GameUI::ProcessPlayerHp()
@@ -526,17 +268,29 @@ void GameUI::ProcessBossHP()
 	m_monsterUI.m_AccumulationDamageFont.SetText(A);*/
 
 	m_oldBossHpScale = HpScale;
-
+	//更新
 	m_monsterUI.m_HpFrontRender.Update();
 	m_monsterUI.m_HpWhiteRender.Update();
 }
 
+void GameUI::ProcessBossSuperArmor()
+{
+	//スーパーアーマーのバーの減っていく割合。
+	/*Vector3 spuerArmorScale = Vector3::One;
+	spuerArmorScale = CalcGaugeScale(
+		m_boss->GetStatus()., nowHP);
+	m_monsterUI.m_HpFrontRender.SetScale(spuerArmorScale);*/
+
+
+}
+
 void GameUI::ProcessPhase()
 {
+	//現在のフェーズを取得
 	int PhaseNumber = GameManager::GetInstance()->GetNowPhaseState();
 	wchar_t NowPhase[255];
 	swprintf_s(NowPhase, 255, L"フェーズ%d", PhaseNumber+1);
-
+	//テキストを設定
 	m_PhadeFont.SetText(NowPhase);
 }
 
@@ -584,3 +338,292 @@ void GameUI::ProcessWeaponEndranceFont()
 	}
 }
 
+void GameUI::Render(RenderContext& rc)
+{
+	DrawPlayerUI(rc);
+	DrawMonsterUI(rc);
+
+	m_TimeFlameRender.Draw(rc);
+	m_TimerFont.Draw(rc);
+
+	m_PhaseFlameRender.Draw(rc);
+	m_PhadeFont.Draw(rc);
+}
+
+void GameUI::DrawPlayerUI(RenderContext& rc)
+{
+	//メインHP
+	m_playerUI.m_hpBackRender.Draw(rc);
+
+	if (m_playerHpWhiteScale.x > 0.0f)
+	{
+		m_playerUI.m_hpWhiteRender.Draw(rc);
+	}
+
+
+	m_playerUI.m_hpFrontRender.Draw(rc);
+
+	//メイン
+	m_playerUI.m_hpFlameRender.Draw(rc);
+
+	//HPのフォント
+	m_playerUI.m_hpFont.Draw(rc);
+
+
+	//メイン武器のフレーム
+	m_playerUI.m_mainWeaponFlameRender.Draw(rc);
+	////サブ武器１のフレーム
+	m_playerUI.m_subWeaponFlameRender.Draw(rc);
+	////サブ武器１のコマンド
+	m_playerUI.m_subWeaponCommandRender.Draw(rc);
+	////サブ武器２のフレーム
+	m_playerUI.m_sub2WeaponFlameRender.Draw(rc);
+	////サブ武器２のコマンド
+	m_playerUI.m_sub2WeaponCommandRender.Draw(rc);
+
+	//武器のアイコン
+	//耐久値の背景
+	for (int num = 0; num < enWeapon_num; num++)
+	{
+		m_weaponSprits[num].m_weaponRender->Draw(rc);
+	}
+
+	if (m_weaponSprits[enWeapon_Main].m_weaponEndranceRender != nullptr)
+	{
+		m_weaponSprits[enWeapon_Main].m_weaponEndranceRender->Draw(rc);
+	}
+
+	//武器の耐久値が-１より大きかったら描画
+	if (m_player->GetNowWeaponEndrance() > -1)
+	{
+		m_playerUI.m_weaponEndranceFont.Draw(rc);
+	}
+}
+
+void GameUI::DrawMonsterUI(RenderContext& rc)
+{
+	if (m_boss == nullptr)
+	{
+		return;
+	}
+	//アイコン
+	m_monsterUI.m_IconRender.Draw(rc);
+
+	//HP
+	m_monsterUI.m_HpBackRender.Draw(rc);
+	if (m_BossHpWhiteScale.x > 0.0f)
+	{
+		m_monsterUI.m_HpWhiteRender.Draw(rc);
+	}
+	m_monsterUI.m_HpFrontRender.Draw(rc);
+
+	//HPのフレーム
+	m_monsterUI.m_HpFlameRender.Draw(rc);
+
+	//HPのフォント
+	m_monsterUI.m_hpFont.Draw(rc);
+	m_monsterUI.m_AccumulationDamageFont.Draw(rc);
+
+	//スーパーアーマー
+	m_monsterUI.m_superArmor_FlameRender.Draw(rc);
+	m_monsterUI.m_superArmor_BackBarRender.Draw(rc);
+	m_monsterUI.m_superArmor_FrontBarRender.Draw(rc);
+}
+
+void GameUI::InitPlayerUI()
+{
+
+	//HPの値
+	InitFontRender(m_playerUI.m_hpFont, HP_FONT_POS, 1.3f);
+
+	//ステータスバー
+	InitSpriteRender(
+		m_playerUI.m_hpFlameRender, "Assets/sprite/InGame/Character/Player_HP_Flame.DDS", 608, 88, MAIN_STATUS_BAR);
+
+	//HPバー
+	InitSpriteRender(
+		m_playerUI.m_hpFrontRender, "Assets/sprite/InGame/Character/Player_HP_Front.DDS", 588, 78, MAIN_HP_BAR);
+	//ピボットの設定
+	m_playerUI.m_hpFrontRender.SetPivot(HP_PIBOT);
+
+	//白いHPバー
+	InitSpriteRender(
+		m_playerUI.m_hpWhiteRender, "Assets/sprite/InGame/Character/Player_HP_White.DDS", 588, 78, MAIN_HP_BAR);
+	//ピボットの設定
+	m_playerUI.m_hpWhiteRender.SetPivot(HP_PIBOT);
+
+	//HPバーの裏側
+	InitSpriteRender(
+		m_playerUI.m_hpBackRender, "Assets/sprite/InGame/Character/Player_HP_Back.DDS", 600, 80, MAIN_STATUS_BAR);
+
+	//メイン武器のアイコン
+	InitSpriteRender(
+		m_playerUI.m_weaponRender[enWeapon_Main],
+		"Assets/sprite/InGame/Character/SwordShield.DDS", 256, 256,
+		m_weaponIconPos[enWeapon_Main], m_weaponIconScale[enWeapon_Main]
+	);
+	m_weaponSprits[enWeapon_Main].m_weaponRender = &m_playerUI.m_weaponRender[enWeapon_Main];
+
+	//メイン武器のフレーム
+	InitSpriteRender(
+		m_playerUI.m_mainWeaponFlameRender, "Assets/sprite/InGame/Character/MainWeaponFlame.DDS", 238, 237,
+		m_weaponIconPos[enWeapon_Main], g_vec3One * 1.1f
+	);
+
+	//サブ武器１のアイコン
+	InitSpriteRender(
+		m_playerUI.m_weaponRender[enWeapon_Sub],
+		"Assets/sprite/InGame/Character/GreatSword.DDS", 300, 300,
+		m_weaponIconPos[enWeapon_Sub], m_weaponIconScale[enWeapon_Sub]
+	);
+	m_weaponSprits[enWeapon_Sub].m_weaponRender = &m_playerUI.m_weaponRender[enWeapon_Sub];
+
+	//サブ武器１のフレーム
+	InitSpriteRender(
+		m_playerUI.m_subWeaponFlameRender, "Assets/sprite/InGame/Character/SubWeaponFlame.DDS", 156, 155,
+		m_weaponIconPos[enWeapon_Sub], g_vec3One * 0.9f
+	);
+	//サブ武器１のコマンド
+	InitSpriteRender(
+		m_playerUI.m_subWeaponCommandRender, "Assets/sprite/InGame/Character/Button_LB.DDS", 80, 60,
+		COMMAND_LB, g_vec3One
+	);
+
+	//サブ武器２のアイコン
+	InitSpriteRender(
+		m_playerUI.m_weaponRender[enWeapon_Sub2],
+		"Assets/sprite/InGame/Character/BowArrow.DDS", 290, 290,
+		m_weaponIconPos[enWeapon_Sub2], m_weaponIconScale[enWeapon_Sub2]
+	);
+	m_weaponSprits[enWeapon_Sub2].m_weaponRender = &m_playerUI.m_weaponRender[enWeapon_Sub2];
+
+	//サブ武器２のフレーム
+	InitSpriteRender(
+		m_playerUI.m_sub2WeaponFlameRender, "Assets/sprite/InGame/Character/SubWeaponFlame.DDS", 156, 155,
+		m_weaponIconPos[enWeapon_Sub2], g_vec3One * 0.9f
+	);
+	//サブ武器２のコマンド
+	InitSpriteRender(
+		m_playerUI.m_sub2WeaponCommandRender, "Assets/sprite/InGame/Character/Button_RB.DDS", 80, 60,
+		COMMAND_RB, g_vec3One
+	);
+
+	//メイン武器(ソード＆シールド)の耐久値の背景
+	InitSpriteRender(m_playerUI.m_weaponEndranceRender[enWeapon_Main],
+		"Assets/sprite/InGame/Character/Shield_Endurance.DDS", 134, 132,
+		ENDURANCE_SPRITE_POS, g_vec3One);
+	m_weaponSprits[enWeapon_Main].m_weaponEndranceRender = &m_playerUI.m_weaponEndranceRender[enWeapon_Main];
+	//サブ武器２(ボウ＆アロー)の耐久値の背景
+	InitSpriteRender(m_playerUI.m_weaponEndranceRender[enWeapon_Sub2],
+		"Assets/sprite/InGame/Character/ArrowStock.DDS", 177, 182,
+		ENDURANCE_SPRITE_POS, g_vec3One);
+	m_weaponSprits[enWeapon_Sub2].m_weaponEndranceRender = &m_playerUI.m_weaponEndranceRender[enWeapon_Sub2];
+
+	//耐久力のフォント
+	InitFontRender(
+		m_playerUI.m_weaponEndranceFont, ENDURANCE_FONT_POS, 1.5f
+	);
+	//耐久値のオフセット
+	m_playerUI.m_weaponEndranceFont.SetOffset({ 20.0f,0.0f });
+
+}
+
+void GameUI::InitMonsterUI()
+{
+	//HPの値
+	InitFontRender(m_monsterUI.m_hpFont, BOSS_HP_FONT_POS, 1.1f);
+
+	//確認用
+	InitFontRender(m_monsterUI.m_AccumulationDamageFont, { 0.0f, 500.0f });
+
+	//ボスのアイコン
+	InitSpriteRender(
+		m_monsterUI.m_IconRender,
+		"Assets/sprite/InGame/Character/Icon_Lich.DDS", 180, 180, BOSS_ICON_POS, g_vec3One * 0.8f
+	);
+
+	//ボスのHPのフレーム
+	InitSpriteRender(
+		m_monsterUI.m_HpFlameRender,
+		"Assets/sprite/InGame/Character/HP_Flame_Boss.DDS", 1000, 60, BOSS_HP_FLAME_POS
+	);
+
+	//ボスのHPバー
+	InitSpriteRender(
+		m_monsterUI.m_HpFrontRender,
+		"Assets/sprite/InGame/Character/HP_Front_Boss.DDS", 978, 47, BOSS_HP_FRONT_POS
+	);
+	//ピボットの設定
+	m_monsterUI.m_HpFrontRender.SetPivot(HP_PIBOT);
+
+	//ボスの白いHPバー
+	InitSpriteRender(
+		m_monsterUI.m_HpWhiteRender,
+		"Assets/sprite/InGame/Character/HP_White_Boss.DDS", 978, 47, BOSS_HP_FRONT_POS
+	);
+	//ピボットの設定
+	m_monsterUI.m_HpWhiteRender.SetPivot(HP_PIBOT);
+
+	//HPバーの裏側
+	InitSpriteRender(
+		m_monsterUI.m_HpBackRender,
+		"Assets/sprite/InGame/Character/HP_Back_Boss.DDS", 978, 47, BOSS_HP_BACK_POS
+	);
+
+	//スーパーアーマーのフレーム
+	InitSpriteRender(
+		m_monsterUI.m_superArmor_FlameRender,
+		"Assets/sprite/InGame/Character/SuperArmor_Flame.DDS", 670, 26, BOSS_SUPERARMOR_POS
+	);
+
+	//スーパーアーマーの変動するバー
+	InitSpriteRender(
+		m_monsterUI.m_superArmor_FrontBarRender,
+		"Assets/sprite/InGame/Character/SuperArmor_Front.DDS", 666, 24, BOSS_SUPERARMOR_FLONT_BAR_POS
+	);
+	//ピボットの設定
+	m_monsterUI.m_superArmor_FrontBarRender.SetPivot(HP_PIBOT);
+
+	//スーパーアーマーの裏のバー
+	InitSpriteRender(
+		m_monsterUI.m_superArmor_BackBarRender,
+		"Assets/sprite/InGame/Character/SuperArmor_Back.DDS", 664, 22, BOSS_SUPERARMOR_POS
+	);
+
+}
+
+void GameUI::InitSpriteRender(
+	SpriteRender& spriterender,
+	const char* filePath,
+	const float width, const float height,
+	Vector3 position,
+	Vector3 scale,
+	Quaternion rotation
+)
+{
+	//初期化
+	spriterender.Init(filePath, width, height);
+	//座標、サイズ、回転の設定と更新
+	spriterender.SetPosition(position);
+	spriterender.SetScale(scale);
+	spriterender.SetRotation(rotation);
+	spriterender.Update();
+}
+
+void GameUI::InitFontRender(
+	FontRender& fontRender,
+	Vector2 position,
+	float scale,
+	Vector4 color,
+	bool isShadowParam, float shadowOffset, Vector4 shadowColor)
+{
+	fontRender.SetPosition(position);
+	fontRender.SetScale(scale);
+	fontRender.SetColor(color);
+	if (isShadowParam)
+	{
+		fontRender.SetShadowParam(
+			isShadowParam, shadowOffset, shadowColor
+		);
+	}
+}

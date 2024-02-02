@@ -105,6 +105,11 @@ private:
 	void ProcessBossHP();
 
 	/// <summary>
+	/// ボスのスーパーアーマーの処理
+	/// </summary>
+	void ProcessBossSuperArmor();
+
+	/// <summary>
 	/// フェーズの処理
 	/// </summary>
 	void ProcessPhase();
@@ -170,6 +175,11 @@ private:
 		SpriteRender m_HpFrontRender;			//変動するHPバー
 		SpriteRender m_HpWhiteRender;			//遅れて減らす白いHPバー
 		SpriteRender m_HpBackRender;			//HPバーの裏側
+
+		SpriteRender m_superArmor_FlameRender;		//スーパーアーマーのフレーム
+		SpriteRender m_superArmor_FrontBarRender;	//スーパーアーマーの表の変動するのバー
+		SpriteRender m_superArmor_BackBarRender;	//スーパーアーマーの後ろのバー
+
 	};
 
 	//プレイヤーのUI
