@@ -70,6 +70,33 @@ public:
 		return m_bossBase->GetStatus();
 	}
 
+	/// <summary>
+	/// キャラクターコントローラーの取得
+	/// </summary>
+	/// <returns></returns>
+	CharacterController& GetCharacterController()
+	{
+		return m_bossBase->GetCharacterController();
+	}
+
+
+	/// <summary>
+	/// ダメージを受けられるかのフラグを設定
+	/// </summary>
+	/// <returns></returns>
+	void SetDamageHitEnableFlag(bool flag)
+	{
+		m_bossBase->SetDamageHitEnableFlag(flag);
+	}
+	/// <summary>
+	/// ダメージを受けられるかのフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetDamageHitEnableFlag() const
+	{
+		return m_bossBase->GetDamageHitEnableFlag();
+	}
+
 
 
 private:
