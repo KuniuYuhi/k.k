@@ -198,6 +198,9 @@ void MonsterBase::HitNormalAttack()
 	//エフェクトを再生
 	CreateHitEffect();
 	m_player->SetAttackHitFlag(true);
+	//余分にダメージを与えてしまう
+	//ダメージを受けたのでフラグがtrueにならないとダメージを受けないようにする
+	SetDamageHitEnableFlag(false);
 }
 
 void MonsterBase::HitSkillAttack()
@@ -210,6 +213,9 @@ void MonsterBase::HitSkillAttack()
 	//エフェクトを再生
 	CreateHitEffect();
 	m_player->SetAttackHitFlag(true);
+
+	//ダメージを受けたのでフラグがtrueにならないとダメージを受けないようにする
+	SetDamageHitEnableFlag(false);
 }
 
 bool MonsterBase::IsCollisionDetection()

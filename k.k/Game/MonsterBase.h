@@ -133,6 +133,27 @@ public:
 	/// <returns></returns> 
 	bool AngleChangeTimeIntarval(float LimitTime);
 
+	/////////////////////////////////////////////////////////////////////////////////
+	// getter,setter関数宣言
+	/////////////////////////////////////////////////////////////////////////////////
+
+	/// <summary>
+	/// ダメージが受けられるかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetDamageHitEnableFlag(bool flag)
+	{
+		m_damageHitEnableFlag = flag;
+	}
+	/// <summary>
+	/// ダメージが受けられるかのフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetDamageHitEnableFlag() const
+	{
+		return m_damageHitEnableFlag;
+	}
+
 
 protected:
 	/// <summary>
@@ -152,25 +173,28 @@ protected:
 
 
 
-	int							m_damage = 0;							//受けたダメージを代入する
+	int							m_damage = 0;					//受けたダメージを代入する
 
-	bool						m_dashFlag = false;						//ダッシュするかのフラグ
-	bool						m_attackEnableFlag = true;					//攻撃していいかのフラグ。falseで攻撃可能
-	bool						m_damageFlag = false;					//ダメージを受けられるかのフラグ。falseで被ダメージ可能
+	bool						m_damageHitEnableFlag = true;	//攻撃がヒット可能かのフラグ。プレイヤーの通常攻撃の判定で使う。
+																//trueでヒット可能。
 
-	float						m_attackIntervalTimer = 0.0f;			//アタックのインターバルタイマー
-	float						m_damageIntervalTimer = 0.0f;			//ダメージのインターバルタイマー
+	bool						m_dashFlag = false;				//ダッシュするかのフラグ
+	bool						m_attackEnableFlag = true;		//攻撃していいかのフラグ。falseで攻撃可能
+	//bool						m_damageFlag = false;			//ダメージを受けられるかのフラグ。falseで被ダメージ可能
 
-	float						m_distance = 0.0f;						//プレイヤーを発見できる距離
+	float						m_attackIntervalTimer = 0.0f;	//アタックのインターバルタイマー
+	float						m_damageIntervalTimer = 0.0f;	//ダメージのインターバルタイマー
 
-	float						m_angle = 0.0f;							//視野角
+	float						m_distance = 0.0f;				//プレイヤーを発見できる距離
 
-	float						m_angleChangeTimer = 0.0f;				//移動する方向をかえるタイミングを計算するタイマー
-	bool						m_angleChangeTimeFlag = false;			//移動する方向をかえるかのフラグ
+	float						m_angle = 0.0f;					//視野角
 
-	bool						m_elaseListFlag = false;				//自身をリストから削除したかのフラグ
+	float						m_angleChangeTimer = 0.0f;		//移動する方向をかえるタイミングを計算するタイマー
+	bool						m_angleChangeTimeFlag = false;	//移動する方向をかえるかのフラグ
 
-	float						m_rotTimer = 0.0f;						//回転の線形補間で使うタイマー
+	bool						m_elaseListFlag = false;		//自身をリストから削除したかのフラグ
+
+	float						m_rotTimer = 0.0f;				//回転の線形補間で使うタイマー
 
 
 };
