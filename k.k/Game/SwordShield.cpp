@@ -63,6 +63,8 @@ bool SwordShield::Start()
 		POWER, SKILL_POWER, ENDURANCE
 	);
 
+	m_status.InitWeaponStatus(GetName());
+
 	//勇者のインスタンスを探す
 	m_brave = FindGO<Brave>("brave");
 
