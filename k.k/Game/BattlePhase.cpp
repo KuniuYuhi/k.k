@@ -28,6 +28,8 @@ namespace {
 
 	const float INCANTATION_TIME_LIMMIT = 2.0f;
 
+	const float CIRCLE_EFFECT_SIZE = 15.0F;
+
 }
 
 BattlePhase::BattlePhase()
@@ -303,6 +305,7 @@ bool BattlePhase::IsIncantation()
 
 void BattlePhase::CreateMagicCircleEffect(const int monsterCount)
 {
+	//モンスターを生成する座標に魔法陣エフェクトを再生
 	for (int num = 0; num < monsterCount; num++)
 	{
 		Vector3 Pos = m_createPos[num];
@@ -311,7 +314,7 @@ void BattlePhase::CreateMagicCircleEffect(const int monsterCount)
 		effectEmitter->Init(InitEffect::enEffect_Mob_Summon_Circle);
 		effectEmitter->Play();
 		effectEmitter->SetPosition(Pos);
-		effectEmitter->SetScale({ 15.0f,15.0f,15.0f });
+		effectEmitter->SetScale(g_vec3One * CIRCLE_EFFECT_SIZE);
 		effectEmitter->Update();
 	}
 }
@@ -323,7 +326,7 @@ void BattlePhase::CreateSummonLightEffect(Vector3 createPos)
 	effectEmitter->Init(InitEffect::enEffect_Mob_Summon_Right);
 	effectEmitter->Play();
 	effectEmitter->SetPosition(createPos);
-	effectEmitter->SetScale({ 15.0f,15.0f,15.0f });
+	effectEmitter->SetScale(g_vec3One * CIRCLE_EFFECT_SIZE);
 	effectEmitter->Update();
 }
 
