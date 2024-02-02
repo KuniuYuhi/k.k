@@ -201,6 +201,13 @@ void Summoner::Damage(int attack)
 
 void Summoner::HitNormalAttack()
 {
+	if (GetDamageHitEnableFlag() == true)
+	{
+		Damage(m_player->GetAtk());
+		CreateDamageFont(m_player->GetAtk());
+		SetDamageHitEnableFlag(false);
+	}
+	return;
 	//１コンボの間に1回だけ判定
 	//ダメージを受けた時のコンボステートと現在のコンボステートが違うなら
 	if (m_player->IsComboStateSame() == true)
@@ -221,7 +228,7 @@ void Summoner::HitSkillAttack()
 	{
 		return;
 	}
-	m_damageFlag = true;
+	//m_damageFlag = true;
 	Damage(m_player->GetSkillAtk());
 	CreateDamageFont(m_player->GetSkillAtk());
 	//多段ヒットしたのでフラグをリセット。多段ヒットでなくとも
@@ -670,21 +677,10 @@ void Summoner::PlayKnockBackEffect(Vector3 position)
 
 void Summoner::ProcessVigilance()
 {
+	//移動処理
 	m_position = m_charaCon.Execute(
 		m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 	return;
-
-	//プレイヤーに向かって移動
-	//プレイヤーの座標を取得
-	m_targetPosition = m_player->GetPosition();
-	//移動方向を設定
-	m_moveSpeed = CalcVelocity(m_status, m_targetPosition);
-
-
-	
-	//前方向の設定
-	m_forward = m_moveSpeed;
-	m_forward.Normalize();
 }
 
 void Summoner::SetNextStateMachine(EnStateMachineState nextStateMachine)
@@ -731,7 +727,8 @@ void Summoner::SetStartStateMachine(EnStateMachineState nextStateMachine)
 		m_stateMachine = new SummonerSM_Vigilance(this, true);
 		break;
 	case Summoner::enStateMachineState_Attack:
-		m_stateMachine = new SummonerSM_Attack(this);
+		//最初の生成なので、前のアクションをリセットする
+		m_stateMachine = new SummonerSM_Attack(this,true);
 		break;
 	default:
 		std::abort();
