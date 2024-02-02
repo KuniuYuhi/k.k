@@ -25,6 +25,8 @@
 
 #include "CalcCharacterForward.h"
 
+#include "CharactersInfoManager.h"
+
 namespace {
 	const float ADD_SCALE = 1.2f;
 
@@ -85,16 +87,16 @@ void Brave::Update()
 	//行動不可能な状態でないなら
 	if (IsInaction() != true)
 	{
+		//攻撃処理
+		ProcessAttack();
+		//防御処理
+		ProcessDefend();
 		//武器の切り替え処理
 		ChangeWeapon();
 		//移動処理
 		Move();
 		//回転処理
 		ProcessRotation();
-		//攻撃処理
-		ProcessAttack();
-		//防御処理
-		ProcessDefend();
 		//無敵時間の計算
 		CalcInvincibleTime();
 		//当たり判定
@@ -123,8 +125,7 @@ void Brave::Move()
 			CalcForward(m_moveSpeed);
 		}
 		//移動量を0にする
-		m_moveSpeed.x = 0.0f;
-		m_moveSpeed.z = 0.0f;
+		m_moveSpeed = g_vec3Zero;
 	}
 	else
 	{
@@ -160,11 +161,10 @@ void Brave::ProcessAttack()
 	//通常攻撃
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
+		//向いている方向に前進するために前方向を計算
+		CalcAttackMoveSpeed();
 		//コンボ攻撃の処理
 		ProcessComboAttack();
-		//攻撃エフェクトの表示
-
-		return;
 	}
 	//スキル
 	if (g_pad[0]->IsTrigger(enButtonB))
@@ -173,8 +173,12 @@ void Brave::ProcessAttack()
 		SetIsActionFlag(true);
 		//ノックバックパワーを設定
 		SetKnockBackPower(m_mainUseWeapon.weapon->GetKnockBackPower(4));
+		//スキルのスタートアニメーションステート
 		SetNextAnimationState(enAnimationState_Skill_start);
 	}
+
+	//モンスターにダメージを与えられるようにフラグをリセット
+	CharactersInfoManager::GetInstance()->SetAllMonsterDamgeHitFlag(true);
 }
 
 void Brave::ProcessDefend()
@@ -443,7 +447,7 @@ void Brave::CalcAttackMoveSpeed()
 {
 	//moveSpeed(移動方向)の取得
 	m_moveSpeed = calcVelocity(GetStatus());
-	//m_moveSpeed.y = 0.0f;
+	m_moveSpeed.y = 0.0f;
 	//前方向を設定
 	m_calcCharacterForward.get()->CalcForwardOfNearMonster(
 		m_position, m_forward, m_moveSpeed, 150.0f);
@@ -469,6 +473,10 @@ void Brave::ProcessComboAttack()
 		static_cast<EnAttackPattern>(m_attackPatternState + 1);
 	//通常攻撃ステート設定
 	SetNextAnimationState(m_attackPatternState);
+
+	//モンスターにダメージを与えられるようにフラグをリセット
+	CharactersInfoManager::GetInstance()->SetAllMonsterDamgeHitFlag(true);
+
 	//敵のためのコンボステートを設定
 	switch (m_attackPatternState)
 	{
@@ -558,6 +566,8 @@ void Brave::ProcessNormalAttackStateTransition()
 		//次のコンボの攻撃ステート設定
 		else
 		{
+			//向いている方向に前進するために前方向を計算
+			CalcAttackMoveSpeed();
 			//次のコンボの処理
 			ProcessComboAttack();
 		}
@@ -624,7 +634,6 @@ void Brave::ProcessDieStateTransition()
 		SetDieFlag(true);
 		//バトル終了後の処理終わり
 		GameManager::GetInstance()->SetGameFinishProcessEndFlag(true);
-		//g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 60);
 	}
 }
 
@@ -695,7 +704,6 @@ void Brave::ReverseWeapon(EnWeapons changeTargetWeaponType)
 	//メイン武器とサブ武器の状態ステートを逆にする
 	m_mainUseWeapon.weapon->ReverseWeaponState();
 	ChangeUseSubWeapon->weapon->ReverseWeaponState();
-	//逆参照あった
 	//攻撃力を現在の武器のものに変更。
 	m_status.SetAtk(m_mainUseWeapon.weapon->GetStatus().GetAtk());
 	//多段ヒット判定フラグをセット
@@ -949,7 +957,7 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	if (wcscmp(eventName, L"MoveForwardStart") == 0)
 	{
 		//向いている方向に前進するために前方向を計算
-		CalcAttackMoveSpeed();
+		//CalcAttackMoveSpeed();
 		//前方向に移動フラグをセット
 		SetMoveforwardFlag(true);
 	}
@@ -1015,13 +1023,6 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	{
 		SetInvicibleFlag(false);
 	}
-
-	////スキル使用時の攻撃処理
-	//if (wcscmp(eventName, L"SkillAttack") == 0)
-	//{
-	//	//メイン武器のスキル攻撃処理
-	//	m_mainUseWeapon.weapon->ProcessSkillAttack();
-	//}
 }
 
 bool Brave::isCollisionEntable() const
