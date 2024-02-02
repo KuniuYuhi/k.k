@@ -17,15 +17,15 @@ namespace {
 	const float ADD_FORWARD = 30.0f;
 
 	//ステータス
-	const int POWER = 30;
+	const int POWER = 0;
 	const int SKILL_POWER = 50;
 	const int ENDURANCE = 70;		//武器の耐久力(盾の耐久力)。
 
 	const float MOVE_FORWARD_SPEED = 200.0f;
 
 	const float ATTACK_1COMBO_KNOCKBACK_POWER = 140.0f;
-	const float ATTACK_2COMBO_KNOCKBACK_POWER = 160.0f;
-	const float ATTACK_3COMBO_KNOCKBACK_POWER = 180.0f;
+	const float ATTACK_2COMBO_KNOCKBACK_POWER = 140.0f;
+	const float ATTACK_3COMBO_KNOCKBACK_POWER = 140.0f;
 	const float SKILL_KNOCKBACK_POWER = 250.0f;
 
 	const float NORMAL_ATTACK_1_EFFECT_ANGLE = 225.0f;
@@ -35,6 +35,8 @@ namespace {
 
 	const float SKILL_ATTACK_EFFECT_SIZE = 17.0f;
 	const float SKILL_ATTACK_RISING_EFFECT_SIZE = 10.0f;
+
+	const float HITTABLE_TIME = 0.1f;
 }
 
 SwordShield::SwordShield()
@@ -87,6 +89,9 @@ void SwordShield::Update()
 	}
 
 	MoveWeapon();
+
+	//多段ヒット可能か判断する。他の武器で処理が途中で終わっているかもしれないから
+	m_hitDelection.IsHittable(HITTABLE_TIME);
 
 	m_modelSword.Update();
 	m_modelShield.Update();
@@ -304,6 +309,11 @@ void SwordShield::PlaySkillAttackEffect()
 		InitEffect::enEffect_SwordShieldSkillAttack,
 		m_skillAttackPosition, SKILL_ATTACK_EFFECT_SIZE
 	);
+	//スキルの音再生
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_SwordShieldSkillAttack,
+		g_soundManager->GetSEVolume()
+	);
 }
 
 void SwordShield::Render(RenderContext& rc)
@@ -341,6 +351,11 @@ void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 			InitEffect::enEffect_SwordShieldCombo12,
 			pos, NORMAL_ATTACK_1_2_EFFECT_SIZE,rot
 		);
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldCombo_1_2,
+			g_soundManager->GetSEVolume()
+		);
 	}
 	//通常攻撃２のアニメーションキーフレーム
 	if (wcscmp(eventName, L"PlayCombo2Effect") == 0)
@@ -354,6 +369,11 @@ void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 			InitEffect::enEffect_SwordShieldCombo12,
 			pos, NORMAL_ATTACK_1_2_EFFECT_SIZE, rot
 		);
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldCombo_1_2,
+			g_soundManager->GetSEVolume()
+		);
 	}
 	//通常攻撃３のアニメーションキーフレーム
 	if (wcscmp(eventName, L"PlayCombo3Effect") == 0)
@@ -366,6 +386,11 @@ void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		PlayEffect(
 			InitEffect::enEffect_SwordShieldCombo3,
 			pos, NORMAL_ATTACK_3_EFFECT_SIZE,rot
+		);
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldCombo_3,
+			g_soundManager->GetSEVolume()
 		);
 	}
 	//スキル攻撃のアニメーションキーフレーム
