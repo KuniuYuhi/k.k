@@ -10,9 +10,11 @@ namespace {
 
 	const float STAY_PLAYER_LIMMIT_TIME = 10.0f;		//プレイヤーが近くにとどまっているタイマーの上限
 
-	const float DARK_METEO_ACTION_POINT = 20.0f;
+	const float DARK_METEO_ACTION_POINT = 30.0f;
 
 }
+
+EnActionName SummonerSM_Attack::m_oldActionName = enActionName_Idle;
 
 void SummonerSM_Attack::Execute()
 {
@@ -26,6 +28,15 @@ void SummonerSM_Attack::Execute()
 	
 }
 
+void SummonerSM_Attack::Init(bool resetoldActionFlag)
+{
+	if (resetoldActionFlag == true)
+	{
+		//前のアクションをリセット
+		m_oldActionName = enActionName_Idle;
+	}
+}
+
 void SummonerSM_Attack::ProcessDecideAction()
 {
 	//一定間隔で攻撃。ある条件で待機状態でも攻撃に移行
@@ -34,8 +45,6 @@ void SummonerSM_Attack::ProcessDecideAction()
 	{
 		return;
 	}
-
-
 	//もう一度行動するときは
 	if (m_continuousAttackTimer <= 0.0f)
 	{
@@ -44,6 +53,7 @@ void SummonerSM_Attack::ProcessDecideAction()
 	}
 	else
 	{
+		//もう一度攻撃タイマーを加算
 		m_continuousAttackTimer -= g_gameTime->GetFrameDeltaTime();
 	}
 	
@@ -71,9 +81,6 @@ void SummonerSM_Attack::DecideNextAction()
 
 	//連続攻撃回数を増やす
 	m_continuousAttackCount++;
-	
-	
-
 	//起こしたアクションを記憶
 	m_oldActionName = m_summoner->GetNowSummonerState()->GetActionName();
 }
@@ -96,8 +103,8 @@ void SummonerSM_Attack::ProcessLongRangeAttack()
 		//ダークメテオ
 		m_summoner->
 			SetNextAnimationState(
-				Summoner::enAnimationState_Attack_DarkMeteorite_start);
-		return;
+				Summoner::enAnimationState_Attack_DarkMeteorite_start
+			);
 	}
 	else
 	{
@@ -107,6 +114,7 @@ void SummonerSM_Attack::ProcessLongRangeAttack()
 
 	//遠距離攻撃行動した後の連続攻撃タイマー
 	m_continuousAttackTimer = 1.0f;
+	
 }
 
 void SummonerSM_Attack::ProcessMeleeAttack()
@@ -153,6 +161,7 @@ void SummonerSM_Attack::ProcessMeleeAttack()
 		//通常攻撃行動した後の連続攻撃タイマー
 		m_continuousAttackTimer = 0.2f;
 	}
+
 }
 
 void SummonerSM_Attack::IsNextActionDarkBall()
