@@ -111,7 +111,7 @@ bool Game::Start()
 	g_renderingEngine->UseLimLight();
 
 	//当たり判定の可視化
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 
 	return true;
@@ -154,7 +154,7 @@ void Game::CreatePlayerAndCamera()
 void Game::CreateBattlePhase()
 {
 	//バトルフェーズ処理クラス生成
-	//m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
+	m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
 }
 
 void Game::InitSkyCube()
