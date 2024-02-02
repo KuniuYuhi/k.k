@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "CharactersInfoManager.h"
 
+#include "Boss.h"
+
 namespace {
 	const float MONSTER_NEAR_PLAYER_DISTANCE = 350.0f;
 
@@ -60,10 +62,6 @@ void CharactersInfoManager::SearchMonstersNearPlayer()
 
 	for (auto monster : m_mobMonsters)
 	{
-		//一定の範囲外なら値を-１にする
-		//chaseMonsters[m_monstersNearPlayerCount][0] = -1.0f;
-		//chaseMonsters[m_monstersNearPlayerCount][1] = -1;
-
 		//プレイヤーからモンスターに向かうベクトルを計算
 		Vector3 diff = monster->GetPosition() - m_playerInstance->GetPosition();
 
@@ -80,6 +78,9 @@ void CharactersInfoManager::SearchMonstersNearPlayer()
 		//カウント加算
 		monsterNumberCount++;
 	}
+
+	//todo終わりを示すために配列に-1を格納
+
 
 	//プレイヤーに近いモンスターがいなかったら処理をしない
 	if (m_monstersNearPlayerCount == 0)
@@ -143,6 +144,25 @@ void CharactersInfoManager::SortMonsterToPlayerLength(float array[][2], int maxV
 			}
 		}
 	}
+}
+
+void CharactersInfoManager::SetAllMonsterDamgeHitFlag(bool flag)
+{
+	//ボスのフラグを設定
+	m_bossInstance->SetDamageHitEnableFlag(flag);
+
+	//モンスターの数が0なら処理しない
+	if (m_mobMonsters.size() == 0)
+	{
+		return;
+	}
+
+	for (auto monster : m_mobMonsters)
+	{
+		//モンスターのフラグを設定
+		monster->SetDamageHitEnableFlag(flag);
+	}
+
 }
 
 bool CharactersInfoManager::SearchMonsterNearPlayer(

@@ -88,7 +88,7 @@ private:
 	/// <param name="effectPos">エフェクトを再生する場所</param>
 	/// <param name="rot">回転</param>
 	/// <param name="angle">回転量</param>
-	void SettingEffectInfo(Vector3& effectPos, Quaternion& rot, float angle);
+	void SettingEffectInfo(Vector3& effectPos, Quaternion& rot, float angle = 0.0f);
 
 	/// <summary>
 	/// スキル攻撃のエフェクトの再生

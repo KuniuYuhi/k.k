@@ -72,6 +72,15 @@ public:
 	}
 
 	/// <summary>
+	/// キャラクターコントローラーの取得
+	/// </summary>
+	/// <returns></returns>
+	CharacterController& GetCharacterController()
+	{
+		return m_charaCon;
+	}
+
+	/// <summary>
 	/// スーパーアーマーの増減の計算
 	/// </summary>
 	/// <param name="addOrSub">trueで加算、falseで減算</param>
@@ -129,6 +138,8 @@ protected:
 
 protected:
 	ModelRender m_modelRender;
+
+	CharacterController	m_charaCon;	//キャラクターコントローラー
 
 	float m_superArmorPoint = 0.0f;		//スーパーアーマーのポイント
 	float m_maxSuperArmorPoint = 0.0f;	//スーパーアーマーの最大値

@@ -258,7 +258,6 @@ void Slime::Damage(int attack)
 	m_status.CalcHp(attack, false);
 
 	//ノックバックフラグをセット
-	//これのおかげで一瞬後ろむく
 	SetKnockBackFlag(true);
 	m_moveSpeed = SetKnockBackDirection(
 		m_position,
@@ -405,6 +404,8 @@ void Slime::OnProcessDamageStateTransition()
 {
 	if (GetKnockBackFlag() == false)
 	{
+		//ヒットアニメーションが終わったのでダメージを受けられるようにする
+		//SetDamageHitEnableFlag(true);
 		//何フレームか硬直させてから
 		//硬直が終わったら
 		if (IsKnockBackStiffness() == false)
@@ -419,14 +420,6 @@ void Slime::OnProcessDamageStateTransition()
 	}
 	//ノックバック処理
 	ProcessKnockBack(m_charaCon);
-
-	//アニメーションの再生が終わったら
-	//if (m_modelRender.IsPlayingAnimation() == false)
-	//{
-
-	//	//共通の状態遷移処理に移行
-	//	ProcessCommonStateTransition();
-	//}
 }
 
 void Slime::OnProcessDieStateTransition()

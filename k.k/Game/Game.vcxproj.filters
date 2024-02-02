@@ -303,7 +303,6 @@
     </ClCompile>
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="BattlePhase.cpp" />
-    <ClCompile Include="Boss.cpp" />
     <ClCompile Include="GameFinishCamera.cpp" />
     <ClCompile Include="SummonerState_Angry.cpp">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
@@ -435,6 +434,9 @@
     </ClCompile>
     <ClCompile Include="ComboFinishBomb.cpp">
       <Filter>AttackObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>Character\Monster\BossMonster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -702,7 +704,6 @@
     </ClInclude>
     <ClInclude Include="Pause.h" />
     <ClInclude Include="BattlePhase.h" />
-    <ClInclude Include="Boss.h" />
     <ClInclude Include="GameFinishCamera.h" />
     <ClInclude Include="SummonerState_Warp.h">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
@@ -837,6 +838,9 @@
     </ClInclude>
     <ClInclude Include="ComboFinishBomb.h">
       <Filter>AttackObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss.h">
+      <Filter>Character\Monster\BossMonster</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

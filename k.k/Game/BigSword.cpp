@@ -107,7 +107,7 @@ void BigSword::Update()
 		return;
 	}
 
-	//ヒット可能か判断する
+	//多段ヒット可能か判断する。他の武器で処理が途中で終わっているかもしれないから
 	m_hitDelection.IsHittable(HITTABLE_TIME);
 
 	MoveWeapon();
@@ -264,6 +264,11 @@ void BigSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		PlayEffect(InitEffect::enEffect_GreatSwordCombo12,
 			pos, NORMAL_ATTACK_1_2_EFFECT_SIZE, rot
 		);
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_GreatSwordCombo_1_2,
+			g_soundManager->GetSEVolume()
+		);
 	}
 	//通常攻撃２のアニメーションキーフレーム
 	if (wcscmp(eventName, L"GreatSwordPlayCombo2Effect") == 0)
@@ -274,6 +279,11 @@ void BigSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		//エフェクト再生
 		PlayEffect(InitEffect::enEffect_GreatSwordCombo12,
 			pos, NORMAL_ATTACK_1_2_EFFECT_SIZE, rot
+		);
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_GreatSwordCombo_1_2,
+			g_soundManager->GetSEVolume()
 		);
 	}
 	//通常攻撃３のアニメーションキーフレーム
@@ -294,6 +304,11 @@ void BigSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		PlayEffect(InitEffect::enEffect_GreatSwordSkillRising,
 			m_brave->GetPosition(), SKILL_ATTACK_RISING_EFFECT_SIZE
 		);
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_GreatSwordSkillRising,
+			g_soundManager->GetSEVolume()
+		);
 	}
 	//スキル攻撃のアニメーションキーフレーム
 	if (wcscmp(eventName, L"GreatSwordSkillAttack") == 0)
@@ -302,6 +317,11 @@ void BigSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		ProcessSkillAttack();
 		//スキル攻撃のエフェクト再生
 		PlaySkillAttackEffect();
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_GreatSwordSkillAttack,
+			g_soundManager->GetSEVolume()
+		);
 	}
 	
 }

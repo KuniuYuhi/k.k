@@ -165,6 +165,12 @@ public:
 	/// <param name="mobMonster"></param>
 	bool SearchMonsterNearPlayer(MobMonster* mobMonster);
 
+	/// <summary>
+	/// 全てのモンスター(ボス含む)のダメージを受けられるかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetAllMonsterDamgeHitFlag(bool flag);
+
 private:
 
 	/// <summary>
@@ -175,6 +181,8 @@ private:
 	
 	void SortMonsterToPlayerLength(float array[][2], int maxValue);
 
+
+	
 
 private:
 	Boss* m_bossInstance = nullptr;

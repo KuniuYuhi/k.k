@@ -117,6 +117,12 @@ public:
 	/// <returns>硬直中ならtrue</returns>
 	const bool& IsKnockBackStiffness();
 
+	/// <summary>
+	/// 当たり判定の処理をするか
+	/// </summary>
+	/// <returns></returns>
+	bool IsCollisionDetection() override;
+
 	///////////////////////////////////////////////////////////
 	///取得、設定関数
 	///////////////////////////////////////////////////////////
@@ -153,6 +159,15 @@ public:
 	const bool& GetEnableChasePlayerFag() const
 	{
 		return m_enableChasePlayerFag;
+	}
+
+	/// <summary>
+	/// キャラクターコントローラーの取得
+	/// </summary>
+	/// <returns></returns>
+	CharacterController& GetCharacterController()
+	{
+		return m_charaCon;
 	}
 
 	/// <summary>
@@ -225,6 +240,8 @@ protected:
 
 	IMobStateMachine* m_mobStateMachine = nullptr;
 	
+	CharacterController m_charaCon;
+
 	Vector3					m_passPower = g_vec3One;		//はじくときの力
 
 	Vector3					m_direction = Vector3::Zero;	//移動する方向ベクトル

@@ -122,16 +122,6 @@ public:
 	/// <param name="nextStateMachine"></param>
 	void SetNextStateMachine(EnStateMachineState nextStateMachine) override;
 
-
-	/// <summary>
-	/// キャラクターコントローラーの取得
-	/// </summary>
-	/// <returns></returns>
-	CharacterController& GetCharacterController()
-	{
-		return m_charaCon;
-	}
-
 	/// <summary>
 	/// 当たり判定生成フラグを取得
 	/// </summary>
@@ -184,8 +174,6 @@ private:
 	ModelRender						m_modelRender;
 
 	CollisionObject*				m_headCollision = nullptr;
-
-	CharacterController				m_charaCon;
 
 	int								m_attackBoonId = -1;								//攻撃で使うボーンID
 

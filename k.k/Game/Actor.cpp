@@ -103,13 +103,8 @@ void Actor::CalcForward(Vector3 moveSpeed)
 	if (fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f)
 	{
 		m_forward = moveSpeed;
+		m_forward.y = 0.0f;
 		m_forward.Normalize();
-
-		//前方向を設定できる条件なら
-		if (IsSetForwardCondition() == true)
-		{
-			
-		}
 	}
 }
 
@@ -296,8 +291,10 @@ bool Actor::IsComboStateSame()
 	// 敵が攻撃を受けた時のコンボ状態が違うなら
 	if (GetNowComboState() != GetDamagedComboState())
 	{
+		//攻撃できる
 		return true;
 	}
+	//同じコンボ中に攻撃しない
 	return false;
 }
 

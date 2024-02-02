@@ -85,15 +85,15 @@ void MobMonster::MovePatrol(CharacterController& charaCon)
 	}
 
 	//’e‚«ˆ—
-	if (IsBumpedMonster() == true)
-	{
-		//”½“]
-		m_direction *= -1.0f;
-	}
+	//if (IsBumpedMonster() == true)
+	//{
+	//	//”½“]
+	//	m_direction *= -1.0f;
+	//}
 
 	//Œˆ‚ß‚½•ûŒü‚ÉÀ•W‚ðˆÚ“®
 	m_position = charaCon.Execute(m_direction, 1.0f / 60.0f);
-
+	m_position.y = 0.0f;
 	m_moveSpeed = m_direction;
 	m_SaveMoveSpeed = m_moveSpeed;
 	//‘O•ûŒü‚ÌÝ’è
@@ -339,6 +339,17 @@ const bool& MobMonster::IsKnockBackStiffness()
 		m_knockBackStiffnessTimer += g_gameTime->GetFrameDeltaTime();
 		return true;
 	}
+}
+
+bool MobMonster::IsCollisionDetection()
+{
+	if (GetDamageHitEnableFlag() == true)
+	{
+		//”»’è‚ð‚Æ‚é
+		return false;
+	}
+	//”»’è‚ð‚Æ‚ç‚È‚¢
+	return true;
 }
 
 bool MobMonster::IsFoundPlayerFlag()

@@ -8,9 +8,10 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="summoner"></param>
-	SummonerSM_Attack(Summoner* summoner)
+	SummonerSM_Attack(Summoner* summoner, bool resetoldActionFlag = false)
 		:IBossStateMachine(summoner)
 	{
+		Init(resetoldActionFlag);
 	}
 	/// <summary>
 	/// デストラクタ
@@ -24,7 +25,11 @@ public:
 
 private:
 
-	
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="initFlag"></param>
+	void Init(bool resetoldActionFlag = false);
 
 	/// <summary>
 	/// ランダムな値を設定
@@ -74,6 +79,9 @@ private:
 	bool IsNextActionDarkMeteo();
 
 private:
+
+	static EnActionName m_oldActionName;
+
 	Vector3 m_toPlayer = g_vec3Zero;
 
 	float m_continuousAttackTimer = 0.0f;		//待機時間を計算するタイマー

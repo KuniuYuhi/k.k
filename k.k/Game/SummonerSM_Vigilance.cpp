@@ -6,11 +6,11 @@
 #include "CharactersInfoManager.h"
 
 namespace {
-	const float WAIT_TIME = 5.0f;		//待機時間
+	const float WAIT_TIME = 50.0f;		//待機時間
 
 	const float MELEE_ATTACK_RANGE = 280.0f;	//近距離攻撃の範囲内
 
-	const float STAY_PLAYER_LIMMIT_TIME = 2.0f;		//プレイヤーが近くにとどまっているタイマーの上限
+	const float STAY_PLAYER_LIMMIT_TIME = 10.0f;		//プレイヤーが近くにとどまっているタイマーの上限
 
 
 	const float KNOCKBACK_DISTANCE = 300.0f;
@@ -19,6 +19,12 @@ namespace {
 
 	//タイマーを0にしない
 	const float START_DECIDE_ACTION_TIMER = 1.0f;
+
+	const float DEFAULT_FIND_PLAYER_DISTANCE = 400.0f;
+
+	const float ADD_DISTANCE = 50.0f;
+
+	const float DECIDE_ACTION_TIMER_LIMMIT = 5.0f;
 
 }
 
@@ -47,6 +53,9 @@ void SummonerSM_Vigilance::Execute()
 
 void SummonerSM_Vigilance::Init(bool saveTimerlesetFlag)
 {
+	//プレイヤーを見つけた判定をとる変数の初期化
+	m_FindPlayerDistance = DEFAULT_FIND_PLAYER_DISTANCE;
+
 	if (saveTimerlesetFlag == true)
 	{
 		//各種タイマーをリセット
@@ -164,41 +173,53 @@ void SummonerSM_Vigilance::AddStayPlayerTimer()
 bool SummonerSM_Vigilance::IsChasePlayer()
 {
 	//一定の距離内にプレイヤーがいるなら確定で待機
-	if (m_summoner->IsFindPlayer(400.0f) == true)
+	if (m_summoner->IsFindPlayer(m_FindPlayerDistance) == true)
 	{
-		//待機
+		//距離加算フラグがセットされているなら
+		if (m_addDsitanceFlag == true)
+		{
+			//移動と待機が交互になってガタガタなる対策
+			m_FindPlayerDistance += ADD_DISTANCE;
+			//距離加算フラグをリセットして
+			//待機している間は距離が伸びないようにする
+			m_addDsitanceFlag = false;
+		}
+		//待機状態を返す
 		return false;
 	}
 
-	//一度待機したら一定時間そのまま
-	if (m_decideActionTimer < 5.0f)
+	//行動決定タイマーが制限時間に達するまでは、前と同じ行動をとる
+	if (m_decideActionTimer < DECIDE_ACTION_TIMER_LIMMIT)
 	{
+		//一度行動が決まったら一定時間そのまま
 		//行動決定タイマーを加算
 		m_decideActionTimer += g_gameTime->GetFrameDeltaTime();
+		//距離加算フラグをリセット
+		m_addDsitanceFlag = true;
 	}
 	else
 	{
-		//タイマーをリセット
+		//行動決定タイマーをリセット
 		m_decideActionTimer = 0.0f;
 
 		//確率で待機にする
 		int probability = rand() % 10;
-
 		//確率が一定値より大きかったらその場で待機
 		if (probability > 4)
 		{
-			m_idleStateFlag = false;
-			//待機
-			return m_idleStateFlag;
+			m_saveStateFlag = false;
+			//待機状態を返す
+			return m_saveStateFlag;
 		}
 		else
 		{
-			m_idleStateFlag = true;
-			//移動
-			return m_idleStateFlag;
+			m_saveStateFlag = true;
+			//移動状態を返す
+			return m_saveStateFlag;
 		}
 	}
-	//ここに来たら前フレームの行動と同じ
-	return m_idleStateFlag;
+
+	//ここに来たら前フレームの行動と同じ状態を返す
+	return m_saveStateFlag;
 	
 }

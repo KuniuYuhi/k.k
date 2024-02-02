@@ -2,7 +2,8 @@
 #include "Arrow.h"
 #include "Bow.h"
 #include "Player.h"
-
+#include "Boss.h"
+#include "CharactersInfoManager.h"
 
 
 //todo　矢を回転させて飛ばす
@@ -12,7 +13,7 @@ namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
 	//通常攻撃の当たり判定のサイズ
-	const Vector3 ARROW_NORMAL_COLLISION_SIZE = { 110.0f,30.0f,10.0f };
+	const Vector3 ARROW_NORMAL_COLLISION_SIZE = { 70.0f,30.0f,10.0f };
 	//スキル攻撃の当たり判定のサイズ
 	const Vector3 ARROW_Skill_COLLISION_SIZE = { 150.0f,14.0f,20.0f };
 
@@ -110,9 +111,30 @@ void Arrow::MoveStowed()
 
 bool Arrow::IsHitCollision()
 {
+	//ボスとの当たり判定
+	if (m_arrowCollision->IsHit(
+		CharactersInfoManager::GetInstance()->GetBossInstance()->GetCharacterController()
+	))
+	{
+		//ヒットした
+		return true;
+	}
 
+	//モブモンスターのリストの取得
+	const auto& mobMonsters = 
+		CharactersInfoManager::GetInstance()->GetMobMonsters();
+	//モブモンスターとの当たり判定
+	for (auto mobMonster : mobMonsters)
+	{
+		if (m_arrowCollision->IsHit(
+			mobMonster->GetCharacterController()))
+		{
+			//ヒットした
+			return true;
+		}
+	}
 
-
+	//ヒットしなかった
 	return false;
 }
 
@@ -251,55 +273,24 @@ void Arrow::InitCollision(
 
 void Arrow::NormalShot()
 {
-	//攻撃がヒットしたら
-	if (m_bow->GetAttackHitFlag() == true)
+	//コリジョンが敵に当たったら
+	if (IsHitCollision() == true)
 	{
-		//ヒットしたので、攻撃がヒットしたかのフラグをリセット
-		m_bow->SetAttackHitFlag(false);
-		//当たり判定の削除
-		DeleteGO(m_arrowCollision);
-		//矢が当たったので削除
-		DeleteGO(this);
+		ProcessDelete();
 		return;
 	}
-	//6.移動
+	
+	//放物線を描く移動処理
+	//消去するまでの制限時間内なら
 	if (m_deleteTimer < m_flightDuration)
 	{
-		float X = m_forward.x * m_shotArrowVerocity.x * 
-			g_gameTime->GetFrameDeltaTime() * 10.0f;
-		float Z = m_forward.z * m_shotArrowVerocity.x * 
-			g_gameTime->GetFrameDeltaTime() * 10.0f;
-
-		//新しい座標
-		m_arrowPos += {
-			X,
-			(m_shotArrowVerocity.y - (GRAVITY * m_deleteTimer)) * g_gameTime->GetFrameDeltaTime()*4.0f,
-			Z
-		};
+		//矢の移動処理
+		MoveNormalShot();
+		//矢の回転処理　やってない
+		RoatationNormalShot();
+		//消去するまでのタイマーを加算
 		m_deleteTimer += g_gameTime->GetFrameDeltaTime() * 6.0f;
-
-		//回転
-		Vector3 Axis;
-		Axis.Cross(m_shotStartPosition, m_arrowPos);
 		
-		//角度の計算
-		//内積
-		Vector3 dot1 = m_shotStartPosition;
-		Vector3 dot2 = m_arrowPos;
-		
-		float vec1 = m_shotStartPosition.Length();
-		float vec2 = m_arrowPos.Length();
-
-		dot1.Normalize();
-		dot2.Normalize();
-		float dotProduct = Dot(dot1,dot2);
-		//ノルム(ベクトルの大きさ)
-		
-		//アークコサインの計算
-		float acos = std::acos(dotProduct / (vec1 * vec2));
-		//ラジアンから度に変換
-		float rotationAngle = Math::RadToDeg(acos);
-
 	}
 	else
 	{
@@ -307,24 +298,12 @@ void Arrow::NormalShot()
 		DeleteGO(this);
 	}
 	
+	//矢のワールド座標を取得
 	Matrix arrowMatrix = m_arrowMatrix;
 	//行列に座標を適応
 	ApplyVector3ToMatirx(arrowMatrix, m_arrowPos);
-	//行列を設定
+	//モデルの行列を設定
 	m_modelArrow.SetWorldMatrix(arrowMatrix);
-
-	/*m_modelArrow.SetPosition(m_arrowPos);
-	m_modelArrow.SetRotation(m_rotation);*/
-
-
-	float value = m_deleteTimer / m_flightDuration;
-	Vector3 collisionPos = m_arrowPos;
-	collisionPos.Normalize();
-	collisionPos.x *= 80.0f;
-	//collisionPos.y = 20.0f;
-	collisionPos.z *= 80.0f;
-	Vector3 finalPos = m_arrowPos;
-	finalPos.Add(collisionPos);
 
 	//エフェクトの座標の設定と更新
 	m_arrowAttackEffect->SetPosition(m_arrowPos);
@@ -338,16 +317,13 @@ void Arrow::SkillShot()
 {
 	//敵にダメージを与えられるタイミングを設定
 	if (m_player->GetHittableFlag() != true&&
-		HITTABLE_TIMER_LIMMIT< m_hittableTimer)
+		m_hitDelection.IsHittable(HITTABLE_TIMER_LIMMIT))
 	{
 		//多段ヒット攻撃可能
 		m_player->SetHittableFlag(true);
-		//多段ヒット攻撃タイマーをリセット
-		m_hittableTimer = 0.0f;
+		//多段ヒット可能判定フラグをリセット
+		m_hitDelection.SetHittableFlag(false);
 	}
-
-	//多段ヒット攻撃タイマーを加算
-	m_hittableTimer += g_gameTime->GetFrameDeltaTime();
 
 	//射撃開始座標から現在の座標に向かうベクトルを計算
 	Vector3 diff = m_arrowPos - m_shotStartPosition;
@@ -392,6 +368,56 @@ void Arrow::SetNormalShotInfo()
 	m_flightDuration = distance / m_shotArrowVerocity.x;
 
 	m_oldArrowPos = m_arrowPos;
+}
+
+void Arrow::MoveNormalShot()
+{
+	float X = m_forward.x * m_shotArrowVerocity.x *
+		g_gameTime->GetFrameDeltaTime() * 10.0f;
+	float Z = m_forward.z * m_shotArrowVerocity.x *
+		g_gameTime->GetFrameDeltaTime() * 10.0f;
+
+	//新しい座標
+	m_arrowPos += {
+		X,
+			(m_shotArrowVerocity.y - (GRAVITY * m_deleteTimer))* g_gameTime->GetFrameDeltaTime() * 4.0f,
+			Z
+	};
+}
+
+void Arrow::RoatationNormalShot()
+{
+	//回転
+	Vector3 Axis;
+	Axis.Cross(m_shotStartPosition, m_arrowPos);
+
+	//角度の計算
+	//内積
+	Vector3 dot1 = m_shotStartPosition;
+	Vector3 dot2 = m_arrowPos;
+
+	float vec1 = m_shotStartPosition.Length();
+	float vec2 = m_arrowPos.Length();
+
+	dot1.Normalize();
+	dot2.Normalize();
+	float dotProduct = Dot(dot1, dot2);
+	//ノルム(ベクトルの大きさ)
+
+	//アークコサインの計算
+	float acos = std::acos(dotProduct / (vec1 * vec2));
+	//ラジアンから度に変換
+	float rotationAngle = Math::RadToDeg(acos);
+}
+
+void Arrow::ProcessDelete()
+{
+	//モンスターにダメージを与えられるようにフラグをリセット
+	CharactersInfoManager::GetInstance()->SetAllMonsterDamgeHitFlag(true);
+	//当たり判定の削除
+	DeleteGO(m_arrowCollision);
+	//矢が当たったので削除
+	DeleteGO(this);
 }
 
 void Arrow::Render(RenderContext& rc)
