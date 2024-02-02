@@ -432,8 +432,6 @@ private:
 
 	DarkWall* m_darkWall = nullptr;
 
-	CharacterController				m_charaCon;												//キャラクターコントローラー
-
 	std::unique_ptr<IBossStateMachine> m_SummonerstateMachine = nullptr;
 
 

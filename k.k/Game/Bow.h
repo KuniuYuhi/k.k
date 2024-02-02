@@ -134,6 +134,8 @@ private:
 
 private:
 
+	EffectEmitter* m_chargeEffect = nullptr;
+
 	Arrow* m_arrow = nullptr;
 
 	ModelRender m_modelBow;		//弓モデル
@@ -156,6 +158,8 @@ private:
 
 	bool m_stockArrowFlag = false;
 
-	float m_ChargeTimer = 0.0f;		//スキルのチャージタイマー
+	float m_ChargeTimer = 0.0f;				//スキルのチャージタイマー
+
+	bool m_playChargeEffectFlag = false;	//スキルのチャージエフェクトを再生したかのフラグ
 };
 

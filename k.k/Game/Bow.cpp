@@ -44,6 +44,13 @@ Bow::~Bow()
 	{
 		DeleteGO(m_arrow);
 	}
+
+	if (m_chargeEffect != nullptr)
+	{
+		//チャージエフェクトを停止
+		m_chargeEffect->Stop();
+	}
+	
 }
 
 bool Bow::Start()
@@ -76,6 +83,16 @@ bool Bow::Start()
 
 void Bow::Update()
 {
+	//プレイヤーがやられたならチャージエフェクトをストップ
+	if (m_brave->GetDieFlag() == true)
+	{
+		if (m_chargeEffect != nullptr)
+		{
+			//チャージエフェクトを停止
+			m_chargeEffect->Stop();
+		}
+	}
+
 	//収納状態なら
 	if (GetStowedFlag() == true)
 	{
@@ -88,7 +105,7 @@ void Bow::Update()
 		IsCreatArrow();
 	}
 
-	//ヒット可能か判断する
+	//多段ヒット可能か判断する。他の武器で処理が途中で終わっているかもしれないから
 	m_hitDelection.IsHittable(HITTABLE_TIME);
 
 	MoveWeapon();
@@ -115,6 +132,22 @@ void Bow::MoveWeapon()
 
 void Bow::ProcessSkillAttack()
 {
+	//フラグが立っていないなら
+	if (m_playChargeEffectFlag == false&&
+		m_ChargeTimer >= CHARGE_COMPLETE_TIME)
+	{
+		//チャージエフェクトを再生
+		m_chargeEffect = NewGO<EffectEmitter>(0);
+		m_chargeEffect->Init(InitEffect::enEffect_SwordStorm_Charge);
+		m_chargeEffect->Play();
+		m_chargeEffect->SetPosition(m_brave->GetPosition());
+		m_chargeEffect->SetScale(g_vec3One * SKILL_ATTACK_EFFECT_SIZE);
+		m_chargeEffect->Update();
+
+		//フラグをセット
+		m_playChargeEffectFlag = true;
+	}
+
 	//矢のストックがないならスキル発動できない
 	if (m_status.GetEndurance() <= 0)
 	{
@@ -140,6 +173,10 @@ void Bow::ProcessSkillAttack()
 		SetRotationDelectionFlag(false);
 		//勇者のアニメーションをスキルメインに切り替え
 		m_brave->SetNextAnimationState(Brave::enAnimationState_Skill_Main);
+		//またチャージエフェクトを再生できるようにする
+		m_playChargeEffectFlag = false;
+		//チャージエフェクトを停止
+		m_chargeEffect->Stop();
 	}
 	//チャージ完了できなかったら
 	else
@@ -147,6 +184,10 @@ void Bow::ProcessSkillAttack()
 		//勇者の情報を攻撃前にリセット
 		m_brave->SetAllInfoAboutActionFlag(false);
 		m_brave->ProcessCommonStateTransition();
+		//またチャージエフェクトを再生できるようにする
+		m_playChargeEffectFlag = false;
+		//チャージエフェクトを停止
+		m_chargeEffect->Stop();
 	}
 }
 
@@ -325,7 +366,7 @@ void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 
 	if (wcscmp(eventName, L"BowArrowPlayComboEffect") == 0)
 	{
-		Vector3 pos = g_vec3Zero;
+		/*Vector3 pos = g_vec3Zero;
 		m_bowMatrix.Apply(pos);
 		Quaternion rot = g_quatIdentity;
 		rot.SetRotationYFromDirectionXZ(m_brave->GetForward());
@@ -335,7 +376,7 @@ void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 			pos,
 			NORMAL_ATTACK__EFFECT_SIZE,
 			rot
-		);
+		);*/
 	}
 
 }

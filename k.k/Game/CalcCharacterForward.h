@@ -22,6 +22,25 @@ public:
 		float chaseDistance
 	);
 
+private:
+
+	/// <summary>
+	/// モンスターの座標をリストに追加。
+	/// </summary>
+	void PushBackMonsterPositionList();
+	
+	/// ベクトルを作成
+	/// </summary>
+	/// <param name="startPosition">ベクトルの始点</param>
+	/// <param name="endPosition">ベクトルの終点</param>
+	/// <param name="isNormalizeFlag">正規化するかのフラグ。デフォルトはtrue</param>
+	/// <returns></returns>
+	Vector3 GetCreateVector(
+		Vector3 startPosition, 
+		Vector3 endPosition,
+		bool isNormalizeFlag = true
+	);
+
 
 private:
 

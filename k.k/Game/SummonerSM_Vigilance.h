@@ -78,7 +78,7 @@ private:
 private:
 	Vector3 m_toPlayer = g_vec3Zero;
 
-	bool m_idleStateFlag = false;
+	bool m_saveStateFlag = false;
 
 	static float m_decideActionTimer;
 
@@ -88,6 +88,10 @@ private:
 	
 	float m_accelerateStayPlayerTimer = 1.0f;	//プレイヤーが近くにいる間を計るタイマーを加速させる
 
+
+	float m_FindPlayerDistance = 0.0f;
+
+	bool m_addDsitanceFlag = false;
 
 };
 

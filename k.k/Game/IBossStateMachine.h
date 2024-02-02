@@ -61,11 +61,6 @@ protected:
 
 
 protected:
-	
-	/// <summary>
-	/// 
-	/// </summary>
-	EnActionName m_oldActionName = SummonerActions::enActionName_Idle;
 
 	Summoner* m_summoner = nullptr;
 

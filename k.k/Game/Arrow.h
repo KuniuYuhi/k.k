@@ -198,6 +198,20 @@ private:
 	/// </summary>
 	void SetNormalShotInfo();
 
+	/// <summary>
+	/// ’ÊíUŒ‚‚Ì–î‚ÌˆÚ“®ˆ—
+	/// </summary>
+	void MoveNormalShot();
+	/// <summary>
+	/// ’ÊíUŒ‚‚Ì–î‚Ì‰ñ“]ˆ—
+	/// </summary>
+	void RoatationNormalShot();
+
+	/// <summary>
+	/// Á‹‚Ìˆ—
+	/// </summary>
+	void ProcessDelete();
+
 private:
 
 	Player* m_player = nullptr;
