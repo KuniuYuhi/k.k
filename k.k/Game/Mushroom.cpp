@@ -66,7 +66,7 @@ bool Mushroom::Start()
 	m_player = FindGO<Player>("player");
 
 	//ステータスの初期化
-	m_status.Init(GetName());
+	m_status.InitCharacterStatus(GetName());
 	//モデルの初期化
 	InitModel();
 	//ステートマシンの生成
