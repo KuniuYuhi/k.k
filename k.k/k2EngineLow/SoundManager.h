@@ -5,6 +5,9 @@ namespace nsK2EngineLow {
 	//todo 同じ番号のサウンドソース全てが参照されてしまう。製作者の名前あり？
 	//todo 同じ番号のサウンドソースが複数あると望んだサウンドソースが取得できない
 
+	/// <summary>
+	/// サウンドの名前
+	/// </summary>
 	enum EnSoundName
 	{
 		//アウトゲーム
@@ -28,16 +31,21 @@ namespace nsK2EngineLow {
 		enSoundName_GameOver,
 		//SE
 		//プレイヤー側
-		enSoundName_ChangeCharacter,			//キャラ切り替え
-		enSoundName_Sword_Hit,					//剣がヒットした時
-		enSoundName_Wand_Hit,					//杖がヒットした時
-		enSoundName_CriticalHit,				//クリティカルヒット
-		enSoundName_Dash,						//ダッシュ
-		enSoundName_SwordStorm_Charge,			//ソードストームのチャージ
-		enSoundName_SwordStorm_Storm,			//ソードストームのストーム
-		enSoundName_FlamePillar,				//フレイムピラーの炎
-		enSoundName_FireBall_Start,				//ファイヤーボールの発生
-		enSoundName_FireBall_Explosion,			//ファイヤーボールの爆発
+		//ソード＆シールドの音
+		enSoundName_SwordShieldCombo_1_2,
+		enSoundName_SwordShieldCombo_3,
+		enSoundName_SwordShieldSkillRising,
+		enSoundName_SwordShieldSkillAttack,
+		//シールドの音
+		//両手剣の音
+		enSoundName_GreatSwordCombo_1_2,
+		enSoundName_GreatSwordCombo_3,
+		enSoundName_GreatSwordSkillRising,
+		enSoundName_GreatSwordSkillAttack,
+
+		//ボウ＆アローの音
+		enSoundName_BowArrowSkillCharge,
+		enSoundName_BowArrowSkillAttack,
 
 		//モンスター側
 		enSoundName_Boss_Warp,					//ボスのワープ
@@ -132,21 +140,34 @@ namespace nsK2EngineLow {
 		/// </summary>
 		void MakeAllSoundDefaultVolume();
 
+		/// <summary>
+		/// デフォルトの効果音ボリュームを取得
+		/// </summary>
+		/// <returns></returns>
 		const float& GetDefaultSEVolume() const
 		{
 			return m_defaultSEVolume;
 		}
-
+		/// <summary>
+		/// デフォルトのBGMボリュームを取得
+		/// </summary>
+		/// <returns></returns>
 		const float& GetDefaultBGVolume() const
 		{
 			return m_defaultBGMVolume;
 		}
-
+		/// <summary>
+		/// 効果音のボリュームを取得
+		/// </summary>
+		/// <returns></returns>
 		const float& GetSEVolume() const
 		{
 			return m_seVolume;
 		}
-
+		/// <summary>
+		/// BGMのボリュームを取得
+		/// </summary>
+		/// <returns></returns>
 		const float& GetBGMVolume() const
 		{
 			return m_bgmVolume;
