@@ -36,12 +36,6 @@ bool Player::Start()
 
 void Player::Update()
 {
-	//ƒQ[ƒ€‚ªŽn‚Ü‚é‚Ü‚Å‚ÍˆÚ“®‚µ‚È‚¢
-	/*if (GameManager::GetInstance()->GetGameSeenState()!=
-		GameManager::enGameSeenState_Game)
-	{
-		return;
-	}*/
 
 	if (IsInaction() == true)
 	{
