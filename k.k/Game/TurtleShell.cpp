@@ -273,8 +273,6 @@ void TurtleShell::HitNormalAttack()
 		//エフェクトを再生
 		CreateHitEffect();
 	}
-
-	m_player->SetAttackHitFlag(true);
 }
 
 void TurtleShell::HitSkillAttack()
@@ -290,8 +288,6 @@ void TurtleShell::HitSkillAttack()
 		//エフェクトを再生
 		CreateHitEffect();
 	}
-	
-	m_player->SetAttackHitFlag(true);
 }
 
 bool TurtleShell::IsSkillUsable()

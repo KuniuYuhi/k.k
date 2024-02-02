@@ -196,7 +196,6 @@ void Summoner::Damage(int attack)
 		//やられた時の処理
 		ProcessDead();
 	}
-
 }
 
 void Summoner::HitNormalAttack()
@@ -208,17 +207,6 @@ void Summoner::HitNormalAttack()
 		SetDamageHitEnableFlag(false);
 	}
 	return;
-	//１コンボの間に1回だけ判定
-	//ダメージを受けた時のコンボステートと現在のコンボステートが違うなら
-	if (m_player->IsComboStateSame() == true)
-	{
-		Damage(m_player->GetAtk());
-		CreateDamageFont(m_player->GetAtk());
-		//ダメージを受けた時のコンボステートに現在のコンボステートを代入する
-		m_player->SetDamagedComboState(m_player->GetNowComboState());
-		//攻撃が自身にヒットしたので、プレイヤーのattackHitFlagをtrueにする
-		m_player->SetAttackHitFlag(true);
-	}
 }
 
 void Summoner::HitSkillAttack()

@@ -197,7 +197,6 @@ void MonsterBase::HitNormalAttack()
 	CreateDamageFont(m_damage);
 	//エフェクトを再生
 	CreateHitEffect();
-	m_player->SetAttackHitFlag(true);
 	//余分にダメージを与えてしまう
 	//ダメージを受けたのでフラグがtrueにならないとダメージを受けないようにする
 	SetDamageHitEnableFlag(false);
@@ -212,8 +211,7 @@ void MonsterBase::HitSkillAttack()
 	CreateDamageFont(m_damage);
 	//エフェクトを再生
 	CreateHitEffect();
-	m_player->SetAttackHitFlag(true);
-
+	
 	//ダメージを受けたのでフラグがtrueにならないとダメージを受けないようにする
 	SetDamageHitEnableFlag(false);
 }

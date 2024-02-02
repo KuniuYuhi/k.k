@@ -119,21 +119,6 @@ int Player::GetSkillAtk()
 	return m_brave->GetSkillAtk();
 }
 
-bool Player::IsComboStateSame()
-{
-	return m_brave->IsComboStateSame();
-}
-
-void Player::SetDamagedComboState(Actor::EnComboState damagedcombostate)
-{
-	m_brave->SetDamagedComboState(damagedcombostate);
-}
-
-Actor::EnComboState Player::GetNowComboState() const
-{
-	return m_brave->GetNowComboState();
-}
-
 void Player::SetKnockBackInfo(
 	bool flag, Vector3 endPos, float KnockBackPower, float knockBackLimmit)
 {
