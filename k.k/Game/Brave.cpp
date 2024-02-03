@@ -58,7 +58,7 @@ bool Brave::Start()
 	m_player = FindGO<Player>("player");
 
 	//ステータスの初期化
-	m_status.Init(GetName());
+	m_status.InitCharacterStatus(GetName());
 
 	//装備する武器の設定
 	SettingWeapons();
@@ -481,20 +481,16 @@ void Brave::ProcessComboAttack()
 	switch (m_attackPatternState)
 	{
 	case Brave::enAttackPattern_None:
-		SetNowComboState(enNowCombo_None);
 		break;
 	case Brave::enAttackPattern_1:
-		SetNowComboState(enNowCombo_1);
 		//ノックバックパワーを設定
 		SetKnockBackPower(m_mainUseWeapon.weapon->GetKnockBackPower(1));
 		break;
 	case Brave::enAttackPattern_2:
-		SetNowComboState(enNowCombo_2);
 		//ノックバックパワーを設定
 		SetKnockBackPower(m_mainUseWeapon.weapon->GetKnockBackPower(2));
 		break;
 	case Brave::enAttackPattern_3:
-		SetNowComboState(enNowCombo_3);
 		//ノックバックパワーを設定
 		SetKnockBackPower(m_mainUseWeapon.weapon->GetKnockBackPower(3));
 		break;
@@ -558,8 +554,6 @@ void Brave::ProcessNormalAttackStateTransition()
 			m_attackPatternState = enAttackPattern_None;
 			//攻撃アニメーションが終わったのでアクション構造体のフラグを全てリセット
 			SetAllInfoAboutActionFlag(false);
-			//コンボ状態をリセット
-			SetComboStateNone();
 			//ステート共通の状態遷移処理に遷移
 			ProcessCommonStateTransition();
 		}
@@ -617,8 +611,6 @@ void Brave::ProcessHitStateTransition()
 		//アクション中にダメージ受けたかもしれないので
 		// アクションフラグ関係を全てfalseにする
 		SetAllInfoAboutActionFlag(false);
-		//コンボ状態をリセット
-		SetComboStateNone();
 		//被ダメージによって戻せなかった変数をリセット
 		m_mainUseWeapon.weapon->ResetVariable();
 		//ステート共通の状態遷移処理に遷移
@@ -644,8 +636,6 @@ void Brave::ProcessDefendStateTransition()
 		//アクション中にダメージ受けたかもしれないので
 		// アクションフラグ関係を全てfalseにする
 		SetAllInfoAboutActionFlag(false);
-		//コンボ状態をリセット
-		SetComboStateNone();
 		//被ダメージによって戻せなかった変数をリセット
 		m_mainUseWeapon.weapon->ResetVariable();
 		//ステート共通の状態遷移処理に遷移
@@ -658,8 +648,6 @@ void Brave::ProcessKnockBackStateTransition()
 	//アクション中にダメージ受けたかもしれないので
 	// アクションフラグ関係を全てfalseにする
 	SetAllInfoAboutActionFlag(false);
-	//コンボ状態をリセット
-	SetComboStateNone();
 	//被ダメージによって戻せなかった変数をリセット
 	m_mainUseWeapon.weapon->ResetVariable();
 	//ステート共通の状態遷移処理に遷移
@@ -705,7 +693,7 @@ void Brave::ReverseWeapon(EnWeapons changeTargetWeaponType)
 	m_mainUseWeapon.weapon->ReverseWeaponState();
 	ChangeUseSubWeapon->weapon->ReverseWeaponState();
 	//攻撃力を現在の武器のものに変更。
-	m_status.SetAtk(m_mainUseWeapon.weapon->GetStatus().GetAtk());
+	m_status.SetAtk(m_mainUseWeapon.weapon->GetStatus().GetWeaponAtk());
 	//多段ヒット判定フラグをセット
 	m_mainUseWeapon.weapon->SetHittableFlag(true);
 	//武器を切り替えた
@@ -754,7 +742,7 @@ void Brave::SettingWeapons()
 	m_mainUseWeapon.weapon->StartSetWeaponState(SwordShield::enWeaponState_Armed);
 
 	//サブ１はグレイトソード
-	BigSword* greatSword = NewGO<BigSword>(0, "greatSword");
+	BigSword* greatSword = NewGO<BigSword>(0, "greatsword");
 	m_subUseWeapon.weapon = greatSword;
 	m_subWeaponType = enWeaponType_TwoHandSword;
 	//アニメーションクリップの最初の番号を設定

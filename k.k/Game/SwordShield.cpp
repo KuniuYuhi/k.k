@@ -59,9 +59,7 @@ SwordShield::~SwordShield()
 bool SwordShield::Start()
 {
 	//武器のステータス初期化
-	m_status.InitWeaponStatus(
-		POWER, SKILL_POWER, ENDURANCE
-	);
+	m_status.InitWeaponStatus(GetName());
 
 	//勇者のインスタンスを探す
 	m_brave = FindGO<Brave>("brave");

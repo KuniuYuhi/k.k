@@ -66,7 +66,7 @@ bool TurtleShell::Start()
 	m_player = FindGO<Player>("player");
 
 	//ステータスの初期化
-	m_status.Init(GetName());
+	m_status.InitCharacterStatus(GetName());
 
 	//モデルの初期化
 	InitModel();
@@ -273,8 +273,6 @@ void TurtleShell::HitNormalAttack()
 		//エフェクトを再生
 		CreateHitEffect();
 	}
-
-	m_player->SetAttackHitFlag(true);
 }
 
 void TurtleShell::HitSkillAttack()
@@ -290,8 +288,6 @@ void TurtleShell::HitSkillAttack()
 		//エフェクトを再生
 		CreateHitEffect();
 	}
-	
-	m_player->SetAttackHitFlag(true);
 }
 
 bool TurtleShell::IsSkillUsable()

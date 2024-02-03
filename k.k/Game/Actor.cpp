@@ -285,19 +285,6 @@ void Actor::DamageCollision(CharacterController& characon)
 
 }
 
-bool Actor::IsComboStateSame()
-{
-	//プレイヤーのコンボ状態と
-	// 敵が攻撃を受けた時のコンボ状態が違うなら
-	if (GetNowComboState() != GetDamagedComboState())
-	{
-		//攻撃できる
-		return true;
-	}
-	//同じコンボ中に攻撃しない
-	return false;
-}
-
 Quaternion Actor::Rotation(float rotSpeed,float rotOnlySpeed)
 {
 	//回転だけさせたいなら

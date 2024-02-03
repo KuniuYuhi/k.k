@@ -4,7 +4,7 @@
 namespace {
 	const int MAX_FLINCH_PROBABILITY = 10;
 
-	const int FLINCH_PROBABILITY = 5;
+	const int FLINCH_PROBABILITY = 7;
 }
 
 BossBase::BossBase()
@@ -25,38 +25,18 @@ void BossBase::HitSkillAttack()
 
 void BossBase::CalcSuperArmor(bool addOrSub, float value)
 {
-	if (addOrSub == true)
+	//スーパーアーマーのポイントを計算
+	if (m_status.CalcSuperArmorPoint(value, addOrSub) == true)
 	{
-		AddSuperArmorPoint(value);
+		//スーパーアーマーが割れた、割れている
+		SetBreakSuperArmorFlag(true);
 	}
 	else
 	{
-		SubSuperArmorPoint(value);
-	}
-}
-
-void BossBase::AddSuperArmorPoint(float addValue)
-{
-	//加算
-	m_superArmorPoint += addValue;
-	if (m_superArmorPoint >= m_maxSuperArmorPoint)
-	{
-		//スーパーアーマー回復
+		//スーパーアーマーは割れていない
 		SetBreakSuperArmorFlag(false);
-		m_superArmorPoint = m_maxSuperArmorPoint;
 	}
-}
 
-void BossBase::SubSuperArmorPoint(float subValue)
-{
-	//減算
-	m_superArmorPoint -= subValue;
-	if (m_superArmorPoint <= 0)
-	{
-		//スーパーアーマーが割れた
-		SetBreakSuperArmorFlag(true);
-		m_superArmorPoint = 0;
-	}
 }
 
 bool BossBase::IsFlinch()

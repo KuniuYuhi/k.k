@@ -58,8 +58,6 @@ namespace {
 
 Summoner::Summoner()
 {
-	m_maxSuperArmorPoint = MAX_SUPERARMOR_POINT;
-	m_superArmorPoint = m_maxSuperArmorPoint;
 }
 
 Summoner::~Summoner()
@@ -92,7 +90,7 @@ bool Summoner::Start()
 	m_player = FindGO<Player>("player");
 
 	//ステータスの初期化
-	m_status.Init(GetName());
+	m_status.InitCharacterStatus(GetName());
 
 	//モデルの初期化
 	InitModel();
@@ -196,7 +194,6 @@ void Summoner::Damage(int attack)
 		//やられた時の処理
 		ProcessDead();
 	}
-
 }
 
 void Summoner::HitNormalAttack()
@@ -208,17 +205,6 @@ void Summoner::HitNormalAttack()
 		SetDamageHitEnableFlag(false);
 	}
 	return;
-	//１コンボの間に1回だけ判定
-	//ダメージを受けた時のコンボステートと現在のコンボステートが違うなら
-	if (m_player->IsComboStateSame() == true)
-	{
-		Damage(m_player->GetAtk());
-		CreateDamageFont(m_player->GetAtk());
-		//ダメージを受けた時のコンボステートに現在のコンボステートを代入する
-		m_player->SetDamagedComboState(m_player->GetNowComboState());
-		//攻撃が自身にヒットしたので、プレイヤーのattackHitFlagをtrueにする
-		m_player->SetAttackHitFlag(true);
-	}
 }
 
 void Summoner::HitSkillAttack()
@@ -280,26 +266,29 @@ void Summoner::ProcessHit(int hitDamage)
 	m_status.CalcHp(hitDamage, false);
 	//被ダメージカウント加算
 	m_damageCount++;
-	//スーパーアーマーを減らす
-	CalcSuperArmor(false, hitDamage);
-
+	//スーパーアーマーがブレイクしていないなら
+	if (GetBreakSuperArmorFlag() == false)
+	{
+		//スーパーアーマーを減らす
+		CalcSuperArmor(false, hitDamage);
+	}
 	//スーパーアーマーがブレイクしているなら
 	if (GetBreakSuperArmorFlag() == true)
 	{
 		//一定確率で怯む
 		//ブレイクした瞬間なら確定で怯む
-		if (IsFlinch() == true|| (m_oldBreakSuperArmorFlag!= GetBreakSuperArmorFlag()))
+		if (IsFlinch() == true || (m_oldBreakSuperArmorFlag != GetBreakSuperArmorFlag()))
 		{
 			//技の途中かもしれないのでダークウォールを削除
 			if (m_darkWall != nullptr)
 			{
 				DeleteGO(m_darkWall);
 			}
-
+			//被ダメージアニメーション
 			SetNextAnimationState(enAnimationState_CriticalHit);
 		}
 	}
-
+	//前フレームのスーパーアーマーブレイクフラグを取得
 	m_oldBreakSuperArmorFlag = GetBreakSuperArmorFlag();
 }
 
@@ -311,7 +300,7 @@ void Summoner::RecoverySuperArmor()
 		return;
 	}
 	//スーパーアーマーの回復
-	CalcSuperArmor(true, g_gameTime->GetFrameDeltaTime());
+	CalcSuperArmor(true, g_gameTime->GetFrameDeltaTime() * 2.0f);
 }
 
 void Summoner::SetNextAnimationState(EnAnimationState nextState)

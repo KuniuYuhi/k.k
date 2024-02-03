@@ -120,17 +120,6 @@ protected:
 	virtual void ManageState() override = 0;
 
 	/// <summary>
-	/// スーパーアーマーの加算
-	/// </summary>
-	/// <param name="addValue"></param>
-	void AddSuperArmorPoint(float addValue);
-	/// <summary>
-	/// スーパーアーマーの減算
-	/// </summary>
-	/// <param name="addValue"></param>
-	void SubSuperArmorPoint(float subValue);
-
-	/// <summary>
 	/// 怯むかどうか
 	/// </summary>
 	/// <returns>trueで怯む</returns>
@@ -140,9 +129,6 @@ protected:
 	ModelRender m_modelRender;
 
 	CharacterController	m_charaCon;	//キャラクターコントローラー
-
-	float m_superArmorPoint = 0.0f;		//スーパーアーマーのポイント
-	float m_maxSuperArmorPoint = 0.0f;	//スーパーアーマーの最大値
 
 	bool m_BreakSuperArmorFlag = false; //スーパーアーマーが割れたかのフラグ
 
