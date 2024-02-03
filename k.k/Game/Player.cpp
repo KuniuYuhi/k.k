@@ -36,12 +36,6 @@ bool Player::Start()
 
 void Player::Update()
 {
-	//ƒQ[ƒ€‚ªŽn‚Ü‚é‚Ü‚Å‚ÍˆÚ“®‚µ‚È‚¢
-	/*if (GameManager::GetInstance()->GetGameSeenState()!=
-		GameManager::enGameSeenState_Game)
-	{
-		return;
-	}*/
 
 	if (IsInaction() == true)
 	{
@@ -117,21 +111,6 @@ int Player::GetAtk()
 int Player::GetSkillAtk()
 {
 	return m_brave->GetSkillAtk();
-}
-
-bool Player::IsComboStateSame()
-{
-	return m_brave->IsComboStateSame();
-}
-
-void Player::SetDamagedComboState(Actor::EnComboState damagedcombostate)
-{
-	m_brave->SetDamagedComboState(damagedcombostate);
-}
-
-Actor::EnComboState Player::GetNowComboState() const
-{
-	return m_brave->GetNowComboState();
 }
 
 void Player::SetKnockBackInfo(

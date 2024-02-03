@@ -131,67 +131,6 @@ public:
 	/// </summary>
 	bool CalcInvincibleTime();
 
-	//敵のダメージ判定用コンボステート
-	enum EnComboState
-	{
-		enNowCombo_None,
-		enDamageCombo_None,
-		enNowCombo_1,
-		enNowCombo_2,
-		enNowCombo_3
-	};
-
-	/// <summary>
-	/// 現在のコンボステートとダメージを受けた時のコンボステートが違うか
-	/// </summary>
-	/// <returns></returns>
-	 bool IsComboStateSame();
-
-	/// <summary>
-	/// 現在のコンボ状態を設定
-	/// </summary>
-	/// <param name="nowcombostate"></param>
-	 void SetNowComboState(EnComboState nowcombostate)
-	{
-		m_enNowComboState = nowcombostate;
-	}
-	/// <summary>
-	/// ダメージを受けた時のコンボ状態を設定。
-	/// ダメージを受けたキャラが設定する。
-	/// またはアニメーションが終わったら設定する。
-	/// </summary>
-	/// <param name="oldcombostate"></param>
-	 void SetDamagedComboState(EnComboState damagedcombostate)
-	{
-		m_enDamagedComboState = damagedcombostate;
-	}
-
-	/// <summary>
-	///	現在のコンボ状態を取得
-	/// </summary>
-	/// <returns></returns>
-	 const EnComboState& GetNowComboState() const
-	{
-		return m_enNowComboState;
-	}
-	/// <summary>
-	/// ダメージを受けた時のコンボ状態を取得
-	/// </summary>
-	/// <returns></returns>
-	 EnComboState GetDamagedComboState() const
-	{
-		return m_enDamagedComboState;
-	}
-	 /// <summary>
-	 /// コンボが終わったときやコンボが中断されたときに呼び出す
-	 /// </summary>
-	 void SetComboStateNone()
-	 {
-		 //コンボが終わったら
-		 SetNowComboState(enNowCombo_None);
-		 SetDamagedComboState(enDamageCombo_None);
-	 }
-
 	/// <summary>
 	/// 座標の取得
 	/// </summary>
@@ -400,8 +339,6 @@ protected:
 	Status							m_status;
 	AIActor*						m_atttackAIActor = nullptr;							//攻撃してきたAIActor(モンスター)
 	
-	EnComboState					m_enNowComboState = enNowCombo_None;				//現在のコンボ
-	EnComboState					m_enDamagedComboState = enDamageCombo_None;			//ダメージを受けた時のコンボ
 	EnDashInvicibleState			m_enDashInvicibleState = enDashInvicibleState_None;	//ダッシュしたときの無敵時間のためのステート
 
 	Vector3							m_forward = { 0.0f,0.0f,1.0f };						//前方向

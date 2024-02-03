@@ -97,7 +97,14 @@ public:
 		return m_bossBase->GetDamageHitEnableFlag();
 	}
 
-
+	/// <summary>
+	/// スーパーアーマーブレイクフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool& GetSuperArmorBreakFlag() const
+	{
+		return m_bossBase->GetBreakSuperArmorFlag();
+	}
 
 private:
 	/// <summary>

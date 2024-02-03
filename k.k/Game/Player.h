@@ -97,24 +97,6 @@ public:
 	/// <returns></returns>
 	int GetSkillAtk();
 
-	/// <summary>
-	/// 現在のコンボステートとダメージを受けた時のコンボステートが違うか
-	/// </summary>
-	/// <returns>違うならtrue,同じならfalse</returns>
-	bool IsComboStateSame();
-	
-	/// <summary>
-	/// ダメージを受けた時のコンボステートを設定
-	/// </summary>
-	/// <param name="damagedcombostate"></param>
-	void SetDamagedComboState(Actor::EnComboState damagedcombostate);
-	
-	/// <summary>
-	/// 現在のキャラクターのコンボステートを取得
-	/// </summary>
-	/// <returns></returns>
-	Actor::EnComboState GetNowComboState() const;
-
 	bool GetGameEndFlag()
 	{
 		return m_gameEndFlag;
