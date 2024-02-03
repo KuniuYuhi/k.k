@@ -3,6 +3,8 @@
 #include "Brave.h"
 #include "Arrow.h"
 
+#include "GameManager.h"
+
 
 namespace {
 	//武器が収納状態の時の座標
@@ -10,8 +12,6 @@ namespace {
 
 	//ステータス
 	const int POWER = 30;
-	const int SKILL_POWER = 15;
-	const int ENDURANCE = 50;		//武器の耐久力(矢のストック)。
 
 	const float HITTABLE_TIME = 0.15f;
 
@@ -20,8 +20,6 @@ namespace {
 	const float SHOT_ARROW_ANGLE = 11.0f;			//矢を撃つときの角度
 
 	const float MOVE_BACK_SPEED = 100.0f;			//矢を撃った後の後退するスピード
-
-	const float NORMAL_ATTACK_KNOCKBACK_POWER = 150.0f;
 
 	const float NORMAL_ATTACK__EFFECT_SIZE = 12.0f;
 	const float SKILL_ATTACK_EFFECT_SIZE = 15.0f;
@@ -32,10 +30,6 @@ Bow::Bow()
 {
 	SetWeaponPower(POWER);
 	SetMoveBackSpeed(MOVE_BACK_SPEED);
-
-	m_knockPower_1combo = NORMAL_ATTACK_KNOCKBACK_POWER;
-	m_knockPower_2combo = NORMAL_ATTACK_KNOCKBACK_POWER;
-	m_knockPower_3combo = NORMAL_ATTACK_KNOCKBACK_POWER;
 }
 
 Bow::~Bow()
@@ -82,14 +76,15 @@ bool Bow::Start()
 void Bow::Update()
 {
 	//プレイヤーがやられたならチャージエフェクトをストップ
-	if (m_brave->GetDieFlag() == true)
-	{
-		if (m_chargeEffect != nullptr)
-		{
-			//チャージエフェクトを停止
-			m_chargeEffect->Stop();
-		}
-	}
+	//if (GameManager::GetInstance()!=nullptr&&
+	//	GameManager::GetInstance()->GetPlayerLoseFlag()==true)
+	//{
+	//	if (m_chargeEffect != nullptr)
+	//	{
+	//		//チャージエフェクトを停止
+	//		m_chargeEffect->Stop();
+	//	}
+	//}
 
 	//収納状態なら
 	if (GetStowedFlag() == true)
@@ -184,6 +179,24 @@ void Bow::ProcessSkillAttack()
 		m_brave->ProcessCommonStateTransition();
 		//またチャージエフェクトを再生できるようにする
 		m_playChargeEffectFlag = false;
+		//チャージエフェクトを停止
+		if (m_chargeEffect != nullptr)
+		{
+			//チャージエフェクトを停止
+			m_chargeEffect->Stop();
+		}
+	}
+}
+
+void Bow::postDamageReset()
+{
+	//チャージタイマーをリセット
+	m_ChargeTimer = 0.0f;
+	//またチャージエフェクトを再生できるようにする
+	m_playChargeEffectFlag = false;
+
+	if (m_chargeEffect != nullptr)
+	{
 		//チャージエフェクトを停止
 		m_chargeEffect->Stop();
 	}

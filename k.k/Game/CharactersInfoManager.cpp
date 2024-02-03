@@ -149,7 +149,10 @@ void CharactersInfoManager::SortMonsterToPlayerLength(float array[][2], int maxV
 void CharactersInfoManager::SetAllMonsterDamgeHitFlag(bool flag)
 {
 	//ボスのフラグを設定
-	m_bossInstance->SetDamageHitEnableFlag(flag);
+	if (m_bossInstance != nullptr)
+	{
+		m_bossInstance->SetDamageHitEnableFlag(flag);
+	}
 
 	//モンスターの数が0なら処理しない
 	if (m_mobMonsters.size() == 0)

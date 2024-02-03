@@ -53,13 +53,16 @@ const float& WeaponBase::GetKnockBackPower(int num)
 	switch (num)
 	{
 	case enKnockBackPowerNumber_1combo:
-		return m_knockPower_1combo;
+		return m_status.GetWeaponStatus().
+			comboKnockBackPower[enKnockBackPowerNumber_1combo - 1];
 	case enKnockBackPowerNumber_2combo:
-		return m_knockPower_2combo;
+		return m_status.GetWeaponStatus().
+			comboKnockBackPower[enKnockBackPowerNumber_2combo - 1];
 	case enKnockBackPowerNumber_3combo:
-		return m_knockPower_3combo;
+		return m_status.GetWeaponStatus().
+			comboKnockBackPower[enKnockBackPowerNumber_3combo - 1];
 	case enKnockBackPowerNumber_Skill:
-		return m_knockPower_Skill;
+		return m_status.GetWeaponStatus().skillKnockBackPower;
 	default:
 		std::abort();
 		break;

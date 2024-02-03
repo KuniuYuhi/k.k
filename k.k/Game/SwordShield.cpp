@@ -17,16 +17,9 @@ namespace {
 	const float ADD_FORWARD = 30.0f;
 
 	//ステータス
-	const int POWER = 0;
-	const int SKILL_POWER = 50;
-	const int ENDURANCE = 70;		//武器の耐久力(盾の耐久力)。
+	const int POWER = 30;
 
 	const float MOVE_FORWARD_SPEED = 200.0f;
-
-	const float ATTACK_1COMBO_KNOCKBACK_POWER = 140.0f;
-	const float ATTACK_2COMBO_KNOCKBACK_POWER = 140.0f;
-	const float ATTACK_3COMBO_KNOCKBACK_POWER = 140.0f;
-	const float SKILL_KNOCKBACK_POWER = 250.0f;
 
 	const float NORMAL_ATTACK_1_EFFECT_ANGLE = 225.0f;
 	
@@ -43,11 +36,6 @@ SwordShield::SwordShield()
 {
 	SetMoveForwardSpeed(MOVE_FORWARD_SPEED);
 	SetWeaponPower(POWER);
-
-	m_knockPower_1combo = ATTACK_1COMBO_KNOCKBACK_POWER;
-	m_knockPower_2combo = ATTACK_2COMBO_KNOCKBACK_POWER;
-	m_knockPower_3combo = ATTACK_3COMBO_KNOCKBACK_POWER;
-	m_knockPower_Skill = SKILL_KNOCKBACK_POWER;
 }
 
 SwordShield::~SwordShield()
@@ -289,12 +277,22 @@ void SwordShield::MoveStowed()
 	SetStowedFlag(true);
 }
 
-void SwordShield::SettingEffectInfo(
+void SwordShield::SettingSwordEffectInfo(
 	Vector3& effectPos, Quaternion& rot, float angle)
 {
 	effectPos = g_vec3Zero;
 	Vector3 forwardPos = m_brave->GetForward();
 	m_swordMatrix.Apply(effectPos);
+	rot = g_quatIdentity;
+	rot.SetRotationYFromDirectionXZ(forwardPos);
+	rot.AddRotationDegZ(angle);
+}
+
+void SwordShield::SettingShieldEffectInfo(Vector3& effectPos, Quaternion& rot, float angle)
+{
+	effectPos = g_vec3Zero;
+	Vector3 forwardPos = m_brave->GetForward();
+	m_shieldMatrix.Apply(effectPos);
 	rot = g_quatIdentity;
 	rot.SetRotationYFromDirectionXZ(forwardPos);
 	rot.AddRotationDegZ(angle);
@@ -341,7 +339,7 @@ void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		Vector3 pos = g_vec3Zero;
 		Quaternion rot = g_quatIdentity;
 		Vector3 forwardPos = m_brave->GetForward();
-		SettingEffectInfo(pos, rot, NORMAL_ATTACK_1_EFFECT_ANGLE);
+		SettingSwordEffectInfo(pos, rot, NORMAL_ATTACK_1_EFFECT_ANGLE);
 		forwardPos *= 15.0f;
 		pos.Add(forwardPos);
 		//エフェクト再生
@@ -361,7 +359,7 @@ void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		//エフェクト再生のための座標と回転設定
 		Vector3 pos = g_vec3Zero;
 		Quaternion rot = g_quatIdentity;
-		SettingEffectInfo(pos, rot, 0.0f);
+		SettingSwordEffectInfo(pos, rot, 0.0f);
 		//エフェクト再生
 		PlayEffect(
 			InitEffect::enEffect_SwordShieldCombo12,
@@ -379,7 +377,7 @@ void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		//エフェクト再生のための座標と回転設定
 		Vector3 pos = g_vec3Zero;
 		Quaternion rot = g_quatIdentity;
-		SettingEffectInfo(pos, rot, 0.0f);
+		SettingSwordEffectInfo(pos, rot, 0.0f);
 		//エフェクト再生
 		PlayEffect(
 			InitEffect::enEffect_SwordShieldCombo3,
@@ -411,20 +409,15 @@ void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 	//防御ヒットのアニメーションキーフレーム
 	if (wcscmp(eventName, L"SwordShieldDifendHit") == 0)
 	{
+		//エフェクト再生のための座標と回転設定
 		Vector3 pos = g_vec3Zero;
-		m_swordMatrix.Apply(pos);
 		Quaternion rot = g_quatIdentity;
-		rot.SetRotationYFromDirectionXZ(m_brave->GetForward());
-		rot.AddRotationDegZ(225.0f);
-
-		//メイン武器のスキル攻撃処理
-		EffectEmitter* hitEffect = NewGO<EffectEmitter>(0);
-		hitEffect->Init(InitEffect::enEffect_SwordShieldCombo12);
-		hitEffect->Play();
-		hitEffect->SetPosition(pos);
-		hitEffect->SetScale(g_vec3One * 11.0f);
-		hitEffect->SetRotation(rot);
-		hitEffect->Update();
+		SettingShieldEffectInfo(pos, rot, 0.0f);
+		//エフェクト再生
+		PlayEffect(
+			InitEffect::enEffect_SwordShieldDefendHit,
+			pos, 10.0f, rot
+		);
 	}
 
 }
