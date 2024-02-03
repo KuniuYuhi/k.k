@@ -207,23 +207,22 @@ namespace nsK2EngineLow {
 		{
 			m_animation.AddAnimationEventListener(eventListener);
 		}
-		/// <summary>
-		/// アニメーションイベントを削除する
-		/// </summary>
-		/// <param name="eventListener"></param>
-		/*void RemoveAnimationEvent(AnimationEventListener eventListener)
-		{
-			m_animation.RemoveAnimationEventListener(eventListener);
-		}*/
 
 		/// <summary>
 		/// アニメーション再生。
 		/// </summary>
 		/// <param name="animNo">アニメーションクリップの番号。</param>
 		/// <param name="interpolateTime">補完時間(単位：秒。)</param>
-		void PlayAnimation(int animNo, float interpolateTime = 0.0f)
+		
+		/// <summary>
+		/// アニメーション再生。
+		/// </summary>
+		/// <param name="animNo">アニメーションクリップの番号。</param>
+		/// <param name="interpolateTime">補完時間(単位：秒。)</param>
+		/// <param name="animReset">アニメーションを最初からにするか。同じアニメーションから同じアニメーションに遷移するときに使う</param>
+		void PlayAnimation(int animNo, float interpolateTime = 0.0f,bool animReset = false)
 		{
-			m_animation.Play(animNo, interpolateTime);
+			m_animation.Play(animNo, interpolateTime, animReset);
 		}
 
 		/// <summary>
