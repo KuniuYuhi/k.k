@@ -45,6 +45,11 @@ void InitEffect::InitPlayerEffect()
 		EnEFK::enEffect_SwordShieldCombo3,
 		u"Assets/effect/sprite/SwordShieldComboThrust.efk"
 	);
+	//剣＆盾の盾防御ヒットエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		EnEFK::enEffect_SwordShieldDefendHit,
+		u"Assets/effect/sprite/SwordShieldDefendHit.efk"
+	);
 	//剣＆盾のスキル上昇エフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(
 		EnEFK::enEffect_SwordShieldSkillRising,

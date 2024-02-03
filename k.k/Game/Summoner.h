@@ -133,8 +133,7 @@ public:
 			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_start &&
 			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_main &&
 			m_enAnimationState != enAnimationState_DarkSpear_Main &&
-			m_enAnimationState != enAnimationState_DarkSpear_End&&
-			m_enAnimationState != enAnimationState_CriticalHit;
+			m_enAnimationState != enAnimationState_DarkSpear_End;
 	}
 	/// <summary>
 	/// 回転可能か
@@ -246,6 +245,14 @@ public:
 	/// </summary>
 	void ProcessCommonStateTransition();
 
+	/// <summary>
+	/// 被ダメージ状態か
+	/// </summary>
+	/// <returns>被ダメージ状態ならtrue</returns>
+	const bool& IsSummonerDamageTaken() const
+	{
+		return m_enAnimationState == enAnimationState_CriticalHit;
+	}
 
 	/// <summary>
 	/// 現在のステートを取得

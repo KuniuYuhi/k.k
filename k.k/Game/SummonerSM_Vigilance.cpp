@@ -6,7 +6,7 @@
 #include "CharactersInfoManager.h"
 
 namespace {
-	const float WAIT_TIME = 50.0f;		//待機時間
+	const float WAIT_TIME = 5.0f;		//待機時間
 
 	const float MELEE_ATTACK_RANGE = 280.0f;	//近距離攻撃の範囲内
 
@@ -41,8 +41,13 @@ void SummonerSM_Vigilance::Execute()
 	{
 		return;
 	}
-
+	//特定のアニメーションなら処理をしない
 	if (m_summoner->isAnimationEnable() != true)
+	{
+		return;
+	}
+	//被ダメージ状態なら処理をしない
+	if (m_summoner->IsSummonerDamageTaken() == true)
 	{
 		return;
 	}

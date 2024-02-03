@@ -165,6 +165,8 @@ void Brave::ProcessAttack()
 		CalcAttackMoveSpeed();
 		//コンボ攻撃の処理
 		ProcessComboAttack();
+		//モンスターにダメージを与えられるようにフラグをリセット
+		CharactersInfoManager::GetInstance()->SetAllMonsterDamgeHitFlag(true);
 	}
 	//スキル
 	if (g_pad[0]->IsTrigger(enButtonB))
@@ -175,10 +177,11 @@ void Brave::ProcessAttack()
 		SetKnockBackPower(m_mainUseWeapon.weapon->GetKnockBackPower(4));
 		//スキルのスタートアニメーションステート
 		SetNextAnimationState(enAnimationState_Skill_start);
+		//モンスターにダメージを与えられるようにフラグをリセット
+		CharactersInfoManager::GetInstance()->SetAllMonsterDamgeHitFlag(true);
 	}
 
-	//モンスターにダメージを与えられるようにフラグをリセット
-	CharactersInfoManager::GetInstance()->SetAllMonsterDamgeHitFlag(true);
+	
 }
 
 void Brave::ProcessDefend()
@@ -245,6 +248,9 @@ void Brave::Damage(int damage)
 		//死亡ステートに遷移
 		SetNextAnimationState(enAnimationState_Die);
 	}
+
+	//それぞれの武器で被ダメージによって、阻害された行動の値などのリセット
+	m_mainUseWeapon.weapon->postDamageReset();
 }
 
 bool Brave::IsInaction()

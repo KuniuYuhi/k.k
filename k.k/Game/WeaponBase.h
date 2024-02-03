@@ -69,6 +69,11 @@ public:
 	/// </summary>
 	virtual void ProcessOnEndurance() {}
 
+	/// <summary>
+	/// 被ダメージ後の値のリセット。スキルなどが中断されたとき用
+	/// </summary>
+	virtual void postDamageReset(){}
+
 	///////////////////////////////////////////////////////////////////////////
 	///その他の関数
 	///////////////////////////////////////////////////////////////////////////
@@ -335,12 +340,5 @@ protected:
 	float				m_moveBackSpeed = 1.0f;					//後退するときのスピード
 
 	float m_knockBackSpeed = 1.0f;
-
-	//ノックバックパワー。デフォルトの値
-	float m_knockPower_1combo = 150.0f;
-	float m_knockPower_2combo = 170.0f;
-	float m_knockPower_3combo = 190.0f;
-	float m_knockPower_Skill = 200.0f;
-
 };
 
