@@ -24,7 +24,7 @@ namespace {
 
 	const Vector2 BOSS_HP_FONT_POS = { -200.0f, 486.0f };
 
-	const Vector3 BOSS_SUPERARMOR_FLONT_BAR_POS = { -0.0f,400.0f,0.0f };
+	const Vector3 BOSS_SUPERARMOR_FLONT_BAR_POS = { -333.0f,400.0f,0.0f };
 	const Vector3 BOSS_SUPERARMOR_POS = { 0.0f,400.0f,0.0f };
 
 	/// <summary>
@@ -56,6 +56,9 @@ namespace {
 
 	const Vector3 PHASE_FLAME_POS = { -800.0f,240.0f,0.0f };
 	const Vector2 PHASE_FONT_POS = { -960.0f,288.0f };
+
+
+	const Vector4 SUPERSARMOR_GRAY_COLOR = { 0.9f,0.9f,0.9f,0.5f };
 
 	const float WHITE_HP_LERP_START = 0.1f;
 	const float WHITE_HP_LERP_END = 4.5f;
@@ -276,12 +279,23 @@ void GameUI::ProcessBossHP()
 void GameUI::ProcessBossSuperArmor()
 {
 	//スーパーアーマーのバーの減っていく割合。
-	/*Vector3 spuerArmorScale = Vector3::One;
+	Vector3 spuerArmorScale = Vector3::One;
 	spuerArmorScale = CalcGaugeScale(
-		m_boss->GetStatus()., nowHP);
-	m_monsterUI.m_HpFrontRender.SetScale(spuerArmorScale);*/
+		m_boss->GetStatus().GetMaxSuperArmorPoint(), m_boss->GetStatus().GetSuperArmorPoint());
+	m_monsterUI.m_superArmor_FrontBarRender.SetScale(spuerArmorScale);
 
+	//スーパーアーマーがブレイクしている時は、ゲージの色を暗くする
+	if (m_boss->GetSuperArmorBreakFlag() == true)
+	{
+		m_monsterUI.m_superArmor_FrontBarRender.SetMulColor(SUPERSARMOR_GRAY_COLOR);
+	}
+	else
+	{
+		m_monsterUI.m_superArmor_FrontBarRender.SetMulColor(g_vec4White);
+	}
 
+	//更新
+	m_monsterUI.m_superArmor_FrontBarRender.Update();
 }
 
 void GameUI::ProcessPhase()
