@@ -89,21 +89,25 @@ void Status::LoadCSV(const std::string& name) {
 		statusData.name = buf;
 		//HPを読み込む。
 		getline(i_stream, buf, ',');
-		statusData.maxHp = stoi(buf);
+		statusData.characterStatus.maxHp = stoi(buf);
 		//Attackを読み込む。
 		getline(i_stream, buf, ',');
-		statusData.defaultAtk = stoi(buf);
+		statusData.characterStatus.defaultAtk = stoi(buf);
 		//Speedを読み込む。
 		getline(i_stream, buf, ',');
-		statusData.defaultSpeed = stoi(buf);
+		statusData.characterStatus.defaultSpeed = stoi(buf);
+		//スーパーアーマーを読み込む。ボス以外は-1
+		getline(i_stream, buf, ',');
+		statusData.characterStatus.maxSuperArmorPoint = stoi(buf);
 
-		//名前を設定
-		const char* di = statusData.name.c_str();
-		statusData.characterName = di;
+
+
 		//HPを設定
-		statusData.hp = statusData.maxHp;
+		statusData.characterStatus.hp = statusData.characterStatus.maxHp;
 		//攻撃力を設定
-		statusData.atk = statusData.defaultAtk;
+		statusData.characterStatus.atk = statusData.characterStatus.defaultAtk;
+		//スーパーアーマーの値を設定
+		statusData.characterStatus.superArmorPoint = statusData.characterStatus.maxSuperArmorPoint;
 
 		//マップに取得したデータを代入
 		StatusDataMAP[statusData.name] = statusData;
@@ -156,13 +160,10 @@ void Status::LoadWeaponCSV(const std::string& name)
 		getline(i_stream, buf, ',');
 		statusData.weaponStatus.skillKnockBackPower = stoi(buf);
 
-
-
 		//攻撃力を設定
 		statusData.weaponStatus.atk = statusData.weaponStatus.defaultAtk;
 		//耐久力を設定
 		statusData.weaponStatus.endurance = statusData.weaponStatus.maxEndurance;
-
 
 		//マップに取得したデータを代入
 		StatusDataMAP[statusData.name] = statusData;
