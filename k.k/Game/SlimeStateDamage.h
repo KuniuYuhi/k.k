@@ -12,5 +12,10 @@ public:
 	void ManageState();
 
 	void PlayAnimation();
+
+private:
+
+	bool m_animationResetFlag = true;
+
 };
 
