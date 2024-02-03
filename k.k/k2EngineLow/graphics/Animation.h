@@ -50,15 +50,17 @@ namespace nsK2EngineLow {
 			AnimationClip* animClips,
 			int numAnimClip
 		);
+		
 		/// <summary>
 		/// アニメーションの再生。
 		/// </summary>
 		/// <param name="clipNo">アニメーションクリップの番号。Init関数に渡したanimClipListの並びとなる。</param>
 		/// <param name="interpolateTime">補完時間(単位：秒)</param>
-		void Play(int clipNo, float interpolateTime = 0.0f)
+		/// <param name="animReset">アニメーションを最初からにするか。同じアニメーションから同じアニメーションに遷移するときに使う</param>
+		void Play(int clipNo, float interpolateTime = 0.0f,bool animReset = false)
 		{
 			if (clipNo < m_animationClips.size()) {
-				PlayCommon(m_animationClips[clipNo], interpolateTime);
+				PlayCommon(m_animationClips[clipNo], interpolateTime, animReset);
 			}
 		}
 		/// <summary>
@@ -154,12 +156,15 @@ namespace nsK2EngineLow {
 		Vector3 CalcFootstepDeltaValueInWorldSpace(Quaternion rotation, Vector3 scale) const;
 
 	private:
-		void PlayCommon(AnimationClip* nextClip, float interpolateTime)
+		void PlayCommon(AnimationClip* nextClip, float interpolateTime,bool animReset = false)
 		{
 			int index = GetLastAnimationControllerIndex();
-			if (m_animationPlayController[index].GetAnimClip() == nextClip) {
+			//次のアニメーションクリップが現在のアニメーションクリップと同じかつ
+			//アニメーションリセットフラグが立っていないなら
+			if (animReset==false && m_animationPlayController[index].GetAnimClip() == nextClip) {
 				return;
 			}
+			//次のアニメーションクリップの初期化
 			if (interpolateTime == 0.0f) {
 				//補完なし。
 				m_numAnimationPlayController = 1;
