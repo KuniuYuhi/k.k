@@ -60,6 +60,10 @@ bool Player::IsInaction()
 	//////////////////////////////////////////////////
 	// 行動出来なくなる条件
 	////////////////////////////////////////////////// 
+	 
+	// 
+	 
+	
 	//勝利したかつゲーム終了後の処理が終わったなら
 	if (GameManager::GetInstance()->GetPlayerWinFlag()==true&&
 		GameManager::GetInstance()->GetGameFinishProcessEndFlag())
