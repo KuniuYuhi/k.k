@@ -58,8 +58,6 @@ namespace {
 
 Summoner::Summoner()
 {
-	m_maxSuperArmorPoint = MAX_SUPERARMOR_POINT;
-	m_superArmorPoint = m_maxSuperArmorPoint;
 }
 
 Summoner::~Summoner()
@@ -268,26 +266,29 @@ void Summoner::ProcessHit(int hitDamage)
 	m_status.CalcHp(hitDamage, false);
 	//被ダメージカウント加算
 	m_damageCount++;
-	//スーパーアーマーを減らす
-	CalcSuperArmor(false, hitDamage);
-
+	//スーパーアーマーがブレイクしていないなら
+	if (GetBreakSuperArmorFlag() == false)
+	{
+		//スーパーアーマーを減らす
+		CalcSuperArmor(false, hitDamage);
+	}
 	//スーパーアーマーがブレイクしているなら
 	if (GetBreakSuperArmorFlag() == true)
 	{
 		//一定確率で怯む
 		//ブレイクした瞬間なら確定で怯む
-		if (IsFlinch() == true|| (m_oldBreakSuperArmorFlag!= GetBreakSuperArmorFlag()))
+		if (IsFlinch() == true || (m_oldBreakSuperArmorFlag != GetBreakSuperArmorFlag()))
 		{
 			//技の途中かもしれないのでダークウォールを削除
 			if (m_darkWall != nullptr)
 			{
 				DeleteGO(m_darkWall);
 			}
-
+			//被ダメージアニメーション
 			SetNextAnimationState(enAnimationState_CriticalHit);
 		}
 	}
-
+	//前フレームのスーパーアーマーブレイクフラグを取得
 	m_oldBreakSuperArmorFlag = GetBreakSuperArmorFlag();
 }
 
@@ -299,7 +300,7 @@ void Summoner::RecoverySuperArmor()
 		return;
 	}
 	//スーパーアーマーの回復
-	CalcSuperArmor(true, g_gameTime->GetFrameDeltaTime());
+	CalcSuperArmor(true, g_gameTime->GetFrameDeltaTime() * 2.0f);
 }
 
 void Summoner::SetNextAnimationState(EnAnimationState nextState)

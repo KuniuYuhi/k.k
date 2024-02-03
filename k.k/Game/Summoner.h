@@ -133,7 +133,8 @@ public:
 			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_start &&
 			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_main &&
 			m_enAnimationState != enAnimationState_DarkSpear_Main &&
-			m_enAnimationState != enAnimationState_DarkSpear_End;
+			m_enAnimationState != enAnimationState_DarkSpear_End&&
+			m_enAnimationState != enAnimationState_CriticalHit;
 	}
 	/// <summary>
 	/// ‰ñ“]‰Â”\‚©
