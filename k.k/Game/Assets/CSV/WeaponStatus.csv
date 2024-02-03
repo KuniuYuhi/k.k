@@ -1,4 +1,4 @@
 ﻿name,attack,endurance,skillAttack,1comboKB,2comboKB,3comboNB,skillKB
 swordshield,0,70,50,150,150,180,250
 greatsword,40,-1,70,160,175,210,320
-bow,30,50,15,150,150,150,150
+bowarrow,30,50,15,150,150,150,150
