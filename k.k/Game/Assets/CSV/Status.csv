@@ -1,6 +1,6 @@
 name,hp,attack,Speed,SuperArmor
-brave,300,30,240,-1
-summoner,700,20,50,50
+brave,400,30,240,-1
+summoner,1500,20,50,400
 slime,150,10,110,-1
 cactus,120,15,120,-1
 mushroom,100,7,130,-1
