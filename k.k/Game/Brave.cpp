@@ -693,7 +693,7 @@ void Brave::ReverseWeapon(EnWeapons changeTargetWeaponType)
 	m_mainUseWeapon.weapon->ReverseWeaponState();
 	ChangeUseSubWeapon->weapon->ReverseWeaponState();
 	//攻撃力を現在の武器のものに変更。
-	m_status.SetAtk(m_mainUseWeapon.weapon->GetStatus().GetAtk());
+	m_status.SetAtk(m_mainUseWeapon.weapon->GetStatus().GetWeaponAtk());
 	//多段ヒット判定フラグをセット
 	m_mainUseWeapon.weapon->SetHittableFlag(true);
 	//武器を切り替えた
@@ -742,7 +742,7 @@ void Brave::SettingWeapons()
 	m_mainUseWeapon.weapon->StartSetWeaponState(SwordShield::enWeaponState_Armed);
 
 	//サブ１はグレイトソード
-	BigSword* greatSword = NewGO<BigSword>(0, "greatSword");
+	BigSword* greatSword = NewGO<BigSword>(0, "greatsword");
 	m_subUseWeapon.weapon = greatSword;
 	m_subWeaponType = enWeaponType_TwoHandSword;
 	//アニメーションクリップの最初の番号を設定
