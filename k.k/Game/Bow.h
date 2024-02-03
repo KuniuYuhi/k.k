@@ -43,6 +43,11 @@ public:
 	}
 
 	/// <summary>
+	/// 被ダメージ後の値のリセット。スキルなどが中断されたとき用
+	/// </summary>
+	virtual void postDamageReset() override;
+
+	/// <summary>
 	/// 矢のワールド座標を取得
 	/// </summary>
 	/// <returns></returns>
