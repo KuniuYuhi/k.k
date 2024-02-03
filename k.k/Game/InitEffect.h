@@ -45,6 +45,7 @@ public:
 		enEffect_SwordShieldCombo3,								//Œ••‚‚Ì’ÊíUŒ‚‚R
 		enEffect_SwordShieldSkillRising,						//Œ••‚‚ÌƒXƒLƒ‹‚Ìã¸
 		enEffect_SwordShieldSkillAttack,						//Œ••‚‚ÌƒXƒLƒ‹UŒ‚
+		enEffect_SwordShieldDefendHit,							//Œ••‚‚Ì‚–hŒäƒqƒbƒg
 		enEffect_GreatSwordCombo12,								//—¼èŒ•‚Ì’ÊíUŒ‚‚P‚Æ‚Q
 		enEffect_GreatSwordCombo3,								//—¼èŒ•‚Ì’ÊíUŒ‚‚R
 		enEffect_GreatSwordSkillRising,							//—¼èŒ•‚ÌƒXƒLƒ‹‚Ìã¸
