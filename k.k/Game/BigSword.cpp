@@ -16,17 +16,10 @@ namespace {
 
 	//ÉXÉeÅ[É^ÉX
 	const int POWER = 40;
-	const int SKILL_POWER = 70;
-	const int ENDURANCE = -1;		//ïêäÌÇÃëœãvóÕ(ëœãvóÕäTîOÇ»Çµ)
 
 	const float HITTABLE_TIME = 0.5f;
 
 	const float MOVE_FORWARD_SPEED = 150.0f;
-
-	const float ATTACK_1COMBO_KNOCKBACK_POWER = 160.0f;
-	const float ATTACK_2COMBO_KNOCKBACK_POWER = 175.0f;
-	const float ATTACK_3COMBO_KNOCKBACK_POWER = 210.0f;
-	const float SKILL_KNOCKBACK_POWER = 320.0f;
 
 	const float NORMAL_ATTACK_1_EFFECT_ANGLE = -270.0f;
 	const float NORMAL_ATTACK_2_EFFECT_ANGLE = 80.0f;
@@ -63,11 +56,6 @@ BigSword::BigSword()
 {
 	SetMoveForwardSpeed(MOVE_FORWARD_SPEED);
 	SetWeaponPower(POWER);
-
-	m_knockPower_1combo = ATTACK_1COMBO_KNOCKBACK_POWER;
-	m_knockPower_2combo = ATTACK_2COMBO_KNOCKBACK_POWER;
-	m_knockPower_3combo = ATTACK_3COMBO_KNOCKBACK_POWER;
-	m_knockPower_Skill = SKILL_KNOCKBACK_POWER;
 }
 
 BigSword::~BigSword()
