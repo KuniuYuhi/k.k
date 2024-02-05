@@ -54,6 +54,8 @@ namespace {
 	const float NORMAL_ATTACK_1_SIZE = 17.0f;
 	const float NORMAL_ATTACK_2_SIZE = 30.0f;
 	const Vector3 KNOCKBACK_EFFECT_SIZE = { 30.0f,17.0f,30.0f };
+
+	const float RECOVERY_SUPERARMOR_SPEED = 9.0f;
 }
 
 Summoner::Summoner()
@@ -300,7 +302,7 @@ void Summoner::RecoverySuperArmor()
 		return;
 	}
 	//スーパーアーマーの回復
-	CalcSuperArmor(true, g_gameTime->GetFrameDeltaTime() * 2.0f);
+	CalcSuperArmor(true, g_gameTime->GetFrameDeltaTime() * RECOVERY_SUPERARMOR_SPEED);
 }
 
 void Summoner::SetNextAnimationState(EnAnimationState nextState)
