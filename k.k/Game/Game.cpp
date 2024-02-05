@@ -86,7 +86,7 @@ bool Game::Start()
 
 	//ゲーム進行マネージャークラスの生成
 	//ゲームシーンステートの設定
-	GameManager::CreateInstance(GameManager::enGameSeenState_GameStart);
+	GameManager::CreateInstance(GameManager::enGameSeenState_Game);
 	//初期化処理
 	GameManager::GetInstance()->Init();
 

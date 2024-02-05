@@ -120,11 +120,11 @@ void SummonerSM_Attack::ProcessLongRangeAttack()
 void SummonerSM_Attack::ProcessMeleeAttack()
 {
 	//’ÊíUŒ‚
-	m_summoner->
-		SetNextAnimationState(Summoner::enAnimationState_NormalAttack_1);
-	//’ÊíUŒ‚s“®‚µ‚½Œã‚Ì˜A‘±UŒ‚ƒ^ƒCƒ}[
-	m_continuousAttackTimer = 0.2f;
-	return;
+	//m_summoner->
+	//	SetNextAnimationState(Summoner::enAnimationState_NormalAttack_1);
+	////’ÊíUŒ‚s“®‚µ‚½Œã‚Ì˜A‘±UŒ‚ƒ^ƒCƒ}[
+	//m_continuousAttackTimer = 0.2f;
+	//return;
 	//‹ß‹——£UŒ‚
 	//m_summoner->
 	//	SetNextAnimationState(Summoner::enAnimationState_DarkSpear_Start);
