@@ -62,20 +62,16 @@ Game::~Game()
 	//全ての音をストップ
 	g_soundManager->StopAllSound();
 
+	DeleteGO(m_gameUI);
+
 	DeleteGO(m_skyCube);
 	DeleteGO(m_bossStage1);
-	
 	DeleteGO(m_player);
 	DeleteGO(m_boss);
-
 	DeleteGO(m_gameCamera);
-
 	DeleteGO(m_gameFinishCamera);
 	DeleteGO(m_battlePhase);
 	DeleteGO(m_pause);
-
-	DeleteGO(m_gameUI);
-
 	DeleteGO(m_result);
 }
 
@@ -154,7 +150,7 @@ void Game::CreatePlayerAndCamera()
 void Game::CreateBattlePhase()
 {
 	//バトルフェーズ処理クラス生成
-	m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
+	//m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
 }
 
 void Game::InitSkyCube()
