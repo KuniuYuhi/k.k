@@ -58,6 +58,10 @@ private:
 	/// モンスターのUIの初期化
 	/// </summary>
 	void InitMonsterUI();
+	/// <summary>
+	/// フェーズのUIの初期化
+	/// </summary>
+	void InitPhaseUI();
 
 	/// <summary>
 	/// プレイヤーUIの処理
@@ -73,11 +77,11 @@ private:
 	/// </summary>
 	void UpdateWeapon();
 	/// <summary>
-	/// HPやMPなどのゲージのスケールを計算する
+	/// ゲージのスケールを計算する
 	/// </summary>
 	/// <param name="Maxvalue">最大値</param>
 	/// <param name="value">計算したい値</param>
-	/// <returns>サイズ</returns>
+	/// <returns>サイズ。Xの値が変換した状態が返ってくる</returns>
 	Vector3 CalcGaugeScale(float Maxvalue, float value);
 
 	/// <summary>
@@ -113,6 +117,10 @@ private:
 	/// フェーズの処理
 	/// </summary>
 	void ProcessPhase();
+	/// <summary>
+	/// 現在のフェーズのモンスターの数のテキストを設定
+	/// </summary>
+	void CalcOffsetForNowPhaseMonsters(int monsters);
 
 	/// <summary>
 	/// 武器切り替え処理
@@ -123,6 +131,14 @@ private:
 	/// 耐久値のフォントの処理
 	/// </summary>
 	void ProcessWeaponEndranceFont();
+
+	/// <summary>
+	/// 引数の桁数によってオフセットを計算する
+	/// </summary>
+	/// <param name="num">オフセットしたい数</param>
+	/// <param name="xOffset">X方向にずらす量</param>
+	/// <param name="yOffset">Y方向にずらす量</param>
+	Vector2 CalcNumberCount(float num, float xOffset, float yOffset);
 
 	/// <summary>
 	/// スプライトレンダーの初期化。
@@ -170,7 +186,6 @@ private:
 		FontRender m_hpFont;					//HPの値
 		FontRender m_AccumulationDamageFont;	//
 
-		SpriteRender m_iconRender;				//キャラアイコン
 		SpriteRender m_hpFlameRender;			//HPのフレーム
 		SpriteRender m_hpFrontRender;			//変動するHPバー
 		SpriteRender m_hpWhiteRender;			//遅れて減らす白いHPバー
@@ -224,15 +239,27 @@ private:
 	FontRender m_timerFont;				//制限時間
 	SpriteRender m_timeFlameRender;		//制限時間の枠
 
-	FontRender m_phadeFont;
-	SpriteRender m_phaseFlameRender;	//フェーズのフレーム
+	
+
+	struct phaseUI
+	{
+		SpriteRender m_phaseFlameRender;	//フェーズのフレーム
+		FontRender m_nowPhaseFont;			//現在のフェーズ数
+		FontRender m_nowPhaseMonstersFont;	//現在のフェーズのモンスターの数
+		SpriteRender m_phaseTimeFlameRender;
+		SpriteRender m_phaseTimeBarRender;
+
+	};
+
+
 
 	Game* m_game = nullptr;
 	Player* m_player = nullptr;
 	Boss* m_boss = nullptr;
 
-	PlayerUI m_playerUI;			//プレイヤーの情報のUI
-	MonsterUI m_monsterUI;			//モンスターの情報のUI
+	PlayerUI m_playerUI;			//プレイヤーのUI
+	MonsterUI m_monsterUI;			//モンスターのUI
+	phaseUI m_phaseUI;				//フェーズのUI
 
 	Vector3 m_playerWhiteHpScale = g_vec3One;		//プレイヤーの白いHPバー
 
@@ -246,6 +273,8 @@ private:
 
 	float m_nowPlayerWhiteHp = 0.0f;
 	float m_nowBossWhiteHp = 0.0f;
+
+	int m_oldPhaseMonstersNum = 0;
 
 
 

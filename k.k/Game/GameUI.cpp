@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Boss.h"
 #include "GameManager.h"
+#include "CharactersInfoManager.h"
 
 namespace {
 
@@ -16,8 +17,6 @@ namespace {
 	/// <summary>
 	/// 978
 	/// </summary>
-	const Vector3 BOSS_ICON_POS = { -582.0f,450.0f,0.0f };
-
 	const Vector3 BOSS_HP_FLAME_POS = { 0.0f,450.0f,0.0f };
 	const Vector3 BOSS_HP_FRONT_POS = { -489.0f,450.0f,0.0f };
 	const Vector3 BOSS_HP_BACK_POS = { 0.0f,450.0f,0.0f };
@@ -31,7 +30,7 @@ namespace {
 	/// プレイヤー側
 	/// </summary>
 
-	const Vector2 HP_PIBOT = { 0.0f,0.5f };							//HPかMPのピボット
+	const Vector2 GAUGE_PIBOT = { 0.0f,0.5f };							//HPかMPのピボット
 
 	//ステータスバー
 	const Vector3 MAIN_STATUS_BAR = { -650.0f, -470.0f, 0.0f };
@@ -54,9 +53,17 @@ namespace {
 	const Vector3 HP_SCALE_END_POS = { 0.0f,1.0f,1.0f };
 
 
-	const Vector3 PHASE_FLAME_POS = { -800.0f,240.0f,0.0f };
-	const Vector2 PHASE_FONT_POS = { -960.0f,288.0f };
+	const Vector3 PHASE_FLAME_POS = { -740.0f,370.0f,0.0f };
+	const Vector2 NOW_PHASE_FONT_POS = { -735.0f,515.0f };
+	const float NOW_PHASE_SIZE = 2.0f;
 
+	const Vector2 NOW_PHASE_MONSTERS_POS= { -765.0f,355.0f };
+	const float NOW_PHASE_MONSTERS_SIZE = 1.8f;
+	const float NOW_PHASE_MONSTERS_DEFAULT_X_OFFSET = 17.0f;
+	const float NOW_PHASE_MONSTERS_DEFAULT_Y_OFFSET = 10.0f;
+
+	const Vector3 PHASE_TIME_FLAME_POS = { -740.0f,345.0f,0.0f };
+	const Vector3 PHASE_TIME_BAR_POS = { -908.0f,345.0f,0.0f };
 
 	const Vector4 SUPERSARMOR_GRAY_COLOR = { 0.9f,0.9f,0.9f,0.5f };
 
@@ -74,10 +81,12 @@ GameUI::~GameUI()
 
 bool GameUI::Start()
 {
-	//プレイヤーのUI
+	//プレイヤーのUIの初期化
 	InitPlayerUI();
-	//モンスターのUI
+	//モンスターのUIの初期化
 	InitMonsterUI();
+	//フェーズUIの初期化
+	InitPhaseUI();
 
 	//制限時間
 	InitFontRender(m_timerFont, TIMER_POS, 1.1f);
@@ -88,13 +97,10 @@ bool GameUI::Start()
 		m_timeFlameRender, "Assets/sprite/InGame/Character/TimeFlame2.DDS", 500, 124, TIME_FLAME_POS, TIME_FLAME_SIZE
 	);
 
-	//フェーズのフレーム
-	InitSpriteRender(
-		m_phaseFlameRender, "Assets/sprite/InGame/Character/Wave_Flame.DDS", 629, 97,
-		PHASE_FLAME_POS, g_vec3One
-	);
-	//フェーズの文字
-	InitFontRender(m_phadeFont, PHASE_FONT_POS, 1.5f);
+
+	
+
+
 
 	m_nowPlayerWhiteHp = m_player->GetNowActorStatus().GetMaxHp();
 
@@ -310,22 +316,47 @@ void GameUI::ProcessPhase()
 	//現在のフェーズを取得
 	int PhaseNumber = GameManager::GetInstance()->GetNowPhaseState();
 	wchar_t NowPhase[255];
-	swprintf_s(NowPhase, 255, L"フェーズ%d", PhaseNumber+1);
+	swprintf_s(NowPhase, 255, L"%d", PhaseNumber+1);
 	//テキストを設定
-	m_phadeFont.SetText(NowPhase);
+	m_phaseUI.m_nowPhaseFont.SetText(NowPhase);
 
 
+	//現在の敵の数を取得
+	int monsterNum = CharactersInfoManager::GetInstance()->GetMobMonsters().size();
+	wchar_t NowMonsterNum[255];
+	swprintf_s(NowMonsterNum, 255, L"%d", monsterNum);
+	//テキストを設定
+	m_phaseUI.m_nowPhaseMonstersFont.SetText(NowMonsterNum);
+	//テキストのオフセット量を計算
+	CalcOffsetForNowPhaseMonsters(monsterNum);
 
 
+	//タイマーの現在の値と最大値を取得
+	float nowTimer = GameManager::GetInstance()->GetPhaseTimer();
+	float timerLimmit = GameManager::GetInstance()->GetNowPhaseTimerLimmit();
 
+	//タイムバーの減っていく割合。
+	Vector3 phaseTimerScale = Vector3::One;
+	//タイムバーのスケールを計算
+	phaseTimerScale = CalcGaugeScale(timerLimmit, nowTimer);
+	//スケールを設定
+	m_phaseUI.m_phaseTimeBarRender.SetScale(phaseTimerScale);
+	m_phaseUI.m_phaseTimeBarRender.Update();
+}
 
+void GameUI::CalcOffsetForNowPhaseMonsters(int monsters)
+{
+	//桁が変わらないならオフセット処理をしない
+	if (monsters == m_oldPhaseMonstersNum)
+	{
+		return;
+	}
+	//敵の数が二桁と一桁があるのでオフセットを計算
+	Vector2 offset = CalcNumberCount(monsters, NOW_PHASE_MONSTERS_DEFAULT_X_OFFSET, NOW_PHASE_MONSTERS_DEFAULT_Y_OFFSET);
+	//オフセットを設定
+	m_phaseUI.m_nowPhaseMonstersFont.SetOffset(offset);
 
-
-
-
-
-
-
+	m_oldPhaseMonstersNum = monsters;
 }
 
 void GameUI::ChangeWeapon(
@@ -372,6 +403,26 @@ void GameUI::ProcessWeaponEndranceFont()
 	}
 }
 
+Vector2 GameUI::CalcNumberCount(float num, float xOffset, float yOffset)
+{
+	int digitCount = 1;
+
+	if (num > 0)
+	{
+		//引数の桁数を取得
+		digitCount = static_cast<int>(log10(num) + 1);
+	}
+
+	//オフセットを計算
+	Vector2 offset = g_vec2Zero;
+	//Xオフセットを計算
+	offset.x = xOffset * digitCount;
+	//Yオフセットを計算
+	offset.y = yOffset;
+
+	return offset;
+}
+
 void GameUI::Render(RenderContext& rc)
 {
 	DrawPlayerUI(rc);
@@ -380,8 +431,13 @@ void GameUI::Render(RenderContext& rc)
 	m_timeFlameRender.Draw(rc);
 	m_timerFont.Draw(rc);
 
-	m_phaseFlameRender.Draw(rc);
-	m_phadeFont.Draw(rc);
+	m_phaseUI.m_phaseFlameRender.Draw(rc);
+	m_phaseUI.m_nowPhaseFont.Draw(rc);
+	m_phaseUI.m_nowPhaseMonstersFont.Draw(rc);
+
+	m_phaseUI.m_phaseTimeBarRender.Draw(rc);
+	m_phaseUI.m_phaseTimeFlameRender.Draw(rc);
+
 }
 
 void GameUI::DrawPlayerUI(RenderContext& rc)
@@ -440,9 +496,6 @@ void GameUI::DrawMonsterUI(RenderContext& rc)
 	{
 		return;
 	}
-	//アイコン
-	m_monsterUI.m_iconRender.Draw(rc);
-
 	//HP
 	m_monsterUI.m_hpBackRender.Draw(rc);
 	if (m_bossHpWhiteScale.x > 0.0f)
@@ -466,7 +519,6 @@ void GameUI::DrawMonsterUI(RenderContext& rc)
 
 void GameUI::InitPlayerUI()
 {
-
 	//HPの値
 	InitFontRender(m_playerUI.m_hpFont, HP_FONT_POS, 1.3f);
 
@@ -478,13 +530,13 @@ void GameUI::InitPlayerUI()
 	InitSpriteRender(
 		m_playerUI.m_hpFrontRender, "Assets/sprite/InGame/Character/Player_HP_Front.DDS", 588, 78, MAIN_HP_BAR);
 	//ピボットの設定
-	m_playerUI.m_hpFrontRender.SetPivot(HP_PIBOT);
+	m_playerUI.m_hpFrontRender.SetPivot(GAUGE_PIBOT);
 
 	//白いHPバー
 	InitSpriteRender(
 		m_playerUI.m_hpWhiteRender, "Assets/sprite/InGame/Character/Player_HP_White.DDS", 588, 78, MAIN_HP_BAR);
 	//ピボットの設定
-	m_playerUI.m_hpWhiteRender.SetPivot(HP_PIBOT);
+	m_playerUI.m_hpWhiteRender.SetPivot(GAUGE_PIBOT);
 
 	//HPバーの裏側
 	InitSpriteRender(
@@ -570,12 +622,6 @@ void GameUI::InitMonsterUI()
 	//確認用
 	InitFontRender(m_monsterUI.m_AccumulationDamageFont, { 0.0f, 500.0f });
 
-	//ボスのアイコン
-	InitSpriteRender(
-		m_monsterUI.m_iconRender,
-		"Assets/sprite/InGame/Character/Icon_Lich.DDS", 180, 180, BOSS_ICON_POS, g_vec3One * 0.8f
-	);
-
 	//ボスのHPのフレーム
 	InitSpriteRender(
 		m_monsterUI.m_hpFlameRender,
@@ -588,7 +634,7 @@ void GameUI::InitMonsterUI()
 		"Assets/sprite/InGame/Character/HP_Front_Boss.DDS", 978, 47, BOSS_HP_FRONT_POS
 	);
 	//ピボットの設定
-	m_monsterUI.m_hpFrontRender.SetPivot(HP_PIBOT);
+	m_monsterUI.m_hpFrontRender.SetPivot(GAUGE_PIBOT);
 
 	//ボスの白いHPバー
 	InitSpriteRender(
@@ -596,7 +642,7 @@ void GameUI::InitMonsterUI()
 		"Assets/sprite/InGame/Character/HP_White_Boss.DDS", 978, 47, BOSS_HP_FRONT_POS
 	);
 	//ピボットの設定
-	m_monsterUI.m_hpWhiteRender.SetPivot(HP_PIBOT);
+	m_monsterUI.m_hpWhiteRender.SetPivot(GAUGE_PIBOT);
 
 	//HPバーの裏側
 	InitSpriteRender(
@@ -616,13 +662,48 @@ void GameUI::InitMonsterUI()
 		"Assets/sprite/InGame/Character/SuperArmor_Front.DDS", 666, 24, BOSS_SUPERARMOR_FLONT_BAR_POS
 	);
 	//ピボットの設定
-	m_monsterUI.m_superArmor_FrontBarRender.SetPivot(HP_PIBOT);
+	m_monsterUI.m_superArmor_FrontBarRender.SetPivot(GAUGE_PIBOT);
 
 	//スーパーアーマーの裏のバー
 	InitSpriteRender(
 		m_monsterUI.m_superArmor_BackBarRender,
 		"Assets/sprite/InGame/Character/SuperArmor_Back.DDS", 664, 22, BOSS_SUPERARMOR_POS
 	);
+
+}
+
+void GameUI::InitPhaseUI()
+{
+	//フェーズのフレーム
+	InitSpriteRender(
+		m_phaseUI.m_phaseFlameRender,
+		"Assets/sprite/InGame/Wave/Wave_Flame.DDS", 500, 300,
+		PHASE_FLAME_POS, g_vec3One
+	);
+	//現在のフェーズの数の文字
+	InitFontRender(
+		m_phaseUI.m_nowPhaseFont, NOW_PHASE_FONT_POS, NOW_PHASE_SIZE);
+	//現在のフェーズのモンスターの数
+	InitFontRender(
+		m_phaseUI.m_nowPhaseMonstersFont, NOW_PHASE_MONSTERS_POS, NOW_PHASE_MONSTERS_SIZE);
+	//オフセットを計算
+	Vector2 offset = CalcNumberCount(1, NOW_PHASE_MONSTERS_DEFAULT_X_OFFSET, NOW_PHASE_MONSTERS_DEFAULT_Y_OFFSET);
+	//オフセットを設定
+	m_phaseUI.m_nowPhaseMonstersFont.SetOffset(offset);
+
+	//フェーズの残り時間のフレーム
+	InitSpriteRender(
+		m_phaseUI.m_phaseTimeFlameRender,
+		"Assets/sprite/InGame/Wave/Wave_time_Flame.DDS", 350, 46,
+		PHASE_TIME_FLAME_POS, g_vec3One
+	);
+	//フェーズの残り時間のバー
+	InitSpriteRender(
+		m_phaseUI.m_phaseTimeBarRender,
+		"Assets/sprite/InGame/Wave/Wave_time_Bar.DDS", 336, 36,
+		PHASE_TIME_BAR_POS, g_vec3One
+	);
+	m_phaseUI.m_phaseTimeBarRender.SetPivot(GAUGE_PIBOT);
 
 }
 
