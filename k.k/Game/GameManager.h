@@ -186,7 +186,22 @@ public:
 		return false;
 	}*/
 
-	
+	/// <summary>
+	/// フェーズタイマーの取得
+	/// </summary>
+	/// <returns></returns>
+	const float& GetPhaseTimer() const
+	{
+		return m_phaseTimer;
+	}
+	/// <summary>
+	/// 現在のフェーズのタイマーの最大値を取得
+	/// </summary>
+	/// <returns></returns>
+	const float& GetNowPhaseTimerLimmit() const
+	{
+		return m_nowPhaseTimerLimmit;
+	}
 
 	/// <summary>
 	/// 秒の取得
@@ -338,11 +353,9 @@ private:
 	bool m_playerWinFlag = false;
 	bool m_playerLoseFlag = false;
 
-	float m_breakTimeTimer = 0.0f;
-
 	float m_phaseTimer = 0.0f;
+	float m_nowPhaseTimerLimmit = 0.0f;
 
-	float m_shortBreakTimer = 0.0f;
 
 	bool m_gameFinishProcessEndFlag = false;	//ゲームが終わった後の処理(リザルト含まない)が終わったかのフラグ
 	bool m_bossDeleteOkFlag = false;			//ボスがもう削除しても良い状態かのフラグ
