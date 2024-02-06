@@ -216,7 +216,7 @@ public:
 	{
 		return m_collisionShape;
 	}
-
+	
 	SIMD_FORCE_INLINE btCollisionShape*	getCollisionShape()
 	{
 		return m_collisionShape;
