@@ -13,8 +13,8 @@ namespace {
 	const float BACK_SPRITE_SCALE_MOBMONSTER = 1.2f;
 	const float BACK_SPRITE_SCALE_BOSS = 1.5f;
 
-	const float DEFAULT_X_OFFSET = -25.0f;
 	const float DEFAULT_Y_OFFSET = 18.0f;
+	const float DEFAULT_X_OFFSET = -25.0f;
 
 	const int RAMDOM_RANGE = 50.0f;
 }
