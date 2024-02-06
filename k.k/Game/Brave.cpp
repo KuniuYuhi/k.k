@@ -994,6 +994,11 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	if (wcscmp(eventName, L"ArmedSwordShield") == 0)
 	{
 		ReverseWeapon(m_changeTargetUseWeapon);
+		//‰¹Ä¶
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_ChangeWeapon,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 	//UŒ‚“–‚½‚è”»’è‚Ì—LŒø‰»
