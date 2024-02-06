@@ -60,8 +60,8 @@ namespace {
 
 	const Vector4 SUPERSARMOR_GRAY_COLOR = { 0.9f,0.9f,0.9f,0.5f };
 
-	const float WHITE_HP_LERP_START = 0.1f;
-	const float WHITE_HP_LERP_END = 4.5f;
+	const float WHITE_HP_SPEED = 25.0f;
+	const float BOSS_WHITE_HP_SPEED = 50.0f;
 }
 
 GameUI::GameUI()
@@ -80,23 +80,23 @@ bool GameUI::Start()
 	InitMonsterUI();
 
 	//制限時間
-	InitFontRender(m_TimerFont, TIMER_POS, 1.1f);
-	m_TimerFont.SetOffset(TIMER_OFFSET);
+	InitFontRender(m_timerFont, TIMER_POS, 1.1f);
+	m_timerFont.SetOffset(TIMER_OFFSET);
 
 	//制限時間の枠
 	InitSpriteRender(
-		m_TimeFlameRender, "Assets/sprite/InGame/Character/TimeFlame2.DDS", 500, 124, TIME_FLAME_POS, TIME_FLAME_SIZE
+		m_timeFlameRender, "Assets/sprite/InGame/Character/TimeFlame2.DDS", 500, 124, TIME_FLAME_POS, TIME_FLAME_SIZE
 	);
 
 	//フェーズのフレーム
 	InitSpriteRender(
-		m_PhaseFlameRender, "Assets/sprite/InGame/Character/Wave_Flame.DDS", 629, 97,
+		m_phaseFlameRender, "Assets/sprite/InGame/Character/Wave_Flame.DDS", 629, 97,
 		PHASE_FLAME_POS, g_vec3One
 	);
 	//フェーズの文字
-	InitFontRender(m_PhadeFont, PHASE_FONT_POS, 1.5f);
+	InitFontRender(m_phadeFont, PHASE_FONT_POS, 1.5f);
 
-	m_oldMainCharaHP = m_player->GetNowActorStatus().GetHp();
+	m_nowPlayerWhiteHp = m_player->GetNowActorStatus().GetMaxHp();
 
 	return true;
 }
@@ -119,6 +119,20 @@ void GameUI::PlayerUIUpdate()
 	UpdateMainStatus();
 	//ウェポン
 	UpdateWeapon();
+}
+
+void GameUI::MonsterUIUpdate()
+{
+	//ボスがいないなら処理しない
+	if (m_boss == nullptr)
+	{
+		return;
+	}
+
+	//ボスのHPの処理
+	ProcessBossHP();
+	//ボスのスーパーアーマーの処理
+	ProcessBossSuperArmor();
 }
 
 void GameUI::UpdateMainStatus()
@@ -167,20 +181,6 @@ Vector3 GameUI::CalcGaugeScale(float Maxvalue, float value)
 	return scale;
 }
 
-void GameUI::MonsterUIUpdate()
-{
-	//ボスがいないなら処理しない
-	if (m_boss == nullptr)
-	{
-		return;
-	}
-
-	//ボスのHPの処理
-	ProcessBossHP();
-	//ボスのスーパーアーマーの処理
-	ProcessBossSuperArmor();
-}
-
 void GameUI::TimerUIUpdate()
 {
 	//分の取得
@@ -191,42 +191,43 @@ void GameUI::TimerUIUpdate()
 	wchar_t time[256];
 	swprintf_s(time, 256, L"%d:%02d", minute, second);
 	//テキストを設定
-	m_TimerFont.SetText(time);
+	m_timerFont.SetText(time);
 }
 
 void GameUI::ProcessPlayerHp()
 {
+	//最大HPと現在のHPを取得
 	int maxHP = m_player->GetNowActorStatus().GetMaxHp();
 	int nowHP = m_player->GetNowActorStatus().GetHp();
 
 	//HPバーの減っていく割合。
 	Vector3 HpScale = Vector3::One;
+	//HPのスケールを計算
 	HpScale = CalcGaugeScale(maxHP, nowHP);
+	//スケールを設定
 	m_playerUI.m_hpFrontRender.SetScale(HpScale);
-	//現在のフレームのHPと前フレームのHPのサイズが違うなら
-	if (HpScale.x < m_oldPlayerHpScale.x)
-	{
-		m_playerHpWhiteScale = m_oldPlayerHpScale;
-	}
-
-	//白いHPバーを減らすための補間率を計算。
-	//HPが多いほど遅く少なくなるほど速くする
-	float num = nowHP / maxHP;
-	m_playerLerpSpeed = Math::Lerp(num, WHITE_HP_LERP_START, WHITE_HP_LERP_END);
-
-	//白いHPバーの減っていく割合
-	m_playerHpWhiteScale = Math::Lerp(
-		g_gameTime->GetFrameDeltaTime() * m_playerLerpSpeed,
-		m_playerHpWhiteScale, HP_SCALE_END_POS);
-	m_playerUI.m_hpWhiteRender.SetScale(m_playerHpWhiteScale);
-
-	//HPフォント
+	//HPフォントの設定
 	wchar_t HP[255];
+	//現在のHPを表示
 	swprintf_s(HP, 255, L"HP      %3d", nowHP);
+	//テキストを設定
 	m_playerUI.m_hpFont.SetText(HP);
 
-	//前フレームのHpスケールを設定
-	m_oldPlayerHpScale = HpScale;
+	//白いHPが現在のHPより小さいなら
+	if (m_nowPlayerWhiteHp < nowHP)
+	{
+		//白いHPに現在のHPを代入する
+		m_nowPlayerWhiteHp = nowHP;
+	}
+	else
+	{
+		//白いHPを減らす
+		m_nowPlayerWhiteHp -= g_gameTime->GetFrameDeltaTime() * WHITE_HP_SPEED;
+	}
+	//白いHPのスケールを計算
+	m_playerWhiteHpScale = CalcGaugeScale(maxHP, m_nowPlayerWhiteHp);
+	//スケールを設定
+	m_playerUI.m_hpWhiteRender.SetScale(m_playerWhiteHpScale);
 
 	//更新
 	m_playerUI.m_hpFrontRender.Update();
@@ -235,33 +236,21 @@ void GameUI::ProcessPlayerHp()
 
 void GameUI::ProcessBossHP()
 {
+	//最大HPと現在のHPを取得
 	int maxHP = m_boss->GetStatus().GetMaxHp();
 	int nowHP = m_boss->GetStatus().GetHp();
 
 	//HPバーの減っていく割合。
 	Vector3 HpScale = Vector3::One;
+	//HPのスケールを計算
 	HpScale = CalcGaugeScale(maxHP, nowHP);
-	m_monsterUI.m_HpFrontRender.SetScale(HpScale);
-	//現在のフレームのHPと前フレームのHPのサイズが違うなら
-	if (HpScale.x < m_oldBossHpScale.x)
-	{
-		m_BossHpWhiteScale = m_oldBossHpScale;
-	}
-
-	//白いHPバーを減らすための補間率を計算。
-	//HPが多いほど遅く少なくなるほど速くする
-	float num = (float)nowHP / (float)maxHP;
-	m_bossLerpSpeed = Math::Lerp(num, WHITE_HP_LERP_START, WHITE_HP_LERP_END);
-
-	//白いHPバーの減っていく割合
-	m_BossHpWhiteScale = Math::Lerp(
-		g_gameTime->GetFrameDeltaTime() * m_bossLerpSpeed,
-		m_BossHpWhiteScale, HP_SCALE_END_POS);
-	m_monsterUI.m_HpWhiteRender.SetScale(m_BossHpWhiteScale);
-
+	//スケールを設定
+	m_monsterUI.m_hpFrontRender.SetScale(HpScale);
 	//ボスのHPの表示
 	wchar_t MP[255];
+	//現在のHPを表示
 	swprintf_s(MP, 255, L"HP %3d/%d", nowHP, maxHP);
+	//テキストを設定
 	m_monsterUI.m_hpFont.SetText(MP);
 
 	/*int a = m_lich->GetAccumulationDamage();
@@ -270,10 +259,28 @@ void GameUI::ProcessBossHP()
 	swprintf_s(A, 255, L"%3d%3d回", a,b);
 	m_monsterUI.m_AccumulationDamageFont.SetText(A);*/
 
-	m_oldBossHpScale = HpScale;
+
+	//白いHPが現在のHPより小さいなら
+	if (m_nowBossWhiteHp < nowHP)
+	{
+		//白いHPに現在のHPを代入する
+		m_nowBossWhiteHp = nowHP;
+	}
+	else
+	{
+		//白いHPを減らす
+		m_nowBossWhiteHp -= g_gameTime->GetFrameDeltaTime() * BOSS_WHITE_HP_SPEED;
+	}
+	//白いHPのスケールを計算
+	m_bossHpWhiteScale = CalcGaugeScale(maxHP, m_nowBossWhiteHp);
+	//スケールを設定
+	m_monsterUI.m_hpWhiteRender.SetScale(m_bossHpWhiteScale);
+
+
+	
 	//更新
-	m_monsterUI.m_HpFrontRender.Update();
-	m_monsterUI.m_HpWhiteRender.Update();
+	m_monsterUI.m_hpFrontRender.Update();
+	m_monsterUI.m_hpWhiteRender.Update();
 }
 
 void GameUI::ProcessBossSuperArmor()
@@ -305,7 +312,20 @@ void GameUI::ProcessPhase()
 	wchar_t NowPhase[255];
 	swprintf_s(NowPhase, 255, L"フェーズ%d", PhaseNumber+1);
 	//テキストを設定
-	m_PhadeFont.SetText(NowPhase);
+	m_phadeFont.SetText(NowPhase);
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 void GameUI::ChangeWeapon(
@@ -357,11 +377,11 @@ void GameUI::Render(RenderContext& rc)
 	DrawPlayerUI(rc);
 	DrawMonsterUI(rc);
 
-	m_TimeFlameRender.Draw(rc);
-	m_TimerFont.Draw(rc);
+	m_timeFlameRender.Draw(rc);
+	m_timerFont.Draw(rc);
 
-	m_PhaseFlameRender.Draw(rc);
-	m_PhadeFont.Draw(rc);
+	m_phaseFlameRender.Draw(rc);
+	m_phadeFont.Draw(rc);
 }
 
 void GameUI::DrawPlayerUI(RenderContext& rc)
@@ -369,7 +389,7 @@ void GameUI::DrawPlayerUI(RenderContext& rc)
 	//メインHP
 	m_playerUI.m_hpBackRender.Draw(rc);
 
-	if (m_playerHpWhiteScale.x > 0.0f)
+	if (m_playerWhiteHpScale.x > 0.0f)
 	{
 		m_playerUI.m_hpWhiteRender.Draw(rc);
 	}
@@ -421,18 +441,18 @@ void GameUI::DrawMonsterUI(RenderContext& rc)
 		return;
 	}
 	//アイコン
-	m_monsterUI.m_IconRender.Draw(rc);
+	m_monsterUI.m_iconRender.Draw(rc);
 
 	//HP
-	m_monsterUI.m_HpBackRender.Draw(rc);
-	if (m_BossHpWhiteScale.x > 0.0f)
+	m_monsterUI.m_hpBackRender.Draw(rc);
+	if (m_bossHpWhiteScale.x > 0.0f)
 	{
-		m_monsterUI.m_HpWhiteRender.Draw(rc);
+		m_monsterUI.m_hpWhiteRender.Draw(rc);
 	}
-	m_monsterUI.m_HpFrontRender.Draw(rc);
+	m_monsterUI.m_hpFrontRender.Draw(rc);
 
 	//HPのフレーム
-	m_monsterUI.m_HpFlameRender.Draw(rc);
+	m_monsterUI.m_hpFlameRender.Draw(rc);
 
 	//HPのフォント
 	m_monsterUI.m_hpFont.Draw(rc);
@@ -552,35 +572,35 @@ void GameUI::InitMonsterUI()
 
 	//ボスのアイコン
 	InitSpriteRender(
-		m_monsterUI.m_IconRender,
+		m_monsterUI.m_iconRender,
 		"Assets/sprite/InGame/Character/Icon_Lich.DDS", 180, 180, BOSS_ICON_POS, g_vec3One * 0.8f
 	);
 
 	//ボスのHPのフレーム
 	InitSpriteRender(
-		m_monsterUI.m_HpFlameRender,
+		m_monsterUI.m_hpFlameRender,
 		"Assets/sprite/InGame/Character/HP_Flame_Boss.DDS", 1000, 60, BOSS_HP_FLAME_POS
 	);
 
 	//ボスのHPバー
 	InitSpriteRender(
-		m_monsterUI.m_HpFrontRender,
+		m_monsterUI.m_hpFrontRender,
 		"Assets/sprite/InGame/Character/HP_Front_Boss.DDS", 978, 47, BOSS_HP_FRONT_POS
 	);
 	//ピボットの設定
-	m_monsterUI.m_HpFrontRender.SetPivot(HP_PIBOT);
+	m_monsterUI.m_hpFrontRender.SetPivot(HP_PIBOT);
 
 	//ボスの白いHPバー
 	InitSpriteRender(
-		m_monsterUI.m_HpWhiteRender,
+		m_monsterUI.m_hpWhiteRender,
 		"Assets/sprite/InGame/Character/HP_White_Boss.DDS", 978, 47, BOSS_HP_FRONT_POS
 	);
 	//ピボットの設定
-	m_monsterUI.m_HpWhiteRender.SetPivot(HP_PIBOT);
+	m_monsterUI.m_hpWhiteRender.SetPivot(HP_PIBOT);
 
 	//HPバーの裏側
 	InitSpriteRender(
-		m_monsterUI.m_HpBackRender,
+		m_monsterUI.m_hpBackRender,
 		"Assets/sprite/InGame/Character/HP_Back_Boss.DDS", 978, 47, BOSS_HP_BACK_POS
 	);
 

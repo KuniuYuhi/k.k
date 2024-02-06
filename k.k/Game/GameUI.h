@@ -170,11 +170,11 @@ private:
 		FontRender m_hpFont;					//HPの値
 		FontRender m_AccumulationDamageFont;	//
 
-		SpriteRender m_IconRender;				//キャラアイコン
-		SpriteRender m_HpFlameRender;			//HPのフレーム
-		SpriteRender m_HpFrontRender;			//変動するHPバー
-		SpriteRender m_HpWhiteRender;			//遅れて減らす白いHPバー
-		SpriteRender m_HpBackRender;			//HPバーの裏側
+		SpriteRender m_iconRender;				//キャラアイコン
+		SpriteRender m_hpFlameRender;			//HPのフレーム
+		SpriteRender m_hpFrontRender;			//変動するHPバー
+		SpriteRender m_hpWhiteRender;			//遅れて減らす白いHPバー
+		SpriteRender m_hpBackRender;			//HPバーの裏側
 
 		SpriteRender m_superArmor_FlameRender;		//スーパーアーマーのフレーム
 		SpriteRender m_superArmor_FrontBarRender;	//スーパーアーマーの表の変動するのバー
@@ -192,8 +192,6 @@ private:
 		SpriteRender m_hpFrontRender;			//変動するHPバー
 		SpriteRender m_hpBackRender;			//HPバーの裏側
 		SpriteRender m_hpWhiteRender;			//遅れて減らす白いHPバー
-	
-		SpriteRender m_Skill_1FlameRender;			//スキル1のフレーム
 
 		SpriteRender m_mainWeaponFlameRender;		//メイン武器のフレーム
 
@@ -223,11 +221,11 @@ private:
 	};
 
 
-	FontRender m_TimerFont;				//制限時間
-	SpriteRender m_TimeFlameRender;		//制限時間の枠
+	FontRender m_timerFont;				//制限時間
+	SpriteRender m_timeFlameRender;		//制限時間の枠
 
-	FontRender m_PhadeFont;
-	SpriteRender m_PhaseFlameRender;	//フェーズのフレーム
+	FontRender m_phadeFont;
+	SpriteRender m_phaseFlameRender;	//フェーズのフレーム
 
 	Game* m_game = nullptr;
 	Player* m_player = nullptr;
@@ -236,30 +234,18 @@ private:
 	PlayerUI m_playerUI;			//プレイヤーの情報のUI
 	MonsterUI m_monsterUI;			//モンスターの情報のUI
 
-	Vector3 m_playerHpWhiteScale = g_vec3One;		//プレイヤーの白いHPバー
-	Vector3 m_oldPlayerHpScale = g_vec3One;	//前フレームのプレイヤーのHPバー
+	Vector3 m_playerWhiteHpScale = g_vec3One;		//プレイヤーの白いHPバー
 
-	Vector3 m_BossHpWhiteScale = g_vec3One;			//ボスの白いHPバー
-	Vector3 m_oldBossHpScale = g_vec3One;		//前フレームのボスのHPバー
-
-	Vector3 m_playerMpWhiteScale = g_vec3One;		//プレイヤーの白いMPバー
-
-	float m_oldMainCharaHP = 0.0f;				//前フレームのメインキャラのHP
+	Vector3 m_bossHpWhiteScale = g_vec3One;			//ボスの白いHPバー
 
 	float m_gaugeTimer = 0.0f;
 
-	float m_charaIconChangeTimer = 0.0f;
-	
-	bool m_coolTimeDrawFlag = true;
-
 	float m_wipeSize = 0;
 
-	float m_bossLerpSpeed = 0.0f;
-	float m_playerLerpSpeed = 0.0f;
+	
 
-
-
-
+	float m_nowPlayerWhiteHp = 0.0f;
+	float m_nowBossWhiteHp = 0.0f;
 
 
 
