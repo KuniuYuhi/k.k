@@ -1,9 +1,5 @@
 #pragma once
 
-namespace {
-	const int SUMMON_MONSTERS_CONUT = 10;
-}
-
 class MobMonster;
 
 class BattlePhase:public IGameObject
@@ -23,10 +19,15 @@ private:
 	void ProcessSummonMonsters();
 
 	/// <summary>
+	/// モブモンスターの生成する数を決める
+	/// </summary>
+	/// <returns></returns>
+	void SetMobMonsterSpawnCount();
+
+	/// <summary>
 	/// モブモンスターを生成
 	/// </summary>
-	/// <param name="createCount">生成する数</param>
-	void CreateMobMonsters(const int createCount);
+	void CreateMobMonsters();
 
 	/// <summary>
 	/// モブモンスターを削除
@@ -83,12 +84,18 @@ private:
 	/// <param name="createPos"></param>
 	void CreateSummonLightEffect(Vector3 createPos);
 
+	/// <summary>
+	/// 優先するモブモンスターの番号を取得。どのモブモンスターを選ばれないこともある
+	/// </summary>
+	/// <returns></returns>
+	const int GetMobMonsterPriority();
 
 	/// <summary>
 	/// モブモンスターを生成する
 	/// </summary>
+	/// <param name="priorityNumber">生成するモンスターの番号。優先度。0以上ならこの番号のモンスターしか生成しない</param>
 	/// <returns></returns>
-	MobMonster* GenerateMobMonster();
+	MobMonster* GenerateMobMonster(int priorityMobMonsterNumber = -1);
 
 
 private:
@@ -102,13 +109,11 @@ private:
 	};
 	EnSummonMonsterStep m_enSummonMonsterStep = enSummonMonsterStep_SettingMagicCircle;
 
-	ModelRender model[SUMMON_MONSTERS_CONUT];
-
-	Vector3 m_createPos[SUMMON_MONSTERS_CONUT];
+	std::vector<Vector3> m_createPositions;
 
 	float m_incantationTimer = 0.0f;
 
-	
+	int m_mobMonsterSpawnCount = 0;
 
 };
 
