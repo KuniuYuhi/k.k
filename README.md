@@ -482,6 +482,12 @@
   
 このゲームは、制限時間内にステージのボスを倒すとゲームクリアになります。  
 プレイヤーは、ソード＆シールド、グレイトソード、ボウ＆アローの3つの武器を使い分けて戦います。  
+
+
+|ソード＆シールド|グレイトソード|ボウ＆アロー|
+|---|---|---|
+|<img src="README_IMAGE/SwordShield.png" width="150" alt="ソード＆シールド">|<img src="README_IMAGE/GreatSword.png" width="150" alt="グレイトソード">|<img src="README_IMAGE/BowArrow.png" width="150" alt="ボウ＆アロー">|  
+
 バトルにはフェーズが存在し、一定時間ごとにフェーズが進み、敵を生成します。フェーズが進行すると、前のフェーズに存在したモブモンスターは消滅します。第4フェーズに進行すると、モブモンスターが出現しない時間(休憩時間)となりフェーズ終了後、第1フェーズに戻り以降ループします。  
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/qej_o-bO8EI?si=1vAGo6YA5AczTmKf" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>  
@@ -699,13 +705,14 @@ m_animationClip[]={
 <img src="README_IMAGE/Boss_StateMachine.png" width="600" alt="ボスモンスターのステートマシン図">  
 
 
-#### ボスの移動と待機
+#### a.ボスの移動と待機
 ボスはプレイヤーに近づきすぎないようにプレイヤーからボスに向かう距離が一定値に達すると待機するようになっています。ですが、この処理プレイヤーが少し動くとボスも少しだけ動いて、待機アニメーションと移動アニメーションが交互に入れ替わり違和感が出てしまいました。  
+<img src="README_IMAGE/movie/Boss_distance_miss.gif" width="600" alt="ボスの一定距離で止まる処理ミス">  
+そのため、プレイヤーに一定値まで近づくたびに、一定値を増やして距離を少し伸ばすことで、改善しました。  
+<img src="README_IMAGE/movie/Boss_distance_success.gif" width="600" alt="ボスの一定距離で止まる処理ミス">  
 
-そのため、一度プレイヤーに一定値まで近づくたびに、一定値を増やして距離を少し伸ばすことで、改善しました。
 
-
-#### a.ボスのアクション
+#### b.ボスのアクション
 
 
 - ダークメテオ  
