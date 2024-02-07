@@ -120,6 +120,8 @@ bool Arrow::IsHitCollision()
 		return true;
 	}
 
+	//todo 生成された瞬間だとキャラコンが初期化されていないのでエラーになる
+
 	//モブモンスターのリストの取得
 	const auto& mobMonsters = 
 		CharactersInfoManager::GetInstance()->GetMobMonsters();
