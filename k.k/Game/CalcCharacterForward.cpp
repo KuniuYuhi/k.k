@@ -23,8 +23,6 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
     //キャラクターからボスに向かうベクトルを取得
     Vector3 bossToCharacterVector = GetCreateVector(charPosition, bossPos,false);
 
-    
-
     //moveSpeedに相似性の高いベクトルを保存するベクトル
     Vector3 nearMoveSpeedVector = moveSpeed;
 
@@ -33,8 +31,7 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
     newMoveSpeed.y = 0.0f;
     newMoveSpeed.Add(moveSpeed);
     //キャラクターから移動方向に向かうベクトルを取得
-    Vector3 moveSpeedToCharacterVector = GetCreateVector(charPosition, newMoveSpeed);
-    
+    Vector3 moveSpeedToCharacterVector = GetCreateVector(charPosition, newMoveSpeed);    
 
     //キャラクターからモンスターに向かうベクトル。初期値は移動方向
     Vector3 monsterToCharcterVector = forward;
@@ -110,7 +107,6 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
         return;
     }
 
-
     //一番近い敵に向かうベクトルと移動方向の内積がかなり似ているかつ
     //敵が近くにいるカウントが１以上なら
     //前方向をmoveSpeedに相似性の高いベクトルに書き換える
@@ -131,82 +127,6 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
         //終了
         return;
     }
-
-
-    //移動の入力があったら
-    //単位ベクトル同士の内積は-1から1の範囲。1になるほど似ている
-    //内積が0.0f以上なら前方向を変更する
-    
-    //前方向と移動方向のベクトルの相似性が0.0ｆより大きいなら
-    if (t2 >= 0.0f)
-    {
-        
-    }
-    else
-    {
-        //ベクトルが敵に向ける範囲を超えているので
-        //真横のベクトルにする
-
-        
-
-        //正の数の時は正常、負の時は逆二回転
-
-         //前方向から入力方向に向かって90度のベクトルを作成
-        Vector3 rightangleX = forwardToCharacterVector;
-        //rightangleX *= -1.0f;
-
-        float X = rightangleX.x;
-        rightangleX.x = rightangleX.z;
-        rightangleX.z = X;
-        rightangleX.y = 0.0f;
-
-        Quaternion rot90 = g_quatIdentity;
-
-        rot90.SetRotationYFromDirectionXZ(forwardToCharacterVector);
-        rot90.AddRotationDegY(90.0f);
-        rot90.Apply(rightangleX);
-
-        //前方向と入力方向の内積でなす角を求める3.14がmax
-        float kakudo = Dot(forwardToCharacterVector, moveSpeedToCharacterVector);
-        kakudo = acos(kakudo);
-        //マイナスかプラスかで判断
-
-        //if (kakudo > 2.0f)
-        //{
-        //    //反転させる
-        //    rightangleX *= -1.0f;
-        //}
-
-
-        //if (moveSpeedDiff.x > moveSpeedDiff.z)
-        //{
-        //    rightangleX.z *= -1.0f;
-        //    //rightangleX.z *= moveSpeedDiff.z;
-        //}
-        //else
-        //{
-        //    rightangleX.z *= -1.0f;
-        //    //rightangleX.x *= moveSpeedDiff.x;
-        //}
-
-       
-        //出来てない
-        forward = rightangleX;
-        forward.Normalize();
-
-
-        //似ていなかったら引数の移動方向を前方向に設定
-        forward = moveSpeed;
-        forward.Normalize();
-
-        return;
-    }
-
-  
-   
-
-  
-
 }
 
 void CalcCharacterForward::PushBackMonsterPositionList()
@@ -216,6 +136,11 @@ void CalcCharacterForward::PushBackMonsterPositionList()
     //モンスターの座標をリストに追加
     for (auto monster : CharactersInfoManager::GetInstance()->GetMobMonsters())
     {
+        //そのモンスターがやられていたら飛ばす
+        if (monster->GetDeadFlag() == true)
+        {
+            continue;
+        }
         //モンスターの座標を取得
         Vector3 monsterPos = monster->GetPosition();
         //リストに追加

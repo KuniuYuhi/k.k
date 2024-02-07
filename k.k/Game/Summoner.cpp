@@ -558,6 +558,11 @@ void Summoner::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	{
 		//ノックバックエフェクト再生
 		PlayKnockBackEffect(m_position);
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_Boss_KnockBackWind,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 }

@@ -125,7 +125,7 @@ void DarkBall::SettingCollision()
     );
     //“–‚½‚è”»’è‚ð¶¬‚µ‚½ì¬ŽÒ‚ÌÝ’è
     m_BallCollision->SetCreatorName(GetName());
-    //Ž©“®‚Åíœ‚·‚é‚æ‚¤‚É‚·‚é
+    //Ž©“®‚Åíœ‚µ‚È‚¢‚æ‚¤‚É‚·‚é
     m_BallCollision->SetIsEnableAutoDelete(false);
 
     m_collisionPosition.y = Y_UP;

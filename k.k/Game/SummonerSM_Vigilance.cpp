@@ -6,7 +6,7 @@
 #include "CharactersInfoManager.h"
 
 namespace {
-	const float WAIT_TIME = 5.0f;		//‘Ò‹@ŠÔ
+	const float WAIT_TIME = 500.0f;		//‘Ò‹@ŠÔ
 
 	const float MELEE_ATTACK_RANGE = 280.0f;	//‹ß‹——£UŒ‚‚Ì”ÍˆÍ“à
 

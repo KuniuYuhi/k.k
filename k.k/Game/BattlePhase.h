@@ -4,6 +4,8 @@ namespace {
 	const int SUMMON_MONSTERS_CONUT = 10;
 }
 
+class MobMonster;
+
 class BattlePhase:public IGameObject
 {
 public:
@@ -80,6 +82,14 @@ private:
 	/// </summary>
 	/// <param name="createPos"></param>
 	void CreateSummonLightEffect(Vector3 createPos);
+
+
+	/// <summary>
+	/// モブモンスターを生成する
+	/// </summary>
+	/// <returns></returns>
+	MobMonster* GenerateMobMonster();
+
 
 private:
 	/// <summary>

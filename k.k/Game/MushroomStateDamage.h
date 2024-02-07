@@ -17,4 +17,8 @@ public:
 	/// アニメーションの再生
 	/// </summary>
 	void PlayAnimation();
+
+private:
+
+	bool m_animationResetFlag = true;
 };

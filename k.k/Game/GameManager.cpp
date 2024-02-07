@@ -29,6 +29,9 @@ GameManager::GameManager(EnGameSeenState startGameSeenState)
 	m_instance = this;
 	//ゲーム開始時のステートを設定
 	m_enGameSeenState = startGameSeenState;
+	//フェーズタイマーのリミットを代入
+	m_phaseTimer = 0.0f;
+	m_nowPhaseTimerLimmit = PHASE_TIME_LIMMIT;
 }
 
 GameManager::~GameManager()
@@ -137,13 +140,17 @@ void GameManager::CalcPhaseTime()
 	{
 		//フェーズタイマーをリセット
 		m_phaseTimer = 0.0f;
+		m_nowPhaseTimerLimmit = SHORT_BREAK_LIMMIT;
 		//フェーズが終わったので、モンスターを削除するようにする
 		SetDAndCMonstersState(enMonsters_Delete);
+
 		//次のフェーズが休憩時間なら、ステップを進めない
 		if ((m_enPhaseState + 1) == EnPhaseState_BreakTime)
 		{
 			//休憩時間フェーズに進む
 			m_enPhaseState = static_cast<EnPhaseState>(m_enPhaseState + 1);
+			//タイマーの最大値を変更
+			m_nowPhaseTimerLimmit = BREAK_TIME_LIMMIT;
 			return;
 		}
 		//次のステップに進む
@@ -159,10 +166,11 @@ void GameManager::CalcPhaseTime()
 
 void GameManager::ProcessShortBreak()
 {
-	if (m_shortBreakTimer > SHORT_BREAK_LIMMIT)
+	if (m_phaseTimer > SHORT_BREAK_LIMMIT)
 	{
 		//小休憩タイマーをリセット
-		m_shortBreakTimer = 0.0f;
+		m_phaseTimer = 0.0f;
+		m_nowPhaseTimerLimmit = SHORT_BREAK_LIMMIT;
 		//次のフェーズに進む
 		m_enPhaseState = static_cast<EnPhaseState>(m_enPhaseState + 1);
 		//次のフェーズが休憩時間でないなら、モンスター召喚
@@ -170,6 +178,9 @@ void GameManager::ProcessShortBreak()
 		{
 			//フェーズが切り替わったので、モンスターを生成する
 			SetDAndCMonstersState(enMonsters_Create);
+			//小休憩タイマーをフェーズタイマーに変更
+			m_phaseTimer = 0.0f;
+			m_nowPhaseTimerLimmit = PHASE_TIME_LIMMIT;
 		}
 		//ステップをリセット
 		m_enPhaseStep = enPhaseStep_PhaseTime;
@@ -177,16 +188,20 @@ void GameManager::ProcessShortBreak()
 	else
 	{
 		//タイマーを加算
-		m_shortBreakTimer += g_gameTime->GetFrameDeltaTime();
+		m_phaseTimer += g_gameTime->GetFrameDeltaTime();
 	}
 }
 
 void GameManager::OnProcessBreakTimeTransition()
 {
 	//一定時間経ったら休憩終了
-	if (m_breakTimeTimer > BREAK_TIME_LIMMIT)
+	if (m_phaseTimer > BREAK_TIME_LIMMIT)
 	{
-		m_breakTimeTimer = 0.0f;
+		//ブレイクタイムタイマーリセット
+		m_phaseTimer = 0.0f;
+		//フェーズタイマーをリセット
+		m_phaseTimer = 0.0f;
+		m_nowPhaseTimerLimmit = PHASE_TIME_LIMMIT;
 		//フェーズを一番最初に戻す
 		m_enPhaseState = EnPhaseState_Phase1;
 		//フェーズが切り替わったので、モンスターを生成する
@@ -196,7 +211,7 @@ void GameManager::OnProcessBreakTimeTransition()
 	else
 	{
 		//タイマーを加算
-		m_breakTimeTimer += g_gameTime->GetFrameDeltaTime();
+		m_phaseTimer += g_gameTime->GetFrameDeltaTime();
 	}
 
 }

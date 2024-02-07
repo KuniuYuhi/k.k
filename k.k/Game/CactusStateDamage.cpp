@@ -9,5 +9,8 @@ void CactusStateDamage::ManageState()
 
 void CactusStateDamage::PlayAnimation()
 {
-	m_cactus->GetModelRender().PlayAnimation(enAnimationClip_Hit);
+	//最初のアニメーションの再生はアニメーションをリセット
+	m_cactus->GetModelRender().PlayAnimation(enAnimationClip_Hit, 0.0f, m_animationResetFlag);
+	//アニメーションをリセットしたのでフラグを下げる
+	m_animationResetFlag = false;
 }

@@ -128,6 +128,15 @@ public:
 	///////////////////////////////////////////////////////////
 
 	/// <summary>
+	/// やられたかのフラグを取得
+	/// </summary>
+	/// <returns></returns>
+	const bool GetDeadFlag() const
+	{
+		return m_deadFlag;
+	}
+
+	/// <summary>
 	/// プレイヤーが近くにいるかフラグを設定
 	/// </summary>
 	/// <param name="flag"></param>
@@ -272,6 +281,8 @@ protected:
 	float m_knockBackStiffnessTimer = 0.0f;
 
 	bool m_enableChasePlayerFag = false;					//プレイヤーを追いかけてもいいかのフラグ
+
+	bool m_deadFlag = false;								//死亡したかのフラグ
 
 	//スキル使用可能かのタイマー
 	float m_skillUsableLimmit = 5.0f;
