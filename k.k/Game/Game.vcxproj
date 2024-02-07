@@ -445,6 +445,7 @@
     <ClInclude Include="ManagerPreCompile.h" />
     <ClInclude Include="IMobStateMachine.h" />
     <ClInclude Include="MobMonsterActionList.h" />
+    <ClInclude Include="MobMonstersList.h" />
     <ClInclude Include="MobMonsterSM_Chase.h" />
     <ClInclude Include="MobMonsterSM_Patrol.h" />
     <ClInclude Include="MonsterBase.h" />

@@ -1,5 +1,6 @@
 #pragma once
 
+
 /// <summary>
 /// ステータスの構造体
 /// </summary>
@@ -20,6 +21,7 @@ private:
 		float defaultSpeed = 0.0f;		//基礎スピード
 		float maxSuperArmorPoint = 0;	//スーパーアーマーのポイント
 		float superArmorPoint = 0;		//スーパーアーマーの最大値
+		char rank = 'D';				//ランク。自身の強さの指標
 	};
 
 	/// <summary>
@@ -219,6 +221,15 @@ public:
 	const int& GetMaxEndrance() const
 	{
 		return weaponStatus.maxEndurance;
+	}
+
+	/// <summary>
+	/// キャラクターのランクを取得
+	/// </summary>
+	/// <returns></returns>
+	const char& GetRank() const
+	{
+		return characterStatus.rank;
 	}
 
 
