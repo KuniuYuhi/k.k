@@ -261,6 +261,8 @@ void Mushroom::Damage(int attack)
 	//HPが0以下なら
 	if (m_status.GetHp() <= 0)
 	{
+		//やられたのでフラグを立てる
+		m_deadFlag = true;
 		//やられアニメーションステート
 		m_status.SetHp(0);
 		SetNextAnimationState(enAnimationState_Die);
