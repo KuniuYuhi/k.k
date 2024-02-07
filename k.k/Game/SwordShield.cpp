@@ -405,6 +405,11 @@ void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 			InitEffect::enEffect_SwordShieldSkillRising,
 			m_brave->GetPosition(), SKILL_ATTACK_RISING_EFFECT_SIZE
 		);
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldSkillRising,
+			g_soundManager->GetSEVolume()
+		);
 	}
 	//防御ヒットのアニメーションキーフレーム
 	if (wcscmp(eventName, L"SwordShieldDifendHit") == 0)
@@ -417,6 +422,11 @@ void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		PlayEffect(
 			InitEffect::enEffect_SwordShieldDefendHit,
 			pos, 10.0f, rot
+		);
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldDefendHit,
+			g_soundManager->GetSEVolume()
 		);
 	}
 

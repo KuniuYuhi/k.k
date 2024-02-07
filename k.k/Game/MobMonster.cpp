@@ -318,7 +318,6 @@ void MobMonster::ProcessDead(bool seFlag)
 
 void MobMonster::CreateHitEffect()
 {
-	//todo exe‚¾‚Æ‰½ŒÌ‚©‰æ‘œ‚ª‚È‚­‚È‚é
 	EffectEmitter* hitEffect = NewGO<EffectEmitter>(0);
 	hitEffect->Init(InitEffect::enEffect_Hit);
 	hitEffect->Play();
@@ -343,7 +342,8 @@ const bool& MobMonster::IsKnockBackStiffness()
 
 bool MobMonster::IsCollisionDetection()
 {
-	if (GetDamageHitEnableFlag() == true)
+	//ƒqƒbƒg‰Â”\‚Ü‚½‚Í‚â‚ç‚ê‚Ä‚¢‚È‚©‚Á‚½‚ç
+	if (GetDamageHitEnableFlag() == true && m_deadFlag == false)
 	{
 		//”»’è‚ð‚Æ‚é
 		return false;

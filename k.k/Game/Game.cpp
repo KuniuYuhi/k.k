@@ -62,20 +62,16 @@ Game::~Game()
 	//全ての音をストップ
 	g_soundManager->StopAllSound();
 
+	DeleteGO(m_gameUI);
+
 	DeleteGO(m_skyCube);
 	DeleteGO(m_bossStage1);
-	
 	DeleteGO(m_player);
 	DeleteGO(m_boss);
-
 	DeleteGO(m_gameCamera);
-
 	DeleteGO(m_gameFinishCamera);
 	DeleteGO(m_battlePhase);
 	DeleteGO(m_pause);
-
-	DeleteGO(m_gameUI);
-
 	DeleteGO(m_result);
 }
 

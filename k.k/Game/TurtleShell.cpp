@@ -273,6 +273,8 @@ void TurtleShell::HitNormalAttack()
 		//エフェクトを再生
 		CreateHitEffect();
 	}
+	//ダメージを受けたのでフラグがtrueにならないとダメージを受けないようにする
+	SetDamageHitEnableFlag(false);
 }
 
 void TurtleShell::HitSkillAttack()
@@ -288,6 +290,8 @@ void TurtleShell::HitSkillAttack()
 		//エフェクトを再生
 		CreateHitEffect();
 	}
+	//ダメージを受けたのでフラグがtrueにならないとダメージを受けないようにする
+	SetDamageHitEnableFlag(false);
 }
 
 bool TurtleShell::IsSkillUsable()
@@ -304,36 +308,6 @@ bool TurtleShell::IsSkillUsable()
 	//スキル攻撃不可能
 	return false;
 }
-
-//bool TurtleShell::IsFoundPlayerFlag()
-//{
-//	//まずプレイヤーとの距離が近いか
-//	if (IsFindPlayer(m_distanceToPlayer) == true)
-//	{
-//		//追いかけている時は視野角判定なし
-//		if (m_chasePlayerFlag == true)
-//		{
-//			return true;
-//		}
-//
-//		//攻撃後で、まだ近くにプレイヤーがいるなら
-//		if (GetPlayerNearbyFlag() == true)
-//		{
-//			SetPlayerNearbyFlag(false);
-//			return true;
-//		}
-//
-//		Vector3 toPlayerDir = m_toTarget;
-//		//視野角内にプレイヤーがいるなら
-//		if (IsInFieldOfView(toPlayerDir, m_forward, m_angle) == true)
-//		{
-//			return true;
-//		}
-//	}
-//	
-//
-//	return false;
-//}
 
 void TurtleShell::Damage(int attack)
 {
@@ -352,7 +326,6 @@ void TurtleShell::Damage(int attack)
 	m_status.CalcHp(attack, false);
 
 	//ノックバックフラグをセット
-	//todo 強さをこんぼやスキルによって変える
 	SetKnockBackFlag(true);
 	m_moveSpeed = SetKnockBackDirection(
 		m_position,
@@ -363,6 +336,8 @@ void TurtleShell::Damage(int attack)
 	//HPが0以下なら
 	if (m_status.GetHp() <= 0)
 	{
+		//やられたのでフラグを立てる
+		m_deadFlag = true;
 		//やられアニメーションステート
 		m_status.SetHp(0);
 		SetNextAnimationState(enAnimationState_Die);
@@ -512,17 +487,6 @@ void TurtleShell::OnProcessDamageStateTransition()
 	}
 	//ノックバック処理
 	ProcessKnockBack(m_charaCon);
-
-
-	//アニメーションが終わったら
-	//if (m_modelRender.IsPlayingAnimation() == false)
-	//{
-	//	//ダメージを受けたのでスキルを使えるようにする
-	//	m_difenceEnableFlag = true;
-
-	//	//共通のステート遷移処理実行
-	//	ProcessCommonStateTransition();
-	//}
 }
 
 void TurtleShell::OnProcessDieStateTransition()

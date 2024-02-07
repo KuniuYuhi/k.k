@@ -66,6 +66,11 @@ void SoundFile::ResistBattleSoundFile()
 
 void SoundFile::ResistPlayerSoundFile()
 {
+	//武器の切り替え
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_ChangeWeapon,
+		"Assets/sound/SE/player/WeaponChange.wav");
+
 	//ソード＆シールドのコンボ攻撃１，２
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_SwordShieldCombo_1_2, 
@@ -74,15 +79,27 @@ void SoundFile::ResistPlayerSoundFile()
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_SwordShieldCombo_3,
 		"Assets/sound/SE/player/SwordShield/SwordShieldCombo_3.wav");
+	//ソード＆シールドのジャンプ
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_SwordShieldSkillRising,
+		"Assets/sound/SE/player/SkillJamp.wav");
 	//ソード＆シールドのスキル攻撃
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_SwordShieldSkillAttack,
 		"Assets/sound/SE/player/SwordShield/SwordShieldSkillAttack.wav");
+	//ソード＆シールドの盾防御ヒット
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_SwordShieldDefendHit,
+		"Assets/sound/SE/player/SwordShield/SwordShield_DefendHit.wav");
 
 	//グレイトソードのコンボ攻撃１，２
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_GreatSwordCombo_1_2,
 		"Assets/sound/SE/player/GreatSword/GreatSwordCombo1_2.wav");
+	//グレイトソードのコンボ攻撃３
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_GreatSwordCombo_3,
+		"Assets/sound/SE/player/GreatSword/GreatSwordCombo3.wav");
 	//グレイトソードのジャンプ
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_GreatSwordSkillRising,
@@ -128,6 +145,14 @@ void SoundFile::ResistBossSoundFile()
 	//召喚の瞬間
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_Boss_Summon_start, "Assets/sound/SE/monster/Summon.wav");
+	//スーパーアーマーブレイク
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_Boss_Break_SuperArmor, 
+		"Assets/sound/SE/monster/Boss_SuperArmor_Break.wav");
+	//ノックバックの風
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_Boss_KnockBackWind,
+		"Assets/sound/SE/monster/Boss_KnockBackWind.wav");
 }
 
 void SoundFile::ResistMobMonsterSoundFile()

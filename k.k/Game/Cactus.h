@@ -147,21 +147,6 @@ private:
 	/// </summary>
 	void ManageState();
 
-	/// <summary>
-	/// 攻撃時の音を再生
-	/// </summary>
-	void PlayAttackSound();
-
-
-	enum EnAttackName
-	{
-		enAttackName_1,
-		enAttackName_2
-	};
-	EnAttackName m_enAttackName;
-
-
-
 	ICactusState*					m_state = nullptr;
 
 	Animation						m_animation;										//アニメーション

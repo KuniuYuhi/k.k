@@ -15,6 +15,8 @@
 #include "Mushroom.h"
 #include "Cactus.h"
 
+#include "MobMonster.h"
+
 
 namespace {
 	//const int SUMMON_MONSTERS_CONUT = 10;
@@ -250,9 +252,9 @@ void BattlePhase::processEasyDifficulty(const int summonMonstersCount)
 {
 	for (int num = 0; num < summonMonstersCount; num++)
 	{
-		Slime* slime = NewGO<Slime>(0, "slime");
-		slime->SetPosition(m_createPos[num]);
-		CharactersInfoManager::GetInstance()->AddMobMonsterFromList(slime);
+		MobMonster* monster = GenerateMobMonster();
+		monster->SetPosition(m_createPos[num]);
+		CharactersInfoManager::GetInstance()->AddMobMonsterFromList(monster);
 		//召喚時の光のエフェクトの再生
 		CreateSummonLightEffect(m_createPos[num]);
 	}
@@ -262,9 +264,9 @@ void BattlePhase::processNormalDifficulty(const int summonMonstersCount)
 {
 	for (int num = 0; num < summonMonstersCount; num++)
 	{
-		Cactus* cactus = NewGO<Cactus>(0, "cactus");
-		cactus->SetPosition(m_createPos[num]);
-		CharactersInfoManager::GetInstance()->AddMobMonsterFromList(cactus);
+		MobMonster* monster = GenerateMobMonster();
+		monster->SetPosition(m_createPos[num]);
+		CharactersInfoManager::GetInstance()->AddMobMonsterFromList(monster);
 		//召喚時の光のエフェクトの再生
 		CreateSummonLightEffect(m_createPos[num]);
 	}
@@ -274,15 +276,9 @@ void BattlePhase::processHardDifficulty(const int summonMonstersCount)
 {
 	for (int num = 0; num < summonMonstersCount; num++)
 	{
-		//Cactus* cactus = NewGO<Cactus>(0, "cactus");
-		//cactus->SetPosition(m_createPos[num]);
-		//CharactersInfoManager::GetInstance()->AddMobMonsterFromList(cactus);
-		////召喚時の光のエフェクトの再生
-		//CreateSummonLightEffect(m_createPos[num]);
-
-		Mushroom* mushroom = NewGO<Mushroom>(0, "mushroom");
-		mushroom->SetPosition(m_createPos[num]);
-		CharactersInfoManager::GetInstance()->AddMobMonsterFromList(mushroom);
+		MobMonster* monster = GenerateMobMonster();
+		monster->SetPosition(m_createPos[num]);
+		CharactersInfoManager::GetInstance()->AddMobMonsterFromList(monster);
 		//召喚時の光のエフェクトの再生
 		CreateSummonLightEffect(m_createPos[num]);
 	}
@@ -328,6 +324,35 @@ void BattlePhase::CreateSummonLightEffect(Vector3 createPos)
 	effectEmitter->SetPosition(createPos);
 	effectEmitter->SetScale(g_vec3One * CIRCLE_EFFECT_SIZE);
 	effectEmitter->Update();
+}
+
+MobMonster* BattlePhase::GenerateMobMonster()
+{
+	MobMonster* monster = nullptr;
+
+	int num = rand() % 4;
+
+	switch (num)
+	{
+	case 0:
+		monster = NewGO<Slime>(0,"slime");
+		break;
+	case 1:
+		monster = NewGO<Cactus>(0, "cactus");
+		break;
+	case 2:
+		monster = NewGO<Mushroom>(0, "mushroom");
+		break;
+	case 3:
+		monster = NewGO<TurtleShell>(0, "turtleshell");
+		break;
+	default:
+		std::abort();
+		break;
+	}
+
+
+	return monster;
 }
 
 

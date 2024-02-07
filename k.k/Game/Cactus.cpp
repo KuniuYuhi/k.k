@@ -264,6 +264,8 @@ void Cactus::Damage(int attack)
 	//HPが0以下なら
 	if (m_status.GetHp() <= 0)
 	{
+		//やられたのでフラグを立てる
+		m_deadFlag = true;
 		//やられアニメーションステート
 		m_status.SetHp(0);
 		SetNextAnimationState(enAnimationState_Die);
@@ -277,21 +279,6 @@ void Cactus::Damage(int attack)
 void Cactus::ManageState()
 {
 	m_state->ManageState();
-}
-
-void Cactus::PlayAttackSound()
-{
-	switch (m_enAttackName)
-	{
-	case Cactus::enAttackName_1:
-		g_soundManager->InitAndPlaySoundSource(enSoundName_Cactus_Attack1, g_soundManager->GetSEVolume());
-		break;
-	case Cactus::enAttackName_2:
-		g_soundManager->InitAndPlaySoundSource(enSoundName_Cactus_Attack1, g_soundManager->GetSEVolume());
-		break;
-	default:
-		break;
-	}
 }
 
 void Cactus::PlayAnimation()

@@ -31,12 +31,15 @@ namespace nsK2EngineLow {
 		enSoundName_GameOver,
 		//SE
 		//プレイヤー側
+		enSoundName_ChangeWeapon,
 		//ソード＆シールドの音
 		enSoundName_SwordShieldCombo_1_2,
 		enSoundName_SwordShieldCombo_3,
 		enSoundName_SwordShieldSkillRising,
 		enSoundName_SwordShieldSkillAttack,
 		//シールドの音
+		enSoundName_SwordShieldDefendHit,
+		
 		//両手剣の音
 		enSoundName_GreatSwordCombo_1_2,
 		enSoundName_GreatSwordCombo_3,
@@ -63,6 +66,8 @@ namespace nsK2EngineLow {
 		enSoundName_Boss_Angry,					//怒りモード
 		enSoundName_Boss_Summon_charge,			//召喚前の詠唱
 		enSoundName_Boss_Summon_start,			//召喚の瞬間
+		enSoundName_Boss_KnockBackWind,			//ノックバックの風
+		enSoundName_Boss_Break_SuperArmor,		//スーパーアーマーブレイク
 
 		enSoundName_Num
 	};
