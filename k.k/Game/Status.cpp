@@ -95,11 +95,13 @@ void Status::LoadCSV(const std::string& name) {
 		statusData.characterStatus.defaultAtk = stoi(buf);
 		//Speedを読み込む。
 		getline(i_stream, buf, ',');
-		statusData.characterStatus.defaultSpeed = stoi(buf);
+		statusData.characterStatus.defaultSpeed = stof(buf);
 		//スーパーアーマーを読み込む。ボス以外は-1
 		getline(i_stream, buf, ',');
-		statusData.characterStatus.maxSuperArmorPoint = stoi(buf);
-
+		statusData.characterStatus.maxSuperArmorPoint = stof(buf);
+		//ランクを読み込む
+		getline(i_stream, buf, ',');
+		statusData.characterStatus.rank = buf[0];
 
 
 		//HPを設定
