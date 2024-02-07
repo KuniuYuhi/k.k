@@ -9,7 +9,7 @@
 namespace {
 	const float SECOND_MAX = 60.0f;
 
-	const float PHASE_TIME_LIMMIT = 30.0f;
+	const float PHASE_TIME_LIMMIT = 10.0f;
 	const float BREAK_TIME_LIMMIT = 10.0f;
 	const float SHORT_BREAK_LIMMIT = 5.0f;
 
@@ -204,6 +204,8 @@ void GameManager::OnProcessBreakTimeTransition()
 		m_nowPhaseTimerLimmit = PHASE_TIME_LIMMIT;
 		//フェーズを一番最初に戻す
 		m_enPhaseState = EnPhaseState_Phase1;
+		//一番最初に戻るのでフェーズループカウント加算
+		m_phaseLoopCount++;
 		//フェーズが切り替わったので、モンスターを生成する
 		SetDAndCMonstersState(enMonsters_Create);
 		return;

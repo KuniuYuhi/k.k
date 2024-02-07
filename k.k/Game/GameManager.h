@@ -296,6 +296,15 @@ public:
 		return m_enDAndCMonstersState;
 	}
 
+	/// <summary>
+	/// フェーズが何回ループしたかの回数を取得
+	/// </summary>
+	/// <returns></returns>
+	const int& GetPhaseLoopCount() const
+	{
+		return m_phaseLoopCount;
+	}
+
 private:
 
 	/// <summary>
@@ -355,6 +364,8 @@ private:
 
 	float m_phaseTimer = 0.0f;
 	float m_nowPhaseTimerLimmit = 0.0f;
+
+	float m_phaseLoopCount = 0;					//フェーズが何回ループしたか
 
 
 	bool m_gameFinishProcessEndFlag = false;	//ゲームが終わった後の処理(リザルト含まない)が終わったかのフラグ
