@@ -9,5 +9,8 @@ void MushroomStateDamage::ManageState()
 
 void MushroomStateDamage::PlayAnimation()
 {
-	m_mushroom->GetModelRender().PlayAnimation(enAnimationClip_Hit);
+	//最初のアニメーションの再生はアニメーションをリセット
+	m_mushroom->GetModelRender().PlayAnimation(enAnimationClip_Hit, 0.0f, m_animationResetFlag);
+	//アニメーションをリセットしたのでフラグを下げる
+	m_animationResetFlag = false;
 }
