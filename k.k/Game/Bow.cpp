@@ -24,6 +24,8 @@ namespace {
 	const float NORMAL_ATTACK__EFFECT_SIZE = 12.0f;
 	const float SKILL_ATTACK_EFFECT_SIZE = 15.0f;
 
+	const int SUB_SKILL_ENDURANCEE = 3;
+
 }
 
 Bow::Bow()
@@ -314,6 +316,8 @@ void Bow::SkillShot()
 		);
 		//矢を放ったので、今の矢を保持フラグをリセットする。矢を持っていない状態
 		SetStockArrowFlag(false);
+		//矢のストックを減らす(耐久値を減らす)。スキルなので少し多め
+		CalcEndurance(SUB_SKILL_ENDURANCEE, false);
 		m_arrow = nullptr;
 	}
 }
