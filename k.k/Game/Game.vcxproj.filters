@@ -842,5 +842,6 @@
     <ClInclude Include="Boss.h">
       <Filter>Character\Monster\BossMonster</Filter>
     </ClInclude>
+    <ClInclude Include="MobMonstersList.h" />
   </ItemGroup>
 </Project>
