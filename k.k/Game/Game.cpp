@@ -150,7 +150,7 @@ void Game::CreatePlayerAndCamera()
 void Game::CreateBattlePhase()
 {
 	//バトルフェーズ処理クラス生成
-	m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
+	//m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
 }
 
 void Game::InitSkyCube()
@@ -467,7 +467,7 @@ bool Game::IsOutcome()
 void Game::ProcessWin()
 {
 	//ゲームUIの削除
-	DeleteGO(m_gameUI);
+	//DeleteGO(m_gameUI);
 	//カメラの削除
 	DeleteGO(m_gameCamera);
 
@@ -487,7 +487,7 @@ void Game::ProcessWin()
 void Game::ProcessLose()
 {
 	//ゲームUIの削除
-	DeleteGO(m_gameUI);
+	//DeleteGO(m_gameUI);
 	//BGMを消し始める
 	m_muteBGMFlag = true;
 	m_bgmVolume = g_soundManager->GetBGMVolume();
