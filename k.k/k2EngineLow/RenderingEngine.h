@@ -226,7 +226,7 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
-		/// 
+		/// ライトビュープロジェクションクロップ行列を取得
 		/// </summary>
 		/// <param name="shadowNo"></param>
 		/// <returns></returns>
@@ -712,9 +712,6 @@ namespace nsK2EngineLow {
 		{
 			enGBufferAlbedoDepth,           // アルベドと深度値。αに深度値が記憶されています。
 			enGBufferNormal,                // 法線
-			//enGBufferMetaricShadowSmooth,   // メタリック、影パラメータ、スムース。
-			//enGBufferWorldPos,				// ワールド座標
-			// メタリックがr、影パラメータがg、スムースがa。gは未使用。
 			enGBufferNum,                   // G-Bufferの数
 		};
 
@@ -726,12 +723,6 @@ namespace nsK2EngineLow {
 		/// ディファードライティングで使用するスプライトを初期化。
 		/// </summary>
 		void InitDefferedLighting_Sprite();
-
-		/*/// <summary>
-		/// モデルを描画する
-		/// </summary>
-		/// <param name="rc">レンダーコンテキスト</param>
-		void ModelRendering(RenderContext& rc);*/
 
 		/// <summary>
 		/// スプライトを描画する

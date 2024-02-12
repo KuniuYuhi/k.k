@@ -77,25 +77,6 @@ namespace nsK2EngineLow {
 			DXGI_FORMAT_R8G8B8A8_SNORM,
 			DXGI_FORMAT_UNKNOWN
 		);
-		//// メタリック、影パラメータ、スムース出力用のレンダリングターゲットを初期化する    
-		//m_gBuffer[enGBufferMetaricShadowSmooth].Create(
-		//	frameBuffer_w,
-		//	frameBuffer_h,
-		//	1,
-		//	1,
-		//	DXGI_FORMAT_R8G8B8A8_UNORM,
-		//	DXGI_FORMAT_UNKNOWN
-		//);
-		// ワールド座標のレンダリングターゲット
-		/*m_gBuffer[enGBufferWorldPos].Create(
-			frameBuffer_w,
-			frameBuffer_h,
-			1,
-			1,
-			DXGI_FORMAT_R32G32B32A32_FLOAT,
-			DXGI_FORMAT_UNKNOWN
-		);*/
-
 	}
 
 	void RenderingEngine::InitDefferedLighting_Sprite()
