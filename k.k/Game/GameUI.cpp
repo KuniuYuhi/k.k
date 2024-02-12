@@ -425,6 +425,7 @@ Vector2 GameUI::CalcNumberCount(float num, float xOffset, float yOffset)
 
 void GameUI::Render(RenderContext& rc)
 {
+
 	DrawPlayerUI(rc);
 	DrawMonsterUI(rc);
 
