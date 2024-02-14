@@ -33,6 +33,10 @@ private:
 	/// </summary>
 	void PlayDarkBallEffect();
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
 	bool IsHit();
 
 private:

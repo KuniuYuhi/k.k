@@ -1,7 +1,7 @@
 # FANTASY BATTLE
 
 
-<img src="README_IMAGE\TitleFull.png" width="600" alt="タイトル">  
+<img src="README_IMAGE\TitleFull.png" width="600" alt="タイトル"><br>
 
 ---
 河原電子ビジネス専門学校　
@@ -26,8 +26,9 @@
       - [a.モブモンスターのノックバック](#aモブモンスターのノックバック)
       - [b.モブモンスターの追跡](#bモブモンスターの追跡)
       - [2.ボスの挙動](#2ボスの挙動)
-      - [a.ボスのアクション](#aボスのアクション)
-  - [5.その他](#5その他)
+      - [a.ボスの移動と待機](#aボスの移動と待機)
+      - [b.ボスのアクション](#bボスのアクション)
+  - [5.技術紹介](#5技術紹介)
     - [5.1.デプスシャドウ](#51デプスシャドウ)
     - [5.2.カスケードシャドウ](#52カスケードシャドウ)
     - [5.3.VSM](#53vsm)
@@ -486,7 +487,8 @@
 
 |ソード＆シールド|グレイトソード|ボウ＆アロー|
 |---|---|---|
-|<img src="README_IMAGE/SwordShield.png" width="150" alt="ソード＆シールド">|<img src="README_IMAGE/GreatSword.png" width="150" alt="グレイトソード">|<img src="README_IMAGE/BowArrow.png" width="150" alt="ボウ＆アロー">|<br>
+|<img src="README_IMAGE/SwordShield.png" width="150" alt="ソード＆シールド">|<img src="README_IMAGE/GreatSword.png" width="150" alt="グレイトソード">|<img src="README_IMAGE/BowArrow.png" width="150" alt="ボウ＆アロー">|
+<br>
 
 バトルにはフェーズが存在し、一定時間ごとにフェーズが進み、敵を生成します。フェーズが進行すると、前のフェーズに存在したモブモンスターは消滅します。第4フェーズに進行すると、モブモンスターが出現しない時間(休憩時間)となりフェーズ終了後、第1フェーズに戻り以降ループします。<br>
 
@@ -693,7 +695,8 @@ m_animationClip[]={
 <img src="README_IMAGE/movie/KnockBack.gif" width="600" alt="モブモンスターのノックバック">  
 
 #### b.モブモンスターの追跡
-モンスターがプレイヤーを追いかけたときに、何体もモンスターがついてくると、プレイヤーがモンスターに囲まれて逃げられなくなったり、敵の列ができて見栄えが良くなくなってしまいます。<br>
+モンスターがプレイヤーを追いかけたときに、何体もモンスターがついてくると、プレイヤーがモンスターに囲まれて逃げられなくなったり、
+モンスターがかたまって集まってしまっていることで、攻撃できないモンスターの列ができたりして見栄えが良くなくなってしまいます。<br>
 <img src="README_IMAGE/movie/Monsters.gif" width="600" alt="モブモンスターが沢山ついてきている"><br>
 そのため、プレイヤーに近づけるモンスターを制限して、プレイヤーの逃げ道を作れるようにしました。<br>
 今回は、プレイヤーに近づけるモンスターの数を3体にしています。<br>
@@ -739,7 +742,7 @@ m_animationClip[]={
 
 ---
 
-## 5.その他
+## 5.技術紹介
 
 ### 5.1.デプスシャドウ
 デプスシャドウは「影はライトの光が遮られている場所に落ちるはずなので、影の落ちる箇所には、手前に遮蔽物があるはず」という考え方をもとに影を落とします。<br>
@@ -959,14 +962,10 @@ e.作成した行列を使ってシェーダー側で座標変換し、シャド
  float pos = exp(INFINITY * depth);
  return float4(pos, pos * pos, 0.0f, 1.0f);
 ```
-深度値を書き込んだシャドウマップ(近影、中影、遠影)<br>
-<table>
-<tr>
-<td><img src="README_IMAGE/blur_near.png" width="200" alt="近影のブラー"></td>
-<td><img src="README_IMAGE/blur_center.png" width="200" alt="中影のブラー"></td>
-<td><img src="README_IMAGE/blur_far.png" width="200" alt="遠影のブラー"></td>
-</tr>
-</table><br>
+|近影のシャドウマップ|中影のシャドウマップ|遠影のシャドウマップ|
+|---|---|---|
+|<img src="README_IMAGE/blur_near.png" width="200" alt="近影のシャドウマップ">|<img src="README_IMAGE/blur_center.png" width="200" alt="中影のシャドウマップ">|<img src="README_IMAGE/blur_far.png" width="200" alt="遠影のシャドウマップ">|
+<br>
 
 2.作成したシャドウマップにガウシアンブラーをかけシャドウマップにブラーをかけます。<br>
 元のテクスチャの1/4サイズのテクスチャを作成することで、4×4ブロックで局所的な平均を計算出来ます。<br>

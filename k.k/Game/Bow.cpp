@@ -77,17 +77,6 @@ bool Bow::Start()
 
 void Bow::Update()
 {
-	//プレイヤーがやられたならチャージエフェクトをストップ
-	//if (GameManager::GetInstance()!=nullptr&&
-	//	GameManager::GetInstance()->GetPlayerLoseFlag()==true)
-	//{
-	//	if (m_chargeEffect != nullptr)
-	//	{
-	//		//チャージエフェクトを停止
-	//		m_chargeEffect->Stop();
-	//	}
-	//}
-
 	//収納状態なら
 	if (GetStowedFlag() == true)
 	{
@@ -138,6 +127,12 @@ void Bow::ProcessSkillAttack()
 		m_chargeEffect->SetPosition(m_brave->GetPosition());
 		m_chargeEffect->SetScale(g_vec3One * SKILL_ATTACK_EFFECT_SIZE);
 		m_chargeEffect->Update();
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_BowArrowSkillCharge,
+			g_soundManager->GetSEVolume()
+		);
 
 		//フラグをセット
 		m_playChargeEffectFlag = true;
@@ -294,6 +289,13 @@ void Bow::ProcessLongRangeAttack()
 			SHOT_ARROW_ANGLE,
 			Arrow::enShotPatternState_Normal
 		);
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_BowArrowNormalShot,
+			g_soundManager->GetSEVolume()
+		);
+
 		//矢を放ったので、今の矢を保持フラグをリセットする。矢を持っていない状態
 		SetStockArrowFlag(false);
 		//矢のストックを減らす(耐久値を減らす)
@@ -314,6 +316,13 @@ void Bow::SkillShot()
 			0.0f,
 			Arrow::enShotPatternState_Skill
 		);
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_BowArrowSkillAttack,
+			g_soundManager->GetSEVolume()
+		);
+
 		//矢を放ったので、今の矢を保持フラグをリセットする。矢を持っていない状態
 		SetStockArrowFlag(false);
 		//矢のストックを減らす(耐久値を減らす)。スキルなので少し多め

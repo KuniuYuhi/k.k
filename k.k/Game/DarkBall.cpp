@@ -113,9 +113,6 @@ void DarkBall::Move()
 
 void DarkBall::SettingCollision()
 {
-    //当たり判定の座標の設定
-    //m_collisionPosition = m_position;
-
     //当たり判定作成
     m_BallCollision = NewGO<CollisionObject>(0, GetCollisionName());
     m_BallCollision->CreateSphere(
@@ -165,10 +162,8 @@ void DarkBall::PlayDarkBallEffect()
 
 bool DarkBall::IsHit()
 {
-    //自身の座標からプレイヤーい向かうベクトルを計算
-    Vector3 diff = m_player->GetPosition() - m_position;
-    //ベクトルの長さが一定値以下なら
-    if (diff.Length() < HIT_LENGTH)
+    //コリジョンがプレイヤーのキャラコンと衝突したら
+    if (m_BallCollision->IsHit(m_player->GetCharacterController())==true)
     {
         //当たった
         return true;

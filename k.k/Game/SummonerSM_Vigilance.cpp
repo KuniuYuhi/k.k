@@ -6,16 +6,12 @@
 #include "CharactersInfoManager.h"
 
 namespace {
-	const float WAIT_TIME = 500.0f;		//待機時間
+	const float WAIT_TIME = 5.0f;		//待機時間
 
-	const float MELEE_ATTACK_RANGE = 280.0f;	//近距離攻撃の範囲内
-
-	const float STAY_PLAYER_LIMMIT_TIME = 10.0f;		//プレイヤーが近くにとどまっているタイマーの上限
+	const float STAY_PLAYER_LIMMIT_TIME = 20.0f;		//プレイヤーが近くにとどまっているタイマーの上限
 
 
 	const float KNOCKBACK_DISTANCE = 300.0f;
-
-	const float DARK_METEO_ACTION_POINT = 40.0f;
 
 	//タイマーを0にしない
 	const float START_DECIDE_ACTION_TIMER = 1.0f;
@@ -25,6 +21,8 @@ namespace {
 	const float ADD_DISTANCE = 50.0f;
 
 	const float DECIDE_ACTION_TIMER_LIMMIT = 5.0f;
+
+	const float ACCELERATE_STAY_PLAYER_TIMER_LIMMIT = 1.35f;
 
 }
 
@@ -139,6 +137,14 @@ bool SummonerSM_Vigilance::IsKnockBack()
 	{
 		//範囲外ならタイマーリセット
 		m_stayPlayerTimer = 0.0f;
+		m_accelerateStayPlayerTimer = 1.0f;
+
+		//ダメージカウントが2より大きかったら前フレームのダメージカウントを半分にする
+		if (m_oldDamageCount > 2)
+		{
+			m_oldDamageCount /= 2;
+		}
+		
 	}
 
 	//とどまっている時間が上限をこえたら
@@ -146,6 +152,8 @@ bool SummonerSM_Vigilance::IsKnockBack()
 	{
 		//とどまっているタイマーリセット
 		m_stayPlayerTimer = 0.0f;
+		m_accelerateStayPlayerTimer = 1.0f;
+		m_oldDamageCount = 0;
 		//ノックバックした後すぐ攻撃しないように一秒は空ける
 		if (m_waitTimer > 1.0f)
 		{
@@ -161,6 +169,20 @@ bool SummonerSM_Vigilance::IsKnockBack()
 
 void SummonerSM_Vigilance::IsKnockBackTimerAccelerate()
 {
+	//加速タイマーが上限に達したらもう計算しない
+	if (m_accelerateStayPlayerTimer > ACCELERATE_STAY_PLAYER_TIMER_LIMMIT)
+	{
+		return;
+	}
+
+	//前フレームよりダメージカウントが大きいなら
+	if (m_oldDamageCount < m_summoner->GetDamageCount())
+	{
+		//加速タイマーを大きくする
+		m_accelerateStayPlayerTimer += m_summoner->GetDamageCount() * 0.1f;
+	}
+	//前フレームのダメージカウントを設定
+	m_oldDamageCount = m_summoner->GetDamageCount();
 }
 
 void SummonerSM_Vigilance::AddStayPlayerTimer()
@@ -169,10 +191,6 @@ void SummonerSM_Vigilance::AddStayPlayerTimer()
 	IsKnockBackTimerAccelerate();
 	//タイマーを加算
 	m_stayPlayerTimer += g_gameTime->GetFrameDeltaTime() * m_accelerateStayPlayerTimer;
-
-
-
-	//何らかの要因でさらにタイマーを加速-＞m_accelerateStayPlayerTimer
 }
 
 bool SummonerSM_Vigilance::IsChasePlayer()

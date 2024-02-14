@@ -4,6 +4,12 @@
 
 void BraveStateAttack_3::ManageState()
 {
+	//勝敗が着いたらこれ以上動かないようにする
+	if (m_brave->IsDecisionOutcomeForState() == true)
+	{
+		return;
+	}
+
 	//前進するフラグが立っている間は処理
 	if (m_brave->GetMoveForwardFlag() == true)
 	{

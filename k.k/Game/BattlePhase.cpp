@@ -22,7 +22,7 @@
 using namespace MobMonstersList;
 
 namespace {
-	const int DEFAULT_SUMMON_MOB_MONSTERS_CONUT = 5;
+	const int DEFAULT_SUMMON_MOB_MONSTERS_CONUT = 7;
 	const int MAX_SUMMON_MOB_MONSTERS_CONUT = 15;
 
 	const int ADD_SUMMON_MONSTER_COUNT = 2;
@@ -49,7 +49,6 @@ BattlePhase::BattlePhase()
 
 BattlePhase::~BattlePhase()
 {
-	//todo エフェクトの削除
 }
 
 bool BattlePhase::Start()
@@ -277,64 +276,6 @@ void BattlePhase::AdjustDifficultyByPhase(const int summonMonstersCount)
 		CreateSummonLightEffect(m_createPositions[num]);
 	}
 
-
-	//フェーズによって
-	//switch (GameManager::GetInstance()->GetNowPhaseState())
-	//{
-	//	//難易度：簡単
-	//case GameManager::EnPhaseState_Phase1:
-	//	processEasyDifficulty(summonMonstersCount);
-	//	break;
-	//	//難易度：普通
-	//case GameManager::EnPhaseState_Phase2:
-	//	processNormalDifficulty(summonMonstersCount);
-	//	break;
-	//	//難易度：難しい
-	//case GameManager::EnPhaseState_Phase3:
-	//	processHardDifficulty(summonMonstersCount);
-	//	break;
-	//default:
-	//	break;
-	//}
-
-
-
-}
-
-void BattlePhase::processEasyDifficulty(const int summonMonstersCount)
-{
-	for (int num = 0; num < summonMonstersCount; num++)
-	{
-		MobMonster* monster = GenerateMobMonster();
-		monster->SetPosition(m_createPositions[num]);
-		CharactersInfoManager::GetInstance()->AddMobMonsterFromList(monster);
-		//召喚時の光のエフェクトの再生
-		CreateSummonLightEffect(m_createPositions[num]);
-	}
-}
-
-void BattlePhase::processNormalDifficulty(const int summonMonstersCount)
-{
-	for (int num = 0; num < summonMonstersCount; num++)
-	{
-		MobMonster* monster = GenerateMobMonster();
-		monster->SetPosition(m_createPositions[num]);
-		CharactersInfoManager::GetInstance()->AddMobMonsterFromList(monster);
-		//召喚時の光のエフェクトの再生
-		CreateSummonLightEffect(m_createPositions[num]);
-	}
-}
-
-void BattlePhase::processHardDifficulty(const int summonMonstersCount)
-{
-	for (int num = 0; num < summonMonstersCount; num++)
-	{
-		MobMonster* monster = GenerateMobMonster();
-		monster->SetPosition(m_createPositions[num]);
-		CharactersInfoManager::GetInstance()->AddMobMonsterFromList(monster);
-		//召喚時の光のエフェクトの再生
-		CreateSummonLightEffect(m_createPositions[num]);
-	}
 }
 
 bool BattlePhase::IsIncantation()

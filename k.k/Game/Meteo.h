@@ -13,15 +13,26 @@ public:
 		enExplosionState
 	};
 
-	bool Start();
-	void Update();
+	bool Start() override;
+	void Update() override;
 	
+	/// <summary>
+	/// ó‘Ô‚ğŠÇ—
+	/// </summary>
 	void ManageState();
 
+	/// <summary>
+	/// ˆÚ“®ˆ—
+	/// </summary>
 	void OnProcessMoveTransition();
+	/// <summary>
+	/// ”š”­ˆ—
+	/// </summary>
 	void OnProcessExplosionTransition();
 
-
+	/// <summary>
+	/// Á‹‚·‚é‚Ü‚Å‚ÌŠÔ‚ğŒvZ
+	/// </summary>
 	void CalcDeleteTime();
 
 	/// <summary>
@@ -96,7 +107,7 @@ private:
 
 private:
 
-	EffectEmitter* m_meteoEffect = nullptr;
+	EffectEmitter*				m_meteoEffect = nullptr;
 	EffectEmitter*				m_ExplosionEffect = nullptr;
 	EffectEmitter*				m_rangeEffect = nullptr;
 
@@ -104,8 +115,8 @@ private:
 	CollisionObject*			m_explosionCollision = nullptr;
 
 
-	Vector3 m_meteoVerocity = g_vec3Zero;
-	Vector3 m_forward = g_vec3Zero;
+	Vector3						m_meteoVerocity = g_vec3Zero;
+	Vector3						m_forward = g_vec3Zero;
 
 	Vector3						m_scale = g_vec3One;
 	Vector3						m_moveSpeed = g_vec3Zero;
@@ -120,7 +131,7 @@ private:
 
 	EnExplosionState			m_state = enMoveState;
 
-	float m_flightDuration = 0.0f;
+	float						m_flightDuration = 0.0f;
 
 	bool						m_explosionFlag = false;
 
@@ -130,13 +141,10 @@ private:
 
 	const float					m_explosionEndTime = 0.5f;
 	float						m_explosionEndTimer = 0.0f;
-	
-	/*const int					m_attack = 60;
-	const int					m_explosionAttack = 40;*/
 
 	bool						m_explosionEffectFlag = false;
 
-	float m_angle = 0.0f;
-	float m_deleteTimer = 0.0f;
+	float						m_angle = 0.0f;
+	float						m_deleteTimer = 0.0f;
 };
 

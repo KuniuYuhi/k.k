@@ -8,9 +8,9 @@
 namespace {
 	const float MELEE_ATTACK_RANGE = 280.0f;	//近距離攻撃の範囲内
 
-	const float STAY_PLAYER_LIMMIT_TIME = 10.0f;		//プレイヤーが近くにとどまっているタイマーの上限
+	const float DARK_METEO_ACTION_POINT = 24.0f;
 
-	const float DARK_METEO_ACTION_POINT = 30.0f;
+	const float NEAR_MONSTER_LENGTH = 300.0f;
 
 }
 
@@ -88,13 +88,7 @@ void SummonerSM_Attack::DecideNextAction()
 void SummonerSM_Attack::ProcessLongRangeAttack()
 {
 	//遠距離攻撃
-
-	//ダークメテオ
-	/*m_summoner->
-		SetNextAnimationState(
-			Summoner::enAnimationState_Attack_DarkMeteorite_start);
-	return;*/
-
+	
 	//前の行動がダークメテオでないなら
 	//ダークメテオを撃つか調べる
 	if (IsNextActionDarkMeteo() == true && 
@@ -119,19 +113,6 @@ void SummonerSM_Attack::ProcessLongRangeAttack()
 
 void SummonerSM_Attack::ProcessMeleeAttack()
 {
-	//通常攻撃
-	//m_summoner->
-	//	SetNextAnimationState(Summoner::enAnimationState_NormalAttack_1);
-	////通常攻撃行動した後の連続攻撃タイマー
-	//m_continuousAttackTimer = 0.2f;
-	//return;
-	//近距離攻撃
-	//m_summoner->
-	//	SetNextAnimationState(Summoner::enAnimationState_DarkSpear_Start);
-	////ダークスピア攻撃行動した後の連続攻撃タイマー
-	//m_continuousAttackTimer = 1.5f; 
-	//return;
-
 	//近距離攻撃カウントを増やす
 	m_meleeCount++;
 
@@ -200,7 +181,7 @@ bool SummonerSM_Attack::IsNextActionDarkMeteo()
 	{
 		Vector3 mobToPlayer = playerPos - monster->GetPosition();
 		//プレイヤーから一定の距離内にモンスターがいないなら
-		if (mobToPlayer.Length() > 300.0f)
+		if (mobToPlayer.Length() > NEAR_MONSTER_LENGTH)
 		{
 			//カウントを加算
 			count++;

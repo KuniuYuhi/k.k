@@ -12,9 +12,9 @@ public:
 	Slime();
 	~Slime();
 
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
+	bool Start() override;
+	void Update() override;
+	void Render(RenderContext& rc) override;
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	/// <summary>
@@ -48,7 +48,7 @@ public:
 	}
 
 	/// <summary>
-	/// 
+	/// ‰ñ“]‰Â”\‚©
 	/// </summary>
 	/// <returns></returns>
 	bool isRotationEnable() const override

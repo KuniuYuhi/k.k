@@ -13,9 +13,9 @@ public:
 	TurtleShell();
 	~TurtleShell();
 
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
+	bool Start() override;
+	void Update() override;
+	void Render(RenderContext& rc) override;
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	/// <summary>
@@ -57,7 +57,7 @@ public:
 	}
 
 	/// <summary>
-	/// 
+	/// 回転可能か
 	/// </summary>
 	/// <returns></returns>
 	bool isRotationEnable() const override
@@ -71,8 +71,7 @@ public:
 	/// <returns></returns>
 	bool IsAttackEnable() const override
 	{
-		return /*m_enAnimationState != enAnimationState_Difence &&*/
-			m_enAnimationState != enAnimationState_Attack &&
+		return m_enAnimationState != enAnimationState_Attack &&
 			m_enAnimationState != enAnimationState_Skill;
 	}
 
@@ -87,12 +86,6 @@ public:
 	/// </summary>
 	/// <returns>使用可能ならtrue</returns>
 	bool IsSkillUsable() override;
-
-	/*/// <summary>
-	/// 敵を見つけたか
-	/// </summary>
-	/// <returns>見つけたらtrue</returns>
-	bool IsFoundPlayerFlag() override;*/
 
 	/// <summary>
 	/// 被ダメージ時処理

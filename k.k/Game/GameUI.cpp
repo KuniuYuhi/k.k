@@ -96,12 +96,7 @@ bool GameUI::Start()
 	InitSpriteRender(
 		m_timeFlameRender, "Assets/sprite/InGame/Character/TimeFlame2.DDS", 500, 124, TIME_FLAME_POS, TIME_FLAME_SIZE
 	);
-
-
-	
-
-
-
+	//現在のプレイヤーのHPを取得
 	m_nowPlayerWhiteHp = m_player->GetNowActorStatus().GetMaxHp();
 
 	return true;
@@ -109,6 +104,14 @@ bool GameUI::Start()
 
 void GameUI::Update()
 {
+	//勝敗が着いたら削除する
+	if (GameManager::GetInstance()->GetOutComeState() != 
+		GameManager::enOutComeState_None)
+	{
+		DeleteGO(this);
+		return;
+	}
+
 	//制限時間
 	TimerUIUpdate();
 	//フェーズの処理
@@ -259,13 +262,6 @@ void GameUI::ProcessBossHP()
 	//テキストを設定
 	m_monsterUI.m_hpFont.SetText(MP);
 
-	/*int a = m_lich->GetAccumulationDamage();
-	int b = m_lich->GetHitCount();
-	wchar_t A[255];
-	swprintf_s(A, 255, L"%3d%3d回", a,b);
-	m_monsterUI.m_AccumulationDamageFont.SetText(A);*/
-
-
 	//白いHPが現在のHPより小さいなら
 	if (m_nowBossWhiteHp < nowHP)
 	{
@@ -282,8 +278,6 @@ void GameUI::ProcessBossHP()
 	//スケールを設定
 	m_monsterUI.m_hpWhiteRender.SetScale(m_bossHpWhiteScale);
 
-
-	
 	//更新
 	m_monsterUI.m_hpFrontRender.Update();
 	m_monsterUI.m_hpWhiteRender.Update();
@@ -375,13 +369,6 @@ void GameUI::ProcessWeaponEndranceFont()
 	wchar_t endrance[255];
 	swprintf_s(endrance, 255, L"%d", num);
 
-	//wchar_t型をstring型に変換
-	//std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-	//std::string str = converter.to_bytes(endrance);
-	////文字列の長さを取得
-	//int length= str.length();
-	//m_playerUI.m_weaponEndranceFont.SetOffset({ length/2.0f ,0.0f });
-
 	m_playerUI.m_weaponEndranceFont.SetText(endrance);
 
 	int harfEndrance = m_player->GetNowWeaponMaxEndrance() / 2;
@@ -425,6 +412,7 @@ Vector2 GameUI::CalcNumberCount(float num, float xOffset, float yOffset)
 
 void GameUI::Render(RenderContext& rc)
 {
+
 	DrawPlayerUI(rc);
 	DrawMonsterUI(rc);
 
@@ -444,22 +432,18 @@ void GameUI::DrawPlayerUI(RenderContext& rc)
 {
 	//メインHP
 	m_playerUI.m_hpBackRender.Draw(rc);
-
+	//スケールが0より大きいなら
 	if (m_playerWhiteHpScale.x > 0.0f)
 	{
+		//白いHPバー
 		m_playerUI.m_hpWhiteRender.Draw(rc);
 	}
-
-
+	//HPバー
 	m_playerUI.m_hpFrontRender.Draw(rc);
-
 	//メイン
 	m_playerUI.m_hpFlameRender.Draw(rc);
-
 	//HPのフォント
 	m_playerUI.m_hpFont.Draw(rc);
-
-
 	//メイン武器のフレーム
 	m_playerUI.m_mainWeaponFlameRender.Draw(rc);
 	////サブ武器１のフレーム
@@ -477,12 +461,11 @@ void GameUI::DrawPlayerUI(RenderContext& rc)
 	{
 		m_weaponSprits[num].m_weaponRender->Draw(rc);
 	}
-
+	//武器の耐久力
 	if (m_weaponSprits[enWeapon_Main].m_weaponEndranceRender != nullptr)
 	{
 		m_weaponSprits[enWeapon_Main].m_weaponEndranceRender->Draw(rc);
 	}
-
 	//武器の耐久値が-１より大きかったら描画
 	if (m_player->GetNowWeaponEndrance() > -1)
 	{
@@ -496,24 +479,26 @@ void GameUI::DrawMonsterUI(RenderContext& rc)
 	{
 		return;
 	}
-	//HP
+	//HPの裏のバー
 	m_monsterUI.m_hpBackRender.Draw(rc);
+	//スケールが0より大きいなら
 	if (m_bossHpWhiteScale.x > 0.0f)
 	{
+		//白いHPバー
 		m_monsterUI.m_hpWhiteRender.Draw(rc);
 	}
+	//HPバー
 	m_monsterUI.m_hpFrontRender.Draw(rc);
-
 	//HPのフレーム
 	m_monsterUI.m_hpFlameRender.Draw(rc);
-
 	//HPのフォント
 	m_monsterUI.m_hpFont.Draw(rc);
 	m_monsterUI.m_AccumulationDamageFont.Draw(rc);
-
-	//スーパーアーマー
+	//スーパーアーマーのフレーム
 	m_monsterUI.m_superArmor_FlameRender.Draw(rc);
+	//スーパーアーマーの裏
 	m_monsterUI.m_superArmor_BackBarRender.Draw(rc);
+	//スーパーアーマーのバー
 	m_monsterUI.m_superArmor_FrontBarRender.Draw(rc);
 }
 

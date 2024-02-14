@@ -31,7 +31,12 @@ bool ComboFinishBomb::Start()
 
 void ComboFinishBomb::Update()
 {
-	DeleteGO(this);
+	//ƒRƒŠƒWƒ‡ƒ“‚ªÁ‚¦‚½‚çÁ‹
+	if (m_collision == nullptr)
+	{
+		DeleteGO(this);
+	}
+	
 }
 
 void ComboFinishBomb::PlayBombEffect()
@@ -48,12 +53,12 @@ void ComboFinishBomb::PlayBombEffect()
 
 void ComboFinishBomb::CreatCollision()
 {
-	CollisionObject* collision = NewGO<CollisionObject>(0, GetCollisionName());
-	collision->CreateSphere(
+	m_collision = NewGO<CollisionObject>(0, GetCollisionName());
+	m_collision->CreateSphere(
 		m_position,g_quatIdentity, COLLISION_RADIUS
 	);
-	collision->SetCreatorName(GetName());
+	m_collision->SetCreatorName(GetName());
 	//©“®‚Åíœ‚·‚é‚æ‚¤‚É‚·‚é
-	collision->SetIsEnableAutoDelete(true);
-	collision->Update();
+	m_collision->SetIsEnableAutoDelete(true);
+	m_collision->Update();
 }

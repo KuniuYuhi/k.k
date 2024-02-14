@@ -110,7 +110,7 @@ void CalcCharacterForward::CalcForwardOfNearMonster(
     //一番近い敵に向かうベクトルと移動方向の内積がかなり似ているかつ
     //敵が近くにいるカウントが１以上なら
     //前方向をmoveSpeedに相似性の高いベクトルに書き換える
-    if (t3 >= 0.5 && count > 0)
+    if (t3 >= 0.75 && count > 0)
     {
         //正規化
         nearMoveSpeedVector.Normalize();

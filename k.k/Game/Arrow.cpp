@@ -5,10 +5,6 @@
 #include "Boss.h"
 #include "CharactersInfoManager.h"
 
-
-//todo　矢を回転させて飛ばす
-//todo 前方向を回転に適応して線形補間で回転
-
 namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
@@ -119,15 +115,18 @@ bool Arrow::IsHitCollision()
 		//ヒットした
 		return true;
 	}
-
-	//todo 生成された瞬間だとキャラコンが初期化されていないのでエラーになる
-
 	//モブモンスターのリストの取得
 	const auto& mobMonsters = 
 		CharactersInfoManager::GetInstance()->GetMobMonsters();
 	//モブモンスターとの当たり判定
 	for (auto mobMonster : mobMonsters)
 	{
+		//生成されたばかりのオブジェクトは当たり判定を取らない
+		if (mobMonster->IsStart()==false)
+		{
+			continue;
+		}
+		//矢のコリジョンとモンスターのキャラコンが衝突したら
 		if (m_arrowCollision->IsHit(
 			mobMonster->GetCharacterController()))
 		{
@@ -144,9 +143,11 @@ void Arrow::ProcessLongRangeAttack()
 {
 	switch (m_enShotPatternState)
 	{
+		//通常攻撃
 	case Arrow::enShotPatternState_Normal:
 		NormalShot();
 		break;
+		//スキル攻撃
 	case Arrow::enShotPatternState_Skill:
 		SkillShot();
 		break;
@@ -154,6 +155,7 @@ void Arrow::ProcessLongRangeAttack()
 		break;
 	}
 
+	//当たり判定の座標の設定と更新
 	m_arrowCollision->SetPosition(m_arrowPos);
 	m_arrowCollision->Update();
 }
@@ -214,6 +216,7 @@ void Arrow::PlayArrowEffect()
 	Quaternion rot = g_quatIdentity;
 	rot.SetRotationYFromDirectionXZ(m_forward);
 
+	//スキルか通常攻撃のエフェクト再生
 	if (m_enShotPatternState==enShotPatternState_Normal)
 	{
 		m_arrowAttackEffect = NewGO<EffectEmitter>(0);
@@ -230,6 +233,7 @@ void Arrow::PlayArrowEffect()
 		m_arrowAttackEffect->SetScale(g_vec3One * 10.0f);
 	}
 
+	//エフェクトの座標と回転の設定と更新
 	m_arrowAttackEffect->SetPosition(m_shotStartPosition);
 	m_arrowAttackEffect->SetRotation(rot);
 	m_arrowAttackEffect->Update();
@@ -239,12 +243,15 @@ void Arrow::PlayArrowEffect()
 
 void Arrow::SelectInitCollision(EnShotPatternState shotPatternState)
 {
+	//コリジョンの初期化
 	switch (shotPatternState)
 	{
+		//通常攻撃
 	case Arrow::enShotPatternState_Normal:
 		InitCollision(
 			"Attack",m_arrowPos,g_quatIdentity, ARROW_NORMAL_COLLISION_SIZE);
 		break;
+		//スキル攻撃
 	case Arrow::enShotPatternState_Skill:
 		InitCollision(
 			"skillAttack", m_arrowPos, g_quatIdentity, ARROW_Skill_COLLISION_SIZE);
@@ -288,11 +295,8 @@ void Arrow::NormalShot()
 	{
 		//矢の移動処理
 		MoveNormalShot();
-		//矢の回転処理　やってない
-		RoatationNormalShot();
 		//消去するまでのタイマーを加算
 		m_deleteTimer += g_gameTime->GetFrameDeltaTime() * 6.0f;
-		
 	}
 	else
 	{
@@ -385,31 +389,6 @@ void Arrow::MoveNormalShot()
 			(m_shotArrowVerocity.y - (GRAVITY * m_deleteTimer))* g_gameTime->GetFrameDeltaTime() * 4.0f,
 			Z
 	};
-}
-
-void Arrow::RoatationNormalShot()
-{
-	//回転
-	Vector3 Axis;
-	Axis.Cross(m_shotStartPosition, m_arrowPos);
-
-	//角度の計算
-	//内積
-	Vector3 dot1 = m_shotStartPosition;
-	Vector3 dot2 = m_arrowPos;
-
-	float vec1 = m_shotStartPosition.Length();
-	float vec2 = m_arrowPos.Length();
-
-	dot1.Normalize();
-	dot2.Normalize();
-	float dotProduct = Dot(dot1, dot2);
-	//ノルム(ベクトルの大きさ)
-
-	//アークコサインの計算
-	float acos = std::acos(dotProduct / (vec1 * vec2));
-	//ラジアンから度に変換
-	float rotationAngle = Math::RadToDeg(acos);
 }
 
 void Arrow::ProcessDelete()

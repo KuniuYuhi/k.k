@@ -219,6 +219,14 @@ public:
 	{
 		return m_modelRender;
 	}
+	/// <summary>
+	/// キャラコンの取得
+	/// </summary>
+	/// <returns></returns>
+	CharacterController& GetCharacterController()
+	{
+		return m_charaCon;
+	}
 
 	/// <summary>
 	/// 次のアニメーションステートを作成する。
@@ -511,6 +519,13 @@ public:
 		return m_mainUseWeapon.weapon->GetStatus().GetSkillAtk();
 	}
 
+	/// <summary>
+	/// ステートで使用する勝敗が決まったかの処理
+	/// </summary>
+	/// <returns>trueで勝敗が決まった</returns>
+	bool IsDecisionOutcomeForState();
+
+
 private:
 	/// <summary>
 	/// コンボ攻撃のコンボの処理
@@ -556,7 +571,7 @@ private:
 	/// </summary>
 	void SettingWeapons();
 	/// <summary>
-	/// 
+	/// 切り替える武器の設定
 	/// </summary>
 	/// <param name="animationStartInbexNo"></param>
 	/// <param name="changeTargetWeapon"></param>

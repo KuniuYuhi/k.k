@@ -4,7 +4,7 @@
 
 
 class SwordShield;
-class BigSword;
+class GreatSword;
 
 /*
 *@brief 武器の管理 
@@ -100,7 +100,7 @@ private:
 	/// 両手剣のオブジェクトの生成
 	/// </summary>
 	/// <returns></returns>
-	WeaponBase* CreateBigSword();
+	WeaponBase* CreateGreatSword();
 	/// <summary>
 	/// 弓のオブジェクトの生成
 	/// </summary>
@@ -108,15 +108,12 @@ private:
 	WeaponBase* CreateBow();
 
 private:
-
+	//武器の情報
 	struct WeaponInfo
 	{
 		WeaponBase* m_useWeapon = nullptr;
-		EnWeaponType m_enWeaponType;
+		EnWeaponType m_enWeaponType = enWeaponType_Num;
 	};
-
-	//std::vector<WeaponInfo*> m_weaponMap;	//武器の種類とインスタンスを関連づけて格納
-													//格納するのは基本的にメイン武器とサブ武器のみ
 
 	WeaponInfo m_mainWeapon;										//メイン武器
 	WeaponInfo m_subWeapon;											//サブ武器

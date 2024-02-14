@@ -30,6 +30,10 @@ namespace {
 	const float ROT_SPEED = 7.0f;
 	const float SKILL_TIMER_LIMMIT = 10.0f;
 	const float DEFENCE_RANGE = 1200.0f;
+
+	const float MUL_SCALE = 1.3f;
+
+	const float MUL_COLLISION_SIZE = 17.0f;
 }
 
 TurtleShell::TurtleShell()
@@ -46,7 +50,7 @@ TurtleShell::TurtleShell()
 
 	m_pos2Length = POS2_LENGTH;
 
-	m_scale *= 1.3f;
+	m_scale *= MUL_SCALE;
 
 	m_skillUsableLimmit = SKILL_TIMER_LIMMIT;
 	m_skillAttackRange = SKILL_ATTACK_RANGE;
@@ -183,7 +187,7 @@ void TurtleShell::CreateCollision()
 	m_headCollision->CreateSphere(
 		m_position,
 		m_rotation,
-		17.0f
+		MUL_COLLISION_SIZE
 	);
 	//ワールド座標取得
 	Matrix HeadMatrix = m_modelRender.GetBone(m_attackBoonId)->GetWorldMatrix();
@@ -221,23 +225,6 @@ bool TurtleShell::IsStopProcessing()
 	{
 		return true;
 	}
-
-	//ノックバック中なら
-	//if (GetKnockBackFlag() == true)
-	//{
-	//	//ノックバックの処理をするなら
-	//	if (IsKnockingBack(
-	//		m_moveSpeed, m_knockBackTimer) == true)
-	//	{
-	//		//座標を移動
-	//		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-	//		return true;
-	//	}
-	//	else
-	//	{
-	//		SetKnockBackFlag(false);
-	//	}
-	//}
 
 	//それ以外なら
 	return false;
@@ -279,7 +266,7 @@ void TurtleShell::HitNormalAttack()
 
 void TurtleShell::HitSkillAttack()
 {
-	m_damage = m_player->GetAtk();
+	m_damage = m_player->GetSkillAtk();
 	//ダメージを受ける処理
 	Damage(m_damage);
 	//スキルを使っていなかったらダメージとエフェクト表示
@@ -299,8 +286,7 @@ bool TurtleShell::IsSkillUsable()
 	//スキル攻撃可能フラグがセットされていたらスキル攻撃可能
 	//まだプレイヤーが近くにいるなら
 	if (m_skillUsableFlag == true&& 
-		m_difenceEnableFlag == true/*&& 
-		IsFindPlayer(DEFENCE_RANGE) == true*/)
+		m_difenceEnableFlag == true)
 	{
 		//スキル攻撃可能
 		return true;

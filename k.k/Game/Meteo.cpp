@@ -56,8 +56,6 @@ Meteo::~Meteo()
 	{
 		m_rangeEffect->Stop();
 	}
-
-	//DeleteGO(m_collision);
 	DeleteGO(m_explosionCollision);
 }
 
@@ -129,44 +127,6 @@ int Meteo::CalcDamageToDistance(const Vector3 targetPosition)
 
 void Meteo::Move()
 {
-	//if (m_deleteTimer < m_flightDuration)
-	//{
-	//	float X = m_forward.x * m_meteoVerocity.x *
-	//		g_gameTime->GetFrameDeltaTime() * 1.0f;
-	//	float Z = m_forward.z * m_meteoVerocity.x *
-	//		g_gameTime->GetFrameDeltaTime() * 1.0f;
-
-	//	m_movePos += {
-	//		X,
-	//			(m_meteoVerocity.y - (GRAVITY * m_deleteTimer))*
-	//			g_gameTime->GetFrameDeltaTime() * 5.0f,
-	//			Z
-	//	};
-
-	//	m_deleteTimer += g_gameTime->GetFrameDeltaTime() * 1.0f;
-	//}
-	//else
-	//{
-	//	//地面についた
-	//	//爆発用当たり判定の生成
-	//	CreateExplosionCollision();
-	//	//爆発した
-	//	SetExplosionFlag(true);
-
-	//	//爆発エフェクトの生成
-	//	while (m_ExplosionEffect == nullptr)
-	//	{
-	//		//爆発する
-	//		m_explosionEffectFlag = true;
-	//		Explosion();
-	//	}
-
-	//	//次のステートに遷移
-	//	m_state = enExplosionState;
-	//	return;
-	//}
-	
-
 	//線形補間を使って移動する
 	//視点から中点
 	StartToCenter.Lerp(m_timer, m_startPosition, m_centerPosition);
@@ -267,31 +227,8 @@ void Meteo::SettingMeteoRoute()
 	m_startPosition = m_position;
 	//中間点を決める
 	m_centerPosition = (m_targetPosition + m_position) / 2.0f;
-
 	//中間点のY座標を上げる
 	m_centerPosition.y = m_startPosition.y + CENTER_POS_ADD_Y;
-
-	//1.目標に向かう距離の計算
-	//終点-始点
-	//Vector3 targetDistance = m_targetPosition - m_startPosition;
-	////前方向を設定
-	//m_forward = targetDistance;
-	//m_forward.Normalize();
-	//float distance = targetDistance.Length();
-	////メテオが撃ちあがる角度を決める
-	//Vector3 toAngle = targetDistance;
-	//toAngle.Normalize();
-	//toAngle.Length();
-	//m_angle = Math::Lerp(toAngle.Length(), 60.0f, 30.0f);
-
-	////2.初速度の計算
-	//float verocity = distance / (sin(Math::DegToRad(2 * m_angle)) / GRAVITY);
-	////3.初速度の分解
-	//m_meteoVerocity.x = sqrt(verocity) * cos(Math::DegToRad(m_angle));
-	//m_meteoVerocity.y = sqrt(verocity) * sin(Math::DegToRad(m_angle));
-	////4.飛行時間の計算
-	//m_flightDuration = distance / m_meteoVerocity.x;
-
 }
 
 void Meteo::PlayRangeEffect()
@@ -354,13 +291,14 @@ void Meteo::OnProcessExplosionTransition()
 	//爆発してからの処理
 	if (GetExplosionFlag() == true)
 	{
+		//消去するまでの時間を計算
 		CalcDeleteTime();
 	}
-
 }
 
 void Meteo::CalcDeleteTime()
 {
+	//爆弾が終わったら消去
 	if (m_explosionEndTime < m_explosionEndTimer)
 	{
 		DeleteGO(this);
@@ -368,7 +306,7 @@ void Meteo::CalcDeleteTime()
 	else
 	{
 		m_explosionEndTimer += g_gameTime->GetFrameDeltaTime();
-
+		//爆発を大きくする
 		m_ExplosionEffect->SetScale(m_scale * (m_explosionEndTimer * MUL_EXPLOSION_SCALE));
 		m_ExplosionEffect->Update();
 	}	
