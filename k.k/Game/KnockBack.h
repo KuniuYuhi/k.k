@@ -14,14 +14,6 @@ const Vector3 SetKnockBackDirection(
 );
 
 /// <summary>
-/// ノックバックの処理。
-/// </summary>
-/// <param name="knockBackPower"></param>
-/// <param name="timer"></param>
-/// <param name="moveSpeed"></param>
-/// <returns>処理中はtrue、timerが上限に達するとfalse</returns>
-
-/// <summary>
 /// ノックバックの移動方向の処理。
 /// </summary>
 /// <param name="moveSpeed">移動方向</param>
