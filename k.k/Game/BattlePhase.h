@@ -8,8 +8,8 @@ public:
 	BattlePhase();
 	~BattlePhase();
 
-	bool Start();
-	void Update();
+	bool Start() override;
+	void Update() override;
 
 private:
 	
@@ -53,19 +53,7 @@ private:
 	/// </summary>
 	/// <param name="summonMonstersCount">召喚するモンスターの数</param>
 	void AdjustDifficultyByPhase(const int summonMonstersCount);
-	/// <summary>
-	/// 難易度：簡単の処理
-	/// </summary>
-	void processEasyDifficulty(const int summonMonstersCount);
-	/// <summary>
-	/// 難易度：普通の処理
-	/// </summary>
-	void processNormalDifficulty(const int summonMonstersCount);
-	/// <summary>
-	/// 難易度：難しいの処理
-	/// </summary>
-	void processHardDifficulty(const int summonMonstersCount);
-
+	
 	/// <summary>
 	/// 詠唱中か(召喚の準備)
 	/// </summary>

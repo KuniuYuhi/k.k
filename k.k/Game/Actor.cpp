@@ -1,14 +1,6 @@
 #include "stdafx.h"
 #include "Actor.h"
-#include "DarkWall.h"
-#include "DarkBall.h"
-#include "Meteo.h"
-#include "DarkMeteorite.h"
-#include "DarkSpearObj.h"
-
 #include "AIActor.h"
-#include "MagicBall.h"
-
 #include "IAttackObject.h"
 
 
@@ -87,9 +79,8 @@ Vector3 Actor::calcVelocity(Status status)
 		right *= stickL.x * (status.GetDefaultSpeed() + status.GetDashSpeed());
 		forward *= stickL.y * (status.GetDefaultSpeed() + status.GetDashSpeed());
 	}
-
+	//前方向と右方向のベクトルを足す
 	moveSpeed += right + forward;
-	
 	//値をセーブしておく
 	m_SaveMoveSpeed = moveSpeed;
 
@@ -163,107 +154,6 @@ void Actor::DamageCollision(CharacterController& characon)
 		}
 	}
 
-
-
-
-	///////////////////////////////////////////////
-
-	//ダークボールの当たり判定
-	//const auto& DarkBallCollisions = g_collisionObjectManager->FindCollisionObjects("darkball");
-	////コリジョンの配列をfor文で回す
-	//for (auto collision : DarkBallCollisions)
-	//{
-	//	//自身のキャラコンと衝突したら
-	//	if (collision->IsHit(characon) == true)
-	//	{
-	//		//todo 常に真ん中で判定をとってしまう
-	//		DarkBall* darkball = FindGO<DarkBall>("darkball");
-	//		//ぶつかったのでフラグを立てる
-	//		darkball->SetHitFlag(true);
-	//		Damage(darkball->GetAtk());
-	//		CreateDamageFont(m_hitDamage);
-	//		return;
-	//	}
-	//}
-
-	////ダークウォールの当たり判定
-	//const auto& DarkWallCollisions = g_collisionObjectManager->FindCollisionObjects("DarkWall");
-	////コリジョンの配列をfor文で回す
-	//for (auto collision : DarkWallCollisions)
-	//{
-	//	//自身のキャラコンと衝突したら
-	//	if (collision->IsHit(characon) == true)
-	//	{
-	//		DarkWall* darkwall = FindGO<DarkWall>("darkwall");
-	//		Damage(darkwall->GetAtk());
-	//		CreateDamageFont(m_hitDamage);
-	//		return;
-	//	}
-	//}
-
-	////ダークスピアの当たり判定
-	//const auto& DarkSpearCollisions = g_collisionObjectManager->FindCollisionObjects("darkspear");
-	////コリジョンの配列をfor文で回す
-	//for (auto collision : DarkSpearCollisions)
-	//{
-	//	//自身のキャラコンと衝突したら
-	//	if (collision->IsHit(characon) == true)
-	//	{
-	//		DarkSpearObj* darkSpearObj = FindGO<DarkSpearObj>("darkspearobj");
-	//		Damage(darkSpearObj->GetAtk());
-	//		CreateDamageFont(m_hitDamage);
-	//		return;
-	//	}
-	//}
-
-	////メテオの当たり判定
-	//const auto& MeteoCollisions = g_collisionObjectManager->FindCollisionObjects("meteo");
-	////コリジョンの配列をfor文で回す
-	//for (auto collision : MeteoCollisions)
-	//{
-	//	//自身のキャラコンと衝突したら
-	//	if (collision->IsHit(characon) == true)
-	//	{
-	//		Meteo* meteo = FindGO<Meteo>("meteo");
-	//		Damage(meteo->GetAtk());
-	//		CreateDamageFont(m_hitDamage);
-	//		//メテオに当たったので強制的に爆発させる
-	//		meteo->Explosion();
-	//		return;
-	//	}
-	//}
-	////メテオの爆発の当たり判定
-	//const auto& MeteoExplosionCollisions = g_collisionObjectManager->FindCollisionObjects("explosion");
-	////コリジョンの配列をfor文で回す
-	//for (auto collision : MeteoExplosionCollisions)
-	//{
-	//	//自身のキャラコンと衝突したら
-	//	if (collision->IsHit(characon) == true)
-	//	{
-	//		Meteo* meteo = FindGO<Meteo>("meteo");
-	//		int damage = meteo->CalcDamageToDistance(m_position);
-	//		Damage(damage);
-	//		CreateDamageFont(m_hitDamage);
-	//		return;
-	//	}
-	//}
-
-	//ダークメテオの攻撃の当たり判定
-	//const auto& DarkMeteoCollisions = g_collisionObjectManager->FindCollisionObjects("bigmeteo");
-	////コリジョンの配列をfor文で回す
-	//for (auto collision : DarkMeteoCollisions)
-	//{
-	//	//自身のキャラコンと衝突したら
-	//	if (collision->IsHit(characon) == true)
-	//	{
-	//		DarkMeteorite* darkMeteo = FindGO<DarkMeteorite>("darkmeteorite");
-	//		Damage(darkMeteo->GetAtk());
-	//		CreateDamageFont(m_hitDamage);
-	//		darkMeteo->SetChaseFlag(true);
-	//		return;
-	//	}
-	//}
-
 	//モンスターの攻撃の当たり判定
 	const auto& MonsterCollisions = g_collisionObjectManager->FindCollisionObjects("monsterattack");
 	//コリジョンの配列をfor文で回す
@@ -280,67 +170,16 @@ void Actor::DamageCollision(CharacterController& characon)
 			return;
 		}
 	}
-
-	
-
 }
 
 Quaternion Actor::Rotation(float rotSpeed,float rotOnlySpeed)
 {
-	//回転だけさせたいなら
-	if (RotationOnly() == true)
-	{
-		//xかzの移動速度があったら(スティックの入力があったら)。
-		if (fabsf(m_forward.x) >= 0.001f || fabsf(m_forward.z) >= 0.001f)
-		{
-			//m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotOnlySpeed, m_rotMove, m_SaveMoveSpeed);
-			m_rotation.SetRotationYFromDirectionXZ(m_forward);
-
-			/*Vector3 forward;
-			m_rotation.Apply(forward);
-			Vector3 diff = forward - m_position;
-			m_forward = diff;
-			m_forward.y = 0.0f;
-			m_forward.Normalize();*/
-		}
-		return m_rotation;
-	}
-
 	//xかzの移動速度があったら(スティックの入力があったら)。
 	if (fabsf(m_forward.x) >= 0.001f || fabsf(m_forward.z) >= 0.001f)
 	{
-		//m_rotMove = Math::Lerp(g_gameTime->GetFrameDeltaTime() * rotSpeed, m_rotMove, m_SaveMoveSpeed);
 		m_rotation.SetRotationYFromDirectionXZ(m_forward);
-
-		/*Vector3 forward;
-		m_rotation.Apply(forward);
-		Vector3 diff = forward - m_position;
-		m_forward = diff;
-		m_forward.y = 0.0f;
-		m_forward.Normalize();*/
 	}
 	return m_rotation;
-}
-
-bool Actor::CalcInvicibleDash()
-{
-	if (m_enDashInvicibleState == enDashInvicibleState_On)
-	{
-		if (m_invincbleDashTime < m_invincbledDashTimer)
-		{
-			m_invincbledDashTimer = 0.0f;
-			SetInvicibleDashState(enDashInvicibleState_Off);
-		}
-		else
-		{
-			m_invincbledDashTimer += g_gameTime->GetFrameDeltaTime();
-		}
-
-		return true;
-	}
-
-	
-	return false;
 }
 
 void Actor::CreateDamageFont(int damage)

@@ -286,39 +286,6 @@ protected:
 	/// </summary>
 	/// <returns></returns>
 	Quaternion Rotation(float rotSpeed, float rotOnlySpeed);
-
-	/// <summary>
-	/// ダッシュ回避ステート 使わなくなるかも
-	/// </summary>
-	enum EnDashInvicibleState
-	{
-		enDashInvicibleState_None,
-		enDashInvicibleState_On,
-		enDashInvicibleState_Off
-	};
-
-	/// <summary>
-	/// ダッシュ回避ステートの設定
-	/// </summary>
-	/// <param name="enDashInvicibleState"></param>
-	void SetInvicibleDashState(EnDashInvicibleState enDashInvicibleState)
-	{
-		m_enDashInvicibleState = enDashInvicibleState;
-	}
-	/// <summary>
-	/// ダッシュ回避ステートの取得
-	/// </summary>
-	/// <returns></returns>
-	const EnDashInvicibleState& GetInvicibleDashState() const
-	{
-		return m_enDashInvicibleState;
-	}
-
-	/// <summary>
-	/// ダッシュしたときの無敵時間の計算
-	/// </summary>
-	/// <returns></returns>
-	bool CalcInvicibleDash();
 	
 	/// <summary>
 	/// ダメージフォント生成
@@ -338,8 +305,6 @@ protected:
 
 	Status							m_status;
 	AIActor*						m_atttackAIActor = nullptr;							//攻撃してきたAIActor(モンスター)
-	
-	EnDashInvicibleState			m_enDashInvicibleState = enDashInvicibleState_None;	//ダッシュしたときの無敵時間のためのステート
 
 	Vector3							m_forward = { 0.0f,0.0f,1.0f };						//前方向
 	Vector3							m_position = Vector3::Zero;							//自身の座標
