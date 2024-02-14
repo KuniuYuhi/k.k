@@ -202,10 +202,6 @@ private:
 	/// ’ÊíUŒ‚‚Ì–î‚ÌˆÚ“®ˆ—
 	/// </summary>
 	void MoveNormalShot();
-	/// <summary>
-	/// ’ÊíUŒ‚‚Ì–î‚Ì‰ñ“]ˆ—
-	/// </summary>
-	void RoatationNormalShot();
 
 	/// <summary>
 	/// Á‹ŽŽž‚Ìˆ—
