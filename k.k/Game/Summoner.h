@@ -1,6 +1,5 @@
 #pragma once
 #include "BossBase.h"
-#include "Level3DRender.h"
 
 class IBossStateMachine;
 class ISummonerState;
@@ -12,10 +11,10 @@ public:
 	Summoner();
 	~Summoner();
 
-	bool Start();
-	void Update();
+	bool Start() override;
+	void Update() override;
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
-	void Render(RenderContext& rc);
+	void Render(RenderContext& rc) override;
 
 	/////////////////////////////////////////////////////////////////////
 	//構造体、列挙型の宣言
@@ -144,7 +143,6 @@ public:
 		return m_enAnimationState != enAnimationState_DarkBall &&
 			m_enAnimationState != enAnimationState_DarkWall &&
 			m_enAnimationState != enAnimationState_KnockBack &&
-			//m_enAnimationState != enAnimationState_NormalAttack_1 &&
 			m_enAnimationState != enAnimationState_NormalAttack_2 &&
 			m_enAnimationState != enAnimationState_NormalAttack_3 &&
 			m_enAnimationState != enAnimationState_CriticalHit &&
@@ -435,7 +433,6 @@ private:
 
 	EnStateMachineState	m_stateMachineState = enStateMachineState_Vigilance;
 
-	Level3DRender					m_stageLevel;
 	AnimationClip					m_animationClip[enAnimClip_Num];						// アニメーションクリップ 
 
 	DarkWall* m_darkWall = nullptr;

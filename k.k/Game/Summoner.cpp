@@ -34,10 +34,6 @@
 #include "DarkWall.h"
 #include "ComboFinishBomb.h"
 
-//todo スーパーアーマーがある間はのけぞらない
-//壊れたらたまにのけぞる
-//回復していく
-
 namespace {
 	const float SCALE_UP = 4.0f;		//キャラクターのサイズ
 
@@ -64,9 +60,6 @@ Summoner::Summoner()
 
 Summoner::~Summoner()
 {
-	//ステートマシンの削除
-	//delete m_stateMachine;
-
 	//勝敗が決まったら場合でないなら処理しない。終わる時にエフェクトが再生されるためエラーがでるから
 	if (GameManager::GetInstance()->GetOutComeState() == GameManager::enOutComeState_None)
 	{
@@ -97,9 +90,7 @@ bool Summoner::Start()
 	//モデルの初期化
 	InitModel();
 	//ステートマシンの生成
-	//m_stateMachine = new IBossStateMachine(this);
 	SetStartStateMachine(enStateMachineState_Vigilance);
-	//m_SummonerstateMachine = std::make_unique<IBossStateMachine>(this);
 
 	//最初のアニメーション設定
 	SetNextAnimationState(enAnimationState_Idle);
@@ -189,10 +180,11 @@ void Summoner::Damage(int attack)
 {
 	//ダメージを受ける処理
 	ProcessHit(attack);
-	
 	//やられたとき
 	if (m_status.GetHp() <= 0)
 	{
+		//ゲームマネージャーのプレイヤーの勝ちフラグを設定
+		GameManager::GetInstance()->SetPlayerWinFlag(true);
 		//やられた時の処理
 		ProcessDead();
 	}
@@ -216,7 +208,6 @@ void Summoner::HitSkillAttack()
 	{
 		return;
 	}
-	//m_damageFlag = true;
 	Damage(m_player->GetSkillAtk());
 	CreateDamageFont(m_player->GetSkillAtk());
 	//多段ヒットしたのでフラグをリセット。多段ヒットでなくとも
@@ -228,11 +219,7 @@ void Summoner::ProcessDead(bool seFlag)
 	//やられるところをゆっくりにする
 	//フレームレートを落とす
 	g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 30);
-	//ゲームマネージャーのプレイヤーの勝ちフラグを設定
-	GameManager::GetInstance()->SetPlayerWinFlag(true);
 	m_status.SetHp(0);
-	//技の途中でやられたかもしれない
-
 	//効果音の再生
 	if (seFlag == true)
 	{
