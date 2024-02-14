@@ -9,7 +9,7 @@
 namespace {
 	const float SECOND_MAX = 60.0f;
 
-	const float PHASE_TIME_LIMMIT = 25.0f;
+	const float PHASE_TIME_LIMMIT = 30.0f;
 	const float BREAK_TIME_LIMMIT = 10.0f;
 	const float SHORT_BREAK_LIMMIT = 5.0f;
 

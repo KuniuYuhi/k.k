@@ -346,7 +346,7 @@ private:
 
 	EnDeleteAndCreateMonstersState m_enDAndCMonstersState = enMonsters_Create;
 
-	float m_minute = 3.0f;			//§ŒÀŠÔ
+	float m_minute = 5.0f;			//§ŒÀŠÔ
 	float m_second = 0.0f;
 
 	bool m_playerWinFlag = false;
