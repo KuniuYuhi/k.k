@@ -159,18 +159,9 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
-		/// トゥーンマップテクスチャを取得
+		/// ZPrepassの描画パスにモデルを追加
 		/// </summary>
-		/// <returns></returns>
-		Texture& GetToonTextrue()
-		{
-			return m_toontexture;
-		}
-
-		/// <summary>
-	   /// ZPrepassの描画パスにモデルを追加
-	   /// </summary>
-	   /// <param name="model"></param>
+		/// <param name="model"></param>
 		void Add3DModelToZPrepass(ModelRender* model)
 		{
 			m_zprepassModelList.emplace_back(model);
@@ -761,7 +752,7 @@ namespace nsK2EngineLow {
 		void ForwardRendering(RenderContext& rc);
 
 		/// <summary>
-		/// 
+		/// ポストエフェクト
 		/// </summary>
 		/// <param name="rc"></param>
 		/// <param name="mainRenderTarget"></param>
