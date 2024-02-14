@@ -153,32 +153,6 @@ void DarkMeteo::OnProcessShotMeteoTranstion()
 	//メテオの最大生成数に達していないなら生成処理
 	if (m_shotMeteoCounter < CREATE_METEO_COUNT)
 	{
-		//for (m_shotMeteoCounter; 
-		//	m_shotMeteoCounter < CREATE_METEO_COUNT; 
-		//	m_shotMeteoCounter++)
-		//{
-		//	while (true)
-		//	{
-		//		//座標の設定
-		//		Vector3 meteoTargetPos = GetMeteoTargetPosition(
-		//			CharactersInfoManager::GetInstance()->GetPlayerInstance()->GetPosition());
-		//		//壁に落ちないならメテオを生成する
-		//		if (IsMeteoHitWall(meteoTargetPos) == false)
-		//		{
-		//			//メテオの生成とカウントを加算
-		//			CreateMeteo(meteoTargetPos);
-		//			//カウントを加算
-		//			//m_shotMeteoCounter++;
-		//			break;
-		//		}
-		//		else
-		//		{
-		//			//やり直し
-		//			continue;
-		//		}
-		//	}
-		//}
-
 		while (true)
 		{
 			//座標の設定
@@ -221,8 +195,6 @@ void DarkMeteo::OnProcessShotDarkMeteoTranstion()
 
 void DarkMeteo::OnProcessEndTranstion()
 {
-
-
 	m_endFlag = true;
 
 }
