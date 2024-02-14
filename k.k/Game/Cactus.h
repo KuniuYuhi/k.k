@@ -14,9 +14,9 @@ public:
 	Cactus();
 	~Cactus();
 
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
+	bool Start() override;
+	void Update() override;
+	void Render(RenderContext& rc) override;
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	/// <summary>
@@ -50,12 +50,12 @@ public:
 	}
 
 	/// <summary>
-	/// 
+	/// ‰ñ“]‰Â”\‚©
 	/// </summary>
 	/// <returns></returns>
 	bool isRotationEnable() const override
 	{
-		return true;//m_enAnimationState != enAninationState_Idle;
+		return true;
 	}
 
 	/// <summary>
