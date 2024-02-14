@@ -15,9 +15,9 @@ public:
 		enMaxScaleSize_Large
 	};
 
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
+	bool Start() override;
+	void Update() override;
+	void Render(RenderContext& rc) override;
 
 	/// <summary>
 	/// 座標の設定
@@ -43,10 +43,13 @@ public:
 
 private:
 
+	/// <summary>
+	/// 当たり判定の作成
+	/// </summary>
 	void CreateCollision();
 
 	/// <summary>
-	/// 
+	/// エフェクト再生
 	/// </summary>
 	void PlayEffect();
 
