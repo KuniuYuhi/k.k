@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "BigSword.h"
+#include "GreatSword.h"
 #include "Brave.h"
 
 
@@ -52,18 +52,18 @@ struct IsGroundResult :public btCollisionWorld::ConvexResultCallback
 	}
 };
 
-BigSword::BigSword()
+GreatSword::GreatSword()
 {
 	SetMoveForwardSpeed(MOVE_FORWARD_SPEED);
 	SetWeaponPower(POWER);
 }
 
-BigSword::~BigSword()
+GreatSword::~GreatSword()
 {
 	DeleteGO(m_bigSwordCollision);
 }
 
-bool BigSword::Start()
+bool GreatSword::Start()
 {
 	//武器のステータス初期化
 	m_status.InitWeaponStatus(GetName());
@@ -85,7 +85,7 @@ bool BigSword::Start()
 	return true;
 }
 
-void BigSword::Update()
+void GreatSword::Update()
 {
 	//収納状態の時は処理しない
 	if (GetStowedFlag() == true)
@@ -98,11 +98,11 @@ void BigSword::Update()
 
 	MoveWeapon();
 
-	m_modelBigSword.Update();
+	m_modelGreatSword.Update();
 	m_bigSwordCollision->Update();
 }
 
-void BigSword::ProcessSkillAttack()
+void GreatSword::ProcessSkillAttack()
 {
 	//当たり判定を生成する座標を設定
 	m_skillAttackPosition = g_vec3Zero;
@@ -126,10 +126,10 @@ void BigSword::ProcessSkillAttack()
 	
 }
 
-void BigSword::InitModel()
+void GreatSword::InitModel()
 {
 	//剣モデルの初期化
-	m_modelBigSword.Init("Assets/modelData/character/Player/NewHero/BigSowrd.tkm",
+	m_modelGreatSword.Init("Assets/modelData/character/Player/NewHero/BigSowrd.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
 		0,
 		0,
@@ -140,7 +140,7 @@ void BigSword::InitModel()
 	m_armedSwordBoonId = m_brave->GetModelRender().FindBoneID(L"weaponShield_l");
 }
 
-void BigSword::InitCollision()
+void GreatSword::InitCollision()
 {
 	m_bigSwordCollision = NewGO<CollisionObject>(0, "Attack");
 	m_bigSwordCollision->CreateBox(
@@ -152,7 +152,7 @@ void BigSword::InitCollision()
 	m_bigSwordCollision->SetIsEnable(false);
 }
 
-void BigSword::MoveWeapon()
+void GreatSword::MoveWeapon()
 {
 	switch (m_enWeaponState)
 	{
@@ -169,13 +169,13 @@ void BigSword::MoveWeapon()
 	}
 }
 
-void BigSword::MoveArmed()
+void GreatSword::MoveArmed()
 {
 	//剣のワールド座標を設定
 	m_swordMatrix =
 		m_brave->GetModelRender().GetBone(m_armedSwordBoonId)->GetWorldMatrix();
 
-	m_modelBigSword.SetWorldMatrix(m_swordMatrix);
+	m_modelGreatSword.SetWorldMatrix(m_swordMatrix);
 
 	
 	//当たり判定の有効化無効化の処理
@@ -196,10 +196,10 @@ void BigSword::MoveArmed()
 
 }
 
-void BigSword::MoveStowed()
+void GreatSword::MoveStowed()
 {
 	m_swordPos = STOWEDS_POSITION;
-	m_modelBigSword.SetPosition(m_swordPos);
+	m_modelGreatSword.SetPosition(m_swordPos);
 	//当たり判定の座標の設定
 	m_bigSwordCollision->SetPosition(m_swordPos);
 	//当たり判定の無効化
@@ -207,7 +207,7 @@ void BigSword::MoveStowed()
 	SetStowedFlag(true);
 }
 
-void BigSword::PlaySkillAttackEffect()
+void GreatSword::PlaySkillAttackEffect()
 {
 	//エフェクト再生のための座標と回転の設定
 	Vector3 pos;
@@ -220,7 +220,7 @@ void BigSword::PlaySkillAttackEffect()
 	);
 }
 
-void BigSword::SettingEffectInfo(Vector3& effectPos, Quaternion& rot, float angle)
+void GreatSword::SettingEffectInfo(Vector3& effectPos, Quaternion& rot, float angle)
 {
 	effectPos = g_vec3Zero;
 	m_swordMatrix.Apply(effectPos);
@@ -229,16 +229,16 @@ void BigSword::SettingEffectInfo(Vector3& effectPos, Quaternion& rot, float angl
 	rot.AddRotationDegZ(angle);
 }
 
-void BigSword::Render(RenderContext& rc)
+void GreatSword::Render(RenderContext& rc)
 {
 	if (GetWeaponState() == enWeaponState_Stowed)
 	{
 		return;
 	}
-	m_modelBigSword.Draw(rc);
+	m_modelGreatSword.Draw(rc);
 }
 
-void BigSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+void GreatSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
 	//通常攻撃１のアニメーションキーフレーム
 	if (wcscmp(eventName, L"GreatSwordPlayCombo1Effect") == 0)
@@ -281,6 +281,11 @@ void BigSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		//エフェクト再生
 		PlayEffect(InitEffect::enEffect_GreatSwordCombo3,
 			pos, NORMAL_ATTACK_3_EFFECT_SIZE, rot
+		);
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_GreatSwordCombo_3,
+			g_soundManager->GetSEVolume()
 		);
 	}
 	//スキルの上昇アニメーションキーフレーム

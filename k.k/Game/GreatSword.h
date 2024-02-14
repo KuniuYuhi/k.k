@@ -2,11 +2,11 @@
 
 #include "WeaponBase.h"
 
-class BigSword:public WeaponBase
+class GreatSword :public WeaponBase
 {
 public:
-	BigSword();
-	~BigSword();
+	GreatSword();
+	~GreatSword();
 
 	bool Start();
 	void Update();
@@ -64,7 +64,7 @@ private:
 	void SettingEffectInfo(Vector3& effectPos, Quaternion& rot, float angle);
 
 private:
-	ModelRender m_modelBigSword;		//Œ•ƒ‚ƒfƒ‹
+	ModelRender m_modelGreatSword;		//Œ•ƒ‚ƒfƒ‹
 
 	CollisionObject* m_bigSwordCollision = nullptr;	//—¼ŽèŒ•‚Ì“–‚½‚è”»’è
 
