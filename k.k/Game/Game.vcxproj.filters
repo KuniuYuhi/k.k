@@ -40,9 +40,6 @@
     <Filter Include="Character\Monster\BossMonster\Lich">
       <UniqueIdentifier>{21da61a7-d81b-459b-b221-5b31fa8ed969}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\Monster\BossMonster\Lich\LichState">
-      <UniqueIdentifier>{b43f38ad-e33f-4abf-b302-e1d16b580fe2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Character\Player\Brave">
       <UniqueIdentifier>{cb6cd09f-fc8e-4001-a80a-8ce928ff27df}</UniqueIdentifier>
     </Filter>
@@ -73,9 +70,6 @@
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="Slime.cpp">
       <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClCompile>
-    <ClCompile Include="DarkMeteorite.cpp">
-      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClCompile>
     <ClCompile Include="TurtleShell.cpp">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
@@ -180,7 +174,6 @@
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClCompile>
     <ClCompile Include="SoundFile.cpp" />
-    <ClCompile Include="CascadModel.cpp" />
     <ClCompile Include="Brave.cpp">
       <Filter>Character\Player\Brave</Filter>
     </ClCompile>
@@ -190,11 +183,8 @@
     <ClCompile Include="SwordShield.cpp">
       <Filter>Weapons</Filter>
     </ClCompile>
-    <ClCompile Include="BigSword.cpp">
+    <ClCompile Include="GreatSword.cpp">
       <Filter>Weapons</Filter>
-    </ClCompile>
-    <ClCompile Include="EventManager.cpp">
-      <Filter>Manager</Filter>
     </ClCompile>
     <ClCompile Include="GameManager.cpp">
       <Filter>Manager</Filter>
@@ -220,7 +210,7 @@
     <ClCompile Include="BraveStateAttack_3.cpp">
       <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
-    <ClCompile Include="BraveStateChangeSwordShield.cpp">
+    <ClCompile Include="BraveStateChangeWeapon.cpp">
       <Filter>Character\Player\Brave\BraveState</Filter>
     </ClCompile>
     <ClCompile Include="BraveStateDefend.cpp">
@@ -453,9 +443,6 @@
     <ClInclude Include="Slime.h">
       <Filter>Character\Monster\MobMonster\Slime</Filter>
     </ClInclude>
-    <ClInclude Include="DarkMeteorite.h">
-      <Filter>Character\Monster\BossMonster\Lich</Filter>
-    </ClInclude>
     <ClInclude Include="TurtleShell.h">
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
@@ -571,7 +558,6 @@
       <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
     </ClInclude>
     <ClInclude Include="SoundFile.h" />
-    <ClInclude Include="CascadModel.h" />
     <ClInclude Include="Brave.h">
       <Filter>Character\Player\Brave</Filter>
     </ClInclude>
@@ -581,13 +567,10 @@
     <ClInclude Include="SwordShield.h">
       <Filter>Weapons</Filter>
     </ClInclude>
-    <ClInclude Include="BigSword.h">
+    <ClInclude Include="GreatSword.h">
       <Filter>Weapons</Filter>
     </ClInclude>
     <ClInclude Include="MyWeapon.h" />
-    <ClInclude Include="EventManager.h">
-      <Filter>Manager</Filter>
-    </ClInclude>
     <ClInclude Include="GameManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
@@ -612,7 +595,7 @@
     <ClInclude Include="BraveStateAttack_3.h">
       <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
-    <ClInclude Include="BraveStateChangeSwordShield.h">
+    <ClInclude Include="BraveStateChangeWeapon.h">
       <Filter>Character\Player\Brave\BraveState</Filter>
     </ClInclude>
     <ClInclude Include="BraveStateDefend.h">
