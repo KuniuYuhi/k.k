@@ -10,27 +10,51 @@ public:
 	Title();
 	~Title();
 
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
+	bool Start() override;
+	void Update() override;
+	void Render(RenderContext& rc) override;
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
+	/// <summary>
+	/// 画像初期化
+	/// </summary>
 	void InitSprite();
-
+	/// <summary>
+	/// 処理を止める
+	/// </summary>
 	void StepManage();
-
+	/// <summary>
+	/// モードセレクト
+	/// </summary>
 	void SelectMode();
-
+	/// <summary>
+	/// 透明度を計算
+	/// </summary>
 	void CalcAlpha();
-
+	/// <summary>
+	/// Aボタンを押すのテキストの透明度を計算
+	/// </summary>
 	void CalcAlphaAButtonText();
-
+	/// <summary>
+	/// カーソルの移動
+	/// </summary>
 	void MoveCursor();
-
+	/// <summary>
+	/// BGMを小さくする
+	/// </summary>
 	void CalcMuteBGMVolume();
 
-
+	/// <summary>
+	/// ゲームを始める
+	/// </summary>
 	void GoToPlayMode();
+	/// <summary>
+	/// 遊び方
+	/// </summary>
 	void HowToPlayMode();
+	/// <summary>
+	/// ゲームを終わる
+	/// </summary>
 	void GameEndMode();
 
 
@@ -103,18 +127,6 @@ private:
 	/// </summary>
 	/// <returns>従ったらtrue</returns>
 	bool IsTriggerPushAButton();
-
-
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <returns></returns>
-	bool IsDirectionWipeEnd();
-	/// <summary>
-	/// 
-	/// </summary>
-	void ProcessDirectionWipe();
 
 private:
 

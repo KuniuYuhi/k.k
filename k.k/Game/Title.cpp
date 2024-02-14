@@ -44,7 +44,8 @@ namespace {
     const Vector3 DEFAULT_DIRECTION_LIGHT_COLOR = { 0.5f,0.5f,0.5f };
     const Vector3 DEFAULT_DIRECTION_LIGHT_DIRECTION = { 0.57f,-0.57f,-0.57f };
 
-
+    const float SKY_CUBE_SCALE = 130.0f;
+    const float SKY_CUBE_LMINANCE = 1.01f;
 }
 
 Title::Title()
@@ -320,9 +321,15 @@ void Title::GoToPlayMode()
         //BGMボリュームを取得
         m_bgmVolume = g_soundManager->GetBGMVolume();
         //決定音再生
-        g_soundManager->InitAndPlaySoundSource(enSoundName_Decision);
+        g_soundManager->InitAndPlaySoundSource(
+            enSoundName_Decision, g_soundManager->GetSEVolume()
+        );
         //崖から飛び降りるアニメーション再生
         m_braveModel.PlayAnimation(enAnimClip_DashJamp);
+        //ダッシュ音再生
+        g_soundManager->InitAndPlaySoundSource(
+            enSoundName_DaahCliff, g_soundManager->GetSEVolume()
+        );
         //画像を表示しないようにする
         m_drawSpriteFlag = false;
     }
@@ -332,6 +339,7 @@ void Title::HowToPlayMode()
 {
     if (g_pad[0]->IsTrigger(enButtonA))
     {
+        //決定音再生
         g_soundManager->InitAndPlaySoundSource(enSoundName_Decision, g_soundManager->GetSEVolume());
         //モード決定
         m_SelectModeFlag = !m_SelectModeFlag;
@@ -385,7 +393,11 @@ void Title::ShineStar()
         //全体のステップ終わり
         m_step = enStep_End;
         //BGM再生
-        g_soundManager->InitAndPlaySoundSource(enSoundName_TitleBGM, g_soundManager->GetBGMVolume(), false, true, true);
+        g_soundManager->InitAndPlaySoundSource(
+            enSoundName_TitleBGM, 
+            g_soundManager->GetBGMVolume(), 
+            false, true, true
+        );
         break;
     default:
         break;
@@ -498,14 +510,19 @@ void Title::InitModel()
 
             return false;
         });
+
+    //アニメーションイベント用の関数を設定する。
+    m_braveModel.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+        OnAnimationEvent(clipName, eventName);
+        });
 }
 
 void Title::InitSkyCube()
 {
     m_skyCube = NewGO<SkyCube>(0, "skycube");
-    m_skyCube->SetScale(130.0f);
+    m_skyCube->SetScale(SKY_CUBE_SCALE);
     m_skyCube->SetPosition(g_vec3Zero);
-    m_skyCube->SetLuminance(1.01f);
+    m_skyCube->SetLuminance(SKY_CUBE_LMINANCE);
     m_skyCube->SetType(enSkyCubeType_DayToon_3);
     m_skyCube->Update();
 }
@@ -557,17 +574,6 @@ bool Title::IsTriggerPushAButton()
     return false;
 }
 
-bool Title::IsDirectionWipeEnd()
-{
-
-
-    return false;
-}
-
-void Title::ProcessDirectionWipe()
-{
-}
-
 void Title::InitSprite()
 {
     m_titleNameRender.Init("Assets/sprite/InGame/Title/TitleName.DDS", 1490, 420);
@@ -609,8 +615,6 @@ void Title::InitSprite()
 
 void Title::Render(RenderContext& rc)
 {
-   // m_blackOutRender.Draw(rc);
-
     if (m_drawHowToPlayFlag == true)
     {
         m_howToPlayRender.Draw(rc);
@@ -641,5 +645,19 @@ void Title::Render(RenderContext& rc)
     m_howToPlayTextRender.Draw(rc);
 
     m_gameEndTextRender.Draw(rc);
+}
+
+void Title::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+    //ジャンプスタート
+    if (wcscmp(eventName, L"JampStart") == 0)
+    {
+        //ダッシュ音停止
+        g_soundManager->StopSound(enSoundName_DaahCliff);
+        //ジャンプ音再生
+        g_soundManager->InitAndPlaySoundSource(
+            enSoundName_JampCliff, g_soundManager->GetSEVolume()
+        );
+    }
 }
 
