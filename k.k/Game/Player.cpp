@@ -9,7 +9,6 @@ namespace {
 	const Vector3 START_POSITION = { 0.0f, 0.0f, -400.0f };
 }
 
-//todo 重力
 Player::Player()
 {
 }
@@ -60,10 +59,7 @@ bool Player::IsInaction()
 	//////////////////////////////////////////////////
 	// 行動出来なくなる条件
 	////////////////////////////////////////////////// 
-	 
-	// 
-	 
-	
+
 	//勝利したかつゲーム終了後の処理が終わったなら
 	if (GameManager::GetInstance()->GetPlayerWinFlag()==true&&
 		GameManager::GetInstance()->GetGameFinishProcessEndFlag())
