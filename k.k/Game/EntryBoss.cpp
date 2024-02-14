@@ -137,21 +137,14 @@ bool EntryBoss::Start()
 	);
 
 	//スカイキューブも明るさを取得
-	m_skyLuminance = m_skyCube->GetLuminance();
-	
-	/*g_renderingEngine->SetSpotLight(
-		pointLightPos,
-		Vector3(100.0f,0.0f,100.0f),
-		Vector3(500.0f, 10.0f, 0.0f),
-		Vector3(1.0f,-1.0f,0.0f),
-		Vector3(90.0f, 40.0f, 0.0f)
-	);*/
-
+	m_skyCube->SetLuminance(END_SKY_CUBE_LMINANCE);
+	m_skyCube->Update();
 	
 	//アニメーションイベント用の関数を設定する。
 	m_model.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
+
 	//画像の読み込み
 	InitSprite();
 	//線形補間で使う始点と終点の初期化
@@ -320,8 +313,19 @@ void EntryBoss::SpriteMove()
 	//一秒超えたら次の文字に切り替える
 	if (m_time >= 1.0f)
 	{
+		//文字カウントを進める
 		m_summonerTextCount++;
+
+		//着地の音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_BossNameDon,
+			g_soundManager->GetBGMVolume()
+		);
 		m_time = 0.0f;
+	}
+	if (m_summonerTextCount == END)
+	{
+		return;
 	}
 	//座標の設定
 	m_summonerCharInfo[m_summonerTextCount].m_CharRender.SetTransForm(LerpPos, size, rot);
@@ -343,11 +347,6 @@ void EntryBoss::slowlyDarkScreen()
 	m_ambientColor = Math::Lerp(m_lightTimer, m_ambientColor, END_AMBIENT_COLOR);
 	m_finalAmbientColor = g_vec3One * m_ambientColor;
 	g_renderingEngine->SetAmbient(m_finalAmbientColor);
-
-	//空を暗くする
-	m_skyLuminance = Math::Lerp(m_lightTimer, m_skyLuminance, END_SKY_CUBE_LMINANCE);
-	m_skyCube->SetLuminance(m_skyLuminance);
-	m_skyCube->Update();
 
 	//環境光が最大まで小さくなったら
 	if (m_ambientColor <= END_AMBIENT_COLOR)
@@ -376,7 +375,7 @@ void EntryBoss::SlowlyBrightScreen()
 	g_renderingEngine->SetAmbient(m_finalAmbientColor);
 
 	//空を明るくする
-	m_skyLuminance = Math::Lerp(m_lightTimer, m_skyLuminance, START_SKY_CUBE_LMINANCE);
+	m_skyLuminance = Math::Lerp(m_lightTimer, END_SKY_CUBE_LMINANCE, START_SKY_CUBE_LMINANCE);
 	m_skyCube->SetLuminance(m_skyLuminance);
 	m_skyCube->Update();
 

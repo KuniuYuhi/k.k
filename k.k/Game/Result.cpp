@@ -195,7 +195,12 @@ void ResultSeen::Render(RenderContext& rc)
 		break;
 	}
 
-	m_goToTitleRender.Draw(rc);
+	if (m_enResultStep == enResultStep_end)
+	{
+		m_goToTitleRender.Draw(rc);
+	}
+
+	
 
 	m_resultSprite.Draw(rc);
 }

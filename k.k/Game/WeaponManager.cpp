@@ -1,10 +1,8 @@
 #include "stdafx.h"
 #include "WeaponManager.h"
 #include "SwordShield.h"
-#include "BigSword.h"
+#include "GreatSword.h"
 #include "Bow.h"
-
-//todo •Ší“ü‚è‘Ö‚¦ŠÖ”•K—vH
 
 WeaponManager* WeaponManager::m_weaponInstance = nullptr;
 
@@ -31,14 +29,11 @@ WeaponBase* WeaponManager::CreateWeapon(EnWeaponType weaponTipe)
 		return CreateSwordShield();
 		break;
 	case enWeaponType_TwoHandSword:
-		return CreateBigSword();
+		return CreateGreatSword();
 		break;
 	case enWeaponType_Bow:
 		return CreateBow();
 		break;
-		/*case enWeaponType_DoubleSwords:
-			return nullptr;
-			break;*/
 	default:
 		return nullptr;
 		break;
@@ -60,9 +55,9 @@ WeaponBase* WeaponManager::CreateSwordShield()
 	return swordshield;
 }
 
-WeaponBase* WeaponManager::CreateBigSword()
+WeaponBase* WeaponManager::CreateGreatSword()
 {
-	BigSword* bigsword = NewGO<BigSword>(0, "bigsword");
+	GreatSword* bigsword = NewGO<GreatSword>(0, "bigsword");
 	return bigsword;
 }
 

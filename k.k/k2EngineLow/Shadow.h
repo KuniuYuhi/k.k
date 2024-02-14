@@ -15,12 +15,6 @@ namespace nsK2EngineLow {
 		);
 
 		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="rc"></param>
-		//void ShadowSpriteRender(RenderContext& rc);
-
-		/// <summary>
 		/// カスケードシャドウのエリア率を設定。
 		/// </summary>
 		/// <remark>
@@ -30,7 +24,7 @@ namespace nsK2EngineLow {
 		/// カメラから10%のエリアは近距離用のシャドウマップに描画、
 		/// カメラから10%～30%のエリアは中距離用のシャドウマップに描画、
 		/// カメラから30%～80%のエリアは遠距離用のシャドウマップに描画となる。
-		/// 影の品質の調整に使ってください。
+		/// 影の品質の調整に使う
 		/// </remark>
 		/// <param name="nearArea">近影エリア率。</param>
 		void SetCascadeNearAreaRates(float nearArea, float middleArea, float farArea);
@@ -53,7 +47,7 @@ namespace nsK2EngineLow {
 		Texture& GetShadowMap(int areaNo)
 		{
 			return m_blur[areaNo].GetBokeTexture();
-			
+			//ボケていないテクスチャの取得
 			//return m_shadowMaps[areaNo].GetRenderTargetTexture();
 		}
 

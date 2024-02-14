@@ -8,6 +8,7 @@
 
 namespace {
 	const float DELETE_TIMER_LIMMIT = 2.0f;
+	const float MUL_SIZE = 7.0f;
 }
 
 DarkSpear::DarkSpear()
@@ -183,7 +184,7 @@ void DarkSpear::PlayRangeEffect()
 			m_rangeEffect[num][num2] = NewGO<EffectEmitter>(0);
 			m_rangeEffect[num][num2]->Init(InitEffect::enEffect_Meteo_Range);
 			m_rangeEffect[num][num2]->Play();
-			m_rangeEffect[num][num2]->SetScale(g_vec3One * (size * 7.0f));
+			m_rangeEffect[num][num2]->SetScale(g_vec3One * (size * MUL_SIZE));
 			m_rangeEffect[num][num2]->SetPosition(createPos);
 			m_rangeEffect[num][num2]->Update();
 		}

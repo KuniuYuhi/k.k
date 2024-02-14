@@ -268,7 +268,7 @@ protected:
 
 	int						m_angleRange = 2;				//移動するアングルの範囲
 
-	float					m_pos2Length = 0.0;				//壁と判
+	float					m_pos2Length = 0.0;				//壁と判定をとるときの距離
 
 	bool                    m_chasePlayerFlag = false;		//プレイヤーを追いかけるかのフラグ
 

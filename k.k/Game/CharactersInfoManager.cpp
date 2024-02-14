@@ -79,9 +79,6 @@ void CharactersInfoManager::SearchMonstersNearPlayer()
 		monsterNumberCount++;
 	}
 
-	//todo終わりを示すために配列に-1を格納
-
-
 	//プレイヤーに近いモンスターがいなかったら処理をしない
 	if (m_monstersNearPlayerCount == 0)
 	{
@@ -129,7 +126,6 @@ void CharactersInfoManager::SortMonsterToPlayerLength(float array[][2], int maxV
 	{
 		for (int j = i + 1; j < maxValue; j++)
 		{
-			//
 			if (array[i][0] > array[j][0])
 			{
 				//長さの入れ替え

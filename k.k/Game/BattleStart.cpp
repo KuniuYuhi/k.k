@@ -58,11 +58,14 @@ bool BattleStart::Start()
     //リムライトの無効化
    // g_renderingEngine->Use
 
+    //モデルの初期化
     InitModel();
 
-   
-    //バトルスタートの音再生
-    g_soundManager->InitAndPlaySoundSource(enSoundName_BattleStart, g_soundManager->GetBGMVolume());
+    //ジャンプ音再生
+    g_soundManager->InitAndPlaySoundSource(
+        enSoundName_Fall, g_soundManager->GetSEVolume()
+    );
+
     return true;
 }
 
@@ -178,6 +181,11 @@ void BattleStart::ProcessMoveBrave()
 
         //着地エフェクト再生
         PlayLandingEffect();
+        //着地の音再生
+        g_soundManager->InitAndPlaySoundSource(
+            enSoundName_Landing,
+            g_soundManager->GetBGMVolume()
+        );
 
         //次のステートに進む
         m_enBraveState = enBraveState_Landing;

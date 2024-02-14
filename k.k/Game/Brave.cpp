@@ -11,7 +11,7 @@
 #include "BraveStateDefendHit.h"
 #include "BraveStateHit.h"
 #include "BraveStateDie.h"
-#include "BraveStateChangeSwordShield.h"
+#include "BraveStateChangeWeapon.h"
 #include "BraveStateWin_Start.h"
 #include "BraveStateWin_Main.h"
 #include "BraveStateKnockBack.h"
@@ -19,7 +19,7 @@
 #include "Player.h"
 
 #include "SwordShield.h"
-#include "BigSword.h"
+#include "GreatSword.h"
 #include "Bow.h"
 #include "ManagerPreCompile.h"
 
@@ -28,19 +28,8 @@
 #include "CharactersInfoManager.h"
 
 namespace {
-	const float ADD_SCALE = 1.2f;
-
 	const float ROT_SPEED = 20.0f;
 	const float ROT_ONLY_SPEED = 20.0f;
-
-	const float SWORD_EFFECT_SIZE = 10.0f;
-	const Vector3 DASH_EFFECT_SIZE = { 10.0f,20.0f,8.0f };
-
-	const float KNOCKBACK_TIMER = 1.0f;
-
-	const float GRAVITY = 50.0f;
-
-	const int SKILL_ATTACK_POWER = 30;
 }
 
 Brave::Brave()
@@ -161,24 +150,24 @@ void Brave::ProcessAttack()
 	//通常攻撃
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
+		//モンスターにダメージを与えられるようにフラグをリセット
+		CharactersInfoManager::GetInstance()->SetAllMonsterDamgeHitFlag(true);
 		//向いている方向に前進するために前方向を計算
 		CalcAttackMoveSpeed();
 		//コンボ攻撃の処理
 		ProcessComboAttack();
-		//モンスターにダメージを与えられるようにフラグをリセット
-		CharactersInfoManager::GetInstance()->SetAllMonsterDamgeHitFlag(true);
 	}
 	//スキル
 	if (g_pad[0]->IsTrigger(enButtonB))
 	{
+		//モンスターにダメージを与えられるようにフラグをリセット
+		CharactersInfoManager::GetInstance()->SetAllMonsterDamgeHitFlag(true);
 		//アクションフラグをセット
 		SetIsActionFlag(true);
 		//ノックバックパワーを設定
 		SetKnockBackPower(m_mainUseWeapon.weapon->GetKnockBackPower(4));
 		//スキルのスタートアニメーションステート
 		SetNextAnimationState(enAnimationState_Skill_start);
-		//モンスターにダメージを与えられるようにフラグをリセット
-		CharactersInfoManager::GetInstance()->SetAllMonsterDamgeHitFlag(true);
 	}
 
 	
@@ -255,6 +244,12 @@ void Brave::Damage(int damage)
 
 bool Brave::IsInaction()
 {
+	//ゲーム中でないなら
+	if (GameManager::GetInstance()->GetGameSeenState() !=
+		GameManager::enGameSeenState_Game)
+	{
+		return true;
+	}
 	//行動出来なくなる条件
 	//プレイヤークラスの関数の動けない条件がtrueなら
 	if (m_player->IsInaction() == true)
@@ -386,7 +381,7 @@ void Brave::SetNextAnimationState(int nextState)
 		m_BraveState = new BraveStateDie(this);
 		break;
 	case Brave::enAnimationState_ChangeWeapon:
-		m_BraveState = new BraveStateChangeSwordShield(this);
+		m_BraveState = new BraveStateChangeWeapon(this);
 		break;
 	case Brave::enAnimationState_Win_Start:
 		m_BraveState = new BraveStateWin_Start(this);
@@ -470,6 +465,25 @@ void Brave::BeforeWeaponInfo()
 		m_currentAnimationStartIndexNo
 			= m_mainUseWeapon.weaponAnimationStartIndexNo;
 	}
+}
+
+bool Brave::IsDecisionOutcomeForState()
+{
+	//勝敗が着いたら入力を受け付けないようにする
+	if (IsInaction() == true)
+	{
+		//アニメーションが終わったら
+		if (GetModelRender().IsPlayingAnimation() == false)
+		{
+			//アイドル状態に遷移
+			ForciblyIdleAnim();
+			ProcessCommonStateTransition();
+		}
+		//決まっている
+		return true;
+	}
+	//決まっていない
+	return false;
 }
 
 void Brave::ProcessComboAttack()
@@ -748,12 +762,12 @@ void Brave::SettingWeapons()
 	m_mainUseWeapon.weapon->StartSetWeaponState(SwordShield::enWeaponState_Armed);
 
 	//サブ１はグレイトソード
-	BigSword* greatSword = NewGO<BigSword>(0, "greatsword");
+	GreatSword* greatSword = NewGO<GreatSword>(0, "greatsword");
 	m_subUseWeapon.weapon = greatSword;
 	m_subWeaponType = enWeaponType_TwoHandSword;
 	//アニメーションクリップの最初の番号を設定
 	SetCurrentAnimationStartIndexNo(m_subUseWeapon, enWeapon_Sub);
-	m_subUseWeapon.weapon->StartSetWeaponState(BigSword::enWeaponState_Stowed);
+	m_subUseWeapon.weapon->StartSetWeaponState(GreatSword::enWeaponState_Stowed);
 
 	//サブ２はボウ＆アロー
 	Bow* bowArrow = NewGO<Bow>(0, "bowarrow");
@@ -761,7 +775,7 @@ void Brave::SettingWeapons()
 	m_subWeapon2Type = enWeaponType_Bow;
 	//アニメーションクリップの最初の番号を設定
 	SetCurrentAnimationStartIndexNo(m_subUseWeapon2, enWeapon_Sub2);
-	m_subUseWeapon2.weapon->StartSetWeaponState(BigSword::enWeaponState_Stowed);
+	m_subUseWeapon2.weapon->StartSetWeaponState(GreatSword::enWeaponState_Stowed);
 
 	//現在の武器のアニメーションクリップの最初の番号
 	m_currentAnimationStartIndexNo

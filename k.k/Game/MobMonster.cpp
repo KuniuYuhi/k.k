@@ -55,10 +55,6 @@ void MobMonster::MoveMonster(CharacterController& charaCon)
 {
 	//移動速度の計算
 	m_moveSpeed = CalcVelocity(m_status, m_direction, m_chasePlayerFlag);
-	//はじきパワーを小さくする
-	//SubPassPower();
-	//はじく力を合わせる
-	//m_moveSpeed += m_passPower;
 	
 }
 
@@ -193,21 +189,9 @@ Vector3 MobMonster::SetRamdomDirection(int range, bool zeroLoopFlag)
 
 bool MobMonster::IsBumpedForest(float pos2Length)
 {
-	//todo
 	Vector3 forward = m_forward;
 	forward.Normalize();
-	/*float t = forward.Dot(g_vec3Zero);
-
-	Vector3 diff1 = m_position - forward;
-	Vector3 diff2 = m_position - g_vec3Zero;
-	diff1.Normalize();
-	diff2.Normalize();*/
-
-	/*if (diff1.Dot(diff2) >= 1.0f)
-	{
-		return false;
-	}*/
-
+	
 	if (m_direction.LengthSq() == 0.0f)
 	{
 		return false;
@@ -259,32 +243,6 @@ bool MobMonster::IsBumpedForest(float pos2Length)
 bool MobMonster::IsBumpedMonster()
 {
 	Vector3 diff = g_vec3Zero;
-
-	////フィールド上の敵のリストを取得
-	//for (auto monster : CharactersInfoManager::GetInstance()->GetMobMonsters())
-	//{
-	//	//リストの中身が自身と同じなら処理しない
-	//	if (this == monster)
-	//	{
-	//		continue;
-	//	}
-
-	//	//自身の座標から他のモンスターに向かうベクトルを計算
-	//	diff = monster->GetPosition() - m_position;
-	//	//ベクトルの長さが一定値以下なら
-	//	if (diff.Length() < MOB_MONSTER_DISTANCE)
-	//	{
-	//		return true;
-	//	}
-	//}
-	////ボスに向かうベクトルを計算
-	//diff = CharactersInfoManager::GetInstance()->GetBossInstance()->GetPosition()
-	//	- m_position;
-	////ベクトルの長さが一定値以下なら
-	//if (diff.Length() < BOSS_DISTANCE)
-	//{
-	//	return true;
-	//}
 
 	return false;
 }
@@ -385,12 +343,6 @@ bool MobMonster::IsFoundPlayerFlag()
 
 bool MobMonster::IsPlayerInAttackRange()
 {
-	//攻撃できない状態でも範囲外とする
-	/*if (IsProcessAttackEnable() != true)
-	{
-		return false;
-	}*/
-
 	//自身からプレイヤーに向かうベクトルの計算
 	Vector3 diff = m_player->GetPosition() - m_position;
 
@@ -416,22 +368,6 @@ bool MobMonster::IsPlayerInAttackRange()
 
 bool MobMonster::IsProcessAttackEnable()
 {
-	/*if (CharactersInfoManager::GetInstance()->SearchMonsterNearPlayer(this) == true)
-	{
-		return false;
-	}*/
-
-	//if (CharactersInfoManager::GetInstance()->GetMonstersNearPlayerCount() >=
-	//	MONSTER_NEAR_PLAYER_COUNT_LIMMIT)
-	//{
-	//	//プレイヤーとの距離が近く、止まる距離なら
-	//	if (IsFindPlayer(120.0f) == true)
-	//	{
-	//		//
-	//		return false;
-	//	}
-	//}
-
 	//アタックフラグがセットされていたら攻撃可能
 	if (m_attackEnableFlag == true)
 	{

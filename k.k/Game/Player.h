@@ -239,7 +239,14 @@ public:
 	{
 		return m_brave->GetWeapon(enWeapon_Main)->GetStatus().GetMaxEndrance();
 	}
-
+	/// <summary>
+	/// ƒLƒƒƒ‰ƒRƒ“‚Ìæ“¾
+	/// </summary>
+	/// <returns></returns>
+	CharacterController& GetCharacterController()
+	{
+		return m_brave->GetCharacterController();
+	}
 
 private:
 	/// <summary>

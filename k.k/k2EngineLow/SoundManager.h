@@ -2,7 +2,6 @@
 
 namespace nsK2EngineLow {
 
-	//todo 同じ番号のサウンドソース全てが参照されてしまう。製作者の名前あり？
 	//todo 同じ番号のサウンドソースが複数あると望んだサウンドソースが取得できない
 
 	/// <summary>
@@ -10,45 +9,61 @@ namespace nsK2EngineLow {
 	/// </summary>
 	enum EnSoundName
 	{
-		//アウトゲーム
-		enSoundName_Decision,					//決定
-		enSoundName_Select,						//選択
+		////////////////////////////////////////////////////////////////
 		//BGM
+		////////////////////////////////////////////////////////////////
 		enSoundName_TitleBGM,
 		enSoundName_BattleBGM,
-		//タイトル関連
+		////////////////////////////////////////////////////////////////
+		//タイトル
+		////////////////////////////////////////////////////////////////
+		enSoundName_Decision,					//決定
+		enSoundName_Select,						//選択
 		enSoundName_StarShine,					//剣のキラーンのやつ
-
+		enSoundName_DaahCliff,					//ダッシュ
+		enSoundName_JampCliff,					//ジャンプ
+		////////////////////////////////////////////////////////////////
+		//勇者登場
+		////////////////////////////////////////////////////////////////
+		enSoundName_Fall,						//落下中
+		enSoundName_Landing,					//着地
+		////////////////////////////////////////////////////////////////
 		//ボス登場
+		////////////////////////////////////////////////////////////////
 		enSoundName_Gogogo,						//ゴゴゴゴゴゴゴ
 		enSoundName_FogRemoval,					//霧払い
+		enSoundName_BossNameDon,				//ボスの名前出すときのドン
+		////////////////////////////////////////////////////////////////
+		//リザルト
+		////////////////////////////////////////////////////////////////
+		enSoundName_GameClear,					//ゲームクリア
+		enSoundName_GameOver,					//ゲームオーバー
 
-		//インゲーム
-		enSoundName_BattleStart,				//バトルスタート
-
-		//ゲーム終了
-		enSoundName_GameClear,
-		enSoundName_GameOver,
 		//SE
-		//プレイヤー側
-		enSoundName_ChangeWeapon,
+		 
+		////////////////////////////////////////////////////////////////
+		//プレイヤー
+		////////////////////////////////////////////////////////////////
+		enSoundName_ChangeWeapon,				//武器の切り替え
 		//ソード＆シールドの音
-		enSoundName_SwordShieldCombo_1_2,
-		enSoundName_SwordShieldCombo_3,
-		enSoundName_SwordShieldSkillRising,
-		enSoundName_SwordShieldSkillAttack,
+		enSoundName_SwordShieldCombo_1_2,		//
+		enSoundName_SwordShieldCombo_3,			//
+		enSoundName_SwordShieldSkillRising,		//
+		enSoundName_SwordShieldSkillAttack,		//
 		//シールドの音
-		enSoundName_SwordShieldDefendHit,
+		enSoundName_SwordShieldDefendHit,		//
 		
 		//両手剣の音
-		enSoundName_GreatSwordCombo_1_2,
-		enSoundName_GreatSwordCombo_3,
-		enSoundName_GreatSwordSkillRising,
-		enSoundName_GreatSwordSkillAttack,
+		enSoundName_GreatSwordCombo_1_2,		//
+		enSoundName_GreatSwordCombo_3,			//
+		enSoundName_GreatSwordSkillRising,		//
+		enSoundName_GreatSwordSkillAttack,		//
 
 		//ボウ＆アローの音
-		enSoundName_BowArrowSkillCharge,
-		enSoundName_BowArrowSkillAttack,
+		enSoundName_BowArrowNormalShot,			//
+		enSoundName_BowArrowSkillCharge,		//
+		enSoundName_BowArrowSkillAttack,		//
+
 
 		//モンスター側
 		enSoundName_Boss_Warp,					//ボスのワープ
@@ -68,6 +83,9 @@ namespace nsK2EngineLow {
 		enSoundName_Boss_Summon_start,			//召喚の瞬間
 		enSoundName_Boss_KnockBackWind,			//ノックバックの風
 		enSoundName_Boss_Break_SuperArmor,		//スーパーアーマーブレイク
+
+
+
 
 		enSoundName_Num
 	};
@@ -182,7 +200,7 @@ namespace nsK2EngineLow {
 		std::vector<SoundSource*> m_soundSourceList;
 
 		const float m_defaultSEVolume = 4.0f;
-		const float m_defaultBGMVolume = 2.5f;
+		const float m_defaultBGMVolume = 4.0f;
 
 		float m_seVolume = m_defaultSEVolume;
 		float m_bgmVolume = m_defaultBGMVolume;

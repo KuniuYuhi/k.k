@@ -9,6 +9,13 @@ namespace {
 	const float DELETE_TIMETR_LIMMIT = 2.0f;
 
 	const int ATTACK = 25;
+
+	const float SCALE_Small = 1.5f;
+	const float SCALE_Medium = 2.0f;
+	const float SCALE_Large = 3.0f;
+
+	const float DEFAULT_MUL_SIZE = 0.5f;
+	const float MUL_CURRENT_SIZE = 3.0f;
 }
 
 DarkSpearObj::DarkSpearObj()
@@ -46,14 +53,6 @@ bool DarkSpearObj::Start()
 
 void DarkSpearObj::Update()
 {
-	//勝敗が決まったら削除
-	/*if (GameManager::GetInstance()->GetOutComeState() !=
-		GameManager::enOutComeState_None)
-	{
-		DeleteGO(this);
-		return;
-	}*/
-
 	//消去する時間になったら消す
 	if (m_deleteTimer > DELETE_TIMETR_LIMMIT)
 	{
@@ -63,7 +62,7 @@ void DarkSpearObj::Update()
 	{
 		m_deleteTimer += g_gameTime->GetFrameDeltaTime();
 	}
-
+	//サイズを変更する
 	ChangeSizeDarkSpearObj();
 
 }
@@ -73,13 +72,13 @@ void DarkSpearObj::SetMaxScale(EnMaxScaleSize maxScaleSize)
 	switch (maxScaleSize)
 	{
 	case DarkSpearObj::enMaxScaleSize_Small:
-		m_maxScale *= 1.5f;
+		m_maxScale *= SCALE_Small;
 		break;
 	case DarkSpearObj::enMaxScaleSize_Medium:
-		m_maxScale *= 2.0f;
+		m_maxScale *= SCALE_Medium;
 		break;
 	case DarkSpearObj::enMaxScaleSize_Large:
-		m_maxScale *= 3.0f;
+		m_maxScale *= SCALE_Large;
 		break;
 	default:std::abort();
 		break;
@@ -91,13 +90,13 @@ void DarkSpearObj::SetMaxScale(int sizeNumer)
 	switch (sizeNumer)
 	{
 	case DarkSpearObj::enMaxScaleSize_Small:
-		m_maxScale *= 1.5f;
+		m_maxScale *= SCALE_Small;
 		break;
 	case DarkSpearObj::enMaxScaleSize_Medium:
-		m_maxScale *= 2.0f;
+		m_maxScale *= SCALE_Medium;
 		break;
 	case DarkSpearObj::enMaxScaleSize_Large:
-		m_maxScale *= 3.0f;
+		m_maxScale *= SCALE_Large;
 		break;
 	default:std::abort();
 		break;
@@ -134,9 +133,9 @@ void DarkSpearObj::CreateCollision()
 void DarkSpearObj::ChangeSizeDarkSpearObj()
 {
 	//現在のサイズを決める
-	float mulSize = 0.5f * sin(m_deleteTimer * 3.0f);
+	float mulSize = DEFAULT_MUL_SIZE * sin(m_deleteTimer * MUL_CURRENT_SIZE);
 
-	float currentSize = m_maxScale * mulSize * 3.0f;
+	float currentSize = m_maxScale * mulSize * MUL_CURRENT_SIZE;
 
 	m_scale = g_vec3One * currentSize;
 

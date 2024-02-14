@@ -9,8 +9,8 @@ public:
 	DarkWall();
 	~DarkWall();
 
-	bool Start();
-	void Update();
+	bool Start() override;
+	void Update() override;
 	
 	/// <summary>
 	/// エフェクトの再生
@@ -34,7 +34,7 @@ private:
 	Vector3							m_collisionPosition = Vector3::Zero;
 	Quaternion						m_rotation = Quaternion::Identity;
 
-	CollisionObject*				m_collision;
+	CollisionObject*				m_collision = nullptr;
 
 	const float						m_speed = 50.0f;
 

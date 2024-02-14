@@ -93,5 +93,7 @@ private:
 
 	bool m_addDsitanceFlag = false;
 
+	int m_oldDamageCount = 0;
+
 };
 

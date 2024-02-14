@@ -42,6 +42,10 @@ public:
 		spriterender.Update();
 	}
 
+	/// <summary>
+	/// 円形ワイプ終了フラグを取得
+	/// </summary>
+	/// <returns></returns>
 	bool GetRoundWipeEndFlag()
 	{
 		return m_roundWipeEndFlag;
@@ -83,15 +87,15 @@ public:
 	};
 
 	/// <summary>
-	/// 
+	/// ゲームクリアの処理
 	/// </summary>
 	void OnProcessGameClearMainTranstion();
 	/// <summary>
-	/// 
+	/// ゲームオーバーの処理
 	/// </summary>
 	void OnProcessGameOverMainTranstion();
 	/// <summary>
-	/// 
+	/// 終了時の処理
 	/// </summary>
 	void OnProcessEndTranstion();
 

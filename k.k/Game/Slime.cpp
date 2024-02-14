@@ -32,6 +32,9 @@ namespace {
 	const float POS2_LENGTH = 30.0f;
 	const float ROT_SPEED = 7.5f;
 	const float SKILL_TIMER_LIMMIT = 8.0f;
+
+	const float MUL_SCALE = 1.3f;
+	const float MUL_COLLISION_SIZE = 17.0f;
 }
 
 Slime::Slime()
@@ -48,7 +51,7 @@ Slime::Slime()
 
 	m_pos2Length = POS2_LENGTH;
 
-	m_scale *= 1.3f;
+	m_scale *= MUL_SCALE;
 
 	m_skillUsableLimmit = SKILL_TIMER_LIMMIT;
 	m_skillAttackRange = SKILL_ATTACK_RANGE;
@@ -214,23 +217,6 @@ bool Slime::IsStopProcessing()
 		return true;
 	}
 
-	////ノックバック中なら
-	//if (GetKnockBackFlag() == true)
-	//{
-	//	//ノックバックの処理をするなら
-	//	if (IsKnockingBack(
-	//		m_moveSpeed, m_knockBackTimer) == true)
-	//	{
-	//		//座標を移動
-	//		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-	//		return true;
-	//	}
-	//	else
-	//	{
-	//		SetKnockBackFlag(false);
-	//	}
-	//}
-
 	//それ以外なら
 	return false;
 }
@@ -242,7 +228,7 @@ void Slime::CreateCollision()
 	m_headCollision->CreateSphere(
 		m_position,
 		m_rotation,
-		17.0f
+		MUL_COLLISION_SIZE
 	);
 	//ワールド座標取得
 	Matrix HeadMatrix = m_modelRender.GetBone(m_attackBoonId)->GetWorldMatrix();
@@ -406,15 +392,10 @@ void Slime::OnProcessDamageStateTransition()
 {
 	if (GetKnockBackFlag() == false)
 	{
-		//ヒットアニメーションが終わったのでダメージを受けられるようにする
-		//SetDamageHitEnableFlag(true);
 		//何フレームか硬直させてから
 		//硬直が終わったら
 		if (IsKnockBackStiffness() == false)
 		{
-			//todo ノックバックで動いた方向と逆を向く
-			//m_moveSpeed *= -1.0f;
-
 			//共通の状態遷移処理に移行
 			ProcessCommonStateTransition();
 		}

@@ -173,20 +173,6 @@ public:
 	void DeleteBossClass();
 
 	/// <summary>
-	/// ゲームの現在のステートと検索したいステートが同じか判定
-	/// </summary>
-	/// <param name="searchGameState">検索したいゲームステート</param>
-	/// <returns>trueで同じ、falseで違う</returns>
-	/*bool IsMatchGameState(EnGameState searchGameState)
-	{
-		if (GetNowGameState() == searchGameState)
-		{
-			return true;
-		}
-		return false;
-	}*/
-
-	/// <summary>
 	/// フェーズタイマーの取得
 	/// </summary>
 	/// <returns></returns>
@@ -226,7 +212,11 @@ public:
 	/// <param name="flag"></param>
 	void SetPlayerWinFlag(bool flag)
 	{
-		m_playerWinFlag = flag;
+		if (m_playerWinFlag != true)
+		{
+			m_playerWinFlag = flag;
+		}
+		
 	}
 	const bool& GetPlayerWinFlag() const
 	{
@@ -356,7 +346,7 @@ private:
 
 	EnDeleteAndCreateMonstersState m_enDAndCMonstersState = enMonsters_Create;
 
-	float m_minute = 3.0f;			//制限時間
+	float m_minute = 5.0f;			//制限時間
 	float m_second = 0.0f;
 
 	bool m_playerWinFlag = false;

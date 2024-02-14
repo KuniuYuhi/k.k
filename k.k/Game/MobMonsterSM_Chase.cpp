@@ -73,8 +73,6 @@ void MobMonsterSM_Chase::ProcessAttackState()
 
 void MobMonsterSM_Chase::ProcessChase()
 {
-
-
 	//攻撃範囲内にプレイヤーがいるなら
 	if (m_mobMonster->IsPlayerInAttackRange() == true)
 	{
@@ -83,19 +81,6 @@ void MobMonsterSM_Chase::ProcessChase()
 	}
 	else
 	{
-		
-		//if (CharactersInfoManager::GetInstance()->
-		//	SearchMonsterNearPlayer(m_mobMonster)
-		//	== true
-		//	)
-		//{
-		//	//十分近づいているので待機
-		//	m_mobMonster->SetNextAnimationState(enAninationState_Idle);
-		//	return;
-		//}
-
-		
-
 		//追いかける
 		m_mobMonster->SetNextAnimationState(enAninationState_Chase);
 	}
