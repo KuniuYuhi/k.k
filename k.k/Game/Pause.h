@@ -8,9 +8,9 @@ public:
 	Pause();
 	~Pause();
 
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
+	bool Start() override;
+	void Update() override;
+	void Render(RenderContext& rc) override;
 
 
 	/// <summary>
@@ -28,7 +28,7 @@ private:
 	/// </summary>
 	void InitSprite();
 	/// <summary>
-	/// 
+	/// ‘I‘ð
 	/// </summary>
 	void Select();
 
