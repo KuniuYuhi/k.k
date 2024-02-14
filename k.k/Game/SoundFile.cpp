@@ -33,13 +33,24 @@ void SoundFile::ResistTitleSoundFile()
 	//‘I‘ð‰¹
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_Select, "Assets/sound/SE/outGame/Select.wav");
+
+	//ƒ_ƒbƒVƒ…‚Ì‰¹
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_DaahCliff, "Assets/sound/SE/outGame/Dash.wav");
+	//ƒWƒƒƒ“ƒv‚Ì‰¹
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_JampCliff, "Assets/sound/SE/outGame/Jamp_Cllif.wav");
+
 }
 
 void SoundFile::ResistBattleStartSoundFile()
 {
-	//ƒoƒgƒ‹ƒXƒ^[ƒg
+	//—Ž‰º’†
 	g_soundEngine->ResistWaveFileBank(
-		enSoundName_BattleStart, "Assets/sound/SE/inGame/BattleStart2.wav");
+		enSoundName_Fall, "Assets/sound/SE/outGame/Fall.wav");
+	//’…’n
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_Landing, "Assets/sound/SE/outGame/Landing.wav");
 }
 
 void SoundFile::ResistEntryBossSoundFile()
@@ -49,7 +60,10 @@ void SoundFile::ResistEntryBossSoundFile()
 		enSoundName_FogRemoval, "Assets/sound/SE/inGame/FogRemoval.wav");
 	//ƒSƒSƒSƒSƒSƒSƒS
 	g_soundEngine->ResistWaveFileBank(
-		enSoundName_Gogogo, "Assets/sound/SE/inGame/gogogo_2.wav");
+		enSoundName_Gogogo, "Assets/sound/SE/inGame/gogogo.wav");
+	//ƒ{ƒX‚Ì–¼‘Oo‚·‚Æ‚«‚Ìƒhƒ“
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_BossNameDon, "Assets/sound/SE/inGame/BossNameDon.wav");
 }
 
 void SoundFile::ResistBattleSoundFile()
@@ -108,6 +122,19 @@ void SoundFile::ResistPlayerSoundFile()
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_GreatSwordSkillAttack,
 		"Assets/sound/SE/player/GreatSword/GreatSwordSkillAttack.wav");
+
+	//‹|–î‚Ì’ÊíUŒ‚
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_BowArrowNormalShot,
+		"Assets/sound/SE/player/BowArrow/ArrowNormalShot.wav");
+	//‹|–î‚ÌƒXƒLƒ‹ƒ`ƒƒ[ƒW
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_BowArrowSkillCharge,
+		"Assets/sound/SE/player/BowArrow/ArrowSkillShotCharge.wav");
+	//‹|–î‚ÌƒXƒLƒ‹UŒ‚
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_BowArrowSkillAttack,
+		"Assets/sound/SE/player/BowArrow/ArrowSkillShot.wav");
 
 }
 
