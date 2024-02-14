@@ -29,8 +29,6 @@
 #include "Mushroom.h"
 #include "TurtleShell.h"
 
-//todo リッチが消える時に送られる勝敗がいじってないのに変わっている
-
 namespace {
 
 	//スカイキューブの初期の明るさ
@@ -82,7 +80,7 @@ bool Game::Start()
 
 	//ゲーム進行マネージャークラスの生成
 	//ゲームシーンステートの設定
-	GameManager::CreateInstance(GameManager::enGameSeenState_Game);
+	GameManager::CreateInstance(GameManager::enGameSeenState_GameStart);
 	//初期化処理
 	GameManager::GetInstance()->Init();
 
@@ -98,8 +96,6 @@ bool Game::Start()
 	m_fade = FindGO<Fade>("fade");
 	//画面を明るくする
 	m_fade->StartFadeOut(2.0f);
-
-
 
 	//被写界深度の無効化
 	g_renderingEngine->DisableDof();
@@ -150,7 +146,7 @@ void Game::CreatePlayerAndCamera()
 void Game::CreateBattlePhase()
 {
 	//バトルフェーズ処理クラス生成
-	//m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
+	m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
 }
 
 void Game::InitSkyCube()
