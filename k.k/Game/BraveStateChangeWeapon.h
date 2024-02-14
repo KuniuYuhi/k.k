@@ -1,14 +1,14 @@
 #pragma once
 #include "IBraveState.h"
 
-class BraveStateChangeSwordShield :public IBraveState
+class BraveStateChangeWeapon :public IBraveState
 {
 public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="brave"></param>
-	BraveStateChangeSwordShield(Brave* brave)
+	BraveStateChangeWeapon(Brave* brave)
 		:IBraveState(brave)
 	{
 	}

@@ -1,13 +1,13 @@
 #include "stdafx.h"
-#include "BraveStateChangeSwordShield.h"
+#include "BraveStateChangeWeapon.h"
 #include "Brave.h"
 
-void BraveStateChangeSwordShield::ManageState()
+void BraveStateChangeWeapon::ManageState()
 {
 	m_brave->ProcessCommonWeaponChangeStateTransition();
 }
 
-void BraveStateChangeSwordShield::PlayAnimation()
+void BraveStateChangeWeapon::PlayAnimation()
 {
 	m_brave->GetModelRender().PlayAnimation(
 		Brave::enAnimClip_ChangeSwordShield + m_brave->GetCurrentMainWeaponAnimationStartIndexNo(), 
