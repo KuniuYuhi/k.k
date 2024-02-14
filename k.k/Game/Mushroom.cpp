@@ -30,6 +30,10 @@ namespace {
 	const float POS2_LENGTH = 30.0f;
 	const float ROT_SPEED = 8.0f;
 	const float SKILL_TIMER_LIMMIT = 5.0f;
+
+	const float MUL_SCALE = 1.3f;
+
+	const float MUL_COLLISION_SIZE = 16.0f;
 }
 
 Mushroom::Mushroom()
@@ -46,7 +50,7 @@ Mushroom::Mushroom()
 
 	m_pos2Length = POS2_LENGTH;
 
-	m_scale *= 1.3f;
+	m_scale *= MUL_SCALE;
 
 	m_skillUsableLimmit = SKILL_TIMER_LIMMIT;
 	m_skillAttackRange = SKILL_ATTACK_RANGE;
@@ -182,7 +186,7 @@ void Mushroom::CreateCollision()
 	m_headCollision->CreateSphere(
 		m_position,
 		m_rotation,
-		16.0f
+		MUL_COLLISION_SIZE
 	);
 	//ワールド座標取得
 	Matrix HeadMatrix = m_modelRender.GetBone(m_attackBoonId)->GetWorldMatrix();
@@ -220,23 +224,6 @@ bool Mushroom::IsStopProcessing()
 	{
 		return true;
 	}
-
-	//ノックバック中なら
-	//if (GetKnockBackFlag() == true)
-	//{
-	//	//ノックバックの処理をするなら
-	//	if (IsKnockingBack(
-	//		m_moveSpeed, m_knockBackTimer) == true)
-	//	{
-	//		//座標を移動
-	//		m_position = m_charaCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-	//		return true;
-	//	}
-	//	else
-	//	{
-	//		SetKnockBackFlag(false);
-	//	}
-	//}
 
 	//それ以外なら
 	return false;
@@ -411,14 +398,6 @@ void Mushroom::OnProcessDamageStateTransition()
 	}
 	//ノックバック処理
 	ProcessKnockBack(m_charaCon);
-
-	//アニメーションの再生が終わったら
-	//if (m_modelRender.IsPlayingAnimation() == false)
-	//{
-
-	//	//共通の状態遷移処理に移行
-	//	ProcessCommonStateTransition();
-	//}
 }
 
 void Mushroom::OnProcessDieStateTransition()
