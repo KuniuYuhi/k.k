@@ -98,29 +98,10 @@ bool MonsterBase::AttackInterval(const float attackintarvaltime)
 	}
 	else
 	{
+		//タイマーを加算
 		m_attackIntervalTimer += g_gameTime->GetFrameDeltaTime();
 	}
 	return false;
-	//攻撃したら
-	//if (m_attackEnableFlag == true)
-	//{
-	//	//タイマーがインターバルを超えたら
-	//	if (attackintarvaltime < m_attackIntervalTimer)
-	//	{
-	//		//攻撃可能にする
-	//		m_attackEnableFlag = false;
-	//		//タイマーをリセット
-	//		m_attackIntervalTimer = 0.0f;
-	//	}
-	//	else
-	//	{
-	//		m_attackIntervalTimer += g_gameTime->GetFrameDeltaTime();
-	//		//攻撃不可能
-	//		return false;
-	//	}
-	//}
-	////攻撃可能
-	//return true;
 }
 
 bool MonsterBase::AngleChangeTimeIntarval(float LimitTime)
@@ -138,6 +119,7 @@ bool MonsterBase::AngleChangeTimeIntarval(float LimitTime)
 		}
 		else
 		{
+			//タイマーを加算
 			m_angleChangeTimer += g_gameTime->GetFrameDeltaTime();
 		}
 	}
