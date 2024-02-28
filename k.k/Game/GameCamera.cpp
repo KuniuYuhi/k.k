@@ -2,7 +2,6 @@
 #include "GameCamera.h"
 #include "Game.h"
 #include "Player.h"
-#include "Lich.h"
 #include "GameManager.h"
 #include "CharactersInfoManager.h"
 
@@ -92,18 +91,15 @@ void GameCamera::SetBattleStartCamera()
 	CameraPosXZ.y = 0.0f;
 	//反転
 	CameraPosXZ *= -1.0f;
-	//XZ方向の
+	//XZ方向
 	CameraPosXZ *= 400.0f;
-	//Y方向の
+	//Y方向
 	Vector3 CameraPosY = Vector3::AxisY;
 	CameraPosY *= 100.0f;
 
 	//新しいカメラの座標
 	Vector3 newCameraPos = CameraPosXZ + CameraPosY;
-
-	//カメラの座標を設定
-	//m_toCameraPos.Set(newCameraPos);
-
+	//最終的なカメラの座標
 	Vector3 finalCameraPos = newCameraPos + m_target;
 
 	//視点と注視点を設定
@@ -119,7 +115,6 @@ void GameCamera::ChaseCamera(bool Reversesflag)
 	//注視点の計算
 	m_target = m_player->GetPosition();
 	m_target.y = TARGETPOS_YUP;
-	//m_target.x -= 35.0f;
 
 	Vector3 toCameraPosOld = m_toCameraPos;
 	
@@ -186,12 +181,6 @@ void GameCamera::ZoomCamera()
 		m_toCameraPos.Lerp(g_gameTime->GetFrameDeltaTime()*2.0f, m_toCameraPos, DEFAULT_TOCAMERAPOS);
 		return;
 	}
-	//todo デフォルトに戻す
-	/*if (g_pad[0]->IsPress(EnButton::))
-	{
-
-	}*/
-
 }
 
 void GameCamera::ManageState()
