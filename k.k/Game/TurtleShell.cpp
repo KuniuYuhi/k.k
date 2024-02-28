@@ -259,6 +259,8 @@ void TurtleShell::HitNormalAttack()
 		CreateDamageFont(m_damage);
 		//エフェクトを再生
 		CreateHitEffect();
+		//ヒット音の再生
+		PlayHitSound();
 	}
 	//ダメージを受けたのでフラグがtrueにならないとダメージを受けないようにする
 	SetDamageHitEnableFlag(false);

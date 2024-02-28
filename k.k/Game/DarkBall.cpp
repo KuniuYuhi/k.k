@@ -98,7 +98,7 @@ void DarkBall::Update()
 void DarkBall::Move()
 {
     //直進処理
-    MoveStraight();
+    MoveStraight(m_position);
   
     //当たり判定をオブジェクトと同じ座標に移動
     m_position.y = Y_UP;

@@ -80,7 +80,7 @@ bool Game::Start()
 
 	//ゲーム進行マネージャークラスの生成
 	//ゲームシーンステートの設定
-	GameManager::CreateInstance(GameManager::enGameSeenState_GameStart);
+	GameManager::CreateInstance(GameManager::enGameSeenState_Game);
 	//初期化処理
 	GameManager::GetInstance()->Init();
 
@@ -146,7 +146,7 @@ void Game::CreatePlayerAndCamera()
 void Game::CreateBattlePhase()
 {
 	//バトルフェーズ処理クラス生成
-	m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
+	//m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
 }
 
 void Game::InitSkyCube()

@@ -9,7 +9,7 @@ void BraveStateSkill_Main::ManageState()
 	{
 		//向いている方向に移動
 		//武器のスピードにする
-		m_brave->MoveBack(m_brave->GetWeapon(enWeapon_Main)->GetMoveBackSpeed());
+		m_brave->MoveBack(m_brave->GetWeapon(enMaxWeapons_Main)->GetMoveBackSpeed());
 	}
 
 	m_brave->ProcessSkillMainStateTransition();

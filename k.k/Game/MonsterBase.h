@@ -154,6 +154,10 @@ public:
 		return m_damageHitEnableFlag;
 	}
 
+	/// <summary>
+	/// ƒqƒbƒg‚ÌŒø‰Ê‰¹Ä¶
+	/// </summary>
+	void PlayHitSound();
 
 protected:
 	/// <summary>
