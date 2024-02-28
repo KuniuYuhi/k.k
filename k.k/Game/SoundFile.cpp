@@ -140,6 +140,10 @@ void SoundFile::ResistPlayerSoundFile()
 
 void SoundFile::ResistMonsterSoundFile()
 {
+	//被ダメージ
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_Monster_Hit, "Assets/sound/SE/monster/monster_hit.wav");
+
 	//ボスのサウンドファイル読み込み
 	ResistBossSoundFile();
 	//モブモンスターのサウンドファイル読み込み
@@ -148,9 +152,6 @@ void SoundFile::ResistMonsterSoundFile()
 
 void SoundFile::ResistBossSoundFile()
 {
-	//ボスのワープ
-	g_soundEngine->ResistWaveFileBank(
-		enSoundName_Boss_Warp, "Assets/sound/SE/monster/Warp.wav");
 	//ボスの怒りモード
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_Boss_Angry, "Assets/sound/SE/monster/Angry.wav");
