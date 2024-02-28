@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Boss.h"
-#include "Lich.h"
 
 #include "GameManager.h"
 

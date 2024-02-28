@@ -75,14 +75,13 @@ bool Title::Start()
 
     m_fade = FindGO<Fade>("fade");
 
+    //環境光の設定
     g_renderingEngine->SetAmbient(DEFAULT_AMBIENT);
+    //ディレクションライトの設定
     g_renderingEngine->SetDirLightColor(DEFAULT_DIRECTION_LIGHT_COLOR);
     g_renderingEngine->SetDirLightDirection(DEFAULT_DIRECTION_LIGHT_DIRECTION);
-
+    //リムライト使用
     g_renderingEngine->UseLimLight();
-
-    //被写界深度の無効化
-    //g_renderingEngine->DisableDof();
 
     return true;
 }
@@ -193,17 +192,20 @@ void Title::CalcAlpha()
 
 void Title::CalcAlphaAButtonText()
 {
-    //チカチカさせる
+    //[Aボタンを押す]をチカチカさせる
 
     if (m_Flag == false)
     {
+        //不透明にしていく
         m_alphaAButtonTimer += g_gameTime->GetFrameDeltaTime();
     }
     if (m_Flag == true)
     {
+        //透明にしていく
         m_alphaAButtonTimer -= g_gameTime->GetFrameDeltaTime();
     }
 
+    //フラグ反転
     if (m_alphaAButtonTimer > 1.0f)
     {
         m_Flag = !m_Flag;
@@ -226,6 +228,7 @@ void Title::MoveCursor()
         return;
     }
 
+    //カーソルを下に移動
     if (g_pad[0]->IsTrigger(enButtonDown))
     {
         g_soundManager->InitAndPlaySoundSource(enSoundName_Select,g_soundManager->GetSEVolume());
@@ -238,6 +241,7 @@ void Title::MoveCursor()
         }
         return;
     }
+    //カーソルを上に移動
     else if (g_pad[0]->IsTrigger(enButtonUp))
     {
         g_soundManager->InitAndPlaySoundSource(enSoundName_Select, g_soundManager->GetSEVolume());
@@ -283,7 +287,7 @@ void Title::CalcMuteBGMVolume()
 
 void Title::GoToPlayMode()
 {
-    //
+    //ゲームに移ることを決定したら
     if (m_goToGameFlag==true)
     {
         //バトルに入ることが決まったらBGMを徐々にミュートにする
@@ -416,6 +420,8 @@ void Title::ShineStar()
 
 void Title::SetScaleModeText()
 {
+    //カーソルが選んでいる項目のサイズを大きくする
+
     if (m_selectCursor == enMode_GoToPlay)
     {
         m_gTPScale = DICIDE_SCALE;

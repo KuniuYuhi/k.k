@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DarkWall.h"
-#include "Lich.h"
 #include "InitEffect.h"
 
 #include "Summoner.h"

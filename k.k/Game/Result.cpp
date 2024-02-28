@@ -146,7 +146,6 @@ void ResultSeen::ResultEnd()
 
 void ResultSeen::OnProcessGameClearMainTranstion()
 {
-	//todo ここ確実じゃない
 	if (g_soundManager->GetSoundSource(enSoundName_GameClear) == nullptr)
 	{
 		//音の再生が終わったら次のステップに進む
@@ -167,6 +166,7 @@ void ResultSeen::OnProcessEndTranstion()
 {
 	if (m_roundWipeStartFlag == true)
 	{
+		//円形ワイプの処理
 		ResultEnd();
 		return;
 	}

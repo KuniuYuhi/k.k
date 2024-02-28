@@ -326,7 +326,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Summon.cpp" />
     <ClCompile Include="Summoner.cpp" />
     <ClCompile Include="SummonerSM_Attack.cpp" />
     <ClCompile Include="SummonerSM_Vigilance.cpp" />
@@ -366,7 +365,6 @@
     <ClCompile Include="TurtleShellStateVictory.cpp" />
     <ClCompile Include="WeaponBase.cpp" />
     <ClCompile Include="WeaponManager.cpp" />
-    <ClCompile Include="WeaponSwitcher.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
@@ -476,7 +474,6 @@
     <ClInclude Include="SoundFile.h" />
     <ClInclude Include="Status.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Summon.h" />
     <ClInclude Include="Summoner.h" />
     <ClInclude Include="SummonerActionList.h" />
     <ClInclude Include="SummonerSM_Attack.h" />
@@ -517,7 +514,6 @@
     <ClInclude Include="TurtleShellStateVictory.h" />
     <ClInclude Include="WeaponBase.h" />
     <ClInclude Include="WeaponManager.h" />
-    <ClInclude Include="WeaponSwitcher.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

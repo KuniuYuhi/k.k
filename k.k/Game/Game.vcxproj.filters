@@ -37,9 +37,6 @@
     <Filter Include="Character\Monster\BossMonster">
       <UniqueIdentifier>{4317407a-a963-4bc5-bfff-fe1016c03c36}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\Monster\BossMonster\Lich">
-      <UniqueIdentifier>{21da61a7-d81b-459b-b221-5b31fa8ed969}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Character\Player\Brave">
       <UniqueIdentifier>{cb6cd09f-fc8e-4001-a80a-8ce928ff27df}</UniqueIdentifier>
     </Filter>
@@ -79,9 +76,6 @@
     </ClCompile>
     <ClCompile Include="Mushroom.cpp">
       <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClCompile>
-    <ClCompile Include="Summon.cpp">
-      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClCompile>
     <ClCompile Include="SlimeStateAttack.cpp">
       <Filter>Character\Monster\MobMonster\Slime</Filter>
@@ -428,7 +422,6 @@
     <ClCompile Include="Boss.cpp">
       <Filter>Character\Monster\BossMonster</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponSwitcher.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -455,9 +448,6 @@
     </ClInclude>
     <ClInclude Include="ISlimeState.h">
       <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClInclude>
-    <ClInclude Include="Summon.h">
-      <Filter>Character\Monster\BossMonster\Lich</Filter>
     </ClInclude>
     <ClInclude Include="SlimeStateAttack.h">
       <Filter>Character\Monster\MobMonster\Slime</Filter>
@@ -827,6 +817,5 @@
       <Filter>Character\Monster\BossMonster</Filter>
     </ClInclude>
     <ClInclude Include="MobMonstersList.h" />
-    <ClInclude Include="WeaponSwitcher.h" />
   </ItemGroup>
 </Project>
