@@ -155,15 +155,15 @@ void GameUI::UpdateWeapon()
 	//入れ替え確定してから処理
 	if (m_player->GetChangeWeaponCompleteFlag() == true)
 	{
-		if (m_player->GetChangeTargetUseWeapon() == enWeapon_Sub)
+		if (m_player->GetChangeTargetUseWeapon() == enMaxWeapons_Sub)
 		{
 			//切り替え対象の武器と武器のスプライトを入れ替える
-			ChangeWeapon(m_weaponSprits[enWeapon_Sub]);
+			ChangeWeapon(m_weaponSprits[enMaxWeapons_Sub]);
 		}
 		else
 		{
 			//切り替え対象の武器と武器のスプライトを入れ替える
-			ChangeWeapon(m_weaponSprits[enWeapon_Sub2]);
+			ChangeWeapon(m_weaponSprits[enMaxWeapons_Sub2]);
 		}
 		
 		//切り替えたので、フラグをリセット
@@ -174,7 +174,7 @@ void GameUI::UpdateWeapon()
 	ProcessWeaponEndranceFont();
 	
 	//画像の更新
-	for (int num = 0; num < enWeapon_num; num++)
+	for (int num = 0; num < enMaxWeapons_num; num++)
 	{
 		m_weaponSprits[num].m_weaponRender->SetPosition(m_weaponIconPos[num]);
 		m_weaponSprits[num].m_weaponRender->SetScale(m_weaponIconScale[num]);
@@ -358,8 +358,8 @@ void GameUI::ChangeWeapon(
 )
 {
 	WeaponSprits temporary;
-	temporary = m_weaponSprits[enWeapon_Main];
-	m_weaponSprits[enWeapon_Main] = changeWeaponSprite;
+	temporary = m_weaponSprits[enMaxWeapons_Main];
+	m_weaponSprits[enMaxWeapons_Main] = changeWeaponSprite;
 	changeWeaponSprite = temporary;
 }
 
@@ -457,14 +457,14 @@ void GameUI::DrawPlayerUI(RenderContext& rc)
 
 	//武器のアイコン
 	//耐久値の背景
-	for (int num = 0; num < enWeapon_num; num++)
+	for (int num = 0; num < enMaxWeapons_num; num++)
 	{
 		m_weaponSprits[num].m_weaponRender->Draw(rc);
 	}
 	//武器の耐久力
-	if (m_weaponSprits[enWeapon_Main].m_weaponEndranceRender != nullptr)
+	if (m_weaponSprits[enMaxWeapons_Main].m_weaponEndranceRender != nullptr)
 	{
-		m_weaponSprits[enWeapon_Main].m_weaponEndranceRender->Draw(rc);
+		m_weaponSprits[enMaxWeapons_Main].m_weaponEndranceRender->Draw(rc);
 	}
 	//武器の耐久値が-１より大きかったら描画
 	if (m_player->GetNowWeaponEndrance() > -1)
@@ -529,30 +529,30 @@ void GameUI::InitPlayerUI()
 
 	//メイン武器のアイコン
 	InitSpriteRender(
-		m_playerUI.m_weaponRender[enWeapon_Main],
+		m_playerUI.m_weaponRender[enMaxWeapons_Main],
 		"Assets/sprite/InGame/Character/SwordShield.DDS", 256, 256,
-		m_weaponIconPos[enWeapon_Main], m_weaponIconScale[enWeapon_Main]
+		m_weaponIconPos[enMaxWeapons_Main], m_weaponIconScale[enMaxWeapons_Main]
 	);
-	m_weaponSprits[enWeapon_Main].m_weaponRender = &m_playerUI.m_weaponRender[enWeapon_Main];
+	m_weaponSprits[enMaxWeapons_Main].m_weaponRender = &m_playerUI.m_weaponRender[enMaxWeapons_Main];
 
 	//メイン武器のフレーム
 	InitSpriteRender(
 		m_playerUI.m_mainWeaponFlameRender, "Assets/sprite/InGame/Character/MainWeaponFlame.DDS", 238, 237,
-		m_weaponIconPos[enWeapon_Main], g_vec3One * 1.1f
+		m_weaponIconPos[enMaxWeapons_Main], g_vec3One * 1.1f
 	);
 
 	//サブ武器１のアイコン
 	InitSpriteRender(
-		m_playerUI.m_weaponRender[enWeapon_Sub],
+		m_playerUI.m_weaponRender[enMaxWeapons_Sub],
 		"Assets/sprite/InGame/Character/GreatSword.DDS", 300, 300,
-		m_weaponIconPos[enWeapon_Sub], m_weaponIconScale[enWeapon_Sub]
+		m_weaponIconPos[enMaxWeapons_Sub], m_weaponIconScale[enMaxWeapons_Sub]
 	);
-	m_weaponSprits[enWeapon_Sub].m_weaponRender = &m_playerUI.m_weaponRender[enWeapon_Sub];
+	m_weaponSprits[enMaxWeapons_Sub].m_weaponRender = &m_playerUI.m_weaponRender[enMaxWeapons_Sub];
 
 	//サブ武器１のフレーム
 	InitSpriteRender(
 		m_playerUI.m_subWeaponFlameRender, "Assets/sprite/InGame/Character/SubWeaponFlame.DDS", 156, 155,
-		m_weaponIconPos[enWeapon_Sub], g_vec3One * 0.9f
+		m_weaponIconPos[enMaxWeapons_Sub], g_vec3One * 0.9f
 	);
 	//サブ武器１のコマンド
 	InitSpriteRender(
@@ -562,16 +562,16 @@ void GameUI::InitPlayerUI()
 
 	//サブ武器２のアイコン
 	InitSpriteRender(
-		m_playerUI.m_weaponRender[enWeapon_Sub2],
+		m_playerUI.m_weaponRender[enMaxWeapons_Sub2],
 		"Assets/sprite/InGame/Character/BowArrow.DDS", 290, 290,
-		m_weaponIconPos[enWeapon_Sub2], m_weaponIconScale[enWeapon_Sub2]
+		m_weaponIconPos[enMaxWeapons_Sub2], m_weaponIconScale[enMaxWeapons_Sub2]
 	);
-	m_weaponSprits[enWeapon_Sub2].m_weaponRender = &m_playerUI.m_weaponRender[enWeapon_Sub2];
+	m_weaponSprits[enMaxWeapons_Sub2].m_weaponRender = &m_playerUI.m_weaponRender[enMaxWeapons_Sub2];
 
 	//サブ武器２のフレーム
 	InitSpriteRender(
 		m_playerUI.m_sub2WeaponFlameRender, "Assets/sprite/InGame/Character/SubWeaponFlame.DDS", 156, 155,
-		m_weaponIconPos[enWeapon_Sub2], g_vec3One * 0.9f
+		m_weaponIconPos[enMaxWeapons_Sub2], g_vec3One * 0.9f
 	);
 	//サブ武器２のコマンド
 	InitSpriteRender(
@@ -580,15 +580,15 @@ void GameUI::InitPlayerUI()
 	);
 
 	//メイン武器(ソード＆シールド)の耐久値の背景
-	InitSpriteRender(m_playerUI.m_weaponEndranceRender[enWeapon_Main],
+	InitSpriteRender(m_playerUI.m_weaponEndranceRender[enMaxWeapons_Main],
 		"Assets/sprite/InGame/Character/Shield_Endurance.DDS", 134, 132,
 		ENDURANCE_SPRITE_POS, g_vec3One);
-	m_weaponSprits[enWeapon_Main].m_weaponEndranceRender = &m_playerUI.m_weaponEndranceRender[enWeapon_Main];
+	m_weaponSprits[enMaxWeapons_Main].m_weaponEndranceRender = &m_playerUI.m_weaponEndranceRender[enMaxWeapons_Main];
 	//サブ武器２(ボウ＆アロー)の耐久値の背景
-	InitSpriteRender(m_playerUI.m_weaponEndranceRender[enWeapon_Sub2],
+	InitSpriteRender(m_playerUI.m_weaponEndranceRender[enMaxWeapons_Sub2],
 		"Assets/sprite/InGame/Character/ArrowStock.DDS", 177, 182,
 		ENDURANCE_SPRITE_POS, g_vec3One);
-	m_weaponSprits[enWeapon_Sub2].m_weaponEndranceRender = &m_playerUI.m_weaponEndranceRender[enWeapon_Sub2];
+	m_weaponSprits[enMaxWeapons_Sub2].m_weaponEndranceRender = &m_playerUI.m_weaponEndranceRender[enMaxWeapons_Sub2];
 
 	//耐久力のフォント
 	InitFontRender(

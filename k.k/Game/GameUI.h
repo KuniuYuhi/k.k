@@ -216,20 +216,20 @@ private:
 		SpriteRender m_sub2WeaponFlameRender;		//サブ武器２のフレーム
 		SpriteRender m_sub2WeaponCommandRender;		//サブ武器２のコマンド
 
-		SpriteRender m_weaponRender[enWeapon_num];
-		SpriteRender m_weaponEndranceRender[enWeapon_num];
+		SpriteRender m_weaponRender[enMaxWeapons_num];
+		SpriteRender m_weaponEndranceRender[enMaxWeapons_num];
 		FontRender m_weaponEndranceFont;
 
 	};
 
-	WeaponSprits m_weaponSprits[enWeapon_num];
+	WeaponSprits m_weaponSprits[enMaxWeapons_num];
 
-	Vector3 m_weaponIconPos[enWeapon_num] = {
+	Vector3 m_weaponIconPos[enMaxWeapons_num] = {
 		{720.0f,-330.0f,0.0f},
 		{850.0f,38.0f,0.0f},
 		{850.0f,-110.0f,0.0f}
 	};
-	Vector3 m_weaponIconScale[enWeapon_num] = {
+	Vector3 m_weaponIconScale[enMaxWeapons_num] = {
 		g_vec3One * 0.8f,
 		g_vec3One * 0.5f,
 		g_vec3One * 0.5f
