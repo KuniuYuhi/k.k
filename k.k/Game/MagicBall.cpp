@@ -9,10 +9,10 @@ MagicBall::~MagicBall()
 {
 }
 
-void MagicBall::MoveStraight()
+void MagicBall::MoveStraight(Vector3& nowPosition)
 {
     //ˆÚ“®•ûŒü‚Éis
-    m_position += m_moveSpeed * g_gameTime->GetFrameDeltaTime();
+    nowPosition += m_moveSpeed * g_gameTime->GetFrameDeltaTime();
 }
 
 void MagicBall::MoveChase(Vector3 targetPosition)
