@@ -193,7 +193,7 @@ public:
 	/// 基礎スピードの取得
 	/// </summary>
 	/// <returns></returns>
-	const int& GetDefaultSpeed() const
+	const float& GetDefaultSpeed() const
 	{
 		return characterStatus.defaultSpeed;
 	}
@@ -201,7 +201,7 @@ public:
 	/// ダッシュスピードの取得
 	/// </summary>
 	/// <returns></returns>
-	const int& GetDashSpeed() const
+	const float& GetDashSpeed() const
 	{
 		return characterStatus.dashSpeed;
 	}

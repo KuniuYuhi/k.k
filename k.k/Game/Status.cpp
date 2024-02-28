@@ -56,17 +56,6 @@ void Status::InitWeaponStatus(const std::string& weaponName)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 void Status::LoadCSV(const std::string& name) {
 
 	//読み込んだcsvファイルのデータを格納するstring型
