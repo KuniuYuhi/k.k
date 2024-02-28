@@ -1,5 +1,7 @@
 #pragma once
 
+
+
 /// <summary>
 /// •Ší‚Ìí—Ş
 /// </summary>
@@ -11,10 +13,13 @@ enum EnWeaponType
 	enWeaponType_Num
 };
 
-enum EnWeapons
+/// <summary>
+/// ‚Ä‚é•Ší‚ÌÅ‘å”
+/// </summary>
+enum EnMaxWeapons
 {
-	enWeapon_Main,
-	enWeapon_Sub,
-	enWeapon_Sub2,
-	enWeapon_num
+	enMaxWeapons_Main,
+	enMaxWeapons_Sub,
+	enMaxWeapons_Sub2,
+	enMaxWeapons_num
 };
