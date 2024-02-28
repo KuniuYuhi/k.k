@@ -571,11 +571,11 @@ void SelectWeapon::GoToPlayMode()
 				{
 				case SelectWeapon::enSelectWeaponOrder_MainWeapon:
 					//•Ší‚ÌŽí—Þ‚ðƒƒCƒ“•Ší‚ÉÝ’è
-					WeaponManager::GetInstance()->SetMainWeapon(m_enWeaponTipe);
+					//WeaponManager::GetInstance()->SetMainWeapon(m_enWeaponTipe);
 					break;
 				case SelectWeapon::enSelectWeaponOrder_SubWeapon:
 					//•Ší‚ÌŽí—Þ‚ðƒTƒu•Ší‚ÉÝ’è
-					WeaponManager::GetInstance()->SetSubWeapon(m_enWeaponTipe);
+					//WeaponManager::GetInstance()->SetSubWeapon(m_enWeaponTipe);
 					break;
 				default:
 					break;
