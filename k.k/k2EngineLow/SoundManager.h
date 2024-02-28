@@ -66,7 +66,7 @@ namespace nsK2EngineLow {
 
 
 		//モンスター側
-		enSoundName_Boss_Warp,					//ボスのワープ
+		enSoundName_Monster_Hit,				//被ダメージ
 		enSoundName_Attack1,					//基本モブモンスターの攻撃１
 		enSoundName_Slime_Attack,				//スライムの攻撃
 		enSoundName_Cactus_Attack1,				//カクタスの攻撃1
