@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "WeaponManager.h"
+
+#include "WeaponBase.h"
+
 #include "SwordShield.h"
 #include "GreatSword.h"
 #include "Bow.h"
@@ -9,7 +12,7 @@ WeaponManager* WeaponManager::m_weaponInstance = nullptr;
 WeaponManager::WeaponManager()
 {
 	if (m_weaponInstance != nullptr) {
-		//インスタンスがすでに作られている。
+		//既にインスタンスがあったらエラー
 		std::abort();
 	}
 	m_weaponInstance = this;
@@ -21,49 +24,46 @@ WeaponManager::~WeaponManager()
 	m_weaponInstance = nullptr;
 }
 
-WeaponBase* WeaponManager::CreateWeapon(EnWeaponType weaponTipe)
+void WeaponManager::InitAllWeapon(int animClipNum)
 {
-	switch (weaponTipe)
-	{
-	case enWeaponType_SwordShield:
-		return CreateSwordShield();
-		break;
-	case enWeaponType_TwoHandSword:
-		return CreateGreatSword();
-		break;
-	case enWeaponType_Bow:
-		return CreateBow();
-		break;
-	default:
-		return nullptr;
-		break;
-	}
-	return nullptr;
-}
+	//武器の生成
+	CreateAllWeapon();
 
-void WeaponManager::SwapWeapons(
-	WeaponBase* mainWeapon, WeaponBase* subWeapon)
-{
-	mainWeapon->ReverseWeaponState();
-	subWeapon->ReverseWeaponState();
+	//animClipを使ってアニメーションクリップの最初の番号設定
+	SetWeaponAnimationStartIndexNo(animClipNum, enMaxWeapons_Main);
+	SetWeaponAnimationStartIndexNo(animClipNum, enMaxWeapons_Sub);
+	SetWeaponAnimationStartIndexNo(animClipNum, enMaxWeapons_Sub2);
 
 }
 
-WeaponBase* WeaponManager::CreateSwordShield()
+void WeaponManager::CreateAllWeapon()
 {
-	SwordShield* swordshield = NewGO<SwordShield>(0, "swordshield");
-	return swordshield;
+	//ソード＆シールド
+	SwordShield* swordShield = NewGO<SwordShield>(0, "swordshield");
+	m_useWeapon[enMaxWeapons_Main].weapon = swordShield;
+	//グレイトソード
+	GreatSword* greatSword = NewGO<GreatSword>(0, "greatsword");
+	m_useWeapon[enMaxWeapons_Sub].weapon = greatSword;
+	//ボウ＆アロー
+	Bow* bowArrow = NewGO<Bow>(0, "bowarrow");
+	m_useWeapon[enMaxWeapons_Sub2].weapon = bowArrow;
+
+
 }
 
-WeaponBase* WeaponManager::CreateGreatSword()
+void WeaponManager::SetWeaponAnimationStartIndexNo(int animClipNum, EnMaxWeapons setWeapon)
 {
-	GreatSword* bigsword = NewGO<GreatSword>(0, "bigsword");
-	return bigsword;
+	//武器のアニメーションクリップの最初の番号を設定
+	m_useWeapon[setWeapon].AnimationStartIndexNo = animClipNum * (int)setWeapon;
 }
 
-WeaponBase* WeaponManager::CreateBow()
+WeaponBase* WeaponManager::GetWeaponObject(EnWeaponType getWeaponType)
 {
-	Bow* bow = NewGO<Bow>(0, "bow");
-	return bow;
+	return m_useWeapon[getWeaponType].weapon;
+}
+
+WeaponBase* WeaponManager::GetWeaponObject(EnMaxWeapons getWeapon)
+{
+	return m_useWeapon[getWeapon].weapon;
 }
 
