@@ -187,6 +187,7 @@ void Summoner::Damage(int attack)
 		GameManager::GetInstance()->SetPlayerWinFlag(true);
 		//‚â‚ç‚ê‚½Žž‚Ìˆ—
 		ProcessDead();
+		return;
 	}
 }
 
@@ -197,6 +198,7 @@ void Summoner::HitNormalAttack()
 		Damage(m_player->GetAtk());
 		CreateDamageFont(m_player->GetAtk());
 		SetDamageHitEnableFlag(false);
+		PlayHitSound();
 	}
 	return;
 }

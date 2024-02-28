@@ -57,7 +57,7 @@ protected:
 	/// <summary>
 	/// ’¼iˆÚ“®ˆ—
 	/// </summary>
-	void MoveStraight();
+	void MoveStraight(Vector3& nowPosition);
 
 	/// <summary>
 	/// ’Ç”öˆÚ“®ˆ—

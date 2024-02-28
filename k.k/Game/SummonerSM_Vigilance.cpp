@@ -6,7 +6,7 @@
 #include "CharactersInfoManager.h"
 
 namespace {
-	const float WAIT_TIME = 5.0f;		//待機時間
+	const float WAIT_TIME = 500.0f;		//待機時間
 
 	const float STAY_PLAYER_LIMMIT_TIME = 20.0f;		//プレイヤーが近くにとどまっているタイマーの上限
 

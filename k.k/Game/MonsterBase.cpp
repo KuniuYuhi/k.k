@@ -126,6 +126,15 @@ bool MonsterBase::AngleChangeTimeIntarval(float LimitTime)
 	return true;
 }
 
+void MonsterBase::PlayHitSound()
+{
+	//音再生
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_Monster_Hit,
+		g_soundManager->GetSEVolume()
+	);
+}
+
 void MonsterBase::CreateDamageFont(int damage)
 {
 	//受けるダメージを表すオブジェクトを生成
@@ -182,6 +191,8 @@ void MonsterBase::HitNormalAttack()
 	//余分にダメージを与えてしまう
 	//ダメージを受けたのでフラグがtrueにならないとダメージを受けないようにする
 	SetDamageHitEnableFlag(false);
+	//ヒット音の再生
+	PlayHitSound();
 }
 
 void MonsterBase::HitSkillAttack()

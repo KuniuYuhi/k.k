@@ -422,13 +422,13 @@ public:
 	/// </summary>
 	/// <param name="enWeapon">サブかメインのステート</param>
 	/// <returns></returns>
-	WeaponBase* GetWeapon(EnWeapons enWeapon) const
+	WeaponBase* GetWeapon(EnMaxWeapons enWeapon) const
 	{
-		if (enWeapon == enWeapon_Main)
+		if (enWeapon == enMaxWeapons_Main)
 		{
 			return m_mainUseWeapon.weapon;
 		}
-		else if (enWeapon == enWeapon_Sub)
+		else if (enWeapon == enMaxWeapons_Sub)
 		{
 			return m_subUseWeapon.weapon;
 		}
@@ -475,7 +475,7 @@ public:
 	/// 切り替え対象の武器を取得
 	/// </summary>
 	/// <returns></returns>
-	const EnWeapons& GetChangeTargetUseWeapon() const
+	const EnMaxWeapons& GetChangeTargetUseWeapon() const
 	{
 		return m_changeTargetUseWeapon;
 	}
@@ -536,7 +536,7 @@ private:
 	/// メイン武器とサブ武器を入れ替える
 	/// </summary>
 	/// <param name="ChangeUseWeapon">入れ替えたいサブ武器</param>
-	void ReverseWeapon(EnWeapons changeTargetWeapon);
+	void ReverseWeapon(EnMaxWeapons changeTargetWeapon);
 	/// <summary>
 	/// UseWeapon構造体の中身を入れ替える
 	/// </summary>
@@ -575,14 +575,14 @@ private:
 	/// </summary>
 	/// <param name="animationStartInbexNo"></param>
 	/// <param name="changeTargetWeapon"></param>
-	void SettingChangeWeapon(int animationStartInbexNo, EnWeapons changeTargetWeapon);;
+	void SettingChangeWeapon(int animationStartInbexNo, EnMaxWeapons changeTargetWeapon);;
 	
 	/// <summary>
 	/// 武器のアニメーションの最初の番号を設定
 	/// </summary>
 	/// <param name="useWeapon">番号を設定したい武器</param>
 	/// <param name="weaponType">武器の種類</param>
-	void SetCurrentAnimationStartIndexNo(UseWeapon& useWeapon, EnWeapons mainOrSub);
+	void SetCurrentAnimationStartIndexNo(UseWeapon& useWeapon, EnMaxWeapons mainOrSub);
 
 	/// <summary>
 	/// 武器の種類に対応したアニメーションクリップのロード
@@ -631,7 +631,7 @@ private:
 	EnWeaponType				m_mainWeaponType = enWeaponType_Num;
 	EnWeaponType				m_subWeaponType = enWeaponType_Num;
 	EnWeaponType				m_subWeapon2Type = enWeaponType_Num;
-	EnWeapons				    m_changeTargetUseWeapon = enWeapon_num;		//切り替え対象の武器
+	EnMaxWeapons				    m_changeTargetUseWeapon = enMaxWeapons_num;		//切り替え対象の武器
 
 	UseWeapon					m_mainUseWeapon;		//メイン武器
 	UseWeapon					m_subUseWeapon;			//サブ武器

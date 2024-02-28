@@ -169,7 +169,7 @@ public:
 	/// <param name="flag"></param>
 	void SetHittableFlag(bool flag)
 	{
-		m_brave->GetWeapon(enWeapon_Main)->SetHittableFlag(flag);
+		m_brave->GetWeapon(enMaxWeapons_Main)->SetHittableFlag(flag);
 	}
 	/// <summary>
 	/// 多段ヒット攻撃がヒットしたかのフラグを取得
@@ -177,7 +177,7 @@ public:
 	/// <returns></returns>
 	const bool& GetHittableFlag() const
 	{
-		return m_brave->GetWeapon(enWeapon_Main)->GetHittableFlag();
+		return m_brave->GetWeapon(enMaxWeapons_Main)->GetHittableFlag();
 	}
 
 	/// <summary>
@@ -200,7 +200,7 @@ public:
 	/// 切り替え対象の武器を取得
 	/// </summary>
 	/// <returns></returns>
-	const EnWeapons& GetChangeTargetUseWeapon() const
+	const EnMaxWeapons& GetChangeTargetUseWeapon() const
 	{
 		return m_brave->GetChangeTargetUseWeapon();
 	}
@@ -228,7 +228,7 @@ public:
 	/// <returns></returns>
 	const int& GetNowWeaponEndrance() const
 	{
-		return m_brave->GetWeapon(enWeapon_Main)->GetStatus().GetEndurance();
+		return m_brave->GetWeapon(enMaxWeapons_Main)->GetStatus().GetEndurance();
 	}
 
 	/// <summary>
@@ -237,7 +237,7 @@ public:
 	/// <returns></returns>
 	const int& GetNowWeaponMaxEndrance() const
 	{
-		return m_brave->GetWeapon(enWeapon_Main)->GetStatus().GetMaxEndrance();
+		return m_brave->GetWeapon(enMaxWeapons_Main)->GetStatus().GetMaxEndrance();
 	}
 	/// <summary>
 	/// キャラコンの取得

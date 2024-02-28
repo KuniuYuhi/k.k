@@ -310,14 +310,14 @@ void Brave::ChangeWeapon()
 	{
 		//武器切り替えのための前準備
 		SettingChangeWeapon(
-			m_subUseWeapon.weaponAnimationStartIndexNo, enWeapon_Sub);
+			m_subUseWeapon.weaponAnimationStartIndexNo, enMaxWeapons_Sub);
 	}
 	//サブ２と武器切り替え
 	if (g_pad[0]->IsTrigger(enButtonRB1))
 	{
 		//武器切り替えのための前準備
 		SettingChangeWeapon(
-			m_subUseWeapon2.weaponAnimationStartIndexNo, enWeapon_Sub2);
+			m_subUseWeapon2.weaponAnimationStartIndexNo, enMaxWeapons_Sub2);
 	}
 }
 
@@ -692,11 +692,11 @@ bool Brave::RotationOnly()
 	return false;
 }
 
-void Brave::ReverseWeapon(EnWeapons changeTargetWeaponType)
+void Brave::ReverseWeapon(EnMaxWeapons changeTargetWeaponType)
 {
 	UseWeapon* ChangeUseSubWeapon = nullptr;
 
-	if (changeTargetWeaponType == enWeapon_Sub)
+	if (changeTargetWeaponType == enMaxWeapons_Sub)
 	{
 		//武器のサブとメインの中身を入れ替える
 		ChangeUseWeapon(m_subUseWeapon);
@@ -757,7 +757,7 @@ void Brave::SettingWeapons()
 	m_mainUseWeapon.weapon = swordShield;
 	m_mainWeaponType = enWeaponType_SwordShield;
 	//アニメーションクリップの最初の番号を設定
-	SetCurrentAnimationStartIndexNo(m_mainUseWeapon, enWeapon_Main);
+	SetCurrentAnimationStartIndexNo(m_mainUseWeapon, enMaxWeapons_Main);
 	//装備状態に設定
 	m_mainUseWeapon.weapon->StartSetWeaponState(SwordShield::enWeaponState_Armed);
 
@@ -766,7 +766,7 @@ void Brave::SettingWeapons()
 	m_subUseWeapon.weapon = greatSword;
 	m_subWeaponType = enWeaponType_TwoHandSword;
 	//アニメーションクリップの最初の番号を設定
-	SetCurrentAnimationStartIndexNo(m_subUseWeapon, enWeapon_Sub);
+	SetCurrentAnimationStartIndexNo(m_subUseWeapon, enMaxWeapons_Sub);
 	m_subUseWeapon.weapon->StartSetWeaponState(GreatSword::enWeaponState_Stowed);
 
 	//サブ２はボウ＆アロー
@@ -774,7 +774,7 @@ void Brave::SettingWeapons()
 	m_subUseWeapon2.weapon = bowArrow;
 	m_subWeapon2Type = enWeaponType_Bow;
 	//アニメーションクリップの最初の番号を設定
-	SetCurrentAnimationStartIndexNo(m_subUseWeapon2, enWeapon_Sub2);
+	SetCurrentAnimationStartIndexNo(m_subUseWeapon2, enMaxWeapons_Sub2);
 	m_subUseWeapon2.weapon->StartSetWeaponState(GreatSword::enWeaponState_Stowed);
 
 	//現在の武器のアニメーションクリップの最初の番号
@@ -786,7 +786,7 @@ void Brave::SettingWeapons()
 }
 
 void Brave::SettingChangeWeapon(
-	int animationStartInbexNo, EnWeapons changeTargetWeapon)
+	int animationStartInbexNo, EnMaxWeapons changeTargetWeapon)
 {
 	//現在の武器のアニメーションクリップの最初の番号をサブに変更
 	m_currentAnimationStartIndexNo
@@ -797,20 +797,20 @@ void Brave::SettingChangeWeapon(
 	SetIsActionFlag(true);
 }
 
-void Brave::SetCurrentAnimationStartIndexNo(UseWeapon& useWeapon, EnWeapons mainOrSub)
+void Brave::SetCurrentAnimationStartIndexNo(UseWeapon& useWeapon, EnMaxWeapons mainOrSub)
 {
 	switch (mainOrSub)
 	{
-	case enWeapon_Main:
+	case enMaxWeapons_Main:
 		useWeapon.weaponAnimationStartIndexNo = m_mainWeaponAnimationStartIndexNo;
 		break;
-	case enWeapon_Sub:
+	case enMaxWeapons_Sub:
 		useWeapon.weaponAnimationStartIndexNo = m_subWeaponAnimationStartIndexNo;
 		break;
-	case enWeapon_Sub2:
+	case enMaxWeapons_Sub2:
 		useWeapon.weaponAnimationStartIndexNo = m_subWeapon2AnimationStartIndexNo;
 		break;
-	case enWeapon_num:
+	case enMaxWeapons_num:
 		std::abort();
 		break;
 	default:

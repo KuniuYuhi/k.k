@@ -12,18 +12,37 @@ class GreatSword;
 class WeaponManager :public Noncopyable
 {
 private:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	WeaponManager();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~WeaponManager();
 public:
+
+
+
 	/// <summary>
-	/// インスタンスの作成。
+	///	武器の情報
+	/// </summary>
+	struct UseWeaponInfo
+	{
+		WeaponBase* weapon = nullptr;	//武器オブジェクト
+		int AnimationStartIndexNo = 0;	//武器のアニメーションクリップの最初の番号
+	};
+
+	/// <summary>
+	/// 武器マネージャーインスタンスを生成
 	/// </summary>
 	static void CreateInstance()
 	{
-		m_weaponInstance = new WeaponManager;
+		m_weaponInstance = new WeaponManager();
 	}
 	/// <summary>
-	/// インスタンスの破棄。
+	/// 武器マネージャーインスタンスを削除
 	/// </summary>
 	static void DeleteInstance()
 	{
@@ -31,8 +50,7 @@ public:
 		m_weaponInstance = nullptr;
 	}
 	/// <summary>
-	/// インスタンスの取得。
-	/// ウェポンマネージャーの関数を使うときはこの関数を経由する
+	/// 武器マネージャーインスタンスを取得
 	/// </summary>
 	/// <returns></returns>
 	static WeaponManager* GetInstance()
@@ -40,91 +58,68 @@ public:
 		return m_weaponInstance;
 	}
 
-	/// <summary>
-	/// 武器の生成
-	/// </summary>
-	/// <param name="weaponTipe"></param>
-	/// <returns></returns>
-	WeaponBase* CreateWeapon(EnWeaponType weaponTipe);
 
 	/// <summary>
-	/// メイン武器とサブ武器の入れ替え
+	/// 全ての武器を初期化
 	/// </summary>
-	/// <param name="mainWeapon">メイン武器</param>
-	/// <param name="subWeapon">サブ武器</param>
-	void SwapWeapons(WeaponBase* mainWeapon, WeaponBase* subWeapon);
+	/// <param name="animClipNum"></param>
+	void InitAllWeapon(int animClipNum);
+	/// <summary>
+	/// 全ての武器を生成
+	/// </summary>
+	void CreateAllWeapon();
+
+	/// <summary>
+	/// 武器のアニメーションクリップの最初の番号を設定
+	/// </summary>
+	/// <param name="animClipNum"></param>
+	/// <param name="setWeapon"></param>
+	void SetWeaponAnimationStartIndexNo(
+		int animClipNum, EnMaxWeapons setWeapon);
+
+	//武器の切り替え
+
+	//アニメーションクリップの最初の番号の入れ替え
 	
 
 	/// <summary>
-	/// メイン武器の種類を設定
+	/// 武器のオブジェクトを取得
 	/// </summary>
-	/// <param name="mainWeaponTipe"></param>
-	void SetMainWeapon(const EnWeaponType mainWeaponTipe)
-	{
-		m_selectMainWeaponType = mainWeaponTipe;
-		m_mainWeapon.m_enWeaponType = m_selectMainWeaponType;
-	}
-	/// <summary>
-	/// サブ武器の種類を設定
-	/// </summary>
-	/// <param name="subWeaponTipe"></param>
-	void SetSubWeapon(const EnWeaponType subWeaponTipe)
-	{
-		m_selectSubWeaponType = subWeaponTipe;
-		m_subWeapon.m_enWeaponType = m_selectSubWeaponType;
-	}
-	/// <summary>
-	/// メイン武器の種類の取得
-	/// </summary>
+	/// <param name="getWeaponType">武器の種類</param>
 	/// <returns></returns>
-	EnWeaponType& GetMainWeapon()
-	{
-		return m_selectMainWeaponType;
-	}
+	WeaponBase* GetWeaponObject(EnWeaponType getWeaponType);
+	
 	/// <summary>
-	/// サブ武器の種類の取得
+	/// 武器のオブジェクトを取得
 	/// </summary>
+	/// <param name="getWeaponType">武器のメインやサブ</param>
 	/// <returns></returns>
-	EnWeaponType& GetSubWeapon()
+	WeaponBase* GetWeaponObject(EnMaxWeapons getWeapon);
+
+	/// <summary>
+	/// 武器のアニメーションクリップの最初の番号を取得
+	/// </summary>
+	/// <param name="getWeapon"></param>
+	/// <returns></returns>
+	const int GetWeaponAnimationStartIndexNo(EnMaxWeapons getWeapon)
 	{
-		return m_selectSubWeaponType;
+		return m_useWeapon[getWeapon].AnimationStartIndexNo;
 	}
+
+
+	//武器の取得
 
 private:
-	/// <summary>
-	/// 剣と盾のオブジェクトの生成
-	/// </summary>
-	/// <returns></returns>
-	WeaponBase* CreateSwordShield();
-	/// <summary>
-	/// 両手剣のオブジェクトの生成
-	/// </summary>
-	/// <returns></returns>
-	WeaponBase* CreateGreatSword();
-	/// <summary>
-	/// 弓のオブジェクトの生成
-	/// </summary>
-	/// <returns></returns>
-	WeaponBase* CreateBow();
+	
+	
+
 
 private:
-	//武器の情報
-	struct WeaponInfo
-	{
-		WeaponBase* m_useWeapon = nullptr;
-		EnWeaponType m_enWeaponType = enWeaponType_Num;
-	};
 
-	WeaponInfo m_mainWeapon;										//メイン武器
-	WeaponInfo m_subWeapon;											//サブ武器
+	//使う武器の情報。武器の数。メイン、サブ
+	UseWeaponInfo m_useWeapon[enMaxWeapons_num];
 
-	 EnWeaponType m_selectMainWeaponType = enWeaponType_Num;		//メイン武器(一つめの選択)
-	 EnWeaponType m_selectSubWeaponType = enWeaponType_Num;			//サブ武器(二つめの選択)
-
-
-	static WeaponManager* m_weaponInstance;							//唯一のインスタンスのアドレスを記録する変数。
-
-
+	static WeaponManager* m_weaponInstance;
 };
 
 
