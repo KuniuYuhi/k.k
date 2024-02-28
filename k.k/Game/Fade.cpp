@@ -14,8 +14,6 @@ Fade::~Fade()
 bool Fade::Start()
 {
 	BlackSprite.Init("Assets/sprite/Fade/Fade_Black.DDS", 1920.0f, 1080.0f);
-	//àÍî‘ëOÇ…ê∂ê¨Ç∑ÇÈÇÊÇ§Ç…ÇπÇ¡ÇƒÇ¢Ç∑ÇÈ
-
 
 	BlackSprite.SetPosition(Vector3::Zero);
 	BlackSprite.SetRotation(Quaternion::Identity);
