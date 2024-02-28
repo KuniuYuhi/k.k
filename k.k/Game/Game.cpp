@@ -165,14 +165,6 @@ void Game::GoResult()
 	{
 		m_result = NewGO<ResultSeen>(0, "result");
 	}
-	//画面がリザルトの画像になった
-	//円形ワイプが終わったら
-	//todo円形ワイプの間音を小さくしていく
-	/*if (m_result->GetRoundWipeEndFlag() == true)
-	{
-		DeleteGO(this);
-	}*/
-
 	//リザルトの処理が終わったら、ゲームを終わる処理をする
 	if (m_result->GetResultEndFlag() == true)
 	{
@@ -180,8 +172,6 @@ void Game::GoResult()
 		GameManager::GetInstance()->
 			SetGameSeenState(GameManager::enGameSeenState_GameEnd);
 	}
-
-
 }
 
 bool Game::IsWinnerDecision()
@@ -292,18 +282,6 @@ void Game::OnProcessAppearanceBossTransition()
 			GameManager::enGameSeenState_Game);
 		return;
 	}
-
-	//ボスの登場ムービークラス生成
-	//if (m_entryBoss == nullptr)
-	//{
-	//	m_entryBoss = NewGO<EntryBoss>(0, "entryboss");
-	//	m_entryBoss->SetPosition(BOSS_CREATE_POSITION);
-	//	m_entryBoss->SetGame(this);
-	//	m_entryBoss->SetSkyCube(m_skyCube);
-
-	//	//プレイヤーとカメラの生成
-	//	CreatePlayerAndCamera();
-	//}
 }
 
 void Game::OnProcessGameTransition()
@@ -462,8 +440,6 @@ bool Game::IsOutcome()
 
 void Game::ProcessWin()
 {
-	//ゲームUIの削除
-	//DeleteGO(m_gameUI);
 	//カメラの削除
 	DeleteGO(m_gameCamera);
 
@@ -482,8 +458,6 @@ void Game::ProcessWin()
 
 void Game::ProcessLose()
 {
-	//ゲームUIの削除
-	//DeleteGO(m_gameUI);
 	//BGMを消し始める
 	m_muteBGMFlag = true;
 	m_bgmVolume = g_soundManager->GetBGMVolume();
