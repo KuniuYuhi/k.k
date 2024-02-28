@@ -6,7 +6,7 @@
 #include "CharactersInfoManager.h"
 
 namespace {
-	const float WAIT_TIME = 500.0f;		//待機時間
+	const float WAIT_TIME = 5.0f;		//待機時間
 
 	const float STAY_PLAYER_LIMMIT_TIME = 20.0f;		//プレイヤーが近くにとどまっているタイマーの上限
 
@@ -22,7 +22,7 @@ namespace {
 
 	const float DECIDE_ACTION_TIMER_LIMMIT = 5.0f;
 
-	const float ACCELERATE_STAY_PLAYER_TIMER_LIMMIT = 1.35f;
+	const float ACCELERATE_STAY_PLAYER_TIMER_LIMMIT = 1.25f;
 
 }
 
@@ -179,7 +179,7 @@ void SummonerSM_Vigilance::IsKnockBackTimerAccelerate()
 	if (m_oldDamageCount < m_summoner->GetDamageCount())
 	{
 		//加速タイマーを大きくする
-		m_accelerateStayPlayerTimer += m_summoner->GetDamageCount() * 0.1f;
+		m_accelerateStayPlayerTimer += m_summoner->GetDamageCount() * 0.05f;
 	}
 	//前フレームのダメージカウントを設定
 	m_oldDamageCount = m_summoner->GetDamageCount();
