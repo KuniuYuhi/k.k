@@ -22,8 +22,8 @@
 using namespace MobMonstersList;
 
 namespace {
-	const int DEFAULT_SUMMON_MOB_MONSTERS_CONUT = 7;
-	const int MAX_SUMMON_MOB_MONSTERS_CONUT = 15;
+	const int DEFAULT_SUMMON_MOB_MONSTERS_CONUT = 10;
+	const int MAX_SUMMON_MOB_MONSTERS_CONUT = 18;
 
 	const int ADD_SUMMON_MONSTER_COUNT = 2;
 	const int SUB_SUMMON_MONSTER_COUNT = 5;
@@ -353,7 +353,6 @@ MobMonster* BattlePhase::GenerateMobMonster(int priorityMobMonsterNumber)
 	MobMonster* monster = nullptr;
 	//生成するモブモンスターの番号を代入する
 	int num = 0;
-
 	//優先したいモブモンスターの番号があるならそっちの番号を優先する
 	if (priorityMobMonsterNumber >= 0)
 	{
@@ -384,7 +383,6 @@ MobMonster* BattlePhase::GenerateMobMonster(int priorityMobMonsterNumber)
 		std::abort();
 		break;
 	}
-
 
 	return monster;
 }

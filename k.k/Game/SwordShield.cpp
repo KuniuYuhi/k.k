@@ -9,7 +9,7 @@ namespace {
 	//武器が収納状態の時の座標
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
 
-	const Vector3 SWORD_COLLISION_SIZE = { 12.0f,170.0f,5.0f };
+	const Vector3 SWORD_COLLISION_SIZE = { 20.0f,240.0f,8.0f };
 	const Vector3 SHIELD_COLLISION_SIZE = { 22.0f,40.0f,16.0f };
 
 	const float SKILL_RADIUS = 60.0f;
@@ -19,7 +19,7 @@ namespace {
 	//ステータス
 	const int POWER = 30;
 
-	const float MOVE_FORWARD_SPEED = 200.0f;
+	const float MOVE_FORWARD_SPEED = 240.0f;
 
 	const float NORMAL_ATTACK_1_EFFECT_ANGLE = 225.0f;
 	

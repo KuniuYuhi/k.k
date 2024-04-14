@@ -8,7 +8,7 @@
 namespace {
 	const float MELEE_ATTACK_RANGE = 280.0f;	//近距離攻撃の範囲内
 
-	const float DARK_METEO_ACTION_POINT = 24.0f;
+	const float DARK_METEO_ACTION_POINT = 22.0f;
 
 	const float NEAR_MONSTER_LENGTH = 300.0f;
 
@@ -118,7 +118,7 @@ void SummonerSM_Attack::ProcessMeleeAttack()
 
 	int bb = rand() % 10;
 	//確率で変化
-	if (bb > 7)
+	if (bb >= 7)
 	{
 		//ダークスピア
 		m_summoner->
@@ -126,7 +126,7 @@ void SummonerSM_Attack::ProcessMeleeAttack()
 		//ダークスピア攻撃行動した後の連続攻撃タイマー
 		m_continuousAttackTimer = 1.5f;
 	}
-	else if (bb > 4)
+	else if (bb > 3)
 	{
 		//ダークウォール
 		m_summoner->
