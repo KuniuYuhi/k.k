@@ -8,7 +8,7 @@ namespace {
 	//•Ší‚ªû”[ó‘Ô‚Ì‚ÌÀ•W
 	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
 
-	const Vector3 BIG_SWORD_COLLISION_SIZE = { 18.0f,100.0f,8.0f };
+	const Vector3 BIG_SWORD_COLLISION_SIZE = { 18.0f,150.0f,8.0f };
 
 	const float SKILL_RADIUS = 80.0f;
 

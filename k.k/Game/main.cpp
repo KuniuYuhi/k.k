@@ -53,6 +53,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		g_k2EngineLow->EndFrame();
 	}
 
+	//開放しないとD3D12オブジェクト開放のエラーはなくなる
 	delete g_k2EngineLow;
 
 	return 0;

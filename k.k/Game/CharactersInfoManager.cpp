@@ -54,11 +54,12 @@ void CharactersInfoManager::SearchMonstersNearPlayer()
 	int monsterNumberCount = 0;
 
 	//追いかけるモンスターの配列。モンスターの総数とm_mobMonstersの配列の番号
-	//列行
-	std::vector<std::vector<float>> array =
-	{ {-1.0f,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f,-1.0f,-1.0f,-1.0f,-1.0f },
-	{ -1.0f,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f ,-1.0f,-1.0f,-1.0f,-1.0f,-1.0f } };
-	
+	//行
+	float line = 2;
+	//列
+	float monsterNum = m_mobMonsters.size();
+
+	std::vector<std::vector<float>> array(line, std::vector<float>(monsterNum));
 
 	for (auto monster : m_mobMonsters)
 	{
