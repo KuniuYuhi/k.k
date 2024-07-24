@@ -22,7 +22,7 @@
 using namespace MobMonstersList;
 
 namespace {
-	const int DEFAULT_SUMMON_MOB_MONSTERS_CONUT = 10;
+	const int DEFAULT_SUMMON_MOB_MONSTERS_CONUT = 2;
 	const int MAX_SUMMON_MOB_MONSTERS_CONUT = 18;
 
 	const int ADD_SUMMON_MONSTER_COUNT = 2;

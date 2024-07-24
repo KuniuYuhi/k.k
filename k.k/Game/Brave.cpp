@@ -449,6 +449,11 @@ void Brave::CalcAttackMoveSpeed()
 	//moveSpeed(ˆÚ“®•ûŒü)‚ÌŽæ“¾
 	m_moveSpeed = calcVelocity(GetStatus());
 	m_moveSpeed.y = 0.0f;
+
+	/*m_moveSpeed.Normalize();
+	m_forward = m_moveSpeed;
+	return;*/
+
 	//‘O•ûŒü‚ðÝ’è
 	m_calcCharacterForward.get()->CalcForwardOfNearMonster(
 		m_position, m_forward, m_moveSpeed, 150.0f);
