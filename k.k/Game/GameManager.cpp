@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Boss.h"
 
+
 namespace {
 	const float SECOND_MAX = 60.0f;
 
@@ -47,6 +48,47 @@ void GameManager::Init()
 	//キャラクターの情報マネージャーの生成
 	CharactersInfoManager::CreateInstance();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void GameManager::CreateBattleStartClass()
 {

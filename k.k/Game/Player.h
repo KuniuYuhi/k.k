@@ -282,5 +282,6 @@ private:
 
 	bool						m_isPlayerDeadFlag = false;		//プレイヤーがやられたかのフラグ
 
+
 };
 

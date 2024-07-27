@@ -227,6 +227,14 @@
     <ClCompile Include="AIActor.cpp" />
     <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="BattleStart.cpp" />
+    <ClCompile Include="GameSceneContext.cpp" />
+    <ClCompile Include="GameSceneManager.cpp" />
+    <ClCompile Include="GameScene_AppearanceBoss.cpp" />
+    <ClCompile Include="GameScene_Game.cpp" />
+    <ClCompile Include="GameScene_GameStart.cpp" />
+    <ClCompile Include="GameScene_Pause.cpp" />
+    <ClCompile Include="GameScene_Result.cpp" />
+    <ClCompile Include="GameScene_Title.cpp" />
     <ClCompile Include="GreatSword.cpp" />
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="BossBase.cpp" />
@@ -363,14 +371,24 @@
     <ClCompile Include="TurtleShellStatePatrol.cpp" />
     <ClCompile Include="TurtleShellStateSkill.cpp" />
     <ClCompile Include="TurtleShellStateVictory.cpp" />
+    <ClCompile Include="WaveTimer.cpp" />
     <ClCompile Include="WeaponBase.cpp" />
     <ClCompile Include="WeaponManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
     <ClInclude Include="AIActor.h" />
+    <ClInclude Include="AllGameSceneState.h" />
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="BattleStart.h" />
+    <ClInclude Include="GameSceneContext.h" />
+    <ClInclude Include="GameSceneManager.h" />
+    <ClInclude Include="GameScene_AppearanceBoss.h" />
+    <ClInclude Include="GameScene_Game.h" />
+    <ClInclude Include="GameScene_GameStart.h" />
+    <ClInclude Include="GameScene_Pause.h" />
+    <ClInclude Include="GameScene_Result.h" />
+    <ClInclude Include="GameScene_Title.h" />
     <ClInclude Include="GreatSword.h" />
     <ClInclude Include="Boss.h" />
     <ClInclude Include="BossBase.h" />
@@ -417,6 +435,7 @@
     <ClInclude Include="GameFinishCamera.h" />
     <ClInclude Include="HitDetection.h" />
     <ClInclude Include="IAttackObject.h" />
+    <ClInclude Include="IGameSceneState.h" />
     <ClInclude Include="ISummonerState.h" />
     <ClInclude Include="IBraveState.h" />
     <ClInclude Include="InitEffect.h" />
@@ -512,6 +531,7 @@
     <ClInclude Include="TurtleShellStatePatrol.h" />
     <ClInclude Include="TurtleShellStateSkill.h" />
     <ClInclude Include="TurtleShellStateVictory.h" />
+    <ClInclude Include="WaveTimer.h" />
     <ClInclude Include="WeaponBase.h" />
     <ClInclude Include="WeaponManager.h" />
   </ItemGroup>

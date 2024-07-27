@@ -184,29 +184,52 @@ void Cactus::Update()
 
 bool Cactus::IsStopProcessing()
 {
-	//ゲームステート以外なら
-	if (GameManager::GetInstance()->GetGameSeenState() !=
-		GameManager::enGameSeenState_Game)
+	if (GameSceneManager::GetInstance()->GetCurrentGameSceneState() != enGameSceneState_Game)
 	{
 		return true;
 	}
 
-	//勝利したら
-	if (GameManager::GetInstance()->GetOutComeState()
-		== GameManager::enOutComeState_PlayerLose)
+	switch (GameSceneManager::GetInstance()->GetBattleOutCome())
 	{
+	case GameSceneManager::enBattleOutCome_PlayerWin:
+		SetNextAnimationState(enAninationState_Idle);
+		return true;
+	case GameSceneManager::enBattleOutCome_PlayerLose:
 		SetWinFlag(true);
 		//攻撃中でなければ
 		SetNextAnimationState(enAnimationState_Victory);
 		return true;
+
+	default:
+		break;
 	}
-	//負けた時
-	if (GameManager::GetInstance()->GetOutComeState()
-		== GameManager::enOutComeState_PlayerWin)
-	{
-		SetNextAnimationState(enAninationState_Idle);
-		return true;
-	}
+
+
+
+	//ゲームステート以外なら
+	//if (GameManager::GetInstance()->GetGameSeenState() !=
+	//	GameManager::enGameSeenState_Game)
+	//{
+	//	return true;
+	//}
+
+	////勝利したら
+	//if (GameManager::GetInstance()->GetOutComeState()
+	//	== GameManager::enOutComeState_PlayerLose)
+	//{
+	//	SetWinFlag(true);
+	//	//攻撃中でなければ
+	//	SetNextAnimationState(enAnimationState_Victory);
+	//	return true;
+	//}
+	////負けた時
+	//if (GameManager::GetInstance()->GetOutComeState()
+	//	== GameManager::enOutComeState_PlayerWin)
+	//{
+	//	SetNextAnimationState(enAninationState_Idle);
+	//	return true;
+	//}
+
 
 	//召喚された時のアニメーションステートなら	
 	if (m_enAnimationState == enAnimationState_Appear)

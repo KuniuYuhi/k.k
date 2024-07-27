@@ -58,14 +58,13 @@ bool GameCamera::Start()
 
 void GameCamera::Update()
 {
-	if (m_game != nullptr)
+	if (GameSceneManager::GetInstance()->GetBattleOutCome() != GameSceneManager::enBattleOutCome_None)
 	{
-		ManageState();
+		return;
 	}
-	else
-	{
-		OnProcessGameTransition();
-	}
+
+
+	OnProcessGameTransition();
 	
 	CalcDirectionLight();
 }
@@ -83,6 +82,9 @@ void GameCamera::CalcDirectionLight()
 
 void GameCamera::SetBattleStartCamera()
 {
+	//カメラをリフレッシュ
+	m_springCamera.Refresh();
+
 	//注視点の計算
 	m_target = m_player->GetPosition();
 	m_target.y += TARGETPOS_YUP;
@@ -108,6 +110,9 @@ void GameCamera::SetBattleStartCamera()
 
 	//カメラの更新。
 	m_springCamera.Update();
+
+	//
+	SetBattleCameraFlag = true;
 }
 
 void GameCamera::ChaseCamera(bool Reversesflag)
@@ -183,29 +188,13 @@ void GameCamera::ZoomCamera()
 	}
 }
 
-void GameCamera::ManageState()
-{
-	//ゲームのステートによってカメラを切り替える
-	switch (GameManager::GetInstance()->GetGameSeenState())
-	{
-	case GameManager::enGameSeenState_Game:
-		//ゲーム中
-		OnProcessGameTransition();
-		break;
-	default:
-		break;
-	}
-}
 
 void GameCamera::OnProcessGameTransition()
 {
 	//最初だけ
 	if (SetBattleCameraFlag == false)
 	{
-		//リフレッシュ
-		m_springCamera.Refresh();
-		SetBattleStartCamera();
-		SetBattleCameraFlag = true;
+		return;
 	}
 	
 	//プレイヤーを追う

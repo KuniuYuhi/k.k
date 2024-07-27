@@ -8,6 +8,11 @@
 
 #include "Loading.h"
 
+#include "GameSceneManager.h"
+#include "AllGameSceneState.h"
+
+
+
 namespace {
     const float SPRITE_OFFSET = -400.0f;
 
@@ -61,6 +66,13 @@ Title::~Title()
 
 bool Title::Start()
 {
+    //ゲームマネージャーを生成
+    //シーンステートをタイトルステートに設定
+    //GameSceneManager::CreateInstanceAndSetGameSceneState(enGameSceneState_Title);
+
+
+
+
     //被写界深度の有効化
     g_renderingEngine->EnableDof();
 
@@ -88,10 +100,11 @@ bool Title::Start()
 
 void Title::Update()
 {
+    //GameSceneManager::GetInstance()->Update();
+
     StepManage();
 
     CalcAlphaAButtonText();
-
     
     m_braveModel.Update();
 }
@@ -299,7 +312,9 @@ void Title::GoToPlayMode()
             Loading* loading = NewGO<Loading>(7, "loading");
             loading->SetLoadingRoot(Loading::enLoadingRoot_TitleToGame);
 
-            //Game* game = NewGO<Game>(0, "game");
+            //次のシーンに切り替えてもよい
+            //GameSceneManager::GetInstance()->SetIsSceneChangeableFlag(true);
+
             DeleteGO(this);
         }
 

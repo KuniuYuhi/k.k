@@ -5,6 +5,9 @@
 
 #include "InitEffect.h"
 
+#include "GameSceneManager.h"
+#include "AllGameSceneState.h"
+
 namespace {
     const Vector3 BATTLE_TEXT_START_POS = { 0.0f,336.0f,0.0f };
     const Vector3 BATTLE_TEXT_END_POS = { 1650.0f,336.0f,0.0f };
@@ -250,10 +253,27 @@ void BattleStart::ProcessIdleStateTransition()
 
 void BattleStart::ProcessEndStateTransition()
 {
+    //処理が終わったなら何もしない
+    if (m_isProcessEndFlag == true)
+    {
+        return;
+    }
+
     //フェードスタートフラグがtrueでないなら処理する
     if (m_fadeStartFlag != true)
     {
         IsFadeStart();
+    }
+    else
+    {
+        if (!m_fade->IsFade())
+        {
+            //フェードイン仕切ったらゲームシーンマネージャーにシーン
+            //を切り替えても良いことを伝える
+            GameSceneManager::GetInstance()->SetIsSceneChangeableFlag(true);
+            m_isProcessEndFlag = true;
+        }
+       
     }
 }
 

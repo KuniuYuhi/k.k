@@ -3,11 +3,20 @@
 #include "MobMonster.h"
 #include "CharactersInfoManager.h"
 
+#include "GameSceneManager.h"
+
 using namespace MobMonsterInfo;
 
 void MobMonsterSM_Chase::Execute()
 {
+	if (GameSceneManager::GetInstance()->GetBattleOutCome() !=
+		GameSceneManager::enBattleOutCome_None)
+	{
+		return;
+	}
+
 	CharactersInfoManager::GetInstance()->SearchMonsterNearPlayer(m_mobMonster);
+	
 	//s“®‚ğŒˆ‚ß‚é
 	ProcessDecideAction();
 }

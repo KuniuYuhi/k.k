@@ -36,8 +36,6 @@ public:
 	/// </summary>
 	void ZoomCamera();
 
-	void ManageState();
-
 	void OnProcessGameTransition();
 
 

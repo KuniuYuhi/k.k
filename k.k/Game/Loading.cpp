@@ -4,6 +4,9 @@
 #include "Title.h"
 #include "Game.h"
 
+#include "GameSceneManager.h"
+
+
 namespace {
 	const float TIMER_LIMMIT = 2.0f;
 }
@@ -186,12 +189,14 @@ void Loading::CreateNextSeen(EnLoadingRoot loadingRoot)
 
 void Loading::CreateGame()
 {
-	Game* game = NewGO<Game>(0, "game");
+	//シーン切り替え可能かフラグをセット
+	GameSceneManager::GetInstance()->SetIsSceneChangeableFlag(true);
 }
 
 void Loading::CreateTitle()
 {
-	Title* title = NewGO<Title>(0, "title");
+	//シーン切り替え可能かフラグをセット
+	GameSceneManager::GetInstance()->SetIsSceneChangeableFlag(true);
 }
 
 void Loading::ProcessSpriteAlpha()

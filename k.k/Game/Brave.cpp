@@ -27,6 +27,12 @@
 
 #include "CharactersInfoManager.h"
 
+
+#include "GameSceneManager.h"
+#include "AllGameSceneState.h"
+
+
+
 namespace {
 	const float ROT_SPEED = 20.0f;
 	const float ROT_ONLY_SPEED = 20.0f;
@@ -67,8 +73,13 @@ bool Brave::Start()
 void Brave::Update()
 {
 	//ポーズ画面なら処理をしない
-	if (GameManager::GetInstance()->GetGameSeenState() ==
+	/*if (GameManager::GetInstance()->GetGameSeenState() ==
 		GameManager::enGameSeenState_Pause)
+	{
+		return;
+	}*/
+
+	if (GameSceneManager::GetInstance()->GetCurrentGameSceneState() == enGameSceneState_Pause)
 	{
 		return;
 	}
@@ -228,6 +239,13 @@ void Brave::Damage(int damage)
 		SetDieFlag(true);
 		//プレイヤーがやられたので負けたことをゲームマネージャーに教える
 		GameManager::GetInstance()->SetPlayerLoseFlag(true);
+
+
+		//ゲームシーンマネージャーにプレイヤーが敗北したことを伝える
+		GameSceneManager::GetInstance()->
+			SetBattleOutCome(GameSceneManager::enBattleOutCome_PlayerLose);
+		GameSceneManager::GetInstance()->SetIsSceneChangeableFlag(true);
+
 		//点滅しないようにする
 		SetInvicibleTimeFlag(false);
 		//HPを0に固定する
@@ -245,11 +263,17 @@ void Brave::Damage(int damage)
 bool Brave::IsInaction()
 {
 	//ゲーム中でないなら
-	if (GameManager::GetInstance()->GetGameSeenState() !=
+	/*if (GameManager::GetInstance()->GetGameSeenState() !=
 		GameManager::enGameSeenState_Game)
 	{
 		return true;
+	}*/
+
+	if (GameSceneManager::GetInstance()->GetCurrentGameSceneState() != enGameSceneState_Game)
+	{
+		return true;
 	}
+
 	//行動出来なくなる条件
 	//プレイヤークラスの関数の動けない条件がtrueなら
 	if (m_player->IsInaction() == true)
@@ -651,6 +675,11 @@ void Brave::ProcessDieStateTransition()
 		SetDieFlag(true);
 		//バトル終了後の処理終わり
 		GameManager::GetInstance()->SetGameFinishProcessEndFlag(true);
+
+		//ゲームシーンマネージャーにプレイヤーが敗北したことを伝える
+		/*GameSceneManager::GetInstance()->
+			SetBattleOutCome(GameSceneManager::enBattleOutCome_PlayerLose);*/
+		//GameSceneManager::GetInstance()->SetIsSceneChangeableFlag(true);
 	}
 }
 

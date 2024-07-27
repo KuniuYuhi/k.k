@@ -34,6 +34,9 @@
 #include "DarkWall.h"
 #include "ComboFinishBomb.h"
 
+#include "GameSceneManager.h"
+#include "AllGameSceneState.h"
+
 namespace {
 	const float SCALE_UP = 4.0f;		//キャラクターのサイズ
 
@@ -60,12 +63,6 @@ Summoner::Summoner()
 
 Summoner::~Summoner()
 {
-	//勝敗が決まったら場合でないなら処理しない。終わる時にエフェクトが再生されるためエラーがでるから
-	if (GameManager::GetInstance()->GetOutComeState() == GameManager::enOutComeState_None)
-	{
-		return;
-	}
-
 	//死んだときにモブモンスターを消しているので消す必要なし
 	if (GameManager::GetInstance()->GetBossDeleteOkFlag() == true)
 	{
@@ -146,29 +143,23 @@ void Summoner::ManageState()
 
 bool Summoner::IsStopProcessing()
 {
-	//ゲームステート以外なら
-	if (GameManager::GetInstance()->GetGameSeenState() !=
-		GameManager::enGameSeenState_Game)
+	if (GameSceneManager::GetInstance()->GetCurrentGameSceneState() != enGameSceneState_Game)
 	{
 		return true;
 	}
-	//勝敗決定したら
-	switch (GameManager::GetInstance()->GetOutComeState())
+
+	switch (GameSceneManager::GetInstance()->GetBattleOutCome())
 	{
-		//負けた
-	case GameManager::enOutComeState_PlayerWin:
+	case GameSceneManager::enBattleOutCome_PlayerWin:
 		//やられアニメーションステート
 		SetNextAnimationState(enAnimationState_Die);
 		m_modelRender.SetAnimationSpeed(0.7f);
 		return true;
-		break;
-
-		//勝った
-	case GameManager::enOutComeState_PlayerLose:
+	case GameSceneManager::enBattleOutCome_PlayerLose:
 		//勝利アニメーション再生
 		SetNextAnimationState(enAnimationState_Victory);
 		return true;
-		break;
+
 	default:
 		break;
 	}
@@ -185,6 +176,11 @@ void Summoner::Damage(int attack)
 	{
 		//ゲームマネージャーのプレイヤーの勝ちフラグを設定
 		GameManager::GetInstance()->SetPlayerWinFlag(true);
+
+		//ゲームシーンマネージャーにプレイヤーが勝利したことを伝える
+		GameSceneManager::GetInstance()->
+			SetBattleOutCome(GameSceneManager::enBattleOutCome_PlayerWin);
+
 		//やられた時の処理
 		ProcessDead();
 		return;

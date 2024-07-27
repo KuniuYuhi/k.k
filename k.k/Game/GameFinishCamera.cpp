@@ -6,12 +6,21 @@
 #include "GameManager.h"
 #include "CharactersInfoManager.h"
 
+#include "GameSceneManager.h"
+
+
+
+#include "Result.h"
+
+
 GameFinishCamera::GameFinishCamera()
 {
 }
 
 GameFinishCamera::~GameFinishCamera()
 {
+	DeleteGO(m_result);
+
 }
 
 bool GameFinishCamera::Start()
@@ -73,6 +82,11 @@ void GameFinishCamera::OnProcessChaseBossTransition()
 		m_springCamera.Refresh();
 		//次のステートに進む
 		m_enFinishCameraState = enFinishCameraState_ChasePlayer;
+
+
+		//リザルト画像クラスを生成
+		m_result = NewGO<ResultSeen>(0, "result");
+
 		return;
 	}
 
@@ -91,6 +105,10 @@ void GameFinishCamera::OnProcessFinishTransition()
 {
 	//全ての処理終わり
 	GameManager::GetInstance()->SetGameFinishProcessEndFlag(true);
+
+	//全ての処理が終わったのでリザルトシーンに移っても良いようにする
+	//GameSceneManager::GetInstance()->SetIsSceneChangeableFlag(true);
+
 }
 
 void GameFinishCamera::ChaseCharacterCamera(

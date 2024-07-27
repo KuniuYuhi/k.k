@@ -2,6 +2,8 @@
 #include "MonsterBase.h"
 #include "KnockBack.h"
 
+#include "GameSceneManager.h"
+#include "AllGameSceneState.h"
 
 #include "MobMonsterActionList.h"
 

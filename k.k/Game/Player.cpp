@@ -5,6 +5,11 @@
 #include "GameManager.h"
 #include "CharactersInfoManager.h"
 
+#include "GameSceneManager.h"
+#include "AllGameSceneState.h"
+
+
+
 namespace {
 	const Vector3 START_POSITION = { 0.0f, 0.0f, -400.0f };
 }
@@ -23,6 +28,7 @@ bool Player::Start()
 	//ゲームクラスと勇者クラスのインスタンスを検索
 	m_game = FindGO<Game>("game");
 
+	
 
 	m_brave = NewGO<Brave>(0, "brave");
 	m_brave->SetPosition(m_position);
@@ -53,6 +59,8 @@ bool Player::IsInaction()
 	//勝敗が決まっていたら
 	if (m_decisionOutComeFlag == true)
 	{
+		
+
 		return true;
 	}
 
@@ -81,12 +89,14 @@ bool Player::IsInaction()
 		m_brave->SetInvicibleTimeFlag(false);
 		return true;
 	}
-	//ゲーム中でないなら
-	if (GameManager::GetInstance()->GetGameSeenState() !=
-		GameManager::enGameSeenState_Game)
+
+
+	//ゲームシーンステートでやる
+	if (GameSceneManager::GetInstance()->GetCurrentGameSceneState() != enGameSceneState_Game)
 	{
 		return true;
 	}
+
 	//////////////////////////////////////////////////
 	// 行動できる
 	//////////////////////////////////////////////////

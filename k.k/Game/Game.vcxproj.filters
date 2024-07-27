@@ -52,6 +52,15 @@
     <Filter Include="AttackObject">
       <UniqueIdentifier>{a090d90b-7c4f-43ec-840f-cc22bf5e55b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Wave">
+      <UniqueIdentifier>{e989cdb3-5d93-48ad-a7d3-26a66c05d2dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\GameManager">
+      <UniqueIdentifier>{0866b6f5-5912-4f20-a7b8-7ac56bf5c050}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\GameManager\SceneState">
+      <UniqueIdentifier>{d2c93985-6b75-4da9-a01e-50bb916c4899}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -180,9 +189,6 @@
     <ClCompile Include="GreatSword.cpp">
       <Filter>Weapons</Filter>
     </ClCompile>
-    <ClCompile Include="GameManager.cpp">
-      <Filter>Manager</Filter>
-    </ClCompile>
     <ClCompile Include="WeaponManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
@@ -286,7 +292,6 @@
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
     </ClCompile>
     <ClCompile Include="Pause.cpp" />
-    <ClCompile Include="BattlePhase.cpp" />
     <ClCompile Include="GameFinishCamera.cpp" />
     <ClCompile Include="SummonerState_Angry.cpp">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
@@ -422,6 +427,35 @@
     <ClCompile Include="Boss.cpp">
       <Filter>Character\Monster\BossMonster</Filter>
     </ClCompile>
+    <ClCompile Include="BattlePhase.cpp">
+      <Filter>Wave</Filter>
+    </ClCompile>
+    <ClCompile Include="WaveTimer.cpp">
+      <Filter>Wave</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Manager\GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameSceneContext.cpp">
+      <Filter>Manager\GameManager\SceneState</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene_Game.cpp">
+      <Filter>Manager\GameManager\SceneState</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene_GameStart.cpp">
+      <Filter>Manager\GameManager\SceneState</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene_Result.cpp">
+      <Filter>Manager\GameManager\SceneState</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene_Title.cpp">
+      <Filter>Manager\GameManager\SceneState</Filter>
+    </ClCompile>
+    <ClCompile Include="GameSceneManager.cpp">
+      <Filter>Manager\GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene_Pause.cpp" />
+    <ClCompile Include="GameScene_AppearanceBoss.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -562,9 +596,6 @@
       <Filter>Weapons</Filter>
     </ClInclude>
     <ClInclude Include="MyWeapon.h" />
-    <ClInclude Include="GameManager.h">
-      <Filter>Manager</Filter>
-    </ClInclude>
     <ClInclude Include="WeaponManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
@@ -677,7 +708,6 @@
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
     </ClInclude>
     <ClInclude Include="Pause.h" />
-    <ClInclude Include="BattlePhase.h" />
     <ClInclude Include="GameFinishCamera.h" />
     <ClInclude Include="SummonerState_Warp.h">
       <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
@@ -817,5 +847,40 @@
       <Filter>Character\Monster\BossMonster</Filter>
     </ClInclude>
     <ClInclude Include="MobMonstersList.h" />
+    <ClInclude Include="BattlePhase.h">
+      <Filter>Wave</Filter>
+    </ClInclude>
+    <ClInclude Include="WaveTimer.h">
+      <Filter>Wave</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Manager\GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSceneContext.h">
+      <Filter>Manager\GameManager\SceneState</Filter>
+    </ClInclude>
+    <ClInclude Include="IGameSceneState.h">
+      <Filter>Manager\GameManager\SceneState</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene_Game.h">
+      <Filter>Manager\GameManager\SceneState</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene_GameStart.h">
+      <Filter>Manager\GameManager\SceneState</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene_Result.h">
+      <Filter>Manager\GameManager\SceneState</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene_Title.h">
+      <Filter>Manager\GameManager\SceneState</Filter>
+    </ClInclude>
+    <ClInclude Include="AllGameSceneState.h">
+      <Filter>Manager\GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSceneManager.h">
+      <Filter>Manager\GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene_Pause.h" />
+    <ClInclude Include="GameScene_AppearanceBoss.h" />
   </ItemGroup>
 </Project>

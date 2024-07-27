@@ -9,6 +9,10 @@
 #include "GameManager.h"
 #include "CharactersInfoManager.h"
 
+
+#include "GameSceneManager.h"
+#include "AllGameSceneState.h"
+
 namespace {
 
 	const Vector2 TIMER_POS = { -34.0f,522.0f };
@@ -111,6 +115,16 @@ void GameUI::Update()
 		DeleteGO(this);
 		return;
 	}
+
+
+	if (GameSceneManager::GetInstance()->GetBattleOutCome() != 
+		GameSceneManager::enBattleOutCome_None)
+	{
+		DeleteGO(this);
+		return;
+	}
+
+
 
 	//§ŒÀŠÔ
 	TimerUIUpdate();

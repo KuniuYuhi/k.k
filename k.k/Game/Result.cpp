@@ -4,6 +4,13 @@
 
 #include "GameManager.h"
 
+#include "GameSceneManager.h"
+
+#include "Loading.h"
+
+#include "Game.h"
+
+
 namespace {
 	const float WIPE_SIZE = 5.0f;
 
@@ -32,25 +39,44 @@ ResultSeen::~ResultSeen()
 
 bool ResultSeen::Start()
 {
-	switch (GameManager::GetInstance()->GetOutComeState())
+	//switch (GameManager::GetInstance()->GetOutComeState())
+	//{
+	//	//プレイヤーの勝利
+	//case GameManager::enOutComeState_PlayerWin:
+	//	SetOutcome(enOutcome_Win);
+	//	//勝利SE再生
+	//	g_soundManager->InitAndPlaySoundSource(enSoundName_GameClear);
+	//	break;
+	//	//プレイヤーの敗北
+	//case GameManager::enOutComeState_PlayerLose:
+	//	SetOutcome(enOutcome_Lose);
+	//	//敗北SE再生
+	//	g_soundManager->InitAndPlaySoundSource(enSoundName_GameOver);
+	//	break;
+
+	//default:
+	//	std::abort();
+	//	break;
+	//}
+
+	switch (GameSceneManager::GetInstance()->GetBattleOutCome())
 	{
-		//プレイヤーの勝利
-	case GameManager::enOutComeState_PlayerWin:
+	case GameSceneManager::enBattleOutCome_PlayerWin:
 		SetOutcome(enOutcome_Win);
 		//勝利SE再生
 		g_soundManager->InitAndPlaySoundSource(enSoundName_GameClear);
 		break;
-		//プレイヤーの敗北
-	case GameManager::enOutComeState_PlayerLose:
+	case GameSceneManager::enBattleOutCome_PlayerLose:
 		SetOutcome(enOutcome_Lose);
 		//敗北SE再生
 		g_soundManager->InitAndPlaySoundSource(enSoundName_GameOver);
 		break;
-
 	default:
 		std::abort();
 		break;
 	}
+
+
 	m_resultSprite.Init("Assets/sprite/InGame/Result_Lose/Fade_Black.DDS", 1920, 1080);
 	m_resultSprite.SetRoundWipe(true);
 	m_resultSprite.SetRoundWipeStartPosition(1920.0f / 2, 1080.0f / 2);
@@ -139,8 +165,18 @@ void ResultSeen::ResultEnd()
 	//円形ワイプが終わったら
 	else
 	{
+		//ローディング画面生成
+		Loading* loading = NewGO<Loading>(0, "loading");
+		loading->SetLoadingRoot(Loading::enLoadingRoot_GameToTitle);
+
 		//ゲームを終わってタイトルに戻る
 		m_resultEndFlag = true;
+
+		Game* game = FindGO<Game>("game");
+		game->DeleteThis();
+
+		//タイトルシーンに切り替え可能にする
+		//GameSceneManager::GetInstance()->SetIsSceneChangeableFlag(true);
 	}
 }
 
@@ -164,6 +200,8 @@ void ResultSeen::OnProcessGameOverMainTranstion()
 
 void ResultSeen::OnProcessEndTranstion()
 {
+	if (m_resultEndFlag) return;
+
 	if (m_roundWipeStartFlag == true)
 	{
 		//円形ワイプの処理
