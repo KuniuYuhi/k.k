@@ -14,9 +14,6 @@
 #include "SkyCube.h"
 #include "InitEffect.h"
 
-
-
-
 #include "GameFinishCamera.h"
 
 
@@ -25,6 +22,10 @@
 
 #include "GameSceneManager.h"
 #include "AllGameSceneState.h"
+
+
+#include "CharacterMovement.h"
+
 
 
 namespace {
@@ -96,6 +97,13 @@ bool Game::Start()
 
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+
+
+	AddComponent<CharacterMovement>();
+
+	CharacterMovement* charamove = nullptr;
+	charamove = GetComponent<CharacterMovement>();
+
 
 
 	return true;

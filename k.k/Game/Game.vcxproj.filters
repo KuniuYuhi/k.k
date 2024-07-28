@@ -25,6 +25,9 @@
     <Filter Include="Characters">
       <UniqueIdentifier>{edd10763-04bd-4799-b1ba-1576052b0094}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Component">
+      <UniqueIdentifier>{dbfd1e5e-ac6a-49a0-92bb-d586ce140ef5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -80,6 +83,7 @@
       <Filter>Characters</Filter>
     </ClCompile>
     <ClCompile Include="CharacterBase.cpp" />
+    <ClCompile Include="CharacterMovement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -142,5 +146,9 @@
       <Filter>Characters</Filter>
     </ClInclude>
     <ClInclude Include="CharacterBase.h" />
+    <ClInclude Include="CharacterMovement.h" />
+    <ClInclude Include="Component.h">
+      <Filter>Component</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -225,6 +225,7 @@
   <ItemGroup>
     <ClCompile Include="BattleStart.cpp" />
     <ClCompile Include="CharacterBase.cpp" />
+    <ClCompile Include="CharacterMovement.cpp" />
     <ClCompile Include="GameSceneContext.cpp" />
     <ClCompile Include="GameSceneManager.cpp" />
     <ClCompile Include="GameScene_AppearanceBoss.cpp" />
@@ -265,6 +266,8 @@
     <ClInclude Include="AllGameSceneState.h" />
     <ClInclude Include="BattleStart.h" />
     <ClInclude Include="CharacterBase.h" />
+    <ClInclude Include="CharacterMovement.h" />
+    <ClInclude Include="Component.h" />
     <ClInclude Include="GameSceneContext.h" />
     <ClInclude Include="GameSceneManager.h" />
     <ClInclude Include="GameScene_AppearanceBoss.h" />
