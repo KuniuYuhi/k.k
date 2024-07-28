@@ -4,8 +4,13 @@
 
 #pragma once
 
+
+#include "IComponent.h"
 #include <list>
 #include <string>
+
+
+
 namespace nsK2EngineLow {
 	class RenderContext;
 
@@ -19,6 +24,10 @@ namespace nsK2EngineLow {
 			*/
 		virtual ~IGameObject()
 		{
+			//コンポーネントリストを削除
+			for (IComponent* component : m_components) {
+				delete component;
+			}
 		}
 	public:
 
@@ -119,6 +128,37 @@ namespace nsK2EngineLow {
 			}
 			return false;
 		}
+
+
+		/// <summary>
+		/// コンポーネントを追加
+		/// </summary>
+		/// <typeparam name="T">追加するコンポーネント</typeparam>
+		template<typename T>
+		void AddComponent() 
+		{
+			m_components.emplace_back(new T());
+		}
+
+		/// <summary>
+		/// コンポーネントを探す
+		/// </summary>
+		/// <typeparam name="T">ゲットしたいコンポーネント</typeparam>
+		/// <returns>あればコンポーネントを返す。なければnullptrを返す</returns>
+		template<typename T>
+		T* GetComponent()
+		{
+			for (IComponent* component : m_components)
+			{
+				T* target = dynamic_cast<T*>(component);
+				if (target != nullptr)
+				{
+					return target;
+				}
+			}
+			return nullptr;
+		}
+
 	public:
 
 		void RenderWrapper(RenderContext& renderContext)
@@ -127,11 +167,20 @@ namespace nsK2EngineLow {
 				Render(renderContext);
 			}
 		}
-
 		void UpdateWrapper()
 		{
 			if (m_isActive && m_isStart && !m_isDead) {
 				Update();
+			}
+		}
+		void UpdateComponentsWrapper()
+		{
+			if (m_isActive && m_isStart && !m_isDead) {
+
+				for (IComponent* component : m_components)
+				{
+					component->UpdateComponent();
+				}
 			}
 		}
 		void StartWrapper()
@@ -152,5 +201,8 @@ namespace nsK2EngineLow {
 		bool m_isNewFromGameObjectManager;	//GameObjectManagerでnewされた。
 		bool m_isRegist = false;							//GameObjectManagerに登録されている？
 		bool m_isActive = true;							//Activeフラグ。
+
+		std::vector<IComponent*> m_components;			//コンポーネントリスト
+
 	};
 }
