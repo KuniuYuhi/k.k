@@ -15,6 +15,8 @@ void GameScene_GameStart::Entry()
 
 	Game* game = NewGO<Game>(0, "game");
 
+
+
 	//バトルスタートクラス作成
 	m_battleStart = NewGO<BattleStart>(0, "battlestart");
 }

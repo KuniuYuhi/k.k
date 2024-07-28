@@ -4,10 +4,9 @@
 
 #include "GameUI.h"
 #include "Game.h"
-#include "Player.h"
+
 #include "Boss.h"
-#include "GameManager.h"
-#include "CharactersInfoManager.h"
+
 
 
 #include "GameSceneManager.h"
@@ -101,7 +100,7 @@ bool GameUI::Start()
 		m_timeFlameRender, "Assets/sprite/InGame/Character/TimeFlame2.DDS", 500, 124, TIME_FLAME_POS, TIME_FLAME_SIZE
 	);
 	//現在のプレイヤーのHPを取得
-	m_nowPlayerWhiteHp = m_player->GetNowActorStatus().GetMaxHp();
+	//m_nowPlayerWhiteHp = m_player->GetNowActorStatus().GetMaxHp();
 
 	return true;
 }
@@ -109,14 +108,6 @@ bool GameUI::Start()
 void GameUI::Update()
 {
 	//勝敗が着いたら削除する
-	if (GameManager::GetInstance()->GetOutComeState() != 
-		GameManager::enOutComeState_None)
-	{
-		DeleteGO(this);
-		return;
-	}
-
-
 	if (GameSceneManager::GetInstance()->GetBattleOutCome() != 
 		GameSceneManager::enBattleOutCome_None)
 	{
@@ -167,22 +158,22 @@ void GameUI::UpdateMainStatus()
 void GameUI::UpdateWeapon()
 {
 	//入れ替え確定してから処理
-	if (m_player->GetChangeWeaponCompleteFlag() == true)
-	{
-		if (m_player->GetChangeTargetUseWeapon() == enMaxWeapons_Sub)
-		{
-			//切り替え対象の武器と武器のスプライトを入れ替える
-			ChangeWeapon(m_weaponSprits[enMaxWeapons_Sub]);
-		}
-		else
-		{
-			//切り替え対象の武器と武器のスプライトを入れ替える
-			ChangeWeapon(m_weaponSprits[enMaxWeapons_Sub2]);
-		}
-		
-		//切り替えたので、フラグをリセット
-		m_player->SetChangeWeaponCompleteFlag(false);
-	}
+	//if (m_player->GetChangeWeaponCompleteFlag() == true)
+	//{
+	//	if (m_player->GetChangeTargetUseWeapon() == enMaxWeapons_Sub)
+	//	{
+	//		//切り替え対象の武器と武器のスプライトを入れ替える
+	//		ChangeWeapon(m_weaponSprits[enMaxWeapons_Sub]);
+	//	}
+	//	else
+	//	{
+	//		//切り替え対象の武器と武器のスプライトを入れ替える
+	//		ChangeWeapon(m_weaponSprits[enMaxWeapons_Sub2]);
+	//	}
+	//	
+	//	//切り替えたので、フラグをリセット
+	//	m_player->SetChangeWeaponCompleteFlag(false);
+	//}
 
 	//耐久値のフォントの処理
 	ProcessWeaponEndranceFont();
@@ -207,12 +198,10 @@ Vector3 GameUI::CalcGaugeScale(float Maxvalue, float value)
 void GameUI::TimerUIUpdate()
 {
 	//分の取得
-	int minute = GameManager::GetInstance()->GetMinute();
-	//秒の取得
-	int second = GameManager::GetInstance()->GetSecond();
+	
 
 	wchar_t time[256];
-	swprintf_s(time, 256, L"%d:%02d", minute, second);
+	//swprintf_s(time, 256, L"%d:%02d", minute, second);
 	//テキストを設定
 	m_timerFont.SetText(time);
 }
@@ -220,37 +209,37 @@ void GameUI::TimerUIUpdate()
 void GameUI::ProcessPlayerHp()
 {
 	//最大HPと現在のHPを取得
-	int maxHP = m_player->GetNowActorStatus().GetMaxHp();
-	int nowHP = m_player->GetNowActorStatus().GetHp();
+	/*int maxHP = m_player->GetNowActorStatus().GetMaxHp();
+	int nowHP = m_player->GetNowActorStatus().GetHp();*/
 
 	//HPバーの減っていく割合。
 	Vector3 HpScale = Vector3::One;
 	//HPのスケールを計算
-	HpScale = CalcGaugeScale(maxHP, nowHP);
+	//HpScale = CalcGaugeScale(maxHP, nowHP);
 	//スケールを設定
 	m_playerUI.m_hpFrontRender.SetScale(HpScale);
 	//HPフォントの設定
 	wchar_t HP[255];
 	//現在のHPを表示
-	swprintf_s(HP, 255, L"HP      %3d", nowHP);
+	//swprintf_s(HP, 255, L"HP      %3d", nowHP);
 	//テキストを設定
 	m_playerUI.m_hpFont.SetText(HP);
 
 	//白いHPが現在のHPより小さいなら
-	if (m_nowPlayerWhiteHp < nowHP)
-	{
-		//白いHPに現在のHPを代入する
-		m_nowPlayerWhiteHp = nowHP;
-	}
-	else
-	{
-		//白いHPを減らす
-		m_nowPlayerWhiteHp -= g_gameTime->GetFrameDeltaTime() * WHITE_HP_SPEED;
-	}
+	//if (m_nowPlayerWhiteHp < nowHP)
+	//{
+	//	//白いHPに現在のHPを代入する
+	//	m_nowPlayerWhiteHp = nowHP;
+	//}
+	//else
+	//{
+	//	//白いHPを減らす
+	//	m_nowPlayerWhiteHp -= g_gameTime->GetFrameDeltaTime() * WHITE_HP_SPEED;
+	//}
 	//白いHPのスケールを計算
-	m_playerWhiteHpScale = CalcGaugeScale(maxHP, m_nowPlayerWhiteHp);
+	//m_playerWhiteHpScale = CalcGaugeScale(maxHP, m_nowPlayerWhiteHp);
 	//スケールを設定
-	m_playerUI.m_hpWhiteRender.SetScale(m_playerWhiteHpScale);
+	//m_playerUI.m_hpWhiteRender.SetScale(m_playerWhiteHpScale);
 
 	//更新
 	m_playerUI.m_hpFrontRender.Update();
@@ -322,31 +311,31 @@ void GameUI::ProcessBossSuperArmor()
 void GameUI::ProcessPhase()
 {
 	//現在のフェーズを取得
-	int PhaseNumber = GameManager::GetInstance()->GetNowPhaseState();
+	//int PhaseNumber = GameManager::GetInstance()->GetNowPhaseState();
 	wchar_t NowPhase[255];
-	swprintf_s(NowPhase, 255, L"%d", PhaseNumber+1);
+	//swprintf_s(NowPhase, 255, L"%d", PhaseNumber+1);
 	//テキストを設定
 	m_phaseUI.m_nowPhaseFont.SetText(NowPhase);
 
 
 	//現在の敵の数を取得
-	int monsterNum = CharactersInfoManager::GetInstance()->GetMobMonsters().size();
+	//int monsterNum = CharactersInfoManager::GetInstance()->GetMobMonsters().size();
 	wchar_t NowMonsterNum[255];
-	swprintf_s(NowMonsterNum, 255, L"%d", monsterNum);
+	//swprintf_s(NowMonsterNum, 255, L"%d", monsterNum);
 	//テキストを設定
 	m_phaseUI.m_nowPhaseMonstersFont.SetText(NowMonsterNum);
 	//テキストのオフセット量を計算
-	CalcOffsetForNowPhaseMonsters(monsterNum);
+	//CalcOffsetForNowPhaseMonsters(monsterNum);
 
 
 	//タイマーの現在の値と最大値を取得
-	float nowTimer = GameManager::GetInstance()->GetPhaseTimer();
-	float timerLimmit = GameManager::GetInstance()->GetNowPhaseTimerLimmit();
+	//float nowTimer = GameManager::GetInstance()->GetPhaseTimer();
+	//float timerLimmit = GameManager::GetInstance()->GetNowPhaseTimerLimmit();
 
 	//タイムバーの減っていく割合。
 	Vector3 phaseTimerScale = Vector3::One;
 	//タイムバーのスケールを計算
-	phaseTimerScale = CalcGaugeScale(timerLimmit, nowTimer);
+	//phaseTimerScale = CalcGaugeScale(timerLimmit, nowTimer);
 	//スケールを設定
 	m_phaseUI.m_phaseTimeBarRender.SetScale(phaseTimerScale);
 	m_phaseUI.m_phaseTimeBarRender.Update();
@@ -379,29 +368,29 @@ void GameUI::ChangeWeapon(
 
 void GameUI::ProcessWeaponEndranceFont()
 {
-	int num = m_player->GetNowWeaponEndrance();
+	//int num = m_player->GetNowWeaponEndrance();
 	wchar_t endrance[255];
-	swprintf_s(endrance, 255, L"%d", num);
+	//swprintf_s(endrance, 255, L"%d", num);
 
 	m_playerUI.m_weaponEndranceFont.SetText(endrance);
 
-	int harfEndrance = m_player->GetNowWeaponMaxEndrance() / 2;
+	//int harfEndrance = m_player->GetNowWeaponMaxEndrance() / 2;
 
 	//半分より上なら白色にする
-	if (m_player->GetNowWeaponEndrance() > harfEndrance)
-	{
-		m_playerUI.m_weaponEndranceFont.SetColor(g_vec4White);
-	}
-	//耐久値の半分の半分(四分の一)だったら赤色にする
-	else if (m_player->GetNowWeaponEndrance() <= harfEndrance / 2)
-	{
-		m_playerUI.m_weaponEndranceFont.SetColor(g_vec4Red);
-	}
-	//半分以下なら黄色にする
-	else
-	{
-		m_playerUI.m_weaponEndranceFont.SetColor(g_vec4Yellow);
-	}
+	//if (m_player->GetNowWeaponEndrance() > harfEndrance)
+	//{
+	//	m_playerUI.m_weaponEndranceFont.SetColor(g_vec4White);
+	//}
+	////耐久値の半分の半分(四分の一)だったら赤色にする
+	//else if (m_player->GetNowWeaponEndrance() <= harfEndrance / 2)
+	//{
+	//	m_playerUI.m_weaponEndranceFont.SetColor(g_vec4Red);
+	//}
+	////半分以下なら黄色にする
+	//else
+	//{
+	//	m_playerUI.m_weaponEndranceFont.SetColor(g_vec4Yellow);
+	//}
 }
 
 Vector2 GameUI::CalcNumberCount(float num, float xOffset, float yOffset)
@@ -481,10 +470,10 @@ void GameUI::DrawPlayerUI(RenderContext& rc)
 		m_weaponSprits[enMaxWeapons_Main].m_weaponEndranceRender->Draw(rc);
 	}
 	//武器の耐久値が-１より大きかったら描画
-	if (m_player->GetNowWeaponEndrance() > -1)
+	/*if (m_player->GetNowWeaponEndrance() > -1)
 	{
 		m_playerUI.m_weaponEndranceFont.Draw(rc);
-	}
+	}*/
 }
 
 void GameUI::DrawMonsterUI(RenderContext& rc)

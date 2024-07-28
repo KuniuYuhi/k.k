@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "BossStage1.h"
-#include "Player.h"
+
 
 BossStage1::BossStage1()
 {
@@ -13,8 +13,6 @@ BossStage1::~BossStage1()
 
 bool BossStage1::Start()
 {
-	m_player = FindGO<Player>("player");
-
 	//ƒŒƒxƒ‹
 	levelbg.Init(
 		"Assets/level3D/FieldLevel.tkl",

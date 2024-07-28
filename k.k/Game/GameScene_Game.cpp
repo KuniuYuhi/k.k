@@ -25,6 +25,9 @@ void GameScene_Game::Entry()
 	//ゲーム開始時のカメラの設定
 	gameCamera->SetBattleStartCamera();
 
+	//todo ここでゲームクラスを作成
+
+
 	//ボスを生成
 	m_game = FindGO<Game>("game");
 	m_game->CreateBoss();
@@ -41,8 +44,7 @@ void GameScene_Game::Update()
 {
 	//勝敗が着いたらステートを変更
 	if (GameSceneManager::GetInstance()->GetBattleOutCome() !=
-		GameSceneManager::enBattleOutCome_None/*&&
-		GameSceneManager::GetInstance()->GetIsSceneChangeableFlag()==true*/)
+		GameSceneManager::enBattleOutCome_None)
 	{
 
 		g_soundManager->StopSound(enSoundName_BattleBGM);

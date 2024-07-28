@@ -1,6 +1,6 @@
 #pragma once
 #include "Status.h"
-#include "Player.h"
+
 
 class AIActor:public IGameObject
 {
@@ -136,8 +136,6 @@ protected:
 	virtual bool isAnimationEnable() const = 0;
 
 
-
-	Player*				m_player = nullptr;
 
 	Status						m_status;
 

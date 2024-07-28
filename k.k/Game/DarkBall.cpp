@@ -2,7 +2,7 @@
 #include "DarkBall.h"
 #include "InitEffect.h"
 
-#include "Player.h"
+
 
 namespace {
     const int ADD_CREATE_POS = 100;
@@ -163,11 +163,11 @@ void DarkBall::PlayDarkBallEffect()
 bool DarkBall::IsHit()
 {
     //コリジョンがプレイヤーのキャラコンと衝突したら
-    if (m_BallCollision->IsHit(m_player->GetCharacterController())==true)
-    {
-        //当たった
-        return true;
-    }
+    //if (m_BallCollision->IsHit(m_player->GetCharacterController())==true)
+    //{
+    //    //当たった
+    //    return true;
+    //}
     //当たらなかった
     return false;
 }

@@ -2,7 +2,7 @@
 #include "Meteo.h"
 #include "InitEffect.h"
 
-#include "Player.h"
+
 
 namespace {
 	const float EXPLOSION_SCALE = 12.0f;
@@ -205,9 +205,9 @@ void Meteo::Explosion()
 const int Meteo::GetAttack()
 {
 	//プレイヤーの座標を取得
-	Vector3 playerPos = FindGO<Player>("player")->GetPosition();
+	//Vector3 playerPos = FindGO<Player>("player")->GetPosition();
 	//プレイヤーの座標によってダメージ変更
-	return CalcDamageToDistance(playerPos);
+	//return CalcDamageToDistance(playerPos);
 }
 
 void Meteo::PlayMeteoEffect()

@@ -1,7 +1,7 @@
 #pragma once
 #include "Level3DRender.h"
 
-class Player;
+
 
 class BossStage1:public IGameObject
 {
@@ -15,7 +15,7 @@ public:
 	void Render(RenderContext& rc) override;
 
 private:
-	Player* m_player = nullptr;
+
 
 	Level3DRender levelbg;
 	ModelRender backGround;

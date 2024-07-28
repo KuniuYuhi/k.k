@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "GameCamera.h"
 #include "Game.h"
-#include "Player.h"
-#include "GameManager.h"
-#include "CharactersInfoManager.h"
+
 
 namespace {
 
@@ -28,9 +26,9 @@ GameCamera::~GameCamera()
 bool GameCamera::Start()
 {
 	m_game = FindGO<Game>("game");
-	m_player = FindGO<Player>("player");
+	//m_player = FindGO<Player>("player");
 
-	m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
+	//m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
 
 	g_camera3D->SetNear(1.0f);
 	g_camera3D->SetFar(10000.0f);
@@ -58,10 +56,10 @@ bool GameCamera::Start()
 
 void GameCamera::Update()
 {
-	if (GameSceneManager::GetInstance()->GetBattleOutCome() != GameSceneManager::enBattleOutCome_None)
+	/*if (GameSceneManager::GetInstance()->GetBattleOutCome() != GameSceneManager::enBattleOutCome_None)
 	{
 		return;
-	}
+	}*/
 
 
 	OnProcessGameTransition();
@@ -86,27 +84,27 @@ void GameCamera::SetBattleStartCamera()
 	m_springCamera.Refresh();
 
 	//注視点の計算
-	m_target = m_player->GetPosition();
-	m_target.y += TARGETPOS_YUP;
+	//m_target = m_player->GetPosition();
+	//m_target.y += TARGETPOS_YUP;
 	//前方向の取得
-	Vector3 CameraPosXZ = m_player->GetForward();
-	CameraPosXZ.y = 0.0f;
+	//Vector3 CameraPosXZ = m_player->GetForward();
+	//CameraPosXZ.y = 0.0f;
 	//反転
-	CameraPosXZ *= -1.0f;
+	//CameraPosXZ *= -1.0f;
 	//XZ方向
-	CameraPosXZ *= 400.0f;
+	//CameraPosXZ *= 400.0f;
 	//Y方向
 	Vector3 CameraPosY = Vector3::AxisY;
 	CameraPosY *= 100.0f;
 
 	//新しいカメラの座標
-	Vector3 newCameraPos = CameraPosXZ + CameraPosY;
+	//Vector3 newCameraPos = CameraPosXZ + CameraPosY;
 	//最終的なカメラの座標
-	Vector3 finalCameraPos = newCameraPos + m_target;
+	//Vector3 finalCameraPos = newCameraPos + m_target;
 
 	//視点と注視点を設定
 	m_springCamera.SetTarget(m_target);
-	m_springCamera.SetPosition(finalCameraPos);
+	//m_springCamera.SetPosition(finalCameraPos);
 
 	//カメラの更新。
 	m_springCamera.Update();
@@ -118,7 +116,7 @@ void GameCamera::SetBattleStartCamera()
 void GameCamera::ChaseCamera(bool Reversesflag)
 {
 	//注視点の計算
-	m_target = m_player->GetPosition();
+	//m_target = m_player->GetPosition();
 	m_target.y = TARGETPOS_YUP;
 
 	Vector3 toCameraPosOld = m_toCameraPos;

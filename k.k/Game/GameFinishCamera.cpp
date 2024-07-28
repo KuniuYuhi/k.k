@@ -3,8 +3,6 @@
 
 #include "Boss.h"
 
-#include "GameManager.h"
-#include "CharactersInfoManager.h"
 
 #include "GameSceneManager.h"
 
@@ -26,9 +24,9 @@ GameFinishCamera::~GameFinishCamera()
 bool GameFinishCamera::Start()
 {
 	//ボスのインスタンスの取得
-	m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
+	//m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
 	//プレイヤーのインスタンスの取得
-	m_player = CharactersInfoManager::GetInstance()->GetPlayerInstance();
+	//m_player = CharactersInfoManager::GetInstance()->GetPlayerInstance();
 
 
 	m_cameraCollisionSolver.Init(1.0f);
@@ -73,22 +71,22 @@ void GameFinishCamera::ManageState()
 void GameFinishCamera::OnProcessChaseBossTransition()
 {
 	//
-	if (GameManager::GetInstance()->GetBossDeleteOkFlag() == true)
-	{
-		//ターゲットをプレイヤーに変更
-		//プレイヤーの位置と前方向を設定
-		m_target = m_player->GetPosition();
-		m_forward = m_player->GetForward();
-		m_springCamera.Refresh();
-		//次のステートに進む
-		m_enFinishCameraState = enFinishCameraState_ChasePlayer;
+	//if (GameManager::GetInstance()->GetBossDeleteOkFlag() == true)
+	//{
+	//	//ターゲットをプレイヤーに変更
+	//	//プレイヤーの位置と前方向を設定
+	//	m_target = m_player->GetPosition();
+	//	m_forward = m_player->GetForward();
+	//	m_springCamera.Refresh();
+	//	//次のステートに進む
+	//	m_enFinishCameraState = enFinishCameraState_ChasePlayer;
 
 
-		//リザルト画像クラスを生成
-		m_result = NewGO<ResultSeen>(0, "result");
+	//	//リザルト画像クラスを生成
+	//	m_result = NewGO<ResultSeen>(0, "result");
 
-		return;
-	}
+	//	return;
+	//}
 
 	ChaseCharacterCamera(-500.0f, 500.0f);
 }
@@ -104,7 +102,7 @@ void GameFinishCamera::OnProcessChasePlayerTransition()
 void GameFinishCamera::OnProcessFinishTransition()
 {
 	//全ての処理終わり
-	GameManager::GetInstance()->SetGameFinishProcessEndFlag(true);
+	//GameManager::GetInstance()->SetGameFinishProcessEndFlag(true);
 
 	//全ての処理が終わったのでリザルトシーンに移っても良いようにする
 	//GameSceneManager::GetInstance()->SetIsSceneChangeableFlag(true);

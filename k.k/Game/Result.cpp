@@ -2,7 +2,7 @@
 #include "Result.h"
 #include "Title.h"
 
-#include "GameManager.h"
+
 
 #include "GameSceneManager.h"
 
@@ -33,31 +33,11 @@ ResultSeen::ResultSeen()
 
 ResultSeen::~ResultSeen()
 {
-	//ゲームマネージャーの削除
-	GameManager::DeleteInstance();
+
 }
 
 bool ResultSeen::Start()
 {
-	//switch (GameManager::GetInstance()->GetOutComeState())
-	//{
-	//	//プレイヤーの勝利
-	//case GameManager::enOutComeState_PlayerWin:
-	//	SetOutcome(enOutcome_Win);
-	//	//勝利SE再生
-	//	g_soundManager->InitAndPlaySoundSource(enSoundName_GameClear);
-	//	break;
-	//	//プレイヤーの敗北
-	//case GameManager::enOutComeState_PlayerLose:
-	//	SetOutcome(enOutcome_Lose);
-	//	//敗北SE再生
-	//	g_soundManager->InitAndPlaySoundSource(enSoundName_GameOver);
-	//	break;
-
-	//default:
-	//	std::abort();
-	//	break;
-	//}
 
 	switch (GameSceneManager::GetInstance()->GetBattleOutCome())
 	{

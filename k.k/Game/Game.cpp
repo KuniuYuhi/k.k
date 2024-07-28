@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Game.h"
 #include "GameCamera.h"
-#include "Player.h"
+
 #include "BossStage1.h"
 #include "Result.h"
 #include "GameUI.h"
@@ -14,13 +14,11 @@
 #include "SkyCube.h"
 #include "InitEffect.h"
 
-#include "CharactersInfoManager.h"
-#include "GameManager.h"
 
-#include "Boss.h"
+
 
 #include "GameFinishCamera.h"
-#include "BattlePhase.h"
+
 
 #include "Loading.h"
 
@@ -64,11 +62,11 @@ Game::~Game()
 
 	DeleteGO(m_skyCube);
 	DeleteGO(m_bossStage1);
-	DeleteGO(m_player);
-	DeleteGO(m_boss);
+	
+	
 	DeleteGO(m_gameCamera);
 	DeleteGO(m_gameFinishCamera);
-	DeleteGO(m_battlePhase);
+
 	DeleteGO(m_pause);
 	DeleteGO(m_result);
 }
@@ -77,14 +75,6 @@ bool Game::Start()
 {
 	//ライティングの初期化
 	InitLighting();
-
-	//ゲーム進行マネージャークラスの生成
-	//ゲームシーンステートの設定
-	GameManager::CreateInstance(GameManager::enGameSeenState_GameStart);
-	//初期化処理
-	GameManager::GetInstance()->Init();
-
-
 
 	//エフェクト初期化クラスの生成。
 	InitEffect* initEffect = new InitEffect();
@@ -129,19 +119,15 @@ bool Game::Fadecomplete()
 
 void Game::CreateBoss()
 {
-	//ボスクラスの生成
-	GameManager::GetInstance()->CreateBoss();
-	m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
+	
 	//モンスターが一定以上近づかないように毎フレーム調べる
 	//数を取得できるようにする
 }
 
 void Game::UpdateGameSystem()
 {
-	//ゲームマネージャーの毎フレームの更新処理
-	GameManager::GetInstance()->Execute();
-	//キャラクター情報マネージャーの毎フレームの更新処理
-	CharactersInfoManager::GetInstance()->Execute();
+	
+	
 }
 
 void Game::DeleteGameCamera()
@@ -158,23 +144,20 @@ void Game::DeleteThis()
 
 void Game::CreatePlayerAndCamera()
 {
-	//プレイヤークラスの生成
-	GameManager::GetInstance()->CreatePlayerClass();
-	m_player = CharactersInfoManager::GetInstance()->GetPlayerInstance();
+
 	//ゲームカメラの生成
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
 }
 
 void Game::CreateBattlePhase()
 {
-	//バトルフェーズ処理クラス生成
-	m_battlePhase = NewGO<BattlePhase>(0, "battlephase");
+	
 }
 
 void Game::InitSkyCube()
 {
 	m_skyCube = NewGO<SkyCube>(0, "skycube");
-	m_skyCube->SetScale(800.0f);
+	m_skyCube->SetScale(400.0f);
 	m_skyCube->SetPosition(m_skyPos);
 	m_skyCube->SetLuminance(1.01f);
 	m_skyCube->SetType(enSkyCubeType_DayToon_3);
@@ -183,17 +166,7 @@ void Game::InitSkyCube()
 
 void Game::GoResult()
 {
-	if (m_result == nullptr)
-	{
-		m_result = NewGO<ResultSeen>(0, "result");
-	}
-	//リザルトの処理が終わったら、ゲームを終わる処理をする
-	if (m_result->GetResultEndFlag() == true)
-	{
-		//最後のステートに進む
-		GameManager::GetInstance()->
-			SetGameSeenState(GameManager::enGameSeenState_GameEnd);
-	}
+	
 }
 
 void Game::CalcMuteBGM()
@@ -221,8 +194,8 @@ void Game::CreateGameUI()
 {
 	m_gameUI = NewGO<GameUI>(0, "gameUI");
 	m_gameUI->SetGame(this);
-	m_gameUI->SetPlayer(CharactersInfoManager::GetInstance()->GetPlayerInstance());
-	m_gameUI->SetBoss(CharactersInfoManager::GetInstance()->GetBossInstance());
+	//m_gameUI->SetPlayer(CharactersInfoManager::GetInstance()->GetPlayerInstance());
+	//m_gameUI->SetBoss(CharactersInfoManager::GetInstance()->GetBossInstance());
 }
 
 void Game::InitGameObject()
@@ -231,6 +204,8 @@ void Game::InitGameObject()
 	InitSkyCube();
 	//ボスステージの生成
 	m_bossStage1 = NewGO<BossStage1>(0, "bossstage1");
+
+	
 	
 }
 

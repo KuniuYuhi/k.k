@@ -2,7 +2,6 @@
 //#include "Level3DRender.h"
 //#include "Level2DRender.h"
 
-class Player;
 class BossStage1;
 class GameCamera;
 class ResultSeen;
@@ -11,9 +10,9 @@ class Fade;
 class EntryBoss;
 class BattleStart;
 class Pause;
-class Boss;
+
 class GameFinishCamera;
-class BattlePhase;
+
 
 class Game:public IGameObject
 {
@@ -158,11 +157,9 @@ private:
 
 	EnGameEndCameraState		m_clearCameraState = enClearCameraState_None;
 
-	BattlePhase*				m_battlePhase = nullptr;
 	Pause*						m_pause = nullptr;
 	Fade*						m_fade = nullptr;
-	Player*						m_player = nullptr;
-	Boss*						m_boss = nullptr;
+	
 
 	GameFinishCamera* m_gameFinishCamera = nullptr;
 

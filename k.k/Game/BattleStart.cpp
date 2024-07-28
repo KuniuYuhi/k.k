@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "BattleStart.h"
 #include "Fade.h"
-#include "CharactersInfoManager.h"
+
 
 #include "InitEffect.h"
 
