@@ -5,7 +5,7 @@
 #include "GameUI.h"
 #include "Game.h"
 
-#include "Boss.h"
+
 
 
 
@@ -249,35 +249,35 @@ void GameUI::ProcessPlayerHp()
 void GameUI::ProcessBossHP()
 {
 	//最大HPと現在のHPを取得
-	int maxHP = m_boss->GetStatus().GetMaxHp();
-	int nowHP = m_boss->GetStatus().GetHp();
+	//int maxHP = m_boss->GetStatus().GetMaxHp();
+	//int nowHP = m_boss->GetStatus().GetHp();
 
 	//HPバーの減っていく割合。
 	Vector3 HpScale = Vector3::One;
 	//HPのスケールを計算
-	HpScale = CalcGaugeScale(maxHP, nowHP);
+	//HpScale = CalcGaugeScale(maxHP, nowHP);
 	//スケールを設定
 	m_monsterUI.m_hpFrontRender.SetScale(HpScale);
 	//ボスのHPの表示
 	wchar_t MP[255];
 	//現在のHPを表示
-	swprintf_s(MP, 255, L"HP %3d/%d", nowHP, maxHP);
+	//swprintf_s(MP, 255, L"HP %3d/%d", nowHP, maxHP);
 	//テキストを設定
 	m_monsterUI.m_hpFont.SetText(MP);
 
 	//白いHPが現在のHPより小さいなら
-	if (m_nowBossWhiteHp < nowHP)
-	{
-		//白いHPに現在のHPを代入する
-		m_nowBossWhiteHp = nowHP;
-	}
-	else
-	{
-		//白いHPを減らす
-		m_nowBossWhiteHp -= g_gameTime->GetFrameDeltaTime() * BOSS_WHITE_HP_SPEED;
-	}
+	//if (m_nowBossWhiteHp < nowHP)
+	//{
+	//	//白いHPに現在のHPを代入する
+	//	m_nowBossWhiteHp = nowHP;
+	//}
+	//else
+	//{
+	//	//白いHPを減らす
+	//	m_nowBossWhiteHp -= g_gameTime->GetFrameDeltaTime() * BOSS_WHITE_HP_SPEED;
+	//}
 	//白いHPのスケールを計算
-	m_bossHpWhiteScale = CalcGaugeScale(maxHP, m_nowBossWhiteHp);
+	//m_bossHpWhiteScale = CalcGaugeScale(maxHP, m_nowBossWhiteHp);
 	//スケールを設定
 	m_monsterUI.m_hpWhiteRender.SetScale(m_bossHpWhiteScale);
 
@@ -289,23 +289,23 @@ void GameUI::ProcessBossHP()
 void GameUI::ProcessBossSuperArmor()
 {
 	//スーパーアーマーのバーの減っていく割合。
-	Vector3 spuerArmorScale = Vector3::One;
-	spuerArmorScale = CalcGaugeScale(
-		m_boss->GetStatus().GetMaxSuperArmorPoint(), m_boss->GetStatus().GetSuperArmorPoint());
-	m_monsterUI.m_superArmor_FrontBarRender.SetScale(spuerArmorScale);
+	//Vector3 spuerArmorScale = Vector3::One;
+	//spuerArmorScale = CalcGaugeScale(
+	//	m_boss->GetStatus().GetMaxSuperArmorPoint(), m_boss->GetStatus().GetSuperArmorPoint());
+	//m_monsterUI.m_superArmor_FrontBarRender.SetScale(spuerArmorScale);
 
-	//スーパーアーマーがブレイクしている時は、ゲージの色を暗くする
-	if (m_boss->GetSuperArmorBreakFlag() == true)
-	{
-		m_monsterUI.m_superArmor_FrontBarRender.SetMulColor(SUPERSARMOR_GRAY_COLOR);
-	}
-	else
-	{
-		m_monsterUI.m_superArmor_FrontBarRender.SetMulColor(g_vec4White);
-	}
+	////スーパーアーマーがブレイクしている時は、ゲージの色を暗くする
+	//if (m_boss->GetSuperArmorBreakFlag() == true)
+	//{
+	//	m_monsterUI.m_superArmor_FrontBarRender.SetMulColor(SUPERSARMOR_GRAY_COLOR);
+	//}
+	//else
+	//{
+	//	m_monsterUI.m_superArmor_FrontBarRender.SetMulColor(g_vec4White);
+	//}
 
-	//更新
-	m_monsterUI.m_superArmor_FrontBarRender.Update();
+	////更新
+	//m_monsterUI.m_superArmor_FrontBarRender.Update();
 }
 
 void GameUI::ProcessPhase()

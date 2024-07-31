@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "GameFinishCamera.h"
 
-#include "Boss.h"
-
-
 #include "GameSceneManager.h"
 
 
@@ -39,8 +36,8 @@ bool GameFinishCamera::Start()
 	);
 
 	//’Ž‹“_‚ÌŒvŽZ
-	m_target = m_boss->GetPosition();
-	m_forward = m_boss->GetForward();
+	//m_target = m_boss->GetPosition();
+	//m_forward = m_boss->GetForward();
 
 	return true;
 }
