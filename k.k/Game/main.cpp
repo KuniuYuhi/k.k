@@ -34,6 +34,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//フェードクラスの初期化
 	Fade*m_fade = NewGO<Fade>(5, "fade");
 
+
+	//todo 使うオブジェクトを最初に生成しておいて非アクティブ化しておく
+
+
+
 	//ゲームマネージャーを生成
 	//シーンステートをタイトルステートに設定
 	//GameSceneManager::CreateInstanceAndSetGameSceneState(enGameSceneState_Title);

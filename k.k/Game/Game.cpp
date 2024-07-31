@@ -24,7 +24,10 @@
 #include "AllGameSceneState.h"
 
 
-#include "CharacterMovement.h"
+
+#include "CharacterBase.h"
+#include "Brave.h"
+#include "PlayerMovement.h"
 
 
 
@@ -98,12 +101,7 @@ bool Game::Start()
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
-
-	AddComponent<CharacterMovement>();
-
-	CharacterMovement* charamove = nullptr;
-	charamove = GetComponent<CharacterMovement>();
-
+	Brave* brave = NewGO<Brave>(0,"Brave");
 
 
 	return true;
@@ -111,8 +109,22 @@ bool Game::Start()
 
 void Game::Update()
 {	
+	//Brave* brave = FindGO<Brave>("Brave");
+
+	//PlayerMovement* pM = brave->GetComponent<PlayerMovement>();
+	if (g_pad[0]->IsTrigger(enButtonA))
+	{
+		Brave* brave = FindGO<Brave>("Brave");
+
+		if (brave != nullptr)
+		{
+			DeleteGO(brave);
+		}
+	}
 	
+
 }
+
 
 bool Game::Fadecomplete()
 {

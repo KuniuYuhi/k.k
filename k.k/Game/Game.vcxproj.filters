@@ -28,6 +28,30 @@
     <Filter Include="Component">
       <UniqueIdentifier>{dbfd1e5e-ac6a-49a0-92bb-d586ce140ef5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Characters\Player">
+      <UniqueIdentifier>{45518746-fe70-484a-884c-d2b2b458c396}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Status">
+      <UniqueIdentifier>{d6d52eb9-37e4-41c0-9974-ac2d63a0a06b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\GameManager\SceneManager\SceneState\Scene">
+      <UniqueIdentifier>{3ee8a357-88f4-4e9f-89cd-e7f6c53a2fa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\CharacterBase">
+      <UniqueIdentifier>{4c83e0f4-7fa7-48ca-90e5-565b849d42ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy">
+      <UniqueIdentifier>{f44760d3-38ad-469f-b6dc-bedf3da4ddda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Boss">
+      <UniqueIdentifier>{5f83efbc-f4d6-41fa-ad00-43eff2c96264}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Mob">
+      <UniqueIdentifier>{0a6eb47e-a5dc-448d-9d1b-0c3aabf70f33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Mob\MobBase">
+      <UniqueIdentifier>{69feae18-3abb-4e8d-ac1c-7ef78f17a9b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -35,17 +59,13 @@
     <ClCompile Include="system\system.cpp">
       <Filter>system</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="Status.cpp" />
-    <ClCompile Include="BossStage1.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="GameUI.cpp" />
     <ClCompile Include="DamageFont.cpp" />
     <ClCompile Include="Fade.cpp" />
-    <ClCompile Include="EntryBoss.cpp" />
-    <ClCompile Include="BattleStart.cpp" />
     <ClCompile Include="InitEffect.cpp" />
     <ClCompile Include="SoundFile.cpp" />
     <ClCompile Include="KnockBack.cpp" />
@@ -74,33 +94,65 @@
     <ClCompile Include="GameScene_Title.cpp">
       <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
     </ClCompile>
-    <ClCompile Include="GameScene_Pause.cpp" />
-    <ClCompile Include="GameScene_AppearanceBoss.cpp" />
     <ClCompile Include="GameSceneManager.cpp">
       <Filter>Manager\GameManager\SceneManager</Filter>
     </ClCompile>
-    <ClCompile Include="ICharacter.cpp">
-      <Filter>Characters</Filter>
+    <ClCompile Include="PlayerMovement.cpp">
+      <Filter>Component</Filter>
     </ClCompile>
-    <ClCompile Include="CharacterBase.cpp" />
-    <ClCompile Include="CharacterMovement.cpp" />
+    <ClCompile Include="Brave.cpp">
+      <Filter>Characters\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterBase.cpp">
+      <Filter>Characters\CharacterBase</Filter>
+    </ClCompile>
+    <ClCompile Include="ICharacter.cpp">
+      <Filter>Characters\CharacterBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Status_Player.cpp">
+      <Filter>Status</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerController.cpp">
+      <Filter>Characters\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="BattleStart.cpp">
+      <Filter>Manager\GameManager\SceneManager\SceneState\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="BossStage1.cpp">
+      <Filter>Manager\GameManager\SceneManager\SceneState\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="EntryBoss.cpp">
+      <Filter>Manager\GameManager\SceneManager\SceneState\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Manager\GameManager\SceneManager\SceneState\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene_AppearanceBoss.cpp">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene_Pause.cpp">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyBase.cpp">
+      <Filter>Characters\Ememy</Filter>
+    </ClCompile>
+    <ClCompile Include="MobEnemyBase.cpp">
+      <Filter>Characters\Ememy\Mob\MobBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h">
       <Filter>system</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="Status.h" />
-    <ClInclude Include="BossStage1.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="GameUI.h" />
     <ClInclude Include="DamageFont.h" />
     <ClInclude Include="Fade.h" />
-    <ClInclude Include="EntryBoss.h" />
-    <ClInclude Include="BattleStart.h" />
     <ClInclude Include="InitEffect.h" />
     <ClInclude Include="SoundFile.h" />
     <ClInclude Include="MyWeapon.h" />
@@ -134,21 +186,54 @@
     <ClInclude Include="GameScene_Title.h">
       <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
     </ClInclude>
-    <ClInclude Include="GameScene_Pause.h" />
-    <ClInclude Include="GameScene_AppearanceBoss.h" />
     <ClInclude Include="AllGameSceneState.h">
       <Filter>Manager\GameManager\SceneManager</Filter>
     </ClInclude>
     <ClInclude Include="GameSceneManager.h">
       <Filter>Manager\GameManager\SceneManager</Filter>
     </ClInclude>
-    <ClInclude Include="ICharacter.h">
-      <Filter>Characters</Filter>
-    </ClInclude>
-    <ClInclude Include="CharacterBase.h" />
-    <ClInclude Include="CharacterMovement.h" />
-    <ClInclude Include="Component.h">
+    <ClInclude Include="PlayerMovement.h">
       <Filter>Component</Filter>
     </ClInclude>
+    <ClInclude Include="Brave.h">
+      <Filter>Characters\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterBase.h">
+      <Filter>Characters\CharacterBase</Filter>
+    </ClInclude>
+    <ClInclude Include="ICharacter.h">
+      <Filter>Characters\CharacterBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Status_Player.h">
+      <Filter>Status</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerController.h">
+      <Filter>Characters\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleStart.h">
+      <Filter>Manager\GameManager\SceneManager\SceneState\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="BossStage1.h">
+      <Filter>Manager\GameManager\SceneManager\SceneState\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="EntryBoss.h">
+      <Filter>Manager\GameManager\SceneManager\SceneState\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Manager\GameManager\SceneManager\SceneState\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene_AppearanceBoss.h">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene_Pause.h">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyBase.h">
+      <Filter>Characters\Ememy</Filter>
+    </ClInclude>
+    <ClInclude Include="MobEnemyBase.h">
+      <Filter>Characters\Ememy\Mob\MobBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime.h" />
   </ItemGroup>
 </Project>
