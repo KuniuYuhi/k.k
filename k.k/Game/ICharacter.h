@@ -29,11 +29,18 @@ public:
 		return m_rotation;
 	}
 
+	ModelRender& GetModelRender()
+	{
+		return m_modelRender;
+	}
+
 protected:
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_forward = Vector3::Front;
 	Vector3 m_scale = Vector3::One;
 	Quaternion m_rotation = Quaternion::Identity;
+
+	ModelRender m_modelRender;
 
 };
 
