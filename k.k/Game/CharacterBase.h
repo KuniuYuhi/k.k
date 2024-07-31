@@ -11,14 +11,21 @@ public:
 	virtual ~CharacterBase() = default;
 
 	/// <summary>
-	/// 更新処理
+	/// 更新処理。使ってない！！！！
 	/// </summary>
 	virtual void UpdateCharacter() = 0;
 
+
+
+	//テンプレートでステータスを取得する
+
+
 protected:
 
-
-	void SettingDefaultComponent();
+	/// <summary>
+	/// 基本的なコンポーネントをセッティング
+	/// </summary>
+	virtual void SettingDefaultComponent(){}
 
 	
 
