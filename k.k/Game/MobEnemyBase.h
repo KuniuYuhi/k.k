@@ -21,7 +21,10 @@ public:
 
 protected:
 
-
+	/// <summary>
+	/// 基本的なコンポーネントをセッティング
+	/// </summary>
+	virtual void SettingDefaultComponent() override {}
 
 
 protected:
