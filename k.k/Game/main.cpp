@@ -8,6 +8,8 @@
 #include "GameSceneManager.h"
 #include "AllGameSceneState.h"
 
+#include "EnemyObjectPool.h"
+
 // K2EngineLowのグローバルアクセスポイント。
 K2EngineLow* g_k2EngineLow = nullptr;
 
@@ -39,9 +41,16 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 
+
 	//ゲームマネージャーを生成
 	//シーンステートをタイトルステートに設定
 	//GameSceneManager::CreateInstanceAndSetGameSceneState(enGameSceneState_Title);
+
+
+	//エネミーオブジェクトプールを生成
+	EnemyObjectPool::CreateInstance();
+
+	EnemyObjectPool::GetInstance()->Init();
 
 	//Title* title = NewGO<Title>(0, "game");
 	Game* game = NewGO<Game>(0, "game");
@@ -71,6 +80,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	delete g_k2EngineLow;
 
 	//GameSceneManager::GetInstance()->DeleteInstance();
+
+	EnemyObjectPool::GetInstance()->DeleteInstance();
 
 	return 0;
 }
