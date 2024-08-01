@@ -27,7 +27,11 @@ public:
 	}
 
 
-	Vector3 CalcSimpleMovementVerocity(Status_Player playerStatus,Vector3 StickInput);
+	Vector3 CalcSimpleMovementVerocity(
+		Status_Player playerStatus,
+		Vector3 moveSpeed,
+		Vector3 StickInput
+	);
 
 
 
