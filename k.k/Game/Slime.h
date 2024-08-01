@@ -18,6 +18,22 @@ public:
 	void Render(RenderContext& rc) override;
 
 
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	void UpdateCharacter() override;
+
+
+
+private:
+
+	/// <summary>
+	/// 基本的なコンポーネントをセッティング
+	/// </summary>
+	void SettingDefaultComponent() override;
+
+
+
 private:
 
 
