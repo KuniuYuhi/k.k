@@ -83,8 +83,14 @@ void Brave::Movement()
 
 	//移動量を取得
 	m_moveSpeed = m_playerMovement->CalcSimpleMovementVerocity(
-		m_status,m_playerContoller->GetLStickInput()
+		m_status, m_moveSpeed, m_playerContoller->GetLStickInput()
 	);
+
+	//仮のジャンプ処理
+	if (m_playerContoller->IsButtonTrigger(enButtonA) && m_charaCon.IsOnGround())
+	{
+		m_moveSpeed.y = 400.0f;
+	}
 
 	//重力の計算
 	m_moveSpeed.y -= 980.0f * g_gameTime->GetFrameDeltaTime();
