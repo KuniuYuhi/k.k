@@ -9,6 +9,29 @@ class ICharacter:public IGameObject
 public:
 	virtual ~ICharacter() = default;
 
+
+
+	void SetPosition(Vector3 position)
+	{
+		m_position = position;
+	}
+
+	void SetForward(Vector3 forward)
+	{
+		m_forward = forward;
+	}
+
+	void SetRotation(Quaternion rotation)
+	{
+		m_rotation = rotation;
+	}
+
+	void SetScale(Vector3 scale)
+	{
+		m_scale = scale;
+	}
+
+
 	const Vector3& GetPosition() const
 	{
 		return m_position;
