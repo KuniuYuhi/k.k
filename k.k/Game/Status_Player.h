@@ -111,7 +111,7 @@ public:
 	}
 
 	/// <summary>
-	/// プレイヤーの現在の攻撃力の設定
+	/// 現在の攻撃力の設定
 	/// </summary>
 	/// <param name="setAtk"></param>
 	void SetAtk(const int setAtk)
@@ -119,7 +119,7 @@ public:
 		m_playerStatus.currentPower = setAtk;
 	}
 	/// <summary>
-	///  プレイヤーの現在の攻撃力の取得
+	/// 現在の攻撃力の取得
 	/// </summary>
 	/// <returns></returns>
 	const int& GetAtk() const
@@ -127,7 +127,7 @@ public:
 		return m_playerStatus.currentPower;
 	}
 	/// <summary>
-	/// プレイヤーの現在の攻撃力を増やす
+	/// 現在の攻撃力を増やす
 	/// </summary>
 	/// <param name="addPower">加算する攻撃力</param>
 	void AddPowerToCurrentPower(int addPower)
@@ -188,7 +188,7 @@ public:
 	static bool IsLoadedWeaponStatusCSVFile;
 
 
-	private:
+private:
 
 	/// <summary>
 	/// プレイヤーステータスcsvファイルの読み込み
