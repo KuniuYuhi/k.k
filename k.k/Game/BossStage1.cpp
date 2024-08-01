@@ -21,7 +21,7 @@ bool BossStage1::Start()
 			if (objData.EqualObjectName(L"grass") == true) {
 				//’n–Ê
 				backGround.Init(
-					"Assets/modelData/BackGround/ground.tkm", 0, 0, 0, enModelUpAxisZ, false,false,false);
+					"Assets/modelData/BackGround/groundDetail.tkm", 0, 0, 0, enModelUpAxisZ, false,false,false);
 				backGround.SetPosition(objData.position);
 				backGround.SetRotation(objData.rotation);
 				backGround.SetScale(objData.scale);
