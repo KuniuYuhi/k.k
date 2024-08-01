@@ -4,9 +4,6 @@
     <Filter Include="system">
       <UniqueIdentifier>{22dd8095-74f9-46df-81a1-36675a040b1f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Weapons">
-      <UniqueIdentifier>{d8445f81-0a79-4ad9-9f94-409a2b4e6cdc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Manager">
       <UniqueIdentifier>{9f0853ec-296c-4466-874e-f835c5ab2ee1}</UniqueIdentifier>
     </Filter>
@@ -34,9 +31,6 @@
     <Filter Include="Status">
       <UniqueIdentifier>{d6d52eb9-37e4-41c0-9974-ac2d63a0a06b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Manager\GameManager\SceneManager\SceneState\Scene">
-      <UniqueIdentifier>{3ee8a357-88f4-4e9f-89cd-e7f6c53a2fa3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Characters\CharacterBase">
       <UniqueIdentifier>{4c83e0f4-7fa7-48ca-90e5-565b849d42ee}</UniqueIdentifier>
     </Filter>
@@ -52,6 +46,21 @@
     <Filter Include="Characters\Ememy\Mob\MobBase">
       <UniqueIdentifier>{69feae18-3abb-4e8d-ac1c-7ef78f17a9b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Status\Enemy">
+      <UniqueIdentifier>{9c00fbc3-5775-40af-9215-dea34742f82d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{298c119d-2eb5-4f83-bcc2-084b6985612e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{3af9418d-01d8-4e82-8643-0cdb1c780c40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{10ef0253-dfff-43d7-9b6b-20e50af7aff4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Mob\Slime">
+      <UniqueIdentifier>{3eed6491-f151-4bd9-91b9-cfb622dc2070}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -59,12 +68,7 @@
     <ClCompile Include="system\system.cpp">
       <Filter>system</Filter>
     </ClCompile>
-    <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="Status.cpp" />
-    <ClCompile Include="Title.cpp" />
-    <ClCompile Include="Result.cpp" />
-    <ClCompile Include="GameUI.cpp" />
-    <ClCompile Include="DamageFont.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="InitEffect.cpp" />
     <ClCompile Include="SoundFile.cpp" />
@@ -73,8 +77,6 @@
     <ClCompile Include="ManagerPreCompile.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Pause.cpp" />
-    <ClCompile Include="GameFinishCamera.cpp" />
     <ClCompile Include="Loading.cpp" />
     <ClCompile Include="WaveTimer.cpp">
       <Filter>Wave</Filter>
@@ -115,18 +117,6 @@
     <ClCompile Include="PlayerController.cpp">
       <Filter>Characters\Player</Filter>
     </ClCompile>
-    <ClCompile Include="BattleStart.cpp">
-      <Filter>Manager\GameManager\SceneManager\SceneState\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="BossStage1.cpp">
-      <Filter>Manager\GameManager\SceneManager\SceneState\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="EntryBoss.cpp">
-      <Filter>Manager\GameManager\SceneManager\SceneState\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Manager\GameManager\SceneManager\SceneState\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="GameScene_AppearanceBoss.cpp">
       <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
     </ClCompile>
@@ -139,19 +129,54 @@
     <ClCompile Include="MobEnemyBase.cpp">
       <Filter>Characters\Ememy\Mob\MobBase</Filter>
     </ClCompile>
-    <ClCompile Include="Slime.cpp" />
+    <ClCompile Include="CommonEnemyStatus.cpp">
+      <Filter>Status\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="BattleStart.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="BossStage1.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="EntryBoss.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="DamageFont.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFinishCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Pause.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Result.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Title.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameUI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime.cpp">
+      <Filter>Characters\Ememy\Mob\Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="IObjectPool.cpp" />
+    <ClCompile Include="EnemyObjectPool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h">
       <Filter>system</Filter>
     </ClInclude>
-    <ClInclude Include="GameCamera.h" />
     <ClInclude Include="Status.h" />
-    <ClInclude Include="Title.h" />
-    <ClInclude Include="Result.h" />
-    <ClInclude Include="GameUI.h" />
-    <ClInclude Include="DamageFont.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="InitEffect.h" />
     <ClInclude Include="SoundFile.h" />
@@ -161,8 +186,6 @@
     <ClInclude Include="ManagerPreCompile.h">
       <Filter>Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Pause.h" />
-    <ClInclude Include="GameFinishCamera.h" />
     <ClInclude Include="Loading.h" />
     <ClInclude Include="MobMonstersList.h" />
     <ClInclude Include="WaveTimer.h">
@@ -210,18 +233,6 @@
     <ClInclude Include="PlayerController.h">
       <Filter>Characters\Player</Filter>
     </ClInclude>
-    <ClInclude Include="BattleStart.h">
-      <Filter>Manager\GameManager\SceneManager\SceneState\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="BossStage1.h">
-      <Filter>Manager\GameManager\SceneManager\SceneState\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="EntryBoss.h">
-      <Filter>Manager\GameManager\SceneManager\SceneState\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Manager\GameManager\SceneManager\SceneState\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="GameScene_AppearanceBoss.h">
       <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
     </ClInclude>
@@ -234,6 +245,46 @@
     <ClInclude Include="MobEnemyBase.h">
       <Filter>Characters\Ememy\Mob\MobBase</Filter>
     </ClInclude>
-    <ClInclude Include="Slime.h" />
+    <ClInclude Include="CommonEnemyStatus.h">
+      <Filter>Status\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleStart.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="BossStage1.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="EntryBoss.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageFont.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFinishCamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Pause.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Result.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameUI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime.h">
+      <Filter>Characters\Ememy\Mob\Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="IObjectPool.h" />
+    <ClInclude Include="EnemyObjectPool.h" />
   </ItemGroup>
 </Project>

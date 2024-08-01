@@ -224,9 +224,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BattleStart.cpp" />
+    <ClCompile Include="BossStage1.cpp" />
     <ClCompile Include="Brave.cpp" />
     <ClCompile Include="CharacterBase.cpp" />
     <ClCompile Include="EnemyBase.cpp" />
+    <ClCompile Include="EnemyObjectPool.cpp" />
+    <ClCompile Include="EntryBoss.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="IObjectPool.cpp" />
     <ClCompile Include="MobEnemyBase.cpp" />
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="PlayerMovement.cpp" />
@@ -238,15 +243,12 @@
     <ClCompile Include="GameScene_Pause.cpp" />
     <ClCompile Include="GameScene_Result.cpp" />
     <ClCompile Include="GameScene_Title.cpp" />
-    <ClCompile Include="BossStage1.cpp" />
     <ClCompile Include="DamageFont.cpp" />
     <ClCompile Include="GameFinishCamera.cpp" />
     <ClCompile Include="HitDetection.cpp" />
     <ClCompile Include="ICharacter.cpp" />
     <ClCompile Include="InitEffect.cpp" />
-    <ClCompile Include="EntryBoss.cpp" />
     <ClCompile Include="Fade.cpp" />
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameUI.cpp" />
     <ClCompile Include="KnockBack.cpp" />
@@ -258,6 +260,7 @@
     <ClCompile Include="Slime.cpp" />
     <ClCompile Include="SoundFile.cpp" />
     <ClCompile Include="Status.cpp" />
+    <ClCompile Include="CommonEnemyStatus.cpp" />
     <ClCompile Include="Status_Player.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -271,9 +274,14 @@
   <ItemGroup>
     <ClInclude Include="AllGameSceneState.h" />
     <ClInclude Include="BattleStart.h" />
+    <ClInclude Include="BossStage1.h" />
     <ClInclude Include="Brave.h" />
     <ClInclude Include="CharacterBase.h" />
     <ClInclude Include="EnemyBase.h" />
+    <ClInclude Include="EnemyObjectPool.h" />
+    <ClInclude Include="EntryBoss.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="IObjectPool.h" />
     <ClInclude Include="MobEnemyBase.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PlayerMovement.h" />
@@ -285,16 +293,13 @@
     <ClInclude Include="GameScene_Pause.h" />
     <ClInclude Include="GameScene_Result.h" />
     <ClInclude Include="GameScene_Title.h" />
-    <ClInclude Include="BossStage1.h" />
     <ClInclude Include="DamageFont.h" />
     <ClInclude Include="GameFinishCamera.h" />
     <ClInclude Include="HitDetection.h" />
     <ClInclude Include="ICharacter.h" />
     <ClInclude Include="IGameSceneState.h" />
     <ClInclude Include="InitEffect.h" />
-    <ClInclude Include="EntryBoss.h" />
     <ClInclude Include="Fade.h" />
-    <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameUI.h" />
     <ClInclude Include="KnockBack.h" />
@@ -307,6 +312,7 @@
     <ClInclude Include="Slime.h" />
     <ClInclude Include="SoundFile.h" />
     <ClInclude Include="Status.h" />
+    <ClInclude Include="CommonEnemyStatus.h" />
     <ClInclude Include="Status_Player.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />

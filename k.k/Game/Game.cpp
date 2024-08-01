@@ -29,7 +29,9 @@
 #include "Brave.h"
 #include "PlayerMovement.h"
 
+#include "Slime.h"
 
+#include "EnemyObjectPool.h"
 
 namespace {
 
@@ -101,7 +103,32 @@ bool Game::Start()
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
+
 	Brave* brave = NewGO<Brave>(0,"Brave");
+
+	//Slime* slime = NewGO<Slime>(0,"Slime");
+	//slime->Deactivate();
+
+	//slime->SetPosition(Vector3(50.0f, 0.0f, 0.0f));
+
+	float x = 50.0f;
+
+	for (int i = 0; i < 5; i++)
+	{
+		//
+		EnemyBase* slime = 
+			EnemyObjectPool::GetInstance()->OnGetEnemy<Slime>("Slime");
+
+		slime->SetPosition(Vector3(x, 0.0f, 0.0f));
+
+		x += 10.0f;
+
+		//EnemyObjectPool::GetInstance()->OnRelease("Slime", slime);
+
+	}
+
+	
+
 
 
 	return true;
@@ -110,16 +137,33 @@ bool Game::Start()
 void Game::Update()
 {	
 	//Brave* brave = FindGO<Brave>("Brave");
-
 	//PlayerMovement* pM = brave->GetComponent<PlayerMovement>();
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
-		Brave* brave = FindGO<Brave>("Brave");
+
+
+
+
+		
+
+		float x = 100.0f;
+
+		for (int i = 0; i < 3; i++)
+		{
+			EnemyBase* slime =
+				EnemyObjectPool::GetInstance()->OnGetEnemy<Slime>("Slime");
+
+			slime->SetPosition(Vector3(x, 0.0f, 0.0f));
+
+			x += 10.0f;
+		}
+
+		/*Brave* brave = FindGO<Brave>("Brave");
 
 		if (brave != nullptr)
 		{
 			DeleteGO(brave);
-		}
+		}*/
 	}
 	
 
