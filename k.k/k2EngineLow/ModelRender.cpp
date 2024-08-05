@@ -30,6 +30,8 @@ namespace nsK2EngineLow {
 				*g_renderingEngine, tkmFilePath, enModelUpAxis
 			);
 		}
+		//‰Šú‰»Š®—¹
+		m_isInit = true;
 		
 	}
 

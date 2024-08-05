@@ -22,11 +22,15 @@ public:
 
 	void Render(RenderContext& rc) override;
 
+	/// <summary>
+	/// 被ダメージ処理
+	/// </summary>
+	virtual void Damage() override;
 
 	/// <summary>
-	/// 更新処理
+	/// 死亡時処理
 	/// </summary>
-	void UpdateCharacter() override;
+	virtual void Dead() override;
 
 	/// <summary>
 	/// 回転するための方向ベクトルを設定
@@ -63,14 +67,11 @@ private:
 
 	Status_Player m_status;
 
-	CharacterController m_charaCon;
+	
 
 	PlayerMovement* m_playerMovement = nullptr;
 
 	PlayerController* m_playerContoller = nullptr;
 
-	Vector3 m_moveSpeed = Vector3::Zero;
-
-	Vector3 m_rotateDirection = Vector3::Zero;
 };
 

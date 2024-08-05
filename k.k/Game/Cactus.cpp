@@ -1,32 +1,30 @@
 #include "stdafx.h"
-#include "Slime.h"
-
-#include "MobEnemyMovement.h"
-
-#include "Brave.h"
+#include "Cactus.h"
 
 #include "EnemyObjectPool.h"
 
-Slime::~Slime()
+#include "Brave.h"
+
+
+Cactus::~Cactus()
 {
 }
 
-bool Slime::Start()
+bool Cactus::Start()
 {
 	//モデルを初期化していないなら
 	if (!m_modelRender.IsInit())
 	{
-		//モデルを初期化
 		m_modelRender.Init(
-			"Assets/modelData/character/Slime/slime.tkm",
-			L"Assets/shader/ToonTextrue/lamp_Slime.DDS"
-		);
+			"Assets/modelData/character/Cactus/Cactus.tkm",
+			L"Assets/shader/ToonTextrue/lamp_Cactus.DDS");
 	}
 
-	//トランスフォームの設定
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 
-	
+	//ステータスを初期化
+	m_status.InitCommonEnemyStatus("Cactus");
+
 
 	//キャラコンを初期化していないなら
 	if (!m_charaCon.IsInited())
@@ -38,37 +36,18 @@ bool Slime::Start()
 		m_charaCon.SetPosition(m_position);
 	}
 
-	//ステータスを初期化
-	m_status.InitCommonEnemyStatus("Slime");
-
 	//コンポーネントを初期化していないなら
 	if (!m_isSettingComponents)
 	{
 		InitComponents();
 	}
 
-
 	m_player = FindGO<Brave>("Brave");
-
 
 	return true;
 }
 
-void Slime::ReleaseThis()
-{
-	//todo キャラコンの位置の変更、非アクティブ化時の処理
-
-	m_charaCon.SetPosition(m_deactivatePosition);
-	m_charaCon.Execute(m_deactivatePosition,g_gameTime->GetFrameDeltaTime());
-	EnemyObjectPool::GetInstance()->OnRelease("Slime", this);
-}
-
-void Slime::AddMoreComponent()
-{
-
-}
-
-void Slime::Update()
+void Cactus::Update()
 {
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
@@ -76,9 +55,8 @@ void Slime::Update()
 		return;
 	}
 
-
 	ChaseMovement(m_player->GetPosition());
-	
+
 	Rotation();
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
@@ -86,13 +64,12 @@ void Slime::Update()
 	m_modelRender.Update();
 }
 
-
-void Slime::Render(RenderContext& rc)
+void Cactus::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
 }
 
-void Slime::InitComponents()
+void Cactus::InitComponents()
 {
 	//基本的なコンポーネントをセッティング
 	SettingDefaultComponent();
@@ -100,4 +77,15 @@ void Slime::InitComponents()
 	AddMoreComponent();
 
 	m_isSettingComponents = true;
+}
+
+void Cactus::ReleaseThis()
+{
+	m_charaCon.SetPosition(m_deactivatePosition);
+	m_charaCon.Execute(m_deactivatePosition, g_gameTime->GetFrameDeltaTime());
+	EnemyObjectPool::GetInstance()->OnRelease("Cactus", this);
+}
+
+void Cactus::AddMoreComponent()
+{
 }

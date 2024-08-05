@@ -22,7 +22,10 @@ namespace nsK2EngineLow {
 		}
 		~CharacterController()
 		{
-			RemoveRigidBoby();
+			if (m_isInited)
+			{
+				RemoveRigidBoby();
+			}
 		}
 		/*!
 			* @brief	‰Šú‰»B
@@ -53,6 +56,13 @@ namespace nsK2EngineLow {
 			m_position = pos;
 		}
 
+		/*!
+			* @brief	‰Šú‰»‚µ‚½‚©”»’è
+			*/
+		bool IsInited() const
+		{
+			return m_isInited;
+		}
 		/*!
 			* @brief	ƒWƒƒƒ“ƒv’†‚©”»’è
 			*/

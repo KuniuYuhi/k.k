@@ -3,14 +3,17 @@
 #include "Game.h"
 
 
+#include "Brave.h"
+
+
 namespace {
 
 	const float MAX_CAMERA_TOP = -0.1f;
 	const float MAX_CAMERA_UNDER = 0.8f;
 	//150.0f
-	const float TARGETPOS_YUP = 160.0f;
+	const float TARGETPOS_YUP = 100.0f;
 	
-	const Vector3 DEFAULT_TOCAMERAPOS = { 0.0f, 100.0f, -400.0f };
+	const Vector3 DEFAULT_TOCAMERAPOS = { 0.0f, 300.0f, -400.0f };
 	const Vector3 MAX_ZOOM_TOCAMERAPOS = { 0.0f,0.0f,-50.0f };
 
 }
@@ -25,15 +28,16 @@ GameCamera::~GameCamera()
 
 bool GameCamera::Start()
 {
-	m_game = FindGO<Game>("game");
-	//m_player = FindGO<Player>("player");
+	//m_game = FindGO<Game>("game");
 
-	//m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
+	m_player = FindGO<Brave>("Brave");
+
+	
 
 	g_camera3D->SetNear(1.0f);
 	g_camera3D->SetFar(10000.0f);
 
-	m_toCameraPosForBoss.Set(0.0f, 200.0f, 200.0f);
+	
 	//注視点から視点までのベクトルを設定。300,400
 	m_toCameraPos.Set(DEFAULT_TOCAMERAPOS);
 	//カメラをプレイヤーの後ろにするときに使う
@@ -50,6 +54,10 @@ bool GameCamera::Start()
 	);
 
 	
+
+
+	//
+	SetBattleCameraFlag = true;
 
 	return true;
 }
@@ -84,27 +92,27 @@ void GameCamera::SetBattleStartCamera()
 	m_springCamera.Refresh();
 
 	//注視点の計算
-	//m_target = m_player->GetPosition();
-	//m_target.y += TARGETPOS_YUP;
+	m_target = m_player->GetPosition();
+	m_target.y += TARGETPOS_YUP;
 	//前方向の取得
-	//Vector3 CameraPosXZ = m_player->GetForward();
-	//CameraPosXZ.y = 0.0f;
+	Vector3 CameraPosXZ = m_player->GetForward();
+	CameraPosXZ.y = 0.0f;
 	//反転
-	//CameraPosXZ *= -1.0f;
+	CameraPosXZ *= -1.0f;
 	//XZ方向
-	//CameraPosXZ *= 400.0f;
+	CameraPosXZ *= 400.0f;
 	//Y方向
 	Vector3 CameraPosY = Vector3::AxisY;
 	CameraPosY *= 100.0f;
 
 	//新しいカメラの座標
-	//Vector3 newCameraPos = CameraPosXZ + CameraPosY;
+	Vector3 newCameraPos = CameraPosXZ + CameraPosY;
 	//最終的なカメラの座標
-	//Vector3 finalCameraPos = newCameraPos + m_target;
+	Vector3 finalCameraPos = newCameraPos + m_target;
 
 	//視点と注視点を設定
 	m_springCamera.SetTarget(m_target);
-	//m_springCamera.SetPosition(finalCameraPos);
+	m_springCamera.SetPosition(finalCameraPos);
 
 	//カメラの更新。
 	m_springCamera.Update();
@@ -113,10 +121,10 @@ void GameCamera::SetBattleStartCamera()
 	SetBattleCameraFlag = true;
 }
 
-void GameCamera::ChaseCamera(bool Reversesflag)
+void GameCamera::ChasePlayerCamera(bool Reversesflag)
 {
 	//注視点の計算
-	//m_target = m_player->GetPosition();
+	m_target = m_player->GetPosition();
 	m_target.y = TARGETPOS_YUP;
 
 	Vector3 toCameraPosOld = m_toCameraPos;
@@ -196,7 +204,7 @@ void GameCamera::OnProcessGameTransition()
 	}
 	
 	//プレイヤーを追う
-	ChaseCamera();
+	ChasePlayerCamera();
 
 	ZoomCamera();
 

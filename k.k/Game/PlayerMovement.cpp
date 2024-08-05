@@ -51,5 +51,8 @@ Vector3 PlayerMovement::CalcSimpleMovementVerocity(
 	currentMoveSpeed += cameraRight + cameraForward;
 
 
+
+
+
 	return currentMoveSpeed;
 }

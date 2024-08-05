@@ -4,9 +4,8 @@
 #include "SpringCamera.h"
 
 class Game;
-class Player;
-class Lich;
-class Boss;
+
+class Brave;
 
 
 class GameCamera:public IGameObject
@@ -29,7 +28,7 @@ public:
 	/// プレイヤーを追うカメラ
 	/// </summary>
 	/// <param name="Reversesflag">視点を反対方向にするかのフラグ。trueで反対方向にする</param>
-	void ChaseCamera(bool Reversesflag = false);
+	void ChasePlayerCamera(bool Reversesflag = false);
 
 	/// <summary>
 	/// カメラのズーム処理
@@ -45,18 +44,15 @@ public:
 		m_springCamera.Refresh();
 	}
 
-	void SetLich(Lich* lich)
-	{
-		m_lich = lich;
-	}
+	
 
 
 
 private:
 	Game* m_game = nullptr;
-	Player* m_player = nullptr;
-	Boss* m_boss = nullptr;
-	Lich* m_lich = nullptr;
+	
+	Brave* m_player = nullptr;
+
 
 	CameraCollisionSolver	m_cameraCollisionSolver;
 	SpringCamera			m_springCamera;

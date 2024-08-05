@@ -2,14 +2,13 @@
 #include "MobEnemyBase.h"
 
 
-
 /// <summary>
-/// モブエネミー：スライムクラス
+/// モブエネミー：カクタスクラス
 /// </summary>
-class Slime : public MobEnemyBase
+class Cactus : public MobEnemyBase
 {
 public:
-	~Slime();
+	~Cactus();
 
 	bool Start() override;
 
@@ -19,7 +18,6 @@ public:
 
 
 private:
-
 
 	/// <summary>
 	/// 全てのコンポーネントを初期化
@@ -42,7 +40,6 @@ private:
 private:
 
 	bool m_isSettingComponents = false;
-
 
 };
 

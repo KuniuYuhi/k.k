@@ -85,6 +85,14 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
+		/// スタートフラグをリセットする
+		/// </summary>
+		void ResetStartFlag()
+		{
+			m_isStart = false;
+		}
+
+		/// <summary>
 		/// 死亡させる。
 		/// </summary>
 		void Dead()

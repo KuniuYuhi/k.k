@@ -29,9 +29,13 @@
 #include "Brave.h"
 #include "PlayerMovement.h"
 
+//////////////////////////////
 #include "Slime.h"
+#include "Cactus.h"
+//////////////////////////////
 
 #include "EnemyObjectPool.h"
+#include "WaveManager.h"
 
 namespace {
 
@@ -90,6 +94,8 @@ bool Game::Start()
 	//ゲームオブジェクトの初期化
 	InitGameObject();
 
+	CreatePlayerAndCamera();
+
 	//フェードクラスのインスタンスを探す
 	m_fade = FindGO<Fade>("fade");
 	//画面を明るくする
@@ -101,10 +107,12 @@ bool Game::Start()
 	g_renderingEngine->UseLimLight();
 
 	//当たり判定の可視化
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 
 	Brave* brave = NewGO<Brave>(0,"Brave");
+
+	WaveManager* wave = NewGO<WaveManager>(0, "WaveManager");
 
 	//Slime* slime = NewGO<Slime>(0,"Slime");
 	//slime->Deactivate();
@@ -113,19 +121,32 @@ bool Game::Start()
 
 	float x = 50.0f;
 
-	for (int i = 0; i < 5; i++)
-	{
-		//
-		EnemyBase* slime = 
-			EnemyObjectPool::GetInstance()->OnGetEnemy<Slime>("Slime");
+	float cx = -50.0f;
 
-		slime->SetPosition(Vector3(x, 0.0f, 0.0f));
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	//
+	//	EnemyBase* slime = 
+	//		EnemyObjectPool::GetInstance()->OnGetEnemy<Slime>("Slime");
 
-		x += 10.0f;
+	//	slime->SetPosition(Vector3(x, 0.0f, 0.0f));
 
-		//EnemyObjectPool::GetInstance()->OnRelease("Slime", slime);
+	//	x += 10.0f;
 
-	}
+
+	//	//
+	//	EnemyBase* cactus =
+	//		EnemyObjectPool::GetInstance()->OnGetEnemy<Cactus>("Cactus");
+
+	//	cactus->SetPosition(Vector3(cx, 0.0f, 0.0f));
+
+	//	cx -= 10.0f;
+
+
+
+	//	//EnemyObjectPool::GetInstance()->OnRelease("Slime", slime);
+
+	//}
 
 	
 
@@ -138,7 +159,7 @@ void Game::Update()
 {	
 	//Brave* brave = FindGO<Brave>("Brave");
 	//PlayerMovement* pM = brave->GetComponent<PlayerMovement>();
-	if (g_pad[0]->IsTrigger(enButtonA))
+	if (g_pad[0]->IsTrigger(enButtonB))
 	{
 
 
@@ -146,7 +167,8 @@ void Game::Update()
 
 		
 
-		float x = 100.0f;
+		/*float x = 100.0f;
+		float cx = -100.0f;
 
 		for (int i = 0; i < 3; i++)
 		{
@@ -156,9 +178,18 @@ void Game::Update()
 			slime->SetPosition(Vector3(x, 0.0f, 0.0f));
 
 			x += 10.0f;
-		}
 
-		/*Brave* brave = FindGO<Brave>("Brave");
+
+			EnemyBase* cactus =
+				EnemyObjectPool::GetInstance()->OnGetEnemy<Cactus>("Cactus");
+
+			cactus->SetPosition(Vector3(cx, 0.0f, 0.0f));
+
+			cx -= 10.0f;
+		}*/
+
+
+		/*CharacterBase* brave = FindGO<CharacterBase>("Brave");
 
 		if (brave != nullptr)
 		{

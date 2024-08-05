@@ -85,8 +85,14 @@ public:
 		return m_commonEnemyStatus.currentPower;
 	}
 
-
-
+	/// <summary>
+	/// スピードを取得
+	/// </summary>
+	/// <returns></returns>
+	const float& GetDefaultSpeed() const
+	{
+		return m_commonEnemyStatus.defaultSpeed;
+	}
 
 
 	//csvは使わない

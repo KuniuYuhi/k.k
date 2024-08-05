@@ -61,6 +61,15 @@
     <Filter Include="Characters\Ememy\Mob\Slime">
       <UniqueIdentifier>{3eed6491-f151-4bd9-91b9-cfb622dc2070}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Characters\Ememy\Mob\Cactus">
+      <UniqueIdentifier>{d09e4278-6343-426e-aeba-f0dc379bd2e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Status\Player">
+      <UniqueIdentifier>{6265e68b-29fd-42ae-ae96-1e370b3c37d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Status\Wave">
+      <UniqueIdentifier>{0bf606d1-af44-4988-bb94-c3d13e6f2646}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -110,9 +119,6 @@
     </ClCompile>
     <ClCompile Include="ICharacter.cpp">
       <Filter>Characters\CharacterBase</Filter>
-    </ClCompile>
-    <ClCompile Include="Status_Player.cpp">
-      <Filter>Status</Filter>
     </ClCompile>
     <ClCompile Include="PlayerController.cpp">
       <Filter>Characters\Player</Filter>
@@ -170,6 +176,18 @@
     </ClCompile>
     <ClCompile Include="IObjectPool.cpp" />
     <ClCompile Include="EnemyObjectPool.cpp" />
+    <ClCompile Include="Damageable.cpp" />
+    <ClCompile Include="Cactus.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="MobEnemyMovement.cpp" />
+    <ClCompile Include="WaveManager.cpp">
+      <Filter>Wave</Filter>
+    </ClCompile>
+    <ClCompile Include="Status_Player.cpp">
+      <Filter>Status\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="WaveStatus.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -227,9 +245,6 @@
     <ClInclude Include="ICharacter.h">
       <Filter>Characters\CharacterBase</Filter>
     </ClInclude>
-    <ClInclude Include="Status_Player.h">
-      <Filter>Status</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerController.h">
       <Filter>Characters\Player</Filter>
     </ClInclude>
@@ -286,5 +301,20 @@
     </ClInclude>
     <ClInclude Include="IObjectPool.h" />
     <ClInclude Include="EnemyObjectPool.h" />
+    <ClInclude Include="Damageable.h" />
+    <ClInclude Include="Cactus.h">
+      <Filter>Characters\Ememy\Mob\Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="MobEnemyMovement.h" />
+    <ClInclude Include="WaveManager.h">
+      <Filter>Wave</Filter>
+    </ClInclude>
+    <ClInclude Include="Status_Player.h">
+      <Filter>Status\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="WaveStatus.h" />
+    <ClInclude Include="MobEnemyheaderFiles.h">
+      <Filter>Status\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

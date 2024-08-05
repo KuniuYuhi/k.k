@@ -60,7 +60,11 @@ void Brave::Update()
 	m_modelRender.Update();
 }
 
-void Brave::UpdateCharacter()
+void Brave::Damage()
+{
+}
+
+void Brave::Dead()
 {
 }
 

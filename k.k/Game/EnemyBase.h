@@ -13,13 +13,7 @@ class EnemyBase : public CharacterBase
 {
 public:
 
-	virtual ~EnemyBase() override = default;
-
-	/// <summary>
-	/// 更新処理。使ってない！！！！
-	/// </summary>
-	virtual void UpdateCharacter() override {}
-
+	//virtual ~EnemyBase() = default;
 
 
 	/// <summary>

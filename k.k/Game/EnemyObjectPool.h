@@ -107,7 +107,7 @@ public:
 			//エネミーを生成
 			OnCreateEnemy<T>(getKeyName);
 		}
-
+		//一番上から取ってくる
 		auto* getEnemy = getQueue.front();
 
 		//ゲットしたいクラスを持っているか調べる
@@ -120,17 +120,29 @@ public:
 
 		//アクティブ化する
 		getEnemy->Activate();
+		//既にスタート関数の処理をしているならやり直す
+		if (getEnemy->IsStart())
+		{
+			getEnemy->ResetStartFlag();
+		}
+
+		//キューから取り出す
 		getQueue.pop();
 
 		return getEnemy;
 	}
 
+	/// <summary>
+	/// オブジェクトをキューに返す。返すときに非アクティブ化されます。
+	/// </summary>
+	/// <param name="keyName">格納するキーの名前</param>
+	/// <param name="releaseObj">格納するオブジェクト</param>
 	void OnRelease(const char* keyName, EnemyBase* releaseObj)
 	{
 		//キューからキーに対応するオブジェクトを取得
 		std::queue<EnemyBase*>& getQueue = m_objectPoolQueue.at(keyName);
 		//
-		if (getQueue.empty())
+		if (releaseObj == nullptr)
 		{
 			return;
 		}
@@ -158,6 +170,34 @@ public:
 			}
 			getQueue.pop();
 		}
+	}
+
+	/// <summary>
+	/// オブジェクトプールの中のアクティブなオブジェクトの数を調べる
+	/// </summary>
+	/// <returns>アクティブオブジェクトの数</returns>
+	const int GetActiveObjCount()
+	{
+		int activeCount = 0;
+
+		for (auto& pool: m_objectPoolQueue)
+		{
+			std::queue<EnemyBase*> getPool = pool.second;
+
+			while (!getPool.empty())
+			{
+				EnemyBase* enemy = getPool.front();
+
+				getPool.pop();
+
+				if (enemy->IsActive())
+				{
+					activeCount++;
+				}
+			}
+		}
+
+		return activeCount;
 	}
 
 

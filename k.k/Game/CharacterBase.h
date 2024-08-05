@@ -1,23 +1,26 @@
 #pragma once
 #include "ICharacter.h"
+#include "Damageable.h"
 
 /// <summary>
 /// キャラクターのベースクラス
 /// キャラクターで共通する処理を実装する
 /// </summary>
-class CharacterBase : public ICharacter
+class CharacterBase : public ICharacter,Damageable
 {
 public:
-	virtual ~CharacterBase() = default;
+	//virtual ~CharacterBase() = default;
 
 	/// <summary>
-	/// 更新処理。使ってない！！！！
+	/// 被ダメージ処理
 	/// </summary>
-	virtual void UpdateCharacter() = 0;
+	virtual void Damage() override {}
 
-
-
-	//テンプレートでステータスを取得する
+	/// <summary>
+	/// 死亡時処理
+	/// </summary>
+	virtual void Dead() override {}
+	
 
 
 protected:
@@ -31,9 +34,14 @@ protected:
 
 
 protected:
-	//ステータス
+	
+	CharacterController m_charaCon;		//キャラクターコントローラー
+	
 
-	//デフォルトコンポーネント
+
+	Vector3 m_moveSpeed = Vector3::Zero;		//移動量
+
+	Vector3 m_rotateDirection = Vector3::Zero;	//回転する方向ベクトル
 
 };
 
