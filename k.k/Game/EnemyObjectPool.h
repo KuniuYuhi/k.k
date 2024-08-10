@@ -1,6 +1,5 @@
 #pragma once
 #include "IObjectPool.h"
-
 #include "EnemyBase.h"
 
 class EnemyBase;
@@ -107,6 +106,7 @@ public:
 			//エネミーを生成
 			OnCreateEnemy<T>(getKeyName);
 		}
+
 		//一番上から取ってくる
 		auto* getEnemy = getQueue.front();
 
