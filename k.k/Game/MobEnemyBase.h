@@ -47,11 +47,19 @@ protected:
 	virtual void AddMoreComponent() {}
 
 	/// <summary>
+	/// コリジョンを作成する
+	/// </summary>
+	virtual void CreateCollisionObject(){}
+
+	/// <summary>
 	/// 追いかける移動処理
 	/// </summary>
 	/// <param name="targetPosition">ターゲットの座標</param>
 	void ChaseMovement(Vector3 targetPosition);
 
+	/// <summary>
+	/// 回転処理
+	/// </summary>
 	void Rotation();
 
 

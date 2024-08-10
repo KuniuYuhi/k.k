@@ -40,6 +40,7 @@ protected:
 	//基本的なステータス
 	CommonEnemyStatus m_status;
 
+	CollisionObject* m_collisionObj = nullptr;		//当たり判定用コリジョン
 
 };
 
