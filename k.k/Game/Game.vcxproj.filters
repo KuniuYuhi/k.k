@@ -25,9 +25,6 @@
     <Filter Include="Component">
       <UniqueIdentifier>{dbfd1e5e-ac6a-49a0-92bb-d586ce140ef5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Characters\Player">
-      <UniqueIdentifier>{45518746-fe70-484a-884c-d2b2b458c396}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Status">
       <UniqueIdentifier>{d6d52eb9-37e4-41c0-9974-ac2d63a0a06b}</UniqueIdentifier>
     </Filter>
@@ -69,6 +66,24 @@
     </Filter>
     <Filter Include="Status\Wave">
       <UniqueIdentifier>{0bf606d1-af44-4988-bb94-c3d13e6f2646}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Player">
+      <UniqueIdentifier>{45518746-fe70-484a-884c-d2b2b458c396}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Player\State">
+      <UniqueIdentifier>{38c6ef1e-c03d-4405-b14a-4d21cf7cf5e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\WeaponManager">
+      <UniqueIdentifier>{b536ce2c-ea28-4808-ac53-8fd1ea8c4f7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Status\Weapon">
+      <UniqueIdentifier>{8dcd7c11-c23b-4aab-8926-c8240345cc07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Weapon">
+      <UniqueIdentifier>{130a3e2d-99d4-4e5f-b61f-bd7c5aa2d90c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Weapon\NewFilter1">
+      <UniqueIdentifier>{bd9c5de3-fb41-4a03-b376-54de26c6235f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -187,7 +202,66 @@
     <ClCompile Include="Status_Player.cpp">
       <Filter>Status\Player</Filter>
     </ClCompile>
-    <ClCompile Include="WaveStatus.cpp" />
+    <ClCompile Include="LoadBraveAnimationClips.cpp">
+      <Filter>Characters\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateContext.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_ChangeWeapon.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_DefensiveAction.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_DefensiveHit.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_Die.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_FirstAttack.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_Hit.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_Idle.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_SecondAttack.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_SkillMain.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_SkillStart.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_Sprint.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_ThirdAttack.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_WinMain.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_WinStart.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponManager.cpp">
+      <Filter>Manager\WeaponManager</Filter>
+    </ClCompile>
+    <ClCompile Include="WaveStatus.cpp">
+      <Filter>Status\Wave</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponStatus.cpp">
+      <Filter>Status\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponBase.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -312,9 +386,80 @@
     <ClInclude Include="Status_Player.h">
       <Filter>Status\Player</Filter>
     </ClInclude>
-    <ClInclude Include="WaveStatus.h" />
     <ClInclude Include="MobEnemyheaderFiles.h">
       <Filter>Status\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveAnimClipAndStateInfo.h">
+      <Filter>Characters\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadBraveAnimationClips.h">
+      <Filter>Characters\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateContext.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="IBraveState.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_ChangeWeapon.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_DefensiveAction.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_DefensiveHit.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_Die.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_FirstAttack.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_Hit.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_Idle.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_SecondAttack.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_SkillMain.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_SkillStart.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_Sprint.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_ThirdAttack.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_WinMain.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_WinStart.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveAllStateFiles.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponManager.h">
+      <Filter>Manager\WeaponManager</Filter>
+    </ClInclude>
+    <ClInclude Include="WaveStatus.h">
+      <Filter>Status\Wave</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponStatus.h">
+      <Filter>Status\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponBase.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponAttribute.h">
+      <Filter>Weapon</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

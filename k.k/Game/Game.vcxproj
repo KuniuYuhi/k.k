@@ -226,6 +226,21 @@
     <ClCompile Include="BattleStart.cpp" />
     <ClCompile Include="BossStage1.cpp" />
     <ClCompile Include="Brave.cpp" />
+    <ClCompile Include="BraveStateContext.cpp" />
+    <ClCompile Include="BraveState_ChangeWeapon.cpp" />
+    <ClCompile Include="BraveState_DefensiveAction.cpp" />
+    <ClCompile Include="BraveState_DefensiveHit.cpp" />
+    <ClCompile Include="BraveState_Die.cpp" />
+    <ClCompile Include="BraveState_FirstAttack.cpp" />
+    <ClCompile Include="BraveState_Hit.cpp" />
+    <ClCompile Include="BraveState_Idle.cpp" />
+    <ClCompile Include="BraveState_SecondAttack.cpp" />
+    <ClCompile Include="BraveState_SkillMain.cpp" />
+    <ClCompile Include="BraveState_SkillStart.cpp" />
+    <ClCompile Include="BraveState_Sprint.cpp" />
+    <ClCompile Include="BraveState_ThirdAttack.cpp" />
+    <ClCompile Include="BraveState_WinMain.cpp" />
+    <ClCompile Include="BraveState_WinStart.cpp" />
     <ClCompile Include="Cactus.cpp" />
     <ClCompile Include="CharacterBase.cpp" />
     <ClCompile Include="Damageable.cpp" />
@@ -234,6 +249,8 @@
     <ClCompile Include="EntryBoss.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="IObjectPool.cpp" />
+    <ClCompile Include="WeaponBase.cpp" />
+    <ClCompile Include="LoadBraveAnimationClips.cpp" />
     <ClCompile Include="MobEnemyBase.cpp" />
     <ClCompile Include="MobEnemyMovement.cpp" />
     <ClCompile Include="PlayerController.cpp" />
@@ -275,12 +292,31 @@
     <ClCompile Include="WaveManager.cpp" />
     <ClCompile Include="WaveStatus.cpp" />
     <ClCompile Include="WaveTimer.cpp" />
+    <ClCompile Include="WeaponManager.cpp" />
+    <ClCompile Include="WeaponStatus.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllGameSceneState.h" />
     <ClInclude Include="BattleStart.h" />
     <ClInclude Include="BossStage1.h" />
     <ClInclude Include="Brave.h" />
+    <ClInclude Include="BraveAllStateFiles.h" />
+    <ClInclude Include="BraveAnimClipAndStateInfo.h" />
+    <ClInclude Include="BraveStateContext.h" />
+    <ClInclude Include="BraveState_ChangeWeapon.h" />
+    <ClInclude Include="BraveState_DefensiveAction.h" />
+    <ClInclude Include="BraveState_DefensiveHit.h" />
+    <ClInclude Include="BraveState_Die.h" />
+    <ClInclude Include="BraveState_FirstAttack.h" />
+    <ClInclude Include="BraveState_Hit.h" />
+    <ClInclude Include="BraveState_Idle.h" />
+    <ClInclude Include="BraveState_SecondAttack.h" />
+    <ClInclude Include="BraveState_SkillMain.h" />
+    <ClInclude Include="BraveState_SkillStart.h" />
+    <ClInclude Include="BraveState_Sprint.h" />
+    <ClInclude Include="BraveState_ThirdAttack.h" />
+    <ClInclude Include="BraveState_WinMain.h" />
+    <ClInclude Include="BraveState_WinStart.h" />
     <ClInclude Include="Cactus.h" />
     <ClInclude Include="CharacterBase.h" />
     <ClInclude Include="Damageable.h" />
@@ -288,7 +324,10 @@
     <ClInclude Include="EnemyObjectPool.h" />
     <ClInclude Include="EntryBoss.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="IBraveState.h" />
     <ClInclude Include="IObjectPool.h" />
+    <ClInclude Include="WeaponBase.h" />
+    <ClInclude Include="LoadBraveAnimationClips.h" />
     <ClInclude Include="MobEnemyBase.h" />
     <ClInclude Include="MobEnemyheaderFiles.h" />
     <ClInclude Include="MobEnemyMovement.h" />
@@ -329,6 +368,9 @@
     <ClInclude Include="WaveManager.h" />
     <ClInclude Include="WaveStatus.h" />
     <ClInclude Include="WaveTimer.h" />
+    <ClInclude Include="WeaponManager.h" />
+    <ClInclude Include="WeaponStatus.h" />
+    <ClInclude Include="WeaponAttribute.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
