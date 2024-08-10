@@ -22,6 +22,14 @@ public:
 	virtual void Dead() override {}
 	
 
+	/// <summary>
+	/// 移動量を取得
+	/// </summary>
+	/// <returns></returns>
+	Vector3 GetMoveSpeed()
+	{
+		return m_moveSpeed;
+	}
 
 protected:
 
@@ -37,6 +45,7 @@ protected:
 	
 	CharacterController m_charaCon;		//キャラクターコントローラー
 	
+	std::unique_ptr<CharacterController> m_charaConPtr = nullptr;
 
 
 	Vector3 m_moveSpeed = Vector3::Zero;		//移動量
