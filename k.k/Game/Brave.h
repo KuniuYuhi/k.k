@@ -3,12 +3,14 @@
 
 #include "Status_Player.h"
 
-
+#include "LoadBraveAnimationClips.h"
+#include "BraveStateContext.h"
 
 class Status_Player;
 class PlayerMovement;
 class PlayerController;
-
+class LoadBraveAnimationClips;
+class BraveStateContext;
 
 class Brave : public CharacterBase
 {
@@ -41,6 +43,15 @@ public:
 		m_rotateDirection = rotateDirection;
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	const int GetCurrentAnimationStartIndexNo()
+	{
+		return m_braveAnimClip.get()->GetCurrentAnimationStartIndexNo();
+	}
+
 
 protected:
 
@@ -67,11 +78,18 @@ private:
 
 	Status_Player m_status;
 
+	std::unique_ptr<LoadBraveAnimationClips> m_braveAnimClip = nullptr;
+
 	
 
 	PlayerMovement* m_playerMovement = nullptr;
 
 	PlayerController* m_playerContoller = nullptr;
+
+	std::unique_ptr<BraveStateContext> m_braveStateCotext = nullptr;
+
+
+	
 
 };
 

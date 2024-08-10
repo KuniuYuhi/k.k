@@ -7,24 +7,37 @@
 #include "PlayerMovement.h"
 #include "PlayerController.h"
 
-//モデルのアニメーション読み込みファイル作ること
+
 
 ///////////////////////////////////////
-//
+//ステートコンテキスト
 ///////////////////////////////////////
-
+//#include "BraveStateContext.h"
 
 
 
 
 Brave::~Brave()
 {
+	m_braveAnimClip.release();
+
 }
 
 bool Brave::Start()
 {
+	
+
+
+	m_braveAnimClip = std::make_unique<LoadBraveAnimationClips>();
+	//アニメーションクリップをロードする
+	m_braveAnimClip.get()->RoadWeaponsAnimClips();
+	//モデル初期化
 	m_modelRender.Init("Assets/modelData/character/Player/NewHero/Hero_Smile_Selllook.tkm",
-		L"Assets/shader/ToonTextrue/lamp_glay.DDS");
+		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
+		m_braveAnimClip.get()->GetBraveAnimationClip(),
+		m_braveAnimClip.get()->GetNumAnimationClips(),
+		enModelUpAxisZ
+	);
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 
@@ -33,7 +46,13 @@ bool Brave::Start()
 
 	//ステータスを初期化
 	m_status.InitPlayerStatus("Brave");
+
+
+	m_braveStateCotext = std::make_unique<BraveStateContext>();
+	//初期化
+	m_braveStateCotext.get()->Init(this, enBraveState_Idle);
 	
+
 	//各種コンポーネントのセッティング
 	SettingDefaultComponent();
 
@@ -53,6 +72,9 @@ void Brave::Update()
 	Rotation();
 
 	//m_playerMovement->UpdateComponent();
+
+	m_braveStateCotext.get()->UpdateCurrentState();
+	m_braveStateCotext.get()->PlayAnimationCurrentState();
 
 
 	//モデルの更新処理
@@ -126,6 +148,13 @@ void Brave::Rotation()
 
 void Brave::Attack()
 {
+	//攻撃ボタン
+	if (m_playerContoller->IsButtonTrigger(enButtonA))
+	{
+
+	}
+
+
 }
 
 
