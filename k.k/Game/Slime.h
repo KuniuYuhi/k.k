@@ -37,7 +37,10 @@ private:
 	/// </summary>
 	void AddMoreComponent() override;
 
-
+	/// <summary>
+	/// ƒRƒŠƒWƒ‡ƒ“‚ğì¬‚·‚é
+	/// </summary>
+	void CreateCollisionObject() override;
 
 private:
 

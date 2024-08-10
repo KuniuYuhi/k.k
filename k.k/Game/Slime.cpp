@@ -58,6 +58,8 @@ void Slime::ReleaseThis()
 {
 	//todo キャラコンの位置の変更、非アクティブ化時の処理
 
+
+
 	m_charaCon.SetPosition(m_deactivatePosition);
 	m_charaCon.Execute(m_deactivatePosition,g_gameTime->GetFrameDeltaTime());
 	EnemyObjectPool::GetInstance()->OnRelease("Slime", this);
@@ -68,9 +70,14 @@ void Slime::AddMoreComponent()
 
 }
 
+void Slime::CreateCollisionObject()
+{
+
+}
+
 void Slime::Update()
 {
-	if (g_pad[0]->IsTrigger(enButtonA))
+	if (g_pad[0]->IsTrigger(enButtonB))
 	{
 		ReleaseThis();
 		return;
