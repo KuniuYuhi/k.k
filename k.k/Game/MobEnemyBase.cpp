@@ -23,7 +23,11 @@ void MobEnemyBase::ChaseMovement(Vector3 targetPosition)
 		m_moveSpeed
 	);
 
-	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+	if (m_charaCon != nullptr)
+	{
+		m_position = m_charaCon.get()->Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+	}
+	
 
 
 	m_rotateDirection = m_moveSpeed;
