@@ -356,7 +356,7 @@ void GameUI::CalcOffsetForNowPhaseMonsters(int monsters)
 	m_oldPhaseMonstersNum = monsters;
 }
 
-void GameUI::ChangeWeapon(
+void GameUI::ChangeWeaponAction(
 	WeaponSprits& changeWeaponSprite
 )
 {

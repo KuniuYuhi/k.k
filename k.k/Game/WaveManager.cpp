@@ -297,6 +297,9 @@ void WaveManager::ProcessShortBreakTimeStateTransition()
 
 void WaveManager::ProcessSettingCreatePosStateTransition()
 {
+	//todo ”•b‘Ò‚Á‚Ä‚©‚ç¢Š«‚É‰f‚é
+
+
 	//À•Wİ’è
 	SetSummonRandomPosition(
 		m_waveStatus.GetCreateRadius(), 

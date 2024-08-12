@@ -107,12 +107,12 @@ bool Game::Start()
 	g_renderingEngine->UseLimLight();
 
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
-	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 
 	Brave* brave = NewGO<Brave>(0,"Brave");
 
-	WaveManager* wave = NewGO<WaveManager>(0, "WaveManager");
+	//WaveManager* wave = NewGO<WaveManager>(0, "WaveManager");
 
 	//Slime* slime = NewGO<Slime>(0,"Slime");
 	//slime->Deactivate();

@@ -262,6 +262,9 @@
     <ClCompile Include="WeaponBase.cpp">
       <Filter>Weapon</Filter>
     </ClCompile>
+    <ClCompile Include="GreateSword.cpp" />
+    <ClCompile Include="SwordShield.cpp" />
+    <ClCompile Include="Bow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -458,8 +461,11 @@
     <ClInclude Include="WeaponBase.h">
       <Filter>Weapon</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponAttribute.h">
+    <ClInclude Include="WeaponInfo.h">
       <Filter>Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="GreateSword.h" />
+    <ClInclude Include="SwordShield.h" />
+    <ClInclude Include="Bow.h" />
   </ItemGroup>
 </Project>

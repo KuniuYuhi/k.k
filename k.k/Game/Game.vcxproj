@@ -225,6 +225,7 @@
   <ItemGroup>
     <ClCompile Include="BattleStart.cpp" />
     <ClCompile Include="BossStage1.cpp" />
+    <ClCompile Include="Bow.cpp" />
     <ClCompile Include="Brave.cpp" />
     <ClCompile Include="BraveStateContext.cpp" />
     <ClCompile Include="BraveState_ChangeWeapon.cpp" />
@@ -248,7 +249,9 @@
     <ClCompile Include="EnemyObjectPool.cpp" />
     <ClCompile Include="EntryBoss.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GreateSword.cpp" />
     <ClCompile Include="IObjectPool.cpp" />
+    <ClCompile Include="SwordShield.cpp" />
     <ClCompile Include="WeaponBase.cpp" />
     <ClCompile Include="LoadBraveAnimationClips.cpp" />
     <ClCompile Include="MobEnemyBase.cpp" />
@@ -299,6 +302,7 @@
     <ClInclude Include="AllGameSceneState.h" />
     <ClInclude Include="BattleStart.h" />
     <ClInclude Include="BossStage1.h" />
+    <ClInclude Include="Bow.h" />
     <ClInclude Include="Brave.h" />
     <ClInclude Include="BraveAllStateFiles.h" />
     <ClInclude Include="BraveAnimClipAndStateInfo.h" />
@@ -324,8 +328,10 @@
     <ClInclude Include="EnemyObjectPool.h" />
     <ClInclude Include="EntryBoss.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GreateSword.h" />
     <ClInclude Include="IBraveState.h" />
     <ClInclude Include="IObjectPool.h" />
+    <ClInclude Include="SwordShield.h" />
     <ClInclude Include="WeaponBase.h" />
     <ClInclude Include="LoadBraveAnimationClips.h" />
     <ClInclude Include="MobEnemyBase.h" />
@@ -370,7 +376,7 @@
     <ClInclude Include="WaveTimer.h" />
     <ClInclude Include="WeaponManager.h" />
     <ClInclude Include="WeaponStatus.h" />
-    <ClInclude Include="WeaponAttribute.h" />
+    <ClInclude Include="WeaponInfo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

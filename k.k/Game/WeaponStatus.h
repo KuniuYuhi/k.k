@@ -1,8 +1,8 @@
 #pragma once
 
-#include "WeaponAttribute.h"
+#include "WeaponInfo.h"
 
-using namespace WeaponType;
+using namespace WeaponAttribute;
 
 /// <summary>
 /// 武器のステータス
@@ -27,7 +27,8 @@ private:
 
 
 public:
-
+	//基礎的なステータスのURL
+	//ノックバックのURL
 
 };
 

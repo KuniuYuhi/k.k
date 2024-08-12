@@ -125,7 +125,7 @@ private:
 	/// <summary>
 	/// 武器切り替え処理
 	/// </summary>
-	void ChangeWeapon(WeaponSprits& changeWeaponSprite);
+	void ChangeWeaponAction(WeaponSprits& changeWeaponSprite);
 
 	/// <summary>
 	/// 耐久値のフォントの処理
