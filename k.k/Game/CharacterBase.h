@@ -21,6 +21,10 @@ public:
 	/// </summary>
 	virtual void Dead() override {}
 	
+	/// <summary>
+	/// キャラコンの作成
+	/// </summary>
+	void CreateCharacterController();
 
 	/// <summary>
 	/// 移動量を取得
@@ -43,9 +47,9 @@ protected:
 
 protected:
 	
-	CharacterController m_charaCon;		//キャラクターコントローラー
+	//CharacterController m_charaCon;		//キャラクターコントローラー
 	
-	std::unique_ptr<CharacterController> m_charaConPtr = nullptr;
+	std::unique_ptr<CharacterController> m_charaCon = nullptr;
 
 
 	Vector3 m_moveSpeed = Vector3::Zero;		//移動量
