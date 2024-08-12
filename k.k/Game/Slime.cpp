@@ -28,14 +28,14 @@ bool Slime::Start()
 
 	
 
-	//キャラコンを初期化していないなら
-	if (!m_charaCon.IsInited())
+	if (m_charaCon == nullptr)
 	{
-		m_charaCon.Init(20.0f, 40.0f, m_position);
+		CreateCharacterController();
+		m_charaCon.get()->Init(20.0f, 40.0f, m_position);
 	}
 	else
 	{
-		m_charaCon.SetPosition(m_position);
+		m_charaCon.get()->SetPosition(m_position);
 	}
 
 	//ステータスを初期化
@@ -59,9 +59,8 @@ void Slime::ReleaseThis()
 	//todo キャラコンの位置の変更、非アクティブ化時の処理
 
 
-
-	m_charaCon.SetPosition(m_deactivatePosition);
-	m_charaCon.Execute(m_deactivatePosition,g_gameTime->GetFrameDeltaTime());
+	m_charaCon.reset();
+	
 	EnemyObjectPool::GetInstance()->OnRelease("Slime", this);
 }
 

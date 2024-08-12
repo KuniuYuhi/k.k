@@ -27,13 +27,14 @@ bool Cactus::Start()
 
 
 	//キャラコンを初期化していないなら
-	if (!m_charaCon.IsInited())
+	if (m_charaCon == nullptr)
 	{
-		m_charaCon.Init(20.0f, 40.0f, m_position);
+		CreateCharacterController();
+		m_charaCon.get()->Init(20.0f, 40.0f, m_position);
 	}
 	else
 	{
-		m_charaCon.SetPosition(m_position);
+		m_charaCon.get()->SetPosition(m_position);
 	}
 
 	//コンポーネントを初期化していないなら
@@ -81,8 +82,8 @@ void Cactus::InitComponents()
 
 void Cactus::ReleaseThis()
 {
-	m_charaCon.SetPosition(m_deactivatePosition);
-	m_charaCon.Execute(m_deactivatePosition, g_gameTime->GetFrameDeltaTime());
+	m_charaCon.reset();
+
 	EnemyObjectPool::GetInstance()->OnRelease("Cactus", this);
 }
 
