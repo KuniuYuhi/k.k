@@ -15,22 +15,30 @@
 //#include "BraveStateContext.h"
 
 
+#include "WeaponManager.h"
+
+#include "SwordShield.h"
+#include "GreateSword.h"
+#include "Bow.h"
 
 
 Brave::~Brave()
 {
 	m_braveAnimClip.release();
-
+	WeaponManager::DeleteInstance();
 }
 
 bool Brave::Start()
 {
-	
+	EnWeaponType firstWeaponType = enSwordShield;
 
-
+	//アニメーションクリップロードクラスを生成
 	m_braveAnimClip = std::make_unique<LoadBraveAnimationClips>();
 	//アニメーションクリップをロードする
 	m_braveAnimClip.get()->RoadWeaponsAnimClips();
+	//アニメーションの最初の番号を設定
+	m_braveAnimClip.get()->SetCurrentWeaponAnimationStartIndexNo(firstWeaponType);
+
 	//モデル初期化
 	m_modelRender.Init("Assets/modelData/character/Player/NewHero/Hero_Smile_Selllook.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
@@ -41,13 +49,20 @@ bool Brave::Start()
 
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 
+	//アニメーションイベント用の関数を設定する。
+	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+	});
 
-	m_charaCon.Init(20.0f, 50.0f, m_position);
+
+	//キャラコンを生成
+	CreateCharacterController();
+	m_charaCon.get()->Init(20.0f, 50.0f, m_position);
 
 	//ステータスを初期化
 	m_status.InitPlayerStatus("Brave");
 
-
+	//ステート管理クラスを生成
 	m_braveStateCotext = std::make_unique<BraveStateContext>();
 	//初期化
 	m_braveStateCotext.get()->Init(this, enBraveState_Idle);
@@ -55,6 +70,15 @@ bool Brave::Start()
 
 	//各種コンポーネントのセッティング
 	SettingDefaultComponent();
+
+
+	//武器管理マネージャーを生成
+	WeaponManager::CreateInstance();
+	//初期化処理
+	WeaponManager::GetInstance()->Init(enSwordShield,enGreateSword,enBowArrow);
+
+
+
 
 	return true;
 }
@@ -64,14 +88,15 @@ void Brave::Update()
 
 	//武器の処理
 
+
+	ButtonAction();
+
 	//移動処理
 	Movement();
 
 
 	//回転が最後
 	Rotation();
-
-	//m_playerMovement->UpdateComponent();
 
 	m_braveStateCotext.get()->UpdateCurrentState();
 	m_braveStateCotext.get()->PlayAnimationCurrentState();
@@ -90,6 +115,43 @@ void Brave::Dead()
 {
 }
 
+void Brave::SetCurrentAnimationStartIndexNoForMainWeaponType()
+{
+	m_braveAnimClip.get()->SetCurrentWeaponAnimationStartIndexNo(
+		WeaponManager::GetInstance()->GetMainWeaponType()
+	);
+}
+
+bool Brave::IsButtonAction()
+{
+	////アクション中は他の処理をしない
+	//if (IsAction() == true)
+	//{
+	//	return true;
+	//}
+
+
+	//Attack();
+
+
+	//ChangeWeapon();
+
+	return false;
+}
+
+void Brave::ProcessCommonStateTransition()
+{
+	if (fabsf(GetMoveSpeed().x) >= 0.001f ||
+		fabsf(GetMoveSpeed().z) >= 0.001f)
+	{
+		m_braveStateCotext.get()->ChangeBraveState(enBraveState_Sprint);
+	}
+	else
+	{
+		m_braveStateCotext.get()->ChangeBraveState(enBraveState_Idle);
+	}
+}
+
 void Brave::SettingDefaultComponent()
 {
 	//プレイヤー移動コンポーネントを取得
@@ -104,6 +166,12 @@ void Brave::SettingDefaultComponent()
 
 void Brave::Movement()
 {
+	//アクション中は他の処理をしない
+	if (IsAction() == true)
+	{
+		return;
+	}
+
 	//コントローラーの入力を受け付けないなら移動処理しない
 	if (!m_playerContoller->IsControllerInputEnabledFlag()) return;
 
@@ -113,7 +181,7 @@ void Brave::Movement()
 	);
 
 	//仮のジャンプ処理
-	if (m_playerContoller->IsButtonTrigger(enButtonA) && m_charaCon.IsOnGround())
+	if (m_playerContoller->IsButtonTrigger(enButtonA) && m_charaCon.get()->IsOnGround())
 	{
 		m_moveSpeed.y = 400.0f;
 	}
@@ -122,9 +190,9 @@ void Brave::Movement()
 	m_moveSpeed.y -= 980.0f * g_gameTime->GetFrameDeltaTime();
 
 	//キャラコンを使って座標を移動
-	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+	m_position = m_charaCon.get()->Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 
-	if (m_charaCon.IsOnGround()) {
+	if (m_charaCon.get()->IsOnGround()) {
 		//地面についた。
 		m_moveSpeed.y = 0.0f;
 	}
@@ -146,8 +214,30 @@ void Brave::Rotation()
 
 }
 
-void Brave::Attack()
+void Brave::ButtonAction()
 {
+	//アクション中は他の処理をしない
+	if (IsAction() == true)
+	{
+		return;
+	}
+
+	//攻撃処理
+	AttackAction();
+
+	//武器切り替え
+	ChangeWeaponAction();
+
+}
+
+void Brave::AttackAction()
+{
+	//アクション中は他の処理をしない
+	if (IsAction() == true)
+	{
+		return;
+	}
+
 	//攻撃ボタン
 	if (m_playerContoller->IsButtonTrigger(enButtonA))
 	{
@@ -157,10 +247,68 @@ void Brave::Attack()
 
 }
 
+void Brave::ChangeWeaponAction()
+{
+	//アクション中は他の処理をしない
+	if (IsAction() == true)
+	{
+		return;
+	}
+
+	bool isTrigger = false;
+
+	//サブ武器１に切り替える
+	if (m_playerContoller->IsButtonTrigger(enButtonRB1))
+	{
+		//サブ武器１を切り替え武器にする
+		WeaponManager::GetInstance()->ChangeSubWeaponTypeToChangeWeaponType();
+		isTrigger = true;
+	}
+	//サブ武器２に切り替える
+	if (m_playerContoller->IsButtonTrigger(enButtonLB1))
+	{
+		//サブ武器２を切り替え武器にする
+		WeaponManager::GetInstance()->ChangeSubWeaponType2ToChangeWeaponType();
+		isTrigger = true;
+	}
+
+	//ボタンを押していたら
+	if (isTrigger)
+	{
+		//切り替える武器のアニメーションの最初の番号を切り替え対象武器の番号にする
+		m_braveAnimClip.get()->SetCurrentWeaponAnimationStartIndexNo(
+			WeaponManager::GetInstance()->GetChangeTargetWeaponType()
+		);
+		//ステートを切り替える
+		m_braveStateCotext.get()->ChangeBraveState(enBraveState_ChangeWeapon);
+
+
+		//アクション中にする
+		ActionActive();
+	}
+
+}
+
 
 
 
 void Brave::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
+}
+
+void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+
+	//武器入れ替えタイミング
+	if (wcscmp(eventName, L"ArmedSwordShield") == 0)
+	{
+		//武器自体と武器タイプを入れ替える
+		WeaponManager::GetInstance()->ChangeArmedWeapon(
+			WeaponManager::GetInstance()->GetChangeTargetWeaponType()
+		);
+		//切り替え武器タイプをメイン武器タイプに切り替える
+		//WeaponManager::GetInstance()->ChangeChangeWeaponTypeToMainWeaponType();
+	}
+
 }

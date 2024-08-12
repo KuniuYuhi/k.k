@@ -27,5 +27,9 @@ public:
 	/// </summary>
 	void Exit() override;
 
+
+private:
+
+
 };
 

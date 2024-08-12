@@ -9,8 +9,27 @@ void LoadBraveAnimationClips::RoadWeaponsAnimClips()
 	RoadBowAndArrowAnimationClip();
 
 	//現在のアニメーションの番号を設定
-	m_currentAnimationStartIndexNo = m_swordShieldAnimationStartIndexNo;
+	//m_currentAnimationStartIndexNo = m_swordShieldAnimationStartIndexNo;
 
+}
+
+void LoadBraveAnimationClips::SetCurrentWeaponAnimationStartIndexNo(
+	WeaponType::EnWeaponType startWeaponType)
+{
+	switch (startWeaponType)
+	{
+	case WeaponType::enSwordShield:
+		m_currentAnimationStartIndexNo = m_swordShieldAnimationStartIndexNo;
+		break;
+	case WeaponType::enGreateSword:
+		m_currentAnimationStartIndexNo = m_greateSwordAnimationStartIndexNo;
+		break;
+	case WeaponType::enBowArrow:
+		m_currentAnimationStartIndexNo = m_bowArrowAnimationStartIndexNo;
+		break;
+	default:
+		break;
+	}
 }
 
 void LoadBraveAnimationClips::RoadOneHandSwordAnimationClip()

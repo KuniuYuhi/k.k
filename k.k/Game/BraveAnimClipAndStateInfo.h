@@ -15,7 +15,7 @@ namespace BraveAnimationClip {
 		enBraveAnimClip_Defend,
 		enBraveAnimClip_DefendHit,
 		enBraveAnimClip_Die,
-		enBraveAnimClip_ChangeSwordShield,
+		enBraveAnimClip_ChangeWeapon,
 		enBraveAnimClip_Win_Start,
 		enBraveAnimClip_Win_Main,
 		enBraveAnimClip_attack1,

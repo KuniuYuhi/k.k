@@ -26,7 +26,14 @@ public:
 		return m_speed;
 	}
 
-
+	/// <summary>
+	/// 普段の移動速度の
+	/// 計算
+	/// </summary>
+	/// <param name="playerStatus">ステータス</param>
+	/// <param name="moveSpeed">現在の移動速度</param>
+	/// <param name="StickInput">コントローラーの移動スティックの入力量</param>
+	/// <returns>移動速度</returns>
 	Vector3 CalcSimpleMovementVerocity(
 		Status_Player playerStatus,
 		Vector3 moveSpeed,

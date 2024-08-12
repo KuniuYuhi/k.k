@@ -16,6 +16,10 @@ void BraveState_Idle::Entry()
 
 void BraveState_Idle::Ubdate()
 {
+
+	
+
+
 	if (fabsf(m_brave->GetMoveSpeed().x) >= 0.001f ||
 		fabsf(m_brave->GetMoveSpeed().z) >= 0.001f)
 	{

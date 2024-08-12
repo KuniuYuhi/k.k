@@ -1,9 +1,11 @@
 #pragma once
 
 #include "BraveAnimClipAndStateInfo.h"
-
+#include "WeaponInfo.h"
 
 using namespace BraveAnimationClip;
+
+using namespace WeaponType;
 
 /// <summary>
 /// 武器それぞれのアニメーションクリップグループ
@@ -51,6 +53,12 @@ public:
 	{
 		return m_currentAnimationStartIndexNo;
 	}
+
+	/// <summary>
+	/// 武器のタイプによって現在の武器のアニメーションの最初の番号を設定
+	/// </summary>
+	/// <param name="startWeaponType"></param>
+	void SetCurrentWeaponAnimationStartIndexNo(WeaponType::EnWeaponType startWeaponType);
 
 
 private:
