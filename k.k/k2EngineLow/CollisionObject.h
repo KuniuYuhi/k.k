@@ -362,6 +362,9 @@ namespace nsK2EngineLow {
 			}
 		}
 
+
+		const char* m_attackCollisionName = "AttackCollision";		//UŒ‚“–‚½‚è”»’è‚Ì–¼‘O
+
 	private:
 		std::vector<CollisionObject*>		m_collisionObjectVector;
 		std::vector<CollisionObject*>		m_findsCollisionObjectVector;
