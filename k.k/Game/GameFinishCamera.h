@@ -5,6 +5,7 @@
 
 class Boss;
 class Player;
+class ResultSeen;
 
 class GameFinishCamera:public IGameObject
 {
@@ -63,6 +64,9 @@ private:
 	Vector3				m_position = Vector3::Zero;		//カメラ座標
 	Vector3				m_target = Vector3::Zero;		//カメラ注視点
 	Vector3 m_forward = g_vec3Zero;
+
+
+	ResultSeen* m_result = nullptr;
 
 };
 

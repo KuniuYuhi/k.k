@@ -5,6 +5,11 @@
 #include "Fade.h"
 #include "SoundFile.h"
 
+#include "GameSceneManager.h"
+#include "AllGameSceneState.h"
+
+#include "EnemyObjectPool.h"
+
 // K2EngineLowのグローバルアクセスポイント。
 K2EngineLow* g_k2EngineLow = nullptr;
 
@@ -31,14 +36,32 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//フェードクラスの初期化
 	Fade*m_fade = NewGO<Fade>(5, "fade");
 
-	Title* title = NewGO<Title>(0, "game");
-	//Game* game = NewGO<Game>(0, "game");
+
+	//todo 使うオブジェクトを最初に生成しておいて非アクティブ化しておく
+
+
+
+
+	//ゲームマネージャーを生成
+	//シーンステートをタイトルステートに設定
+	//GameSceneManager::CreateInstanceAndSetGameSceneState(enGameSceneState_Title);
+
+
+	//エネミーオブジェクトプールを生成
+	EnemyObjectPool::CreateInstance();
+
+	EnemyObjectPool::GetInstance()->Init();
+
+	//Title* title = NewGO<Title>(0, "game");
+	Game* game = NewGO<Game>(0, "game");
 
 	// ここからゲームループ。
 	while (DispatchWindowMessage() && g_gameLoop.m_isLoop == true)
 	{
 		// フレームの開始時に呼び出す必要がある処理を実行
 		g_k2EngineLow->BeginFrame();
+
+		//GameSceneManager::GetInstance()->Update();
 
 		// ゲームオブジェクトマネージャーの更新処理を呼び出す。
 		g_k2EngineLow->ExecuteUpdate();
@@ -55,6 +78,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	//開放しないとD3D12オブジェクト開放のエラーはなくなる
 	delete g_k2EngineLow;
+
+	//GameSceneManager::GetInstance()->DeleteInstance();
+
+	EnemyObjectPool::GetInstance()->DeleteInstance();
 
 	return 0;
 }

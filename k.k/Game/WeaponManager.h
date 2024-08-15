@@ -1,127 +1,143 @@
 #pragma once
-#include "MyWeapon.h"
-#include "WeaponBase.h"
+
+#include "WeaponInfo.h"
+
+class WeaponBase;
 
 
-class SwordShield;
-class GreatSword;
+using namespace WeaponType;
 
-/*
-*@brief 武器の管理 
-*/
-class WeaponManager :public Noncopyable
+/// <summary>
+/// 武器を管理するマネージャークラス。
+/// シングルトンパターン
+/// </summary>
+class WeaponManager:public Noncopyable
 {
 private:
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
 	WeaponManager();
-
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
 	~WeaponManager();
+
 public:
 
-
-
-	/// <summary>
-	///	武器の情報
-	/// </summary>
-	struct UseWeaponInfo
-	{
-		WeaponBase* weapon = nullptr;	//武器オブジェクト
-		int AnimationStartIndexNo = 0;	//武器のアニメーションクリップの最初の番号
-	};
+	static WeaponManager* m_instance;//唯一のインスタンスのアドレスを記録する変数。
 
 	/// <summary>
-	/// 武器マネージャーインスタンスを生成
+	/// インスタンスを生成
 	/// </summary>
-	static void CreateInstance()
-	{
-		m_weaponInstance = new WeaponManager();
-	}
+	static void CreateInstance();
+
 	/// <summary>
-	/// 武器マネージャーインスタンスを削除
-	/// </summary>
-	static void DeleteInstance()
-	{
-		delete m_weaponInstance;
-		m_weaponInstance = nullptr;
-	}
-	/// <summary>
-	/// 武器マネージャーインスタンスを取得
+	/// インスタンスを取得。
 	/// </summary>
 	/// <returns></returns>
 	static WeaponManager* GetInstance()
 	{
-		return m_weaponInstance;
+		return m_instance;
 	}
 
-
 	/// <summary>
-	/// 全ての武器を初期化
+	/// インスタンスを削除
 	/// </summary>
-	/// <param name="animClipNum"></param>
-	void InitAllWeapon(int animClipNum);
-	/// <summary>
-	/// 全ての武器を生成
-	/// </summary>
-	void CreateAllWeapon();
-
-	/// <summary>
-	/// 武器のアニメーションクリップの最初の番号を設定
-	/// </summary>
-	/// <param name="animClipNum"></param>
-	/// <param name="setWeapon"></param>
-	void SetWeaponAnimationStartIndexNo(
-		int animClipNum, EnMaxWeapons setWeapon);
-
-	//武器の切り替え
-
-	//アニメーションクリップの最初の番号の入れ替え
-	
-
-	/// <summary>
-	/// 武器のオブジェクトを取得
-	/// </summary>
-	/// <param name="getWeaponType">武器の種類</param>
-	/// <returns></returns>
-	WeaponBase* GetWeaponObject(EnWeaponType getWeaponType);
-	
-	/// <summary>
-	/// 武器のオブジェクトを取得
-	/// </summary>
-	/// <param name="getWeaponType">武器のメインやサブ</param>
-	/// <returns></returns>
-	WeaponBase* GetWeaponObject(EnMaxWeapons getWeapon);
-
-	/// <summary>
-	/// 武器のアニメーションクリップの最初の番号を取得
-	/// </summary>
-	/// <param name="getWeapon"></param>
-	/// <returns></returns>
-	const int GetWeaponAnimationStartIndexNo(EnMaxWeapons getWeapon)
+	static void DeleteInstance()
 	{
-		return m_useWeapon[getWeapon].AnimationStartIndexNo;
+		delete m_instance;
+		m_instance = nullptr;
+	}
+
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name="armedWeaponType">最初に装備する武器のタイプ</param>
+	void Init(EnWeaponType main, EnWeaponType sub, EnWeaponType sub2);
+
+	/// <summary>
+	/// 使う武器の役割を設定する
+	/// </summary>
+	/// <param name="main">メイン武器のタイプ</param>
+	/// <param name="sub">サブ武器１のタイプ</param>
+	/// <param name="sub2">サブ武器２にタイプ</param>
+	void SettingUseWeaponRole(EnWeaponType main, EnWeaponType sub, EnWeaponType sub2);
+
+	/// <summary>
+	/// 装備する武器を切り替える
+	/// </summary>
+	/// <param name="armedWeaponType">切り替える武器のタイプ</param>
+	void ChangeArmedWeapon(EnWeaponType armedWeaponType);
+
+
+
+	/// <summary>
+	/// 切り替え武器タイプを設定
+	/// </summary>
+	/// <param name="targetWeaponType">切り替え武器タイプ</param>
+	void SetChangeWeaponType(EnWeaponType targetWeaponType);
+
+	/// <summary>
+	/// サブ武器１を切り替え武器にする
+	/// </summary>
+	void ChangeSubWeaponTypeToChangeWeaponType();
+
+	/// <summary>
+	/// サブ武器２を切り替え武器にする
+	/// </summary>
+	void ChangeSubWeaponType2ToChangeWeaponType();
+
+	/// <summary>
+	/// 切り替え武器をメイン武器にする
+	/// </summary>
+	void ChangeChangeWeaponTypeToMainWeaponType();
+
+	/// <summary>
+	/// 装備している武器を取得
+	/// </summary>
+	/// <returns></returns>
+	WeaponBase* GetArmedWeapon()
+	{
+		return m_armedWeapon;
 	}
 
 
-	//武器の取得
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	EnWeaponType GetMainWeaponType() const
+	{
+		return m_mainWeaponType;
+	}
+
+	/// <summary>
+	/// 切り替え武器タイプを取得
+	/// </summary>
+	/// <returns></returns>
+	EnWeaponType GetChangeTargetWeaponType() const
+	{
+		return m_changeTargetWeaponType;
+	}
+
 
 private:
+
 	
+
+
+
 	
 
 
 private:
 
-	//使う武器の情報。武器の数。メイン、サブ
-	UseWeaponInfo m_useWeapon[enMaxWeapons_num];
+	std::map<EnWeaponType, WeaponBase*> m_weaponsMap;		//武器を格納しておくマップ
 
-	static WeaponManager* m_weaponInstance;
+	WeaponBase* m_armedWeapon = nullptr;
+
+	EnWeaponType m_mainWeaponType;		//メイン武器タイプ
+	EnWeaponType m_subWeaponType;		//サブ武器1
+	EnWeaponType m_subWeaponType2;		//サブ武器2
+	EnWeaponType m_changeTargetWeaponType;	//切り替え対象の武器タイプ
+
+	EnWeaponType* m_tempWeaponType;
+
 };
-
-
-
 

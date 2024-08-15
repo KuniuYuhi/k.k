@@ -4,6 +4,9 @@
 #include "InitEffect.h"
 #include "Fade.h"
 
+#include "GameSceneManager.h"
+
+
 namespace {
 	//スカイキューブの初期の明るさ
 	const float START_SKY_CUBE_LMINANCE = 1.008f;
@@ -82,6 +85,10 @@ namespace {
 	const Vector3 END_POS = { 160.0f,230.0f,-550.0f };
 
 	const float BOSS_MOVIE_SKIP_TIME = 2.0f;
+
+	//ボスを生成する座標
+	const Vector3 BOSS_CREATE_POSITION = Vector3(0.0f, 0.0f, 600.0f);
+
 }
 
 EntryBoss::EntryBoss()
@@ -110,6 +117,8 @@ bool EntryBoss::Start()
 		enModelUpAxisZ
 	);
 
+	SetPosition(BOSS_CREATE_POSITION);
+
 	Vector3 pos = m_position;
 	pos.y += ADD_CIRCLE_POS_Y;
 	m_CircleEffect = NewGO<EffectEmitter>(0);
@@ -135,6 +144,10 @@ bool EntryBoss::Start()
 		POINT_LIGHT_COLOR,
 		POINT_LIGHT_RANGE
 	);
+
+	m_game = FindGO<Game>("game");
+
+	m_skyCube = m_game->GetSkyCube();
 
 	//スカイキューブも明るさを取得
 	m_skyCube->SetLuminance(END_SKY_CUBE_LMINANCE);
@@ -184,7 +197,10 @@ void EntryBoss::Update()
 	if (m_completeFlag == true && m_fade->IsFade() == false)
 	{
 		//登場ムービーが終わったことゲームに伝える
-		m_game->SetBossMovieFlag(true);
+		//m_game->SetBossMovieFlag(true);
+
+		//登場シーンが終わったことをシーンマネージャー
+		GameSceneManager::GetInstance()->ChangeGameSceneState(enGameSceneState_Game);
 	}
 	else
 	{

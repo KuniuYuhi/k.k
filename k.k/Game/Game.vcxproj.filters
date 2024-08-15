@@ -4,53 +4,89 @@
     <Filter Include="system">
       <UniqueIdentifier>{22dd8095-74f9-46df-81a1-36675a040b1f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Weapons">
-      <UniqueIdentifier>{d8445f81-0a79-4ad9-9f94-409a2b4e6cdc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Manager">
       <UniqueIdentifier>{9f0853ec-296c-4466-874e-f835c5ab2ee1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character">
-      <UniqueIdentifier>{c6a7755c-61b3-4dc5-886f-172e407a71be}</UniqueIdentifier>
+    <Filter Include="Wave">
+      <UniqueIdentifier>{e989cdb3-5d93-48ad-a7d3-26a66c05d2dc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\Player">
-      <UniqueIdentifier>{5c3cc85a-f283-4f3b-b352-cd2c32fc0feb}</UniqueIdentifier>
+    <Filter Include="Manager\GameManager">
+      <UniqueIdentifier>{0866b6f5-5912-4f20-a7b8-7ac56bf5c050}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\Monster">
-      <UniqueIdentifier>{6df1f376-901f-4c7b-b6f9-1d478a9d2f21}</UniqueIdentifier>
+    <Filter Include="Manager\GameManager\SceneManager">
+      <UniqueIdentifier>{d85db11e-e975-4d14-8250-4a7e56325911}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\Monster\MobMonster">
-      <UniqueIdentifier>{10980145-dc75-4358-bbe2-827223ebeae3}</UniqueIdentifier>
+    <Filter Include="Manager\GameManager\SceneManager\SceneState">
+      <UniqueIdentifier>{d2c93985-6b75-4da9-a01e-50bb916c4899}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\Monster\MobMonster\Mushroom">
-      <UniqueIdentifier>{171f71e6-9381-4839-b187-14e7805cd952}</UniqueIdentifier>
+    <Filter Include="Characters">
+      <UniqueIdentifier>{edd10763-04bd-4799-b1ba-1576052b0094}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\Monster\MobMonster\Cactus">
-      <UniqueIdentifier>{28bbc3b2-cb0f-4038-92f3-4593b9b6d9f5}</UniqueIdentifier>
+    <Filter Include="Component">
+      <UniqueIdentifier>{dbfd1e5e-ac6a-49a0-92bb-d586ce140ef5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\Monster\MobMonster\Slime">
-      <UniqueIdentifier>{2e495790-ee8d-4c1e-b20d-3dd2252b068a}</UniqueIdentifier>
+    <Filter Include="Status">
+      <UniqueIdentifier>{d6d52eb9-37e4-41c0-9974-ac2d63a0a06b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\Monster\MobMonster\TurtleShell">
-      <UniqueIdentifier>{eaba4644-52df-49e7-ab11-46b649af7b1e}</UniqueIdentifier>
+    <Filter Include="Characters\CharacterBase">
+      <UniqueIdentifier>{4c83e0f4-7fa7-48ca-90e5-565b849d42ee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\Monster\BossMonster">
-      <UniqueIdentifier>{4317407a-a963-4bc5-bfff-fe1016c03c36}</UniqueIdentifier>
+    <Filter Include="Characters\Ememy">
+      <UniqueIdentifier>{f44760d3-38ad-469f-b6dc-bedf3da4ddda}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\Player\Brave">
-      <UniqueIdentifier>{cb6cd09f-fc8e-4001-a80a-8ce928ff27df}</UniqueIdentifier>
+    <Filter Include="Characters\Ememy\Boss">
+      <UniqueIdentifier>{5f83efbc-f4d6-41fa-ad00-43eff2c96264}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\Player\Brave\BraveState">
-      <UniqueIdentifier>{10694726-74fe-4cc9-92b3-f39e4854081d}</UniqueIdentifier>
+    <Filter Include="Characters\Ememy\Mob">
+      <UniqueIdentifier>{0a6eb47e-a5dc-448d-9d1b-0c3aabf70f33}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\Monster\BossMonster\Summoner">
-      <UniqueIdentifier>{a01f4965-0644-4283-956f-46c41ff3c29d}</UniqueIdentifier>
+    <Filter Include="Characters\Ememy\Mob\MobBase">
+      <UniqueIdentifier>{69feae18-3abb-4e8d-ac1c-7ef78f17a9b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\Monster\BossMonster\Summoner\SummonerState">
-      <UniqueIdentifier>{8823fa93-d69b-4b1f-9b47-a660d16975f6}</UniqueIdentifier>
+    <Filter Include="Status\Enemy">
+      <UniqueIdentifier>{9c00fbc3-5775-40af-9215-dea34742f82d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AttackObject">
-      <UniqueIdentifier>{a090d90b-7c4f-43ec-840f-cc22bf5e55b6}</UniqueIdentifier>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{298c119d-2eb5-4f83-bcc2-084b6985612e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{3af9418d-01d8-4e82-8643-0cdb1c780c40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{10ef0253-dfff-43d7-9b6b-20e50af7aff4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Mob\Slime">
+      <UniqueIdentifier>{3eed6491-f151-4bd9-91b9-cfb622dc2070}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Mob\Cactus">
+      <UniqueIdentifier>{d09e4278-6343-426e-aeba-f0dc379bd2e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Status\Player">
+      <UniqueIdentifier>{6265e68b-29fd-42ae-ae96-1e370b3c37d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Status\Wave">
+      <UniqueIdentifier>{0bf606d1-af44-4988-bb94-c3d13e6f2646}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Player">
+      <UniqueIdentifier>{45518746-fe70-484a-884c-d2b2b458c396}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Player\State">
+      <UniqueIdentifier>{38c6ef1e-c03d-4405-b14a-4d21cf7cf5e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\WeaponManager">
+      <UniqueIdentifier>{b536ce2c-ea28-4808-ac53-8fd1ea8c4f7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Status\Weapon">
+      <UniqueIdentifier>{8dcd7c11-c23b-4aab-8926-c8240345cc07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Weapon">
+      <UniqueIdentifier>{130a3e2d-99d4-4e5f-b61f-bd7c5aa2d90c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Status\KnockBack">
+      <UniqueIdentifier>{535169d9-54f1-40b7-acc6-81b3a0c02113}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Weapon\WeaponBase">
+      <UniqueIdentifier>{bd9c5de3-fb41-4a03-b376-54de26c6235f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -59,763 +95,397 @@
     <ClCompile Include="system\system.cpp">
       <Filter>system</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="Status.cpp" />
-    <ClCompile Include="BossStage1.cpp" />
-    <ClCompile Include="Title.cpp" />
-    <ClCompile Include="Result.cpp" />
-    <ClCompile Include="Slime.cpp">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClCompile>
-    <ClCompile Include="TurtleShell.cpp">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClCompile>
-    <ClCompile Include="Cactus.cpp">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClCompile>
-    <ClCompile Include="Mushroom.cpp">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClCompile>
-    <ClCompile Include="SlimeStateAttack.cpp">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClCompile>
-    <ClCompile Include="SlimeStateDamage.cpp">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClCompile>
-    <ClCompile Include="SlimeStateDie.cpp">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClCompile>
-    <ClCompile Include="SlimeStateIdle.cpp">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClCompile>
-    <ClCompile Include="SlimeStateVictory.cpp">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClCompile>
-    <ClCompile Include="SlimeStateWalk.cpp">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClCompile>
-    <ClCompile Include="TurtleShellStateAttack_1.cpp">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClCompile>
-    <ClCompile Include="TurtleShellStateDamage.cpp">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClCompile>
-    <ClCompile Include="TurtleShellStateDie.cpp">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClCompile>
-    <ClCompile Include="TurtleShellStateIdle.cpp">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClCompile>
-    <ClCompile Include="TurtleShellStateVictory.cpp">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClCompile>
-    <ClCompile Include="MushroomStateAttack_1.cpp">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClCompile>
-    <ClCompile Include="MushroomStateDamage.cpp">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClCompile>
-    <ClCompile Include="MushroomStateDie.cpp">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClCompile>
-    <ClCompile Include="MushroomStateIdle.cpp">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClCompile>
-    <ClCompile Include="MushroomStateVictory.cpp">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClCompile>
-    <ClCompile Include="MushroomStateWalk.cpp">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClCompile>
-    <ClCompile Include="CactusStateAttack_1.cpp">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClCompile>
-    <ClCompile Include="CactusStateDamage.cpp">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClCompile>
-    <ClCompile Include="CactusStateDie.cpp">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClCompile>
-    <ClCompile Include="CactusStateIdle.cpp">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClCompile>
-    <ClCompile Include="CactusStateRun.cpp">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClCompile>
-    <ClCompile Include="CactusStateVictory.cpp">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClCompile>
-    <ClCompile Include="GameUI.cpp" />
-    <ClCompile Include="DamageFont.cpp" />
     <ClCompile Include="Fade.cpp" />
-    <ClCompile Include="EntryBoss.cpp" />
-    <ClCompile Include="BattleStart.cpp" />
-    <ClCompile Include="MobMonster.cpp">
-      <Filter>Character\Monster\MobMonster</Filter>
-    </ClCompile>
-    <ClCompile Include="MushroomStateAppear.cpp">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClCompile>
-    <ClCompile Include="SlimeStateAppear.cpp">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClCompile>
-    <ClCompile Include="CactusStateAppear.cpp">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClCompile>
     <ClCompile Include="InitEffect.cpp" />
-    <ClCompile Include="TurtleShellStateAppear.cpp">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClCompile>
     <ClCompile Include="SoundFile.cpp" />
-    <ClCompile Include="Brave.cpp">
-      <Filter>Character\Player\Brave</Filter>
-    </ClCompile>
-    <ClCompile Include="IWeapon.cpp">
-      <Filter>Weapons</Filter>
-    </ClCompile>
-    <ClCompile Include="SwordShield.cpp">
-      <Filter>Weapons</Filter>
-    </ClCompile>
-    <ClCompile Include="GreatSword.cpp">
-      <Filter>Weapons</Filter>
-    </ClCompile>
-    <ClCompile Include="GameManager.cpp">
-      <Filter>Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="WeaponManager.cpp">
-      <Filter>Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="SelectWeapon.cpp" />
     <ClCompile Include="KnockBack.cpp" />
-    <ClCompile Include="Bow.cpp">
-      <Filter>Weapons</Filter>
-    </ClCompile>
-    <ClCompile Include="Arrow.cpp">
-      <Filter>Weapons</Filter>
-    </ClCompile>
     <ClCompile Include="HitDetection.cpp" />
-    <ClCompile Include="BraveStateAttack_1.cpp">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClCompile>
-    <ClCompile Include="BraveStateAttack_2.cpp">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClCompile>
-    <ClCompile Include="BraveStateAttack_3.cpp">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClCompile>
-    <ClCompile Include="BraveStateChangeWeapon.cpp">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClCompile>
-    <ClCompile Include="BraveStateDefend.cpp">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClCompile>
-    <ClCompile Include="BraveStateDefendHit.cpp">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClCompile>
-    <ClCompile Include="BraveStateDie.cpp">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClCompile>
-    <ClCompile Include="BraveStateHit.cpp">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClCompile>
-    <ClCompile Include="BraveStateIdle.cpp">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClCompile>
-    <ClCompile Include="BraveStateSkill_Main.cpp">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClCompile>
-    <ClCompile Include="BraveStateSkill_Start.cpp">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClCompile>
-    <ClCompile Include="BraveStateSprint.cpp">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClCompile>
-    <ClCompile Include="BraveStateWin_Main.cpp">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClCompile>
-    <ClCompile Include="BraveStateWin_Start.cpp">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClCompile>
     <ClCompile Include="ManagerPreCompile.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponBase.cpp">
-      <Filter>Weapons</Filter>
-    </ClCompile>
-    <ClCompile Include="CharactersInfoManager.cpp">
-      <Filter>Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="BossBase.cpp">
-      <Filter>Character\Monster\BossMonster</Filter>
-    </ClCompile>
-    <ClCompile Include="Actor.cpp">
-      <Filter>Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="AIActor.cpp">
-      <Filter>Character\Monster</Filter>
-    </ClCompile>
-    <ClCompile Include="MonsterBase.cpp">
-      <Filter>Character\Monster</Filter>
-    </ClCompile>
-    <ClCompile Include="Summoner.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_DarkBall.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_Idle.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_DarkWall.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="IBossStateMachine.cpp">
-      <Filter>Character\Monster\BossMonster</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_KnockBack.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_NAttack_1.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_NAttack_2.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_NAttack_3.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="Pause.cpp" />
-    <ClCompile Include="BattlePhase.cpp" />
-    <ClCompile Include="GameFinishCamera.cpp" />
-    <ClCompile Include="SummonerState_Angry.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_Command.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_Die.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_Hit.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_Summon.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_Victory.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_Walk.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_Warp.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SlimeStateChase.cpp">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClCompile>
-    <ClCompile Include="SlimeStatePatrol.cpp">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClCompile>
-    <ClCompile Include="SlimeStateSkill.cpp">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClCompile>
-    <ClCompile Include="CactusStateChase.cpp">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClCompile>
-    <ClCompile Include="CactusStatePatrol.cpp">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClCompile>
-    <ClCompile Include="CactusStateSkill.cpp">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClCompile>
-    <ClCompile Include="MushroomStateChase.cpp">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClCompile>
-    <ClCompile Include="MushroomStatePatrol.cpp">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClCompile>
-    <ClCompile Include="MushroomStateSkill.cpp">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_DMeteo_Main.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_DMeteo_Start.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="DarkMeteo.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner</Filter>
-    </ClCompile>
-    <ClCompile Include="BraveStateKnockBack.cpp">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_DarkSpearEnd.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_DarkSpearMain.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerState_DarkSpearStart.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SummonerStateEat.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClCompile>
-    <ClCompile Include="TurtleShellStateChase.cpp">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClCompile>
-    <ClCompile Include="TurtleShellStatePatrol.cpp">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClCompile>
-    <ClCompile Include="TurtleShellStateSkill.cpp">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClCompile>
-    <ClCompile Include="IMobStateMachine.cpp">
-      <Filter>Character\Monster\MobMonster</Filter>
-    </ClCompile>
-    <ClCompile Include="MobMonsterActionList.cpp">
-      <Filter>Character\Monster\MobMonster</Filter>
-    </ClCompile>
-    <ClCompile Include="CalcCharacterForward.cpp" />
     <ClCompile Include="Loading.cpp" />
-    <ClCompile Include="SummonerSM_Attack.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    <ClCompile Include="WaveTimer.cpp">
+      <Filter>Wave</Filter>
     </ClCompile>
-    <ClCompile Include="SummonerSM_Vigilance.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    <ClCompile Include="GameSceneContext.cpp">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
     </ClCompile>
-    <ClCompile Include="DarkSpear.cpp">
-      <Filter>Character\Monster\BossMonster\Summoner</Filter>
+    <ClCompile Include="GameScene_Game.cpp">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
     </ClCompile>
-    <ClCompile Include="MobMonsterSM_Chase.cpp">
-      <Filter>Character\Monster\MobMonster</Filter>
+    <ClCompile Include="GameScene_GameStart.cpp">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
     </ClCompile>
-    <ClCompile Include="MobMonsterSM_Patrol.cpp">
-      <Filter>Character\Monster\MobMonster</Filter>
+    <ClCompile Include="GameScene_Result.cpp">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
     </ClCompile>
-    <ClCompile Include="DarkBall.cpp">
-      <Filter>AttackObject</Filter>
+    <ClCompile Include="GameScene_Title.cpp">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
     </ClCompile>
-    <ClCompile Include="DarkSpearObj.cpp">
-      <Filter>AttackObject</Filter>
+    <ClCompile Include="GameSceneManager.cpp">
+      <Filter>Manager\GameManager\SceneManager</Filter>
     </ClCompile>
-    <ClCompile Include="DarkWall.cpp">
-      <Filter>AttackObject</Filter>
+    <ClCompile Include="PlayerMovement.cpp">
+      <Filter>Component</Filter>
     </ClCompile>
-    <ClCompile Include="Meteo.cpp">
-      <Filter>AttackObject</Filter>
+    <ClCompile Include="Brave.cpp">
+      <Filter>Characters\Player</Filter>
     </ClCompile>
-    <ClCompile Include="MagicBall.cpp">
-      <Filter>AttackObject</Filter>
+    <ClCompile Include="CharacterBase.cpp">
+      <Filter>Characters\CharacterBase</Filter>
     </ClCompile>
-    <ClCompile Include="IAttackObject.cpp">
-      <Filter>AttackObject</Filter>
+    <ClCompile Include="ICharacter.cpp">
+      <Filter>Characters\CharacterBase</Filter>
     </ClCompile>
-    <ClCompile Include="ComboFinishBomb.cpp">
-      <Filter>AttackObject</Filter>
+    <ClCompile Include="PlayerController.cpp">
+      <Filter>Characters\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Boss.cpp">
-      <Filter>Character\Monster\BossMonster</Filter>
+    <ClCompile Include="GameScene_AppearanceBoss.cpp">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
     </ClCompile>
+    <ClCompile Include="GameScene_Pause.cpp">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyBase.cpp">
+      <Filter>Characters\Ememy</Filter>
+    </ClCompile>
+    <ClCompile Include="MobEnemyBase.cpp">
+      <Filter>Characters\Ememy\Mob\MobBase</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonEnemyStatus.cpp">
+      <Filter>Status\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="BattleStart.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="BossStage1.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="EntryBoss.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="DamageFont.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFinishCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Pause.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Result.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Title.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameUI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime.cpp">
+      <Filter>Characters\Ememy\Mob\Slime</Filter>
+    </ClCompile>
+    <ClCompile Include="IObjectPool.cpp" />
+    <ClCompile Include="EnemyObjectPool.cpp" />
+    <ClCompile Include="Damageable.cpp" />
+    <ClCompile Include="Cactus.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="MobEnemyMovement.cpp" />
+    <ClCompile Include="WaveManager.cpp">
+      <Filter>Wave</Filter>
+    </ClCompile>
+    <ClCompile Include="Status_Player.cpp">
+      <Filter>Status\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadBraveAnimationClips.cpp">
+      <Filter>Characters\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveStateContext.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_ChangeWeapon.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_DefensiveAction.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_DefensiveHit.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_Die.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_FirstAttack.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_Hit.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_Idle.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_SecondAttack.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_SkillMain.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_SkillStart.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_Sprint.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_ThirdAttack.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_WinMain.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BraveState_WinStart.cpp">
+      <Filter>Characters\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponManager.cpp">
+      <Filter>Manager\WeaponManager</Filter>
+    </ClCompile>
+    <ClCompile Include="WaveStatus.cpp">
+      <Filter>Status\Wave</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponStatus.cpp">
+      <Filter>Status\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponBase.cpp">
+      <Filter>Weapon\WeaponBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Bow.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="GreateSword.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="SwordShield.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="KnockBackStatus.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h">
       <Filter>system</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="GameCamera.h" />
     <ClInclude Include="Status.h" />
-    <ClInclude Include="BossStage1.h" />
-    <ClInclude Include="Title.h" />
-    <ClInclude Include="Result.h" />
-    <ClInclude Include="Slime.h">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClInclude>
-    <ClInclude Include="TurtleShell.h">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClInclude>
-    <ClInclude Include="Cactus.h">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClInclude>
-    <ClInclude Include="Mushroom.h">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClInclude>
-    <ClInclude Include="ISlimeState.h">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClInclude>
-    <ClInclude Include="SlimeStateAttack.h">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClInclude>
-    <ClInclude Include="SlimeStateDamage.h">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClInclude>
-    <ClInclude Include="SlimeStateDie.h">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClInclude>
-    <ClInclude Include="SlimeStateIdle.h">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClInclude>
-    <ClInclude Include="SlimeStateVictory.h">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClInclude>
-    <ClInclude Include="SlimeStateWalk.h">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClInclude>
-    <ClInclude Include="TurtleShellStateAttack_1.h">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClInclude>
-    <ClInclude Include="TurtleShellStateDamage.h">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClInclude>
-    <ClInclude Include="TurtleShellStateDie.h">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClInclude>
-    <ClInclude Include="TurtleShellStateIdle.h">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClInclude>
-    <ClInclude Include="TurtleShellStateVictory.h">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClInclude>
-    <ClInclude Include="ITurtleShellState.h">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClInclude>
-    <ClInclude Include="MushroomStateAttack_1.h">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClInclude>
-    <ClInclude Include="MushroomStateDamage.h">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClInclude>
-    <ClInclude Include="MushroomStateDie.h">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClInclude>
-    <ClInclude Include="MushroomStateIdle.h">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClInclude>
-    <ClInclude Include="MushroomStateVictory.h">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClInclude>
-    <ClInclude Include="MushroomStateWalk.h">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClInclude>
-    <ClInclude Include="IMushroomState.h">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClInclude>
-    <ClInclude Include="CactusStateAttack_1.h">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClInclude>
-    <ClInclude Include="CactusStateDamage.h">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClInclude>
-    <ClInclude Include="CactusStateDie.h">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClInclude>
-    <ClInclude Include="CactusStateIdle.h">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClInclude>
-    <ClInclude Include="CactusStateRun.h">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClInclude>
-    <ClInclude Include="CactusStateVictory.h">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClInclude>
-    <ClInclude Include="ICactusState.h">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClInclude>
-    <ClInclude Include="GameUI.h" />
-    <ClInclude Include="DamageFont.h" />
     <ClInclude Include="Fade.h" />
-    <ClInclude Include="EntryBoss.h" />
-    <ClInclude Include="BattleStart.h" />
-    <ClInclude Include="MobMonster.h">
-      <Filter>Character\Monster\MobMonster</Filter>
-    </ClInclude>
-    <ClInclude Include="MushroomStateAppear.h">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClInclude>
-    <ClInclude Include="SlimeStateAppear.h">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClInclude>
-    <ClInclude Include="CactusStateAppear.h">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClInclude>
     <ClInclude Include="InitEffect.h" />
-    <ClInclude Include="TurtleShellStateAppear.h">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClInclude>
     <ClInclude Include="SoundFile.h" />
-    <ClInclude Include="Brave.h">
-      <Filter>Character\Player\Brave</Filter>
-    </ClInclude>
-    <ClInclude Include="IWeapon.h">
-      <Filter>Weapons</Filter>
-    </ClInclude>
-    <ClInclude Include="SwordShield.h">
-      <Filter>Weapons</Filter>
-    </ClInclude>
-    <ClInclude Include="GreatSword.h">
-      <Filter>Weapons</Filter>
-    </ClInclude>
     <ClInclude Include="MyWeapon.h" />
-    <ClInclude Include="GameManager.h">
-      <Filter>Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="WeaponManager.h">
-      <Filter>Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="SelectWeapon.h" />
     <ClInclude Include="KnockBack.h" />
-    <ClInclude Include="Bow.h">
-      <Filter>Weapons</Filter>
-    </ClInclude>
-    <ClInclude Include="Arrow.h">
-      <Filter>Weapons</Filter>
-    </ClInclude>
     <ClInclude Include="HitDetection.h" />
-    <ClInclude Include="BraveStateAttack_1.h">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClInclude>
-    <ClInclude Include="BraveStateAttack_2.h">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClInclude>
-    <ClInclude Include="BraveStateAttack_3.h">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClInclude>
-    <ClInclude Include="BraveStateChangeWeapon.h">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClInclude>
-    <ClInclude Include="BraveStateDefend.h">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClInclude>
-    <ClInclude Include="BraveStateDefendHit.h">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClInclude>
-    <ClInclude Include="BraveStateDie.h">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClInclude>
-    <ClInclude Include="BraveStateHit.h">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClInclude>
-    <ClInclude Include="BraveStateIdle.h">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClInclude>
-    <ClInclude Include="BraveStateSkill_Main.h">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClInclude>
-    <ClInclude Include="BraveStateSkill_Start.h">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClInclude>
-    <ClInclude Include="BraveStateSprint.h">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClInclude>
-    <ClInclude Include="BraveStateWin_Main.h">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClInclude>
-    <ClInclude Include="BraveStateWin_Start.h">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClInclude>
-    <ClInclude Include="IBraveState.h">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClInclude>
     <ClInclude Include="ManagerPreCompile.h">
       <Filter>Manager</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponBase.h">
-      <Filter>Weapons</Filter>
-    </ClInclude>
-    <ClInclude Include="CharactersInfoManager.h">
-      <Filter>Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="BossBase.h">
-      <Filter>Character\Monster\BossMonster</Filter>
-    </ClInclude>
-    <ClInclude Include="Actor.h">
-      <Filter>Character\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="AIActor.h">
-      <Filter>Character\Monster</Filter>
-    </ClInclude>
-    <ClInclude Include="MonsterBase.h">
-      <Filter>Character\Monster</Filter>
-    </ClInclude>
-    <ClInclude Include="Summoner.h">
-      <Filter>Character\Monster\BossMonster\Summoner</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_DarkBall.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_Idle.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="ISummonerState.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_DarkWall.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerActionList.h">
-      <Filter>Character\Monster\BossMonster\Summoner</Filter>
-    </ClInclude>
-    <ClInclude Include="IBossStateMachine.h">
-      <Filter>Character\Monster\BossMonster</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_KnockBack.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_NAttack_1.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_NAttack_2.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_NAttack_3.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="Pause.h" />
-    <ClInclude Include="BattlePhase.h" />
-    <ClInclude Include="GameFinishCamera.h" />
-    <ClInclude Include="SummonerState_Warp.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_Angry.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_Command.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_Die.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_Hit.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_Summon.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_Victory.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_Walk.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SlimeStateChase.h">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClInclude>
-    <ClInclude Include="SlimeStatePatrol.h">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClInclude>
-    <ClInclude Include="SlimeStateSkill.h">
-      <Filter>Character\Monster\MobMonster\Slime</Filter>
-    </ClInclude>
-    <ClInclude Include="CactusStateChase.h">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClInclude>
-    <ClInclude Include="CactusStatePatrol.h">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClInclude>
-    <ClInclude Include="CactusStateSkill.h">
-      <Filter>Character\Monster\MobMonster\Cactus</Filter>
-    </ClInclude>
-    <ClInclude Include="MushroomStateChase.h">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClInclude>
-    <ClInclude Include="MushroomStatePatrol.h">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClInclude>
-    <ClInclude Include="MushroomStateSkill.h">
-      <Filter>Character\Monster\MobMonster\Mushroom</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_DMeteo_Main.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_DMeteo_Start.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Character\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="DecisionMeteoEndpoint.h">
-      <Filter>Character\Monster\BossMonster\Summoner</Filter>
-    </ClInclude>
-    <ClInclude Include="DarkMeteo.h">
-      <Filter>Character\Monster\BossMonster\Summoner</Filter>
-    </ClInclude>
-    <ClInclude Include="BraveStateKnockBack.h">
-      <Filter>Character\Player\Brave\BraveState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_DarkSpearEnd.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_DarkSpearMain.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerState_DarkSpearStart.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerStateEat.h">
-      <Filter>Character\Monster\BossMonster\Summoner\SummonerState</Filter>
-    </ClInclude>
-    <ClInclude Include="TurtleShellStateChase.h">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClInclude>
-    <ClInclude Include="TurtleShellStatePatrol.h">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClInclude>
-    <ClInclude Include="TurtleShellStateSkill.h">
-      <Filter>Character\Monster\MobMonster\TurtleShell</Filter>
-    </ClInclude>
-    <ClInclude Include="IMobStateMachine.h">
-      <Filter>Character\Monster\MobMonster</Filter>
-    </ClInclude>
-    <ClInclude Include="MobMonsterActionList.h">
-      <Filter>Character\Monster\MobMonster</Filter>
-    </ClInclude>
-    <ClInclude Include="CalcCharacterForward.h" />
     <ClInclude Include="Loading.h" />
-    <ClInclude Include="SummonerSM_Attack.h">
-      <Filter>Character\Monster\BossMonster\Summoner</Filter>
-    </ClInclude>
-    <ClInclude Include="SummonerSM_Vigilance.h">
-      <Filter>Character\Monster\BossMonster\Summoner</Filter>
-    </ClInclude>
-    <ClInclude Include="DarkSpear.h">
-      <Filter>Character\Monster\BossMonster\Summoner</Filter>
-    </ClInclude>
-    <ClInclude Include="MobMonsterSM_Chase.h">
-      <Filter>Character\Monster\MobMonster</Filter>
-    </ClInclude>
-    <ClInclude Include="MobMonsterSM_Patrol.h">
-      <Filter>Character\Monster\MobMonster</Filter>
-    </ClInclude>
-    <ClInclude Include="DarkBall.h">
-      <Filter>AttackObject</Filter>
-    </ClInclude>
-    <ClInclude Include="DarkSpearObj.h">
-      <Filter>AttackObject</Filter>
-    </ClInclude>
-    <ClInclude Include="DarkWall.h">
-      <Filter>AttackObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Meteo.h">
-      <Filter>AttackObject</Filter>
-    </ClInclude>
-    <ClInclude Include="MagicBall.h">
-      <Filter>AttackObject</Filter>
-    </ClInclude>
-    <ClInclude Include="IAttackObject.h">
-      <Filter>AttackObject</Filter>
-    </ClInclude>
-    <ClInclude Include="ComboFinishBomb.h">
-      <Filter>AttackObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Boss.h">
-      <Filter>Character\Monster\BossMonster</Filter>
-    </ClInclude>
     <ClInclude Include="MobMonstersList.h" />
+    <ClInclude Include="WaveTimer.h">
+      <Filter>Wave</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSceneContext.h">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
+    </ClInclude>
+    <ClInclude Include="IGameSceneState.h">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene_Game.h">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene_GameStart.h">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene_Result.h">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene_Title.h">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
+    </ClInclude>
+    <ClInclude Include="AllGameSceneState.h">
+      <Filter>Manager\GameManager\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSceneManager.h">
+      <Filter>Manager\GameManager\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerMovement.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Brave.h">
+      <Filter>Characters\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterBase.h">
+      <Filter>Characters\CharacterBase</Filter>
+    </ClInclude>
+    <ClInclude Include="ICharacter.h">
+      <Filter>Characters\CharacterBase</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerController.h">
+      <Filter>Characters\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene_AppearanceBoss.h">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene_Pause.h">
+      <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyBase.h">
+      <Filter>Characters\Ememy</Filter>
+    </ClInclude>
+    <ClInclude Include="MobEnemyBase.h">
+      <Filter>Characters\Ememy\Mob\MobBase</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonEnemyStatus.h">
+      <Filter>Status\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleStart.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="BossStage1.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="EntryBoss.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageFont.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFinishCamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Pause.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Result.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameUI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime.h">
+      <Filter>Characters\Ememy\Mob\Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="IObjectPool.h" />
+    <ClInclude Include="EnemyObjectPool.h" />
+    <ClInclude Include="Damageable.h" />
+    <ClInclude Include="Cactus.h">
+      <Filter>Characters\Ememy\Mob\Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="MobEnemyMovement.h" />
+    <ClInclude Include="WaveManager.h">
+      <Filter>Wave</Filter>
+    </ClInclude>
+    <ClInclude Include="Status_Player.h">
+      <Filter>Status\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="MobEnemyheaderFiles.h">
+      <Filter>Status\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveAnimClipAndStateInfo.h">
+      <Filter>Characters\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadBraveAnimationClips.h">
+      <Filter>Characters\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveStateContext.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="IBraveState.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_ChangeWeapon.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_DefensiveAction.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_DefensiveHit.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_Die.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_FirstAttack.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_Hit.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_Idle.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_SecondAttack.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_SkillMain.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_SkillStart.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_Sprint.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_ThirdAttack.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_WinMain.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveState_WinStart.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BraveAllStateFiles.h">
+      <Filter>Characters\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponManager.h">
+      <Filter>Manager\WeaponManager</Filter>
+    </ClInclude>
+    <ClInclude Include="WaveStatus.h">
+      <Filter>Status\Wave</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponStatus.h">
+      <Filter>Status\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponInfo.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponBase.h">
+      <Filter>Weapon\WeaponBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Bow.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="GreateSword.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="SwordShield.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="KnockBackStatus.h" />
+    <ClInclude Include="KnockBackInfo.h">
+      <Filter>Status\KnockBack</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

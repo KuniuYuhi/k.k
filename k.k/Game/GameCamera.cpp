@@ -1,18 +1,19 @@
 #include "stdafx.h"
 #include "GameCamera.h"
 #include "Game.h"
-#include "Player.h"
-#include "GameManager.h"
-#include "CharactersInfoManager.h"
+
+
+#include "Brave.h"
+
 
 namespace {
 
 	const float MAX_CAMERA_TOP = -0.1f;
 	const float MAX_CAMERA_UNDER = 0.8f;
 	//150.0f
-	const float TARGETPOS_YUP = 160.0f;
+	const float TARGETPOS_YUP = 100.0f;
 	
-	const Vector3 DEFAULT_TOCAMERAPOS = { 0.0f, 100.0f, -400.0f };
+	const Vector3 DEFAULT_TOCAMERAPOS = { 0.0f, 300.0f, -400.0f };
 	const Vector3 MAX_ZOOM_TOCAMERAPOS = { 0.0f,0.0f,-50.0f };
 
 }
@@ -27,15 +28,16 @@ GameCamera::~GameCamera()
 
 bool GameCamera::Start()
 {
-	m_game = FindGO<Game>("game");
-	m_player = FindGO<Player>("player");
+	//m_game = FindGO<Game>("game");
 
-	m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
+	m_player = FindGO<Brave>("Brave");
+
+	
 
 	g_camera3D->SetNear(1.0f);
 	g_camera3D->SetFar(10000.0f);
 
-	m_toCameraPosForBoss.Set(0.0f, 200.0f, 200.0f);
+	
 	//注視点から視点までのベクトルを設定。300,400
 	m_toCameraPos.Set(DEFAULT_TOCAMERAPOS);
 	//カメラをプレイヤーの後ろにするときに使う
@@ -53,19 +55,22 @@ bool GameCamera::Start()
 
 	
 
+
+	//
+	SetBattleCameraFlag = true;
+
 	return true;
 }
 
 void GameCamera::Update()
 {
-	if (m_game != nullptr)
+	/*if (GameSceneManager::GetInstance()->GetBattleOutCome() != GameSceneManager::enBattleOutCome_None)
 	{
-		ManageState();
-	}
-	else
-	{
-		OnProcessGameTransition();
-	}
+		return;
+	}*/
+
+
+	OnProcessGameTransition();
 	
 	CalcDirectionLight();
 }
@@ -83,6 +88,9 @@ void GameCamera::CalcDirectionLight()
 
 void GameCamera::SetBattleStartCamera()
 {
+	//カメラをリフレッシュ
+	m_springCamera.Refresh();
+
 	//注視点の計算
 	m_target = m_player->GetPosition();
 	m_target.y += TARGETPOS_YUP;
@@ -108,9 +116,12 @@ void GameCamera::SetBattleStartCamera()
 
 	//カメラの更新。
 	m_springCamera.Update();
+
+	//
+	SetBattleCameraFlag = true;
 }
 
-void GameCamera::ChaseCamera(bool Reversesflag)
+void GameCamera::ChasePlayerCamera(bool Reversesflag)
 {
 	//注視点の計算
 	m_target = m_player->GetPosition();
@@ -183,33 +194,17 @@ void GameCamera::ZoomCamera()
 	}
 }
 
-void GameCamera::ManageState()
-{
-	//ゲームのステートによってカメラを切り替える
-	switch (GameManager::GetInstance()->GetGameSeenState())
-	{
-	case GameManager::enGameSeenState_Game:
-		//ゲーム中
-		OnProcessGameTransition();
-		break;
-	default:
-		break;
-	}
-}
 
 void GameCamera::OnProcessGameTransition()
 {
 	//最初だけ
 	if (SetBattleCameraFlag == false)
 	{
-		//リフレッシュ
-		m_springCamera.Refresh();
-		SetBattleStartCamera();
-		SetBattleCameraFlag = true;
+		return;
 	}
 	
 	//プレイヤーを追う
-	ChaseCamera();
+	ChasePlayerCamera();
 
 	ZoomCamera();
 
