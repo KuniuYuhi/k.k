@@ -7,46 +7,19 @@
 std::unordered_map<std::string, Status_Player> Status_Player::StatusDataMAP = {};
 //ステータスを記載したファイルパス
 const std::string Status_Player::playerStatusCsvFilePath = "Assets/CSV/PlayerStatus.csv";
-const std::string Status_Player::weaponStatusCsvFilePath = "Assets/CSV/WeaponStatus.csv";
 
 bool Status_Player::IsLoadedPlayerStatusCSVFile = false;
-bool Status_Player::IsLoadedWeaponStatusCSVFile = false;
 
 
 
 //プレイヤーのステータス
-//[名前][体力][攻撃力][スタミナ][基礎スピード][加速スピード][回避スピード]
+//[名前][体力][攻撃力][スタミナ][スタミナの回復速度倍率][基礎スピード][加速スピード][回避スピード]
 
-
-//武器のステータス
-//[][][][][][][][][]
 
 void Status_Player::InitPlayerStatus(const std::string& name)
 {
 	//CSVファイルをロードしていないなら
 	if (IsLoadedPlayerStatusCSVFile == false)
-	{
-		//CSVファイルを読み込む
-		LoadPlayerStatusCSV(name);
-	}
-	//キーがnameである要素を探す
-	auto itr = StatusDataMAP.find(name);
-	//名前がない
-	if (itr == StatusDataMAP.end())
-	{
-		std::abort();
-		return;
-	}
-	//引数と同じ名前のデータを代入
-	*this = itr->second;
-
-	return;
-}
-
-void Status_Player::InitWeaponStatus(const std::string& weaponName)
-{
-	//CSVファイルをロードしていないなら
-	if (IsLoadedWeaponStatusCSVFile == false)
 	{
 		//CSVファイルを読み込む
 		LoadPlayerStatusCSV(name);
@@ -94,6 +67,9 @@ void Status_Player::LoadPlayerStatusCSV(const std::string& name)
 		//スタミナを読み込む。
 		getline(i_stream, buf, ',');
 		statusData.m_playerStatus.maxStamina = stof(buf);
+		//スタミナの回復速度倍率を読み込む。
+		getline(i_stream, buf, ',');
+		statusData.m_playerStatus.staminaRecoveryRate = stof(buf);
 		//スピードを読み込む。
 		getline(i_stream, buf, ',');
 		statusData.m_playerStatus.defaultSpeed = stof(buf);
@@ -119,8 +95,4 @@ void Status_Player::LoadPlayerStatusCSV(const std::string& name)
 	//ロードした
 	IsLoadedPlayerStatusCSVFile = true;
 	return;
-}
-
-void Status_Player::LoadWeaponStatusCSV(const std::string& name)
-{
 }

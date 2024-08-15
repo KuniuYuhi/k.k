@@ -19,35 +19,15 @@ private:
 		int defaultPower = 0;				//基礎攻撃力
 		int currentPower = 0;				//現在の攻撃力
 		float maxStamina = 0;			//スタミナの最大値
+		float staminaRecoveryRate = 0.0f;		//スタミナの回復速度倍率
 		float currentStamina = 0;		//現在のスタミナ
 		float defaultSpeed = 0.0f;		//基礎スピード
 		float dashSpeed = 0.0f;			//加速時のスピード
 		float evasionSpeed = 0.0f;		//回避時のスピード
 	};
 
-	/// <summary>
-	/// 武器のステータス
-	/// </summary>
-	struct WeaponStatus
-	{
-		int defaultAtk = 0;				//基礎攻撃力
-		int currentAtk = 0;				//現在の攻撃力
-		int skillAtk = 0;				//スキルの攻撃力
-		int maxEndurance = 0;			//耐久値の最大値
-		int currentEndurance = 0;				//耐久値。耐久値の概念が必要ないなら-1に設定する
-
-		float comboKnockBackPower[3] = { 150.0f };	//通常攻撃のコンボでのノックバックパワー
-
-		float skillKnockBackPower = 200.0f;
-
-		//靭性ゲージのことも考える
-
-		//タイプ　斬　射　打
-	};
-
 
 	PlayerStatus m_playerStatus;
-	WeaponStatus m_weaponStatus;
 
 public:
 
@@ -59,26 +39,12 @@ public:
 	{
 		return m_playerStatus;
 	}
-	/// <summary>
-	/// 武器のステータス構造体を取得
-	/// </summary>
-	/// <returns></returns>
-	const WeaponStatus& GetWeaponStatus()
-	{
-		return m_weaponStatus;
-	}
-
+	
 	/// <summary>
 	/// プレイヤーのステータスを初期化
 	/// </summary>
 	/// <param name="name">ステータスを初期化したいキャラの名前</param>
 	void InitPlayerStatus(const std::string& name);
-	/// <summary>
-	/// 武器のステータスの初期化。
-	/// </summary>
-	/// <param name="weaponName">ステータスを初期化したい武器の名前</param>
-	void InitWeaponStatus(const std::string& weaponName);
-
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,6 +110,14 @@ public:
 		return m_playerStatus.currentStamina;
 	}
 	
+	/// <summary>
+	/// スタミナの回復速度倍率を取得
+	/// </summary>
+	/// <returns></returns>
+	float GetStaminaRecoveryRate()
+	{
+		return m_playerStatus.staminaRecoveryRate;
+	}
 
 	/// <summary>
 	/// 基礎スピードの取得
@@ -163,18 +137,6 @@ public:
 	}
 
 
-	///////////////////////////////////////////////////////////////////////////////////////////////
-	///武器のステータスに関する関数
-	///////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-	///////////////////////////////////////////////////////////////////////////////////////////////
-	///
-	///////////////////////////////////////////////////////////////////////////////////////////////
-
-
 		//csvは使わない
 	std::string name;          //名前
 
@@ -183,9 +145,6 @@ public:
 	//プレイヤーのステータスの初期化で使う静的な型
 	static const std::string playerStatusCsvFilePath;
 	static bool IsLoadedPlayerStatusCSVFile;
-	//武器のステータスの初期化で使う静的な型
-	static const std::string weaponStatusCsvFilePath;
-	static bool IsLoadedWeaponStatusCSVFile;
 
 
 private:
@@ -195,13 +154,6 @@ private:
 	/// </summary>
 	/// <param name="name">読み込みたいプレイヤーの名前</param>
 	void LoadPlayerStatusCSV(const std::string& name);
-
-	/// <summary>
-	/// 武器cステータスsvファイルの読み込み
-	/// </summary>
-	/// <param name="name">読み込みたい武器の名前</param>
-	void LoadWeaponStatusCSV(const std::string& name);
-
 
 
 };
