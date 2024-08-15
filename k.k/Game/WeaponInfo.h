@@ -10,6 +10,7 @@ namespace WeaponAttribute {
 	/// </summary>
 	enum EnWeaponAttribute
 	{
+		enWeaponAttribute_None,
 		enWeaponAttribute_Slash,	//斬タイプ
 		enWeaponAttribute_Pierce,	//突タイプ
 	};
