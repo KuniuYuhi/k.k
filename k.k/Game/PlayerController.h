@@ -43,9 +43,23 @@ public:
 
 
 
+	/// <summary>
+	/// 通常攻撃ボタンを押したか
+	/// </summary>
+	/// <returns></returns>
+	bool IsTriggerNromalAttackButton();
 
+	/// <summary>
+	/// 回避、防御ボタンを押したか
+	/// </summary>
+	/// <returns></returns>
+	bool IsTriggerDefensiveActionButton();
 
-
+	/// <summary>
+	/// 回避、防御ボタンを押し続けているか
+	/// </summary>
+	/// <returns></returns>
+	bool IsPressDefensiveActionButton();
 
 	/// <summary>
 	/// 特定のボタンのトリガー判定

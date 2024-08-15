@@ -18,6 +18,21 @@ void PlayerController::UpdateComponent()
 {
 }
 
+bool PlayerController::IsTriggerNromalAttackButton()
+{
+	return g_pad[0]->IsTrigger(enButtonA);
+}
+
+bool PlayerController::IsTriggerDefensiveActionButton()
+{
+	return g_pad[0]->IsTrigger(enButtonY);
+}
+
+bool PlayerController::IsPressDefensiveActionButton()
+{
+	return g_pad[0]->IsPress(enButtonY);
+}
+
 bool PlayerController::IsButtonTrigger(EnButton button)
 {
 	return g_pad[0]->IsTrigger(button);
