@@ -20,6 +20,8 @@ bool Bow::Start()
 {
 	m_brave = FindGO<Brave>("Brave");
 
+	m_status.InitWeaponCommonStatus("BowArrow");
+
 	//初期化処理
 	Init();
 
@@ -80,6 +82,38 @@ void Bow::ChangeArmedState()
 
 void Bow::AttackAction()
 {
+}
+
+void Bow::ProceedComboAttack()
+{
+	//３コンボ以上なら
+	if (m_enComboState >= enCombo_Third)
+	{
+		//コンボステートをなしにリセットする
+		m_enComboState = enCombo_None;
+	}
+
+	//コンボを一つ進める
+	m_enComboState = static_cast<EnComboState>(m_enComboState + 1);
+}
+
+void Bow::ResetComboAttack()
+{
+	//コンボステートをなしにリセットする
+	m_enComboState = enCombo_None;
+}
+
+bool Bow::IsEndDefensiveAction()
+{
+
+	//アニメーションが終わったら
+	if (m_brave->GetModelRender().IsPlayingAnimation() == false)
+	{
+		//回避アクションを終わる
+		return true;
+	}
+
+	return false;
 }
 
 void Bow::MoveArmed()

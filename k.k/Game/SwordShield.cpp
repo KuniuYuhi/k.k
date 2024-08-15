@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SwordShield.h"
 #include "Brave.h"
+#include "PlayerController.h"
 
 namespace {
 
@@ -24,6 +25,10 @@ bool SwordShield::Start()
 {
 
 	m_brave = FindGO<Brave>("Brave");
+
+	m_playerController = m_brave->GetComponent<PlayerController>();
+
+	m_status.InitWeaponCommonStatus("SwordShield");
 
 	//初期化処理
 	Init();
@@ -140,6 +145,44 @@ void SwordShield::InitCollision()
 
 void SwordShield::AttackAction()
 {
+
+
+
+}
+
+void SwordShield::ProceedComboAttack()
+{
+	//３コンボ以上なら
+	if(m_enComboState >= enCombo_Third)
+	{
+		//コンボステートをなしにリセットする
+		m_enComboState = enCombo_None;
+	}
+
+	//コンボを一つ進める
+	m_enComboState= static_cast<EnComboState>(m_enComboState + 1);
+
+	
+}
+
+void SwordShield::ResetComboAttack()
+{
+	//コンボステートをなしにリセットする
+	m_enComboState = enCombo_None;
+}
+
+bool SwordShield::IsEndDefensiveAction()
+{
+	//防御ボタンを話したら
+	if (!m_playerController->IsPressDefensiveActionButton())
+	{
+		//防御アクションを終わる
+		return true;
+	}
+
+
+
+	return false;
 }
 
 void SwordShield::MoveArmed()

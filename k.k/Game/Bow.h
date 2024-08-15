@@ -33,6 +33,23 @@ public:
 
     void AttackAction() override;
 
+
+    /// <summary>
+    /// コンボ攻撃処理を進める
+    /// </summary>
+    void ProceedComboAttack() override;
+    /// <summary>
+    /// コンボ攻撃処理をリセットする
+    /// </summary>
+    void ResetComboAttack() override;
+
+    /// <summary>
+    /// 回避、防御アクションを終わるか
+    /// </summary>
+    /// <returns>終わるならtrue</returns>
+    bool IsEndDefensiveAction() override;
+
+
     /// <summary>
     /// 装備状態での移動処理
     /// </summary>
