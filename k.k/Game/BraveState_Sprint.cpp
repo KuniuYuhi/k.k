@@ -8,7 +8,7 @@ using namespace BraveAnimationClip;
 void BraveState_Sprint::PlayAnimation()
 {
 	m_brave->GetModelRender().PlayAnimation(
-		enBraveAnimClip_Sprint + m_brave->GetCurrentAnimationStartIndexNo()
+		enBraveAnimClip_Sprint + m_brave->GetCurrentAnimationStartIndexNo(),0.1f
 	);
 }
 

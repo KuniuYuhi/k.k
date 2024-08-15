@@ -46,7 +46,7 @@ private:
 
 	Brave* m_brave = nullptr;
 
-	int m_speed = 10.0f;
+	int m_speed = 10;
 
 
 };

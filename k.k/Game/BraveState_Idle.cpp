@@ -6,7 +6,7 @@
 void BraveState_Idle::PlayAnimation()
 {
 	m_brave->GetModelRender().PlayAnimation(
-		enBraveAnimClip_Idle + m_brave->GetCurrentAnimationStartIndexNo()
+		enBraveAnimClip_Idle + m_brave->GetCurrentAnimationStartIndexNo(),0.2f
 	);
 }
 

@@ -251,6 +251,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GreateSword.cpp" />
     <ClCompile Include="IObjectPool.cpp" />
+    <ClCompile Include="KnockBackStatus.cpp" />
     <ClCompile Include="SwordShield.cpp" />
     <ClCompile Include="WeaponBase.cpp" />
     <ClCompile Include="LoadBraveAnimationClips.cpp" />
@@ -331,6 +332,8 @@
     <ClInclude Include="GreateSword.h" />
     <ClInclude Include="IBraveState.h" />
     <ClInclude Include="IObjectPool.h" />
+    <ClInclude Include="KnockBackInfo.h" />
+    <ClInclude Include="KnockBackStatus.h" />
     <ClInclude Include="SwordShield.h" />
     <ClInclude Include="WeaponBase.h" />
     <ClInclude Include="LoadBraveAnimationClips.h" />

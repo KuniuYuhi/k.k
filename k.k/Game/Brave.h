@@ -11,7 +11,7 @@ class PlayerMovement;
 class PlayerController;
 class LoadBraveAnimationClips;
 class BraveStateContext;
-
+class WeaponBase;
 
 
 
@@ -85,13 +85,33 @@ public:
 		return m_isActionFlag;
 	}
 
+	/// <summary>
+	/// 装備状態の武器を取得
+	/// </summary>
+	/// <returns></returns>
+	WeaponBase* GetArmedWeapon()
+	{
+		return m_armedWeapon;
+	}
+
+
 
 	bool IsButtonAction();
 
 	/// <summary>
-	/// 
+	/// 共通のステート処理
 	/// </summary>
 	void ProcessCommonStateTransition();
+
+	/// <summary>
+	/// 通常攻撃処理
+	/// </summary>
+	void NormalAttackProcess();
+
+	/// <summary>
+	/// 攻撃アクションを抜け出す
+	/// </summary>
+	void ExitAttackAction();
 
 private:
 
@@ -121,12 +141,20 @@ private:
 	void AttackAction();
 
 	/// <summary>
+	/// 回避、防御処理
+	/// </summary>
+	void DefensiveAction();
+
+	/// <summary>
 	/// 武器切り替え
 	/// </summary>
 	void ChangeWeaponAction();
 
-
-	//void 
+	/// <summary>
+	/// 硬直時間か
+	/// </summary>
+	/// <returns>硬直中ならtrue、硬直中でないならfalse</returns>
+	bool IsStarkTime();
 
 
 
@@ -142,17 +170,15 @@ private:
 
 	std::unique_ptr<BraveStateContext> m_braveStateCotext = nullptr;	//ステートコンテキスト
 
+	WeaponBase* m_armedWeapon = nullptr;		//装備している武器
 
-
-	WeaponType::EnWeaponType m_mainWeaponType;		//メイン武器タイプ
-	WeaponType::EnWeaponType m_subWeaponType;		//サブ武器1
-	WeaponType::EnWeaponType m_subWeaponType2;		//サブ武器2
-	WeaponType::EnWeaponType m_changeTargetWeaponType;	//切り替え対象の武器タイプ
-
+	
 
 
 	bool m_isActionFlag = false;		//アクションt中かのフラグ
 	
+
+	float m_starkTimer = 0.0f;			//硬直タイマー
 
 };
 

@@ -72,6 +72,40 @@ void BraveStateContext::ChangeBraveState(EnBraveState changeState)
 
 }
 
+void BraveStateContext::ChangeBraveState(int changeStateNum)
+{
+	EnBraveState tempState = (EnBraveState)changeStateNum;
+
+
+	//前のステートを保存しておく
+	m_EnPreviousBraveState = m_EnCurrentBraveState;
+
+	if (m_currentBraveState != nullptr)
+	{
+		//現在のステートの最後の処理を行う
+		m_currentBraveState->Exit();
+	}
+
+	//nullにする
+	m_currentBraveState = nullptr;
+
+	//マップからキーに対応するステートを持ってくる
+	//新しいステートに入れ替える
+	m_currentBraveState = m_braveStateMap.at(tempState);
+	//キーが対応してなかったら
+	if (m_currentBraveState == nullptr)
+	{
+		std::abort();
+		return;
+	}
+
+	//最初の処理を実行
+	m_currentBraveState->Entry();
+
+	//現在のステートの値を保存
+	m_EnCurrentBraveState = tempState;
+}
+
 void BraveStateContext::UpdateCurrentState()
 {
 	if (m_currentBraveState == nullptr)

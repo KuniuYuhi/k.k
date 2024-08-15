@@ -22,6 +22,10 @@
 #include "Bow.h"
 
 
+namespace {
+	float STARK_TIME_LIMIT = 0.2f;
+}
+
 Brave::~Brave()
 {
 	m_braveAnimClip.release();
@@ -74,10 +78,10 @@ bool Brave::Start()
 
 	//武器管理マネージャーを生成
 	WeaponManager::CreateInstance();
-	//初期化処理
+	//初期化処理。武器の役割を設定する
 	WeaponManager::GetInstance()->Init(enSwordShield,enGreateSword,enBowArrow);
-
-
+	//装備している武器を取得
+	m_armedWeapon = WeaponManager::GetInstance()->GetArmedWeapon();
 
 
 	return true;
@@ -181,7 +185,7 @@ void Brave::Movement()
 	);
 
 	//仮のジャンプ処理
-	if (m_playerContoller->IsButtonTrigger(enButtonA) && m_charaCon.get()->IsOnGround())
+	if (m_playerContoller->IsButtonTrigger(enButtonB) && m_charaCon.get()->IsOnGround())
 	{
 		m_moveSpeed.y = 400.0f;
 	}
@@ -225,6 +229,9 @@ void Brave::ButtonAction()
 	//攻撃処理
 	AttackAction();
 
+	//回避、防御アクション
+	DefensiveAction();
+
 	//武器切り替え
 	ChangeWeaponAction();
 
@@ -238,13 +245,57 @@ void Brave::AttackAction()
 		return;
 	}
 
-	//攻撃ボタン
-	if (m_playerContoller->IsButtonTrigger(enButtonA))
+	//ほんの少し硬直させる
+	if (IsStarkTime() == true) return;
+
+
+	//通常攻撃ボタンを押したなら
+	if (m_playerContoller->IsTriggerNromalAttackButton())
 	{
+		NormalAttackProcess();
+		//アクション中にする
+		ActionActive();
+	}
+
+
+}
+
+void Brave::DefensiveAction()
+{
+	//アクション中は他の処理をしない
+	if (IsAction() == true)
+	{
+		return;
+	}
+	//回避、防御ボタンを押したなら
+	if (m_playerContoller->IsTriggerDefensiveActionButton())
+	{
+		//ステートを切り替える
+		m_braveStateCotext.get()->ChangeBraveState(enBraveState_DefensiveActions);
+		//アクション中にする
+		ActionActive();
 
 	}
 
 
+}
+
+void Brave::NormalAttackProcess()
+{
+	//コンボ処理をする
+	m_armedWeapon->ProceedComboAttack();
+	//通常攻撃ステートに切り替える。コンボによって変わる
+	m_braveStateCotext.get()->ChangeBraveState(m_armedWeapon->GetCurrentComboState());
+}
+
+void Brave::ExitAttackAction()
+{
+	//コンボ処理のリセット
+	m_armedWeapon->ResetComboAttack();
+	//アクションを終わる
+	ActionDeactive();
+	//硬直タイマーをリセット
+	m_starkTimer = 0.0f;
 }
 
 void Brave::ChangeWeaponAction()
@@ -289,6 +340,22 @@ void Brave::ChangeWeaponAction()
 
 }
 
+bool Brave::IsStarkTime()
+{
+	if (m_starkTimer >= STARK_TIME_LIMIT)
+	{
+		//硬直時間が終わったのでtrue
+		return false;
+	}
+	else
+	{
+		//タイマー加算
+		m_starkTimer += g_gameTime->GetFrameDeltaTime();
+	}
+	//硬直中なのでtrue
+	return true;
+}
+
 
 
 
@@ -307,6 +374,9 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		WeaponManager::GetInstance()->ChangeArmedWeapon(
 			WeaponManager::GetInstance()->GetChangeTargetWeaponType()
 		);
+		//入れ替え後の現在の武器をインスタンスを取得
+		m_armedWeapon = WeaponManager::GetInstance()->GetArmedWeapon();
+
 		//切り替え武器タイプをメイン武器タイプに切り替える
 		//WeaponManager::GetInstance()->ChangeChangeWeaponTypeToMainWeaponType();
 	}

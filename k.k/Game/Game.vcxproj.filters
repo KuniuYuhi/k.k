@@ -82,7 +82,10 @@
     <Filter Include="Weapon">
       <UniqueIdentifier>{130a3e2d-99d4-4e5f-b61f-bd7c5aa2d90c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Weapon\NewFilter1">
+    <Filter Include="Status\KnockBack">
+      <UniqueIdentifier>{535169d9-54f1-40b7-acc6-81b3a0c02113}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Weapon\WeaponBase">
       <UniqueIdentifier>{bd9c5de3-fb41-4a03-b376-54de26c6235f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -260,11 +263,18 @@
       <Filter>Status\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="WeaponBase.cpp">
+      <Filter>Weapon\WeaponBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Bow.cpp">
       <Filter>Weapon</Filter>
     </ClCompile>
-    <ClCompile Include="GreateSword.cpp" />
-    <ClCompile Include="SwordShield.cpp" />
-    <ClCompile Include="Bow.cpp" />
+    <ClCompile Include="GreateSword.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="SwordShield.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="KnockBackStatus.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -458,14 +468,24 @@
     <ClInclude Include="WeaponStatus.h">
       <Filter>Status\Weapon</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponBase.h">
-      <Filter>Weapon</Filter>
-    </ClInclude>
     <ClInclude Include="WeaponInfo.h">
       <Filter>Weapon</Filter>
     </ClInclude>
-    <ClInclude Include="GreateSword.h" />
-    <ClInclude Include="SwordShield.h" />
-    <ClInclude Include="Bow.h" />
+    <ClInclude Include="WeaponBase.h">
+      <Filter>Weapon\WeaponBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Bow.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="GreateSword.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="SwordShield.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="KnockBackStatus.h" />
+    <ClInclude Include="KnockBackInfo.h">
+      <Filter>Status\KnockBack</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

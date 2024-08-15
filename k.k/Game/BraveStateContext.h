@@ -24,10 +24,16 @@ public:
 	void Init(Brave* brave,EnBraveState startState);
 
 	/// <summary>
-	/// 
+	/// ステートを切り替える
 	/// </summary>
-	/// <param name="changeState"></param>
+	/// <param name="changeState">切り替えたいステート</param>
 	void ChangeBraveState(EnBraveState changeState);
+
+	/// <summary>
+	/// ステートを切り替える
+	/// </summary>
+	/// <param name="changeState">切り替えたいステート番号</param>
+	void ChangeBraveState(int changeStateNum);
 
 	/// <summary>
 	/// 現在のステートを更新

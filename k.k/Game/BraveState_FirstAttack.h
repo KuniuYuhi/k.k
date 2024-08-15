@@ -1,6 +1,8 @@
 #pragma once
 #include "IBraveState.h"
 
+class PlayerController;
+
 class BraveState_FirstAttack :
     public IBraveState
 {
@@ -26,6 +28,15 @@ public:
 	/// I—¹‚Ìˆ—
 	/// </summary>
 	void Exit() override;
+
+
+private:
+
+	PlayerController* m_playerController = nullptr;
+
+	bool m_isTrigger = false;
+
+	bool m_isDelay = false;
 
 };
 
