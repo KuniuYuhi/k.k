@@ -23,6 +23,16 @@ bool PlayerController::IsTriggerNromalAttackButton()
 	return g_pad[0]->IsTrigger(enButtonA);
 }
 
+bool PlayerController::IsTriggerSkillAttackButton()
+{
+	return g_pad[0]->IsTrigger(enButtonB);
+}
+
+bool PlayerController::IsPressSkillAttackButton()
+{
+	return g_pad[0]->IsPress(enButtonB);
+}
+
 bool PlayerController::IsTriggerDefensiveActionButton()
 {
 	return g_pad[0]->IsTrigger(enButtonY);
