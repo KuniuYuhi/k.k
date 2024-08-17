@@ -2,6 +2,8 @@
 #include "BraveState_SecondAttack.h"
 #include "Brave.h"
 #include "PlayerController.h"
+#include "WeaponBase.h"
+
 
 void BraveState_SecondAttack::PlayAnimation()
 {
@@ -18,6 +20,9 @@ void BraveState_SecondAttack::Entry()
 		m_playerController = m_brave->GetComponent<PlayerController>();
 	}
 
+	//武器のエントリーの処理を行う
+	m_brave->GetArmedWeapon()->EntryNormalAttackProcess(WeaponBase::enCombo_Second);
+
 	//アクション中にする
 	m_brave->ActionActive();
 	//トリガーチェックフラグをリセット
@@ -33,6 +38,9 @@ void BraveState_SecondAttack::Ubdate()
 	{
 		m_isTrigger = true;
 	}
+
+	//武器の更新処理
+	m_brave->GetArmedWeapon()->UpdateNormalAttackProcess(WeaponBase::enCombo_Second);
 
 	//アニメーションが終わったら
 	if (m_brave->GetModelRender().IsPlayingAnimation() == false)
@@ -63,6 +71,10 @@ void BraveState_SecondAttack::Exit()
 		//アクションを終わる
 		m_brave->ExitAttackAction();
 	}
+
+	//武器の抜け出す処理
+	m_brave->GetArmedWeapon()->ExitNormalAttackProcess(WeaponBase::enCombo_Second);
+
 
 	//トリガーチェックフラグをリセット
 	m_isTrigger = false;

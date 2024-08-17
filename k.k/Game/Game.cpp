@@ -37,6 +37,8 @@
 #include "EnemyObjectPool.h"
 #include "WaveManager.h"
 
+#include "EnemyManager.h"
+
 namespace {
 
 	//スカイキューブの初期の明るさ
@@ -112,41 +114,13 @@ bool Game::Start()
 
 	Brave* brave = NewGO<Brave>(0,"Brave");
 
-	//WaveManager* wave = NewGO<WaveManager>(0, "WaveManager");
 
-	//Slime* slime = NewGO<Slime>(0,"Slime");
-	//slime->Deactivate();
-
-	//slime->SetPosition(Vector3(50.0f, 0.0f, 0.0f));
-
-	float x = 50.0f;
-
-	float cx = -50.0f;
-
-	//for (int i = 0; i < 3; i++)
-	//{
-	//	//
-	//	EnemyBase* slime = 
-	//		EnemyObjectPool::GetInstance()->OnGetEnemy<Slime>("Slime");
-
-	//	slime->SetPosition(Vector3(x, 0.0f, 0.0f));
-
-	//	x += 10.0f;
+	EnemyManager::GetInstance()->CrearMobEnemyList();
 
 
-	//	//
-	//	EnemyBase* cactus =
-	//		EnemyObjectPool::GetInstance()->OnGetEnemy<Cactus>("Cactus");
+	WaveManager* wave = NewGO<WaveManager>(0, "WaveManager");
 
-	//	cactus->SetPosition(Vector3(cx, 0.0f, 0.0f));
-
-	//	cx -= 10.0f;
-
-
-
-	//	//EnemyObjectPool::GetInstance()->OnRelease("Slime", slime);
-
-	//}
+	
 
 	
 
@@ -157,45 +131,9 @@ bool Game::Start()
 
 void Game::Update()
 {	
-	//Brave* brave = FindGO<Brave>("Brave");
-	//PlayerMovement* pM = brave->GetComponent<PlayerMovement>();
-	if (g_pad[0]->IsTrigger(enButtonB))
-	{
+	Brave* brave = FindGO<Brave>("Brave");
 
-
-
-
-		
-
-		/*float x = 100.0f;
-		float cx = -100.0f;
-
-		for (int i = 0; i < 3; i++)
-		{
-			EnemyBase* slime =
-				EnemyObjectPool::GetInstance()->OnGetEnemy<Slime>("Slime");
-
-			slime->SetPosition(Vector3(x, 0.0f, 0.0f));
-
-			x += 10.0f;
-
-
-			EnemyBase* cactus =
-				EnemyObjectPool::GetInstance()->OnGetEnemy<Cactus>("Cactus");
-
-			cactus->SetPosition(Vector3(cx, 0.0f, 0.0f));
-
-			cx -= 10.0f;
-		}*/
-
-
-		/*CharacterBase* brave = FindGO<CharacterBase>("Brave");
-
-		if (brave != nullptr)
-		{
-			DeleteGO(brave);
-		}*/
-	}
+	EnemyManager::GetInstance()->ControlEnemyDistances(brave->GetPosition());
 	
 
 }

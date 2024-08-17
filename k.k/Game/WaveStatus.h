@@ -101,6 +101,12 @@ public:
 		return m_status.playerAvoidanceRadius;
 	}
 
+	const float& GetIncantationTimeLimit()
+	{
+		return m_status.incantationTimeLimit;
+	}
+
+
 
 	//CSV‚Ìî•ñ‚ğ•Û‘¶‚µ‚½ƒ}ƒbƒv
 	static WaveStatus StatusDataMAP;

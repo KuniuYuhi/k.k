@@ -6,6 +6,12 @@
 
 
 
+float MobEnemyBase::CalcDistanceToTargetPosition(Vector3 target)
+{
+	Vector3 diff = target - m_position;
+	return diff.Length();
+}
+
 void MobEnemyBase::SettingDefaultComponent()
 {
 	AddComponent<MobEnemyMovement>();
@@ -23,13 +29,37 @@ void MobEnemyBase::ChaseMovement(Vector3 targetPosition)
 		m_moveSpeed
 	);
 
-	if (m_charaCon != nullptr)
+	float toPlayerDistance = CalcDistanceToTargetPosition(targetPosition);
+	bool isExecute = true;
+
+	//待機フラグがあるなら
+	if (m_isWaitingFlag)
 	{
+		//プレイヤーとの距離より待機する距離が大きいならキャラコンの処理をしないようにする
+		if (toPlayerDistance < m_status.GetWaitingDistance())
+		{
+			isExecute = false;
+		}
+	}
+	else
+	{
+		//プレイヤーとの距離より接近する距離が大きいならキャラコンの処理をしないようにする
+		if (toPlayerDistance < m_status.GetApproachDistance())
+		{
+			isExecute = false;
+		}
+	}
+
+
+	//実行フラグがtrueなら
+	if (m_charaCon != nullptr && isExecute)
+	{
+		//キャラコンで座標を移動する
 		m_position = m_charaCon.get()->Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 	}
 	
 
-
+	//回転方向を保存
 	m_rotateDirection = m_moveSpeed;
 }
 

@@ -19,6 +19,10 @@ private:
 		int currentPower = 0;		//現在の攻撃力
 		float defaultSpeed = 0;		//基礎スピード
 		float attackIntarval = 0;	//攻撃インターバル
+
+		float approachDistance = 0.0f;	//接近できる最大の距離
+		float waitingDistance = 0.0f;	//待機する距離
+
 	};
 
 
@@ -92,6 +96,23 @@ public:
 	const float& GetDefaultSpeed() const
 	{
 		return m_commonEnemyStatus.defaultSpeed;
+	}
+
+	/// <summary>
+	/// 接近できる距離を取得
+	/// </summary>
+	/// <returns></returns>
+	const float& GetApproachDistance() const
+	{
+		return m_commonEnemyStatus.approachDistance;
+	}
+	/// <summary>
+	/// 待機する距離を取得
+	/// </summary>
+	/// <returns></returns>
+	const float& GetWaitingDistance() const
+	{
+		return m_commonEnemyStatus.waitingDistance;
 	}
 
 

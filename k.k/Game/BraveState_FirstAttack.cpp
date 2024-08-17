@@ -2,6 +2,7 @@
 #include "BraveState_FirstAttack.h"
 #include "Brave.h"
 #include "PlayerController.h"
+#include "WeaponBase.h"
 
 void BraveState_FirstAttack::PlayAnimation()
 {
@@ -18,6 +19,9 @@ void BraveState_FirstAttack::Entry()
 		m_playerController = m_brave->GetComponent<PlayerController>();
 	}
 
+	//武器のエントリーの処理を行う
+	m_brave->GetArmedWeapon()->EntryNormalAttackProcess(WeaponBase::enCombo_First);
+
 	//アクション中にする
 	m_brave->ActionActive();
 	//トリガーチェックフラグをリセット
@@ -33,6 +37,9 @@ void BraveState_FirstAttack::Ubdate()
 	{
 		m_isTrigger = true;
 	}
+
+	//武器の更新処理
+	m_brave->GetArmedWeapon()->UpdateNormalAttackProcess(WeaponBase::enCombo_First);
 
 	//アニメーションが終わったら
 	if (m_brave->GetModelRender().IsPlayingAnimation() == false)
@@ -58,12 +65,16 @@ void BraveState_FirstAttack::Ubdate()
 void BraveState_FirstAttack::Exit()
 {
 	//ボタンを押していなかったら
+	//todo 被ダメージを受けていてもやる
 	if (!m_isTrigger)
 	{
 		//アクションを終わる
 		m_brave->ExitAttackAction();
 	}
 	
+	//武器の抜け出す処理
+	m_brave->GetArmedWeapon()->ExitNormalAttackProcess(WeaponBase::enCombo_First);
+
 	//トリガーチェックフラグをリセット
 	m_isTrigger = false;
 	//遅延フラグリセット

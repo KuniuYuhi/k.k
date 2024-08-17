@@ -28,6 +28,23 @@ public:
 	/// </summary>
 	virtual void Dead() override {}
 
+	/// <summary>
+	/// ターゲットとの距離の長さを計算
+	/// </summary>
+	/// <param name="target">ターゲットの座標</param>
+	/// <returns>距離の長さ</returns>
+	float CalcDistanceToTargetPosition(Vector3 target);
+
+	/// <summary>
+	/// 待機するかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetWaitingFlag(bool flag)
+	{
+		m_isWaitingFlag = flag;
+	}
+
+
 
 protected:
 
@@ -73,7 +90,7 @@ protected:
 	//
 
 
-
+	bool m_isWaitingFlag = false;		//プレイヤーに近づき過ぎず遠くで待つかのフラグ
 
 	Brave* m_player = nullptr;			//プレイヤーのインスタンス
 

@@ -53,7 +53,7 @@ private:
 public:
 
 
-	const CommonStatus GetCommonStatus()
+	const CommonStatus& GetCommonStatus()
 	{
 		return m_status;
 	}

@@ -35,6 +35,24 @@ public:
 		return m_moveSpeed;
 	}
 
+	/// <summary>
+	/// ƒLƒƒƒ‰ƒRƒ“‚ğæ“¾
+	/// </summary>
+	/// <returns></returns>
+	CharacterController* GetCharaCon()
+	{
+		return m_charaCon.get();
+	}
+
+	/// <summary>
+	/// ‰ñ“]•ûŒü‚ğİ’è
+	/// </summary>
+	/// <param name="direction"></param>
+	void SetRotateDirection(Vector3 direction);
+
+
+
+
 protected:
 
 	/// <summary>

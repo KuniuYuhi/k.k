@@ -48,7 +48,16 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	bool IsTriggerNromalAttackButton();
-
+	/// <summary>
+	/// スキル攻撃ボタンを押したか
+	/// </summary>
+	/// <returns></returns>
+	bool IsTriggerSkillAttackButton();
+	/// <summary>
+	/// スキル攻撃ボタンを押し続けているか
+	/// </summary>
+	/// <returns></returns>
+	bool IsPressSkillAttackButton();
 	/// <summary>
 	/// 回避、防御ボタンを押したか
 	/// </summary>
