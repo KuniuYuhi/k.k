@@ -2,6 +2,8 @@
 #include "SwordShield.h"
 #include "Brave.h"
 #include "PlayerController.h"
+#include "PlayerMovement.h"
+
 
 namespace {
 
@@ -25,11 +27,13 @@ bool SwordShield::Start()
 {
 
 	m_brave = FindGO<Brave>("Brave");
-
+	//プレイヤーコントローラーコンポーネントを取得
 	m_playerController = m_brave->GetComponent<PlayerController>();
-
+	//共通ステータスを初期化
 	m_status.InitWeaponCommonStatus("SwordShield");
-
+	//固有ステータスの初期化
+	m_uniqueStatus.InitUniqueStatus();
+	
 	//初期化処理
 	Init();
 
@@ -183,6 +187,153 @@ bool SwordShield::IsEndDefensiveAction()
 
 
 	return false;
+}
+
+void SwordShield::EntryDefensiveActionProcess()
+{
+	//エフェクト生成
+}
+
+void SwordShield::UpdateDefensiveActionProcess()
+{
+}
+
+void SwordShield::ExitDefensiveActionProcess()
+{
+	//エフェクト削除
+}
+
+void SwordShield::EntryNormalAttackProcess(EnComboState comboState)
+{
+	//移動方向を前方向か入力方向か計算する
+	m_normalAttackMoveDirection = 
+	m_brave->GetPlayerMovement()->CalcMoveDirection(
+		m_brave->GetForward(),
+		m_playerController->GetLStickInput(),
+		m_brave->GetMoveSpeed()
+	);
+
+	//敵の位置も踏まえて向く方向を決める
+	m_normalAttackMoveDirection = CalcAutoAimAtTarget(
+		m_brave->GetPosition(),
+		m_normalAttackMoveDirection,
+		m_uniqueStatus.GetNormalAttackSearchRadius(),
+		m_uniqueStatus.GetNormalAttackComparisonDot()
+	);
+
+	//プレイヤーの回転方向に移動方向を設定する
+	m_brave->SetRotateDirection(m_normalAttackMoveDirection);
+
+	int comboNum = 0;
+	switch (comboState)
+	{
+	case WeaponBase::enCombo_First:
+		comboNum = 0;
+		break;
+	case WeaponBase::enCombo_Second:
+		comboNum = 1;
+		break;
+	case WeaponBase::enCombo_Third:
+		comboNum = 2;
+		break;
+	default:
+		std::abort();
+		break;
+	}
+
+	//武器ステータスから攻撃スピードを取得して方向にかける
+	m_normalAttackMoveDirection *= m_uniqueStatus.GetNormalAttackSpeed(comboNum);
+}
+
+void SwordShield::UpdateNormalAttackProcess(EnComboState comboState)
+{
+	//移動フラグが立っている間は移動
+	if (IsAttackActionMove())
+	{
+		m_brave->CharaConExecute(m_normalAttackMoveDirection);
+	}
+
+}
+
+void SwordShield::ExitNormalAttackProcess(EnComboState comboState)
+{
+	//
+	SetAttackActionMove(false);
+}
+
+void SwordShield::EntrySkillAttackProcess(EnSkillProcessState skillProcessState)
+{
+	switch (skillProcessState)
+	{
+	case WeaponBase::enStart:
+		EntrySkillStartProcess();
+		break;
+	case WeaponBase::enMain:
+		EntrySkillMainProcess();
+		break;
+	default:
+		break;
+	}
+}
+
+void SwordShield::UpdateSkillAttackProcess(EnSkillProcessState skillProcessState)
+{
+	switch (skillProcessState)
+	{
+	case WeaponBase::enStart:
+		UpdateSkillStartProcess();
+		break;
+	case WeaponBase::enMain:
+		UpdateSkillMainProcess();
+		break;
+	default:
+		break;
+	}
+}
+
+void SwordShield::ExitSkillAttackProcess(EnSkillProcessState skillProcessState)
+{
+	switch (skillProcessState)
+	{
+	case WeaponBase::enStart:
+		ExitSkillStartProcess();
+		break;
+	case WeaponBase::enMain:
+		ExitSkillMainProcess();
+		break;
+	default:
+		break;
+	}
+}
+
+void SwordShield::EntrySkillStartProcess()
+{
+}
+
+void SwordShield::UpdateSkillStartProcess()
+{
+	//アニメーションが終わったら
+	if (m_brave->GetModelRender().IsPlayingAnimation() == false)
+	{
+		//メインステートに遷移
+		m_brave->ChangeBraveState(BraveState::enBraveState_SkillMain);
+	}
+}
+
+void SwordShield::ExitSkillStartProcess()
+{
+}
+
+void SwordShield::EntrySkillMainProcess()
+{
+}
+
+void SwordShield::UpdateSkillMainProcess()
+{
+}
+
+void SwordShield::ExitSkillMainProcess()
+{
 }
 
 void SwordShield::MoveArmed()

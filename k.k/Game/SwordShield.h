@@ -1,7 +1,9 @@
 #pragma once
 #include "WeaponBase.h"
+#include "SwordShieldStatus.h"
 
 class PlayerController;
+class SwordShieldStatus;
 
 /// <summary>
 /// 武器：ソード＆シールドクラス
@@ -51,19 +53,91 @@ public:
     /// <returns>終わるならtrue</returns>
     bool IsEndDefensiveAction() override;
 
+    /// <summary>
+    /// 回避、防御アクションに入ったときの最初の処理
+    /// </summary>
+    void EntryDefensiveActionProcess() override;
+    /// <summary>
+    /// 回避、防御アクション中の更新処理
+    /// </summary>
+    void UpdateDefensiveActionProcess() override;
+    /// <summary>
+    /// 回避、防御アクションを抜け出す時の処理
+    /// </summary>
+    void ExitDefensiveActionProcess() override;
+
+    /// <summary>
+    /// 通常攻撃ステートに入った時の処理
+    /// </summary>
+    void EntryNormalAttackProcess(EnComboState comboState) override;
+    /// <summary>
+    /// 通常攻撃ステートでの更新処理
+    /// </summary>
+    void UpdateNormalAttackProcess(EnComboState comboState) override;
+    /// <summary>
+    /// 通常攻撃ステートを抜け出す時の処理
+    /// </summary>
+    void ExitNormalAttackProcess(EnComboState comboState) override;
+
+    /// <summary>
+    /// スキル攻撃ステートに入った時の処理
+    /// </summary>
+    void EntrySkillAttackProcess(EnSkillProcessState skillProcessState) override;
+    /// <summary>
+    /// スキル攻撃ステートでの更新処理
+    /// </summary>
+    void UpdateSkillAttackProcess(EnSkillProcessState skillProcessState) override;
+    /// <summary>
+    /// スキル攻撃ステートを抜け出す時の処理
+    /// </summary>
+    void ExitSkillAttackProcess(EnSkillProcessState skillProcessState) override;
+
+
+
+private:
 
     /// <summary>
     /// 装備状態での移動処理
     /// </summary>
     void MoveArmed();
 
-
+    /// <summary>
+    /// 当たり判定初期化
+    /// </summary>
     void InitCollision();
+
+    /// <summary>
+    /// スキルスタートステートでのエントリー処理
+    /// </summary>
+    void EntrySkillStartProcess();
+    /// <summary>
+    /// スキルスタートステートでの更新処理
+    /// </summary>
+    void UpdateSkillStartProcess();
+    /// <summary>
+    /// スキルスタートステートでの終わりの処理
+    /// </summary>
+    void ExitSkillStartProcess();
+
+    /// <summary>
+    /// スキルメインステートでのエントリー処理
+    /// </summary>
+    void EntrySkillMainProcess();
+    /// <summary>
+    /// スキルメインステートでの更新処理
+    /// </summary>
+    void UpdateSkillMainProcess();
+    /// <summary>
+    /// スキルメインステートでの終わりの処理
+    /// </summary>
+    void ExitSkillMainProcess();
 
 
 
 
 private:
+
+    SwordShieldStatus m_uniqueStatus;
 
     PlayerController* m_playerController = nullptr;
 
@@ -75,6 +149,8 @@ private:
 
     Matrix m_swordMatrix;
     Matrix m_shieldMatrix;
+
+    Vector3 m_normalAttackMoveDirection = g_vec3Zero;
 
 
     //武器を持たせる時のボーンID
