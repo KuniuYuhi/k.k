@@ -67,6 +67,12 @@ void CommonEnemyStatus::LoadCommonEnemyStatusCSV(const std::string& name)
 		//攻撃インターバルを読み込む。
 		getline(i_stream, buf, ',');
 		statusData.m_commonEnemyStatus.attackIntarval = stof(buf);
+		//接近できる距離を読み込む。
+		getline(i_stream, buf, ',');
+		statusData.m_commonEnemyStatus.approachDistance = stof(buf);
+		//待機する距離を読み込む。
+		getline(i_stream, buf, ',');
+		statusData.m_commonEnemyStatus.waitingDistance = stof(buf);
 		
 		//現在のHPを設定
 		statusData.SetCurrentHp(statusData.m_commonEnemyStatus.maxHp);
