@@ -12,12 +12,17 @@ void BraveState_DefensiveAction::PlayAnimation()
 
 void BraveState_DefensiveAction::Entry()
 {
+	//アクション中にする
 	m_brave->ActionActive();
+
+	//装備している武器の回避、防御アクションに入った時の最初の処理を実行
+	m_brave->GetArmedWeapon()->EntryDefensiveActionProcess();
 }
 
 void BraveState_DefensiveAction::Ubdate()
 {
-
+	//装備している武器の更新処理
+	m_brave->GetArmedWeapon()->UpdateDefensiveActionProcess();
 
 	//回避、防御アクションを終わるなら
 	if (m_brave->GetArmedWeapon()->IsEndDefensiveAction())
