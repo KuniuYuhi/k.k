@@ -147,6 +147,7 @@ private:
 	bool IsWithInDistances(int count, float distance);
 
 
+	bool IsChangeSummonState();
 
 private:
 
@@ -160,6 +161,9 @@ private:
 	float m_currentTimeLimit = 0.0f;
 
 	int m_currentWaveNumber = 0;
+
+
+	float m_changeSummonTimer = 0.0f;
 
 };
 

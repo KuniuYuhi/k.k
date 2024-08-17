@@ -9,6 +9,8 @@
 
 #include "MobEnemyheaderFiles.h"
 
+#include "EnemyManager.h"
+
 
 WaveManager::WaveManager()
 {
@@ -67,7 +69,8 @@ void WaveManager::SummonMobEnemys()
 	for (int i = 0; i < m_createPositions.size(); i++)
 	{
 		//todo エネミー数が上限を超えないようにする
-		if (EnemyObjectPool::GetInstance()->GetActiveObjCount() >= m_waveStatus.GetMaxMobEnemys())
+		if (EnemyManager::GetInstance()->GetMobEnemyList().size() >=
+			m_waveStatus.GetMaxMobEnemys())
 		{
 			return;
 		}
@@ -190,6 +193,21 @@ bool WaveManager::IsWithInDistances(int count, float distance)
 	return false;
 }
 
+bool WaveManager::IsChangeSummonState()
+{
+	if (m_changeSummonTimer >= m_waveStatus.GetIncantationTimeLimit())
+	{
+		m_changeSummonTimer = 0.0f;
+		return true;
+	}
+	else
+	{
+		m_changeSummonTimer += g_gameTime->GetFrameDeltaTime();
+	}
+
+	return false;
+}
+
 void WaveManager::ManageWaveProgression()
 {
 	switch (m_currentWaveManageState)
@@ -297,9 +315,6 @@ void WaveManager::ProcessShortBreakTimeStateTransition()
 
 void WaveManager::ProcessSettingCreatePosStateTransition()
 {
-	//todo 数秒待ってから召喚に映る
-
-
 	//座標設定
 	SetSummonRandomPosition(
 		m_waveStatus.GetCreateRadius(), 
@@ -313,10 +328,14 @@ void WaveManager::ProcessSettingCreatePosStateTransition()
 
 void WaveManager::ProcessSummonMobEnemysStateTransition()
 {
+	//召喚するじかんになるまで処理をしない
+	if (!IsChangeSummonState())
+	{
+		return;
+	}
+
 	//モブエネミーを召喚
 	SummonMobEnemys();
-
-	
 
 	//タイマーをウェーブ進行中のリミットに変更
 	m_currentTimeLimit = m_waveStatus.GetCurrentWaveTimeLimit();
