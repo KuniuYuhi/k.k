@@ -88,6 +88,9 @@
     <Filter Include="Weapon\WeaponBase">
       <UniqueIdentifier>{bd9c5de3-fb41-4a03-b376-54de26c6235f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Status\Weapon\UniqueStatus">
+      <UniqueIdentifier>{107f3da8-a96b-4ef0-8c78-79f3157f0374}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -137,9 +140,6 @@
     </ClCompile>
     <ClCompile Include="ICharacter.cpp">
       <Filter>Characters\CharacterBase</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerController.cpp">
-      <Filter>Characters\Player</Filter>
     </ClCompile>
     <ClCompile Include="GameScene_AppearanceBoss.cpp">
       <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
@@ -274,7 +274,22 @@
     <ClCompile Include="SwordShield.cpp">
       <Filter>Weapon</Filter>
     </ClCompile>
-    <ClCompile Include="KnockBackStatus.cpp" />
+    <ClCompile Include="PlayerController.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="KnockBackStatus.cpp">
+      <Filter>Status\KnockBack</Filter>
+    </ClCompile>
+    <ClCompile Include="BowArrowStatus.cpp">
+      <Filter>Status\Weapon\UniqueStatus</Filter>
+    </ClCompile>
+    <ClCompile Include="GreateSwordStatus.cpp">
+      <Filter>Status\Weapon\UniqueStatus</Filter>
+    </ClCompile>
+    <ClCompile Include="SwordShieldStatus.cpp">
+      <Filter>Status\Weapon\UniqueStatus</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -331,9 +346,6 @@
     </ClInclude>
     <ClInclude Include="ICharacter.h">
       <Filter>Characters\CharacterBase</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerController.h">
-      <Filter>Characters\Player</Filter>
     </ClInclude>
     <ClInclude Include="GameScene_AppearanceBoss.h">
       <Filter>Manager\GameManager\SceneManager\SceneState</Filter>
@@ -483,9 +495,24 @@
     <ClInclude Include="SwordShield.h">
       <Filter>Weapon</Filter>
     </ClInclude>
-    <ClInclude Include="KnockBackStatus.h" />
     <ClInclude Include="KnockBackInfo.h">
       <Filter>Status\KnockBack</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerController.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="KnockBackStatus.h">
+      <Filter>Status\KnockBack</Filter>
+    </ClInclude>
+    <ClInclude Include="BowArrowStatus.h">
+      <Filter>Status\Weapon\UniqueStatus</Filter>
+    </ClInclude>
+    <ClInclude Include="SwordShieldStatus.h">
+      <Filter>Status\Weapon\UniqueStatus</Filter>
+    </ClInclude>
+    <ClInclude Include="GreateSwordStatus.h">
+      <Filter>Status\Weapon\UniqueStatus</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyManager.h" />
   </ItemGroup>
 </Project>
