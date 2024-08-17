@@ -7,6 +7,10 @@
 
 #include "EnemyObjectPool.h"
 
+#include "EnemyManager.h"
+
+
+
 Slime::~Slime()
 {
 }
@@ -48,6 +52,8 @@ bool Slime::Start()
 	}
 
 
+	EnemyManager::GetInstance()->AddMobEnemyToList(this);
+
 	m_player = FindGO<Brave>("Brave");
 
 
@@ -58,6 +64,8 @@ void Slime::ReleaseThis()
 {
 	//todo キャラコンの位置の変更、非アクティブ化時の処理
 
+	//
+	EnemyManager::GetInstance()->RemoveMobEnemyToList(this);
 
 	m_charaCon.reset();
 	
@@ -78,8 +86,8 @@ void Slime::Update()
 {
 	if (g_pad[0]->IsTrigger(enButtonB))
 	{
-		ReleaseThis();
-		return;
+		//ReleaseThis();
+		//return;
 	}
 
 
