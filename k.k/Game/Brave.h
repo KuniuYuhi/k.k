@@ -63,6 +63,12 @@ public:
 	void SetCurrentAnimationStartIndexNoForMainWeaponType();
 
 	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="moveSpeed"></param>
+	void CharaConExecute(Vector3 moveSpeed);
+
+	/// <summary>
 	/// アクション中にする
 	/// </summary>
 	void ActionActive()
@@ -94,6 +100,23 @@ public:
 		return m_armedWeapon;
 	}
 
+	/// <summary>
+	/// プレイヤーコントローラーを取得
+	/// </summary>
+	/// <returns></returns>
+	PlayerController* GetPlayerController()
+	{
+		return m_playerContoller;
+	}
+	/// <summary>
+	/// プレイヤームーブメントを取得
+	/// </summary>
+	/// <returns></returns>
+	PlayerMovement* GetPlayerMovement()
+	{
+		return m_playerMovement;
+	}
+
 
 
 	bool IsButtonAction();
@@ -112,6 +135,12 @@ public:
 	/// 攻撃アクションを抜け出す
 	/// </summary>
 	void ExitAttackAction();
+
+	/// <summary>
+	/// ステートを切り替える
+	/// </summary>
+	/// <param name="nextState">次のステート</param>
+	void ChangeBraveState(BraveState::EnBraveState nextState);
 
 private:
 

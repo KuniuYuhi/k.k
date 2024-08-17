@@ -126,6 +126,13 @@ void Brave::SetCurrentAnimationStartIndexNoForMainWeaponType()
 	);
 }
 
+void Brave::CharaConExecute(Vector3 moveSpeed)
+{
+	//キャラコンを使って座標を移動
+	m_position = m_charaCon.get()->Execute(moveSpeed, g_gameTime->GetFrameDeltaTime());
+
+}
+
 bool Brave::IsButtonAction()
 {
 	////アクション中は他の処理をしない
@@ -181,11 +188,11 @@ void Brave::Movement()
 
 	//移動量を取得
 	m_moveSpeed = m_playerMovement->CalcSimpleMovementVerocity(
-		m_status, m_moveSpeed, m_playerContoller->GetLStickInput()
+		m_status.GetDefaultSpeed(), m_moveSpeed, m_playerContoller->GetLStickInput()
 	);
 
 	//仮のジャンプ処理
-	if (m_playerContoller->IsButtonTrigger(enButtonB) && m_charaCon.get()->IsOnGround())
+	if (m_playerContoller->IsButtonTrigger(enButtonX) && m_charaCon.get()->IsOnGround())
 	{
 		m_moveSpeed.y = 400.0f;
 	}
@@ -200,6 +207,7 @@ void Brave::Movement()
 		//地面についた。
 		m_moveSpeed.y = 0.0f;
 	}
+	
 
 	//回転用ベクトルに移動量を保存
 	m_rotateDirection = m_moveSpeed;
@@ -255,6 +263,14 @@ void Brave::AttackAction()
 		NormalAttackProcess();
 		//アクション中にする
 		ActionActive();
+		return;
+	}
+	//スキル攻撃ボタンを押したなら
+	if (m_playerContoller->IsTriggerSkillAttackButton())
+	{
+		m_braveStateCotext.get()->ChangeBraveState(enBraveState_SkillStart);
+		//アクション中にする
+		ActionActive();
 	}
 
 
@@ -296,6 +312,11 @@ void Brave::ExitAttackAction()
 	ActionDeactive();
 	//硬直タイマーをリセット
 	m_starkTimer = 0.0f;
+}
+
+void Brave::ChangeBraveState(BraveState::EnBraveState nextState)
+{
+	m_braveStateCotext.get()->ChangeBraveState(nextState);
 }
 
 void Brave::ChangeWeaponAction()
@@ -379,6 +400,29 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 
 		//切り替え武器タイプをメイン武器タイプに切り替える
 		//WeaponManager::GetInstance()->ChangeChangeWeaponTypeToMainWeaponType();
+	}
+
+
+	//前進する始まり
+	if (wcscmp(eventName, L"MoveForwardStart") == 0)
+	{
+		m_armedWeapon->SetAttackActionMove(true);
+	}
+	//前進する終わり
+	if (wcscmp(eventName, L"MoveForwardEnd") == 0)
+	{
+		m_armedWeapon->SetAttackActionMove(false);
+	}
+
+	//回避時の移動の始まり
+	if (wcscmp(eventName, L"AvoidMoveStart") == 0)
+	{
+		
+	}
+	//回避時の移動の終わり
+	if (wcscmp(eventName, L"AvoidMoveEnd") == 0)
+	{
+		
 	}
 
 }
