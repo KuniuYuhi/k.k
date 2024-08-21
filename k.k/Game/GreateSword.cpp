@@ -8,6 +8,8 @@ namespace {
 
 
 	const Vector3 SWORD_COLLISION_SIZE = { 100.0f,30.0f,10.0f };
+
+	const float SKILL_ATTACK_RADIUS = 100.0f;		//スキル攻撃用コリジョンの半径
 	
 }
 
@@ -34,6 +36,11 @@ bool GreateSword::Start()
 
 	//初期化処理
 	Init();
+
+	//アニメーションイベント用の関数を設定する。
+	m_brave->GetModelRender().AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+	});
 
 	return true;
 }
@@ -116,6 +123,25 @@ void GreateSword::InitCollision()
 
 }
 
+void GreateSword::CreateSkillAttackCollision()
+{
+	//スキル攻撃用コリジョン作成
+	
+	Vector3 hitPosition = g_vec3Zero;
+
+	m_swordCenterMatrix.Apply(hitPosition);
+	hitPosition.y = 0.0f;
+
+	//スキル攻撃時の当たり判定の生成
+	//自動で消える
+	auto skillCollision = NewGO<CollisionObject>(0, g_collisionObjectManager->m_attackCollisionName);
+	skillCollision->CreateSphere(
+		hitPosition,
+		g_quatIdentity,
+		SKILL_ATTACK_RADIUS
+	);
+}
+
 void GreateSword::AttackAction()
 {
 }
@@ -154,21 +180,53 @@ bool GreateSword::IsEndDefensiveAction()
 void GreateSword::EntryDefensiveActionProcess()
 {
 	//回避時に移動する方向を決める
-	m_defensiveActionDirection = 
-		m_playerMovement->CalcForwardDirection(
-			m_brave->GetForward(),
-			m_brave->GetMoveSpeed()
-		);
+	m_defensiveActionDirection = m_playerMovement->CalcMoveDirection(
+		m_brave->GetForward(),
+		m_playerController->GetLStickInput(),
+		m_brave->GetMoveSpeed()
+	);
 
-	//
+	//プレイヤーの回転方向に移動方向を設定する
+	m_brave->SetRotateDirection(m_defensiveActionDirection);
+	m_brave->SetForward(m_defensiveActionDirection);
+
+	//回避速度をかける
 	m_defensiveActionDirection.x *= m_uniqueStatus.GetDefenciveMoveSpeed();
 	m_defensiveActionDirection.z *= m_uniqueStatus.GetDefenciveMoveSpeed();
 }
 
 void GreateSword::UpdateDefensiveActionProcess()
 {
-	
-	m_brave->CharaConExecute(m_defensiveActionDirection);
+	//回避中の移動可能フラグが立っていたら
+	if (IsDefensiveActionMove())
+	{
+		//回避中の移動処理
+		m_brave->CharaConExecute(m_defensiveActionDirection);
+	}
+}
+
+bool GreateSword::CanDefensiveAction()
+{
+	//回避に必要なスタミナを消費できるなら
+	if (m_brave->GetStatus().TryConsumeStamina(m_status.GetDefensiveStaminaCost()))
+	{
+		//回避可能
+		return true;
+	}
+	//不可能
+	return false;
+}
+
+bool GreateSword::CanSkillAttack()
+{
+	//スキルに必要なスタミナを消費できるなら
+	if (m_brave->GetStatus().TryConsumeStamina(m_status.GetSkillStaminaCost()))
+	{
+		//スキル攻撃可能
+		return true;
+	}
+	//不可能
+	return false;
 }
 
 void GreateSword::EntryNormalAttackProcess(EnComboState comboState)
@@ -191,6 +249,7 @@ void GreateSword::EntryNormalAttackProcess(EnComboState comboState)
 
 	//プレイヤーの回転方向に移動方向を設定する
 	m_brave->SetRotateDirection(m_normalAttackMoveDirection);
+	m_brave->SetForward(m_normalAttackMoveDirection);
 
 	int comboNum = 0;
 	switch (comboState)
@@ -211,10 +270,28 @@ void GreateSword::EntryNormalAttackProcess(EnComboState comboState)
 
 	//武器ステータスから攻撃スピードを取得して方向にかける
 	m_normalAttackMoveDirection *= m_uniqueStatus.GetNormalAttackSpeed(comboNum);
+
+	//通常攻撃待機区間フラグをリセット
+	SetStandbyPeriodFlag(false);
+	//キャンセルアクションフラグを立てる。(キャンセルアクションできる)
+	m_isPossibleCancelAction = true;
+
 }
 
 void GreateSword::UpdateNormalAttackProcess(EnComboState comboState)
 {
+	//キャンセルアクションできる状態なら回避も可能
+	//三コンボ目は回避不可能
+	if (m_isPossibleCancelAction && 
+		IsStandbyPeriod() &&
+		m_playerController->IsPressDefensiveActionButton()&&
+		comboState!=enCombo_Third)
+	{
+		//防御ステートに切り替える
+		m_brave->ChangeBraveState(enBraveState_DefensiveActions);
+		return;
+	}
+
 	//移動フラグが立っている間は移動
 	if (IsAttackActionMove())
 	{
@@ -224,8 +301,10 @@ void GreateSword::UpdateNormalAttackProcess(EnComboState comboState)
 
 void GreateSword::ExitNormalAttackProcess(EnComboState comboState)
 {
-	//
+	//攻撃中の移動フラグをリセット
 	SetAttackActionMove(false);
+	//通常攻撃待機区間フラグをリセット
+	SetStandbyPeriodFlag(false);
 }
 
 void GreateSword::EntrySkillAttackProcess(EnSkillProcessState skillProcessState)
@@ -277,6 +356,8 @@ void GreateSword::EntrySkillStartProcess()
 {
 	//滞空時間タイマーをリセット
 	m_skillFlightTimer = 0.0f;
+	//スキル中移動できるかフラグをリセット
+	isMoveSkillAttack = false;
 }
 
 void GreateSword::UpdateSkillStartProcess()
@@ -293,6 +374,9 @@ void GreateSword::UpdateSkillStartProcess()
 	}
 	else
 	{
+		//移動できるタイミングでないなら処理しない
+		if (!isMoveSkillAttack) return;
+
 		//移動できる
 		Vector3 moveSpeed = m_playerMovement->CalcSimpleMovementVerocity(
 			100.0f,
@@ -308,6 +392,8 @@ void GreateSword::UpdateSkillStartProcess()
 
 void GreateSword::ExitSkillStartProcess()
 {
+	//スキル中移動できるかフラグをリセット
+	isMoveSkillAttack = false;
 }
 
 void GreateSword::EntrySkillMainProcess()
@@ -345,13 +431,34 @@ void GreateSword::MoveArmed()
 
 	//コリジョンのワールド座標を設定
 	//剣の中心のボーンからワールド座標を取得してコリジョンのワールド座標に設定
-	Matrix matrix;
-	matrix = m_swordModelRender.GetBone(m_swordCenterBoonId)->GetWorldMatrix();
-	m_swordCollision->SetWorldMatrix(matrix);
+	m_swordCenterMatrix = m_swordModelRender.GetBone(m_swordCenterBoonId)->GetWorldMatrix();
+	m_swordCollision->SetWorldMatrix(m_swordCenterMatrix);
 
 }
 
 void GreateSword::Render(RenderContext& rc)
 {
 	m_swordModelRender.Draw(rc);
+}
+
+void GreateSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+	//スキル攻撃のキャラクター上昇アニメーションキーフレーム
+	if (wcscmp(eventName, L"GreatSwordSkillRising") == 0)
+	{
+		//ここから先移動できる
+		isMoveSkillAttack = true;
+
+		//エフェクトや音の再生
+
+	}
+
+	//スキル攻撃のダメージ判定出現アニメーションキーフレーム
+	if (wcscmp(eventName, L"GreatSwordSkillAttack") == 0)
+	{
+		//当たり判定作成
+		CreateSkillAttackCollision();
+
+	}
+
 }
