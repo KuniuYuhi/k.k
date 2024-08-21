@@ -26,14 +26,15 @@ void BraveState_FirstAttack::Entry()
 	m_brave->ActionActive();
 	//トリガーチェックフラグをリセット
 	m_isTrigger = false;
-	//遅延フラグリセット
-	m_isDelay = false;
+	//
+	m_isNextNormalAttackProgress = false;
 }
 
 void BraveState_FirstAttack::Ubdate()
 {
-	//攻撃中に通常攻撃ボタンを押したなら
-	if (m_playerController->IsTriggerNromalAttackButton()&& !m_isTrigger&& m_isDelay)
+	//次の通常攻撃待機区間内で通常攻撃ボタンを押したなら
+	if (m_playerController->IsTriggerNromalAttackButton()&& !m_isTrigger&&
+		m_brave->GetArmedWeapon()->IsStandbyPeriod())
 	{
 		m_isTrigger = true;
 	}
@@ -44,11 +45,14 @@ void BraveState_FirstAttack::Ubdate()
 	//アニメーションが終わったら
 	if (m_brave->GetModelRender().IsPlayingAnimation() == false)
 	{
+		
 		//ボタンを押していたら
 		if (m_isTrigger)
 		{
+			m_isNextNormalAttackProgress = true;
 			//次のコンボ処理をする
 			m_brave->NormalAttackProcess();
+			
 		}
 		else
 		{
@@ -58,15 +62,13 @@ void BraveState_FirstAttack::Ubdate()
 		
 	}
 
-	//遅延フラグを立てる
-	m_isDelay = true;
 }
 
 void BraveState_FirstAttack::Exit()
 {
-	//ボタンを押していなかったら
+	//次の攻撃に移らないなら
 	//todo 被ダメージを受けていてもやる
-	if (!m_isTrigger)
+	if (!m_isNextNormalAttackProgress)
 	{
 		//アクションを終わる
 		m_brave->ExitAttackAction();
@@ -77,6 +79,5 @@ void BraveState_FirstAttack::Exit()
 
 	//トリガーチェックフラグをリセット
 	m_isTrigger = false;
-	//遅延フラグリセット
-	m_isDelay = false;
+	
 }

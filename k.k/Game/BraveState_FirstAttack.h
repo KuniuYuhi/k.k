@@ -36,7 +36,7 @@ private:
 
 	bool m_isTrigger = false;
 
-	bool m_isDelay = false;
+	bool m_isNextNormalAttackProgress = false;	//Ÿ‚ÌUŒ‚‚Éi‚Ş‚Ì‚©
 
 };
 
