@@ -30,5 +30,7 @@ void BraveState_SkillStart::Exit()
 	//被ダメージなどで終わったら
 
 
+	//武器側で処理
+	//スキル攻撃失敗したときはここでアクションを終わる
 	m_brave->GetArmedWeapon()->ExitSkillAttackProcess(WeaponBase::enStart);
 }
