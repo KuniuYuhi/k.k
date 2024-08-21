@@ -137,6 +137,37 @@ public:
 	}
 
 
+	///////////////////////////////////////////////////////////
+	///
+	///////////////////////////////////////////////////////////
+
+	/// <summary>
+	/// スタミナを消費できるか。できるときは消費する。できないときは消費しない
+	/// </summary>
+	/// <param name="consumeValue">消費する量</param>
+	/// <returns>消費できたらtrue、消費できなかったらfalse</returns>
+	bool TryConsumeStamina(float consumeValue);
+
+	/// <summary>
+	/// スタミナを消費できるかチェックする。スタミナは消費しない
+	/// </summary>
+	/// <param name="checkValue">調べたい値</param>
+	/// <returns>消費できるならtrue</returns>
+	bool CheckConsumeStamina(float checkValue);
+
+	/// <summary>
+	/// スタミナを回復する
+	/// </summary>
+	/// <param name="recoveryValue">回復する量</param>
+	void RecoveryStamina(float recoveryValue);
+
+
+
+
+
+
+	///////////////////////////////////////////////////////////
+
 		//csvは使わない
 	std::string name;          //名前
 

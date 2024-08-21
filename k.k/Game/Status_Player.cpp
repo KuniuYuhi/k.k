@@ -96,3 +96,61 @@ void Status_Player::LoadPlayerStatusCSV(const std::string& name)
 	IsLoadedPlayerStatusCSVFile = true;
 	return;
 }
+
+
+bool Status_Player::TryConsumeStamina(float consumeValue)
+{
+	//仮のスタミナを定義
+	float tempStamina = m_playerStatus.currentStamina;
+
+	//スタミナを消費する
+	tempStamina -= consumeValue;
+
+	//スタミナが0以下になったら
+	if (tempStamina < 0)
+	{
+		//スタミナを消費できない。行動できない
+		return false;
+	}
+
+	//消費された後のスタミナをステータスのスタミナに代入
+	m_playerStatus.currentStamina = tempStamina;
+
+	return true;
+}
+
+
+bool Status_Player::CheckConsumeStamina(float checkValue)
+{
+	//仮のスタミナを定義
+	float tempStamina = m_playerStatus.currentStamina;
+
+	//スタミナを消費する
+	tempStamina -= checkValue;
+
+	//スタミナが0以下になったら
+	if (tempStamina < 0)
+	{
+		//スタミナを消費できない。行動できない
+		return false;
+	}
+	//消費できる状態にある
+	return true;
+}
+
+void Status_Player::RecoveryStamina(float recoveryValue)
+{
+	//既に最大値まで回復しているなら処理しない
+	if (m_playerStatus.currentStamina == m_playerStatus.maxStamina)
+	{
+		return;
+	}
+
+	m_playerStatus.currentStamina += recoveryValue;
+	//スタミナが最大値を超えないようにする
+	if (m_playerStatus.currentStamina >= m_playerStatus.maxStamina)
+	{
+		m_playerStatus.currentStamina = m_playerStatus.maxStamina;
+	}
+
+}
