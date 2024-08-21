@@ -23,7 +23,8 @@ private:
 
 		float normalAttackComparisonDot = 0.0f;	//通常攻撃で計算するベクトル同士の内積の比較対象の内積
 
-		int shieldEnduranceValue = 0;			//シールドの耐久値
+		int maxShieldEnduranceValue = 0;			//シールドの最大耐久値
+		int currentShieldEnduranceValue = 0;		//現在のシールドの耐久値
 	};
 
 	UniqueStatus m_uniqueStatus;
@@ -88,8 +89,21 @@ public:
 
 	const int& GetShieldEnduranceValue()
 	{
-		return m_uniqueStatus.shieldEnduranceValue;
+		return m_uniqueStatus.maxShieldEnduranceValue;
 	}
+
+	const int& GetCurrentShieldEnduranceValue()
+	{
+		return m_uniqueStatus.currentShieldEnduranceValue;
+	}
+
+	void SetCurrentShieldEnduranceValue(int value)
+	{
+		m_uniqueStatus.currentShieldEnduranceValue = value;
+	}
+
+
+
 
 	//CSVの情報を保存したマップ
 	static SwordShieldStatus StatusDataMAP;

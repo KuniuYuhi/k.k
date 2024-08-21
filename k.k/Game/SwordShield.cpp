@@ -9,6 +9,8 @@ namespace {
 
 	const Vector3 SWORD_COLLISION_SIZE = { 90.0f,20.0f,10.0f };
 	const Vector3 SHIELD_COLLISION_SIZE = { 28.0f,50.0f,16.0f };
+
+	const float SKILL_ATTACK_RADIUS = 100.0f;		//スキル攻撃用コリジョンの半径
 }
 
 SwordShield::SwordShield()
@@ -36,6 +38,11 @@ bool SwordShield::Start()
 	
 	//初期化処理
 	Init();
+
+	//アニメーションイベント用の関数を設定する。
+	m_brave->GetModelRender().AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+	});
 
 	return true;
 }
@@ -147,6 +154,22 @@ void SwordShield::InitCollision()
 	m_shieldCollision->SetIsEnable(false);
 }
 
+void SwordShield::CreateSkillAttackCollision()
+{
+	Vector3 hitPosition = g_vec3Zero;
+	//剣のワールド座標をベクトルに乗算
+	m_swordCenterMatrix.Apply(hitPosition);
+	hitPosition.y = 0.0f;
+
+	//スキル攻撃時の当たり判定の生成
+	auto skillCollision = NewGO<CollisionObject>(0, g_collisionObjectManager->m_attackCollisionName);
+	skillCollision->CreateSphere(
+		hitPosition,
+		g_quatIdentity,
+		SKILL_ATTACK_RADIUS
+	);
+}
+
 void SwordShield::AttackAction()
 {
 
@@ -177,14 +200,12 @@ void SwordShield::ResetComboAttack()
 
 bool SwordShield::IsEndDefensiveAction()
 {
-	//防御ボタンを話したら
+	//防御ボタンを離したら
 	if (!m_playerController->IsPressDefensiveActionButton())
 	{
 		//防御アクションを終わる
 		return true;
 	}
-
-
 
 	return false;
 }
@@ -201,6 +222,35 @@ void SwordShield::UpdateDefensiveActionProcess()
 void SwordShield::ExitDefensiveActionProcess()
 {
 	//エフェクト削除
+
+	//まだ防御ボタンを押していたら防御ステートに切り替える
+
+	//それ以外は共通ステートに遷移
+
+}
+
+bool SwordShield::CanDefensiveAction()
+{
+	//現在のシールドの耐久値が0より大きければ
+	if (m_uniqueStatus.GetCurrentShieldEnduranceValue() > 0)
+	{
+		//防御可能
+		return true;
+	}
+	//不可能
+	return false;
+}
+
+bool SwordShield::CanSkillAttack()
+{
+	//スキルに必要なスタミナを消費できるなら
+	if (m_brave->GetStatus().TryConsumeStamina(m_status.GetSkillStaminaCost()))
+	{
+		//スキル攻撃可能
+		return true;
+	}
+	//不可能
+	return false;
 }
 
 void SwordShield::EntryNormalAttackProcess(EnComboState comboState)
@@ -223,6 +273,7 @@ void SwordShield::EntryNormalAttackProcess(EnComboState comboState)
 
 	//プレイヤーの回転方向に移動方向を設定する
 	m_brave->SetRotateDirection(m_normalAttackMoveDirection);
+	m_brave->SetForward(m_normalAttackMoveDirection);
 
 	int comboNum = 0;
 	switch (comboState)
@@ -243,10 +294,26 @@ void SwordShield::EntryNormalAttackProcess(EnComboState comboState)
 
 	//武器ステータスから攻撃スピードを取得して方向にかける
 	m_normalAttackMoveDirection *= m_uniqueStatus.GetNormalAttackSpeed(comboNum);
+
+	//通常攻撃待機区間フラグをリセット
+	SetStandbyPeriodFlag(false);
+	//キャンセルアクションフラグを立てる。(キャンセルアクションできる)
+	m_isPossibleCancelAction = true;
+	
 }
 
 void SwordShield::UpdateNormalAttackProcess(EnComboState comboState)
 {
+	//キャンセルアクションできる状態なら防御も可能
+	if (m_isPossibleCancelAction && 
+		IsStandbyPeriod() && 
+		m_playerController->IsPressDefensiveActionButton())
+	{
+		//防御ステートに切り替える
+		m_brave->ChangeBraveState(enBraveState_DefensiveActions);
+		return;
+	}
+
 	//移動フラグが立っている間は移動
 	if (IsAttackActionMove())
 	{
@@ -257,8 +324,11 @@ void SwordShield::UpdateNormalAttackProcess(EnComboState comboState)
 
 void SwordShield::ExitNormalAttackProcess(EnComboState comboState)
 {
-	//
+	//攻撃中の移動フラグをリセット
 	SetAttackActionMove(false);
+	//通常攻撃待機区間フラグをリセット
+	SetStandbyPeriodFlag(false);
+
 }
 
 void SwordShield::EntrySkillAttackProcess(EnSkillProcessState skillProcessState)
@@ -351,9 +421,8 @@ void SwordShield::MoveArmed()
 
 	//コリジョンのワールド座標を設定
 	//剣の中心のボーンからワールド座標を取得してコリジョンのワールド座標に設定
-	Matrix matrix;
-	matrix = m_swordModelRender.GetBone(m_swordCenterBoonId)->GetWorldMatrix();
-	m_swordCollision->SetWorldMatrix(matrix);
+	m_swordCenterMatrix = m_swordModelRender.GetBone(m_swordCenterBoonId)->GetWorldMatrix();
+	m_swordCollision->SetWorldMatrix(m_swordCenterMatrix);
 	//盾のワールド座標を設定
 	m_shieldCollision->SetWorldMatrix(m_shieldMatrix);
 }
@@ -363,5 +432,17 @@ void SwordShield::Render(RenderContext& rc)
 {
 	m_swordModelRender.Draw(rc);
 	m_shieldModelRender.Draw(rc);
+
+}
+
+void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+
+	//スキル攻撃のダメージ判定出現アニメーションキーフレーム
+	if (wcscmp(eventName, L"SwordShieldSkillAttack") == 0)
+	{
+		//スキル攻撃用コリジョン生成
+		CreateSkillAttackCollision();
+	}
 
 }

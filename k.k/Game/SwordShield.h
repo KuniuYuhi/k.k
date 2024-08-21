@@ -22,6 +22,8 @@ public:
 
     void Render(RenderContext& rc) override;
 
+    void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
+
 
     void Init() override;
 
@@ -67,6 +69,17 @@ public:
     void ExitDefensiveActionProcess() override;
 
     /// <summary>
+    /// 回避、防御アクションが行えるか
+    /// </summary>
+    /// <returns>行えるならtrue</returns>
+    bool CanDefensiveAction() override;
+    /// <summary>
+    /// スキル攻撃が行えるか
+    /// </summary>
+    /// <returns>行えるならtrue</returns>
+    bool CanSkillAttack() override;
+
+    /// <summary>
     /// 通常攻撃ステートに入った時の処理
     /// </summary>
     void EntryNormalAttackProcess(EnComboState comboState) override;
@@ -93,18 +106,21 @@ public:
     void ExitSkillAttackProcess(EnSkillProcessState skillProcessState) override;
 
 
-
 private:
 
     /// <summary>
     /// 装備状態での移動処理
     /// </summary>
     void MoveArmed();
-
     /// <summary>
     /// 当たり判定初期化
     /// </summary>
     void InitCollision();
+    /// <summary>
+    /// スキル攻撃用コリジョンの作成
+    /// </summary>
+    void CreateSkillAttackCollision();
+
 
     /// <summary>
     /// スキルスタートステートでのエントリー処理
@@ -148,6 +164,8 @@ private:
     CollisionObject* m_shieldCollision = nullptr;	//盾の当たり判定
 
     Matrix m_swordMatrix;
+    Matrix m_swordCenterMatrix;
+
     Matrix m_shieldMatrix;
 
     Vector3 m_normalAttackMoveDirection = g_vec3Zero;
@@ -158,6 +176,9 @@ private:
     int m_armedShieldBoonId = -1;
 
     int m_swordCenterBoonId = -1;           //剣の中心のボーンID
+
+
+   
 
 };
 
