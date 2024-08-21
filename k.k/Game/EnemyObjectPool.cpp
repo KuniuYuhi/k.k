@@ -8,6 +8,8 @@
 //////////////////////////////////////////////
 #include "Slime.h"
 #include "Cactus.h"
+#include "BeholderEye.h"
+#include "Mimic.h"
 //////////////////////////////////////////////
 
 EnemyObjectPool* EnemyObjectPool::m_instance = nullptr;
@@ -62,6 +64,35 @@ void EnemyObjectPool::Init()
 	for (int i = 0; i < 10; i++)
 	{
 		OnCreateEnemy<Cactus>("Cactus");
+	}
+
+	//目玉のキューを挿入
+	std::queue<EnemyBase*> beholderEyeQueue;
+	EnemyBase* beholderEye = NewGO<BeholderEye>(0, "BeholderEye");
+	//非アクティブ化
+	beholderEye->Deactivate();
+	beholderEyeQueue.push(beholderEye);
+	//インサート
+	m_objectPoolQueue.insert(std::make_pair("BeholderEye", beholderEyeQueue));
+	//五個目玉をキューに追加
+	for (int i = 0; i < 10; i++)
+	{
+		OnCreateEnemy<BeholderEye>("BeholderEye");
+	}
+
+
+	//目玉のキューを挿入
+	std::queue<EnemyBase*> mimicEyeQueue;
+	EnemyBase* mimicEye = NewGO<Mimic>(0, "Mimic");
+	//非アクティブ化
+	mimicEye->Deactivate();
+	mimicEyeQueue.push(mimicEye);
+	//インサート
+	m_objectPoolQueue.insert(std::make_pair("Mimic", mimicEyeQueue));
+	//五個目玉をキューに追加
+	for (int i = 0; i < 10; i++)
+	{
+		OnCreateEnemy<Mimic>("Mimic");
 	}
 
 }
