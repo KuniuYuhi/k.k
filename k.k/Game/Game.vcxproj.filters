@@ -91,6 +91,18 @@
     <Filter Include="Status\Weapon\UniqueStatus">
       <UniqueIdentifier>{107f3da8-a96b-4ef0-8c78-79f3157f0374}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Characters\Ememy\Mob\Mimic">
+      <UniqueIdentifier>{3ee7f433-c5fe-4a27-bb4f-839b0987ccc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Mob\BeholderEye">
+      <UniqueIdentifier>{7737dbb3-0bdf-4c95-bc7e-b9b045de6f58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Mob\Slime\States">
+      <UniqueIdentifier>{c26e075c-759d-4ff3-94e1-90c5da07a429}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Mob\BaseState">
+      <UniqueIdentifier>{9cf34992-1a78-4b68-942a-c66477e6a106}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -198,7 +210,6 @@
     <ClCompile Include="Cactus.cpp">
       <Filter>Characters\Ememy\Mob\Cactus</Filter>
     </ClCompile>
-    <ClCompile Include="MobEnemyMovement.cpp" />
     <ClCompile Include="WaveManager.cpp">
       <Filter>Wave</Filter>
     </ClCompile>
@@ -290,6 +301,31 @@
       <Filter>Status\Weapon\UniqueStatus</Filter>
     </ClCompile>
     <ClCompile Include="EnemyManager.cpp" />
+    <ClCompile Include="BeholderEye.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye</Filter>
+    </ClCompile>
+    <ClCompile Include="Arrow.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrowStatus.cpp">
+      <Filter>Status\Weapon\UniqueStatus</Filter>
+    </ClCompile>
+    <ClCompile Include="MobEnemyMovement.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Mimic.cpp">
+      <Filter>Characters\Ememy\Mob\Mimic</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStateContext.cpp">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeState_Idle.cpp" />
+    <ClCompile Include="SlimeState_Run.cpp" />
+    <ClCompile Include="SlimeState_Attack.cpp" />
+    <ClCompile Include="SlimeState_Hit.cpp" />
+    <ClCompile Include="SlimeState_Die.cpp" />
+    <ClCompile Include="SlimeState_Victory.cpp" />
+    <ClCompile Include="SlimeState_Appear.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -404,7 +440,6 @@
     <ClInclude Include="Cactus.h">
       <Filter>Characters\Ememy\Mob\Cactus</Filter>
     </ClInclude>
-    <ClInclude Include="MobEnemyMovement.h" />
     <ClInclude Include="WaveManager.h">
       <Filter>Wave</Filter>
     </ClInclude>
@@ -514,5 +549,36 @@
       <Filter>Status\Weapon\UniqueStatus</Filter>
     </ClInclude>
     <ClInclude Include="EnemyManager.h" />
+    <ClInclude Include="BeholderEye.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye</Filter>
+    </ClInclude>
+    <ClInclude Include="Arrow.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrowStatus.h">
+      <Filter>Status\Weapon\UniqueStatus</Filter>
+    </ClInclude>
+    <ClInclude Include="MobEnemyMovement.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Mimic.h">
+      <Filter>Characters\Ememy\Mob\Mimic</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeInfo.h">
+      <Filter>Characters\Ememy\Mob\Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStateContext.h">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClInclude>
+    <ClInclude Include="IMobEnemyState.h">
+      <Filter>Characters\Ememy\Mob\BaseState</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeState_Idle.h" />
+    <ClInclude Include="SlimeState_Run.h" />
+    <ClInclude Include="SlimeState_Attack.h" />
+    <ClInclude Include="SlimeState_Hit.h" />
+    <ClInclude Include="SlimeState_Die.h" />
+    <ClInclude Include="SlimeState_Victory.h" />
+    <ClInclude Include="SlimeState_Appear.h" />
   </ItemGroup>
 </Project>

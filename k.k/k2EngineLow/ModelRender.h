@@ -124,7 +124,6 @@ namespace nsK2EngineLow {
 		{
 			m_position = position;
 		}
-
 		/// <summary>
 		/// À•W‚Ìİ’è
 		/// </summary>
@@ -135,6 +134,15 @@ namespace nsK2EngineLow {
 		{
 			SetPosition({ x,y,z });
 		}
+		/// <summary>
+		/// À•W‚ğ‰ÁZ
+		/// </summary>
+		/// <param name="addPosition"></param>
+		void AddPosition(Vector3 addPosition)
+		{
+			m_position += addPosition;
+		}
+
 
 		/// <summary>
 		/// ‰ñ“]‚Ìİ’è
@@ -207,6 +215,11 @@ namespace nsK2EngineLow {
 		const Vector3 GetPosition() const
 		{
 			return m_position;
+		}
+
+		const Quaternion GetRotation() const
+		{
+			return m_rotation;
 		}
 
 		/// <summary>

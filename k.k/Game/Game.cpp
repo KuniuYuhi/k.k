@@ -32,6 +32,7 @@
 //////////////////////////////
 #include "Slime.h"
 #include "Cactus.h"
+#include "BeholderEye.h"
 //////////////////////////////
 
 #include "EnemyObjectPool.h"
@@ -122,7 +123,7 @@ bool Game::Start()
 
 	
 
-	
+	//BeholderEye* b = NewGO<BeholderEye>(0, "BeholderEye");
 
 
 

@@ -223,7 +223,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Arrow.cpp" />
+    <ClCompile Include="ArrowStatus.cpp" />
     <ClCompile Include="BattleStart.cpp" />
+    <ClCompile Include="BeholderEye.cpp" />
     <ClCompile Include="BossStage1.cpp" />
     <ClCompile Include="Bow.cpp" />
     <ClCompile Include="BowArrowStatus.cpp" />
@@ -255,6 +258,15 @@
     <ClCompile Include="GreateSwordStatus.cpp" />
     <ClCompile Include="IObjectPool.cpp" />
     <ClCompile Include="KnockBackStatus.cpp" />
+    <ClCompile Include="Mimic.cpp" />
+    <ClCompile Include="SlimeStateContext.cpp" />
+    <ClCompile Include="SlimeState_Appear.cpp" />
+    <ClCompile Include="SlimeState_Attack.cpp" />
+    <ClCompile Include="SlimeState_Die.cpp" />
+    <ClCompile Include="SlimeState_Hit.cpp" />
+    <ClCompile Include="SlimeState_Idle.cpp" />
+    <ClCompile Include="SlimeState_Run.cpp" />
+    <ClCompile Include="SlimeState_Victory.cpp" />
     <ClCompile Include="SwordShield.cpp" />
     <ClCompile Include="SwordShieldStatus.cpp" />
     <ClCompile Include="WeaponBase.cpp" />
@@ -305,7 +317,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllGameSceneState.h" />
+    <ClInclude Include="Arrow.h" />
+    <ClInclude Include="ArrowStatus.h" />
     <ClInclude Include="BattleStart.h" />
+    <ClInclude Include="BeholderEye.h" />
     <ClInclude Include="BossStage1.h" />
     <ClInclude Include="Bow.h" />
     <ClInclude Include="BowArrowStatus.h" />
@@ -338,9 +353,20 @@
     <ClInclude Include="GreateSword.h" />
     <ClInclude Include="GreateSwordStatus.h" />
     <ClInclude Include="IBraveState.h" />
+    <ClInclude Include="IMobEnemyState.h" />
     <ClInclude Include="IObjectPool.h" />
     <ClInclude Include="KnockBackInfo.h" />
     <ClInclude Include="KnockBackStatus.h" />
+    <ClInclude Include="Mimic.h" />
+    <ClInclude Include="SlimeInfo.h" />
+    <ClInclude Include="SlimeStateContext.h" />
+    <ClInclude Include="SlimeState_Appear.h" />
+    <ClInclude Include="SlimeState_Attack.h" />
+    <ClInclude Include="SlimeState_Die.h" />
+    <ClInclude Include="SlimeState_Hit.h" />
+    <ClInclude Include="SlimeState_Idle.h" />
+    <ClInclude Include="SlimeState_Run.h" />
+    <ClInclude Include="SlimeState_Victory.h" />
     <ClInclude Include="SwordShield.h" />
     <ClInclude Include="SwordShieldStatus.h" />
     <ClInclude Include="WeaponBase.h" />
