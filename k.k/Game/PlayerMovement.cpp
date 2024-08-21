@@ -34,14 +34,8 @@ Vector3 PlayerMovement::CalcSimpleMovementVerocity(
 	currentMoveSpeed.z = 0.0f;
 
 	//カメラの前方向と右方向のベクトルを持ってくる。
-	Vector3 cameraForward = g_camera3D->GetForward();
-	Vector3 cameraRight = g_camera3D->GetRight();
-	//y方向には移動させない。
-	cameraForward.y = 0.0f;
-	cameraRight.y = 0.0f;
-	//正規化
-	cameraForward.Normalize();
-	cameraRight.Normalize();
+	Vector3 cameraForward = GetCameraForward();
+	Vector3 cameraRight = GetCameraRight();
 
 	//カメラの方向とそれぞれの軸の入力量とスピードをかけて移動量を計算
 	cameraRight *= StickInput.x * speed;
@@ -50,13 +44,11 @@ Vector3 PlayerMovement::CalcSimpleMovementVerocity(
 	//前方向と右方向の移動量ベクトルを足す
 	currentMoveSpeed += cameraRight + cameraForward;
 
-
-	//前方向を設定
+	//移動量があれば前方向を設定
 	if (fabsf(currentMoveSpeed.x) >= 0.001f || fabsf(currentMoveSpeed.z) >= 0.001f)
 	{
 		m_brave->SetForward(currentMoveSpeed);
 	}
-
 
 	return currentMoveSpeed;
 }
@@ -70,14 +62,8 @@ Vector3 PlayerMovement::CalcForwardDirection(Vector3 forward, Vector3 moveSpeed)
 	float y = currentMoveSpeed.y;
 
 	//カメラの前方向と右方向のベクトルを持ってくる。
-	Vector3 cameraForward = g_camera3D->GetForward();
-	Vector3 cameraRight = g_camera3D->GetRight();
-	//y方向には移動させない。
-	cameraForward.y = 0.0f;
-	cameraRight.y = 0.0f;
-	//正規化
-	cameraForward.Normalize();
-	cameraRight.Normalize();
+	Vector3 cameraForward = GetCameraForward();
+	Vector3 cameraRight = GetCameraRight();
 
 	//方向（前方向）
 	Vector3 direction = forward;
@@ -104,42 +90,53 @@ Vector3 PlayerMovement::CalcMoveDirection(Vector3 forward, Vector3 stick, Vector
 
 	float y = currentMoveSpeed.y;
 
-	//カメラの前方向と右方向のベクトルを持ってくる。
-	Vector3 cameraForward = g_camera3D->GetForward();
-	Vector3 cameraRight = g_camera3D->GetRight();
-	//y方向には移動させない。
-	cameraForward.y = 0.0f;
-	cameraRight.y = 0.0f;
-	//正規化
-	cameraForward.Normalize();
-	cameraRight.Normalize();
-
-	//方向（前方向）
+	//方向。ひとまず前方向
 	Vector3 direction = forward;
 
 	if (fabsf(stick.x) >= 0.001f ||
 		fabsf(stick.y) >= 0.001f)
 	{
+		//入力量があったらカメラの向きも考慮する
+		//カメラの前方向と右方向のベクトルを持ってくる。
+		Vector3 cameraForward = GetCameraForward();
+		Vector3 cameraRight = GetCameraRight();
+		
+		//カメラの方向とそれぞれの軸の入力量をかけて方向を計算
+		cameraRight *= stick.x;
+		cameraForward *= stick.y;
+
 		//移動方向をスティックのものにする
-		direction = stick;
-	}
-	else
-	{
-		//移動量の計算のために値を変更
-		direction.y = direction.z;
+		direction = cameraRight + cameraForward;
 	}
 
+	//移動量の計算のために値を変更
+	direction.y = 0.0f;
+	//正規化
 	direction.Normalize();
 
-	//カメラの方向とそれぞれの軸の入力量とスピードをかけて移動量を計算
-	cameraRight *= direction.x;
-	cameraForward *= direction.y;
-
 	//前方向と右方向の移動量ベクトルを足す
-	currentMoveSpeed += cameraRight + cameraForward;
+	currentMoveSpeed += direction;
 	currentMoveSpeed.Normalize();
 
-	//currentMoveSpeed.y = y;
-
 	return currentMoveSpeed;
+}
+
+Vector3 PlayerMovement::GetCameraForward()
+{
+	Vector3 cameraForward = g_camera3D->GetForward();
+	//y方向には移動させない。
+	cameraForward.y = 0.0f;
+	//正規化
+	cameraForward.Normalize();
+	return cameraForward;
+}
+
+Vector3 PlayerMovement::GetCameraRight()
+{
+	Vector3 cameraRight = g_camera3D->GetRight();
+	//y方向には移動させない。
+	cameraRight.y = 0.0f;
+	//正規化
+	cameraRight.Normalize();
+	return cameraRight;
 }
