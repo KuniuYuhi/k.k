@@ -117,6 +117,14 @@ public:
 		return m_playerMovement;
 	}
 
+	/// <summary>
+	/// ステータスの取得
+	/// </summary>
+	/// <returns></returns>
+	Status_Player& GetStatus()
+	{
+		return m_status;
+	}
 
 
 	bool IsButtonAction();
@@ -184,6 +192,12 @@ private:
 	/// </summary>
 	/// <returns>硬直中ならtrue、硬直中でないならfalse</returns>
 	bool IsStarkTime();
+
+	/// <summary>
+	/// スタミナの自動回復
+	/// </summary>
+	void AutoRecoveryStamina();
+
 
 
 

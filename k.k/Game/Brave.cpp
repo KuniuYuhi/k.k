@@ -90,9 +90,10 @@ bool Brave::Start()
 void Brave::Update()
 {
 
-	//武器の処理
+	//スタミナの自動回復
+	AutoRecoveryStamina();
 
-
+	//ボタンを押して行うアクション
 	ButtonAction();
 
 	//移動処理
@@ -102,6 +103,7 @@ void Brave::Update()
 	//回転が最後
 	Rotation();
 
+	//現在のステートの処理
 	m_braveStateCotext.get()->UpdateCurrentState();
 	m_braveStateCotext.get()->PlayAnimationCurrentState();
 
@@ -215,6 +217,7 @@ void Brave::Movement()
 
 void Brave::Rotation()
 {
+	
 	if (fabsf(m_rotateDirection.x) < 0.001f
 		&& fabsf(m_rotateDirection.z) < 0.001f) {
 		//m_moveSpeed.xとm_moveSpeed.zの絶対値がともに0.001以下ということは
@@ -265,8 +268,11 @@ void Brave::AttackAction()
 		ActionActive();
 		return;
 	}
-	//スキル攻撃ボタンを押したなら
-	if (m_playerContoller->IsTriggerSkillAttackButton())
+
+	//スキル攻撃ボタンを押したかつ
+	//武器側がスキル攻撃を行える状態なら
+	if (m_playerContoller->IsTriggerSkillAttackButton() &&
+		m_armedWeapon->CanSkillAttack())
 	{
 		m_braveStateCotext.get()->ChangeBraveState(enBraveState_SkillStart);
 		//アクション中にする
@@ -283,8 +289,10 @@ void Brave::DefensiveAction()
 	{
 		return;
 	}
-	//回避、防御ボタンを押したなら
-	if (m_playerContoller->IsTriggerDefensiveActionButton())
+	//回避、防御ボタンを押したかつ
+	//武器側が回避、防御アクションが行える状態なら
+	if (m_playerContoller->IsTriggerDefensiveActionButton() && 
+		m_armedWeapon->CanDefensiveAction())
 	{
 		//ステートを切り替える
 		m_braveStateCotext.get()->ChangeBraveState(enBraveState_DefensiveActions);
@@ -377,8 +385,16 @@ bool Brave::IsStarkTime()
 	return true;
 }
 
+void Brave::AutoRecoveryStamina()
+{
+	//アクション中は回復しない
+	if (IsAction()) return;
 
-
+	//スタミナを回復する量を計算
+	float recoveryValue = g_gameTime->GetFrameDeltaTime() * m_status.GetStaminaRecoveryRate();
+	//回復
+	m_status.RecoveryStamina(recoveryValue);
+}
 
 void Brave::Render(RenderContext& rc)
 {
@@ -417,12 +433,40 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	//回避時の移動の始まり
 	if (wcscmp(eventName, L"AvoidMoveStart") == 0)
 	{
-		
+		m_armedWeapon->SetDefensiveActionMove(true);
 	}
 	//回避時の移動の終わり
 	if (wcscmp(eventName, L"AvoidMoveEnd") == 0)
 	{
-		
+		m_armedWeapon->SetDefensiveActionMove(false);
+	}
+
+
+	//次の行動待機区間始まり
+	if (wcscmp(eventName, L"StandbyPeriodStart") == 0)
+	{
+		//待機区間フラグを立てる
+		m_armedWeapon->SetStandbyPeriodFlag(true);
+	}
+	//次の行動待機区間終わり
+	if (wcscmp(eventName, L"StandbyPeriodEnd") == 0)
+	{
+		//待機区間フラグをリセット
+		m_armedWeapon->SetStandbyPeriodFlag(false);
+	}
+
+	//攻撃(敵に攻撃が届くなど)が始まった瞬間。
+	if (wcscmp(eventName, L"ImpactStart") == 0)
+	{
+		//コリジョンの生成など、キャンセルアクションの設定など
+		m_armedWeapon->AttackImpactProcess(true);
+	}
+	
+	//攻撃(敵に攻撃が届くなど)が終わった瞬間。
+	if (wcscmp(eventName, L"ImpactEnd") == 0)
+	{
+		//コリジョンの生成など、キャンセルアクションの設定など
+		m_armedWeapon->AttackImpactProcess(false);
 	}
 
 }
