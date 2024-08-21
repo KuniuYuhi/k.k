@@ -15,6 +15,15 @@ void WeaponBase::ChangeArmedState()
 	SetCurrentWeaponState(enArmed);
 }
 
+void WeaponBase::AttackImpactProcess(bool startOrEnd)
+{
+	//キャンセルアクションフラグを設定
+	m_isPossibleCancelAction = !startOrEnd;
+
+	//コリジョンの設定など派生クラスで実装
+
+}
+
 Vector3 WeaponBase::CalcAutoAimAtTarget(
 	Vector3 origin, Vector3 nowDirection, float searchRadius, float maxDot)
 {

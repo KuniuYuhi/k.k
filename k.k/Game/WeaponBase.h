@@ -100,7 +100,7 @@ public:
 		m_isAttackActionMove = flag;
 	}
 	/// <summary>
-	/// 攻撃で移動するか
+	/// 攻撃で移動するかフラグを取得
 	/// </summary>
 	/// <returns></returns>
 	bool IsAttackActionMove()
@@ -108,7 +108,32 @@ public:
 		return m_isAttackActionMove;
 	}
 
+	void SetDefensiveActionMove(bool flag)
+	{
+		m_isDefensiveActionMove = flag;
+	}
 
+	bool IsDefensiveActionMove()
+	{
+		return m_isDefensiveActionMove;
+	}
+
+	/// <summary>
+	/// 次のボタンを待機している区間か。
+	/// </summary>
+	/// <returns>できるならtrue</returns>
+	bool IsStandbyPeriod()
+	{
+		return m_isStandbyPeriod;
+	}
+	/// <summary>
+	/// 次の行動の待機区間かフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetStandbyPeriodFlag(bool flag)
+	{
+		m_isStandbyPeriod = flag;
+	}
 
 	/// <summary>
 	/// 収納状態に切り替える
@@ -151,6 +176,18 @@ public:
 
 
 	/// <summary>
+	/// 回避、防御アクションが行えるか
+	/// </summary>
+	/// <returns>行えるならtrue</returns>
+	virtual bool CanDefensiveAction() { return false; }
+	/// <summary>
+	/// スキル攻撃が行えるか
+	/// </summary>
+	/// <returns>行えるならtrue</returns>
+	virtual bool CanSkillAttack() { return false; }
+
+
+	/// <summary>
 	/// 通常攻撃ステートに入った時の処理
 	/// </summary>
 	virtual void EntryNormalAttackProcess(EnComboState comboState) {}
@@ -176,6 +213,13 @@ public:
 	/// スキル攻撃ステートを抜け出す時の処理
 	/// </summary>
 	virtual void ExitSkillAttackProcess(EnSkillProcessState skillProcessState) {}
+
+
+	/// <summary>
+	/// 攻撃の瞬間の処理
+	/// </summary>
+	/// <param name="startOrEnd">startはtrue</param>
+	virtual void AttackImpactProcess(bool startOrEnd);
 
 
 protected:
@@ -209,9 +253,19 @@ protected:
 	EnComboState m_enComboState = enCombo_None;
 
 
-
+	//攻撃系フラグ
 	bool m_isAttackActionMove = false;			//攻撃で移動するか
+	bool m_isStandbyPeriod = false;	//通常攻撃入力待機区間フラグ
 
+	//回避、防御系フラグ
+	bool m_isDefensiveActionMove = false;		//回避で移動するか
+
+	bool m_isPossibleCancelAction = false;          //アクションのキャンセル可能かフラグ。行動上書きに使う
+													//基本的に当たり判定が出ているときや攻撃が当たるであろう瞬間
+													//はキャンセルアクションできない
+
+
+	
 
 };
 
