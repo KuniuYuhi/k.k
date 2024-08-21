@@ -1,7 +1,12 @@
 #pragma once
 #include "MobEnemyBase.h"
+#include "SlimeStateContext.h"
+#include "SlimeInfo.h"
+
+class SlimeStateContext;
 
 
+using namespace SlimeAnimationClips;
 
 /// <summary>
 /// モブエネミー：スライムクラス
@@ -19,7 +24,12 @@ public:
 
 
 private:
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Init();
 
+	void LoadAnimationClip();
 
 	/// <summary>
 	/// 全てのコンポーネントを初期化
@@ -43,6 +53,11 @@ private:
 	void CreateCollisionObject() override;
 
 private:
+
+	std::unique_ptr<SlimeStateContext> m_slimeContext = nullptr;	//ステートコンテキスト
+
+	AnimationClip m_animationClip[enSlimeAnimClip_num];
+
 
 	bool m_isSettingComponents = false;
 
