@@ -63,6 +63,15 @@ void BowArrowStatus::LoadUniqueStatusCSV()
 		getline(i_stream, buf, ',');
 		statusData.m_uniqueStatus.normalAttackComparisonDot = stof(buf);
 
+
+		for (int i = 0; i < enStage_max; i++)
+		{
+			//チャージ完了時間を読み込む。
+			getline(i_stream, buf, ',');
+			statusData.m_uniqueStatus.skillChargeCompletionTime[i] = stof(buf);
+		}
+
+
 		//矢のストックを読み込む。
 		getline(i_stream, buf, ',');
 		statusData.m_uniqueStatus.arrowStack = stoi(buf);

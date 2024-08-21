@@ -5,6 +5,15 @@
 /// </summary>
 class BowArrowStatus
 {
+public:
+
+	enum EnSkillChargeStage
+	{
+		enStage_1,
+		enStage_2,
+		enStage_max,
+	};
+
 private:
 
 	/// <summary>
@@ -26,11 +35,14 @@ private:
 		float normalAttackComparisonDot = 0.0f;	//通常攻撃で計算するベクトル同士の内積の比較対象の内積
 
 
+		float skillChargeCompletionTime[enStage_max] = { 0.0f };//チャージ完了時間。配列は段階
+
 		int arrowStack = 0;						//矢のストック
 	};
 
 	UniqueStatus m_uniqueStatus;
 
+	EnSkillChargeStage m_enSkillChargeStage = enStage_1;
 
 	/// <summary>
 	/// ボウ＆アローの固有ステータスcsvファイルの読み込み
@@ -39,6 +51,10 @@ private:
 
 public:
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
 	const UniqueStatus& GetUniqueStatus()
 	{
 		return m_uniqueStatus;
@@ -48,6 +64,18 @@ public:
 	/// ボウ＆アローの固有ステータスを初期化
 	/// </summary>
 	void InitUniqueStatus();
+
+	
+	void SetSkillChargeStage(EnSkillChargeStage setStage)
+	{
+		m_enSkillChargeStage = setStage;
+	}
+
+	EnSkillChargeStage GetCurrentSkillChargeStage()
+	{
+		return m_enSkillChargeStage;
+	}
+
 
 
 
@@ -91,6 +119,10 @@ public:
 		return m_uniqueStatus.normalAttackComparisonDot;
 	}
 
+	const float& GetSkillChargeCompletionTime(EnSkillChargeStage stage)
+	{
+		return m_uniqueStatus.skillChargeCompletionTime[stage];
+	}
 
 	const int& GetArrowStack()
 	{
