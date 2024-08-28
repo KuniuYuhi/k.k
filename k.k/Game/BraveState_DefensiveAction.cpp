@@ -25,16 +25,18 @@ void BraveState_DefensiveAction::Ubdate()
 	m_brave->GetArmedWeapon()->UpdateDefensiveActionProcess();
 
 	//回避、防御アクションを終わるなら
-	if (m_brave->GetArmedWeapon()->IsEndDefensiveAction())
-	{
-		//ステートの共通処理
-		m_brave->ProcessCommonStateTransition();
-	}
+	//if (m_brave->GetArmedWeapon()->IsEndDefensiveAction())
+	//{
+	//	//ステートの共通処理
+	//	m_brave->ProcessCommonStateTransition();
+	//}
 
 
 }
 
 void BraveState_DefensiveAction::Exit()
 {
+	m_brave->GetArmedWeapon()->ExitDefensiveActionProcess();
+
 	m_brave->ActionDeactive();
 }

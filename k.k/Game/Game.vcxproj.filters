@@ -91,6 +91,21 @@
     <Filter Include="Status\Weapon\UniqueStatus">
       <UniqueIdentifier>{107f3da8-a96b-4ef0-8c78-79f3157f0374}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Characters\Ememy\Mob\Mimic">
+      <UniqueIdentifier>{3ee7f433-c5fe-4a27-bb4f-839b0987ccc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Mob\BeholderEye">
+      <UniqueIdentifier>{7737dbb3-0bdf-4c95-bc7e-b9b045de6f58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Mob\Slime\States">
+      <UniqueIdentifier>{c26e075c-759d-4ff3-94e1-90c5da07a429}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Mob\BaseState">
+      <UniqueIdentifier>{9cf34992-1a78-4b68-942a-c66477e6a106}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Status\Enemy\MobEenemy">
+      <UniqueIdentifier>{120369a0-27e8-4825-82e0-83395a799812}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -194,11 +209,9 @@
     </ClCompile>
     <ClCompile Include="IObjectPool.cpp" />
     <ClCompile Include="EnemyObjectPool.cpp" />
-    <ClCompile Include="Damageable.cpp" />
     <ClCompile Include="Cactus.cpp">
       <Filter>Characters\Ememy\Mob\Cactus</Filter>
     </ClCompile>
-    <ClCompile Include="MobEnemyMovement.cpp" />
     <ClCompile Include="WaveManager.cpp">
       <Filter>Wave</Filter>
     </ClCompile>
@@ -289,7 +302,55 @@
     <ClCompile Include="SwordShieldStatus.cpp">
       <Filter>Status\Weapon\UniqueStatus</Filter>
     </ClCompile>
-    <ClCompile Include="EnemyManager.cpp" />
+    <ClCompile Include="BeholderEye.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye</Filter>
+    </ClCompile>
+    <ClCompile Include="Arrow.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrowStatus.cpp">
+      <Filter>Status\Weapon\UniqueStatus</Filter>
+    </ClCompile>
+    <ClCompile Include="MobEnemyMovement.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Mimic.cpp">
+      <Filter>Characters\Ememy\Mob\Mimic</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeStateContext.cpp">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeState_Appear.cpp">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeState_Attack.cpp">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeState_Die.cpp">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeState_Hit.cpp">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeState_Idle.cpp">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeState_Run.cpp">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeState_Victory.cpp">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClCompile>
+    <ClCompile Include="KnockBackInfoManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="DamageProvider.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="MobEnemyCommonStatus.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -400,11 +461,9 @@
     </ClInclude>
     <ClInclude Include="IObjectPool.h" />
     <ClInclude Include="EnemyObjectPool.h" />
-    <ClInclude Include="Damageable.h" />
     <ClInclude Include="Cactus.h">
       <Filter>Characters\Ememy\Mob\Cactus</Filter>
     </ClInclude>
-    <ClInclude Include="MobEnemyMovement.h" />
     <ClInclude Include="WaveManager.h">
       <Filter>Wave</Filter>
     </ClInclude>
@@ -513,6 +572,60 @@
     <ClInclude Include="GreateSwordStatus.h">
       <Filter>Status\Weapon\UniqueStatus</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyManager.h" />
+    <ClInclude Include="BeholderEye.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye</Filter>
+    </ClInclude>
+    <ClInclude Include="Arrow.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrowStatus.h">
+      <Filter>Status\Weapon\UniqueStatus</Filter>
+    </ClInclude>
+    <ClInclude Include="MobEnemyMovement.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Mimic.h">
+      <Filter>Characters\Ememy\Mob\Mimic</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeInfo.h">
+      <Filter>Characters\Ememy\Mob\Slime</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeStateContext.h">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClInclude>
+    <ClInclude Include="IMobEnemyState.h">
+      <Filter>Characters\Ememy\Mob\BaseState</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeState_Appear.h">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeState_Attack.h">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeState_Die.h">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeState_Hit.h">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeState_Idle.h">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeState_Run.h">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeState_Victory.h">
+      <Filter>Characters\Ememy\Mob\Slime\States</Filter>
+    </ClInclude>
+    <ClInclude Include="KnockBackInfoManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageProvider.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="MobEnemyCommonStatus.h" />
   </ItemGroup>
 </Project>

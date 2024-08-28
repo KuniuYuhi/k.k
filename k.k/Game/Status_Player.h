@@ -17,7 +17,7 @@ private:
 		int maxHp = 0;					//HPの最大値
 		int currentHp = 0;				//現在のHP
 		int defaultPower = 0;				//基礎攻撃力
-		int currentPower = 0;				//現在の攻撃力
+		int currentPower = 0;				//現在の攻撃力(自身の攻撃力+武器の攻撃力)
 		float maxStamina = 0;			//スタミナの最大値
 		float staminaRecoveryRate = 0.0f;		//スタミナの回復速度倍率
 		float currentStamina = 0;		//現在のスタミナ
@@ -77,10 +77,10 @@ public:
 	}
 
 	/// <summary>
-	/// 現在の攻撃力の設定
+	/// 現在の攻撃力の設定(最初に使うだけ)
 	/// </summary>
 	/// <param name="setAtk"></param>
-	void SetAtk(const int setAtk)
+	void SetCurrentPower(const int setAtk)
 	{
 		m_playerStatus.currentPower = setAtk;
 	}
@@ -88,17 +88,27 @@ public:
 	/// 現在の攻撃力の取得
 	/// </summary>
 	/// <returns></returns>
-	const int& GetAtk() const
+	const int& GetCurrentPower() const
 	{
 		return m_playerStatus.currentPower;
 	}
 	/// <summary>
-	/// 現在の攻撃力を増やす
+	/// 基礎攻撃力を増やす
 	/// </summary>
 	/// <param name="addPower">加算する攻撃力</param>
-	void AddPowerToCurrentPower(int addPower)
+	void AddPowerToDefaultPower(int addPower)
 	{
-		m_playerStatus.currentPower += addPower;
+		m_playerStatus.defaultPower += addPower;
+	}
+
+	/// <summary>
+	/// 武器切り替え時の攻撃力の設定
+	/// </summary>
+	/// <param name="weaponPower">武器の攻撃力</param>
+	void ChangeWeaponCalcCurrentPower(int weaponPower)
+	{
+		//現在の攻撃力を計算
+		m_playerStatus.currentPower = m_playerStatus.defaultPower + weaponPower;
 	}
 
 	/// <summary>
@@ -136,6 +146,37 @@ public:
 		return m_playerStatus.dashSpeed;
 	}
 
+
+	///////////////////////////////////////////////////////////
+	///
+	///////////////////////////////////////////////////////////
+
+	/// <summary>
+	/// スタミナを消費できるか。できるときは消費する。できないときは消費しない
+	/// </summary>
+	/// <param name="consumeValue">消費する量</param>
+	/// <returns>消費できたらtrue、消費できなかったらfalse</returns>
+	bool TryConsumeStamina(float consumeValue);
+
+	/// <summary>
+	/// スタミナを消費できるかチェックする。スタミナは消費しない
+	/// </summary>
+	/// <param name="checkValue">調べたい値</param>
+	/// <returns>消費できるならtrue</returns>
+	bool CheckConsumeStamina(float checkValue);
+
+	/// <summary>
+	/// スタミナを回復する
+	/// </summary>
+	/// <param name="recoveryValue">回復する量</param>
+	void RecoveryStamina(float recoveryValue);
+
+
+
+
+
+
+	///////////////////////////////////////////////////////////
 
 		//csvは使わない
 	std::string name;          //名前

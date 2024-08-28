@@ -32,6 +32,7 @@
 //////////////////////////////
 #include "Slime.h"
 #include "Cactus.h"
+#include "BeholderEye.h"
 //////////////////////////////
 
 #include "EnemyObjectPool.h"
@@ -85,6 +86,9 @@ Game::~Game()
 
 bool Game::Start()
 {
+	//　乱数を初期化。
+	srand((unsigned)time(NULL));
+
 	//ライティングの初期化
 	InitLighting();
 
@@ -109,7 +113,7 @@ bool Game::Start()
 	g_renderingEngine->UseLimLight();
 
 	//当たり判定の可視化
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 
 	Brave* brave = NewGO<Brave>(0,"Brave");
@@ -122,7 +126,7 @@ bool Game::Start()
 
 	
 
-	
+	//BeholderEye* b = NewGO<BeholderEye>(0, "BeholderEye");
 
 
 

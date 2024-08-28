@@ -50,6 +50,20 @@ public:
 	void InitUniqueStatus();
 
 
+	const float& GetAttackTimeScale(int num)
+	{
+		switch (num)
+		{
+		case 0:
+			return FirstAttackTimeScale();
+		case 1:
+			return SecondAttackTimeScale();
+		case 2:
+			return ThirdAttackTimeScale();
+		default:
+			break;
+		}
+	}
 
 	const float& FirstAttackTimeScale()
 	{

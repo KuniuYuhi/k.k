@@ -3,11 +3,15 @@
 
 #include "EnemyBase.h"
 
+#include "EnemyManager.h"
+
 //////////////////////////////////////////////
 //モブエネミーたち
 //////////////////////////////////////////////
 #include "Slime.h"
 #include "Cactus.h"
+#include "BeholderEye.h"
+#include "Mimic.h"
 //////////////////////////////////////////////
 
 EnemyObjectPool* EnemyObjectPool::m_instance = nullptr;
@@ -25,6 +29,8 @@ EnemyObjectPool::~EnemyObjectPool()
 {
 	//中身を全てクリア
 	m_objectPoolQueue.clear();
+
+	//todo 中のエネミーを消す
 }
 
 void EnemyObjectPool::CreateInstance()
@@ -37,6 +43,8 @@ void EnemyObjectPool::Init()
 	//スライムのキューを挿入
 	std::queue<EnemyBase*> slimeQueue;
 	EnemyBase* slime = NewGO<Slime>(0, "Slime");
+	//モデルだけ先に読み込む
+	slime->InitModel();
 	//非アクティブ化
 	slime->Deactivate();
 	slimeQueue.push(slime);
@@ -53,6 +61,8 @@ void EnemyObjectPool::Init()
 	//カクタスのキューを挿入
 	std::queue<EnemyBase*> cactusQueue;
 	EnemyBase* cactus = NewGO<Cactus>(0, "Cactus");
+	//モデルだけ先に読み込む
+	cactus->InitModel();
 	//非アクティブ化
 	cactus->Deactivate();
 	cactusQueue.push(cactus);
@@ -63,5 +73,43 @@ void EnemyObjectPool::Init()
 	{
 		OnCreateEnemy<Cactus>("Cactus");
 	}
+
+	//目玉のキューを挿入
+	std::queue<EnemyBase*> beholderEyeQueue;
+	EnemyBase* beholderEye = NewGO<BeholderEye>(0, "BeholderEye");
+	//モデルだけ先に読み込む
+	beholderEye->InitModel();
+	//非アクティブ化
+	beholderEye->Deactivate();
+	beholderEyeQueue.push(beholderEye);
+	//インサート
+	m_objectPoolQueue.insert(std::make_pair("BeholderEye", beholderEyeQueue));
+	//五個目玉をキューに追加
+	for (int i = 0; i < 10; i++)
+	{
+		OnCreateEnemy<BeholderEye>("BeholderEye");
+	}
+
+
+	//ミミックのキューを挿入
+	std::queue<EnemyBase*> mimicQueue;
+	EnemyBase* mimic = NewGO<Mimic>(0, "Mimic");
+	//モデルだけ先に読み込む
+	slime->InitModel();
+	//非アクティブ化
+	mimic->Deactivate();
+	mimicQueue.push(mimic);
+	//インサート
+	m_objectPoolQueue.insert(std::make_pair("Mimic", mimicQueue));
+	//五個目玉をキューに追加
+	for (int i = 0; i < 10; i++)
+	{
+		OnCreateEnemy<Mimic>("Mimic");
+	}
+
+
+	//Start関数でエネミーマネージャーのリストに追加していたので
+	//リセットしておく
+	EnemyManager::GetInstance()->CrearMobEnemyList();
 
 }

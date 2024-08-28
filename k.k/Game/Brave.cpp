@@ -6,20 +6,17 @@
 ///////////////////////////////////////
 #include "PlayerMovement.h"
 #include "PlayerController.h"
-
-
-
+#include "DamageProvider.h"
 ///////////////////////////////////////
-//ステートコンテキスト
-///////////////////////////////////////
-//#include "BraveStateContext.h"
-
-
 #include "WeaponManager.h"
 
 #include "SwordShield.h"
 #include "GreateSword.h"
 #include "Bow.h"
+
+
+#include "KnockBackStatus.h"
+#include "KnockBackInfoManager.h"
 
 
 namespace {
@@ -83,25 +80,31 @@ bool Brave::Start()
 	//装備している武器を取得
 	m_armedWeapon = WeaponManager::GetInstance()->GetArmedWeapon();
 
-
+	//プレイヤーの攻撃力に武器の攻撃力を加算
+	m_status.ChangeWeaponCalcCurrentPower(m_armedWeapon->GetWeaponCurrentPower());
+	
 	return true;
 }
 
 void Brave::Update()
 {
 
-	//武器の処理
+	//スタミナの自動回復
+	AutoRecoveryStamina();
 
-
+	//ボタンを押して行うアクション
 	ButtonAction();
 
 	//移動処理
 	Movement();
 
-
-	//回転が最後
+	//回転
 	Rotation();
 
+	//当たり判定
+	CheckSelfCollision();
+
+	//現在のステートの処理
 	m_braveStateCotext.get()->UpdateCurrentState();
 	m_braveStateCotext.get()->PlayAnimationCurrentState();
 
@@ -109,14 +112,6 @@ void Brave::Update()
 	//モデルの更新処理
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 	m_modelRender.Update();
-}
-
-void Brave::Damage()
-{
-}
-
-void Brave::Dead()
-{
 }
 
 void Brave::SetCurrentAnimationStartIndexNoForMainWeaponType()
@@ -173,6 +168,8 @@ void Brave::SettingDefaultComponent()
 	AddComponent<PlayerController>();
 	m_playerContoller = GetComponent<PlayerController>();
 
+	AddComponent<DamageProvider>();
+	m_damageProvider = GetComponent<DamageProvider>();
 }
 
 void Brave::Movement()
@@ -215,6 +212,7 @@ void Brave::Movement()
 
 void Brave::Rotation()
 {
+	
 	if (fabsf(m_rotateDirection.x) < 0.001f
 		&& fabsf(m_rotateDirection.z) < 0.001f) {
 		//m_moveSpeed.xとm_moveSpeed.zの絶対値がともに0.001以下ということは
@@ -260,14 +258,23 @@ void Brave::AttackAction()
 	//通常攻撃ボタンを押したなら
 	if (m_playerContoller->IsTriggerNromalAttackButton())
 	{
+		//プレイヤーの攻撃力に武器の攻撃力を加算
+		m_status.ChangeWeaponCalcCurrentPower(m_armedWeapon->GetWeaponCurrentPower());
+
 		NormalAttackProcess();
 		//アクション中にする
 		ActionActive();
 		return;
 	}
-	//スキル攻撃ボタンを押したなら
-	if (m_playerContoller->IsTriggerSkillAttackButton())
+
+	//スキル攻撃ボタンを押したかつ
+	//武器側がスキル攻撃を行える状態なら
+	if (m_playerContoller->IsTriggerSkillAttackButton() &&
+		m_armedWeapon->CanSkillAttack())
 	{
+		//プレイヤーの攻撃力に武器のスキル攻撃力を加算
+		m_status.ChangeWeaponCalcCurrentPower(m_armedWeapon->GetWeaponSkillPower());
+
 		m_braveStateCotext.get()->ChangeBraveState(enBraveState_SkillStart);
 		//アクション中にする
 		ActionActive();
@@ -283,8 +290,10 @@ void Brave::DefensiveAction()
 	{
 		return;
 	}
-	//回避、防御ボタンを押したなら
-	if (m_playerContoller->IsTriggerDefensiveActionButton())
+	//回避、防御ボタンを押したかつ
+	//武器側が回避、防御アクションが行える状態なら
+	if (m_playerContoller->IsTriggerDefensiveActionButton() && 
+		m_armedWeapon->CanDefensiveAction())
 	{
 		//ステートを切り替える
 		m_braveStateCotext.get()->ChangeBraveState(enBraveState_DefensiveActions);
@@ -318,6 +327,68 @@ void Brave::ChangeBraveState(BraveState::EnBraveState nextState)
 {
 	m_braveStateCotext.get()->ChangeBraveState(nextState);
 }
+
+void Brave::EntryHitActionProcess()
+{
+	//アクション中にする
+	ActionActive();
+	//ノックバックするための情報を設定
+	SettingKnockBackProcess();
+	//攻撃中かもしれないのでインパクト時の処理をリセット
+	m_armedWeapon->AttackImpactProcess(false);
+
+	count = 0.0f;
+
+	//無敵にする
+	EnableInvincible();
+}
+
+void Brave::UpdateHitActionProcess()
+{
+	//まずカーブデータを元に移動
+	if (count < m_curvePointList.size())
+	{
+		//ノックバックによる移動
+		KnockBackMove(count);
+		//タイムスケールを加算
+		count += m_knockBackTimeScale;
+	}
+	//次に空中に浮いていたら地面に降りる
+	else if (m_charaCon.get()->IsJump())
+	{
+		KnockBackGravityFall();
+
+	}
+	//最後に少し硬直させて共通ステート処理に移行
+	else
+	{
+		//アニメーションが終わったら
+		if (GetModelRender().IsPlayingAnimation() == false)
+		{
+			//少し硬直して共通ステート処理に移行
+			if (m_starkTimer >= 0.1f)
+			{
+				//共通ステートに移行
+				ProcessCommonStateTransition();
+			}
+			m_starkTimer += g_gameTime->GetFrameDeltaTime();
+		}
+	}
+}
+
+void Brave::ExitHitActionProcess()
+{
+	//アクションを終わる
+	ActionDeactive();
+
+	//保存していた前方向を取得
+	m_forward = m_saveForward;
+
+	//無敵解除
+	DisableInvincible();
+}
+
+
 
 void Brave::ChangeWeaponAction()
 {
@@ -377,8 +448,159 @@ bool Brave::IsStarkTime()
 	return true;
 }
 
+void Brave::AutoRecoveryStamina()
+{
+	//アクション中は回復しない
+	if (IsAction()) return;
+
+	//スタミナを回復する量を計算
+	float recoveryValue = g_gameTime->GetFrameDeltaTime() * m_status.GetStaminaRecoveryRate();
+	//回復
+	m_status.RecoveryStamina(recoveryValue);
+}
+
+void Brave::CheckSelfCollision()
+{
+	//当たり判定無効条件
+	//無敵なら処理しない
+	if (IsInvincible()) {
+		return; 
+	}
+
+	//エネミーの攻撃コリジョンを取得
+	const auto& Collisions =
+		g_collisionObjectManager->FindCollisionObjects(
+			g_collisionObjectManager->m_enemyAttackCollisionName
+		);
+
+	int nazenaze = 0;
+
+	//コリジョンの配列をfor文で回す
+	for (auto collision : Collisions)
+	{
+		//当たり判定が有効でないなら飛ばす
+		if (!collision->IsEnable()) continue;
+
+		//自身のキャラコンと衝突したら
+		if (collision->IsHit(*m_charaCon) == true)
+		{
+			//コリジョンを持っているキャラのダメージプロバイダーコンポーネントを取得
+			DamageProvider* dp = FindGOComponent<DamageProvider>(collision->GetCreatorName());
+
+			if (dp == nullptr) return;
+
+			//攻撃がヒットしたことをコリジョンを持っているDamageProviderクラスに伝える
+			dp->Hit();
+
+			//ダメージプロバイダーの座標を取得
+			m_damageProviderPosition = dp->GetProviderCharacterPostion();
+
+			//攻撃IDを取得
+			int currentAttackId = dp->GetAttackId();
+
+			//前回とIDが同じなら処理しない
+			if (currentAttackId == oldAttackId) return;
+
+			nazenaze++;
+
+			//ダメージをランダムに調整して、フォントとして表示
+			CreateDamageFont(dp->GetAdjustedDamage(),DamageFont::enDamageActor_Player);
+
+			//被ダメージ処理を行う引数に情報を入れる
+			ProcessHit(dp->GetProviderDamageInfo());
+
+			//今回のIDを前フレームのIDに保存
+			oldAttackId = currentAttackId;
 
 
+			if (nazenaze >= 5)
+			{
+				nazenaze = 0;
+			}
+
+			//todo 無敵時間に入る
+			EnableInvincible();
+		}
+	}
+
+}
+
+void Brave::SettingKnockBackProcess()
+{
+	m_curvePointList.clear();
+	//ノックバックカーブのポイントリストを取得
+	m_curvePointList = KnockBackInfoManager::GetInstance()->GetCurvePoint(
+		m_hitKnockBackPattern
+	);
+
+	//今回のパターンのノックバックのスピードを取得
+	m_knockBackSpeed = KnockBackInfoManager::
+		GetInstance()->GetStatus().GetKnockBackSpeed(m_hitKnockBackPattern);
+
+	//前方向を変更する前に今の方向を保存しておく
+	m_saveForward = m_forward;
+
+	//前方向を正規化して方向を反転させる
+	Vector3 diff = m_position - m_damageProviderPosition;
+	m_forward = diff;
+	m_forward.Normalize();
+
+	//硬直タイマーリセット
+	m_starkTimer = 0.0f;
+}
+
+void Brave::KnockBackMove(int listNum)
+{
+	//正規化
+	m_curvePointList[listNum].curvePosition.Normalize();
+	//移動速度を計算
+	m_moveSpeed.x = m_forward.x * m_curvePointList[listNum].curvePosition.x * m_knockBackSpeed.x;
+	m_moveSpeed.y = m_curvePointList[listNum].curvePosition.y * m_knockBackSpeed.y;
+	m_moveSpeed.z = m_forward.z * m_curvePointList[listNum].curvePosition.z * m_knockBackSpeed.x;
+	//キャラコンを使って移動
+	m_position = m_charaCon.get()->Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+}
+
+void Brave::KnockBackGravityFall()
+{
+	//重力の計算
+	m_moveSpeed.y -= 980.0f * g_gameTime->GetFrameDeltaTime();
+	//キャラコンを使って座標を移動
+	m_position = m_charaCon.get()->Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+	if (m_charaCon.get()->IsOnGround()) {
+		//地面についた。
+		m_moveSpeed.y = 0.0f;
+	}
+}
+
+void Brave::SettingKnockBackInfoForDamageInfo(DamageInfo damageInfo)
+{
+	//ノックバックパターンを取得
+	//todo レベルによって変更
+	m_hitKnockBackPattern = damageInfo.knockBackPattern;
+
+	//ノックバックの時間間隔を取得
+	m_knockBackTimeScale = damageInfo.knockBackTimeScale;
+}
+
+void Brave::ProcessHit(DamageInfo damageInfo)
+{
+	//ノックバックの情報を設定
+	SettingKnockBackInfoForDamageInfo(damageInfo);
+
+	//攻撃中かもしれないのでインパクト時の処理をリセット
+	m_armedWeapon->AttackImpactProcess(false);
+
+
+	//被ダメージ処理
+
+
+
+
+
+	//ステートを切り替える
+	m_braveStateCotext.get()->ChangeBraveState(enBraveState_Hit);
+}
 
 void Brave::Render(RenderContext& rc)
 {
@@ -398,8 +620,8 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		//入れ替え後の現在の武器をインスタンスを取得
 		m_armedWeapon = WeaponManager::GetInstance()->GetArmedWeapon();
 
-		//切り替え武器タイプをメイン武器タイプに切り替える
-		//WeaponManager::GetInstance()->ChangeChangeWeaponTypeToMainWeaponType();
+		//武器のステータス(攻撃力など)を自身のステータスに加算
+		m_status.ChangeWeaponCalcCurrentPower(m_armedWeapon->GetWeaponCurrentPower());
 	}
 
 
@@ -417,12 +639,45 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	//回避時の移動の始まり
 	if (wcscmp(eventName, L"AvoidMoveStart") == 0)
 	{
-		
+		m_armedWeapon->SetDefensiveActionMove(true);
 	}
 	//回避時の移動の終わり
 	if (wcscmp(eventName, L"AvoidMoveEnd") == 0)
 	{
-		
+		m_armedWeapon->SetDefensiveActionMove(false);
 	}
 
+
+	//次の行動待機区間始まり
+	if (wcscmp(eventName, L"StandbyPeriodStart") == 0)
+	{
+		//待機区間フラグを立てる
+		m_armedWeapon->SetStandbyPeriodFlag(true);
+	}
+	//次の行動待機区間終わり
+	if (wcscmp(eventName, L"StandbyPeriodEnd") == 0)
+	{
+		//待機区間フラグをリセット
+		m_armedWeapon->SetStandbyPeriodFlag(false);
+	}
+
+	//攻撃(敵に攻撃が届くなど)が始まった瞬間。
+	if (wcscmp(eventName, L"ImpactStart") == 0)
+	{
+		//コリジョンの生成など、キャンセルアクションの設定など
+		m_armedWeapon->AttackImpactProcess(true);
+	}
+	
+	//攻撃(敵に攻撃が届くなど)が終わった瞬間。
+	if (wcscmp(eventName, L"ImpactEnd") == 0)
+	{
+		//コリジョンの生成など、キャンセルアクションの設定など
+		m_armedWeapon->AttackImpactProcess(false);
+	}
+
+}
+
+int Brave::GetCurrentPower()
+{
+	return m_status.GetCurrentPower();
 }

@@ -121,6 +121,35 @@ namespace nsK2EngineLow {
 			//見つからなかった。
 			return nullptr;
 		}
+
+
+		/*!
+		*@brief	ゲームオブジェクトが持っているコンポーネントの検索。
+		*@details
+		* 重いよ！
+		*@param[in]	objectName		オブジェクト名。
+		*/
+		template<class T>
+		T* FindGameObjectComponent(const char* objectName)
+		{
+			if (m_isActive == false)
+			{
+				return nullptr;
+			}
+			for (auto goList : m_gameObjectListArray) {
+				for (auto go : goList) {
+					if (go->IsMatchName(objectName)) {
+						//見つけた
+						T* p = go->GetComponent<T>();
+						return p;
+					}
+				}
+			}
+
+			//見つからなかった。
+			return nullptr;
+		}
+
 		template<class T>
 		void QueryGameObjects(const char* objectName, std::function<bool(T* go)> func)
 		{
@@ -195,6 +224,19 @@ namespace nsK2EngineLow {
 	static inline T* FindGO(const char* objectName)
 	{
 		return GameObjectManager::GetInstance()->FindGameObject<T>(objectName);
+	}
+
+	/*!
+	*@brief	ゲームオブジェクトが持っているコンポーネント検索のヘルパー関数。
+	*@details
+	* 名前の検索が入るため遅いです。
+	*@param[in]	objectName	ゲームオブジェクトの名前。
+	*@return 見つかったインスタンスのアドレス。見つからなかった場合はnullptrを返す。
+	*/
+	template<class T>
+	static inline T* FindGOComponent(const char* objectName)
+	{
+		return GameObjectManager::GetInstance()->FindGameObjectComponent<T>(objectName);
 	}
 
 	/*!

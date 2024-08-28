@@ -23,7 +23,8 @@ private:
 
 		float normalAttackComparisonDot = 0.0f;	//通常攻撃で計算するベクトル同士の内積の比較対象の内積
 
-		int shieldEnduranceValue = 0;			//シールドの耐久値
+		int maxShieldEnduranceValue = 0;			//シールドの最大耐久値
+		int currentShieldEnduranceValue = 0;		//現在のシールドの耐久値
 	};
 
 	UniqueStatus m_uniqueStatus;
@@ -47,6 +48,21 @@ public:
 	void InitUniqueStatus();
 
 
+
+	const float& GetAttackTimeScale(int num)
+	{
+		switch (num)
+		{
+		case 0:
+			return FirstAttackTimeScale();
+		case 1:
+			return SecondAttackTimeScale();
+		case 2:
+			return ThirdAttackTimeScale();
+		default:
+			break;
+		}
+	}
 
 	const float& FirstAttackTimeScale()
 	{
@@ -88,8 +104,37 @@ public:
 
 	const int& GetShieldEnduranceValue()
 	{
-		return m_uniqueStatus.shieldEnduranceValue;
+		return m_uniqueStatus.maxShieldEnduranceValue;
 	}
+
+	const int& GetCurrentShieldEnduranceValue()
+	{
+		return m_uniqueStatus.currentShieldEnduranceValue;
+	}
+
+	void SetCurrentShieldEnduranceValue(int value)
+	{
+		m_uniqueStatus.currentShieldEnduranceValue = value;
+	}
+
+
+
+
+	/// <summary>
+	/// シールドの耐久値の減算
+	/// </summary>
+	/// <param name="subValue">減算したい値</param>
+	void SubShieldEnduranceValue(int subValue)
+	{
+		m_uniqueStatus.currentShieldEnduranceValue -= subValue;
+
+		if (m_uniqueStatus.currentShieldEnduranceValue <= 0)
+		{
+			m_uniqueStatus.currentShieldEnduranceValue = 0;
+		}
+
+	}
+
 
 	//CSVの情報を保存したマップ
 	static SwordShieldStatus StatusDataMAP;

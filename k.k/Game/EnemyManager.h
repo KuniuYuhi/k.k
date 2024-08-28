@@ -107,7 +107,7 @@ private:
 	std::vector<MobEnemyBase*> m_mobEnemyList;		//モブエネミーリスト
 
 
-	int m_approachMobEnemyAmount = 3;				//接近できるモブエネミーの数
+	int m_approachMobEnemyAmount = 5;				//接近できるモブエネミーの数
 
 	
 };

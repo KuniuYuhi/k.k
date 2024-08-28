@@ -1,26 +1,24 @@
 #pragma once
 #include "ICharacter.h"
-#include "Damageable.h"
+#include "DamageFont.h"
+#include "DamageProvider.h"
 
 /// <summary>
 /// キャラクターのベースクラス
 /// キャラクターで共通する処理を実装する
 /// </summary>
-class CharacterBase : public ICharacter,Damageable
+class CharacterBase : public ICharacter//,DamageProvider
 {
 public:
-	//virtual ~CharacterBase() = default;
-
-	/// <summary>
-	/// 被ダメージ処理
-	/// </summary>
-	virtual void Damage() override {}
-
-	/// <summary>
-	/// 死亡時処理
-	/// </summary>
-	virtual void Dead() override {}
 	
+	/// <summary>
+	/// 現在の攻撃力を取得
+	/// </summary>
+	/// <returns></returns>
+	virtual int GetCurrentPower() { return 0; }
+	
+	
+
 	/// <summary>
 	/// キャラコンの作成
 	/// </summary>
@@ -32,6 +30,8 @@ public:
 	/// <returns></returns>
 	Vector3 GetMoveSpeed()
 	{
+
+
 		return m_moveSpeed;
 	}
 
@@ -50,8 +50,12 @@ public:
 	/// <param name="direction"></param>
 	void SetRotateDirection(Vector3 direction);
 
-
-
+	/// <summary>
+	/// ダメージフォントを作成
+	/// </summary>
+	/// <param name="hitDamage">表示するダメージ</param>
+	/// <param name="hitActor">誰がダメージを受けるのか</param>
+	void CreateDamageFont(int hitDamage, DamageFont::EnDamageActor hitActor);
 
 protected:
 
@@ -61,7 +65,7 @@ protected:
 	virtual void SettingDefaultComponent(){}
 
 	
-
+	
 
 protected:
 	

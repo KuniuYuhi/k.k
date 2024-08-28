@@ -4,6 +4,9 @@
 
 class BowArrowStatus;
 class PlayerController;
+class PlayerMovement;
+
+class Arrow;
 
 /// <summary>
 /// 武器：ボウクラス
@@ -20,8 +23,18 @@ public:
 
     void Render(RenderContext& rc) override;
 
+    void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
     void Init() override;
+
+    /// <summary>
+    /// 弓のユニークステータスを取得
+    /// </summary>
+    /// <returns></returns>
+    BowArrowStatus GetBowUniqueStatus()
+    {
+        return m_uniqueStatus;
+    }
 
     /// <summary>
     /// 収納状態に切り替える
@@ -61,6 +74,22 @@ public:
     /// 回避、防御アクション中の更新処理
     /// </summary>
     void UpdateDefensiveActionProcess() override;
+    /// <summary>
+    /// 回避、防御アクションを終わる時の処理
+    /// </summary>
+    void ExitDefensiveActionProcess() override;
+
+    /// <summary>
+    /// 回避、防御アクションが行えるか
+    /// </summary>
+    /// <returns>行えるならtrue</returns>
+    bool CanDefensiveAction() override;
+    /// <summary>
+    /// スキル攻撃が行えるか
+    /// </summary>
+    /// <returns>行えるならtrue</returns>
+    bool CanSkillAttack() override;
+
 
     /// <summary>
     /// 通常攻撃ステートに入った時の処理
@@ -127,10 +156,31 @@ private:
     /// </summary>
     void SkillChargeTimeProcess();
 
+
+    /// <summary>
+    /// 矢を生成
+    /// </summary>
+    /// <param name="weaponState">武器(弓)のステート</param>
+    void CreateArrow(EnWeaponState weaponState);
+
+    /// <summary>
+    /// 通常攻撃で矢を放つ
+    /// </summary>
+    void ShotNromalAttackArrow();
+    /// <summary>
+    /// スキル攻撃で矢を放つ
+    /// </summary>
+    void ShotSkillAttackArrow();
+
+
+
 private:
     BowArrowStatus m_uniqueStatus;
 
     PlayerController* m_playerController = nullptr;
+    PlayerMovement* m_playerMovement = nullptr;
+
+    Arrow* m_arrow = nullptr;
 
     ModelRender m_bowModelRender;         //ボウのモデルレンダー
 
@@ -141,13 +191,17 @@ private:
 
     Vector3 m_normalAttackMoveDirection = g_vec3Zero;
 
+
+    int m_arrowNameId = -1;
+
     //武器を持たせる時のボーンID
     int m_armedBowBoonId = -1;
     int m_armedArrowBoonId = -1;
 
 
     float m_skillChargeTimer = 0.0f;
+    bool m_ispossibleSkillAttack = false;
 
-
+    int m_comboNumber = 0;
 };
 

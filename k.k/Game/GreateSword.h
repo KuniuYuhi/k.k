@@ -23,6 +23,9 @@ public:
 
     void Render(RenderContext& rc) override;
 
+    void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
+
+
 
     void Init() override;
 
@@ -61,6 +64,22 @@ public:
     /// 回避、防御アクション中の更新処理
     /// </summary>
     void UpdateDefensiveActionProcess() override;
+    /// <summary>
+    /// 回避、防御アクションを終わる時の処理
+    /// </summary>
+    void ExitDefensiveActionProcess() override;
+
+    /// <summary>
+    /// 回避、防御アクションが行えるか
+    /// </summary>
+    /// <returns>行えるならtrue</returns>
+    bool CanDefensiveAction() override;
+    /// <summary>
+    /// スキル攻撃が行えるか
+    /// </summary>
+    /// <returns>行えるならtrue</returns>
+    bool CanSkillAttack() override;
+
 
     /// <summary>
     /// 通常攻撃ステートに入った時の処理
@@ -88,6 +107,11 @@ public:
     /// </summary>
     void ExitSkillAttackProcess(EnSkillProcessState skillProcessState) override;
 
+    /// <summary>
+    /// 攻撃の瞬間の処理
+    /// </summary>
+    /// <param name="startOrEnd">startはtrue</param>
+    void AttackImpactProcess(bool startOrEnd) override;
 
 
 private:
@@ -100,6 +124,11 @@ private:
     /// 当たり判定初期化
     /// </summary>
     void InitCollision();
+
+    /// <summary>
+    /// スキル攻撃用コリジョン作成
+    /// </summary>
+    void CreateSkillAttackCollision();
 
 
     /// <summary>
@@ -129,7 +158,10 @@ private:
     void ExitSkillMainProcess();
 
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     bool IsSkillFlightTimeOver();
 
 
@@ -145,6 +177,7 @@ private:
 
 
     Matrix m_swordMatrix;
+    Matrix m_swordCenterMatrix;
 
 
     Vector3 m_defensiveActionDirection = g_vec3Zero;
@@ -159,7 +192,8 @@ private:
 
 
 
-    float m_skillFlightTimer = 0.0f;
+    float m_skillFlightTimer = 0.0f;        //スキルスタート中空に浮いている時間計測タイマー
+    bool isMoveSkillAttack = false;         //スキル中移動できるか
 
 
 

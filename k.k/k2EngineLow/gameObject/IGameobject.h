@@ -55,6 +55,14 @@ namespace nsK2EngineLow {
 		}
 
 	public:
+
+
+		/*!
+		*@brief モデルの読み込み。
+		モデルの読み込みは時間がかかるので先に読み込んでおきたいときに呼ぶ
+		*/
+		virtual void InitModel(){}
+
 		/*!
 		*@brief Start関数が完了した？
 		*/

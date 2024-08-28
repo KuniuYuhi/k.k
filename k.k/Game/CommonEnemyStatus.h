@@ -99,6 +99,15 @@ public:
 	}
 
 	/// <summary>
+	/// 攻撃のインターバルを取得
+	/// </summary>
+	/// <returns></returns>
+	const float& GetAttackIntarval() const
+	{
+		return m_commonEnemyStatus.attackIntarval;
+	}
+
+	/// <summary>
 	/// 接近できる距離を取得
 	/// </summary>
 	/// <returns></returns>

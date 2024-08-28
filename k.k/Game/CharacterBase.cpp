@@ -12,3 +12,15 @@ void CharacterBase::SetRotateDirection(Vector3 direction)
 	m_rotateDirection = direction;
 }
 
+void CharacterBase::CreateDamageFont(
+	int hitDamage, DamageFont::EnDamageActor hitActor
+)
+{
+	DamageFont* damagefont = NewGO<DamageFont>(0, "damagefont");
+	damagefont->Setting(
+		hitActor,
+		hitDamage,
+		m_position
+	);
+}
+

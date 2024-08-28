@@ -59,6 +59,21 @@ public:
 
 private:
 
+	/// <summary>
+	/// カメラの前方向を取得。正規化済み
+	/// </summary>
+	/// <returns></returns>
+	Vector3 GetCameraForward();
+	/// <summary>
+	/// カメラの右方向を取得。正規化済み
+	/// </summary>
+	/// <returns></returns>
+	Vector3 GetCameraRight();
+
+
+
+private:
+
 	Brave* m_brave = nullptr;
 
 

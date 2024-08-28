@@ -62,7 +62,11 @@ void SwordShieldStatus::LoadUniqueStatusCSV()
 
 		//シールドの耐久値を読み込む。
 		getline(i_stream, buf, ',');
-		statusData.m_uniqueStatus.shieldEnduranceValue = stoi(buf);
+		statusData.m_uniqueStatus.maxShieldEnduranceValue = stoi(buf);
+
+
+		//現在のシールドの耐久値を設定する
+		statusData.SetCurrentShieldEnduranceValue(statusData.m_uniqueStatus.maxShieldEnduranceValue);
 
 		//マップに取得したデータを代入
 		StatusDataMAP = statusData;

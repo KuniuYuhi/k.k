@@ -98,6 +98,11 @@ void WaveManager::SummonMobEnemys()
 
 		enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Slime>("Slime");
 
+		//enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<BeholderEye>("BeholderEye");
+
+		//enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Mimic>("Mimic");
+
+
 		//エネミーの座標を生成座標にする
 		enemy->SetPosition(m_createPositions[i]);
 
