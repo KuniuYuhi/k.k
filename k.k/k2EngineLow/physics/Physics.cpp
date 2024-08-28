@@ -160,4 +160,6 @@ namespace nsK2EngineLow {
 	{
 		ContactTest(*charaCon.GetRigidBody(), cb);
 	}
+
+	
 }
