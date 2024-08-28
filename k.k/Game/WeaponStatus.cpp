@@ -99,7 +99,7 @@ void WeaponStatus::LoadWeaponCommonStatusCSV(const std::string& name)
 
 
 		//現在の攻撃力を設定
-		SetCurrentPower(statusData.m_status.defaultPower);
+		statusData.SetCurrentPower(statusData.m_status.defaultPower);
 
 		//マップに取得したデータを代入
 		StatusDataMAP[statusData.name] = statusData;
@@ -132,31 +132,31 @@ EnKnockBackPattern WeaponStatus::StringToKnockBackPattern(std::string& knockBack
 	//地面に接したまま少し後ずさるパターン
 	if (knockBackPattern == "ShortGroundedRetreat")
 	{
-		return EnKnockBackPattern::ShortGroundedRetreat;
+		return EnKnockBackPattern::enKBPattern_ShortGroundedRetreat;
 	}
 	//地面に接したまま長めに後ずさるパターン
 	else if (knockBackPattern == "LongGroundedRetreat")
 	{
-		return EnKnockBackPattern::LongGroundedRetreat;
+		return EnKnockBackPattern::enKBPattern_LongGroundedRetreat;
 	}
 	//少し吹っ飛びながら後ずさるパターン
 	else if (knockBackPattern == "SlightAirborneRetreat")
 	{
-		return EnKnockBackPattern::SlightAirborneRetreat;
+		return EnKnockBackPattern::enKBPattern_SlightAirborneRetreat;
 	}
 	//強めに吹っ飛びながら後ずさるパターン
 	else if (knockBackPattern == "FullAirborneRetreat")
 	{
-		return EnKnockBackPattern::FullAirborneRetreat;
+		return EnKnockBackPattern::enKBPattern_FullAirborneRetreat;
 	}
 	//その場から動かずに空中に吹っ飛ぶ(空中に浮く)
 	else if (knockBackPattern == "VerticalLaunch")
 	{
-		return EnKnockBackPattern::VerticalLaunch;
+		return EnKnockBackPattern::enKBPattern_VerticalLaunch;
 	}
 
 	//ここまで来たらいけない
 	std::abort();
-	return EnKnockBackPattern::enPattern_Num;
+	return EnKnockBackPattern::enKnockBackPattern_Num;
 
 }

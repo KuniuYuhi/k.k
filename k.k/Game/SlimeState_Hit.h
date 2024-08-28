@@ -43,5 +43,7 @@ private:
 	Slime* m_slime = nullptr;
 	SlimeStateContext* m_stateCotext = nullptr;
 
+	bool m_playAnimationResetFlag = true;
+
 };
 

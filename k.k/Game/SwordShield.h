@@ -69,6 +69,20 @@ public:
     void ExitDefensiveActionProcess() override;
 
     /// <summary>
+    /// 回避、防御ヒットに入ったときの最初の処理
+    /// </summary>
+    void EntryDefensiveHitProcess() override;
+    /// <summary>
+    /// 回避、防御ヒット中の更新処理
+    /// </summary>
+    void UpdateDefensiveHitProcess() override;
+    /// <summary>
+    /// 回避、防御ヒットを抜け出す時の処理
+    /// </summary>
+    void ExitDefensiveHitProcess() override;
+
+
+    /// <summary>
     /// 回避、防御アクションが行えるか
     /// </summary>
     /// <returns>行えるならtrue</returns>
@@ -104,6 +118,12 @@ public:
     /// スキル攻撃ステートを抜け出す時の処理
     /// </summary>
     void ExitSkillAttackProcess(EnSkillProcessState skillProcessState) override;
+
+    /// <summary>
+    /// 攻撃の瞬間の処理
+    /// </summary>
+    /// <param name="startOrEnd">startはtrue</param>
+    void AttackImpactProcess(bool startOrEnd) override;
 
 
 private:
@@ -148,8 +168,15 @@ private:
     /// </summary>
     void ExitSkillMainProcess();
 
+    /// <summary>
+    /// 盾の当たり判定をチェック
+    /// </summary>
+    void CheckShieldCollision();
 
-
+    /// <summary>
+    /// シールドにヒットした時の処理
+    /// </summary>
+    void ProcessShieldHit();
 
 private:
 
@@ -178,7 +205,7 @@ private:
     int m_swordCenterBoonId = -1;           //剣の中心のボーンID
 
 
-   
+    bool m_isHitShield = false;
 
 };
 

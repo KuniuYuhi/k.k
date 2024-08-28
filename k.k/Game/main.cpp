@@ -11,6 +11,11 @@
 #include "EnemyObjectPool.h"
 #include "EnemyManager.h"
 
+
+#include "KnockBackInfoManager.h"
+
+
+
 // K2EngineLowのグローバルアクセスポイント。
 K2EngineLow* g_k2EngineLow = nullptr;
 
@@ -48,13 +53,19 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//GameSceneManager::CreateInstanceAndSetGameSceneState(enGameSceneState_Title);
 
 
-	//エネミーオブジェクトプールを生成
-	EnemyObjectPool::CreateInstance();
-
-	EnemyObjectPool::GetInstance()->Init();
-
 	//エネミー管理するマネージャーを生成
 	EnemyManager::CreateInstance();
+
+	//エネミーオブジェクトプールを生成
+	EnemyObjectPool::CreateInstance();
+	//初期化処理
+	EnemyObjectPool::GetInstance()->Init();
+
+	//ノックバック情報マネージャーを生成
+	KnockBackInfoManager::CreateInstance();
+	//初期化処理
+	KnockBackInfoManager::GetInstance()->Init();
+
 
 	//Title* title = NewGO<Title>(0, "game");
 	Game* game = NewGO<Game>(2, "game");
@@ -85,8 +96,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	//GameSceneManager::GetInstance()->DeleteInstance();
 
-	EnemyManager::GetInstance()->DeleteInstance();
 
+	KnockBackInfoManager::GetInstance()->DeleteInstance();
+
+	//エネミー管理マネージャーを削除
+	EnemyManager::GetInstance()->DeleteInstance();
+	//エネミーオブジェクトプールを削除
 	EnemyObjectPool::GetInstance()->DeleteInstance();
 
 	return 0;

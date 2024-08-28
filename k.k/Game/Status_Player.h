@@ -17,7 +17,7 @@ private:
 		int maxHp = 0;					//HP‚ÌÅ‘å’l
 		int currentHp = 0;				//Œ»İ‚ÌHP
 		int defaultPower = 0;				//Šî‘bUŒ‚—Í
-		int currentPower = 0;				//Œ»İ‚ÌUŒ‚—Í
+		int currentPower = 0;				//Œ»İ‚ÌUŒ‚—Í(©g‚ÌUŒ‚—Í+•Ší‚ÌUŒ‚—Í)
 		float maxStamina = 0;			//ƒXƒ^ƒ~ƒi‚ÌÅ‘å’l
 		float staminaRecoveryRate = 0.0f;		//ƒXƒ^ƒ~ƒi‚Ì‰ñ•œ‘¬“x”{—¦
 		float currentStamina = 0;		//Œ»İ‚ÌƒXƒ^ƒ~ƒi
@@ -77,10 +77,10 @@ public:
 	}
 
 	/// <summary>
-	/// Œ»İ‚ÌUŒ‚—Í‚Ìİ’è
+	/// Œ»İ‚ÌUŒ‚—Í‚Ìİ’è(Å‰‚Ég‚¤‚¾‚¯)
 	/// </summary>
 	/// <param name="setAtk"></param>
-	void SetAtk(const int setAtk)
+	void SetCurrentPower(const int setAtk)
 	{
 		m_playerStatus.currentPower = setAtk;
 	}
@@ -88,17 +88,27 @@ public:
 	/// Œ»İ‚ÌUŒ‚—Í‚Ìæ“¾
 	/// </summary>
 	/// <returns></returns>
-	const int& GetAtk() const
+	const int& GetCurrentPower() const
 	{
 		return m_playerStatus.currentPower;
 	}
 	/// <summary>
-	/// Œ»İ‚ÌUŒ‚—Í‚ğ‘‚â‚·
+	/// Šî‘bUŒ‚—Í‚ğ‘‚â‚·
 	/// </summary>
 	/// <param name="addPower">‰ÁZ‚·‚éUŒ‚—Í</param>
-	void AddPowerToCurrentPower(int addPower)
+	void AddPowerToDefaultPower(int addPower)
 	{
-		m_playerStatus.currentPower += addPower;
+		m_playerStatus.defaultPower += addPower;
+	}
+
+	/// <summary>
+	/// •ŠíØ‚è‘Ö‚¦‚ÌUŒ‚—Í‚Ìİ’è
+	/// </summary>
+	/// <param name="weaponPower">•Ší‚ÌUŒ‚—Í</param>
+	void ChangeWeaponCalcCurrentPower(int weaponPower)
+	{
+		//Œ»İ‚ÌUŒ‚—Í‚ğŒvZ
+		m_playerStatus.currentPower = m_playerStatus.defaultPower + weaponPower;
 	}
 
 	/// <summary>

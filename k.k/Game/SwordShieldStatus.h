@@ -49,6 +49,21 @@ public:
 
 
 
+	const float& GetAttackTimeScale(int num)
+	{
+		switch (num)
+		{
+		case 0:
+			return FirstAttackTimeScale();
+		case 1:
+			return SecondAttackTimeScale();
+		case 2:
+			return ThirdAttackTimeScale();
+		default:
+			break;
+		}
+	}
+
 	const float& FirstAttackTimeScale()
 	{
 		return m_uniqueStatus.firstAttackTimeScale;
@@ -103,6 +118,22 @@ public:
 	}
 
 
+
+
+	/// <summary>
+	/// シールドの耐久値の減算
+	/// </summary>
+	/// <param name="subValue">減算したい値</param>
+	void SubShieldEnduranceValue(int subValue)
+	{
+		m_uniqueStatus.currentShieldEnduranceValue -= subValue;
+
+		if (m_uniqueStatus.currentShieldEnduranceValue <= 0)
+		{
+			m_uniqueStatus.currentShieldEnduranceValue = 0;
+		}
+
+	}
 
 
 	//CSVの情報を保存したマップ

@@ -99,7 +99,7 @@ public:
 
 
 	/// <summary>
-	/// 
+	/// メイン武器のタイプを取得
 	/// </summary>
 	/// <returns></returns>
 	EnWeaponType GetMainWeaponType() const
@@ -115,6 +115,11 @@ public:
 	{
 		return m_changeTargetWeaponType;
 	}
+
+
+
+	
+
 
 
 private:

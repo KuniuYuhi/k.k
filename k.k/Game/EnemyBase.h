@@ -25,6 +25,30 @@ public:
 		return m_status;
 	}
 
+	/// <summary>
+	/// アクション中か
+	/// </summary>
+	/// <returns></returns>
+	const bool IsAction()
+	{
+		return isAction;
+	}
+	/// <summary>
+	/// アクション中にする
+	/// </summary>
+	void ActionActive()
+	{
+		isAction = true;
+	}
+	/// <summary>
+	/// アクションを終わる
+	/// </summary>
+	void ActionDeactive()
+	{
+		isAction = false;
+	}
+
+
 
 protected:
 
@@ -40,7 +64,10 @@ protected:
 	//基本的なステータス
 	CommonEnemyStatus m_status;
 
-	CollisionObject* m_collisionObj = nullptr;		//当たり判定用コリジョン
+	
+
+
+	bool isAction = false;		//アクション中かのフラグ
 
 };
 

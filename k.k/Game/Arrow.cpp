@@ -1,6 +1,12 @@
 #include "stdafx.h"
+
 #include "Arrow.h"
 #include "Brave.h"
+#include "Bow.h"
+#include "DamageProvider.h"
+#include "KnockBackInfoManager.h"
+
+using namespace KnockBackInfo;
 
 
 namespace {
@@ -35,7 +41,7 @@ bool Arrow::Start()
 
 	Init();
 
-
+	InitComponent();
 
 	return true;
 }
@@ -43,6 +49,8 @@ bool Arrow::Start()
 void Arrow::Update()
 {
 	ManageShotPatternState();
+
+	m_damageProvider->UpdateComponent();
 
 	//モデルの更新処理。TRSは移動時に設定
 	m_arrowModelRender.Update();
@@ -63,6 +71,12 @@ void Arrow::Init()
 	//矢を持つ座標のボーンIDを取得
 	m_armedArrowBoonId = m_brave->GetModelRender().FindBoneID(L"weaponShield_r");
 
+}
+
+void Arrow::InitComponent()
+{
+	AddComponent<DamageProvider>();
+	m_damageProvider = GetComponent<DamageProvider>();
 }
 
 void Arrow::ManageShotPatternState()
@@ -90,11 +104,19 @@ void Arrow::UpdateNormalShotState()
 		DeleteGO(this);
 	}
 
+	//todo 当たり判定処理
+	if (m_damageProvider->IsHit())
+	{
+		DeleteGO(this);
+		return;
+	}
+
 
 	m_deleteTimer += g_gameTime->GetFrameDeltaTime();
 
+	ShotArrowMove(enNormalShot);
 
-	Vector3 moveSpeed = m_forward;
+	/*Vector3 moveSpeed = m_forward;
 
 	moveSpeed *= m_statusMap.at(enNormalShot).GetArrowSpeed();
 
@@ -104,7 +126,7 @@ void Arrow::UpdateNormalShotState()
 
 	m_arrowCollision->SetWorldMatrix(m_arrowCenterMatrix);
 
-	m_arrowCollision->Update();
+	m_arrowCollision->Update();*/
 }
 
 void Arrow::UpdateSkillShotState()
@@ -116,10 +138,22 @@ void Arrow::UpdateSkillShotState()
 	}
 
 
+	//一定時間ごとにダメージIDを変更して多段ヒットできるようにする
+	if (m_attackInfoUpdateTimer > m_attackInfoUpdateTimeLimit)
+	{
+		//IDを新しく設定
+		m_damageProvider->SetAttackId(KnockBackInfoManager::GetInstance()->GetAddAttackId());
+		//タイマーリセット
+		m_attackInfoUpdateTimer = 0.0f;
+	}
+
+	//各種タイマー加算
 	m_deleteTimer += g_gameTime->GetFrameDeltaTime();
+	m_attackInfoUpdateTimer+= g_gameTime->GetFrameDeltaTime();
 
+	ShotArrowMove(enSkillShot);
 
-	Vector3 moveSpeed = m_forward;
+	/*Vector3 moveSpeed = m_forward;
 
 	moveSpeed *= m_statusMap.at(enSkillShot).GetArrowSpeed();
 
@@ -129,7 +163,7 @@ void Arrow::UpdateSkillShotState()
 
 	m_arrowCollision->SetWorldMatrix(m_arrowCenterMatrix);
 
-	m_arrowCollision->Update();
+	m_arrowCollision->Update();*/
 }
 
 void Arrow::UpdateNoneState()
@@ -141,6 +175,20 @@ void Arrow::UpdateNoneState()
 	MoveArmed();
 
 
+}
+
+void Arrow::ShotArrowMove(EnShotPatternState shotPattern)
+{
+	Vector3 moveSpeed = m_forward;
+	moveSpeed *= m_statusMap.at(shotPattern).GetArrowSpeed();
+
+	//座標を加算
+	m_arrowModelRender.AddPosition(moveSpeed);
+	//弓の真ん中のワールド座標を取得
+	m_arrowCenterMatrix = m_arrowModelRender.GetBone(m_arrowCentorBoonId)->GetWorldMatrix();
+	//コリジョンにワールド座標を設定、更新
+	m_arrowCollision->SetWorldMatrix(m_arrowCenterMatrix);
+	m_arrowCollision->Update();
 }
 
 void Arrow::FixedAttaackArrowTransform()
@@ -163,7 +211,10 @@ void Arrow::CreateCollision(
 {
 	//矢の通常攻撃用の当たり判定の生成
 	m_arrowCollision = NewGO<CollisionObject>(
-		0, g_collisionObjectManager->m_attackCollisionName);
+		0, g_collisionObjectManager->m_playerAttackCollisionName);
+	//コリジョンの制作者を自身に設定
+	m_arrowCollision->SetCreatorName(GetName());
+	//コリジョンの形状はボックス
 	m_arrowCollision->CreateBox(
 		createPosition,
 		rotation,
@@ -175,6 +226,13 @@ void Arrow::CreateCollision(
 	m_arrowCollision->SetWorldMatrix(m_arrowCenterMatrix);
 	m_arrowCollision->Update();
 
+}
+
+bool Arrow::IsHitCollision()
+{
+
+
+	return false;
 }
 
 void Arrow::SetShotArrowParameters(

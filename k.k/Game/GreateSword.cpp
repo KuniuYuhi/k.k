@@ -3,6 +3,9 @@
 #include "Brave.h"
 #include "PlayerMovement.h"
 #include "PlayerController.h"
+#include "DamageProvider.h"
+
+#include "KnockBackInfoManager.h"
 
 namespace {
 
@@ -107,9 +110,11 @@ void GreateSword::InitCollision()
 	//剣の当たり判定
 	m_swordCollision =
 		NewGO<CollisionObject>
-		(0, g_collisionObjectManager->m_attackCollisionName
+		(0, g_collisionObjectManager->m_playerAttackCollisionName
 		);
-
+	//コリジョンの制作者をプレイヤーに設定
+	m_swordCollision->SetCreatorName(m_brave->GetName());
+	//コリジョンの形状はボックス
 	m_swordCollision->CreateBox(
 		m_stowedPosition,
 		Quaternion::Identity,
@@ -134,7 +139,10 @@ void GreateSword::CreateSkillAttackCollision()
 
 	//スキル攻撃時の当たり判定の生成
 	//自動で消える
-	auto skillCollision = NewGO<CollisionObject>(0, g_collisionObjectManager->m_attackCollisionName);
+	auto skillCollision = NewGO<CollisionObject>(0, g_collisionObjectManager->m_playerAttackCollisionName);
+	//コリジョンの制作者をプレイヤーに設定
+	skillCollision->SetCreatorName(m_brave->GetName());
+	//コリジョンの形状は球
 	skillCollision->CreateSphere(
 		hitPosition,
 		g_quatIdentity,
@@ -190,9 +198,13 @@ void GreateSword::EntryDefensiveActionProcess()
 	m_brave->SetRotateDirection(m_defensiveActionDirection);
 	m_brave->SetForward(m_defensiveActionDirection);
 
+	m_defensiveActionDirection.y = 0.0f;
+
 	//回避速度をかける
-	m_defensiveActionDirection.x *= m_uniqueStatus.GetDefenciveMoveSpeed();
-	m_defensiveActionDirection.z *= m_uniqueStatus.GetDefenciveMoveSpeed();
+	m_defensiveActionDirection *= m_uniqueStatus.GetDefenciveMoveSpeed();
+
+	//回避中は無敵
+	m_brave->EnableInvincible();
 }
 
 void GreateSword::UpdateDefensiveActionProcess()
@@ -203,6 +215,20 @@ void GreateSword::UpdateDefensiveActionProcess()
 		//回避中の移動処理
 		m_brave->CharaConExecute(m_defensiveActionDirection);
 	}
+
+	//回避アクションを終わるなら
+	if (IsEndDefensiveAction())
+	{
+		//ステートの共通処理
+		m_brave->ProcessCommonStateTransition();
+	}
+
+}
+
+void GreateSword::ExitDefensiveActionProcess()
+{
+	//無敵を解除
+	m_brave->DisableInvincible();
 }
 
 bool GreateSword::CanDefensiveAction()
@@ -251,22 +277,8 @@ void GreateSword::EntryNormalAttackProcess(EnComboState comboState)
 	m_brave->SetRotateDirection(m_normalAttackMoveDirection);
 	m_brave->SetForward(m_normalAttackMoveDirection);
 
-	int comboNum = 0;
-	switch (comboState)
-	{
-	case WeaponBase::enCombo_First:
-		comboNum = 0;
-		break;
-	case WeaponBase::enCombo_Second:
-		comboNum = 1;
-		break;
-	case WeaponBase::enCombo_Third:
-		comboNum = 2;
-		break;
-	default:
-		std::abort();
-		break;
-	}
+	//コンボステートを番号に変換する
+	int comboNum = ConvertComboStateToNumber(comboState);
 
 	//武器ステータスから攻撃スピードを取得して方向にかける
 	m_normalAttackMoveDirection *= m_uniqueStatus.GetNormalAttackSpeed(comboNum);
@@ -274,7 +286,15 @@ void GreateSword::EntryNormalAttackProcess(EnComboState comboState)
 	//通常攻撃待機区間フラグをリセット
 	SetStandbyPeriodFlag(false);
 	//キャンセルアクションフラグを立てる。(キャンセルアクションできる)
-	m_isPossibleCancelAction = true;
+	m_isImpossibleancelAction = true;
+
+	//ダメージ情報を設定
+	m_brave->GetDamageProvider()->SetDamageInfo(
+		KnockBackInfoManager::GetInstance()->GetAddAttackId(), m_brave->GetCurrentPower(),
+		m_uniqueStatus.GetAttackTimeScale(comboNum),
+		m_status.GetComboKnockBackPattern(static_cast<WeaponStatus::EnCombo>(comboNum)),
+		m_status.GetWeaponAttribute()
+	);
 
 }
 
@@ -282,7 +302,7 @@ void GreateSword::UpdateNormalAttackProcess(EnComboState comboState)
 {
 	//キャンセルアクションできる状態なら回避も可能
 	//三コンボ目は回避不可能
-	if (m_isPossibleCancelAction && 
+	if (m_isImpossibleancelAction && 
 		IsStandbyPeriod() &&
 		m_playerController->IsPressDefensiveActionButton()&&
 		comboState!=enCombo_Third)
@@ -305,6 +325,8 @@ void GreateSword::ExitNormalAttackProcess(EnComboState comboState)
 	SetAttackActionMove(false);
 	//通常攻撃待機区間フラグをリセット
 	SetStandbyPeriodFlag(false);
+	//一応当たり判定を無効化しておく
+	m_swordCollision->SetIsEnable(false);
 }
 
 void GreateSword::EntrySkillAttackProcess(EnSkillProcessState skillProcessState)
@@ -352,12 +374,23 @@ void GreateSword::ExitSkillAttackProcess(EnSkillProcessState skillProcessState)
 	}
 }
 
+void GreateSword::AttackImpactProcess(bool startOrEnd)
+{
+	//キャンセルアクションフラグを設定
+	m_isImpossibleancelAction = startOrEnd;
+
+	//当たり判定の有効化、無効化の設定
+	m_swordCollision->SetIsEnable(startOrEnd);
+}
+
 void GreateSword::EntrySkillStartProcess()
 {
 	//滞空時間タイマーをリセット
 	m_skillFlightTimer = 0.0f;
 	//スキル中移動できるかフラグをリセット
 	isMoveSkillAttack = false;
+	//スキルメインステートに進むかのフラグをリセット
+	m_brave->SetProceedSkillMainFlag(false);
 }
 
 void GreateSword::UpdateSkillStartProcess()
@@ -368,6 +401,8 @@ void GreateSword::UpdateSkillStartProcess()
 		//アニメーションが終わったら
 		if (m_brave->GetModelRender().IsPlayingAnimation() == false)
 		{
+			//スキルメインステートに進むよ
+			m_brave->SetProceedSkillMainFlag(true);
 			//メインステートに遷移
 			m_brave->ChangeBraveState(BraveState::enBraveState_SkillMain);
 		}
@@ -398,6 +433,16 @@ void GreateSword::ExitSkillStartProcess()
 
 void GreateSword::EntrySkillMainProcess()
 {
+	//ダメージ情報を設定
+	m_brave->GetDamageProvider()->SetDamageInfo(
+		KnockBackInfoManager::GetInstance()->GetAddAttackId(), m_brave->GetCurrentPower(),
+		m_uniqueStatus.SkillAttackTimeScale(),
+		m_status.GetSkillKnockBackPattern(),
+		m_status.GetWeaponAttribute()
+	);
+
+	//メインに進んだので無敵にする
+	m_brave->EnableInvincible();
 }
 
 void GreateSword::UpdateSkillMainProcess()
@@ -406,6 +451,9 @@ void GreateSword::UpdateSkillMainProcess()
 
 void GreateSword::ExitSkillMainProcess()
 {
+
+	//無敵を無効化する
+	m_brave->DisableInvincible();
 }
 
 bool GreateSword::IsSkillFlightTimeOver()
@@ -448,6 +496,9 @@ void GreateSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 	{
 		//ここから先移動できる
 		isMoveSkillAttack = true;
+
+		//空中に浮いてからは無敵にする
+		m_brave->EnableInvincible();
 
 		//エフェクトや音の再生
 

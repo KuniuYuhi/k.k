@@ -64,6 +64,10 @@ public:
     /// 回避、防御アクション中の更新処理
     /// </summary>
     void UpdateDefensiveActionProcess() override;
+    /// <summary>
+    /// 回避、防御アクションを終わる時の処理
+    /// </summary>
+    void ExitDefensiveActionProcess() override;
 
     /// <summary>
     /// 回避、防御アクションが行えるか
@@ -103,6 +107,11 @@ public:
     /// </summary>
     void ExitSkillAttackProcess(EnSkillProcessState skillProcessState) override;
 
+    /// <summary>
+    /// 攻撃の瞬間の処理
+    /// </summary>
+    /// <param name="startOrEnd">startはtrue</param>
+    void AttackImpactProcess(bool startOrEnd) override;
 
 
 private:

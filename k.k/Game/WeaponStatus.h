@@ -16,14 +16,16 @@ using namespace KnockBackInfo;
 /// </summary>
 class WeaponStatus
 {
-private:
-
+public:
 	enum EnCombo
 	{
-		FirstCombo = 1,
+		FirstCombo,
 		SecondCombo,
 		ThirdCombo
 	};
+private:
+
+	
 
 	/// <summary>
 	/// ステータス
@@ -72,7 +74,7 @@ public:
 	/// 現在の攻撃力の設定
 	/// </summary>
 	/// <param name="setAtk"></param>
-	void SetCurrentPower(const int setCurrentPower)
+	void SetCurrentPower(int setCurrentPower)
 	{
 		m_status.currentPower = setCurrentPower;
 	}
@@ -143,6 +145,11 @@ public:
 			std::abort();
 			break;
 		}
+	}
+
+	const EnKnockBackPattern GetSkillKnockBackPattern()
+	{
+		return m_status.m_SkillPattern;
 	}
 
 	//csvは使わない

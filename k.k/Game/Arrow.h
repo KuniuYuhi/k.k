@@ -4,6 +4,8 @@
 
 class Brave;
 class ArrowStatus;
+class DamageProvider;
+class Bow;
 
 /// <summary>
 /// 武器：ボウが使うアロークラス
@@ -40,6 +42,25 @@ public:
 
 	void Render(RenderContext& rc) override;
 
+
+	/// <summary>
+	/// 弓のインスタンスを設定
+	/// </summary>
+	/// <param name="bow"></param>
+	void SetBowInstance(Bow* bow)
+	{
+		m_bow = bow;
+	}
+
+	/// <summary>
+	/// ダメージプロバイダーを取得
+	/// </summary>
+	/// <returns></returns>
+	DamageProvider* GetDamageProvider()
+	{
+		return m_damageProvider;
+	}
+
 	/// <summary>
 	/// ショットパターンを設定
 	/// </summary>
@@ -56,6 +77,33 @@ public:
 	void SetWeaponState(EnWeaponState setWeaponState)
 	{
 		m_enWeaponState = setWeaponState;
+	}
+
+	/// <summary>
+	/// スキル攻撃時の情報の設定
+	/// </summary>
+	/// <param name="power">スキル攻撃力</param>
+	/// <param name="interval">攻撃情報更新インターバル</param>
+	void SetSkillShotInfo(int power, int interval)
+	{
+		SetDefaultSkillAttackPower(power);
+		SetAttackInfoUpdateTimeLimit(interval);
+	}
+	/// <summary>
+	/// 基本スキル攻撃力を設定
+	/// </summary>
+	/// <param name="power"></param>
+	void SetDefaultSkillAttackPower(int power)
+	{
+		m_defaultSkillAttackPower = power;
+	}
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="timeLimit"></param>
+	void SetAttackInfoUpdateTimeLimit(float timeLimit)
+	{
+		m_attackInfoUpdateTimeLimit = timeLimit;
 	}
 
 	/// <summary>
@@ -88,12 +136,16 @@ public:
 
 	
 
-
 private:
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	void Init();
+
+	/// <summary>
+	/// コンポーネントを設定
+	/// </summary>
+	void InitComponent();
 
 	/// <summary>
 	/// ショットパターンによるステートの管理
@@ -113,12 +165,19 @@ private:
 	/// </summary>
 	void UpdateNoneState();
 	
+	/// <summary>
+	/// 放たれた矢の移動
+	/// </summary>
+	void ShotArrowMove(EnShotPatternState shotPattern);
+
 
 
 	/// <summary>
 	/// 攻撃時の矢のトランスフォームの修正
 	/// </summary>
 	void FixedAttaackArrowTransform();
+
+
 	/// <summary>
 	/// 当たり判定を作成
 	/// </summary>
@@ -132,12 +191,23 @@ private:
 	);
 
 
+	/// <summary>
+	/// コリジョンに何かヒットしたか
+	/// </summary>
+	/// <returns></returns>
+	bool IsHitCollision();
+
+
 private:
 
 
 	Brave* m_brave = nullptr;
 
+	Bow* m_bow = nullptr;
+
 	ModelRender m_arrowModelRender;
+
+	DamageProvider* m_damageProvider = nullptr;
 
 	CollisionObject* m_arrowCollision = nullptr;	//矢の当たり判定
 
@@ -166,6 +236,11 @@ private:
 
 
 	float m_deleteTimer = 0.0f;
+
+	int m_defaultSkillAttackPower = 0;
+
+	float m_attackInfoUpdateTimeLimit = 0.0f;
+	float m_attackInfoUpdateTimer = 0.0f;
 
 
 };

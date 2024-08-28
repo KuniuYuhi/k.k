@@ -142,7 +142,7 @@ public:
 	/// キャラクターの攻撃力の設定
 	/// </summary>
 	/// <param name="setAtk"></param>
-	void SetAtk(const int setAtk)
+	void SetCurrentPower(const int setAtk)
 	{
 		characterStatus.atk = setAtk;
 	}
@@ -150,7 +150,7 @@ public:
 	/// キャラクターの攻撃力の取得
 	/// </summary>
 	/// <returns></returns>
-	const int& GetAtk() const
+	const int& GetCurrentPower() const
 	{
 		return characterStatus.atk;
 	}

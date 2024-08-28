@@ -6,6 +6,9 @@
 
 #include "Arrow.h"
 
+#include "DamageProvider.h"
+#include "KnockBackInfoManager.h"
+
 namespace {
 	
 
@@ -159,9 +162,13 @@ void Bow::EntryDefensiveActionProcess()
 	m_brave->SetRotateDirection(m_defensiveActionDirection);
 	m_brave->SetForward(m_defensiveActionDirection);
 
+	m_defensiveActionDirection.y = 0.0f;
+
 	//回避速度をかける
-	m_defensiveActionDirection.x *= m_uniqueStatus.GetDefenciveMoveSpeed();
-	m_defensiveActionDirection.z *= m_uniqueStatus.GetDefenciveMoveSpeed();
+	m_defensiveActionDirection *= m_uniqueStatus.GetDefenciveMoveSpeed();
+
+	//回避中は無敵
+	m_brave->EnableInvincible();
 }
 
 void Bow::UpdateDefensiveActionProcess()
@@ -171,6 +178,19 @@ void Bow::UpdateDefensiveActionProcess()
 	{
 		m_brave->CharaConExecute(m_defensiveActionDirection);
 	}	
+
+	//回避アクションを終わるなら
+	if (IsEndDefensiveAction())
+	{
+		//ステートの共通処理
+		m_brave->ProcessCommonStateTransition();
+	}
+}
+
+void Bow::ExitDefensiveActionProcess()
+{
+	//無敵を解除
+	m_brave->DisableInvincible();
 }
 
 bool Bow::CanDefensiveAction()
@@ -265,36 +285,24 @@ void Bow::EntryNormalAttackProcess(EnComboState comboState)
 	m_brave->SetRotateDirection(m_normalAttackMoveDirection);
 	m_brave->SetForward(m_normalAttackMoveDirection);
 
-	int comboNum = 0;
-	switch (comboState)
-	{
-	case WeaponBase::enCombo_First:
-		comboNum = 0;
-		break;
-	case WeaponBase::enCombo_Second:
-		comboNum = 1;
-		break;
-	case WeaponBase::enCombo_Third:
-		comboNum = 2;
-		break;
-	default:
-		std::abort();
-		break;
-	}
+	//コンボステートを番号に変換する
+	m_comboNumber = ConvertComboStateToNumber(comboState);
 
 	//武器ステータスから攻撃スピードを取得して方向にかける
-	m_normalAttackMoveDirection *= m_uniqueStatus.GetNormalAttackSpeed(comboNum);
+	m_normalAttackMoveDirection *= m_uniqueStatus.GetNormalAttackSpeed(m_comboNumber);
 
 	//通常攻撃待機区間フラグをリセット
 	SetStandbyPeriodFlag(false);
 	//キャンセルアクションフラグを立てる。(キャンセルアクションできる)
-	m_isPossibleCancelAction = true;
+	m_isImpossibleancelAction = true;
+
+	
 }
 
 void Bow::UpdateNormalAttackProcess(EnComboState comboState)
 {
 	//キャンセルアクションできる状態なら回避も可能
-	if (m_isPossibleCancelAction && 
+	if (m_isImpossibleancelAction && 
 		IsStandbyPeriod() &&
 		m_playerController->IsPressDefensiveActionButton())
 	{
@@ -387,6 +395,9 @@ void Bow::EntrySkillMainProcess()
 {
 	//攻撃すること確定なのでスタミナを消費する
 	m_brave->GetStatus().TryConsumeStamina(m_status.GetSkillStaminaCost());
+
+	//メインに進んだので無敵にする
+	m_brave->EnableInvincible();
 }
 
 void Bow::UpdateSkillMainProcess()
@@ -403,6 +414,9 @@ void Bow::ExitSkillMainProcess()
 		//矢を生成
 		CreateArrow(m_enWeaponState);
 	}
+
+	//無敵を無効化する
+	m_brave->DisableInvincible();
 }
 
 void Bow::SkillChargeTimeProcess()
@@ -432,7 +446,13 @@ void Bow::SkillChargeTimeProcess()
 
 void Bow::CreateArrow(EnWeaponState weaponState)
 {
-	m_arrow = NewGO<Arrow>(0, "Arrow");
+	//矢の名前を決める。
+	//当たり判定を取りやすくするために名前の後にIDを設定
+	const char* name = "Arrow" + m_arrowNameId;
+
+	m_arrow = NewGO<Arrow>(0, name);
+	//弓のインスタンスを設定
+	m_arrow->SetBowInstance(this);
 
 	//矢を弓の状態と同じ状態にする
 	if (weaponState == enStowed)
@@ -443,13 +463,30 @@ void Bow::CreateArrow(EnWeaponState weaponState)
 	{
 		m_arrow->ChangeArmed();
 	}
+
+	//IDを加算
+	m_arrowNameId++;
+	//一定の数を超えるとIDをリセット
+	if (m_arrowNameId > 100)
+	{
+		m_arrowNameId = -1;
+	}
 }
 
 void Bow::ShotNromalAttackArrow()
 {
 	if (m_arrow == nullptr) return;
-
+	//放つ時のパラメータの設定
 	m_arrow->SetShotArrowParameters(Arrow::enNormalShot, m_brave->GetForward());
+
+	//矢を放ったので矢自体にダメージ情報を設定
+	m_arrow->GetDamageProvider()->SetDamageInfo(
+		KnockBackInfoManager::GetInstance()->GetAddAttackId(), m_brave->GetCurrentPower(),
+		m_uniqueStatus.GetAttackTimeScale(m_comboNumber),
+		m_status.GetComboKnockBackPattern(static_cast<WeaponStatus::EnCombo>(m_comboNumber)),
+		m_status.GetWeaponAttribute()
+	);
+
 	//矢を放ったので矢を持っていない状態にする
 	m_arrow = nullptr;
 }
@@ -457,8 +494,22 @@ void Bow::ShotNromalAttackArrow()
 void Bow::ShotSkillAttackArrow()
 {
 	if (m_arrow == nullptr) return;
-
+	//放つ時のパラメータの設定
 	m_arrow->SetShotArrowParameters(Arrow::enSkillShot, m_brave->GetForward());
+
+	//矢を放ったので矢自体にダメージ情報を設定
+	m_arrow->GetDamageProvider()->SetDamageInfo(
+		KnockBackInfoManager::GetInstance()->GetAddAttackId(), m_brave->GetCurrentPower(),
+		m_uniqueStatus.SkillAttackTimeScale(),
+		m_status.GetSkillKnockBackPattern(),
+		m_status.GetWeaponAttribute()
+	);
+
+	//スキル攻撃に必要な情報を設定
+	m_arrow->SetSkillShotInfo(
+		m_brave->GetCurrentPower(),m_uniqueStatus.GetAttackInfoUpdateInterval()
+	);
+
 	//矢を放ったので矢を持っていない状態にする
 	m_arrow = nullptr;
 }

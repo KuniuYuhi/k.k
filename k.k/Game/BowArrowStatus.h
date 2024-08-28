@@ -37,6 +37,8 @@ private:
 
 		float skillChargeCompletionTime[enStage_max] = { 0.0f };//チャージ完了時間。配列は段階
 
+		float attackInfoUpdateInterval = 0.0f;			//攻撃情報更新インターバル
+
 		int arrowStack = 0;						//矢のストック
 	};
 
@@ -77,7 +79,20 @@ public:
 	}
 
 
-
+	const float& GetAttackTimeScale(int num)
+	{
+		switch (num)
+		{
+		case 0:
+			return FirstAttackTimeScale();
+		case 1:
+			return SecondAttackTimeScale();
+		case 2:
+			return ThirdAttackTimeScale();
+		default:
+			break;
+		}
+	}
 
 	const float& FirstAttackTimeScale()
 	{
@@ -122,6 +137,11 @@ public:
 	const float& GetSkillChargeCompletionTime(EnSkillChargeStage stage)
 	{
 		return m_uniqueStatus.skillChargeCompletionTime[stage];
+	}
+
+	const float& GetAttackInfoUpdateInterval()
+	{
+		return m_uniqueStatus.attackInfoUpdateInterval;
 	}
 
 	const int& GetArrowStack()

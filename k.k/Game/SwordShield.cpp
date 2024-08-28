@@ -3,7 +3,9 @@
 #include "Brave.h"
 #include "PlayerController.h"
 #include "PlayerMovement.h"
+#include "DamageProvider.h"
 
+#include "KnockBackInfoManager.h"
 
 namespace {
 
@@ -130,8 +132,11 @@ void SwordShield::InitCollision()
 	//剣の当たり判定
 	m_swordCollision = 
 		NewGO<CollisionObject>
-		(0, g_collisionObjectManager->m_attackCollisionName
+		(0, g_collisionObjectManager->m_playerAttackCollisionName
 		);
+	//コリジョンの制作者をプレイヤーに設定
+	m_swordCollision->SetCreatorName(m_brave->GetName());
+	//コリジョンの形状はボックス
 	m_swordCollision->CreateBox(
 		m_stowedPosition,
 		Quaternion::Identity,
@@ -145,11 +150,15 @@ void SwordShield::InitCollision()
 
 	//盾の当たり判定
 	m_shieldCollision = NewGO<CollisionObject>(0, "defence");
-	m_shieldCollision->CreateBox(
+	//コリジョンの制作者をプレイヤーに設定
+	m_shieldCollision->SetCreatorName(m_brave->GetName());
+	//コリジョンの形状はボックス
+	m_shieldCollision->CreateSphere(
 		m_stowedPosition,
-		Quaternion(0.0f, 90.0f, 180.0f, 1.0f),
-		SHIELD_COLLISION_SIZE
+		Quaternion::Identity,
+		50.0f
 	);
+	//当たり判定を自動で削除しないようにする
 	m_shieldCollision->SetIsEnableAutoDelete(false);
 	m_shieldCollision->SetIsEnable(false);
 }
@@ -162,7 +171,10 @@ void SwordShield::CreateSkillAttackCollision()
 	hitPosition.y = 0.0f;
 
 	//スキル攻撃時の当たり判定の生成
-	auto skillCollision = NewGO<CollisionObject>(0, g_collisionObjectManager->m_attackCollisionName);
+	auto skillCollision = NewGO<CollisionObject>(0, g_collisionObjectManager->m_playerAttackCollisionName);
+	//コリジョンの制作者をプレイヤーに設定
+	skillCollision->SetCreatorName(m_brave->GetName());
+	//コリジョンの形状は球
 	skillCollision->CreateSphere(
 		hitPosition,
 		g_quatIdentity,
@@ -200,8 +212,8 @@ void SwordShield::ResetComboAttack()
 
 bool SwordShield::IsEndDefensiveAction()
 {
-	//防御ボタンを離したら
-	if (!m_playerController->IsPressDefensiveActionButton())
+	//防御ボタンを離したら、またはシールドにヒットしたら
+	if (!m_playerController->IsPressDefensiveActionButton()|| m_isHitShield)
 	{
 		//防御アクションを終わる
 		return true;
@@ -213,20 +225,71 @@ bool SwordShield::IsEndDefensiveAction()
 void SwordShield::EntryDefensiveActionProcess()
 {
 	//エフェクト生成
+
+	//盾の当たり判定を使うのでプレイヤー本体は無敵にする
+	m_brave->EnableInvincible();
+	//盾の当たり判定を有効化する
+	m_shieldCollision->SetIsEnable(true);
+	//シールドヒットフラグをリセット
+	m_isHitShield = false;
 }
 
 void SwordShield::UpdateDefensiveActionProcess()
 {
+	//盾の当たり判定をチェック
+	CheckShieldCollision();
+
+	//回避、防御アクションを終わるなら
+	if (IsEndDefensiveAction())
+	{
+		if (m_isHitShield)
+		{
+			//シールドにヒットしていたらシールドヒットステートに遷移
+			m_brave->ChangeBraveState(enBraveState_DefensiveHit);
+		}
+		else
+		//ステートの共通処理
+		m_brave->ProcessCommonStateTransition();
+	}
 }
 
 void SwordShield::ExitDefensiveActionProcess()
 {
 	//エフェクト削除
 
-	//まだ防御ボタンを押していたら防御ステートに切り替える
+	//シールドにヒットせずにステートが終わったら
+	if (!m_isHitShield)
+	{
+		//無敵を解除
+		m_brave->DisableInvincible();
+	}
 
-	//それ以外は共通ステートに遷移
+	//盾の当たり判定を無効化する
+	m_shieldCollision->SetIsEnable(false);
+}
 
+void SwordShield::EntryDefensiveHitProcess()
+{
+	//盾の当たり判定を使うのでプレイヤー本体は無敵にする
+	m_brave->EnableInvincible();
+
+}
+
+void SwordShield::UpdateDefensiveHitProcess()
+{
+}
+
+void SwordShield::ExitDefensiveHitProcess()
+{
+	////まだ防御ボタンを押していたら防御ステートに切り替える
+	//if (m_playerController->IsPressDefensiveActionButton())
+	//{
+	//	m_brave->ChangeBraveState(enBraveState_DefensiveActions);
+	//	return;
+	//}
+
+	//無敵を解除
+	m_brave->DisableInvincible();
 }
 
 bool SwordShield::CanDefensiveAction()
@@ -275,22 +338,8 @@ void SwordShield::EntryNormalAttackProcess(EnComboState comboState)
 	m_brave->SetRotateDirection(m_normalAttackMoveDirection);
 	m_brave->SetForward(m_normalAttackMoveDirection);
 
-	int comboNum = 0;
-	switch (comboState)
-	{
-	case WeaponBase::enCombo_First:
-		comboNum = 0;
-		break;
-	case WeaponBase::enCombo_Second:
-		comboNum = 1;
-		break;
-	case WeaponBase::enCombo_Third:
-		comboNum = 2;
-		break;
-	default:
-		std::abort();
-		break;
-	}
+	//コンボステートを番号に変換する
+	int comboNum = ConvertComboStateToNumber(comboState);
 
 	//武器ステータスから攻撃スピードを取得して方向にかける
 	m_normalAttackMoveDirection *= m_uniqueStatus.GetNormalAttackSpeed(comboNum);
@@ -298,14 +347,22 @@ void SwordShield::EntryNormalAttackProcess(EnComboState comboState)
 	//通常攻撃待機区間フラグをリセット
 	SetStandbyPeriodFlag(false);
 	//キャンセルアクションフラグを立てる。(キャンセルアクションできる)
-	m_isPossibleCancelAction = true;
+	m_isImpossibleancelAction = true;
+
+	//ダメージ情報を設定
+	m_brave->GetDamageProvider()->SetDamageInfo(
+		KnockBackInfoManager::GetInstance()->GetAddAttackId(), m_brave->GetCurrentPower(),
+		m_uniqueStatus.GetAttackTimeScale(comboNum),
+		m_status.GetComboKnockBackPattern(static_cast<WeaponStatus::EnCombo>(comboNum)),
+		m_status.GetWeaponAttribute()
+	);
 	
 }
 
 void SwordShield::UpdateNormalAttackProcess(EnComboState comboState)
 {
 	//キャンセルアクションできる状態なら防御も可能
-	if (m_isPossibleCancelAction && 
+	if (m_isImpossibleancelAction && 
 		IsStandbyPeriod() && 
 		m_playerController->IsPressDefensiveActionButton())
 	{
@@ -328,7 +385,8 @@ void SwordShield::ExitNormalAttackProcess(EnComboState comboState)
 	SetAttackActionMove(false);
 	//通常攻撃待機区間フラグをリセット
 	SetStandbyPeriodFlag(false);
-
+	//一応当たり判定を無効化しておく
+	m_swordCollision->SetIsEnable(false);
 }
 
 void SwordShield::EntrySkillAttackProcess(EnSkillProcessState skillProcessState)
@@ -376,8 +434,19 @@ void SwordShield::ExitSkillAttackProcess(EnSkillProcessState skillProcessState)
 	}
 }
 
+void SwordShield::AttackImpactProcess(bool startOrEnd)
+{
+	//キャンセルアクションフラグを設定
+	m_isImpossibleancelAction = startOrEnd;
+
+	//当たり判定の有効化、無効化の設定
+	m_swordCollision->SetIsEnable(startOrEnd);
+}
+
 void SwordShield::EntrySkillStartProcess()
 {
+	//スキルメインステートに進むかのフラグをリセット
+	m_brave->SetProceedSkillMainFlag(false);
 }
 
 void SwordShield::UpdateSkillStartProcess()
@@ -385,6 +454,8 @@ void SwordShield::UpdateSkillStartProcess()
 	//アニメーションが終わったら
 	if (m_brave->GetModelRender().IsPlayingAnimation() == false)
 	{
+		//スキルメインステートに進むよ
+		m_brave->SetProceedSkillMainFlag(true);
 		//メインステートに遷移
 		m_brave->ChangeBraveState(BraveState::enBraveState_SkillMain);
 	}
@@ -392,10 +463,21 @@ void SwordShield::UpdateSkillStartProcess()
 
 void SwordShield::ExitSkillStartProcess()
 {
+
 }
 
 void SwordShield::EntrySkillMainProcess()
 {
+	//ダメージ情報を設定
+	m_brave->GetDamageProvider()->SetDamageInfo(
+		KnockBackInfoManager::GetInstance()->GetAddAttackId(), m_brave->GetCurrentPower(),
+		m_uniqueStatus.SkillAttackTimeScale(),
+		m_status.GetSkillKnockBackPattern(),
+		m_status.GetWeaponAttribute()
+	);
+
+	//メインに進んだので無敵にする
+	m_brave->EnableInvincible();
 }
 
 void SwordShield::UpdateSkillMainProcess()
@@ -404,6 +486,65 @@ void SwordShield::UpdateSkillMainProcess()
 
 void SwordShield::ExitSkillMainProcess()
 {
+
+	//無敵を無効化する
+	m_brave->DisableInvincible();
+}
+
+void SwordShield::CheckShieldCollision()
+{
+	if (m_isHitShield) return;
+
+	//エネミーの攻撃コリジョンを取得
+	const auto& Collisions =
+		g_collisionObjectManager->FindCollisionObjects(
+			g_collisionObjectManager->m_enemyAttackCollisionName
+		);
+
+	//コリジョンの配列をfor文で回す
+	for (auto collision : Collisions)
+	{
+		//当たり判定が有効でないなら飛ばす
+		if (!collision->IsEnable()) continue;
+
+		//盾の当たり判定と衝突したら
+		if (collision->IsHit(m_shieldCollision) == true)
+		{
+			//コリジョンを持っているキャラのダメージプロバイダーコンポーネントを取得
+			DamageProvider* dp = FindGOComponent<DamageProvider>(collision->GetCreatorName());
+
+			if (dp == nullptr) return;
+
+			//敵の位置保存
+
+			//ノックバックの情報を設定
+			m_brave->SettingKnockBackInfoForDamageInfo(dp->GetProviderDamageInfo());
+
+			//盾の耐久値をダメージ分減らす
+			m_uniqueStatus.SubShieldEnduranceValue(
+				dp->GetAdjustedDamage()
+			);
+
+			m_brave->CreateDamageFont(
+				dp->GetProviderDamageInfo().attackPower,
+				DamageFont::enDamageActor_Player
+			);
+
+			//シールドにヒットした！
+			m_isHitShield = true;
+
+
+			//ダメージを盾の耐久値が肩代わり
+			ProcessShieldHit();
+		}
+	}
+
+}
+
+void SwordShield::ProcessShieldHit()
+{
+	
+	
 }
 
 void SwordShield::MoveArmed()

@@ -58,26 +58,31 @@ public:
 	/// <typeparam name="T">オブジェクトのクラス</typeparam>
 	/// <param name="saveKeyName">オブジェクトを保存するペアのキーの名前</param>
 	template <typename T>
-	void OnCreateEnemy(const char* saveKeyName)
+	void OnCreateEnemy(const char* pushQueueKeyName)
 	{
 		//オブジェクトを生成
-		EnemyBase* createobj = NewGO<T>(0, saveKeyName);
+		EnemyBase* createobj = NewGO<T>(0, pushQueueKeyName + m_objNameId);
 
 		//IGameObjectを継承しているなら取得
 		IGameObject* targetObj = dynamic_cast<IGameObject*>(createobj);
 		////IGameObjectが継承されていないならエラー
 		if (targetObj == nullptr) std::abort();
-
+		
+		//モデルの読み込みだけ先にしておく
+		targetObj->InitModel();
 		//非アクティブ化する
 		targetObj->Deactivate();
 
 
 		//オブジェクトプールの中に引数のオブジェクトの名前があるか調べる
-		auto it = m_objectPoolQueue.find(saveKeyName);
+		auto it = m_objectPoolQueue.find(pushQueueKeyName);
 		if (it != m_objectPoolQueue.end())
 		{
 			//キューにプッシュ
 			it->second.push(createobj);
+
+			//IDを更新
+			m_objNameId++;
 		}
 	}
 
@@ -207,7 +212,7 @@ private:
 
 	std::map<const char*, std::queue<EnemyBase*>> m_objectPoolQueue;	//オブジェクトプールのマップ
 
-
+	int m_objNameId = -1;
 
 };
 

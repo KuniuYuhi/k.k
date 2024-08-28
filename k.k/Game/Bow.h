@@ -28,6 +28,15 @@ public:
     void Init() override;
 
     /// <summary>
+    /// 弓のユニークステータスを取得
+    /// </summary>
+    /// <returns></returns>
+    BowArrowStatus GetBowUniqueStatus()
+    {
+        return m_uniqueStatus;
+    }
+
+    /// <summary>
     /// 収納状態に切り替える
     /// </summary>
     void ChangeStowedState() override;
@@ -65,6 +74,10 @@ public:
     /// 回避、防御アクション中の更新処理
     /// </summary>
     void UpdateDefensiveActionProcess() override;
+    /// <summary>
+    /// 回避、防御アクションを終わる時の処理
+    /// </summary>
+    void ExitDefensiveActionProcess() override;
 
     /// <summary>
     /// 回避、防御アクションが行えるか
@@ -178,6 +191,9 @@ private:
 
     Vector3 m_normalAttackMoveDirection = g_vec3Zero;
 
+
+    int m_arrowNameId = -1;
+
     //武器を持たせる時のボーンID
     int m_armedBowBoonId = -1;
     int m_armedArrowBoonId = -1;
@@ -186,6 +202,6 @@ private:
     float m_skillChargeTimer = 0.0f;
     bool m_ispossibleSkillAttack = false;
 
-
+    int m_comboNumber = 0;
 };
 

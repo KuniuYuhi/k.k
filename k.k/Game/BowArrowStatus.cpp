@@ -71,6 +71,9 @@ void BowArrowStatus::LoadUniqueStatusCSV()
 			statusData.m_uniqueStatus.skillChargeCompletionTime[i] = stof(buf);
 		}
 
+		//攻撃情報更新インターバルを読み込む。
+		getline(i_stream, buf, ',');
+		statusData.m_uniqueStatus.attackInfoUpdateInterval = stof(buf);
 
 		//矢のストックを読み込む。
 		getline(i_stream, buf, ',');

@@ -63,6 +63,27 @@ public:
 	virtual void AttackAction() = 0;
 
 
+	WeaponStatus GetCommonStatus()
+	{
+		return m_status;
+	}
+
+	/// <summary>
+	/// 武器の攻撃力を取得
+	/// </summary>
+	/// <returns></returns>
+	int GetWeaponCurrentPower()
+	{
+		return m_status.GetCurrentPower();
+	}
+	/// <summary>
+	/// 武器のスキルの攻撃力を取得
+	/// </summary>
+	/// <returns></returns>
+	int GetWeaponSkillPower()
+	{
+		return m_status.GetSkillPower();
+	}
 
 	/// <summary>
 	/// 現在の武器の状態を設定
@@ -174,6 +195,19 @@ public:
 	/// </summary>
 	virtual void ExitDefensiveActionProcess() {}
 
+	/// <summary>
+	/// 回避、防御ヒットに入ったときの最初の処理
+	/// </summary>
+	virtual void EntryDefensiveHitProcess() {}
+	/// <summary>
+	/// 回避、防御ヒット中の更新処理
+	/// </summary>
+	virtual void UpdateDefensiveHitProcess() {}
+	/// <summary>
+	/// 回避、防御ヒットを抜け出す時の処理
+	/// </summary>
+	virtual void ExitDefensiveHitProcess() {}
+
 
 	/// <summary>
 	/// 回避、防御アクションが行えるか
@@ -235,7 +269,12 @@ protected:
 	Vector3 CalcAutoAimAtTarget(
 		Vector3 origin, Vector3 nowDirection,float searchRadius, float maxDot);
 
-
+	/// <summary>
+	/// コンボステートを番号(int)に変換する
+	/// </summary>
+	/// <param name="comboState">コンボステート</param>
+	/// <returns>番号</returns>
+	int ConvertComboStateToNumber(EnComboState comboState);
 
 
 protected:
@@ -260,7 +299,7 @@ protected:
 	//回避、防御系フラグ
 	bool m_isDefensiveActionMove = false;		//回避で移動するか
 
-	bool m_isPossibleCancelAction = false;          //アクションのキャンセル可能かフラグ。行動上書きに使う
+	bool m_isImpossibleancelAction = false;          //アクションのキャンセル不可能かフラグ。行動上書きに使う
 													//基本的に当たり判定が出ているときや攻撃が当たるであろう瞬間
 													//はキャンセルアクションできない
 

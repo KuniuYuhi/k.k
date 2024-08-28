@@ -1,9 +1,17 @@
 #pragma once
 #include "EnemyBase.h"
+#include "MobEnemyCommonStatus.h"
+
+#include "KnockBackInfo.h"
 
 class MobEnemyMovement;
+class DamageProvider;
 
 class Brave;
+class MobEnemyCommonStatus;
+
+using namespace DamageInformaiton;
+using namespace KnockBackInfo;
 
 
 /// <summary>
@@ -14,19 +22,7 @@ class MobEnemyBase : public EnemyBase
 {
 public:
 
-	//virtual ~MobEnemyBase() = default;
-
-
 	
-	/// <summary>
-	/// 被ダメージ処理
-	/// </summary>
-	virtual void Damage() override {}
-
-	/// <summary>
-	/// 死亡時処理
-	/// </summary>
-	virtual void Dead() override {}
 
 	/// <summary>
 	/// ターゲットとの距離の長さを計算
@@ -69,6 +65,17 @@ protected:
 	virtual void CreateCollisionObject(){}
 
 	/// <summary>
+	/// ダメージを受けた時の処理
+	/// </summary>
+	virtual void ProcessHit(DamageInfo damageInfo){}
+
+	/// <summary>
+	/// 自身の当たり判定確認
+	/// </summary>
+	void CheckSelfCollision();
+
+
+	/// <summary>
 	/// 追いかける移動処理
 	/// </summary>
 	/// <param name="targetPosition">ターゲットの座標</param>
@@ -79,20 +86,55 @@ protected:
 	/// </summary>
 	void Rotation();
 
+	/// <summary>
+	/// ノックバックする前の準備
+	/// </summary>
+	void SettingKnockBackProcess();
+
+	void KnockBackMove(int listNum);
+
+	void KnockBackGravityFall();
+
+
+	/// <summary>
+	/// ダメージフォントを生成
+	/// </summary>
+	/// <param name="hitDamage">ヒットダメージ</param>
+	//void CreateDamageFont(int hitDamage);
+
 
 
 protected:
+
+	MobEnemyCommonStatus m_commonStatus;
 
 	Vector3 m_deactivatePosition = { 0.0f, 100.0f, 0.0f };
 
 	//移動コンポーネント
 	MobEnemyMovement* m_movement = nullptr;
 	//
-
+	DamageProvider* m_damageProvider = nullptr;
 
 	bool m_isWaitingFlag = false;		//プレイヤーに近づき過ぎず遠くで待つかのフラグ
 
 	Brave* m_player = nullptr;			//プレイヤーのインスタンス
+
+	std::vector<CurvePoint> m_curvePointList;			//ノックバックカーブポイントリスト
+
+	Vector2 m_knockBackSpeed = g_vec2Zero;
+
+	EnKnockBackPattern m_hitKnockBackPattern;
+	float m_knockBackTimeScale = 0.0f;
+
+	int oldAttackId = -1;				//前フレームの攻撃ID
+
+	float m_starkTimer = 0.0f;			//硬直タイマー//全員使うやろ
+
+
+
+
+	bool adadadadada = false;
+
 
 };
 

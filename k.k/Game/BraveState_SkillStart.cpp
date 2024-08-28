@@ -27,8 +27,12 @@ void BraveState_SkillStart::Ubdate()
 
 void BraveState_SkillStart::Exit()
 {
-	//被ダメージなどで終わったら
-
+	//スキルメインステートに進めないなら
+	if (!m_brave->IsProceedSkillMain())
+	{
+		//アクションを終わる
+		m_brave->ActionDeactive();
+	}
 
 	//武器側で処理
 	//スキル攻撃失敗したときはここでアクションを終わる
