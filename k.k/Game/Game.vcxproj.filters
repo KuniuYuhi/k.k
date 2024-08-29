@@ -351,6 +351,14 @@
       <Filter>Component</Filter>
     </ClCompile>
     <ClCompile Include="MobEnemyCommonStatus.cpp" />
+    <ClCompile Include="CactusStateContext.cpp" />
+    <ClCompile Include="CactusState_Idle.cpp" />
+    <ClCompile Include="CactusState_Run.cpp" />
+    <ClCompile Include="CactusState_Attack.cpp" />
+    <ClCompile Include="CactusState_Hit.cpp" />
+    <ClCompile Include="CactusState_Die.cpp" />
+    <ClCompile Include="CactusState_Victory.cpp" />
+    <ClCompile Include="CactusState_Appear.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -627,5 +635,14 @@
       <Filter>Component</Filter>
     </ClInclude>
     <ClInclude Include="MobEnemyCommonStatus.h" />
+    <ClInclude Include="CactusInfo.h" />
+    <ClInclude Include="CactusStateContext.h" />
+    <ClInclude Include="CactusState_Idle.h" />
+    <ClInclude Include="CactusState_Run.h" />
+    <ClInclude Include="CactusState_Attack.h" />
+    <ClInclude Include="CactusState_Hit.h" />
+    <ClInclude Include="CactusState_Die.h" />
+    <ClInclude Include="CactusState_Victory.h" />
+    <ClInclude Include="CactusState_Appear.h" />
   </ItemGroup>
 </Project>

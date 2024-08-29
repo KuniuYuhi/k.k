@@ -96,7 +96,10 @@ void WaveManager::SummonMobEnemys()
 		//	break;
 		//}
 
-		enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Slime>("Slime");
+		//enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Slime>("Slime");
+
+		enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Cactus>("Cactus");
+
 
 		//enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<BeholderEye>("BeholderEye");
 
