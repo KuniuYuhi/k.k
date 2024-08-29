@@ -3,8 +3,6 @@
 #include "SlimeStateContext.h"
 #include "SlimeInfo.h"
 
-//#include "KnockBackInfo.h"
-
 
 class SlimeStateContext;
 

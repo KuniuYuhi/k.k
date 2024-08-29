@@ -106,6 +106,12 @@
     <Filter Include="Status\Enemy\MobEenemy">
       <UniqueIdentifier>{120369a0-27e8-4825-82e0-83395a799812}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Characters\Ememy\Mob\Cactus\State">
+      <UniqueIdentifier>{900a074f-cb3a-40ad-bef8-a8b49ca41977}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Mob\Mushroom">
+      <UniqueIdentifier>{9aab3ef9-4b0f-43f5-9f1e-716d513eddf1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -351,14 +357,39 @@
       <Filter>Component</Filter>
     </ClCompile>
     <ClCompile Include="MobEnemyCommonStatus.cpp" />
-    <ClCompile Include="CactusStateContext.cpp" />
-    <ClCompile Include="CactusState_Idle.cpp" />
-    <ClCompile Include="CactusState_Run.cpp" />
-    <ClCompile Include="CactusState_Attack.cpp" />
-    <ClCompile Include="CactusState_Hit.cpp" />
-    <ClCompile Include="CactusState_Die.cpp" />
-    <ClCompile Include="CactusState_Victory.cpp" />
-    <ClCompile Include="CactusState_Appear.cpp" />
+    <ClCompile Include="CactusState_Appear.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusState_Attack.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusState_Die.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusState_Hit.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusState_Idle.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusState_Run.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusState_Victory.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateContext.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateContext.cpp" />
+    <ClCompile Include="MushroomState_Idle.cpp" />
+    <ClCompile Include="MushroomState_Attack.cpp" />
+    <ClCompile Include="MushroomState_Run.cpp" />
+    <ClCompile Include="MushroomState_Hit.cpp" />
+    <ClCompile Include="MushroomState_Die.cpp" />
+    <ClCompile Include="MushroomState_Victory.cpp" />
+    <ClCompile Include="MushroomState_Appear.cpp" />
+    <ClCompile Include="Mushroom.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -635,14 +666,42 @@
       <Filter>Component</Filter>
     </ClInclude>
     <ClInclude Include="MobEnemyCommonStatus.h" />
-    <ClInclude Include="CactusInfo.h" />
-    <ClInclude Include="CactusStateContext.h" />
-    <ClInclude Include="CactusState_Idle.h" />
-    <ClInclude Include="CactusState_Run.h" />
-    <ClInclude Include="CactusState_Attack.h" />
-    <ClInclude Include="CactusState_Hit.h" />
-    <ClInclude Include="CactusState_Die.h" />
-    <ClInclude Include="CactusState_Victory.h" />
-    <ClInclude Include="CactusState_Appear.h" />
+    <ClInclude Include="CactusState_Appear.h">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusState_Attack.h">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusState_Die.h">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusState_Hit.h">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusState_Idle.h">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusState_Run.h">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusState_Victory.h">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateContext.h">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusInfo.h">
+      <Filter>Characters\Ememy\Mob\Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomInfo.h" />
+    <ClInclude Include="MushroomStateContext.h" />
+    <ClInclude Include="MushroomState_Idle.h" />
+    <ClInclude Include="MushroomState_Attack.h" />
+    <ClInclude Include="MushroomState_Run.h" />
+    <ClInclude Include="MushroomState_Hit.h" />
+    <ClInclude Include="MushroomState_Die.h" />
+    <ClInclude Include="MushroomState_Victory.h" />
+    <ClInclude Include="MushroomState_Appear.h" />
+    <ClInclude Include="Mushroom.h" />
   </ItemGroup>
 </Project>
