@@ -37,14 +37,10 @@ public:
 	/// </summary>
 	void ProcessCommonTranstion();
 
-
 	/// <summary>
-	/// ターゲットのほうに振り向く
+	/// プレイヤーの方を向く
 	/// </summary>
-	void TrunToTarget();
-
-
-
+	void TurnToPlayer();
 
 	/// <summary>
 	/// 攻撃アクションを始めるときの処理
@@ -61,11 +57,11 @@ public:
 
 
 	/// <summary>
-	/// 
+	/// ヒットアクションに入った時の処理
 	/// </summary>
 	void EntryHitActionProcess();
 	/// <summary>
-	/// 
+	/// ヒットアクション中の処理
 	/// </summary>
 	void UpdateHitActionProcess();
 
@@ -109,11 +105,6 @@ private:
 	/// </summary>
 	void Attack();
 
-	/// <summary>
-	/// 攻撃可能か？
-	/// </summary>
-	/// <returns>可能ならtrue</returns>
-	bool IsAttackable();
 
 private:
 
@@ -132,10 +123,6 @@ private:
 	int m_headBoonId = -1;
 
 	bool m_isSettingComponents = false;
-
-	float m_attackIntarvalTimer = 0.0f;
-
-
 
 
 	float count = 0.0f;

@@ -26,15 +26,6 @@ void SlimeState_Hit::Entry()
 void SlimeState_Hit::Ubdate()
 {
 	m_slime->UpdateHitActionProcess();
-
-	////アニメーションが終わったら
-	//if (m_slime->GetModelRender().IsPlayingAnimation() == false)
-	//{
-	//	//少し硬直して共通ステート処理に移行
-
-	//	m_slime->ProcessCommonTranstion();
-	//}
-
 }
 
 void SlimeState_Hit::Exit()

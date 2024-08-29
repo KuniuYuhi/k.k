@@ -9,8 +9,6 @@
 
 #include "EnemyManager.h"
 
-//#include "SlimeStateContext.h"
-
 #include "KnockBackInfoManager.h"
 
 
@@ -37,7 +35,7 @@ bool Slime::Start()
 	if (m_charaCon == nullptr)
 	{
 		CreateCharacterController();
-		m_charaCon.get()->Init(20.0f, 20.0f, m_position);
+		m_charaCon.get()->Init(22.0f, 10.0f, m_position);
 	}
 	else
 	{
@@ -164,39 +162,6 @@ void Slime::Attack()
 
 }
 
-bool Slime::IsAttackable()
-{
-	//タイマーが攻撃インターバルを超えたら
-	if (m_attackIntarvalTimer >= m_status.GetAttackIntarval())
-	{
-		//攻撃可能
-		return true;
-	}
-	//タイマーを加算
-	m_attackIntarvalTimer += g_gameTime->GetFrameDeltaTime();
-
-	return false;
-}
-
-void Slime::TrunToTarget()
-{
-	if (m_player == nullptr) return;
-
-	Vector3 direction = g_vec3Zero;
-	//プレイヤーの方を向くベクトルを取得
-	direction = m_movement->CalcChaseCharacterVerocity(
-		m_status,
-		m_player->GetPosition(),
-		m_position,
-		m_moveSpeed
-	);
-
-	//回転方向を設定
-	SetRotateDirection(direction);
-	//前方向を設定
-	SetForward(direction);
-}
-
 void Slime::EntryAttackActionProcess()
 {
 	//アクション中にする
@@ -240,7 +205,8 @@ void Slime::EntryHitActionProcess()
 	SettingKnockBackProcess();
 	//ノックバックカウントリセット
 	count = 0.0f;
-
+	//硬直タイマーをリセット
+	m_starkTimer = 0.0f;
 	//攻撃中かもしれないのでコリジョン生成フラグをリセットしておく
 	m_isCreateAttackCollision = false;
 }
@@ -268,7 +234,7 @@ void Slime::UpdateHitActionProcess()
 		if (GetModelRender().IsPlayingAnimation() == false)
 		{
 			//少し硬直して共通ステート処理に移行
-			if (m_starkTimer >= 0.2f)
+			if (m_starkTimer >= 0.1f)
 			{
 				//共通ステートに移行
 				ProcessCommonTranstion();
@@ -292,6 +258,11 @@ void Slime::ProcessCommonTranstion()
 		m_slimeContext.get()->ChangeSlimeState(this,enSlimeState_Idle);
 	}
 
+}
+
+void Slime::TurnToPlayer()
+{
+	TurnToTarget();
 }
 
 void Slime::Update()
