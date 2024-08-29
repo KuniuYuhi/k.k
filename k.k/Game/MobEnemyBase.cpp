@@ -81,6 +81,25 @@ void MobEnemyBase::CheckSelfCollision()
 
 }
 
+void MobEnemyBase::TurnToTarget()
+{
+	if (m_player == nullptr) return;
+
+	Vector3 direction = g_vec3Zero;
+	//プレイヤーの方を向くベクトルを取得
+	direction = m_movement->CalcChaseCharacterVerocity(
+		m_status,
+		m_player->GetPosition(),
+		m_position,
+		m_moveSpeed
+	);
+
+	//回転方向を設定
+	SetRotateDirection(direction);
+	//前方向を設定
+	SetForward(direction);
+}
+
 void MobEnemyBase::ChaseMovement(Vector3 targetPosition)
 {
 	//アクション中は移動処理しない
@@ -208,6 +227,20 @@ void MobEnemyBase::KnockBackGravityFall()
 		//地面についた。
 		m_moveSpeed.y = 0.0f;
 	}
+}
+
+bool MobEnemyBase::IsAttackable()
+{
+	//タイマーが攻撃インターバルを超えたら
+	if (m_attackIntarvalTimer >= m_status.GetAttackIntarval())
+	{
+		//攻撃可能
+		return true;
+	}
+	//タイマーを加算
+	m_attackIntarvalTimer += g_gameTime->GetFrameDeltaTime();
+
+	return false;
 }
 
 //void MobEnemyBase::CreateDamageFont(int hitDamage)

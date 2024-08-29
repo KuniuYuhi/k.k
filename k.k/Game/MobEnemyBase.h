@@ -74,6 +74,10 @@ protected:
 	/// </summary>
 	void CheckSelfCollision();
 
+	/// <summary>
+	/// ターゲットのほうに向く
+	/// </summary>
+	void TurnToTarget();
 
 	/// <summary>
 	/// 追いかける移動処理
@@ -94,6 +98,13 @@ protected:
 	void KnockBackMove(int listNum);
 
 	void KnockBackGravityFall();
+
+	/// <summary>
+	/// 攻撃可能か？
+	/// </summary>
+	/// <returns>可能ならtrue</returns>
+	bool IsAttackable();
+
 
 
 	/// <summary>
@@ -130,7 +141,7 @@ protected:
 
 	float m_starkTimer = 0.0f;			//硬直タイマー//全員使うやろ
 
-
+	float m_attackIntarvalTimer = 0.0f;			//攻撃インターバルタイマー
 
 
 	bool adadadadada = false;
