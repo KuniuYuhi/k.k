@@ -60,8 +60,11 @@ public:
 	template <typename T>
 	void OnCreateEnemy(const char* pushQueueKeyName)
 	{
+		std::string result = std::string(pushQueueKeyName) + std::to_string(m_objNameId);
+		const char* finalStr = result.c_str();
+
 		//オブジェクトを生成
-		EnemyBase* createobj = NewGO<T>(0, pushQueueKeyName + m_objNameId);
+		EnemyBase* createobj = NewGO<T>(0, finalStr);
 
 		//IGameObjectを継承しているなら取得
 		IGameObject* targetObj = dynamic_cast<IGameObject*>(createobj);
