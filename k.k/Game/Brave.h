@@ -175,6 +175,15 @@ public:
 		return m_status;
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="position"></param>
+	void SetDamageProviderPosition(Vector3 position)
+	{
+		m_damageProviderPosition = position;
+	}
+
 
 	bool IsButtonAction();
 

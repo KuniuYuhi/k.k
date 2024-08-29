@@ -487,7 +487,10 @@ void Brave::CheckSelfCollision()
 			//コリジョンを持っているキャラのダメージプロバイダーコンポーネントを取得
 			DamageProvider* dp = FindGOComponent<DamageProvider>(collision->GetCreatorName());
 
-			if (dp == nullptr) return;
+			if (dp == nullptr)
+			{
+				return;
+			}
 
 			//攻撃がヒットしたことをコリジョンを持っているDamageProviderクラスに伝える
 			dp->Hit();
