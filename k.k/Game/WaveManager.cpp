@@ -100,10 +100,10 @@ void WaveManager::SummonMobEnemys()
 
 		//enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Cactus>("Cactus");
 
-		enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Mushroom>("Mushroom");
+		//enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Mushroom>("Mushroom");
 
 
-		//enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<BeholderEye>("BeholderEye");
+		enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<BeholderEye>("BeholderEye");
 
 		//enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Mimic>("Mimic");
 

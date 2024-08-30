@@ -112,6 +112,21 @@
     <Filter Include="Characters\Ememy\Mob\Mushroom">
       <UniqueIdentifier>{9aab3ef9-4b0f-43f5-9f1e-716d513eddf1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Characters\Ememy\Mob\Mushroom\State">
+      <UniqueIdentifier>{84174951-2354-4b57-9d48-9fdcfb8fcab6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MagicBall">
+      <UniqueIdentifier>{c89917c1-a318-41de-b336-bc06419863e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Mob\BeholderEye\State">
+      <UniqueIdentifier>{8b65d3de-6338-4d2e-b23a-5612c869865f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Status\MagicBall">
+      <UniqueIdentifier>{8348ab96-b01b-4c2c-b91a-ebf316341c54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MagicBall\Unique">
+      <UniqueIdentifier>{d05bdb78-87b3-4190-90b7-6a9aec4696c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -356,7 +371,6 @@
     <ClCompile Include="DamageProvider.cpp">
       <Filter>Component</Filter>
     </ClCompile>
-    <ClCompile Include="MobEnemyCommonStatus.cpp" />
     <ClCompile Include="CactusState_Appear.cpp">
       <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
     </ClCompile>
@@ -381,15 +395,68 @@
     <ClCompile Include="CactusStateContext.cpp">
       <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
     </ClCompile>
-    <ClCompile Include="MushroomStateContext.cpp" />
-    <ClCompile Include="MushroomState_Idle.cpp" />
-    <ClCompile Include="MushroomState_Attack.cpp" />
-    <ClCompile Include="MushroomState_Run.cpp" />
-    <ClCompile Include="MushroomState_Hit.cpp" />
-    <ClCompile Include="MushroomState_Die.cpp" />
-    <ClCompile Include="MushroomState_Victory.cpp" />
-    <ClCompile Include="MushroomState_Appear.cpp" />
-    <ClCompile Include="Mushroom.cpp" />
+    <ClCompile Include="Mushroom.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomState_Appear.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomState_Attack.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomState_Die.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomState_Hit.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomState_Idle.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomState_Run.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomState_Victory.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateContext.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MobEnemyCommonStatus.cpp">
+      <Filter>Status\Enemy\MobEenemy</Filter>
+    </ClCompile>
+    <ClCompile Include="BeholderEyeState_Appear.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BeholderEyeState_Attack.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BeholderEyeState_Die.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BeholderEyeState_Hit.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BeholderEyeState_Idle.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BeholderEyeState_Run.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BeholderEyeState_Victory.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BeholderEyeStateContext.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClCompile>
+    <ClCompile Include="IMagicBall.cpp">
+      <Filter>MagicBall</Filter>
+    </ClCompile>
+    <ClCompile Include="MagicBallStatus.cpp">
+      <Filter>Status\MagicBall</Filter>
+    </ClCompile>
+    <ClCompile Include="EyeBall.cpp" />
+    <ClCompile Include="MagicBallMovement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -508,9 +575,6 @@
     </ClInclude>
     <ClInclude Include="Status_Player.h">
       <Filter>Status\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="MobEnemyheaderFiles.h">
-      <Filter>Status\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="BraveAnimClipAndStateInfo.h">
       <Filter>Characters\Player</Filter>
@@ -665,7 +729,6 @@
     <ClInclude Include="DamageProvider.h">
       <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="MobEnemyCommonStatus.h" />
     <ClInclude Include="CactusState_Appear.h">
       <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
     </ClInclude>
@@ -693,15 +756,76 @@
     <ClInclude Include="CactusInfo.h">
       <Filter>Characters\Ememy\Mob\Cactus</Filter>
     </ClInclude>
-    <ClInclude Include="MushroomInfo.h" />
-    <ClInclude Include="MushroomStateContext.h" />
-    <ClInclude Include="MushroomState_Idle.h" />
-    <ClInclude Include="MushroomState_Attack.h" />
-    <ClInclude Include="MushroomState_Run.h" />
-    <ClInclude Include="MushroomState_Hit.h" />
-    <ClInclude Include="MushroomState_Die.h" />
-    <ClInclude Include="MushroomState_Victory.h" />
-    <ClInclude Include="MushroomState_Appear.h" />
-    <ClInclude Include="Mushroom.h" />
+    <ClInclude Include="Mushroom.h">
+      <Filter>Characters\Ememy\Mob\Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomInfo.h">
+      <Filter>Characters\Ememy\Mob\Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomState_Appear.h">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomState_Attack.h">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomState_Die.h">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomState_Hit.h">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomState_Idle.h">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomState_Run.h">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomState_Victory.h">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateContext.h">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MobEnemyCommonStatus.h">
+      <Filter>Status\Enemy\MobEenemy</Filter>
+    </ClInclude>
+    <ClInclude Include="MobEnemyheaderFiles.h">
+      <Filter>Wave</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeInfo.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeState_Appear.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeState_Attack.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeState_Die.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeState_Hit.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeState_Idle.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeState_Run.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeState_Victory.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeStateContext.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClInclude>
+    <ClInclude Include="IMagicBall.h">
+      <Filter>MagicBall</Filter>
+    </ClInclude>
+    <ClInclude Include="MagicBallStatus.h">
+      <Filter>Status\MagicBall</Filter>
+    </ClInclude>
+    <ClInclude Include="EyeBall.h" />
+    <ClInclude Include="MagicBallMovement.h" />
   </ItemGroup>
 </Project>
