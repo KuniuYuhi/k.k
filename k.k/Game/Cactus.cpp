@@ -135,6 +135,9 @@ void Cactus::ProcessHit(DamageInfo damageInfo)
 	//ノックバックの時間間隔を取得
 	m_knockBackTimeScale = damageInfo.knockBackTimeScale;
 
+	//ダメージを受ける
+	TakeDamage(damageInfo.attackPower);
+
 	//ヒットステートに切り替える
 	m_cactusContext.get()->ChangeCactusState(this, enCactusState_Hit);
 }
@@ -242,6 +245,13 @@ void Cactus::UpdateHitActionProcess()
 		//アニメーションが終わったら
 		if (GetModelRender().IsPlayingAnimation() == false)
 		{
+			//もし死んでいるなら
+			if (IsDie())
+			{
+				//死亡ステートに遷移
+				m_cactusContext.get()->ChangeCactusState(this, enCactusState_Die);
+				return;
+			}
 			//少し硬直して共通ステート処理に移行
 			if (m_starkTimer >= 0.1f)
 			{
@@ -253,6 +263,21 @@ void Cactus::UpdateHitActionProcess()
 	}
 }
 
+void Cactus::ExitHitActionProcess()
+{
+	if (IsDie()) return;
+
+
+	//アクションを終わる
+	ActionDeactive();
+}
+
+void Cactus::DieProcess()
+{
+	//ダメージによってやられた時の処理
+	DieFromDamage();
+}
+
 void Cactus::Update()
 {
 	if (g_pad[0]->IsTrigger(enButtonB))
@@ -261,16 +286,19 @@ void Cactus::Update()
 		return;*/
 	}
 
-	//攻撃処理
-	Attack();
-	//キャラクターの移動
-	ChaseMovement(m_player->GetPosition());
+	//死んでいないなら処理する
+	if (!IsDie())
+	{
+		//攻撃処理
+		Attack();
+		//キャラクターの移動
+		ChaseMovement(m_player->GetPosition());
+		//回転
+		Rotation();
 
-	//回転
-	Rotation();
-
-	//当たり判定
-	CheckSelfCollision();
+		//当たり判定
+		CheckSelfCollision();
+	}
 
 	//コンテキストの処理
 	m_cactusContext.get()->UpdateCurrentState();

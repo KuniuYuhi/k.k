@@ -60,6 +60,16 @@ public:
 	/// ヒットアクション中の処理
 	/// </summary>
 	void UpdateHitActionProcess();
+	/// <summary>
+	/// ヒットアクション終了時の処理
+	/// </summary>
+	void ExitHitActionProcess();
+
+	/// <summary>
+	/// 死亡時の処理
+	/// </summary>
+	void DieProcess();
+
 
 private:
 

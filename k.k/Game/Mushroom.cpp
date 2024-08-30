@@ -137,6 +137,9 @@ void Mushroom::ProcessHit(DamageInfo damageInfo)
 	//ノックバックの時間間隔を取得
 	m_knockBackTimeScale = damageInfo.knockBackTimeScale;
 
+	//ダメージを受ける
+	TakeDamage(damageInfo.attackPower);
+
 	//ヒットステートに切り替える
 	m_mushroomContext.get()->ChangeMushroomState(this, enMushroomState_Hit);
 }
@@ -232,6 +235,13 @@ void Mushroom::UpdateHitActionProcess()
 		//アニメーションが終わったら
 		if (GetModelRender().IsPlayingAnimation() == false)
 		{
+			//もし死んでいるなら
+			if (IsDie())
+			{
+				//死亡ステートに遷移
+				m_mushroomContext.get()->ChangeMushroomState(this, enMushroomState_Die);
+				return;
+			}
 			//少し硬直して共通ステート処理に移行
 			if (m_starkTimer >= 0.1f)
 			{
@@ -241,8 +251,21 @@ void Mushroom::UpdateHitActionProcess()
 			m_starkTimer += g_gameTime->GetFrameDeltaTime();
 		}
 	}
+}
+
+void Mushroom::ExitHitActionProcess()
+{
+	if (IsDie()) return;
 
 
+	//アクションを終わる
+	ActionDeactive();
+}
+
+void Mushroom::DieProcess()
+{
+	//ダメージによってやられた時の処理
+	DieFromDamage();
 }
 
 void Mushroom::ProcessCommonTranstion()
@@ -272,17 +295,19 @@ void Mushroom::Update()
 		//return;
 	}
 
+	//死んでいないなら処理する
+	if (!IsDie())
+	{
+		//攻撃処理
+		Attack();
+		//キャラクターの移動
+		ChaseMovement(m_player->GetPosition());
+		//回転
+		Rotation();
 
-
-	//攻撃処理
-	Attack();
-	//キャラクターの移動
-	ChaseMovement(m_player->GetPosition());
-	//回転
-	Rotation();
-
-	//当たり判定
-	CheckSelfCollision();
+		//当たり判定
+		CheckSelfCollision();
+	}
 
 	//コンテキストの処理
 	m_mushroomContext.get()->UpdateCurrentState();

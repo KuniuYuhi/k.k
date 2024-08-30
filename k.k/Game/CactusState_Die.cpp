@@ -15,12 +15,20 @@ void CactusState_Die::PlayAnimation()
 
 void CactusState_Die::Entry()
 {
+	m_cactus->ActionActive();
 }
 
 void CactusState_Die::Ubdate()
 {
+	//アニメーションが終わったら
+	if (m_cactus->GetModelRender().IsPlayingAnimation() == false)
+	{
+		m_cactus->DieProcess();
+	}
+
 }
 
 void CactusState_Die::Exit()
 {
+	m_cactus->ActionDeactive();
 }

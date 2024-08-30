@@ -62,6 +62,15 @@ public:
 	/// ヒットアクション中の処理
 	/// </summary>
 	void UpdateHitActionProcess();
+	/// <summary>
+	/// ヒットアクション終了時の処理
+	/// </summary>
+	void ExitHitActionProcess();
+
+	/// <summary>
+	/// 死亡時の処理
+	/// </summary>
+	void DieProcess();
 
 private:
 	
@@ -95,6 +104,7 @@ private:
 	/// ダメージを受けた時の処理
 	/// </summary>
 	void ProcessHit(DamageInfo damageInfo) override;
+
 
 	
 

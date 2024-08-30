@@ -138,6 +138,9 @@ void Slime::ProcessHit(DamageInfo damageInfo)
 	//ノックバックの時間間隔を取得
 	m_knockBackTimeScale = damageInfo.knockBackTimeScale;
 
+	//ダメージを受ける
+	TakeDamage(damageInfo.attackPower);
+
 	//ヒットステートに切り替える
 	m_slimeContext.get()->ChangeSlimeState(this, enSlimeState_Hit);
 }
@@ -233,6 +236,14 @@ void Slime::UpdateHitActionProcess()
 		//アニメーションが終わったら
 		if (GetModelRender().IsPlayingAnimation() == false)
 		{
+			//もし死んでいるなら
+			if (IsDie())
+			{
+				//死亡ステートに遷移
+				m_slimeContext.get()->ChangeSlimeState(this, enSlimeState_Die);
+				return;
+			}
+
 			//少し硬直して共通ステート処理に移行
 			if (m_starkTimer >= 0.1f)
 			{
@@ -244,6 +255,21 @@ void Slime::UpdateHitActionProcess()
 	}
 
 
+}
+
+void Slime::ExitHitActionProcess()
+{
+	if (IsDie()) return;
+
+
+	//アクションを終わる
+	ActionDeactive();
+}
+
+void Slime::DieProcess()
+{
+	//ダメージによってやられた時の処理
+	DieFromDamage();
 }
 
 void Slime::ProcessCommonTranstion()
@@ -273,17 +299,19 @@ void Slime::Update()
 		//return;
 	}
 
+	//死んでいないなら処理する
+	if (!IsDie())
+	{
+		//攻撃処理
+		Attack();
+		//キャラクターの移動
+		ChaseMovement(m_player->GetPosition());
+		//回転
+		Rotation();
 
-
-	//攻撃処理
-	Attack();
-	//キャラクターの移動
-	ChaseMovement(m_player->GetPosition());
-	//回転
-	Rotation();
-
-	//当たり判定
-	CheckSelfCollision();
+		//当たり判定
+		CheckSelfCollision();
+	}
 
 	//コンテキストの処理
 	m_slimeContext.get()->UpdateCurrentState();
