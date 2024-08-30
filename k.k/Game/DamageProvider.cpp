@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DamageProvider.h"
 #include "CharacterBase.h"
+#include "IMagicBall.h"
 
 DamageProvider::DamageProvider()
 {
@@ -19,9 +20,15 @@ void DamageProvider::UpdateComponent()
 	m_isHit = false;
 }
 
-Vector3 DamageProvider::GetProviderCharacterPostion()
+Vector3 DamageProvider::GetProviderPostion()
 {
-	return m_characterBase->GetPosition();
+	if (m_characterBase != nullptr)
+	{
+		return m_characterBase->GetPosition();
+	}
+	else return m_magicBall->GetPosition();
+	
+	
 }
 
 void DamageProvider::AdjustPowerRandomly()

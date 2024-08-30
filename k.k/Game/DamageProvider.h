@@ -7,6 +7,7 @@
 
 
 class CharacterBase;
+class IMagicBall;
 
 using namespace KnockBackInfo;
 using namespace WeaponAttribute;
@@ -57,12 +58,21 @@ public:
 	{
 		m_characterBase = characterBase;
 	}
+	/// <summary>
+	/// 提供者の魔法球のインスタンスを設定
+	/// </summary>
+	/// <param name="magicBall"></param>
+	void SetProviderMagicBallInstance(IMagicBall* magicBall)
+	{
+		m_magicBall = magicBall;
+	}
+
 
 	/// <summary>
-	/// 
+	/// ダメージ提供者の座標を取得
 	/// </summary>
 	/// <returns></returns>
-	Vector3 GetProviderCharacterPostion();
+	Vector3 GetProviderPostion();
 
 	/// <summary>
 	/// 提供者のダメージ情報を取得
@@ -158,6 +168,8 @@ public:
 protected:
 	
 	CharacterBase* m_characterBase = nullptr;	//このコンポーネントを持っているキャラクター
+
+	IMagicBall* m_magicBall = nullptr;		//このコンポーネントを持っているマジックボール
 
 	DamageInfo m_damageInfo;
 
