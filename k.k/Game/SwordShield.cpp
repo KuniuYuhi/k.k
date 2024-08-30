@@ -517,7 +517,7 @@ void SwordShield::CheckShieldCollision()
 
 			//敵の位置保存
 			m_brave->SetDamageProviderPosition(
-				dp->GetProviderCharacterPostion()
+				dp->GetProviderPostion()
 			);
 
 			//ノックバックの情報を設定
