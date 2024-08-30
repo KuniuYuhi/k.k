@@ -496,7 +496,7 @@ void Brave::CheckSelfCollision()
 			dp->Hit();
 
 			//ダメージプロバイダーの座標を取得
-			m_damageProviderPosition = dp->GetProviderCharacterPostion();
+			m_damageProviderPosition = dp->GetProviderPostion();
 
 			//攻撃IDを取得
 			int currentAttackId = dp->GetAttackId();
