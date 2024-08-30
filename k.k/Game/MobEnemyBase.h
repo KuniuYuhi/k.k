@@ -70,6 +70,17 @@ protected:
 	virtual void ProcessHit(DamageInfo damageInfo){}
 
 	/// <summary>
+	/// ダメージを受ける
+	/// </summary>
+	/// <param name="damage">受けるダメージ量</param>
+	virtual void TakeDamage(int damage);
+
+	/// <summary>
+	/// ダメージによって死亡
+	/// </summary>
+	virtual void DieFromDamage();
+
+	/// <summary>
 	/// 自身の当たり判定確認
 	/// </summary>
 	void CheckSelfCollision();

@@ -26,7 +26,25 @@ void MobEnemyBase::SettingDefaultComponent()
 	//ダメージプロバイダーコンポーネント
 	AddComponent<DamageProvider>();
 	m_damageProvider = GetComponent<DamageProvider>();
+	//自身のインスタンスを保存
 	m_damageProvider->SetProviderCharacterInstance(this);
+}
+
+void MobEnemyBase::TakeDamage(int damage)
+{
+	//ダメージを受ける
+	//やられた場合は死亡フラグが立つ
+	SetDieFlag(m_status.TakeDamage(damage));
+
+}
+
+void MobEnemyBase::DieFromDamage()
+{
+	//自身を返す
+	ReleaseThis();
+
+	//エフェクト生成
+
 }
 
 void MobEnemyBase::CheckSelfCollision()
@@ -112,7 +130,13 @@ void MobEnemyBase::ChaseMovement(Vector3 targetPosition)
 		m_moveSpeed
 	);
 
+	//移動量があれば前方向を設定
+	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+	{
+		SetForward(m_moveSpeed);
+	}
 	
+	//プレイヤーに向かう距離を計算
 	float toPlayerDistance = CalcDistanceToTargetPosition(targetPosition);
 	bool isExecute = true;
 
@@ -136,13 +160,6 @@ void MobEnemyBase::ChaseMovement(Vector3 targetPosition)
 			m_moveSpeed = g_vec3Zero;
 		}
 	}
-
-	//移動量があれば前方向を設定
-	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
-	{
-		SetForward(m_moveSpeed);
-	}
-
 	
 
 	//実行フラグがtrueなら
@@ -243,13 +260,3 @@ bool MobEnemyBase::IsAttackable()
 	return false;
 }
 
-//void MobEnemyBase::CreateDamageFont(int hitDamage)
-//{
-//	DamageFont* damagefont = NewGO<DamageFont>(0, "damagefont");
-//	damagefont->Setting(
-//		DamageFont::enDamageActor_Monster,
-//		hitDamage,
-//		m_position
-//	);
-//
-//}

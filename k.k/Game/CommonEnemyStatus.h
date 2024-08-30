@@ -125,6 +125,31 @@ public:
 	}
 
 
+	/// <summary>
+	/// ダメージを受ける。HPが0以下になったらtrueを返す
+	/// </summary>
+	/// <param name="damage"></param>
+	/// <returns></returns>
+	bool TakeDamage(int damage)
+	{
+		//HPからダメージ量を減らす
+		m_commonEnemyStatus.currentHp -= damage;
+
+		//HPが0以下なら
+		if (m_commonEnemyStatus.currentHp <= 0)
+		{
+			m_commonEnemyStatus.currentHp = 0;
+			//倒された
+			return true;
+		}
+
+		//倒されていない
+		return false;
+	}
+
+
+
+
 	//csvは使わない
 	std::string name;          //名前
 
