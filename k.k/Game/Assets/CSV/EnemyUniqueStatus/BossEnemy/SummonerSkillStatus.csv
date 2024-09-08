@@ -1,0 +1,5 @@
+技名,攻撃力,ノックバック進行速度,ノックバックパターン
+コンボ1,20,3,ShortGroundedRetreat
+コンボ2,20,3,ShortGroundedRetreat
+コンボ3,35,4,SlightAirborneRetreat
+ショックウェーブ,30,3,FullAirborneRetreat

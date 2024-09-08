@@ -1,2 +1,4 @@
 ﻿名前,攻撃力,スピード,消滅時間,ノックバックパターン,ノックバックの進行速度
-EyeBall,20,10,2,ShortGroundedRetreat,5
+EyeBall,20,40,2,ShortGroundedRetreat,5.5
+DarkBall,25,70,2,ShortGroundedRetreat,5
+DarkMeteorite,70,20,-1,FullAirborneRetreat,4
