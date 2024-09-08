@@ -72,6 +72,11 @@ public:
 	/// </summary>
 	void DieProcess();
 
+	/// <summary>
+	/// ŠO•”‚©‚çíœ
+	/// </summary>
+	void DieFlomOutside() override;
+
 private:
 	
 	/// <summary>

@@ -62,6 +62,10 @@ public:
 	/// </summary>
 	virtual void AttackAction() = 0;
 
+	/// <summary>
+	/// ©g‚ğíœ‚·‚é
+	/// </summary>
+	virtual void DeleteThis() = 0;
 
 	WeaponStatus GetCommonStatus()
 	{

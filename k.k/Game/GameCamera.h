@@ -35,9 +35,20 @@ public:
 	/// </summary>
 	void ZoomCamera();
 
+	/// <summary>
+	/// カメラのゲーム中の処理
+	/// </summary>
 	void OnProcessGameTransition();
 
+	/// <summary>
+	/// カメラを揺らす
+	/// </summary>
+	void CameraShake();
 
+
+	/// <summary>
+	/// スプリングカメラのリフレッシュ
+	/// </summary>
 	void CameraRefresh()
 	{
 		m_springCamera.SetDampingRate(1.0f);

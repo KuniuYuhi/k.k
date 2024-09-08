@@ -24,10 +24,12 @@ EnemyObjectPool::EnemyObjectPool()
 
 EnemyObjectPool::~EnemyObjectPool()
 {
+	//中のエネミーを消す
+	//DeleteQueueObject();
+
+
 	//中身を全てクリア
 	m_objectPoolQueue.clear();
-
-	//todo 中のエネミーを消す
 }
 
 void EnemyObjectPool::CreateInstance()
@@ -123,4 +125,22 @@ void EnemyObjectPool::Init()
 	//リセットしておく
 	EnemyManager::GetInstance()->CrearMobEnemyList();
 
+}
+
+void EnemyObjectPool::DeleteQueueObject()
+{
+	for (auto& pair : m_objectPoolQueue) {
+		//キューを持ってくる
+		std::queue<EnemyBase*>& enemyQueue = pair.second;
+
+		//キューの中身がなくなるまで繰り返す
+		while (!enemyQueue.empty()) {
+			EnemyBase* enemy = enemyQueue.front();
+			//キューから出す
+			enemyQueue.pop();
+
+			//エネミーを削除
+			DeleteGO(enemy);
+		}
+	}
 }

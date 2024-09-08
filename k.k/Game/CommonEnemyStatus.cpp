@@ -69,7 +69,7 @@ void CommonEnemyStatus::LoadCommonEnemyStatusCSV(const std::string& name)
 		statusData.m_commonEnemyStatus.attackIntarval = stof(buf);
 		//接近できる距離を読み込む。
 		getline(i_stream, buf, ',');
-		statusData.m_commonEnemyStatus.approachDistance = stof(buf);
+		statusData.m_commonEnemyStatus.defaultApproachDistance = stof(buf);
 		//待機する距離を読み込む。
 		getline(i_stream, buf, ',');
 		statusData.m_commonEnemyStatus.waitingDistance = stof(buf);
@@ -78,7 +78,8 @@ void CommonEnemyStatus::LoadCommonEnemyStatusCSV(const std::string& name)
 		statusData.SetCurrentHp(statusData.m_commonEnemyStatus.maxHp);
 		//現在の攻撃力を設定
 		statusData.SetCurrentAtk(statusData.m_commonEnemyStatus.defaultPower);
-	
+		//現在の接近できる距離を設定
+		statusData.SetCurrentApproachDistance(statusData.m_commonEnemyStatus.defaultApproachDistance);
 
 		//マップに取得したデータを代入
 		StatusDataMAP[statusData.name] = statusData;

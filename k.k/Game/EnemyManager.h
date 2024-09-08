@@ -1,6 +1,7 @@
 #pragma once
 
 class MobEnemyBase;
+class BossEnemyBase;
 
 /// <summary>
 /// エネミーの情報を管理するマネージャー
@@ -60,13 +61,45 @@ public:
 		m_mobEnemyList.clear();
 	}
 
-
-
+	/// <summary>
+	/// モブエネミーリストを取得
+	/// </summary>
+	/// <returns></returns>
 	std::vector<MobEnemyBase*> GetMobEnemyList()
 	{
 		return m_mobEnemyList;
 	}
 
+
+	/// <summary>
+	/// ボスエネミーのインスタンスを設定
+	/// </summary>
+	/// <param name="bossEnemy"></param>
+	void SetBossEnemyInstance(BossEnemyBase* bossEnemy)
+	{
+		m_bossEnemy = bossEnemy;
+	}
+	/// <summary>
+	/// ボスエネミーのインスタンスを取得
+	/// </summary>
+	/// <returns></returns>
+	BossEnemyBase* GetBossEnemyInstance()
+	{
+		return m_bossEnemy;
+	}
+
+	/// <summary>
+	/// ボスエネミーのインスタンスがnullptrか？
+	/// </summary>
+	/// <returns>nullptrならtrue</returns>
+	bool IsNullptrBossEnemyInstance()
+	{
+		if (m_bossEnemy != nullptr)
+		{
+			return false;
+		}
+		return true;
+	}
 
 	/// <summary>
 	/// モブエネミーをリストから削除
@@ -90,6 +123,18 @@ public:
 	/// <param name="targetPosition"></param>
 	void SortEnemiesByDistanceToTarget(Vector3 targetPosition);
 
+
+
+	int GetNearbyEnemyCount(Vector3 targetPosition, float radius);
+
+
+	/// <summary>
+	/// 全てのエネミーを削除する
+	/// </summary>
+	void DeleteAllEnemy();
+
+
+
 private:
 
 	
@@ -103,6 +148,7 @@ private:
 private:
 
 	//ボスエネミー情報
+	BossEnemyBase* m_bossEnemy = nullptr;			//ボスエネミーインスタンス
 
 	std::vector<MobEnemyBase*> m_mobEnemyList;		//モブエネミーリスト
 

@@ -20,11 +20,11 @@ public:
 
 	
 	/// <summary>
-	/// 
+	/// キャラクターを追いかける方向の計算
 	/// </summary>
-	/// <param name="status"></param>
-	/// <param name="chaseCharacter"></param>
-	/// <param name="moveSpeed"></param>
+	/// <param name="status">ステータス</param>
+	/// <param name="chaseCharacter">追いかけるキャラクターの座標</param>
+	/// <param name="moveSpeed">移動速度</param>
 	/// <returns></returns>
 	Vector3 CalcChaseCharacterVerocity(
 		CommonEnemyStatus status,

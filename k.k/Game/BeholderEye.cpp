@@ -29,6 +29,9 @@ BeholderEye::~BeholderEye()
 
 bool BeholderEye::Start()
 {
+	//やられてオブジェクトプールに格納された時のことも考えて死亡フラグをリセット
+	SetDieFlag(false);
+
 	m_player = FindGO<Brave>("Brave");
 
 	//モデルの読み込み
@@ -273,6 +276,17 @@ void BeholderEye::DieProcess()
 	DieFromDamage();
 }
 
+void BeholderEye::DieFlomOutside()
+{
+	//キャラコンリセット
+	m_charaCon.reset();
+	//オブジェクトプールに自身のオブジェクトを返す
+	EnemyObjectPool::GetInstance()->OnRelease("BeholderEye", this);
+
+	//エフェクト生成
+
+}
+
 void BeholderEye::ProcessCommonTranstion()
 {
 	if (fabsf(GetMoveSpeed().x) >= 0.001f ||
@@ -299,6 +313,9 @@ void BeholderEye::Update()
 		//ReleaseThis();
 		//return;
 	}
+
+	//処理を止める要求があるなら
+	if (IsStopRequested())return;
 
 	//死んでいないなら処理する
 	if (!IsDie())
@@ -389,6 +406,8 @@ void BeholderEye::ShotNormalBall()
 	Vector3 createPos = g_vec3Zero;
 	Matrix m = m_modelRender.GetBone(m_headBoonId)->GetWorldMatrix();
 	m.Apply(createPos);
+
+	m_forward.Normalize();
 
 	//撃つときのパラメータの設定
 	m_eyeBall->SetShotMagicBallParameters(

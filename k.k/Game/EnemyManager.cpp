@@ -2,6 +2,7 @@
 #include "EnemyManager.h"
 #include "MobEnemyBase.h"
 
+
 EnemyManager* EnemyManager::m_instance = nullptr;
 
 EnemyManager::EnemyManager()
@@ -68,6 +69,34 @@ void EnemyManager::SortEnemiesByDistanceToTarget(Vector3 targetPosition)
 	std::sort(m_mobEnemyList.begin(), m_mobEnemyList.end(),
 		[targetPosition](MobEnemyBase* a, MobEnemyBase* b)
 		{
-			return a->CalcDistanceToTargetPosition(targetPosition) < b->CalcDistanceToTargetPosition(targetPosition);
+			return a->GetDistanceToTargetPositionValue(targetPosition) < b->GetDistanceToTargetPositionValue(targetPosition);
 		});
+}
+
+int EnemyManager::GetNearbyEnemyCount(Vector3 targetPosition, float radius)
+{
+	int count = 0;
+
+	for (auto enemy: m_mobEnemyList)
+	{
+		//ターゲットまでの距離が半径以下ならカウント加算
+		if (enemy->GetDistanceToTargetPositionValue(targetPosition) <= radius)
+		{
+			count++;
+		}
+	}
+
+	return count;
+}
+
+void EnemyManager::DeleteAllEnemy()
+{
+	for (auto enemy : m_mobEnemyList)
+	{
+		//削除時の処理
+		enemy->DieFlomOutside();
+	}
+
+	m_mobEnemyList.clear();
+
 }

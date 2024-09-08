@@ -10,6 +10,9 @@ class Fade;
 class EntryBoss;
 class BattleStart;
 class Pause;
+class Brave;
+class WaveManager;
+class Summoner;
 
 class GameFinishCamera;
 
@@ -123,7 +126,7 @@ public:
 	/// <summary>
 	/// バトルフェーズクラス生成
 	/// </summary>
-	void CreateBattlePhase();
+	void CreateBattleWave();
 
 private:
 	/// <summary>
@@ -159,21 +162,19 @@ private:
 
 	Pause*						m_pause = nullptr;
 	Fade*						m_fade = nullptr;
-	
-
-	GameFinishCamera* m_gameFinishCamera = nullptr;
 
 	BossStage1*					m_bossStage1 = nullptr;
 	GameCamera*					m_gameCamera = nullptr;
-	ResultSeen*					m_result = nullptr;
+	
 	SkyCube*					m_skyCube = nullptr;
 	const Vector3				m_skyPos = { 0.0f,-700.0f,0.0f };
 
 	GameUI*						m_gameUI = nullptr;
 	EntryBoss*					m_entryBoss = nullptr;
 	BattleStart*				m_battleStart = nullptr;
-
-	ModelRender					model;
+	Brave* m_brave = nullptr;
+	WaveManager* m_waveManager = nullptr;
+	Summoner* m_summoner = nullptr;
 
 	bool						m_ChaseBossFlag = false;						//ボスを見るかのフラグ
 

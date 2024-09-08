@@ -26,6 +26,9 @@ Cactus::~Cactus()
 
 bool Cactus::Start()
 {
+	//やられてオブジェクトプールに格納された時のことも考えて死亡フラグをリセット
+	SetDieFlag(false);
+
 	m_player = FindGO<Brave>("Brave");
 
 
@@ -278,6 +281,17 @@ void Cactus::DieProcess()
 	DieFromDamage();
 }
 
+void Cactus::DieFlomOutside()
+{
+	//キャラコンリセット
+	m_charaCon.reset();
+	//オブジェクトプールに自身のオブジェクトを返す
+	EnemyObjectPool::GetInstance()->OnRelease("Cactus", this);
+
+	//エフェクト生成
+
+}
+
 void Cactus::Update()
 {
 	if (g_pad[0]->IsTrigger(enButtonB))
@@ -285,6 +299,9 @@ void Cactus::Update()
 		/*ReleaseThis();
 		return;*/
 	}
+
+	//処理を止める要求があるなら
+	if (IsStopRequested())return;
 
 	//死んでいないなら処理する
 	if (!IsDie())

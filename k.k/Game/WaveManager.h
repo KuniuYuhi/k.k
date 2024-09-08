@@ -4,6 +4,7 @@
 
 class WaveStatus;
 class EmnemyBase;
+class Summoner;
 
 /// <summary>
 /// ウェーブ状況を管理するクラス
@@ -150,6 +151,8 @@ private:
 	bool IsChangeSummonState();
 
 private:
+
+	Summoner* m_summoner = nullptr;
 
 	WaveStatus m_waveStatus;		//ウェーブのステータス
 

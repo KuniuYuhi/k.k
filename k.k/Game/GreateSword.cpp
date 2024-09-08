@@ -92,6 +92,11 @@ void GreateSword::Init()
 
 }
 
+void GreateSword::DeleteThis()
+{
+	DeleteGO(this);
+}
+
 void GreateSword::ChangeStowedState()
 {
 	SetCurrentWeaponState(enStowed);

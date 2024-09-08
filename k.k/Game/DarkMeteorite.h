@@ -5,13 +5,13 @@
 class MagicBallMovement;
 
 /// <summary>
-/// サモナーが放つ魔法球：ダークボール
+/// サモナーが放つ魔法球：ダークメテオ
 /// </summary>
-class DarkBall : public IMagicBall
+class DarkMeteorite : public IMagicBall
 {
 public:
-	DarkBall();
-	~DarkBall();
+	DarkMeteorite();
+	~DarkMeteorite();
 
 	bool Start() override;
 
@@ -45,13 +45,16 @@ private:
 	/// <returns></returns>
 	bool IsDelete();
 
-
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <returns></returns>
-	bool IsDeleteTime();
+	bool IsGroundHit();
 
+	/// <summary>
+	/// 爆発する
+	/// </summary>
+	void Explosion();
 
 
 private:
@@ -61,7 +64,7 @@ private:
 	CollisionObject* m_collision = nullptr;
 
 
-	float m_deleteTimer = 0.0f;
+	
 
 };
 

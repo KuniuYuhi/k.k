@@ -152,8 +152,8 @@ void ResultSeen::ResultEnd()
 		//ゲームを終わってタイトルに戻る
 		m_resultEndFlag = true;
 
-		Game* game = FindGO<Game>("game");
-		game->DeleteThis();
+		/*Game* game = FindGO<Game>("game");
+		game->DeleteThis();*/
 
 		//タイトルシーンに切り替え可能にする
 		//GameSceneManager::GetInstance()->SetIsSceneChangeableFlag(true);

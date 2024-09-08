@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "MobEnemyBase.h"
 
+#include "GameSceneManager.h"
+
 ////////////////////////////////////////////////////
 //コンポーネント
 #include "MobEnemyMovement.h"
@@ -12,10 +14,20 @@
 #include "KnockBackInfoManager.h"
 #include "Brave.h"
 
-float MobEnemyBase::CalcDistanceToTargetPosition(Vector3 target)
+
+float MobEnemyBase::GetDistanceToTargetPositionValue(Vector3 target)
 {
-	Vector3 diff = target - m_position;
-	return diff.Length();
+	return CalcDistanceToTargetPosition(target);
+}
+
+bool MobEnemyBase::IsStopRequested()
+{
+	//勝敗が着いたら
+	if (GameSceneManager::GetInstance()->IsGameOutcome())return true;
+
+
+	//ここまで来たら処理は止まらない
+	return false;
 }
 
 void MobEnemyBase::SettingDefaultComponent()
@@ -30,13 +42,6 @@ void MobEnemyBase::SettingDefaultComponent()
 	m_damageProvider->SetProviderCharacterInstance(this);
 }
 
-void MobEnemyBase::TakeDamage(int damage)
-{
-	//ダメージを受ける
-	//やられた場合は死亡フラグが立つ
-	SetDieFlag(m_status.TakeDamage(damage));
-
-}
 
 void MobEnemyBase::DieFromDamage()
 {
@@ -122,6 +127,8 @@ void MobEnemyBase::ChaseMovement(Vector3 targetPosition)
 {
 	//アクション中は移動処理しない
 	if (IsAction()) return;
+
+	//もし逃げるようコンポーネントを持っているならそっちの移動処理を優先
 
 	m_moveSpeed = m_movement->CalcChaseCharacterVerocity(
 		m_status,

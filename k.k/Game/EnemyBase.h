@@ -59,6 +59,21 @@ protected:
 	virtual void SettingDefaultComponent() override {}
 
 
+	/// <summary>
+	/// ダメージを受ける
+	/// </summary>
+	/// <param name="damage">受けるダメージ量</param>
+	virtual void TakeDamage(int damage);
+
+
+	/// <summary>
+	/// ターゲットとの距離の長さを計算
+	/// </summary>
+	/// <param name="target">ターゲットの座標</param>
+	/// <returns>距離の長さ</returns>
+	float CalcDistanceToTargetPosition(Vector3 target);
+
+
 protected:
 
 	//基本的なステータス

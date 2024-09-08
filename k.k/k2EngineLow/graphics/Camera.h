@@ -360,6 +360,44 @@ namespace nsK2EngineLow {
 		/// <param name="worldPos">ワールド座標</param>
 		void CalcScreenPositionFromWorldPosition(Vector2& screenPos, const Vector3& worldPos) const;
 
+
+		/// <summary>
+		/// カメラを揺らす
+		/// </summary>
+		void ActiveCameraShake()
+		{
+			m_isCameraShakeActive = true;
+		}
+		/// <summary>
+		/// カメラを揺らさない
+		/// </summary>
+		void DeactiveCameraShake()
+		{
+			m_isCameraShakeActive = false;
+		}
+
+		/// <summary>
+		/// カメラを揺らす。揺らすときに使う変数の値も設定
+		/// </summary>
+		/// <param name="timeLimit"></param>
+		/// <param name="power"></param>
+		void ActiveCameraShake(float timeLimit, float power)
+		{
+			m_shakeTimeLimit = timeLimit;
+			m_shakePower = power;
+			m_isCameraShakeActive = true;
+		}
+
+		/// <summary>
+		/// カメラを揺らしているか
+		/// </summary>
+		/// <returns></returns>
+		bool IsCameraShakeActive()
+		{
+			return m_isCameraShakeActive;
+		}
+
+
 	protected:
 		float		m_targetToPositionLen = 1.0f;			// 注視点と視点まで距離。
 		Vector3		m_position = { 0.0f, 0.0f, 1.0f };		// カメラ位置。
@@ -383,5 +421,9 @@ namespace nsK2EngineLow {
 		EnUpdateProjMatrixFunc m_updateProjMatrixFunc = enUpdateProjMatrixFunc_Perspective;	// プロジェクション行列の更新の仕方。
 		bool		m_isNeedUpdateProjectionMatrix = true;
 		bool		m_isDirty = false;						// ダーティフラグ。
+
+		bool		m_isCameraShakeActive = false;			//カメラを揺らすか
+		float		m_shakeTimeLimit = 0.0f;				//カメラを揺らす時間
+		float		m_shakePower = 0.0f;					//カメラを揺らす強さ
 	};
 }

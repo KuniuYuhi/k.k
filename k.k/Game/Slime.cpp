@@ -25,7 +25,9 @@ Slime::~Slime()
 
 bool Slime::Start()
 {
-	
+	//やられてオブジェクトプールに格納された時のことも考えて死亡フラグをリセット
+	SetDieFlag(false);
+
 	m_player = FindGO<Brave>("Brave");
 
 	//モデルの読み込み
@@ -272,6 +274,17 @@ void Slime::DieProcess()
 	DieFromDamage();
 }
 
+void Slime::DieFlomOutside()
+{
+	//キャラコンリセット
+	m_charaCon.reset();
+	//オブジェクトプールに自身のオブジェクトを返す
+	EnemyObjectPool::GetInstance()->OnRelease("Slime", this);
+
+	//エフェクト生成
+
+}
+
 void Slime::ProcessCommonTranstion()
 {
 	if (fabsf(GetMoveSpeed().x) >= 0.001f ||
@@ -298,6 +311,9 @@ void Slime::Update()
 		//ReleaseThis();
 		//return;
 	}
+
+	//処理を止める要求があるなら
+	if (IsStopRequested())return;
 
 	//死んでいないなら処理する
 	if (!IsDie())

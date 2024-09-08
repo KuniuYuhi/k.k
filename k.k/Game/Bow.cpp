@@ -95,6 +95,11 @@ void Bow::Init()
 
 }
 
+void Bow::DeleteThis()
+{
+	DeleteGO(this);
+}
+
 void Bow::ChangeStowedState()
 {
 	SetCurrentWeaponState(enStowed);

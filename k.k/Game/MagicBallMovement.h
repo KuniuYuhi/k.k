@@ -36,7 +36,12 @@ public:
 	void MoveStraight();
 
 	/// <summary>
-	/// 
+	/// —Ž‚¿‚éˆÚ“®
+	/// </summary>
+	void MoveFall();
+
+	/// <summary>
+	/// ’Ç‚¢‚©‚¯‚é
 	/// </summary>
 	/// <param name="targetPosition"></param>
 	void MoveChase(Vector3 targetPosition);

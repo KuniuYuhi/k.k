@@ -107,4 +107,14 @@ void WeaponManager::ChangeChangeWeaponTypeToMainWeaponType()
 
 }
 
+void WeaponManager::DeleteAllWeaponInstance()
+{
+	for (auto& weapon : m_weaponsMap)
+	{
+		weapon.second->DeleteThis();
+	}
+
+	m_weaponsMap.clear();
+}
+
 

@@ -109,6 +109,11 @@ void SwordShield::Init()
 
 }
 
+void SwordShield::DeleteThis()
+{
+	DeleteGO(this);
+}
+
 void SwordShield::ChangeStowedState()
 {
 	SetCurrentWeaponState(enStowed);

@@ -4,7 +4,7 @@
 #include "SpringCamera.h"
 
 class Boss;
-class Player;
+class Brave;
 class ResultSeen;
 
 class GameFinishCamera:public IGameObject
@@ -57,7 +57,7 @@ private:
 	SpringCamera			m_springCamera;
 
 	Boss* m_boss = nullptr;
-	Player* m_player = nullptr;
+	Brave* m_brave = nullptr;
 
 	EnFinishCameraState m_enFinishCameraState = enFinishCameraState_ChaseBoss;
 

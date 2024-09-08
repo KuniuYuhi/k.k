@@ -24,6 +24,8 @@ Mushroom::~Mushroom()
 
 bool Mushroom::Start()
 {
+	//やられてオブジェクトプールに格納された時のことも考えて死亡フラグをリセット
+	SetDieFlag(false);
 
 	m_player = FindGO<Brave>("Brave");
 
@@ -268,6 +270,17 @@ void Mushroom::DieProcess()
 	DieFromDamage();
 }
 
+void Mushroom::DieFlomOutside()
+{
+	//キャラコンリセット
+	m_charaCon.reset();
+	//オブジェクトプールに自身のオブジェクトを返す
+	EnemyObjectPool::GetInstance()->OnRelease("Mushroom", this);
+
+	//エフェクト生成
+
+}
+
 void Mushroom::ProcessCommonTranstion()
 {
 	if (fabsf(GetMoveSpeed().x) >= 0.001f ||
@@ -294,6 +307,9 @@ void Mushroom::Update()
 		//ReleaseThis();
 		//return;
 	}
+
+	//処理を止める要求があるなら
+	if (IsStopRequested())return;
 
 	//死んでいないなら処理する
 	if (!IsDie())

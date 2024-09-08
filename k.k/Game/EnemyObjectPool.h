@@ -211,6 +211,11 @@ public:
 
 private:
 
+	void DeleteQueueObject();
+
+
+private:
+
 	int m_initPoolSize = 10;
 
 	std::map<const char*, std::queue<EnemyBase*>> m_objectPoolQueue;	//オブジェクトプールのマップ
