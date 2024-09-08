@@ -9,8 +9,6 @@
 
 #include "EnemyManager.h"
 
-//#include "SlimeStateContext.h"
-
 #include "KnockBackInfoManager.h"
 
 
@@ -27,7 +25,9 @@ Slime::~Slime()
 
 bool Slime::Start()
 {
-	
+	//やられてオブジェクトプールに格納された時のことも考えて死亡フラグをリセット
+	SetDieFlag(false);
+
 	m_player = FindGO<Brave>("Brave");
 
 	//モデルの読み込み
@@ -37,7 +37,7 @@ bool Slime::Start()
 	if (m_charaCon == nullptr)
 	{
 		CreateCharacterController();
-		m_charaCon.get()->Init(20.0f, 20.0f, m_position);
+		m_charaCon.get()->Init(22.0f, 10.0f, m_position);
 	}
 	else
 	{
@@ -140,6 +140,9 @@ void Slime::ProcessHit(DamageInfo damageInfo)
 	//ノックバックの時間間隔を取得
 	m_knockBackTimeScale = damageInfo.knockBackTimeScale;
 
+	//ダメージを受ける
+	TakeDamage(damageInfo.attackPower);
+
 	//ヒットステートに切り替える
 	m_slimeContext.get()->ChangeSlimeState(this, enSlimeState_Hit);
 }
@@ -162,39 +165,6 @@ void Slime::Attack()
 	//ステートを切り替える
 	m_slimeContext.get()->ChangeSlimeState(this, enSlimeState_Attack);
 
-}
-
-bool Slime::IsAttackable()
-{
-	//タイマーが攻撃インターバルを超えたら
-	if (m_attackIntarvalTimer >= m_status.GetAttackIntarval())
-	{
-		//攻撃可能
-		return true;
-	}
-	//タイマーを加算
-	m_attackIntarvalTimer += g_gameTime->GetFrameDeltaTime();
-
-	return false;
-}
-
-void Slime::TrunToTarget()
-{
-	if (m_player == nullptr) return;
-
-	Vector3 direction = g_vec3Zero;
-	//プレイヤーの方を向くベクトルを取得
-	direction = m_movement->CalcChaseCharacterVerocity(
-		m_status,
-		m_player->GetPosition(),
-		m_position,
-		m_moveSpeed
-	);
-
-	//回転方向を設定
-	SetRotateDirection(direction);
-	//前方向を設定
-	SetForward(direction);
 }
 
 void Slime::EntryAttackActionProcess()
@@ -240,7 +210,8 @@ void Slime::EntryHitActionProcess()
 	SettingKnockBackProcess();
 	//ノックバックカウントリセット
 	count = 0.0f;
-
+	//硬直タイマーをリセット
+	m_starkTimer = 0.0f;
 	//攻撃中かもしれないのでコリジョン生成フラグをリセットしておく
 	m_isCreateAttackCollision = false;
 }
@@ -267,8 +238,16 @@ void Slime::UpdateHitActionProcess()
 		//アニメーションが終わったら
 		if (GetModelRender().IsPlayingAnimation() == false)
 		{
+			//もし死んでいるなら
+			if (IsDie())
+			{
+				//死亡ステートに遷移
+				m_slimeContext.get()->ChangeSlimeState(this, enSlimeState_Die);
+				return;
+			}
+
 			//少し硬直して共通ステート処理に移行
-			if (m_starkTimer >= 0.2f)
+			if (m_starkTimer >= 0.1f)
 			{
 				//共通ステートに移行
 				ProcessCommonTranstion();
@@ -277,6 +256,32 @@ void Slime::UpdateHitActionProcess()
 		}
 	}
 
+
+}
+
+void Slime::ExitHitActionProcess()
+{
+	if (IsDie()) return;
+
+
+	//アクションを終わる
+	ActionDeactive();
+}
+
+void Slime::DieProcess()
+{
+	//ダメージによってやられた時の処理
+	DieFromDamage();
+}
+
+void Slime::DieFlomOutside()
+{
+	//キャラコンリセット
+	m_charaCon.reset();
+	//オブジェクトプールに自身のオブジェクトを返す
+	EnemyObjectPool::GetInstance()->OnRelease("Slime", this);
+
+	//エフェクト生成
 
 }
 
@@ -294,6 +299,11 @@ void Slime::ProcessCommonTranstion()
 
 }
 
+void Slime::TurnToPlayer()
+{
+	TurnToTarget();
+}
+
 void Slime::Update()
 {
 	if (g_pad[0]->IsTrigger(enButtonB))
@@ -302,17 +312,22 @@ void Slime::Update()
 		//return;
 	}
 
+	//処理を止める要求があるなら
+	if (IsStopRequested())return;
 
+	//死んでいないなら処理する
+	if (!IsDie())
+	{
+		//攻撃処理
+		Attack();
+		//キャラクターの移動
+		ChaseMovement(m_player->GetPosition());
+		//回転
+		Rotation();
 
-	//攻撃処理
-	Attack();
-	//キャラクターの移動
-	ChaseMovement(m_player->GetPosition());
-	//回転
-	Rotation();
-
-	//当たり判定
-	CheckSelfCollision();
+		//当たり判定
+		CheckSelfCollision();
+	}
 
 	//コンテキストの処理
 	m_slimeContext.get()->UpdateCurrentState();

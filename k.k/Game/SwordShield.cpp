@@ -109,6 +109,11 @@ void SwordShield::Init()
 
 }
 
+void SwordShield::DeleteThis()
+{
+	DeleteGO(this);
+}
+
 void SwordShield::ChangeStowedState()
 {
 	SetCurrentWeaponState(enStowed);
@@ -516,6 +521,9 @@ void SwordShield::CheckShieldCollision()
 			if (dp == nullptr) return;
 
 			//敵の位置保存
+			m_brave->SetDamageProviderPosition(
+				dp->GetProviderPostion()
+			);
 
 			//ノックバックの情報を設定
 			m_brave->SettingKnockBackInfoForDamageInfo(dp->GetProviderDamageInfo());

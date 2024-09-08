@@ -118,8 +118,10 @@ public:
 
 
 
-	
-
+	/// <summary>
+	/// ‘S‚Ä‚Ì•Ší‚ğíœ
+	/// </summary>
+	void DeleteAllWeaponInstance();
 
 
 private:

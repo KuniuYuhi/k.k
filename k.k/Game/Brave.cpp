@@ -26,6 +26,7 @@ namespace {
 Brave::~Brave()
 {
 	m_braveAnimClip.release();
+	WeaponManager::GetInstance()->DeleteAllWeaponInstance();
 	WeaponManager::DeleteInstance();
 }
 
@@ -88,21 +89,25 @@ bool Brave::Start()
 
 void Brave::Update()
 {
+	//コントローラーの入力を受け付けている間は
+	if (m_playerContoller->IsControllerInputEnabledFlag())
+	{
+		//スタミナの自動回復
+		AutoRecoveryStamina();
 
-	//スタミナの自動回復
-	AutoRecoveryStamina();
+		//ボタンを押して行うアクション
+		ButtonAction();
 
-	//ボタンを押して行うアクション
-	ButtonAction();
+		//移動処理
+		Movement();
 
-	//移動処理
-	Movement();
+		//回転
+		Rotation();
 
-	//回転
-	Rotation();
-
-	//当たり判定
-	CheckSelfCollision();
+		//当たり判定
+		CheckSelfCollision();
+	}
+	
 
 	//現在のステートの処理
 	m_braveStateCotext.get()->UpdateCurrentState();
@@ -365,6 +370,13 @@ void Brave::UpdateHitActionProcess()
 		//アニメーションが終わったら
 		if (GetModelRender().IsPlayingAnimation() == false)
 		{
+			if (IsDie())
+			{
+				//死亡しているときはステート遷移
+				m_braveStateCotext.get()->ChangeBraveState(enBraveState_Die);
+				return;
+			}
+
 			//少し硬直して共通ステート処理に移行
 			if (m_starkTimer >= 0.1f)
 			{
@@ -487,13 +499,16 @@ void Brave::CheckSelfCollision()
 			//コリジョンを持っているキャラのダメージプロバイダーコンポーネントを取得
 			DamageProvider* dp = FindGOComponent<DamageProvider>(collision->GetCreatorName());
 
-			if (dp == nullptr) return;
+			if (dp == nullptr)
+			{
+				return;
+			}
 
 			//攻撃がヒットしたことをコリジョンを持っているDamageProviderクラスに伝える
 			dp->Hit();
 
 			//ダメージプロバイダーの座標を取得
-			m_damageProviderPosition = dp->GetProviderCharacterPostion();
+			m_damageProviderPosition = dp->GetProviderPostion();
 
 			//攻撃IDを取得
 			int currentAttackId = dp->GetAttackId();
@@ -591,16 +606,26 @@ void Brave::ProcessHit(DamageInfo damageInfo)
 	//攻撃中かもしれないのでインパクト時の処理をリセット
 	m_armedWeapon->AttackImpactProcess(false);
 
-
 	//被ダメージ処理
-
-
-
-
+	//TakeDamage(damageInfo.attackPower);
 
 	//ステートを切り替える
 	m_braveStateCotext.get()->ChangeBraveState(enBraveState_Hit);
 }
+
+void Brave::TakeDamage(int damage)
+{
+	//ダメージを受ける
+	//やられた場合は死亡フラグが立つ
+	SetDieFlag(m_status.TakeDamage(damage));
+
+	//やられた場合は入力を受け付けない
+	if (IsDie())
+	{
+		m_playerContoller->SetControllerInputEnabledFlag(false);
+	}
+}
+
 
 void Brave::Render(RenderContext& rc)
 {
@@ -675,6 +700,14 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		m_armedWeapon->AttackImpactProcess(false);
 	}
 
+}
+
+void Brave::ChangePlayerWinState()
+{
+	//コントローラーの入力を受け付けないようにする
+	m_playerContoller->SetControllerInputEnabledFlag(false);
+	//勝利ステートに遷移
+	m_braveStateCotext.get()->ChangeBraveState(enBraveState_WinStart);
 }
 
 int Brave::GetCurrentPower()

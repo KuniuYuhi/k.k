@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "WaveManager.h"
+#include "GameSceneManager.h"
 
 #include "InitEffect.h"
 
@@ -10,6 +11,8 @@
 #include "MobEnemyheaderFiles.h"
 
 #include "EnemyManager.h"
+
+#include "Summoner.h"
 
 
 WaveManager::WaveManager()
@@ -28,6 +31,7 @@ bool WaveManager::Start()
 	//ステータスを初期化
 	m_waveStatus.InitWaveStatus();
 
+	m_summoner = FindGO<Summoner>("Summoner");
 
 	m_currentWaveNumber = 0;
 
@@ -36,6 +40,13 @@ bool WaveManager::Start()
 
 void WaveManager::Update()
 {
+	//勝敗が着いたならウェーブを進行しない
+	if (GameSceneManager::GetInstance()->IsGameOutcome())
+	{
+		return;
+	}
+
+
 	//進行管理
 	ManageWaveProgression();
 
@@ -97,6 +108,11 @@ void WaveManager::SummonMobEnemys()
 		//}
 
 		enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Slime>("Slime");
+
+		//enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Cactus>("Cactus");
+
+		//enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Mushroom>("Mushroom");
+
 
 		//enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<BeholderEye>("BeholderEye");
 
@@ -174,13 +190,15 @@ bool WaveManager::IsWithInDistances(int count, float distance)
 {
 	if (count <= 1) return true;
 
+	Vector3 diff = g_vec3Zero;
+	float length = 0.0f;
 	int distanceCount = 0;
 	//他の生成する座標と一定の間隔を開ける
 	for (int i = 0; i < count; i++)
 	{
-		Vector3 diff = m_createPositions[count] - m_createPositions[i];
+		diff = m_createPositions[count] - m_createPositions[i];
 		//生成する座標同士の距離を計算
-		float length = diff.Length();
+		length = diff.Length();
 		//距離が離れていたら、生成する座標に決定
 		if (length > distance)
 		{
@@ -188,8 +206,16 @@ bool WaveManager::IsWithInDistances(int count, float distance)
 		}
 	}
 
+	diff = m_createPositions[count] - m_summoner->GetPosition();
+	length = diff.Length();
+	if (length > distance)
+	{
+		distanceCount++;
+	}
+
+
 	//全ての座標と距離が空いていたら
-	if (distanceCount == count)
+	if (distanceCount > count)
 	{
 		//空いている
 		return true;

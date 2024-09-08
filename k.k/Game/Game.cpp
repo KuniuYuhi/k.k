@@ -33,6 +33,8 @@
 #include "Slime.h"
 #include "Cactus.h"
 #include "BeholderEye.h"
+
+#include "Summoner.h"
 //////////////////////////////
 
 #include "EnemyObjectPool.h"
@@ -75,13 +77,11 @@ Game::~Game()
 
 	DeleteGO(m_skyCube);
 	DeleteGO(m_bossStage1);
-	
+	DeleteGO(m_waveManager);
 	
 	DeleteGO(m_gameCamera);
-	DeleteGO(m_gameFinishCamera);
-
+	DeleteGO(m_brave);
 	DeleteGO(m_pause);
-	DeleteGO(m_result);
 }
 
 bool Game::Start()
@@ -100,7 +100,7 @@ bool Game::Start()
 	//ゲームオブジェクトの初期化
 	InitGameObject();
 
-	CreatePlayerAndCamera();
+	//CreatePlayerAndCamera();
 
 	//フェードクラスのインスタンスを探す
 	m_fade = FindGO<Fade>("fade");
@@ -116,17 +116,17 @@ bool Game::Start()
 	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 
-	Brave* brave = NewGO<Brave>(0,"Brave");
+	
 
 
 	EnemyManager::GetInstance()->CrearMobEnemyList();
 
 
-	WaveManager* wave = NewGO<WaveManager>(0, "WaveManager");
+	
 
 	
 
-	//BeholderEye* b = NewGO<BeholderEye>(0, "BeholderEye");
+	
 
 
 
@@ -135,9 +135,14 @@ bool Game::Start()
 
 void Game::Update()
 {	
-	Brave* brave = FindGO<Brave>("Brave");
+	m_brave = FindGO<Brave>("Brave");
 
-	EnemyManager::GetInstance()->ControlEnemyDistances(brave->GetPosition());
+	if (m_brave != nullptr)
+	{
+		EnemyManager::GetInstance()->ControlEnemyDistances(m_brave->GetPosition());
+	}
+
+	
 	
 
 }
@@ -156,9 +161,8 @@ bool Game::Fadecomplete()
 
 void Game::CreateBoss()
 {
+	m_summoner = NewGO<Summoner>(0, "Summoner");
 	
-	//モンスターが一定以上近づかないように毎フレーム調べる
-	//数を取得できるようにする
 }
 
 void Game::UpdateGameSystem()
@@ -176,6 +180,14 @@ void Game::DeleteGameCamera()
 
 void Game::DeleteThis()
 {
+	m_summoner = FindGO<Summoner>("Summoner");
+	if (m_summoner != nullptr)
+	{
+		//ボスを削除
+		m_summoner->DieFlomOutside();
+	}
+
+	//自身を削除
 	DeleteGO(this);
 }
 
@@ -184,11 +196,15 @@ void Game::CreatePlayerAndCamera()
 
 	//ゲームカメラの生成
 	m_gameCamera = NewGO<GameCamera>(0, "gameCamera");
+
+	//プレイヤーの生成
+	m_brave = NewGO<Brave>(0, "Brave");
 }
 
-void Game::CreateBattlePhase()
+void Game::CreateBattleWave()
 {
-	
+	//ウェーブ管理クラス生成
+	m_waveManager = NewGO<WaveManager>(0, "WaveManager");
 }
 
 void Game::InitSkyCube()

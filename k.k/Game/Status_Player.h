@@ -112,6 +112,14 @@ public:
 	}
 
 	/// <summary>
+	/// 最大スタミナを取得
+	/// </summary>
+	/// <returns></returns>
+	const float& GetMaxStamina() const
+	{
+		return m_playerStatus.maxStamina;
+	}
+	/// <summary>
 	/// 現在のスタミナを取得
 	/// </summary>
 	/// <returns></returns>
@@ -171,7 +179,27 @@ public:
 	/// <param name="recoveryValue">回復する量</param>
 	void RecoveryStamina(float recoveryValue);
 
+	/// <summary>
+	/// ダメージを受ける。HPが0以下になったらtrueを返す
+	/// </summary>
+	/// <param name="damage"></param>
+	/// <returns></returns>
+	bool TakeDamage(int damage)
+	{
+		//HPからダメージ量を減らす
+		m_playerStatus.currentHp -= damage;
 
+		//HPが0以下なら
+		if (m_playerStatus.currentHp <= 0)
+		{
+			m_playerStatus.currentHp = 0;
+			//倒された
+			return true;
+		}
+
+		//倒されていない
+		return false;
+	}
 
 
 

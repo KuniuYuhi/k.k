@@ -106,6 +106,39 @@
     <Filter Include="Status\Enemy\MobEenemy">
       <UniqueIdentifier>{120369a0-27e8-4825-82e0-83395a799812}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Characters\Ememy\Mob\Cactus\State">
+      <UniqueIdentifier>{900a074f-cb3a-40ad-bef8-a8b49ca41977}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Mob\Mushroom">
+      <UniqueIdentifier>{9aab3ef9-4b0f-43f5-9f1e-716d513eddf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Mob\Mushroom\State">
+      <UniqueIdentifier>{84174951-2354-4b57-9d48-9fdcfb8fcab6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MagicBall">
+      <UniqueIdentifier>{c89917c1-a318-41de-b336-bc06419863e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Mob\BeholderEye\State">
+      <UniqueIdentifier>{8b65d3de-6338-4d2e-b23a-5612c869865f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Status\MagicBall">
+      <UniqueIdentifier>{8348ab96-b01b-4c2c-b91a-ebf316341c54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MagicBall\Unique">
+      <UniqueIdentifier>{d05bdb78-87b3-4190-90b7-6a9aec4696c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Boss\BossBase">
+      <UniqueIdentifier>{9548b9e1-52e7-4215-9673-220571b06e16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Boss\Summoner">
+      <UniqueIdentifier>{ac1fe4f0-4b05-4c18-8ea1-21eb032e4f5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Boss\Summoner\State">
+      <UniqueIdentifier>{4d707892-0b44-4114-a1d4-6c0298589faf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Characters\Ememy\Boss\Summoner\StateMachine">
+      <UniqueIdentifier>{876000f7-1253-493f-a16d-3a64d9ebfe4f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -350,7 +383,163 @@
     <ClCompile Include="DamageProvider.cpp">
       <Filter>Component</Filter>
     </ClCompile>
-    <ClCompile Include="MobEnemyCommonStatus.cpp" />
+    <ClCompile Include="CactusState_Appear.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusState_Attack.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusState_Die.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusState_Hit.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusState_Idle.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusState_Run.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusState_Victory.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateContext.cpp">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Mushroom.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomState_Appear.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomState_Attack.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomState_Die.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomState_Hit.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomState_Idle.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomState_Run.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomState_Victory.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MushroomStateContext.cpp">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MobEnemyCommonStatus.cpp">
+      <Filter>Status\Enemy\MobEenemy</Filter>
+    </ClCompile>
+    <ClCompile Include="BeholderEyeState_Appear.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BeholderEyeState_Attack.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BeholderEyeState_Die.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BeholderEyeState_Hit.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BeholderEyeState_Idle.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BeholderEyeState_Run.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BeholderEyeState_Victory.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BeholderEyeStateContext.cpp">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClCompile>
+    <ClCompile Include="IMagicBall.cpp">
+      <Filter>MagicBall</Filter>
+    </ClCompile>
+    <ClCompile Include="MagicBallStatus.cpp">
+      <Filter>Status\MagicBall</Filter>
+    </ClCompile>
+    <ClCompile Include="BossEnemyBase.cpp">
+      <Filter>Characters\Ememy\Boss\BossBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Summoner.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_DarkBall.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_Die.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_FirstAttack.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_Hit.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_Idle.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_Run.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_SecondAttack.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_ThirdAttack.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_Victory.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_Warp.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerStateContext.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerSMContext.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerSSM_General.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerSSM_Offensive.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="ISummonerState.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClCompile>
+    <ClCompile Include="ISummonerStateMachine.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerAIController.cpp" />
+    <ClCompile Include="MagicBallMovement.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="BossEnemyMovement.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_ShockWave.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerSkillStatus.cpp" />
+    <ClCompile Include="EyeBall.cpp">
+      <Filter>MagicBall\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_DarkMeteorite.cpp" />
+    <ClCompile Include="DarkBall.cpp">
+      <Filter>MagicBall\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="DarkMeteorite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -469,9 +658,6 @@
     </ClInclude>
     <ClInclude Include="Status_Player.h">
       <Filter>Status\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="MobEnemyheaderFiles.h">
-      <Filter>Status\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="BraveAnimClipAndStateInfo.h">
       <Filter>Characters\Player</Filter>
@@ -626,6 +812,177 @@
     <ClInclude Include="DamageProvider.h">
       <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="MobEnemyCommonStatus.h" />
+    <ClInclude Include="CactusState_Appear.h">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusState_Attack.h">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusState_Die.h">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusState_Hit.h">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusState_Idle.h">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusState_Run.h">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusState_Victory.h">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateContext.h">
+      <Filter>Characters\Ememy\Mob\Cactus\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusInfo.h">
+      <Filter>Characters\Ememy\Mob\Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="Mushroom.h">
+      <Filter>Characters\Ememy\Mob\Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomInfo.h">
+      <Filter>Characters\Ememy\Mob\Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomState_Appear.h">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomState_Attack.h">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomState_Die.h">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomState_Hit.h">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomState_Idle.h">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomState_Run.h">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomState_Victory.h">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MushroomStateContext.h">
+      <Filter>Characters\Ememy\Mob\Mushroom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MobEnemyCommonStatus.h">
+      <Filter>Status\Enemy\MobEenemy</Filter>
+    </ClInclude>
+    <ClInclude Include="MobEnemyheaderFiles.h">
+      <Filter>Wave</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeInfo.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeState_Appear.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeState_Attack.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeState_Die.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeState_Hit.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeState_Idle.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeState_Run.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeState_Victory.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BeholderEyeStateContext.h">
+      <Filter>Characters\Ememy\Mob\BeholderEye\State</Filter>
+    </ClInclude>
+    <ClInclude Include="IMagicBall.h">
+      <Filter>MagicBall</Filter>
+    </ClInclude>
+    <ClInclude Include="MagicBallStatus.h">
+      <Filter>Status\MagicBall</Filter>
+    </ClInclude>
+    <ClInclude Include="BossEnemyBase.h">
+      <Filter>Characters\Ememy\Boss\BossBase</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerInfo.h">
+      <Filter>Characters\Ememy\Boss\Summoner</Filter>
+    </ClInclude>
+    <ClInclude Include="Summoner.h">
+      <Filter>Characters\Ememy\Boss\Summoner</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_DarkBall.h">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_Die.h">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_FirstAttack.h">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_Hit.h">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_Idle.h">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_Run.h">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_SecondAttack.h">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_ThirdAttack.h">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_Victory.h">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_Warp.h">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerStateContext.h">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerSMContext.h">
+      <Filter>Characters\Ememy\Boss\Summoner\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerSSM_General.h">
+      <Filter>Characters\Ememy\Boss\Summoner\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerSSM_Offensive.h">
+      <Filter>Characters\Ememy\Boss\Summoner\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="ISummonerState.h">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClInclude>
+    <ClInclude Include="ISummonerStateMachine.h">
+      <Filter>Characters\Ememy\Boss\Summoner\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerAIController.h" />
+    <ClInclude Include="MagicBallMovement.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="BossEnemyMovement.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_ShockWave.h">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerSkillStatus.h" />
+    <ClInclude Include="EyeBall.h">
+      <Filter>MagicBall\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_DarkMeteorite.h" />
+    <ClInclude Include="DarkBall.h">
+      <Filter>MagicBall\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="DarkMeteorite.h" />
   </ItemGroup>
 </Project>

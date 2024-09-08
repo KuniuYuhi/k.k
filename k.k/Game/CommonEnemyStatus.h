@@ -20,7 +20,8 @@ private:
 		float defaultSpeed = 0;		//基礎スピード
 		float attackIntarval = 0;	//攻撃インターバル
 
-		float approachDistance = 0.0f;	//接近できる最大の距離
+		float currentApproachDistance = 0.0f;	//接近できる最大の距離
+		float defaultApproachDistance = 0.0f;//基礎接近できる最大の距離
 		float waitingDistance = 0.0f;	//待機する距離
 
 	};
@@ -108,12 +109,36 @@ public:
 	}
 
 	/// <summary>
+	/// 接近できる距離をリセットする
+	/// </summary>
+	/// <returns></returns>
+	void ResetCurrentApproachDistance()
+	{
+		m_commonEnemyStatus.currentApproachDistance = m_commonEnemyStatus.defaultApproachDistance;
+	}
+	/// <summary>
+	/// 現在の接近できる距離を設定
+	/// </summary>
+	/// <param name="value"></param>
+	void SetCurrentApproachDistance(float value)
+	{
+		m_commonEnemyStatus.currentApproachDistance = value;
+	}
+	/// <summary>
+	/// 接近できる距離に加算
+	/// </summary>
+	/// <param name="addValue"></param>
+	void AddApproachDistance(float addValue)
+	{
+		m_commonEnemyStatus.currentApproachDistance += addValue;
+	}
+	/// <summary>
 	/// 接近できる距離を取得
 	/// </summary>
 	/// <returns></returns>
 	const float& GetApproachDistance() const
 	{
-		return m_commonEnemyStatus.approachDistance;
+		return m_commonEnemyStatus.currentApproachDistance;
 	}
 	/// <summary>
 	/// 待機する距離を取得
@@ -123,6 +148,31 @@ public:
 	{
 		return m_commonEnemyStatus.waitingDistance;
 	}
+
+
+	/// <summary>
+	/// ダメージを受ける。HPが0以下になったらtrueを返す
+	/// </summary>
+	/// <param name="damage"></param>
+	/// <returns></returns>
+	bool TakeDamage(int damage)
+	{
+		//HPからダメージ量を減らす
+		m_commonEnemyStatus.currentHp -= damage;
+
+		//HPが0以下なら
+		if (m_commonEnemyStatus.currentHp <= 0)
+		{
+			m_commonEnemyStatus.currentHp = 0;
+			//倒された
+			return true;
+		}
+
+		//倒されていない
+		return false;
+	}
+
+
 
 
 	//csvは使わない

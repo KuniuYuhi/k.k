@@ -50,7 +50,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	//ゲームマネージャーを生成
 	//シーンステートをタイトルステートに設定
-	//GameSceneManager::CreateInstanceAndSetGameSceneState(enGameSceneState_Title);
+	GameSceneManager::CreateInstanceAndSetGameSceneState(enGameSceneState_Game);
 
 
 	//エネミー管理するマネージャーを生成
@@ -68,7 +68,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 	//Title* title = NewGO<Title>(0, "game");
-	Game* game = NewGO<Game>(2, "game");
+	//Game* game = NewGO<Game>(2, "game");
 
 	// ここからゲームループ。
 	while (DispatchWindowMessage() && g_gameLoop.m_isLoop == true)
@@ -76,7 +76,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		// フレームの開始時に呼び出す必要がある処理を実行
 		g_k2EngineLow->BeginFrame();
 
-		//GameSceneManager::GetInstance()->Update();
+		GameSceneManager::GetInstance()->Update();
 
 		// ゲームオブジェクトマネージャーの更新処理を呼び出す。
 		g_k2EngineLow->ExecuteUpdate();
@@ -94,7 +94,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//開放しないとD3D12オブジェクト開放のエラーはなくなる
 	delete g_k2EngineLow;
 
-	//GameSceneManager::GetInstance()->DeleteInstance();
+	GameSceneManager::GetInstance()->DeleteInstance();
 
 
 	KnockBackInfoManager::GetInstance()->DeleteInstance();

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "MobEnemyBase.h"
 
+#include "GameSceneManager.h"
+
 ////////////////////////////////////////////////////
 //コンポーネント
 #include "MobEnemyMovement.h"
@@ -12,10 +14,20 @@
 #include "KnockBackInfoManager.h"
 #include "Brave.h"
 
-float MobEnemyBase::CalcDistanceToTargetPosition(Vector3 target)
+
+float MobEnemyBase::GetDistanceToTargetPositionValue(Vector3 target)
 {
-	Vector3 diff = target - m_position;
-	return diff.Length();
+	return CalcDistanceToTargetPosition(target);
+}
+
+bool MobEnemyBase::IsStopRequested()
+{
+	//勝敗が着いたら
+	if (GameSceneManager::GetInstance()->IsGameOutcome())return true;
+
+
+	//ここまで来たら処理は止まらない
+	return false;
 }
 
 void MobEnemyBase::SettingDefaultComponent()
@@ -26,7 +38,18 @@ void MobEnemyBase::SettingDefaultComponent()
 	//ダメージプロバイダーコンポーネント
 	AddComponent<DamageProvider>();
 	m_damageProvider = GetComponent<DamageProvider>();
+	//自身のインスタンスを保存
 	m_damageProvider->SetProviderCharacterInstance(this);
+}
+
+
+void MobEnemyBase::DieFromDamage()
+{
+	//自身を返す
+	ReleaseThis();
+
+	//エフェクト生成
+
 }
 
 void MobEnemyBase::CheckSelfCollision()
@@ -81,10 +104,31 @@ void MobEnemyBase::CheckSelfCollision()
 
 }
 
+void MobEnemyBase::TurnToTarget()
+{
+	if (m_player == nullptr) return;
+
+	Vector3 direction = g_vec3Zero;
+	//プレイヤーの方を向くベクトルを取得
+	direction = m_movement->CalcChaseCharacterVerocity(
+		m_status,
+		m_player->GetPosition(),
+		m_position,
+		m_moveSpeed
+	);
+
+	//回転方向を設定
+	SetRotateDirection(direction);
+	//前方向を設定
+	SetForward(direction);
+}
+
 void MobEnemyBase::ChaseMovement(Vector3 targetPosition)
 {
 	//アクション中は移動処理しない
 	if (IsAction()) return;
+
+	//もし逃げるようコンポーネントを持っているならそっちの移動処理を優先
 
 	m_moveSpeed = m_movement->CalcChaseCharacterVerocity(
 		m_status,
@@ -93,7 +137,13 @@ void MobEnemyBase::ChaseMovement(Vector3 targetPosition)
 		m_moveSpeed
 	);
 
+	//移動量があれば前方向を設定
+	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+	{
+		SetForward(m_moveSpeed);
+	}
 	
+	//プレイヤーに向かう距離を計算
 	float toPlayerDistance = CalcDistanceToTargetPosition(targetPosition);
 	bool isExecute = true;
 
@@ -117,13 +167,6 @@ void MobEnemyBase::ChaseMovement(Vector3 targetPosition)
 			m_moveSpeed = g_vec3Zero;
 		}
 	}
-
-	//移動量があれば前方向を設定
-	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
-	{
-		SetForward(m_moveSpeed);
-	}
-
 	
 
 	//実行フラグがtrueなら
@@ -210,13 +253,17 @@ void MobEnemyBase::KnockBackGravityFall()
 	}
 }
 
-//void MobEnemyBase::CreateDamageFont(int hitDamage)
-//{
-//	DamageFont* damagefont = NewGO<DamageFont>(0, "damagefont");
-//	damagefont->Setting(
-//		DamageFont::enDamageActor_Monster,
-//		hitDamage,
-//		m_position
-//	);
-//
-//}
+bool MobEnemyBase::IsAttackable()
+{
+	//タイマーが攻撃インターバルを超えたら
+	if (m_attackIntarvalTimer >= m_status.GetAttackIntarval())
+	{
+		//攻撃可能
+		return true;
+	}
+	//タイマーを加算
+	m_attackIntarvalTimer += g_gameTime->GetFrameDeltaTime();
+
+	return false;
+}
+

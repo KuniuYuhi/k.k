@@ -1,173 +1,135 @@
 #include "stdafx.h"
 #include "DarkBall.h"
-#include "InitEffect.h"
+#include "MagicBallMovement.h"
+#include "DamageProvider.h"
+
+#include "KnockBackInfoManager.h"
 
 
 
 namespace {
-    const int ADD_CREATE_POS = 100;
-    const float SPEED = 600.0f;
-    const float RADIUS = 45.0f;
-    const float Y_UP = 60.0f;
-
-    const float EXPLOSION_SIZE = 9.0f;
-
-    const float DARK_BALL_SIZE = 12.0f;
-
-    const float DELETE_LENGTH = 1200.0f;
-
-    const float HIT_LENGTH = 80.0f;
-
-    const int ATTACK = 20;
-
+	const int COLLISION_RADIUS = 100.0f;
 }
 
 DarkBall::DarkBall()
 {
-    m_speed = SPEED;
 }
 
 DarkBall::~DarkBall()
 {
-    if (m_BallCollision != nullptr)
-    {
-        DeleteGO(m_BallCollision);
-    }
-
-    if (m_darkBallEffect != nullptr)
-    {
-        m_darkBallEffect->Stop();
-    }
+	if (m_collision != nullptr)
+	{
+		DeleteGO(m_collision);
+	}
 }
 
 bool DarkBall::Start()
 {
-    //プレイヤーのインスタンスを探す
-    m_player = FindGO<Player>("player");
+	InitModel();
 
-    //移動方向の設定
-    SetMoveSpeed();
-    //生成する座標の決定
-    m_position += m_moveSpeed * ADD_CREATE_POS;
-    //速度を決める
-    m_moveSpeed *= SPEED;
-    //生成開始座標を設定
-    SetStartPosition(m_position);
+	//ステータス設定
+	m_status.InitMagicBallStatus("DarkBall");
 
-    //当たり判定の設定
-    SettingCollision();
-    //エフェクト再生
-    PlayDarkBallEffect();
-    
-    //ダークボール生成音再生
-    g_soundManager->InitAndPlaySoundSource(enSoundName_Boss_DarkBall, g_soundManager->GetSEVolume());
+	//コンポーネントの設定
+	DefaultSettingComponents();
+	AddSettingComponents();
+
+	//ダメージ情報を設定
+	m_damageProvider->SetDamageInfo(
+		KnockBackInfoManager::GetInstance()->GetAddAttackId(),
+		m_status.GetPower(),
+		m_status.GetKnockBackTimeScale(),
+		m_status.GetKnockBackPattern()
+	);
+
+	//当たり判定作成
+	CreateCollision();
+
+
 
 	return true;
 }
 
-void DarkBall::Update()
+void DarkBall::InitModel()
 {
-    //ヒットしたら爆発する
-    if (m_hitFlag == true)
-    {
-        //爆発処理
-        Explosion();
-        return;
-    }
+}
 
-    //削除する距離に達してないなら
-    if (IsForceDelete(m_position, DELETE_LENGTH) != true)
-    {
-        //移動処理
-        Move();
-        //プレイヤーにヒットしたか(距離判定)
-        if (IsHit() == true)
-        {
-            //ヒットした
-            m_hitFlag = true;
-        }
-    }
-    else
-    {
-        //削除する
-        //爆発処理
-        Explosion();
-    }
+void DarkBall::AddSettingComponents()
+{
+	//魔法球移動コンポーネントを追加
+	AddComponent<MagicBallMovement>();
+	m_magicBallMovement = GetComponent<MagicBallMovement>();
+	//移動コンポーネントに自身のインスタンスを設定
+	m_magicBallMovement->SetMagicBallInstance(this);
+}
+
+void DarkBall::CreateCollision()
+{
+	m_collision = NewGO<CollisionObject>(
+		0, g_collisionObjectManager->m_enemyAttackCollisionName
+	);
+	//球状の当たり判定
+	m_collision->CreateSphere(m_position, m_rotation, COLLISION_RADIUS);
+
+	m_collision->SetCreatorName(GetName());
+	//自動で削除しない
+	m_collision->SetIsEnableAutoDelete(false);
 }
 
 void DarkBall::Move()
 {
-    //直進処理
-    MoveStraight(m_position);
-  
-    //当たり判定をオブジェクトと同じ座標に移動
-    m_position.y = Y_UP;
+	if (m_magicBallMovement == nullptr) return;
 
-    //エフェクトの移動の設定と更新
-    m_darkBallEffect->SetPosition(m_position);
-    m_darkBallEffect->Update();
-    //当たり判定の移動の設定と更新
-    m_BallCollision->SetPosition(m_position);
-    m_BallCollision->Update();
+	//直進
+	m_magicBallMovement->MoveStraight();
+
+	m_collision->SetPosition(m_position);
+	m_collision->Update();
+
 }
 
-void DarkBall::SettingCollision()
+bool DarkBall::IsDelete()
 {
-    //当たり判定作成
-    m_BallCollision = NewGO<CollisionObject>(0, GetCollisionName());
-    m_BallCollision->CreateSphere(
-        m_position,
-        Quaternion::Identity,
-        RADIUS
-    );
-    //当たり判定を生成した作成者の設定
-    m_BallCollision->SetCreatorName(GetName());
-    //自動で削除しないようにする
-    m_BallCollision->SetIsEnableAutoDelete(false);
+	if (IsDeleteTime())
+	{
+		return true;
+	}
 
-    m_collisionPosition.y = Y_UP;
-    m_BallCollision->SetPosition(m_position);
-    m_BallCollision->Update();
+	//何かにヒットしたら
+	if (m_damageProvider->IsHit())
+	{
+		return true;
+	}
+
+
+	return false;
 }
 
-void DarkBall::Explosion()
+bool DarkBall::IsDeleteTime()
 {
-    //ダークボールのエフェクト停止
-    m_darkBallEffect->Stop();
-    //爆発音再生
-    g_soundManager->InitAndPlaySoundSource(enSoundName_Boss_DarkBall_Explosion, g_soundManager->GetSEVolume());
-
-    //爆発エフェクト再生
-    EffectEmitter* explosionEffect = NewGO<EffectEmitter>(0);
-    explosionEffect->Init(InitEffect::enEffect_DarkBall_Explosion);
-    explosionEffect->Play();
-    explosionEffect->SetScale(g_vec3One * EXPLOSION_SIZE);
-    explosionEffect->SetPosition(m_position);
-    explosionEffect->Update();
-    //自身を削除
-    DeleteGO(this);
+	if (m_deleteTimer >= m_status.GetDeleteTimeLimit())
+	{
+		//消去可能
+		return true;
+	}
+	//タイマーを加算
+	m_deleteTimer += g_gameTime->GetFrameDeltaTime();
+	return false;
 }
 
-void DarkBall::PlayDarkBallEffect()
+void DarkBall::Update()
 {
-    //エフェクトの設定
-    m_darkBallEffect = NewGO<EffectEmitter>(0, "DarkBall");
-    m_darkBallEffect->Init(InitEffect::enEffect_DarkBall);
-    m_darkBallEffect->Play();
-    m_darkBallEffect->SetScale(g_vec3One * DARK_BALL_SIZE);
-    m_darkBallEffect->SetPosition(m_position);
-    m_darkBallEffect->SetRotation(m_rotation);
-    m_darkBallEffect->Update();
+	if (IsDelete())
+	{
+		//消去
+		DeleteGO(this);
+		return;
+	}
+
+	//移動
+	Move();
 }
 
-bool DarkBall::IsHit()
+void DarkBall::Render(RenderContext& rc)
 {
-    //コリジョンがプレイヤーのキャラコンと衝突したら
-    //if (m_BallCollision->IsHit(m_player->GetCharacterController())==true)
-    //{
-    //    //当たった
-    //    return true;
-    //}
-    //当たらなかった
-    return false;
 }

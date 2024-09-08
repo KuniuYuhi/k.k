@@ -115,18 +115,6 @@ void Arrow::UpdateNormalShotState()
 	m_deleteTimer += g_gameTime->GetFrameDeltaTime();
 
 	ShotArrowMove(enNormalShot);
-
-	/*Vector3 moveSpeed = m_forward;
-
-	moveSpeed *= m_statusMap.at(enNormalShot).GetArrowSpeed();
-
-	m_arrowModelRender.AddPosition(moveSpeed);
-
-	m_arrowCenterMatrix = m_arrowModelRender.GetBone(m_arrowCentorBoonId)->GetWorldMatrix();
-
-	m_arrowCollision->SetWorldMatrix(m_arrowCenterMatrix);
-
-	m_arrowCollision->Update();*/
 }
 
 void Arrow::UpdateSkillShotState()
@@ -153,17 +141,6 @@ void Arrow::UpdateSkillShotState()
 
 	ShotArrowMove(enSkillShot);
 
-	/*Vector3 moveSpeed = m_forward;
-
-	moveSpeed *= m_statusMap.at(enSkillShot).GetArrowSpeed();
-
-	m_arrowModelRender.AddPosition(moveSpeed);
-
-	m_arrowCenterMatrix = m_arrowModelRender.GetBone(m_arrowCentorBoonId)->GetWorldMatrix();
-
-	m_arrowCollision->SetWorldMatrix(m_arrowCenterMatrix);
-
-	m_arrowCollision->Update();*/
 }
 
 void Arrow::UpdateNoneState()

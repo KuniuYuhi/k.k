@@ -22,14 +22,10 @@ class MobEnemyBase : public EnemyBase
 {
 public:
 
-	
-
 	/// <summary>
-	/// ターゲットとの距離の長さを計算
+	/// 自身からターゲットに向かう距離を取得
 	/// </summary>
-	/// <param name="target">ターゲットの座標</param>
-	/// <returns>距離の長さ</returns>
-	float CalcDistanceToTargetPosition(Vector3 target);
+	float GetDistanceToTargetPositionValue(Vector3 target);
 
 	/// <summary>
 	/// 待機するかのフラグを設定
@@ -40,7 +36,16 @@ public:
 		m_isWaitingFlag = flag;
 	}
 
+	/// <summary>
+	/// 外部から削除
+	/// </summary>
+	virtual void DieFlomOutside() {}
 
+	/// <summary>
+	/// 処理を止める要求がされているか？
+	/// </summary>
+	/// <returns></returns>
+	virtual bool IsStopRequested();
 
 protected:
 
@@ -69,11 +74,24 @@ protected:
 	/// </summary>
 	virtual void ProcessHit(DamageInfo damageInfo){}
 
+	
+
+	/// <summary>
+	/// ダメージによって死亡
+	/// </summary>
+	virtual void DieFromDamage();
+
+	
+
 	/// <summary>
 	/// 自身の当たり判定確認
 	/// </summary>
 	void CheckSelfCollision();
 
+	/// <summary>
+	/// ターゲットのほうに向く
+	/// </summary>
+	void TurnToTarget();
 
 	/// <summary>
 	/// 追いかける移動処理
@@ -94,6 +112,13 @@ protected:
 	void KnockBackMove(int listNum);
 
 	void KnockBackGravityFall();
+
+	/// <summary>
+	/// 攻撃可能か？
+	/// </summary>
+	/// <returns>可能ならtrue</returns>
+	bool IsAttackable();
+
 
 
 	/// <summary>
@@ -130,10 +155,8 @@ protected:
 
 	float m_starkTimer = 0.0f;			//硬直タイマー//全員使うやろ
 
+	float m_attackIntarvalTimer = 0.0f;			//攻撃インターバルタイマー
 
-
-
-	bool adadadadada = false;
 
 
 };

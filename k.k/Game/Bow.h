@@ -28,6 +28,11 @@ public:
     void Init() override;
 
     /// <summary>
+    /// 自身を削除する
+    /// </summary>
+    void DeleteThis() override;
+
+    /// <summary>
     /// 弓のユニークステータスを取得
     /// </summary>
     /// <returns></returns>

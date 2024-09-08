@@ -30,6 +30,11 @@ public:
     void Init() override;
 
     /// <summary>
+    /// ©g‚ğíœ‚·‚é
+    /// </summary>
+    void DeleteThis() override;
+
+    /// <summary>
     /// û”[ó‘Ô‚ÉØ‚è‘Ö‚¦‚é
     /// </summary>
     void ChangeStowedState() override;

@@ -2,9 +2,12 @@
 #include "GameCamera.h"
 #include "Game.h"
 
+#include "GameSceneManager.h"
 
 #include "Brave.h"
 
+
+//todo 画面を揺らす
 
 namespace {
 
@@ -64,14 +67,15 @@ bool GameCamera::Start()
 
 void GameCamera::Update()
 {
-	/*if (GameSceneManager::GetInstance()->GetBattleOutCome() != GameSceneManager::enBattleOutCome_None)
+	if (GameSceneManager::GetInstance()->IsGameOutcome())
 	{
 		return;
-	}*/
+	}
 
-
+	//カメラの処理
 	OnProcessGameTransition();
-	
+
+	//カメラの位置からディレクションライトの方向を計算
 	CalcDirectionLight();
 }
 
@@ -206,6 +210,20 @@ void GameCamera::OnProcessGameTransition()
 	//プレイヤーを追う
 	ChasePlayerCamera();
 
-	ZoomCamera();
+	//カメラを揺らすなら
+	//if (g_camera3D->IsCameraShakeActive())
+	//{
+	//	//カメラを揺らす
+	//	CameraShake();
+	//}
+
+
+	//
+	//ZoomCamera();
+
+}
+
+void GameCamera::CameraShake()
+{
 
 }

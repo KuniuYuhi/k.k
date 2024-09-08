@@ -14,7 +14,7 @@ void GameScene_AppearanceBoss::Entry()
 	m_entryBoss = NewGO<EntryBoss>(0, "entryboss");
 	
 	Game* game = FindGO<Game>("game");
-	game->CreatePlayerAndCamera();
+	//game->CreatePlayerAndCamera();
 
 	
 

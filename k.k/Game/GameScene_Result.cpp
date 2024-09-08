@@ -63,6 +63,10 @@ void GameScene_Result::Exit()
 		DeleteGO(m_gameFinishCamera);
 	}
 	
+	Game* game = FindGO<Game>("game");
+	game->DeleteThis();
+
+	//リザルトシーンを削除
 	DeleteGO(m_resultSeen);
 
 	//勝敗をリセットする
@@ -90,6 +94,7 @@ void GameScene_Result::PlayerWinProcess()
 void GameScene_Result::PlayerLoseProcess()
 {
 	//BGMを小さくしていく
+
 	CreateResult();
 }
 

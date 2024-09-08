@@ -8,10 +8,7 @@
 //////////////////////////////////////////////
 //モブエネミーたち
 //////////////////////////////////////////////
-#include "Slime.h"
-#include "Cactus.h"
-#include "BeholderEye.h"
-#include "Mimic.h"
+#include "MobEnemyheaderFiles.h"
 //////////////////////////////////////////////
 
 EnemyObjectPool* EnemyObjectPool::m_instance = nullptr;
@@ -27,10 +24,12 @@ EnemyObjectPool::EnemyObjectPool()
 
 EnemyObjectPool::~EnemyObjectPool()
 {
+	//中のエネミーを消す
+	//DeleteQueueObject();
+
+
 	//中身を全てクリア
 	m_objectPoolQueue.clear();
-
-	//todo 中のエネミーを消す
 }
 
 void EnemyObjectPool::CreateInstance()
@@ -56,7 +55,21 @@ void EnemyObjectPool::Init()
 		OnCreateEnemy<Slime>("Slime");
 	}
 
-
+	//キノコのキューを挿入
+	std::queue<EnemyBase*> mushroomQueue;
+	EnemyBase* mushroom = NewGO<Mushroom>(0, "Mushroom");
+	//モデルだけ先に読み込む
+	mushroom->InitModel();
+	//非アクティブ化
+	mushroom->Deactivate();
+	mushroomQueue.push(mushroom);
+	//インサート
+	m_objectPoolQueue.insert(std::make_pair("Mushroom", mushroomQueue));
+	//五個キノコをキューに追加
+	for (int i = 0; i < 10; i++)
+	{
+		OnCreateEnemy<Mushroom>("Mushroom");
+	}
 
 	//カクタスのキューを挿入
 	std::queue<EnemyBase*> cactusQueue;
@@ -112,4 +125,22 @@ void EnemyObjectPool::Init()
 	//リセットしておく
 	EnemyManager::GetInstance()->CrearMobEnemyList();
 
+}
+
+void EnemyObjectPool::DeleteQueueObject()
+{
+	for (auto& pair : m_objectPoolQueue) {
+		//キューを持ってくる
+		std::queue<EnemyBase*>& enemyQueue = pair.second;
+
+		//キューの中身がなくなるまで繰り返す
+		while (!enemyQueue.empty()) {
+			EnemyBase* enemy = enemyQueue.front();
+			//キューから出す
+			enemyQueue.pop();
+
+			//エネミーを削除
+			DeleteGO(enemy);
+		}
+	}
 }

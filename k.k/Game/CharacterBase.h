@@ -57,6 +57,28 @@ public:
 	/// <param name="hitActor">誰がダメージを受けるのか</param>
 	void CreateDamageFont(int hitDamage, DamageFont::EnDamageActor hitActor);
 
+
+	/// <summary>
+	/// 死亡フラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetDieFlag(bool flag)
+	{
+		m_isDieFlag = flag;
+	}
+	/// <summary>
+	/// 死亡したか？
+	/// </summary>
+	/// <returns></returns>
+	bool IsDie()
+	{
+		return m_isDieFlag;
+	}
+
+
+
+
+
 protected:
 
 	/// <summary>
@@ -77,6 +99,10 @@ protected:
 	Vector3 m_moveSpeed = Vector3::Zero;		//移動量
 
 	Vector3 m_rotateDirection = Vector3::Zero;	//回転する方向ベクトル
+
+
+	bool m_isDieFlag = false;				//死亡フラグ
+
 
 };
 

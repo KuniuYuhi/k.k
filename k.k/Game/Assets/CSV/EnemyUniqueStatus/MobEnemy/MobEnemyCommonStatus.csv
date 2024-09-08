@@ -1,7 +1,7 @@
 名前,攻撃のノックバックパターン,ノックバックの時間間隔
-Slime,ShortGroundedRetreat,3
-Cactus,ShortGroundedRetreat,2.5
-Mushroom,ShortGroundedRetreat,4
-Turltle,LongGroundedRetreat,2
-BeholderEye,ShortGroundedRetreat,3
+Slime,ShortGroundedRetreat,4.5
+Cactus,ShortGroundedRetreat,4
+Mushroom,ShortGroundedRetreat,6
+Turltle,LongGroundedRetreat,3.5
+BeholderEye,ShortGroundedRetreat,4
 Mimic,ShortGroundedRetreat,5

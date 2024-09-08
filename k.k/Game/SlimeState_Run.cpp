@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "SlimeState_Run.h"
 #include "Slime.h"
-#include "SlimeInfo.h"
-
-using namespace SlimeStates;
 
 
 SlimeState_Run::~SlimeState_Run()

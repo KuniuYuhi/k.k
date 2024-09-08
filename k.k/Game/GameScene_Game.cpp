@@ -21,18 +21,26 @@ void GameScene_Game::Entry()
 	Fade* fade = FindGO<Fade>("fade");
 	fade->StartFadeOut(3.0f);
 
-	GameCamera* gameCamera = FindGO<GameCamera>("gameCamera");
-	//ゲーム開始時のカメラの設定
-	gameCamera->SetBattleStartCamera();
+	
+	
 
-	//todo ここでゲームクラスを作成
+	m_game = FindGO<Game>("game");
 
+	if (m_game == nullptr)
+	{
+		m_game = NewGO<Game>(0, "game");
+	}
+
+
+	//プレイヤーとカメラを生成
+	m_game->CreatePlayerAndCamera();
 
 	//ボスを生成
-	m_game = FindGO<Game>("game");
 	m_game->CreateBoss();
-	m_game->CreateGameUI();
-	m_game->CreateBattlePhase();
+	//UI生成
+	//m_game->CreateGameUI();
+	//ウェーブクラス生成
+	m_game->CreateBattleWave();
 
 	//BGMの音量を上げる
 		//BGMの再生
@@ -43,8 +51,7 @@ void GameScene_Game::Entry()
 void GameScene_Game::Update()
 {
 	//勝敗が着いたらステートを変更
-	if (GameSceneManager::GetInstance()->GetBattleOutCome() !=
-		GameSceneManager::enBattleOutCome_None)
+	if (GameSceneManager::GetInstance()->IsGameOutcome())
 	{
 
 		g_soundManager->StopSound(enSoundName_BattleBGM);

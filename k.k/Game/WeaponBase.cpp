@@ -2,6 +2,8 @@
 #include "WeaponBase.h"
 
 #include "MobEnemyBase.h"
+#include "BossEnemyBase.h"
+
 #include "EnemyManager.h"
 
 
@@ -32,30 +34,57 @@ Vector3 WeaponBase::CalcAutoAimAtTarget(
 
 	//モブエネミーリストをプレイヤーに近い順にいれかえる
 	EnemyManager::GetInstance()->SortEnemiesByDistanceToTarget(origin);
-	//エネミーリストを取得
+	//ソートしたエネミーリストを取得
 	std::vector<MobEnemyBase*> tempList = EnemyManager::GetInstance()->GetMobEnemyList();
 
-	//リストの中身がないなら処理をしない
-	if (tempList.size() == 0) return newDirection;
 
-	for (auto enemy : tempList)
+	float mobDot = -1.0f;
+
+
+	//リストの中身がないなら処理をしない
+	if (tempList.size() != 0)
 	{
-		//プレイヤーから敵に向かうベクトルを計算
-		Vector3 diff = enemy->GetPosition() - origin;
-		diff.y = 0.0f;
-		//ベクトルの長さが調べる範囲外なら
-		if (diff.Length() > searchRadius)
+		for (auto enemy : tempList)
 		{
-			//もう近くに敵がいないのでfor文をぬける
-			break;
+			//プレイヤーから敵に向かうベクトルを計算
+			Vector3 diff = enemy->GetPosition() - origin;
+			diff.y = 0.0f;
+			//ベクトルの長さが調べる範囲外なら
+			if (diff.Length() > searchRadius)
+			{
+				//もう近くに敵がいないのでfor文をぬける
+				break;
+			}
+			//ベクトルを正規化
+			diff.Normalize();
+			//今の方向と計算したベクトルの内積を調べ、どのくらいベクトルが似ているか調べる
+			mobDot = Dot(nowDirection, diff);
+			//引数の内積より似ていたら新しい座標とする
+			if (mobDot >= maxDot)
+			{
+				newDirection = diff;
+			}
 		}
-		//ベクトルを正規化
+	}
+
+	//ボスエネミーのインスタンスがあるかチェック。
+	//ないならここで終わる
+	if (EnemyManager::GetInstance()->IsNullptrBossEnemyInstance()) return newDirection;
+
+	//モブエネミーの一番近いやつとボスエネミーの座標で比べる
+	//ベクトル計算
+	Vector3 diff = EnemyManager::GetInstance()->GetBossEnemyInstance()->GetPosition() - origin;
+	//ベクトルが調べる範囲内なら
+	if (diff.Length() < searchRadius)
+	{
+		diff.y = 0.0f;
 		diff.Normalize();
-		//今の方向と計算したベクトルの内積を調べ、どのくらいベクトルが似ているか調べる
-		float dot = Dot(nowDirection, diff);
-		//引数の内積より似ていたら新しい座標とする
-		if (dot >= maxDot)
+		//内積を計算
+		float bossDot = Dot(nowDirection, diff);
+		//ボスの内積がモブの内積より似ていたら
+		if (bossDot >= mobDot && bossDot >= maxDot)
 		{
+			//ベクトルを変更
 			newDirection = diff;
 		}
 	}

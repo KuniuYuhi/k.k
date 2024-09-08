@@ -110,6 +110,29 @@ public:
 	{
 		m_battleOutCome = setBattleOutCome;
 	}
+	/// <summary>
+	/// プレイヤーの勝ち
+	/// </summary>
+	void SetOutComePlayerWin()
+	{
+		m_battleOutCome = enBattleOutCome_PlayerWin;
+	}
+	/// <summary>
+	/// プレイヤーの負け
+	/// </summary>
+	void SetOutComPlayerLose()
+	{
+		m_battleOutCome = enBattleOutCome_PlayerLose;
+	}
+
+	/// <summary>
+	/// 勝敗が着いたか？
+	/// </summary>
+	/// <returns>着いたならtrue</returns>
+	bool IsGameOutcome()
+	{
+		return m_battleOutCome != enBattleOutCome_None;
+	}
 
 	/// <summary>
 	/// バトルの勝敗を取得する
@@ -120,6 +143,29 @@ public:
 		return m_battleOutCome;
 	}
 
+	/// <summary>
+	/// ボスを消去しました
+	/// </summary>
+	void BossDelete()
+	{
+		m_isBossDelete = true;
+	}
+
+	void ResetBossDelete()
+	{
+		m_isBossDelete = false;
+	}
+
+	/// <summary>
+	/// ボスが消去されたか
+	/// </summary>
+	/// <returns></returns>
+	bool IsBossDelete()
+	{
+		return m_isBossDelete;
+	}
+
+
 
 
 private:
@@ -129,6 +175,8 @@ private:
 
 	bool m_isSceneChangeable = false;				//シーンが切り替え可能か
 
+
+	bool m_isBossDelete = false;					//ボスは消去されたか？
 
 	EnBattleOutCome m_battleOutCome = enBattleOutCome_None;
 

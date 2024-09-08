@@ -13,12 +13,19 @@ void SlimeState_Die::PlayAnimation()
 
 void SlimeState_Die::Entry()
 {
+	m_slime->ActionActive();
 }
 
 void SlimeState_Die::Ubdate()
 {
+	//アニメーションが終わったら
+	if (m_slime->GetModelRender().IsPlayingAnimation() == false)
+	{
+		m_slime->DieProcess();
+	}
 }
 
 void SlimeState_Die::Exit()
 {
+	m_slime->ActionDeactive();
 }

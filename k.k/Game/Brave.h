@@ -33,12 +33,17 @@ public:
 
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
+
+	/// <summary>
+	/// プレイヤーが勝利した時のステートに遷移
+	/// </summary>
+	void ChangePlayerWinState();
+
 	/// <summary>
 	/// 現在の攻撃力を取得
 	/// </summary>
 	/// <returns></returns>
 	int GetCurrentPower() override;
-
 
 	/// <summary>
 	/// 回転するための方向ベクトルを設定
@@ -175,6 +180,15 @@ public:
 		return m_status;
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="position"></param>
+	void SetDamageProviderPosition(Vector3 position)
+	{
+		m_damageProviderPosition = position;
+	}
+
 
 	bool IsButtonAction();
 
@@ -278,6 +292,13 @@ private:
 	void KnockBackMove(int listNum);
 
 	void KnockBackGravityFall();
+
+	/// <summary>
+	/// ダメージを受ける
+	/// </summary>
+	/// <param name="damage"></param>
+	void TakeDamage(int damage);
+
 
 private:
 

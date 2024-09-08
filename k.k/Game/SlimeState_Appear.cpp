@@ -18,7 +18,7 @@ void SlimeState_Appear::Entry()
 	m_slime->ActionActive();
 
 	//ƒvƒŒƒCƒ„[‚Ì•û‚ðŒü‚­‚æ‚¤‚É‚·‚é
-	m_slime->TrunToTarget();
+	m_slime->TurnToPlayer();
 
 }
 
