@@ -11,9 +11,34 @@ class DamageProvider;
 /// </summary>
 class IMagicBall:public IGameObject
 {
+protected:
+	/// <summary>
+	/// 
+	/// </summary>
+	enum EnShotPatternState
+	{
+		enStraight,		//直進
+		enChase,		//追いかける
+	};
+
 public:
 
 	virtual ~IMagicBall() {}
+
+	/// <summary>
+	/// 直進するパターンを設定
+	/// </summary>
+	void SetStraightPatternState()
+	{
+		m_enShotPatternState = enStraight;
+	}
+	/// <summary>
+	/// 追いかけるパターンを設定
+	/// </summary>
+	void SetChasePatternState()
+	{
+		m_enShotPatternState = enChase;
+	}
 
 	/// <summary>
 	/// ローカル座標を設定
@@ -136,6 +161,8 @@ protected:
 
 
 protected:
+
+	EnShotPatternState m_enShotPatternState = enStraight;
 
 	MagicBallStatus m_status;
 
