@@ -4,6 +4,8 @@
 
 class MagicBallMovement;
 
+class Brave;
+
 /// <summary>
 /// サモナーが放つ魔法球：ダークボール
 /// </summary>
@@ -12,6 +14,7 @@ class DarkBall : public IMagicBall
 public:
 	DarkBall();
 	~DarkBall();
+
 
 	bool Start() override;
 
@@ -23,6 +26,9 @@ public:
 
 
 private:
+
+	
+
 
 	/// <summary>
 	/// 追加で設定するコンポーネント
@@ -55,6 +61,8 @@ private:
 
 
 private:
+
+	Brave* m_player = nullptr;
 
 	MagicBallMovement* m_magicBallMovement = nullptr;
 
