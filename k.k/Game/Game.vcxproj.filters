@@ -539,7 +539,9 @@
     <ClCompile Include="DarkBall.cpp">
       <Filter>MagicBall\Unique</Filter>
     </ClCompile>
-    <ClCompile Include="DarkMeteorite.cpp" />
+    <ClCompile Include="DarkMeteorite.cpp">
+      <Filter>MagicBall\Unique</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -983,6 +985,8 @@
     <ClInclude Include="DarkBall.h">
       <Filter>MagicBall\Unique</Filter>
     </ClInclude>
-    <ClInclude Include="DarkMeteorite.h" />
+    <ClInclude Include="DarkMeteorite.h">
+      <Filter>MagicBall\Unique</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
