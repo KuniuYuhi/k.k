@@ -4,7 +4,8 @@
 
 
 namespace {
-	float MUL_SPEED = 10.0f;
+	float MUL_STRAGHT_SPEED = 10.0f;
+	float MUL_CHASE_SPEED = 4.0f;
 }
 
 MagicBallMovement::MagicBallMovement()
@@ -29,7 +30,7 @@ void MagicBallMovement::MoveStraight()
 	Vector3 moveSpeed = m_magicBall->GetForward();
 	moveSpeed.Normalize();
 
-	moveSpeed *= MUL_SPEED;
+	moveSpeed *= MUL_STRAGHT_SPEED;
 
 	moveSpeed *= m_magicBall->GetSpeedParameter()*g_gameTime->GetFrameDeltaTime();
 	m_magicBall->SetMoveSpeed(moveSpeed);
@@ -47,7 +48,7 @@ void MagicBallMovement::MoveFall()
 	//前方向を取得
 	Vector3 moveSpeed = g_vec3Down;
 
-	moveSpeed *= MUL_SPEED;
+	moveSpeed *= MUL_STRAGHT_SPEED;
 
 	moveSpeed *= m_magicBall->GetSpeedParameter() * g_gameTime->GetFrameDeltaTime();
 	m_magicBall->SetMoveSpeed(moveSpeed);
@@ -61,4 +62,35 @@ void MagicBallMovement::MoveFall()
 
 void MagicBallMovement::MoveChase(Vector3 targetPosition)
 {
+
+	// プレイヤーの位置に向かうベクトル
+	Vector3 directionToPlayer = targetPosition - m_magicBall->GetPosition();
+	directionToPlayer.Normalize();
+
+	// 現在の弾の移動ベクトル
+	Vector3 currentDirection = m_magicBall->GetMoveSpeed();
+	currentDirection.Normalize();
+
+	// プレイヤー方向と現在の弾の方向の補間 (追尾速度を調整)
+	float homingSpeed = 0.5f; // 追尾の速さ
+	Vector3 newDirection = 
+		currentDirection * (1.0f - homingSpeed) + directionToPlayer * homingSpeed;
+
+	newDirection.Normalize();
+
+	Vector3 moveSpeed = 
+		(newDirection * MUL_CHASE_SPEED) * m_magicBall->GetSpeedParameter() * g_gameTime->GetFrameDeltaTime();
+	
+	// 新しい速度ベクトルを設定
+	//移動速度設定
+	m_magicBall->SetMoveSpeed(moveSpeed);
+
+	//
+	Vector3 currentPos = m_magicBall->GetPosition();
+
+	currentPos += m_magicBall->GetMoveSpeed();
+
+	m_magicBall->SetPosition(currentPos);
+
+
 }
