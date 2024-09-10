@@ -240,6 +240,7 @@
     <ClCompile Include="BossStage1.cpp" />
     <ClCompile Include="Bow.cpp" />
     <ClCompile Include="BowArrowStatus.cpp" />
+    <ClCompile Include="BowArrowUI.cpp" />
     <ClCompile Include="Brave.cpp" />
     <ClCompile Include="BraveStateContext.cpp" />
     <ClCompile Include="BraveState_ChangeWeapon.cpp" />
@@ -275,8 +276,10 @@
     <ClCompile Include="EntryBoss.cpp" />
     <ClCompile Include="EyeBall.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameUIBase.cpp" />
     <ClCompile Include="GreateSword.cpp" />
     <ClCompile Include="GreateSwordStatus.cpp" />
+    <ClCompile Include="GreateSwordUI.cpp" />
     <ClCompile Include="ISummonerStateMachine.cpp" />
     <ClCompile Include="IMagicBall.cpp" />
     <ClCompile Include="IObjectPool.cpp" />
@@ -296,6 +299,7 @@
     <ClCompile Include="MushroomState_Idle.cpp" />
     <ClCompile Include="MushroomState_Run.cpp" />
     <ClCompile Include="MushroomState_Victory.cpp" />
+    <ClCompile Include="PlayerGameUI.cpp" />
     <ClCompile Include="SlimeStateContext.cpp" />
     <ClCompile Include="SlimeState_Appear.cpp" />
     <ClCompile Include="SlimeState_Attack.cpp" />
@@ -325,6 +329,7 @@
     <ClCompile Include="SummonerState_Warp.cpp" />
     <ClCompile Include="SwordShield.cpp" />
     <ClCompile Include="SwordShieldStatus.cpp" />
+    <ClCompile Include="SwordShieldUI.cpp" />
     <ClCompile Include="WeaponBase.cpp" />
     <ClCompile Include="LoadBraveAnimationClips.cpp" />
     <ClCompile Include="MobEnemyBase.cpp" />
@@ -347,7 +352,6 @@
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameUI.cpp" />
-    <ClCompile Include="KnockBack.cpp" />
     <ClCompile Include="Loading.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ManagerPreCompile.cpp" />
@@ -370,6 +374,7 @@
     <ClCompile Include="WaveTimer.cpp" />
     <ClCompile Include="WeaponManager.cpp" />
     <ClCompile Include="WeaponStatus.cpp" />
+    <ClCompile Include="WeaponUIBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllGameSceneState.h" />
@@ -391,6 +396,7 @@
     <ClInclude Include="BossStage1.h" />
     <ClInclude Include="Bow.h" />
     <ClInclude Include="BowArrowStatus.h" />
+    <ClInclude Include="BowArrowUI.h" />
     <ClInclude Include="Brave.h" />
     <ClInclude Include="BraveAllStateFiles.h" />
     <ClInclude Include="BraveAnimClipAndStateInfo.h" />
@@ -429,8 +435,10 @@
     <ClInclude Include="EntryBoss.h" />
     <ClInclude Include="EyeBall.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameUIBase.h" />
     <ClInclude Include="GreateSword.h" />
     <ClInclude Include="GreateSwordStatus.h" />
+    <ClInclude Include="GreateSwordUI.h" />
     <ClInclude Include="ISummonerStateMachine.h" />
     <ClInclude Include="IBraveState.h" />
     <ClInclude Include="IMagicBall.h" />
@@ -454,6 +462,8 @@
     <ClInclude Include="MushroomState_Idle.h" />
     <ClInclude Include="MushroomState_Run.h" />
     <ClInclude Include="MushroomState_Victory.h" />
+    <ClInclude Include="PlayerGameUI.h" />
+    <ClInclude Include="SheraUIInfo.h" />
     <ClInclude Include="SlimeInfo.h" />
     <ClInclude Include="SlimeStateContext.h" />
     <ClInclude Include="SlimeState_Appear.h" />
@@ -485,6 +495,7 @@
     <ClInclude Include="SummonerState_Warp.h" />
     <ClInclude Include="SwordShield.h" />
     <ClInclude Include="SwordShieldStatus.h" />
+    <ClInclude Include="SwordShieldUI.h" />
     <ClInclude Include="WeaponBase.h" />
     <ClInclude Include="LoadBraveAnimationClips.h" />
     <ClInclude Include="MobEnemyBase.h" />
@@ -509,7 +520,6 @@
     <ClInclude Include="Fade.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameUI.h" />
-    <ClInclude Include="KnockBack.h" />
     <ClInclude Include="Loading.h" />
     <ClInclude Include="ManagerPreCompile.h" />
     <ClInclude Include="MobMonstersList.h" />
@@ -527,9 +537,10 @@
     <ClInclude Include="WaveManager.h" />
     <ClInclude Include="WaveStatus.h" />
     <ClInclude Include="WaveTimer.h" />
+    <ClInclude Include="WeaponInfo.h" />
     <ClInclude Include="WeaponManager.h" />
     <ClInclude Include="WeaponStatus.h" />
-    <ClInclude Include="WeaponInfo.h" />
+    <ClInclude Include="WeaponUIBase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

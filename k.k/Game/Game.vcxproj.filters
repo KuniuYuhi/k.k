@@ -139,6 +139,9 @@
     <Filter Include="Characters\Ememy\Boss\Summoner\StateMachine">
       <UniqueIdentifier>{876000f7-1253-493f-a16d-3a64d9ebfe4f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Status\Enemy\BossEnemy">
+      <UniqueIdentifier>{e3f753b2-0162-4e97-8c81-608ce2a0bd1a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -150,7 +153,6 @@
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="InitEffect.cpp" />
     <ClCompile Include="SoundFile.cpp" />
-    <ClCompile Include="KnockBack.cpp" />
     <ClCompile Include="HitDetection.cpp" />
     <ClCompile Include="ManagerPreCompile.cpp">
       <Filter>Manager</Filter>
@@ -521,7 +523,6 @@
     <ClCompile Include="ISummonerStateMachine.cpp">
       <Filter>Characters\Ememy\Boss\Summoner\StateMachine</Filter>
     </ClCompile>
-    <ClCompile Include="SummonerAIController.cpp" />
     <ClCompile Include="MagicBallMovement.cpp">
       <Filter>Component</Filter>
     </ClCompile>
@@ -531,17 +532,30 @@
     <ClCompile Include="SummonerState_ShockWave.cpp">
       <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
     </ClCompile>
-    <ClCompile Include="SummonerSkillStatus.cpp" />
     <ClCompile Include="EyeBall.cpp">
       <Filter>MagicBall\Unique</Filter>
     </ClCompile>
-    <ClCompile Include="SummonerState_DarkMeteorite.cpp" />
     <ClCompile Include="DarkBall.cpp">
       <Filter>MagicBall\Unique</Filter>
     </ClCompile>
     <ClCompile Include="DarkMeteorite.cpp">
       <Filter>MagicBall\Unique</Filter>
     </ClCompile>
+    <ClCompile Include="SummonerSkillStatus.cpp">
+      <Filter>Status\Enemy\BossEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerAIController.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerState_DarkMeteorite.cpp">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerGameUI.cpp" />
+    <ClCompile Include="GameUIBase.cpp" />
+    <ClCompile Include="SwordShieldUI.cpp" />
+    <ClCompile Include="GreateSwordUI.cpp" />
+    <ClCompile Include="BowArrowUI.cpp" />
+    <ClCompile Include="WeaponUIBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -553,7 +567,6 @@
     <ClInclude Include="InitEffect.h" />
     <ClInclude Include="SoundFile.h" />
     <ClInclude Include="MyWeapon.h" />
-    <ClInclude Include="KnockBack.h" />
     <ClInclude Include="HitDetection.h" />
     <ClInclude Include="ManagerPreCompile.h">
       <Filter>Manager</Filter>
@@ -726,9 +739,6 @@
     </ClInclude>
     <ClInclude Include="WeaponStatus.h">
       <Filter>Status\Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="WeaponInfo.h">
-      <Filter>Weapon</Filter>
     </ClInclude>
     <ClInclude Include="WeaponBase.h">
       <Filter>Weapon\WeaponBase</Filter>
@@ -967,7 +977,6 @@
     <ClInclude Include="ISummonerStateMachine.h">
       <Filter>Characters\Ememy\Boss\Summoner\StateMachine</Filter>
     </ClInclude>
-    <ClInclude Include="SummonerAIController.h" />
     <ClInclude Include="MagicBallMovement.h">
       <Filter>Component</Filter>
     </ClInclude>
@@ -977,16 +986,35 @@
     <ClInclude Include="SummonerState_ShockWave.h">
       <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
     </ClInclude>
-    <ClInclude Include="SummonerSkillStatus.h" />
     <ClInclude Include="EyeBall.h">
       <Filter>MagicBall\Unique</Filter>
     </ClInclude>
-    <ClInclude Include="SummonerState_DarkMeteorite.h" />
     <ClInclude Include="DarkBall.h">
       <Filter>MagicBall\Unique</Filter>
     </ClInclude>
     <ClInclude Include="DarkMeteorite.h">
       <Filter>MagicBall\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerSkillStatus.h">
+      <Filter>Status\Enemy\BossEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerAIController.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerState_DarkMeteorite.h">
+      <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerGameUI.h" />
+    <ClInclude Include="GameUIBase.h" />
+    <ClInclude Include="SwordShieldUI.h" />
+    <ClInclude Include="GreateSwordUI.h" />
+    <ClInclude Include="BowArrowUI.h" />
+    <ClInclude Include="WeaponUIBase.h" />
+    <ClInclude Include="WeaponInfo.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="SheraUIInfo.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
