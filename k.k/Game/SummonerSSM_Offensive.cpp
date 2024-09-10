@@ -10,6 +10,8 @@
 
 namespace {
 	const float DARKMETEORITE_COOLTIME_LIMIT = 20.0f;
+
+	const float MELEE_ATTACK_DISTANCE = 400.0f;
 }
 
 void SummonerSSM_Offensive::Entry()
@@ -76,7 +78,7 @@ void SummonerSSM_Offensive::SelectAttackBasedOnDistance()
 	float distance = m_summoner->GetDistanceToPlayerPositionValue();
 
 
-	if (distance <= 500.0f)
+	if (distance <= MELEE_ATTACK_DISTANCE)
 	{
 		SelectMeleeAttack();
 	}

@@ -99,7 +99,7 @@ public:
 	/// HP�̎擾
 	/// </summary>
 	/// <returns></returns>
-	const int& GetHp() const
+	const int& GetCurrentHp() const
 	{
 		return characterStatus.hp;
 	}

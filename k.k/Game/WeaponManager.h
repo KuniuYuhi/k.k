@@ -96,6 +96,15 @@ public:
 		return m_armedWeapon;
 	}
 
+	/// <summary>
+	/// 武器のインスタンスを取得
+	/// </summary>
+	/// <param name="weaponType">武器の種類</param>
+	/// <returns></returns>
+	WeaponBase* GetWeaponInstance(EnWeaponType weaponType)
+	{
+		return m_weaponsMap.at(weaponType);
+	}
 
 
 	/// <summary>
@@ -106,6 +115,26 @@ public:
 	{
 		return m_mainWeaponType;
 	}
+
+	/// <summary>
+	/// サブ武器のタイプを取得
+	/// </summary>
+	/// <returns></returns>
+	EnWeaponType GetSubWeaponType() const
+	{
+		return m_subWeaponType;
+	}
+
+	/// <summary>
+	/// サブ２武器のタイプを取得
+	/// </summary>
+	/// <returns></returns>
+	EnWeaponType GetSubWeaponType2() const
+	{
+		return m_subWeaponType2;
+	}
+
+
 
 	/// <summary>
 	/// 切り替え武器タイプを取得

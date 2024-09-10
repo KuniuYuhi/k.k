@@ -463,7 +463,7 @@ bool Brave::IsStarkTime()
 void Brave::AutoRecoveryStamina()
 {
 	//アクション中は回復しない
-	if (IsAction()) return;
+	//if (IsAction()) return;
 
 	//スタミナを回復する量を計算
 	float recoveryValue = g_gameTime->GetFrameDeltaTime() * m_status.GetStaminaRecoveryRate();
@@ -607,7 +607,7 @@ void Brave::ProcessHit(DamageInfo damageInfo)
 	m_armedWeapon->AttackImpactProcess(false);
 
 	//被ダメージ処理
-	//TakeDamage(damageInfo.attackPower);
+	TakeDamage(damageInfo.attackPower);
 
 	//ステートを切り替える
 	m_braveStateCotext.get()->ChangeBraveState(enBraveState_Hit);

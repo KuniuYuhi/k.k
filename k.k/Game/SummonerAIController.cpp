@@ -161,8 +161,29 @@ void SummonerAIController::CreateDarkBall()
 	m.Apply(createPos);
 
 
-	//todo 直進か追尾型か決める
+	//直進か追尾型か決める
 	//プレイヤーとの距離が遠いほど確率が上がる
+
+	//確率
+	int probability = rand() % 10;
+
+	//ボスからプレイヤーに向かうベクトルを計算
+	float length = m_summoner->GetDistanceToPlayerPositionValue();
+
+	//加算する確率は最大3。距離の補間は0～1000
+	int add = Math::Lerp((length - 0.0f) / (1000.0f - 0.0f), 0.0f, 4.0f);
+
+	//確率が小さいと追いかけるようになる
+	if (probability < 5 + add)
+	{
+		//追いかける
+		darkBall->SetChasePatternState();
+	}
+	else
+	{
+		//直進
+		darkBall->SetStraightPatternState();
+	}
 
 
 	//撃つときのパラメータの設定

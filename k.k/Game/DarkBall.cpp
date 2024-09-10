@@ -5,7 +5,7 @@
 
 #include "KnockBackInfoManager.h"
 
-
+#include "Brave.h"
 
 namespace {
 	const int COLLISION_RADIUS = 100.0f;
@@ -45,7 +45,10 @@ bool DarkBall::Start()
 	//“–‚½‚è”»’èì¬
 	CreateCollision();
 
-
+	if (m_enShotPatternState == enChase)
+	{
+		m_player = FindGO<Brave>("Brave");
+	}
 
 	return true;
 }
@@ -80,8 +83,17 @@ void DarkBall::Move()
 {
 	if (m_magicBallMovement == nullptr) return;
 
-	//’¼i
-	m_magicBallMovement->MoveStraight();
+
+	if (m_enShotPatternState == enStraight)
+	{
+		//’¼i
+		m_magicBallMovement->MoveStraight();
+	}
+	else if(m_enShotPatternState == enChase)
+	{
+		m_magicBallMovement->MoveChase(m_player->GetPosition());
+	}
+	
 
 	m_collision->SetPosition(m_position);
 	m_collision->Update();

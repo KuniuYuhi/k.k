@@ -121,6 +121,23 @@ public:
 	}
 
 	/// <summary>
+	/// スタミナが不足しているかのフラグを設定
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetStaminaInsufficientFlag(bool flag)
+	{
+		m_isStaminaInsufficient = flag;
+	}
+	/// <summary>
+	/// スタミナが不足しているか？
+	/// </summary>
+	/// <returns></returns>
+	const bool IsStaminaInsufficient() const
+	{
+		return m_isStaminaInsufficient;
+	}
+
+	/// <summary>
 	/// スキルメインに進むかのフラグ
 	/// </summary>
 	/// <param name="flag"></param>
@@ -302,43 +319,44 @@ private:
 
 private:
 
-	Status_Player m_status;					//プレイヤーのステータス
+	Status_Player								m_status;					//プレイヤーのステータス
 
-	std::unique_ptr<LoadBraveAnimationClips> m_braveAnimClip = nullptr;		//アニメーションクリップロード
+	std::unique_ptr<LoadBraveAnimationClips>	m_braveAnimClip = nullptr;		//アニメーションクリップロード
 
-	PlayerMovement* m_playerMovement = nullptr;			//移動コンポーネントインスタンス
+	PlayerMovement*								m_playerMovement = nullptr;			//移動コンポーネントインスタンス
 
-	DamageProvider* m_damageProvider = nullptr;
-
-	PlayerController* m_playerContoller = nullptr;		//プレイヤーコントローラーインスタンス
-
-	std::unique_ptr<BraveStateContext> m_braveStateCotext = nullptr;	//ステートコンテキスト
-
-	WeaponBase* m_armedWeapon = nullptr;		//装備している武器
-
-	std::vector<CurvePoint> m_curvePointList;			//ノックバックカーブポイントリスト
-
-	Vector2 m_knockBackSpeed = g_vec2Zero;				//ノックバックのスピード
-
-	Vector3 m_damageProviderPosition = g_vec3Zero;		//ダメージ提供者（攻撃者）の座標
-
-	Vector3 m_saveForward = g_vec3Zero;					//保存用前方向
-
-	EnKnockBackPattern m_hitKnockBackPattern;			//ノックバックのパターン
-	float m_knockBackTimeScale = 0.0f;					//ノックバックの進行速度
+	DamageProvider*								m_damageProvider = nullptr;
 	
-	bool m_isProceedSkillMain = false;					//スキルメインステートに進むのか
+	PlayerController*							m_playerContoller = nullptr;		//プレイヤーコントローラーインスタンス
 
-	bool m_isActionFlag = false;		//アクションt中かのフラグ
+	std::unique_ptr<BraveStateContext>			m_braveStateCotext = nullptr;	//ステートコンテキスト
+
+	WeaponBase*									m_armedWeapon = nullptr;		//装備している武器
+
+	std::vector<CurvePoint>						m_curvePointList;			//ノックバックカーブポイントリスト
+
+	Vector2										m_knockBackSpeed = g_vec2Zero;				//ノックバックのスピード
+
+	Vector3										m_damageProviderPosition = g_vec3Zero;		//ダメージ提供者（攻撃者）の座標
+
+	Vector3										m_saveForward = g_vec3Zero;					//保存用前方向
+
+	EnKnockBackPattern							m_hitKnockBackPattern;			//ノックバックのパターン
+	float										m_knockBackTimeScale = 0.0f;					//ノックバックの進行速度
 	
+	bool										m_isProceedSkillMain = false;					//スキルメインステートに進むのか
 
-	bool m_isInvincible = false;		//無敵か？
+	bool										m_isActionFlag = false;		//アクションt中かのフラグ
+	
+	bool										m_isStaminaInsufficient = false;	//スタミナが不足しているか？
 
-	float m_starkTimer = 0.0f;			//硬直タイマー
+	bool										m_isInvincible = false;		//無敵か？
 
-	float count = 0.0f;
+	float										m_starkTimer = 0.0f;			//硬直タイマー
 
-	int oldAttackId = -1;
+	float										count = 0.0f;
+
+	int											oldAttackId = -1;
 
 };
 

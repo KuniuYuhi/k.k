@@ -246,9 +246,8 @@ void Game::CalcMuteBGM()
 void Game::CreateGameUI()
 {
 	m_gameUI = NewGO<GameUI>(0, "gameUI");
-	m_gameUI->SetGame(this);
-	//m_gameUI->SetPlayer(CharactersInfoManager::GetInstance()->GetPlayerInstance());
-	//m_gameUI->SetBoss(CharactersInfoManager::GetInstance()->GetBossInstance());
+
+
 }
 
 void Game::InitGameObject()
