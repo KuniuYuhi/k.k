@@ -311,12 +311,15 @@ bool SwordShield::CanDefensiveAction()
 
 bool SwordShield::CanSkillAttack()
 {
-	//スキルに必要なスタミナを消費できるなら
-	if (m_brave->GetStatus().TryConsumeStamina(m_status.GetSkillStaminaCost()))
+	//スキルに必要なスタミナを消費できるかチェック
+	if (m_brave->GetStatus().CheckConsumeStamina(m_status.GetSkillStaminaCost()))
 	{
 		//スキル攻撃可能
 		return true;
 	}
+
+	//スタミナが不足しているのでフラグを立てる
+	m_brave->SetStaminaInsufficientFlag(true);
 	//不可能
 	return false;
 }
@@ -491,7 +494,8 @@ void SwordShield::UpdateSkillMainProcess()
 
 void SwordShield::ExitSkillMainProcess()
 {
-
+	//スタミナを消費する
+	m_brave->GetStatus().TryConsumeStamina(m_status.GetSkillStaminaCost());
 	//無敵を無効化する
 	m_brave->DisableInvincible();
 }

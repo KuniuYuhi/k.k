@@ -194,18 +194,23 @@ void Bow::UpdateDefensiveActionProcess()
 
 void Bow::ExitDefensiveActionProcess()
 {
+	//スタミナを消費する
+	m_brave->GetStatus().TryConsumeStamina(m_status.GetDefensiveStaminaCost());
 	//無敵を解除
 	m_brave->DisableInvincible();
 }
 
 bool Bow::CanDefensiveAction()
 {
-	//回避に必要なスタミナを消費できるなら
-	if (m_brave->GetStatus().TryConsumeStamina(m_status.GetDefensiveStaminaCost()))
+	//回避に必要なスタミナを消費できるかチェック
+	if (m_brave->GetStatus().CheckConsumeStamina(m_status.GetDefensiveStaminaCost()))
 	{
 		//回避可能
 		return true;
 	}
+
+	//スタミナが不足しているのでフラグを立てる
+	m_brave->SetStaminaInsufficientFlag(true);
 	//不可能
 	return false;
 }
@@ -219,6 +224,9 @@ bool Bow::CanSkillAttack()
 		//スキル攻撃可能
 		return true;
 	}
+
+	//スタミナが不足しているのでフラグを立てる
+	m_brave->SetStaminaInsufficientFlag(true);
 	//不可能
 	return false;
 }
@@ -398,9 +406,6 @@ void Bow::ExitSkillStartProcess()
 
 void Bow::EntrySkillMainProcess()
 {
-	//攻撃すること確定なのでスタミナを消費する
-	m_brave->GetStatus().TryConsumeStamina(m_status.GetSkillStaminaCost());
-
 	//メインに進んだので無敵にする
 	m_brave->EnableInvincible();
 }
@@ -419,6 +424,9 @@ void Bow::ExitSkillMainProcess()
 		//矢を生成
 		CreateArrow(m_enWeaponState);
 	}
+
+	//スタミナを消費する
+	m_brave->GetStatus().TryConsumeStamina(m_status.GetSkillStaminaCost());
 
 	//無敵を無効化する
 	m_brave->DisableInvincible();

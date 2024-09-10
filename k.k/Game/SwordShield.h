@@ -130,6 +130,15 @@ public:
     /// <param name="startOrEnd">startはtrue</param>
     void AttackImpactProcess(bool startOrEnd) override;
 
+    /// <summary>
+    /// シールドの耐久値を取得
+    /// </summary>
+    /// <returns></returns>
+    int GetShieldEndrance()
+    {
+        return m_uniqueStatus.GetCurrentShieldEnduranceValue();
+    }
+
 
 private:
 

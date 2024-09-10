@@ -232,30 +232,38 @@ void GreateSword::UpdateDefensiveActionProcess()
 
 void GreateSword::ExitDefensiveActionProcess()
 {
+	//スタミナを消費する
+	m_brave->GetStatus().TryConsumeStamina(m_status.GetDefensiveStaminaCost());
 	//無敵を解除
 	m_brave->DisableInvincible();
 }
 
 bool GreateSword::CanDefensiveAction()
 {
-	//回避に必要なスタミナを消費できるなら
-	if (m_brave->GetStatus().TryConsumeStamina(m_status.GetDefensiveStaminaCost()))
+	//回避に必要なスタミナを消費できるかチェック
+	if (m_brave->GetStatus().CheckConsumeStamina(m_status.GetDefensiveStaminaCost()))
 	{
 		//回避可能
 		return true;
 	}
+
+	//スタミナが不足しているのでフラグを立てる
+	m_brave->SetStaminaInsufficientFlag(true);
 	//不可能
 	return false;
 }
 
 bool GreateSword::CanSkillAttack()
 {
-	//スキルに必要なスタミナを消費できるなら
-	if (m_brave->GetStatus().TryConsumeStamina(m_status.GetSkillStaminaCost()))
+	//スキルに必要なスタミナを消費できるかチェック
+	if (m_brave->GetStatus().CheckConsumeStamina(m_status.GetSkillStaminaCost()))
 	{
 		//スキル攻撃可能
 		return true;
 	}
+
+	//スタミナが不足しているのでフラグを立てる
+	m_brave->SetStaminaInsufficientFlag(true);
 	//不可能
 	return false;
 }
@@ -456,7 +464,8 @@ void GreateSword::UpdateSkillMainProcess()
 
 void GreateSword::ExitSkillMainProcess()
 {
-
+	//スタミナを消費する
+	m_brave->GetStatus().TryConsumeStamina(m_status.GetSkillStaminaCost());
 	//無敵を無効化する
 	m_brave->DisableInvincible();
 }
