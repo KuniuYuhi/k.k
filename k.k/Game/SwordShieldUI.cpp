@@ -18,6 +18,8 @@ namespace {
 
 
 
+	const int SHAKE_STEWNGTH = 30;
+	const float SHAKE_VIBRATO = 15.0f;
 	const float SHAKE_TIME_LIMIT = 0.7f;
 
 }
@@ -31,6 +33,9 @@ bool SwordShieldUI::Start()
 	m_oldEndranceValue = m_swordShield->GetShieldEndrance();
 
 	Init();
+
+	//揺れ情報を設定
+	SetShakeInfo(SHAKE_STEWNGTH, SHAKE_VIBRATO, SHEIELD_ENDURANCE_POS);
 
 	return true;
 }
@@ -142,10 +147,11 @@ void SwordShieldUI::UpdateShieldEndrance()
 {
 	int endrance = m_swordShield->GetShieldEndrance();
 
-
+	//耐久値が変動したら
 	if (endrance != m_oldEndranceValue)
 	{
-
+		//タイマーリセット
+		m_shakeTimer = 0.0f;
 		m_isVariableEndrance = true;
 	}
 
@@ -179,12 +185,10 @@ void SwordShieldUI::UpdateShieldEndrance()
 
 void SwordShieldUI::ShakeShield()
 {
-	GetUpdateShakePosition();
-
-	
+	//揺らす座標を計算
+	m_endranceCurrentPosition = GetUpdateShakePosition(m_shakeTimer, SHAKE_TIME_LIMIT, m_endranceCurrentPosition);
 
 	//タイマーの計算
-
 	if (m_shakeTimer > SHAKE_TIME_LIMIT)
 	{
 		//タイムリミットに達したら
@@ -205,35 +209,4 @@ void SwordShieldUI::ShakeShield()
 
 }
 
-void SwordShieldUI::GetUpdateShakePosition()
-{
-
-	float ramdomX = rand() % 61 - 30;
-	float ramdomY = rand() % 61 - 30;
-
-	Vector2 shakePos = m_endranceCurrentPosition;
-
-	shakePos.x += ramdomX;
-	shakePos.y += ramdomY;
-
-	float vibrato = 15.0f;
-	float ratio = 1.0f - m_shakeTimer / SHAKE_TIME_LIMIT;
-
-	vibrato *= ratio;
-
-	m_endranceCurrentPosition.x = 
-		Clamp(shakePos.x, SHEIELD_ENDURANCE_POS.x - vibrato, SHEIELD_ENDURANCE_POS.x + vibrato);
-	m_endranceCurrentPosition.y =
-		Clamp(shakePos.y, SHEIELD_ENDURANCE_POS.y - vibrato, SHEIELD_ENDURANCE_POS.y + vibrato);
-
-}
-
-float SwordShieldUI::Clamp(float value, float min, float max)
-{
-	if (value < min) return min;
-
-	if (value > max) return max;
-
-	return value;
-}
 
