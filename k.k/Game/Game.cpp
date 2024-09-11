@@ -113,7 +113,7 @@ bool Game::Start()
 	g_renderingEngine->UseLimLight();
 
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
-	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 
 	

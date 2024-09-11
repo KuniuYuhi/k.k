@@ -142,6 +142,12 @@
     <Filter Include="Status\Enemy\BossEnemy">
       <UniqueIdentifier>{e3f753b2-0162-4e97-8c81-608ce2a0bd1a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI\InGameUI">
+      <UniqueIdentifier>{4f78a3a9-fb78-4194-8471-50d720790547}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\InGameUI\Base">
+      <UniqueIdentifier>{6ec5905b-da14-4257-becc-a183451a1f29}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -550,12 +556,25 @@
     <ClCompile Include="SummonerState_DarkMeteorite.cpp">
       <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerGameUI.cpp" />
-    <ClCompile Include="GameUIBase.cpp" />
-    <ClCompile Include="SwordShieldUI.cpp" />
-    <ClCompile Include="GreateSwordUI.cpp" />
-    <ClCompile Include="BowArrowUI.cpp" />
-    <ClCompile Include="WeaponUIBase.cpp" />
+    <ClCompile Include="WeaponUIBase.cpp">
+      <Filter>UI\InGameUI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="GameUIBase.cpp">
+      <Filter>UI\InGameUI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="BowArrowUI.cpp">
+      <Filter>UI\InGameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GreateSwordUI.cpp">
+      <Filter>UI\InGameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerGameUI.cpp">
+      <Filter>UI\InGameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SwordShieldUI.cpp">
+      <Filter>UI\InGameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonerUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -1004,17 +1023,30 @@
     <ClInclude Include="SummonerState_DarkMeteorite.h">
       <Filter>Characters\Ememy\Boss\Summoner\State</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerGameUI.h" />
-    <ClInclude Include="GameUIBase.h" />
-    <ClInclude Include="SwordShieldUI.h" />
-    <ClInclude Include="GreateSwordUI.h" />
-    <ClInclude Include="BowArrowUI.h" />
-    <ClInclude Include="WeaponUIBase.h" />
     <ClInclude Include="WeaponInfo.h">
       <Filter>Weapon</Filter>
     </ClInclude>
     <ClInclude Include="SheraUIInfo.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="WeaponUIBase.h">
+      <Filter>UI\InGameUI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="GameUIBase.h">
+      <Filter>UI\InGameUI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="BowArrowUI.h">
+      <Filter>UI\InGameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GreateSwordUI.h">
+      <Filter>UI\InGameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerGameUI.h">
+      <Filter>UI\InGameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SwordShieldUI.h">
+      <Filter>UI\InGameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonerUI.h" />
   </ItemGroup>
 </Project>

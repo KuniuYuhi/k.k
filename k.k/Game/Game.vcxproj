@@ -327,6 +327,7 @@
     <ClCompile Include="SummonerState_ThirdAttack.cpp" />
     <ClCompile Include="SummonerState_Victory.cpp" />
     <ClCompile Include="SummonerState_Warp.cpp" />
+    <ClCompile Include="SummonerUI.cpp" />
     <ClCompile Include="SwordShield.cpp" />
     <ClCompile Include="SwordShieldStatus.cpp" />
     <ClCompile Include="SwordShieldUI.cpp" />
@@ -493,6 +494,7 @@
     <ClInclude Include="SummonerState_ThirdAttack.h" />
     <ClInclude Include="SummonerState_Victory.h" />
     <ClInclude Include="SummonerState_Warp.h" />
+    <ClInclude Include="SummonerUI.h" />
     <ClInclude Include="SwordShield.h" />
     <ClInclude Include="SwordShieldStatus.h" />
     <ClInclude Include="SwordShieldUI.h" />

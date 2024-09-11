@@ -37,8 +37,10 @@ void GameScene_Game::Entry()
 
 	//ボスを生成
 	m_game->CreateBoss();
+
 	//UI生成
 	m_game->CreateGameUI();
+
 	//ウェーブクラス生成
 	m_game->CreateBattleWave();
 
