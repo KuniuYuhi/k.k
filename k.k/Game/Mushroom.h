@@ -73,9 +73,14 @@ public:
 	void DieProcess();
 
 	/// <summary>
+	/// Ÿ—˜‚Ìˆ—
+	/// </summary>
+	void WinProcess() override;
+
+	/// <summary>
 	/// ŠO•”‚©‚çíœ
 	/// </summary>
-	void DieFlomOutside() override;
+	void DieFlomOutside(bool isPlayEffect = false) override;
 
 private:
 

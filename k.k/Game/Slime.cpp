@@ -11,6 +11,8 @@
 
 #include "KnockBackInfoManager.h"
 
+#include "UseEffect.h"
+
 
 using namespace KnockBackInfo;
 
@@ -274,14 +276,27 @@ void Slime::DieProcess()
 	DieFromDamage();
 }
 
-void Slime::DieFlomOutside()
+void Slime::WinProcess()
 {
+	m_slimeContext.get()->ChangeSlimeState(this, enSlimeState_Victory);
+}
+
+void Slime::DieFlomOutside(bool isPlayEffect)
+{
+	//これが呼ばれるときは大抵マネージャーが消しているので、リストからは削除しない
+
 	//キャラコンリセット
 	m_charaCon.reset();
 	//オブジェクトプールに自身のオブジェクトを返す
 	EnemyObjectPool::GetInstance()->OnRelease("Slime", this);
 
-	//エフェクト生成
+	//エフェクトを再生しないなら
+	if (!isPlayEffect) return;
+
+	//死亡エフェクト生成
+	UseEffect* effect = NewGO<UseEffect>(0, "DieEffect");
+	effect->PlayEffect(enEffect_Mob_Dead,
+		m_position, g_vec3One * 15.0f, Quaternion::Identity, false);
 
 }
 
@@ -306,17 +321,10 @@ void Slime::TurnToPlayer()
 
 void Slime::Update()
 {
-	if (g_pad[0]->IsTrigger(enButtonB))
-	{
-		//ReleaseThis();
-		//return;
-	}
+	
 
-	//処理を止める要求があるなら
-	if (IsStopRequested())return;
-
-	//死んでいないなら処理する
-	if (!IsDie())
+	//処理を止める要求がない限り処理をする
+	if (!IsStopRequested())
 	{
 		//攻撃処理
 		Attack();

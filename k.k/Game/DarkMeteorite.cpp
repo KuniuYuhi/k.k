@@ -5,9 +5,19 @@
 
 #include "KnockBackInfoManager.h"
 
+#include "UseEffect.h"
 
 namespace {
-	const int COLLISION_RADIUS = 700.0f;
+	const int COLLISION_RADIUS = 550.0f;
+
+	const float END_Y_ADD_VALUE = 280.0f;
+
+
+	const float METEO_EFFECT_SIZE = 80.0f;
+	const float METEO_EXPLOSION_EFFECT_SIZE = 30.0f;
+
+	const float ADD_Y_DOWN = 300.0f;
+
 }
 
 //衝突したときに呼ばれる関数オブジェクト(壁用)
@@ -43,6 +53,10 @@ DarkMeteorite::~DarkMeteorite()
 	{
 		DeleteGO(m_collision);
 	}
+
+
+	m_areaEffect = nullptr;
+	m_mainEffect = nullptr;
 }
 
 bool DarkMeteorite::Start()
@@ -56,6 +70,17 @@ bool DarkMeteorite::Start()
 	DefaultSettingComponents();
 	AddSettingComponents();
 
+	return true;
+}
+
+
+void DarkMeteorite::InitModel()
+{
+	
+}
+
+void DarkMeteorite::ShotStartDarkMeteorite()
+{
 	//ダメージ情報を設定
 	m_damageProvider->SetDamageInfo(
 		KnockBackInfoManager::GetInstance()->GetAddAttackId(),
@@ -67,14 +92,30 @@ bool DarkMeteorite::Start()
 	//当たり判定作成
 	CreateCollision();
 
+	//エフェクトを生成
+	m_mainEffect = NewGO<UseEffect>(0, "DarkMeteoriteEffect");
+	m_mainEffect->PlayEffect(
+		enEffect_Meteo,
+		m_position,
+		g_vec3One * METEO_EFFECT_SIZE,
+		Quaternion::Identity,
+		false
+	);
 
 
-	return true;
+	m_isMove = true;
 }
 
-
-void DarkMeteorite::InitModel()
+void DarkMeteorite::PlayRangeEffect(Vector3 position)
 {
+	//エフェクト生成
+	m_areaEffect = NewGO<UseEffect>(0, "DarkMeteoriteAreaEffect");
+	m_areaEffect->PlayEffect(
+		enEffect_Meteo_Range,
+		position,
+		{ 90.0f,1.0f,90.0f },
+		Quaternion::Identity,
+		false);
 }
 
 void DarkMeteorite::AddSettingComponents()
@@ -106,6 +147,14 @@ void DarkMeteorite::Move()
 	//落下する
 	m_magicBallMovement->MoveFall();
 
+	Vector3 effectPosition = m_position;
+
+	effectPosition.y -= ADD_Y_DOWN;
+
+	//エフェクト座標を設定
+	m_mainEffect->SetMovePosition(effectPosition);
+
+	//当たり判定の座標更新
 	m_collision->SetPosition(m_position);
 	m_collision->Update();
 }
@@ -130,7 +179,7 @@ bool DarkMeteorite::IsGroundHit()
 		btVector3(m_position.x, m_position.y, m_position.z));
 	//終点はプレイヤーの座標。
 	end.setOrigin(
-		btVector3(m_position.x, m_position.y - 300.0f , m_position.z));
+		btVector3(m_position.x, m_position.y - END_Y_ADD_VALUE, m_position.z));
 	//壁の判定を返す
 	IsWallResult isWallResult;
 	//コライダーを始点から終点まで動かして。
@@ -156,6 +205,21 @@ bool DarkMeteorite::IsGroundHit()
 
 void DarkMeteorite::Explosion()
 {
+	m_areaEffect->Delete();
+	m_areaEffect = nullptr;
+
+	m_mainEffect->Delete();
+	m_mainEffect = nullptr;
+
+
+	m_mainEffect = NewGO<UseEffect>(0, "DarkMeteoriteExplosionEffect");
+	//爆発エフェクト
+	m_mainEffect->PlayEffect(
+		enEffect_Meteo_Explosion,
+		m_position,
+		g_vec3One * METEO_EXPLOSION_EFFECT_SIZE,
+		Quaternion::Identity,
+		false);
 
 
 
@@ -164,6 +228,12 @@ void DarkMeteorite::Explosion()
 
 void DarkMeteorite::Update()
 {
+	if (!m_isMove) return;
+
+
+	//移動
+	Move();
+
 	if (IsDelete())
 	{
 		//爆発
@@ -171,8 +241,6 @@ void DarkMeteorite::Update()
 		return;
 	}
 
-	//移動
-	Move();
 }
 
 void DarkMeteorite::Render(RenderContext& rc)

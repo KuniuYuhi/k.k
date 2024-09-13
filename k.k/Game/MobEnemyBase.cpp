@@ -14,6 +14,8 @@
 #include "KnockBackInfoManager.h"
 #include "Brave.h"
 
+#include "UseEffect.h"
+
 
 float MobEnemyBase::GetDistanceToTargetPositionValue(Vector3 target)
 {
@@ -25,6 +27,8 @@ bool MobEnemyBase::IsStopRequested()
 	//勝敗が着いたら
 	if (GameSceneManager::GetInstance()->IsGameOutcome())return true;
 
+	//死亡したら
+	if (IsDie()) return true;
 
 	//ここまで来たら処理は止まらない
 	return false;
@@ -48,7 +52,10 @@ void MobEnemyBase::DieFromDamage()
 	//自身を返す
 	ReleaseThis();
 
-	//エフェクト生成
+	//死亡エフェクト生成
+	UseEffect* effect = NewGO<UseEffect>(0, "DieEffect");
+	effect->PlayEffect(enEffect_Mob_Dead,
+		m_position, g_vec3One * 3.0f, Quaternion::Identity, false);
 
 }
 

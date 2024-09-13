@@ -50,6 +50,11 @@ public:
 		return m_Status.speed;
 	}
 
+	void SetDeleteTimeLimit(float timeLimit)
+	{
+		m_Status.deleteTimeLimit = timeLimit;
+	}
+
 	const float& GetDeleteTimeLimit()
 	{
 		return m_Status.deleteTimeLimit;

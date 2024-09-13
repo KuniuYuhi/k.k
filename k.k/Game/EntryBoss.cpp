@@ -1,11 +1,14 @@
 #include "stdafx.h"
 #include "EntryBoss.h"
 #include "Game.h"
-#include "InitEffect.h"
 #include "Fade.h"
 
 #include "GameSceneManager.h"
 
+
+#include "EffectNumbers.h"
+
+using namespace EffectNumbers;
 
 namespace {
 	//スカイキューブの初期の明るさ
@@ -122,7 +125,7 @@ bool EntryBoss::Start()
 	Vector3 pos = m_position;
 	pos.y += ADD_CIRCLE_POS_Y;
 	m_CircleEffect = NewGO<EffectEmitter>(0);
-	m_CircleEffect->Init(InitEffect::enEffect_Boss_Summon_Circle);
+	m_CircleEffect->Init(enEffect_Boss_Summon_Circle);
 	m_CircleEffect->Play();
 	m_CircleEffect->SetPosition(pos);
 	m_CircleEffect->SetScale(g_vec3One * CIRICLE_EFFECT_SIZE);
@@ -642,7 +645,7 @@ void EntryBoss::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNa
 	if (wcscmp(eventName, L"FogRemoval") == 0)
 	{
 		m_FogRemovalEffect = NewGO<EffectEmitter>(0);
-		m_FogRemovalEffect->Init(InitEffect::enEffect_Boss_Summon_FogRemoval);
+		m_FogRemovalEffect->Init(enEffect_Boss_Summon_FogRemoval);
 		m_FogRemovalEffect->Play();
 		m_FogRemovalEffect->SetPosition(m_position);
 		m_FogRemovalEffect->SetScale({ 15.0f,40.0f,15.0f });

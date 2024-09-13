@@ -7,6 +7,8 @@ class ArrowStatus;
 class DamageProvider;
 class Bow;
 
+class UseEffect;
+
 /// <summary>
 /// 武器：ボウが使うアロークラス
 /// </summary>
@@ -198,8 +200,20 @@ private:
 	bool IsHitCollision();
 
 
+	/// <summary>
+	/// 矢のエフェクトを生成
+	/// </summary>
+	void PlayArrowEffect(EnShotPatternState shotpatternState);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void DeleteArrow();
+
+
 private:
 
+	UseEffect* m_arrowEffect = nullptr;
 
 	Brave* m_brave = nullptr;
 

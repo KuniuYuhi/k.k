@@ -4,6 +4,7 @@
 #include "Summoner.h"
 #include "Brave.h"
 
+
 #include "SummonerInfo.h"
 
 #include "DarkBall.h"
@@ -122,7 +123,7 @@ void SummonerAIController::CreateComboAttackCollision()
 	m_comboAttackCollision->CreateBox(
 		m_summoner->GetPosition(),
 		Quaternion::Identity,
-		{ 80.0f,360.0f,100.0f }
+		{ 90.0f,360.0f,160.0f }
 	);
 	//ワールド座標を設定する
 	Matrix staffMatrix = m_summoner->GetModelRender().GetBone(m_summoner->GetStaffBoonId())->GetWorldMatrix();
@@ -171,10 +172,10 @@ void SummonerAIController::CreateDarkBall()
 	float length = m_summoner->GetDistanceToPlayerPositionValue();
 
 	//加算する確率は最大3。距離の補間は0～1000
-	int add = Math::Lerp((length - 0.0f) / (1000.0f - 0.0f), 0.0f, 4.0f);
+	int add = Math::Lerp((length - 0.0f) / (1000.0f - 0.0f), 0.0f, 3.0f);
 
 	//確率が小さいと追いかけるようになる
-	if (probability < 5 + add)
+	if (probability < 4 + add)
 	{
 		//追いかける
 		darkBall->SetChasePatternState();
@@ -199,24 +200,29 @@ void SummonerAIController::CreateDarkBall()
 
 void SummonerAIController::DecisionDarkMeteoriteFallPoint()
 {
+	//ダークメテオ落下地点を設定
 	m_darkMeteoriteFallPoint = m_player->GetPosition();
 	m_darkMeteoriteFallPoint.y = 0.0f;
 
-	//エフェクト生成
-
+	//ダークメテオを生成
+	m_darkMeteorite = NewGO<DarkMeteorite>(0, "DarkMeteorite");
+	//範囲エフェクトを再生
+	m_darkMeteorite->PlayRangeEffect(m_darkMeteoriteFallPoint);
 
 }
 
 void SummonerAIController::CreateDarkMeteorite()
 {
-	DarkMeteorite* darkMeteorite = NewGO<DarkMeteorite>(0, "DarkMeteorite");
-
+	
 	Vector3 createPos = m_darkMeteoriteFallPoint;
 	createPos += DARKMETEORITE_CREATE_POSITION;
 
 	//撃つときのパラメータの設定
-	darkMeteorite->SetShotMagicBallParameters(
+	m_darkMeteorite->SetShotMagicBallParameters(
 		createPos,
 		m_summoner->GetForwardYZero()
 	);
+	//メテオを撃ち始める
+	m_darkMeteorite->ShotStartDarkMeteorite();
+
 }

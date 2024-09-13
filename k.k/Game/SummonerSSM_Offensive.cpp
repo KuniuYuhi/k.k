@@ -95,7 +95,6 @@ void SummonerSSM_Offensive::SelectMeleeAttack()
 	int r = rand() % 10;
 	//
 
-
 	if (r > 4)
 	{
 		//コンボ攻撃の一コンボ目
@@ -139,6 +138,11 @@ void SummonerSSM_Offensive::SelectRangedAttack()
 	{
 		changeState = enSummonerState_DarkBall;
 	}
+
+	//changeState = enSummonerState_Attack_DarkMeteorite;
+	////各種要素を計算
+	//m_darkMeteoriteRemainingCount--;
+	//m_darkMeteoriteCoolTimer = 0.0f;
 
 	//ステートが切り替わらないなら処理しない
 	if (changeState == enSummonerState_None) return;

@@ -13,6 +13,8 @@
 
 #include "EyeBall.h"
 
+#include "UseEffect.h"
+
 
 
 using namespace KnockBackInfo;
@@ -276,14 +278,25 @@ void BeholderEye::DieProcess()
 	DieFromDamage();
 }
 
-void BeholderEye::DieFlomOutside()
+void BeholderEye::WinProcess()
+{
+	m_beholderEyeContext.get()->ChangeBeholderEyeState(this, enBeholderEyeState_Victory);
+}
+
+void BeholderEye::DieFlomOutside(bool isPlayEffect)
 {
 	//キャラコンリセット
 	m_charaCon.reset();
 	//オブジェクトプールに自身のオブジェクトを返す
 	EnemyObjectPool::GetInstance()->OnRelease("BeholderEye", this);
 
-	//エフェクト生成
+	//エフェクトを再生しないなら
+	if (!isPlayEffect) return;
+
+	//死亡エフェクト生成
+	UseEffect* effect = NewGO<UseEffect>(0, "DieEffect");
+	effect->PlayEffect(enEffect_Mob_Dead,
+		m_position, g_vec3One * 15.0f, Quaternion::Identity, false);
 
 }
 

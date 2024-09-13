@@ -18,6 +18,11 @@
 #include "KnockBackStatus.h"
 #include "KnockBackInfoManager.h"
 
+#include "GameSceneManager.h"
+
+#include "EnemyManager.h"
+
+
 
 namespace {
 	float STARK_TIME_LIMIT = 0.2f;
@@ -59,7 +64,7 @@ bool Brave::Start()
 
 	//キャラコンを生成
 	CreateCharacterController();
-	m_charaCon.get()->Init(20.0f, 50.0f, m_position);
+	m_charaCon.get()->Init(17.0f, 40.0f, m_position);
 
 	//ステータスを初期化
 	m_status.InitPlayerStatus("Brave");
@@ -90,7 +95,7 @@ bool Brave::Start()
 void Brave::Update()
 {
 	//コントローラーの入力を受け付けている間は
-	if (m_playerContoller->IsControllerInputEnabledFlag())
+	if (!IsStopRequested())
 	{
 		//スタミナの自動回復
 		AutoRecoveryStamina();
@@ -598,6 +603,13 @@ void Brave::SettingKnockBackInfoForDamageInfo(DamageInfo damageInfo)
 	m_knockBackTimeScale = damageInfo.knockBackTimeScale;
 }
 
+void Brave::AfterDieProcess()
+{
+	//エネミーたちに勝利時の処理をさせる
+	EnemyManager::GetInstance()->WinProcessAllEnemy();
+
+}
+
 void Brave::ProcessHit(DamageInfo damageInfo)
 {
 	//ノックバックの情報を設定
@@ -624,6 +636,20 @@ void Brave::TakeDamage(int damage)
 	{
 		m_playerContoller->SetControllerInputEnabledFlag(false);
 	}
+}
+
+bool Brave::IsStopRequested()
+{
+	//コントローラーの入力を受け付けないなら
+	if (m_playerContoller->IsControllerInputEnabledFlag()) true;
+
+	//勝敗が着いたら
+	if (GameSceneManager::GetInstance()->IsGameOutcome())return true;
+
+	//死亡したら
+	if (IsDie()) return true;
+
+	return false;
 }
 
 

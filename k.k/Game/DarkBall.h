@@ -6,6 +6,8 @@ class MagicBallMovement;
 
 class Brave;
 
+class UseEffect;
+
 /// <summary>
 /// サモナーが放つ魔法球：ダークボール
 /// </summary>
@@ -59,6 +61,10 @@ private:
 	bool IsDeleteTime();
 
 
+	/// <summary>
+	/// 爆発処理
+	/// </summary>
+	void Explosion();
 
 private:
 
@@ -67,6 +73,8 @@ private:
 	MagicBallMovement* m_magicBallMovement = nullptr;
 
 	CollisionObject* m_collision = nullptr;
+
+	UseEffect* m_effect = nullptr;
 
 
 	float m_deleteTimer = 0.0f;

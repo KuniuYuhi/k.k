@@ -17,6 +17,8 @@ class SummonerSMContext;
 class SummonerStateContext;
 class SummonerAIController;
 
+class UseEffect;
+
 class Brave;
 
 using namespace SummonerStates;
@@ -48,11 +50,6 @@ public:
 		m_forward.Normalize();
 		return m_forward;
 	}
-
-	/// <summary>
-	/// ショックウェーブのダメージ情報を設定する
-	/// </summary>
-	void SetShockWaveDamageInfo();
 
 	/// <summary>
 	/// ダメージ情報を設定する
@@ -157,12 +154,23 @@ public:
 	void AfterDieProcess();
 
 	/// <summary>
+	/// 勝利時の処理
+	/// </summary>
+	void WinProcess();
+
+	/// <summary>
 	/// 外部から自身を削除
 	/// </summary>
 	void DieFlomOutside();
 
 
 private:
+
+	/// <summary>
+	/// 処理を止める要求があるか？
+	/// </summary>
+	/// <returns>処理を止める要求があるならtrue</returns>
+	bool IsStopRequested();
 
 	/// <summary>
 	/// ダメージを受けた時の処理
@@ -204,6 +212,8 @@ private:
 
 private:
 
+	UseEffect* m_dieEffect = nullptr;
+
 	SummonerSkillStatus m_skillStatus;
 	
 
@@ -218,7 +228,7 @@ private:
 
 	Vector3 m_currentRotDirection = g_vec3Zero;
 
-
+	bool m_isViewModel = true;
 
 	bool m_isSettingComponents = false;
 

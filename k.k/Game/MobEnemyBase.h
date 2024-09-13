@@ -39,7 +39,12 @@ public:
 	/// <summary>
 	/// ŠO•”‚©‚çíœ
 	/// </summary>
-	virtual void DieFlomOutside() {}
+	virtual void DieFlomOutside(bool isPlayEffect = false) {}
+
+	/// <summary>
+	/// Ÿ—˜‚Ìˆ—
+	/// </summary>
+	virtual void WinProcess() {}
 
 	/// <summary>
 	/// ˆ—‚ğ~‚ß‚é—v‹‚ª‚³‚ê‚Ä‚¢‚é‚©H

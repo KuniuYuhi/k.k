@@ -9,13 +9,18 @@
 
 #include "GameSceneManager.h"
 
-
+#include "UseEffect.h"
 
 namespace {
 	float MUL_SCALE = 4.0f;
 
 	const Vector3 START_POSITION = { 0.0f,0.0f,400.0f };
 	const Vector3 START_FORWARD = g_vec3Back;
+
+
+	const float FIRST_COMBO_EFFECT_SCALE = 20.0f;
+
+	const float SECOND_AND_THIRD_COMBO_EFFECT_SCALE = 15.0f;
 
 }
 
@@ -63,7 +68,7 @@ bool Summoner::Start()
 	if (m_stateContext == nullptr)
 	{
 		m_stateContext = std::make_unique<SummonerStateContext>();
-		m_stateContext.get()->Init(this,enSummonerState_Idle);
+		m_stateContext.get()->Init(this,enSummonerState_Appear);
 	}
 
 
@@ -144,15 +149,45 @@ void Summoner::UpdateShockWaveProcess()
 
 void Summoner::AfterDieProcess()
 {
+	//
+	if (!m_isViewModel)
+	{
+		m_dieEffect = FindGO<UseEffect>("SummonerDieEffect");
+
+		if (m_dieEffect == nullptr)
+		{
+			//ボスがやられた
+			//カメラをプレイヤーに移す
+			GameSceneManager::GetInstance()->BossDelete();
+
+			//自身を削除
+			DeleteGO(this);
+			return;
+		}
+
+		return;
+	}
+
+
 	//ボスがやられると同時にフィールド上のモブエネミーも死亡させる
-	EnemyManager::GetInstance()->DeleteAllEnemy();
+	//モブエネミーの死亡エフェクトも再生させる
+	EnemyManager::GetInstance()->DeleteAllEnemy(true);
 
+	//モデルは表示させない
+	m_isViewModel = false;
 
-	//ボスがやられた
-	GameSceneManager::GetInstance()->BossDelete();
+	//死亡エフェクト生成
+	m_dieEffect = NewGO<UseEffect>(0, "SummonerDieEffect");
+	m_dieEffect->PlayEffect(enEffect_Mob_Dead,
+		m_position, g_vec3One * 15.0f, Quaternion::Identity, false);
 
-	//自身を削除
-	DeleteGO(this);
+	
+}
+
+void Summoner::WinProcess()
+{
+	//勝利アニメーションステートに遷移
+	m_stateContext.get()->ChangeState(enSummonerState_Victory);
 }
 
 void Summoner::DieFlomOutside()
@@ -162,6 +197,18 @@ void Summoner::DieFlomOutside()
 
 	//自身を削除
 	DeleteGO(this);
+}
+
+bool Summoner::IsStopRequested()
+{
+	//勝敗が着いたら
+	if (GameSceneManager::GetInstance()->IsGameOutcome())return true;
+
+	//死亡したら
+	if (IsDie()) return true;
+
+	//ここまで来たら処理は止まらない
+	return false;
 }
 
 void Summoner::ProcessHit(DamageInfo damageInfo)
@@ -227,19 +274,23 @@ void Summoner::Rotation()
 
 void Summoner::Update()
 {
+	//処理を止める要求がない限り処理をする
+	if (!IsStopRequested())
+	{
+		//移動処理
+		ChaseMovement(m_player->GetPosition());
 
-	//移動処理
-	ChaseMovement(m_player->GetPosition());
+		//回転処理
+		Rotation();
 
-	//回転処理
-	Rotation();
-
-	//当たり判定
-	CheckSelfCollision();
+		//当たり判定
+		CheckSelfCollision();
 
 
-	//サブステートマシンの更新処理
-	m_StateMachineCotext.get()->CurrentSubStateMachineUpdate();
+		//サブステートマシンの更新処理
+		m_StateMachineCotext.get()->CurrentSubStateMachineUpdate();
+	}
+	
 	//ステートの更新処理
 	m_stateContext.get()->UpdateCurrentState();
 	//アニメーション
@@ -255,6 +306,9 @@ void Summoner::Update()
 
 void Summoner::Render(RenderContext& rc)
 {
+	//モデルを表示させないなら
+	if (!m_isViewModel) return;
+
 	m_modelRender.Draw(rc);
 }
 
@@ -307,6 +361,8 @@ void Summoner::InitModel()
 void Summoner::LoadAnimationClip()
 {
 	//各種アニメーションクリップのロード
+	m_animationClip[enSummonerAnimClip_Appear].Load("Assets/animData/character/Lich/FogRemoval.tka");
+	m_animationClip[enSummonerAnimClip_Appear].SetLoopFlag(false);
 	m_animationClip[enSummonerAnimClip_Idle].Load("Assets/animData/character/Lich/Idle.tka");
 	m_animationClip[enSummonerAnimClip_Idle].SetLoopFlag(true);
 	m_animationClip[enSummonerAnimClip_Run].Load("Assets/animData/character/Lich/Walk.tka");
@@ -366,11 +422,6 @@ void Summoner::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	{
 		m_isAttackMove = false;
 	}
-	//三コンボ目の爆発アニメーションキーフレーム
-	if (wcscmp(eventName, L"ThirdComboBurst") == 0)
-	{
-		m_aiController->CreateThirdComboCollision();
-	}
 	
 
 	
@@ -378,6 +429,12 @@ void Summoner::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	if (wcscmp(eventName, L"ShockWave") == 0)
 	{
 		m_aiController->CreateShockWaveCollision();
+
+		//エフェクト生成
+		UseEffect* effect = NewGO<UseEffect>(0, "ShockWaveEffect");
+		effect->PlayEffect(enEffect_Boss_KnockBack,
+			m_position, g_vec3One * SECOND_AND_THIRD_COMBO_EFFECT_SCALE, Quaternion::Identity, false);
+
 	}
 
 	//ダークボール生成アニメーションキーフレーム
@@ -403,23 +460,78 @@ void Summoner::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	if (wcscmp(eventName, L"DecisionWarpPoint") == 0)
 	{
 		m_aiController->DecisionWarpPoint();
+
+		Vector3 position = m_aiController->GetWarpPosition();
+		position.y = 3.0f;
+
+		//ワープ先にエフェクト生成
+		UseEffect* warpEffect = NewGO<UseEffect>(0, "WarpEffect");
+		warpEffect->PlayEffect(enEffect_Boss_WarpSircle,
+			position, g_vec3One * 20.0f, Quaternion::Identity, false);
 	}
 	//ワープスタートアニメーションキーフレーム
 	if (wcscmp(eventName, L"WarpStart") == 0)
 	{
+		//エフェクト生成
+		UseEffect* effect = NewGO<UseEffect>(0, "WarpWindEffect");
+		effect->PlayEffect(enEffect_Boss_WarpWind,
+			m_position, g_vec3One * 30.0f, Quaternion::Identity, false);
+
+		//座標をワープ先に設定
 		m_aiController->WarpProcess();
+
+		
+
+	}
+
+	//通常攻撃1のエフェクト発生イベントキーフレーム
+	if (wcscmp(eventName, L"PlayNormalAttack1Effect") == 0)
+	{
+		Vector3 position = g_vec3Zero;
+		Matrix m = m_modelRender.GetBone(m_staffBoonId)->GetWorldMatrix();
+		m.Apply(position);
+		Quaternion rot;
+		rot.SetRotationYFromDirectionXZ(m_forward);
+
+		UseEffect* effect = NewGO<UseEffect>(0, "SrashEffect");
+		effect->PlayEffect(enEffect_Boss_Combo_1,
+			position, g_vec3One * FIRST_COMBO_EFFECT_SCALE, rot, false);
+	}
+
+	//通常攻撃2のエフェクト発生イベントキーフレーム
+	if (wcscmp(eventName, L"PlayNormalAttack2Effect") == 0)
+	{
+		Vector3 position = g_vec3Zero;
+		Matrix m = m_modelRender.GetBone(m_leftHandBoonId)->GetWorldMatrix();
+
+		Quaternion rot;
+		rot.SetRotationYFromDirectionXZ(m_forward);
+
+		m.Apply(position);
+		UseEffect* effect = NewGO<UseEffect>(0, "PokeEffect");
+		effect->PlayEffect(enEffect_Boss_Combo_2,
+			position, g_vec3One * SECOND_AND_THIRD_COMBO_EFFECT_SCALE, rot, false);
+	}
+
+	//通常攻撃3のエフェクト発生イベントキーフレーム
+	if (wcscmp(eventName, L"PlayNormalAttack3Effect") == 0)
+	{
+		//当たり判定発生
+		m_aiController->CreateThirdComboCollision();
+
+		Vector3 position = g_vec3Zero;
+		Matrix m = m_modelRender.GetBone(m_rightHandBoonId)->GetWorldMatrix();
+
+		m.Apply(position);
+		UseEffect* effect = NewGO<UseEffect>(0, "ComboFinishEffect");
+		effect->PlayEffect(enEffect_ComboFinishExplosion,
+			position, g_vec3One * SECOND_AND_THIRD_COMBO_EFFECT_SCALE, Quaternion::Identity, false);
 	}
 
 
-
 }
 
-void Summoner::SetShockWaveDamageInfo()
-{
-	SetDamageInfo(
-		KnockBackInfoManager::GetInstance()->GetAddAttackId(),
-		40, 3.0f, enKBPattern_FullAirborneRetreat);
-}
+
 
 void Summoner::SettingDamageInfo(EnSkillSType skillType)
 {

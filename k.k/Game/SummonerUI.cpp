@@ -31,7 +31,12 @@ bool SummonerUI::Start()
 {
     m_summmoner = FindGO<Summoner>("Summoner");
 
-    m_oldHpValue = m_summmoner->GetCommonStatus().GetCurrentHp();
+
+    if (m_summmoner != nullptr)
+    {
+        m_oldHpValue = m_summmoner->GetCommonStatus().GetCurrentHp();
+    }
+   
 
     Init();
 
@@ -42,6 +47,8 @@ bool SummonerUI::Start()
 
 void SummonerUI::UIUpdate()
 {
+    if (m_summmoner == nullptr) return;
+
     UpdateStatusUI();
   
 

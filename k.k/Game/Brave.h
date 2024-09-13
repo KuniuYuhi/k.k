@@ -243,6 +243,12 @@ public:
 	/// <param name="damageInfo"></param>
 	void SettingKnockBackInfoForDamageInfo(DamageInfo damageInfo);
 
+	/// <summary>
+	/// €–SŒã‚Ìˆ—
+	/// </summary>
+	void AfterDieProcess();
+
+
 private:
 
 	/// <summary>
@@ -315,6 +321,13 @@ private:
 	/// </summary>
 	/// <param name="damage"></param>
 	void TakeDamage(int damage);
+
+
+	/// <summary>
+	/// ˆ—‚ğ~‚ß‚é—v‹‚ª‚ ‚é‚©H
+	/// </summary>
+	/// <returns>‚ ‚é‚È‚çtrue</returns>
+	bool IsStopRequested();
 
 
 private:

@@ -1,7 +1,7 @@
 #pragma once
 #include "IMagicBall.h"
 
-
+class UseEffect;
 class MagicBallMovement;
 
 /// <summary>
@@ -21,6 +21,16 @@ public:
 
 	void InitModel() override;
 
+	/// <summary>
+	/// ÉÅÉeÉIÇåÇÇøénÇﬂÇÈ
+	/// </summary>
+	void ShotStartDarkMeteorite();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="position"></param>
+	void PlayRangeEffect(Vector3 position);
 
 private:
 
@@ -63,8 +73,10 @@ private:
 
 	CollisionObject* m_collision = nullptr;
 
-
+	UseEffect* m_mainEffect = nullptr;
 	
+	UseEffect* m_areaEffect = nullptr;
 
+	bool m_isMove = false;
 };
 

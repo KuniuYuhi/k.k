@@ -71,6 +71,12 @@ public:
 protected:
 
 	/// <summary>
+	/// 処理を止める要求があるか？
+	/// </summary>
+	/// <returns>処理を止める要求があるならtrue</returns>
+	virtual bool IsStopRequested() { return false; }
+
+	/// <summary>
 	/// 自身をオブジェクトプールに戻す
 	/// </summary>
 	virtual void ReleaseThis() = 0;

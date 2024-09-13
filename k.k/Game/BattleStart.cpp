@@ -2,11 +2,13 @@
 #include "BattleStart.h"
 #include "Fade.h"
 
-
-#include "InitEffect.h"
-
 #include "GameSceneManager.h"
 #include "AllGameSceneState.h"
+
+
+#include "EffectNumbers.h"
+
+using namespace EffectNumbers;
 
 namespace {
     const Vector3 BATTLE_TEXT_START_POS = { 0.0f,336.0f,0.0f };
@@ -280,7 +282,7 @@ void BattleStart::ProcessEndStateTransition()
 void BattleStart::PlayLandingEffect()
 {
     EffectEmitter* landingEffect = NewGO<EffectEmitter>(0);
-    landingEffect->Init(InitEffect::enEffect_BraveLanding);
+    landingEffect->Init(enEffect_BraveLanding);
     landingEffect->Play();
     landingEffect->SetPosition(m_bravePosition);
     landingEffect->SetScale(g_vec3One * LANDING_EFFECT_SIZE);

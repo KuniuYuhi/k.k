@@ -10,6 +10,8 @@
 
 #include "KnockBackInfoManager.h"
 
+#include "UseEffect.h"
+
 
 using namespace KnockBackInfo;
 
@@ -270,14 +272,25 @@ void Mushroom::DieProcess()
 	DieFromDamage();
 }
 
-void Mushroom::DieFlomOutside()
+void Mushroom::WinProcess()
+{
+	m_mushroomContext.get()->ChangeMushroomState(this, enMushroomState_Victory);
+}
+
+void Mushroom::DieFlomOutside(bool isPlayEffect)
 {
 	//キャラコンリセット
 	m_charaCon.reset();
 	//オブジェクトプールに自身のオブジェクトを返す
 	EnemyObjectPool::GetInstance()->OnRelease("Mushroom", this);
 
-	//エフェクト生成
+	//エフェクトを再生しないなら
+	if (!isPlayEffect) return;
+
+	//死亡エフェクト生成
+	UseEffect* effect = NewGO<UseEffect>(0, "DieEffect");
+	effect->PlayEffect(enEffect_Mob_Dead,
+		m_position, g_vec3One * 15.0f, Quaternion::Identity, false);
 
 }
 
