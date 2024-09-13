@@ -315,6 +315,7 @@
     <ClCompile Include="SummonerSSM_General.cpp" />
     <ClCompile Include="SummonerSSM_Offensive.cpp" />
     <ClCompile Include="SummonerStateContext.cpp" />
+    <ClCompile Include="SummonerState_Appear.cpp" />
     <ClCompile Include="SummonerState_DarkBall.cpp" />
     <ClCompile Include="SummonerState_DarkMeteorite.cpp" />
     <ClCompile Include="SummonerState_ShockWave.cpp" />
@@ -331,6 +332,7 @@
     <ClCompile Include="SwordShield.cpp" />
     <ClCompile Include="SwordShieldStatus.cpp" />
     <ClCompile Include="SwordShieldUI.cpp" />
+    <ClCompile Include="UseEffect.cpp" />
     <ClCompile Include="WeaponBase.cpp" />
     <ClCompile Include="LoadBraveAnimationClips.cpp" />
     <ClCompile Include="MobEnemyBase.cpp" />
@@ -430,6 +432,7 @@
     <ClInclude Include="DamageProvider.h" />
     <ClInclude Include="DarkBall.h" />
     <ClInclude Include="DarkMeteorite.h" />
+    <ClInclude Include="EffectNumbers.h" />
     <ClInclude Include="EnemyBase.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="EnemyObjectPool.h" />
@@ -482,6 +485,7 @@
     <ClInclude Include="SummonerSSM_General.h" />
     <ClInclude Include="SummonerSSM_Offensive.h" />
     <ClInclude Include="SummonerStateContext.h" />
+    <ClInclude Include="SummonerState_Appear.h" />
     <ClInclude Include="SummonerState_DarkBall.h" />
     <ClInclude Include="SummonerState_DarkMeteorite.h" />
     <ClInclude Include="SummonerState_ShockWave.h" />
@@ -498,6 +502,7 @@
     <ClInclude Include="SwordShield.h" />
     <ClInclude Include="SwordShieldStatus.h" />
     <ClInclude Include="SwordShieldUI.h" />
+    <ClInclude Include="UseEffect.h" />
     <ClInclude Include="WeaponBase.h" />
     <ClInclude Include="LoadBraveAnimationClips.h" />
     <ClInclude Include="MobEnemyBase.h" />

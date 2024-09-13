@@ -148,6 +148,9 @@
     <Filter Include="UI\InGameUI\Base">
       <UniqueIdentifier>{6ec5905b-da14-4257-becc-a183451a1f29}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Effect">
+      <UniqueIdentifier>{369e20f4-6ff3-4cfd-9fad-c6b39ae55f47}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -157,7 +160,6 @@
     </ClCompile>
     <ClCompile Include="Status.cpp" />
     <ClCompile Include="Fade.cpp" />
-    <ClCompile Include="InitEffect.cpp" />
     <ClCompile Include="SoundFile.cpp" />
     <ClCompile Include="HitDetection.cpp" />
     <ClCompile Include="ManagerPreCompile.cpp">
@@ -575,6 +577,11 @@
       <Filter>UI\InGameUI</Filter>
     </ClCompile>
     <ClCompile Include="SummonerUI.cpp" />
+    <ClCompile Include="InitEffect.cpp">
+      <Filter>Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="UseEffect.cpp" />
+    <ClCompile Include="SummonerState_Appear.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -583,7 +590,6 @@
     </ClInclude>
     <ClInclude Include="Status.h" />
     <ClInclude Include="Fade.h" />
-    <ClInclude Include="InitEffect.h" />
     <ClInclude Include="SoundFile.h" />
     <ClInclude Include="MyWeapon.h" />
     <ClInclude Include="HitDetection.h" />
@@ -1048,5 +1054,13 @@
       <Filter>UI\InGameUI</Filter>
     </ClInclude>
     <ClInclude Include="SummonerUI.h" />
+    <ClInclude Include="InitEffect.h">
+      <Filter>Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectNumbers.h">
+      <Filter>Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="UseEffect.h" />
+    <ClInclude Include="SummonerState_Appear.h" />
   </ItemGroup>
 </Project>

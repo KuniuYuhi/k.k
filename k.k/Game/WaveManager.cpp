@@ -2,8 +2,6 @@
 #include "WaveManager.h"
 #include "GameSceneManager.h"
 
-#include "InitEffect.h"
-
 #include "EnemyObjectPool.h"
 
 #include "EnemyBase.h"
@@ -13,6 +11,11 @@
 #include "EnemyManager.h"
 
 #include "Summoner.h"
+
+
+#include "EffectNumbers.h"
+
+using namespace EffectNumbers;
 
 
 WaveManager::WaveManager()
@@ -136,7 +139,7 @@ void WaveManager::CastSummmonCircle(int castAmount)
 		Vector3 Pos = m_createPositions[num];
 		Pos.y += 5.0f;
 		EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
-		effectEmitter->Init(InitEffect::enEffect_Mob_Summon_Circle);
+		effectEmitter->Init(enEffect_Mob_Summon_Circle);
 		effectEmitter->Play();
 		effectEmitter->SetPosition(Pos);
 		effectEmitter->SetScale(g_vec3One * 15.0f);
