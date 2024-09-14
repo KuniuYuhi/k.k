@@ -2,8 +2,6 @@
 #include "WaveManager.h"
 #include "GameSceneManager.h"
 
-#include "InitEffect.h"
-
 #include "EnemyObjectPool.h"
 
 #include "EnemyBase.h"
@@ -13,6 +11,11 @@
 #include "EnemyManager.h"
 
 #include "Summoner.h"
+
+
+#include "EffectNumbers.h"
+
+using namespace EffectNumbers;
 
 
 WaveManager::WaveManager()
@@ -136,7 +139,7 @@ void WaveManager::CastSummmonCircle(int castAmount)
 		Vector3 Pos = m_createPositions[num];
 		Pos.y += 5.0f;
 		EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
-		effectEmitter->Init(InitEffect::enEffect_Mob_Summon_Circle);
+		effectEmitter->Init(enEffect_Mob_Summon_Circle);
 		effectEmitter->Play();
 		effectEmitter->SetPosition(Pos);
 		effectEmitter->SetScale(g_vec3One * 15.0f);
@@ -164,6 +167,8 @@ void WaveManager::SetSummonRandomPosition(const int radius, int amount)
 
 	while (count < amount)
 	{
+		
+
 		//ランダムな値の最大値の計算
 		int max = radius * 2 + 1;
 
@@ -208,7 +213,7 @@ bool WaveManager::IsWithInDistances(int count, float distance)
 
 	diff = m_createPositions[count] - m_summoner->GetPosition();
 	length = diff.Length();
-	if (length > distance)
+	if (length > m_waveStatus.GetBossAvoidanceRadius())
 	{
 		distanceCount++;
 	}
@@ -274,8 +279,30 @@ void WaveManager::ManageWaveProgression()
 
 void WaveManager::ProcessFirstSummonMobEnemysStateTransition()
 {
-	//最初のエネミーを召喚
+	if (!m_firstSummonSircleSet)
+	{
+		//最初のエネミーを召喚
+		//座標設定
+		SetSummonRandomPosition(
+			m_waveStatus.GetCreateRadius(),
+			m_waveStatus.GetAddCreateMobEnemyAmonut()
+		);
+		//召喚魔法陣の設置
+		CastSummmonCircle(m_waveStatus.GetAddCreateMobEnemyAmonut());
 
+		m_firstSummonSircleSet = true;
+	}
+
+	
+
+	//召喚するじかんになるまで処理をしない
+	if (!IsChangeSummonState())
+	{
+		return;
+	}
+
+	//モブエネミーを召喚
+	SummonMobEnemys();
 
 	//ウェーブ１にする
 	m_currentWaveNumber = 1;
@@ -346,6 +373,15 @@ void WaveManager::ProcessShortBreakTimeStateTransition()
 
 void WaveManager::ProcessSettingCreatePosStateTransition()
 {
+	int size = m_waveStatus.GetMaxMobEnemys() - m_waveStatus.GetAddCreateMobEnemyAmonut();
+
+	//フィールド上のエネミーが多すぎるなら先に進まない
+	if (EnemyManager::GetInstance()->GetMobEnemyList().size() >=
+		size)
+	{
+		return;
+	}
+
 	//座標設定
 	SetSummonRandomPosition(
 		m_waveStatus.GetCreateRadius(), 

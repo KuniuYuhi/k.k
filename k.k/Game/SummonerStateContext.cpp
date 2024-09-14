@@ -3,6 +3,7 @@
 
 #include "ISummonerState.h"
 
+#include "SummonerState_Appear.h"
 #include "SummonerState_Idle.h"
 #include "SummonerState_Run.h"
 #include "SummonerState_DarkBall.h"
@@ -30,6 +31,7 @@ SummonerStateContext::~SummonerStateContext()
 void SummonerStateContext::Init(Summoner* summoner, EnSummonerState startState)
 {
 	
+	m_summonerStateMap.insert(std::make_pair(enSummonerState_Appear, new SummonerState_Appear(summoner, this)));
 	m_summonerStateMap.insert(std::make_pair(enSummonerState_Idle, new SummonerState_Idle(summoner, this)));
 	m_summonerStateMap.insert(std::make_pair(enSummonerState_Run, new SummonerState_Run(summoner, this)));
 	m_summonerStateMap.insert(std::make_pair(enSummonerState_DarkBall, new SummonerState_DarkBall(summoner, this)));

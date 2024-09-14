@@ -113,16 +113,18 @@ bool Game::Start()
 	g_renderingEngine->UseLimLight();
 
 	//当たり判定の可視化
-	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 
 	
 
-
+	//モブエネミーのリストをクリア
 	EnemyManager::GetInstance()->CrearMobEnemyList();
 
 
-	
+
+	//制限時間のタイマーをスタートさせる
+	GameSceneManager::GetInstance()->StartGameTimer();
 
 	
 

@@ -19,6 +19,52 @@ public:
 
 protected:
 
+	/// <summary>
+	/// 揺れに使う情報
+	/// </summary>
+	struct ShakeInfo
+	{
+	public:
+
+		void SetShakeInfo(int Strength, float Vibrato, Vector2 DefaultPosition)
+		{
+			strength = Strength;
+			vibrato = Vibrato;
+			defaultPosition = DefaultPosition;
+		}
+
+
+		int strength = 0.0f;		//揺れの強さ
+		float vibrato = 0.0f;		//どのくらい振動するか
+		Vector2 defaultPosition = g_vec2Zero;	//初期位置
+
+	};
+
+protected:
+
+	/// <summary>
+	/// 揺れ情報を設定
+	/// </summary>
+	/// <param name="Strength">揺れの強さ。(ランダムに設定するときに使う)</param>
+	/// <param name="Vibrato">どのくらい振動するか。(揺れの強さの最大値)</param>
+	/// <param name="DefaultPosition">初期位置</param>
+	void SetShakeInfo(int Strength, float Vibrato, Vector2 DefaultPosition);
+
+
+	Vector2 GetUpdateShakePosition(
+		float currentTimer, float TimeLimit, Vector2 currentPosition
+	);
+
+
+	/// <summary>
+	/// 値を範囲内に収める
+	/// </summary>
+	/// <param name="value"></param>
+	/// <param name="min"></param>
+	/// <param name="max"></param>
+	/// <returns></returns>
+	float Clamp(float value, float min, float max);
+
 
 	/// <summary>
 	/// ゲージの割合を計算
@@ -77,9 +123,16 @@ protected:
 		Vector4 shadowColor = g_vec4Black
 	);
 
+
+
+
+
+
+
+
 protected:
 
-
+	ShakeInfo m_shakeInfo;
 
 
 };

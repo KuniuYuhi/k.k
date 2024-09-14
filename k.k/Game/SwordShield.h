@@ -5,6 +5,8 @@
 class PlayerController;
 class SwordShieldStatus;
 
+class UseEffect;
+
 /// <summary>
 /// 武器：ソード＆シールドクラス
 /// </summary>
@@ -193,6 +195,8 @@ private:
     void ProcessShieldHit();
 
 private:
+
+    UseEffect* m_shieldEffect = nullptr;
 
     SwordShieldStatus m_uniqueStatus;
 

@@ -39,7 +39,12 @@ public:
 	/// <summary>
 	/// 外部から削除
 	/// </summary>
-	virtual void DieFlomOutside() {}
+	virtual void DieFlomOutside(bool isPlayEffect = false) {}
+
+	/// <summary>
+	/// 勝利時の処理
+	/// </summary>
+	virtual void WinProcess() {}
 
 	/// <summary>
 	/// 処理を止める要求がされているか？
@@ -120,12 +125,10 @@ protected:
 	bool IsAttackable();
 
 
-
 	/// <summary>
-	/// ダメージフォントを生成
+	/// ヒット音を再生
 	/// </summary>
-	/// <param name="hitDamage">ヒットダメージ</param>
-	//void CreateDamageFont(int hitDamage);
+	virtual void PlayHitSound();
 
 
 

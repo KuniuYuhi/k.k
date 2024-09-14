@@ -9,6 +9,9 @@
 #include "DamageProvider.h"
 #include "KnockBackInfoManager.h"
 
+#include "UseEffect.h"
+
+
 namespace {
 	
 
@@ -372,7 +375,6 @@ void Bow::UpdateSkillStartProcess()
 		);
 		//回転方向を設定する
 		m_brave->SetRotateDirection(moveSpeed);
-
 	}
 	else
 	{
@@ -402,10 +404,20 @@ void Bow::ExitSkillStartProcess()
 		m_brave->ActionDeactive();
 	}
 
+	//エフェクトを削除する
+	if (m_chargeEffect != nullptr)
+	{
+		m_chargeEffect->Delete();
+		m_chargeEffect = nullptr;
+	}
+
 }
 
 void Bow::EntrySkillMainProcess()
 {
+	
+	
+
 	//メインに進んだので無敵にする
 	m_brave->EnableInvincible();
 }
@@ -447,7 +459,7 @@ void Bow::SkillChargeTimeProcess()
 	if (m_skillChargeTimer >= m_uniqueStatus.GetSkillChargeCompletionTime(m_uniqueStatus.GetCurrentSkillChargeStage()))
 	{
 		//チャージエフェクト生成
-
+		PlayChargeEffect(m_uniqueStatus.GetCurrentSkillChargeStage());
 
 		//次の段階にする
 		m_uniqueStatus.SetSkillChargeStage(
@@ -527,6 +539,62 @@ void Bow::ShotSkillAttackArrow()
 	m_arrow = nullptr;
 }
 
+void Bow::PlayChargeEffect(BowArrowStatus::EnSkillChargeStage chargeState)
+{
+	//エフェクトを削除する
+	if (m_chargeEffect != nullptr)
+	{
+		m_chargeEffect->Delete();
+		m_chargeEffect = nullptr;
+	}
+
+	Vector3 position = g_vec3Zero;
+	m_bowMatrix.Apply(position);
+
+	EnEFK eff = enEffect_ArrowCharge1;
+
+	float mulScale = 1.0f;
+
+	switch (chargeState)
+	{
+	case BowArrowStatus::enStage_1:
+
+		eff = enEffect_ArrowCharge1;
+		mulScale = 15.0f;
+		
+		break;
+	case BowArrowStatus::enStage_2:
+		eff = enEffect_ArrowCharge2;
+		mulScale = 20.0f;
+
+		break;
+	case BowArrowStatus::enStage_max:
+		eff = enEffect_ArrowCharge2;
+		mulScale = 30.0f;
+
+		break;
+	}
+
+	//エフェクトや音の再生
+	m_chargeEffect = NewGO<UseEffect>(0, "ChargeStageEffect");
+	//自動で追尾するようにする
+	m_chargeEffect->PlayEffect(
+		eff,
+		m_brave,
+		m_armedBowBoonId,
+		position, g_vec3One * mulScale, Quaternion::Identity, true);
+
+	g_soundManager->StopSound(enSoundName_BowArrowSkillCharge);
+
+	//音再生
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_BowArrowSkillCharge,
+		g_soundManager->GetSEVolume()
+	);
+}
+
+
+
 void Bow::MoveArmed()
 {
 	//弓のワールド座標を設定
@@ -548,12 +616,24 @@ void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	{
 		//矢を放つ
 		ShotNromalAttackArrow();
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_BowArrowNormalShot,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 	//スキル攻撃で矢を放つアニメーションキーフレーム
 	if (wcscmp(eventName, L"SkillShot") == 0)
 	{
 		ShotSkillAttackArrow();
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_BowArrowSkillAttack,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 

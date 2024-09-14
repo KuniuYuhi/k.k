@@ -7,6 +7,7 @@ class PlayerController;
 class PlayerMovement;
 
 class Arrow;
+class UseEffect;
 
 /// <summary>
 /// 武器：ボウクラス
@@ -177,7 +178,13 @@ private:
     /// </summary>
     void ShotSkillAttackArrow();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="chargeState"></param>
+    void PlayChargeEffect(BowArrowStatus::EnSkillChargeStage chargeState);
 
+   
 
 private:
     BowArrowStatus m_uniqueStatus;
@@ -186,6 +193,8 @@ private:
     PlayerMovement* m_playerMovement = nullptr;
 
     Arrow* m_arrow = nullptr;
+
+    UseEffect* m_chargeEffect = nullptr;
 
     ModelRender m_bowModelRender;         //ボウのモデルレンダー
 

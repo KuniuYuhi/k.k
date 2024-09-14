@@ -74,10 +74,7 @@ private:
 	void ShakeShield();
 
 
-	void GetUpdateShakePosition();
-
-
-	float Clamp(float value, float min, float max);
+	
 
 private:
 

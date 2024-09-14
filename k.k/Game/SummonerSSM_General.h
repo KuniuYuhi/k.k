@@ -76,7 +76,7 @@ private:
 
 
 	float m_warpCoolTimer = 0.0f;
-	float m_warpCoolTimeLimit = 10.0f;
+	float m_warpCoolTimeLimit = 15.0f;
 
 
 

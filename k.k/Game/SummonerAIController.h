@@ -1,7 +1,7 @@
 #pragma once
 #include "IComponent.h"
 
-
+class DarkMeteorite;
 class Summoner;
 class Brave;
 
@@ -19,6 +19,11 @@ public:
 
 	void UpdateComponent() override;
 
+
+	Vector3 GetWarpPosition()
+	{
+		return m_warpPosition;
+	}
 
 	/// <summary>
 	/// ワープ座標をステージのレベルファイルから読み込む
@@ -69,6 +74,8 @@ private:
 	Summoner* m_summoner = nullptr;		//サモナーのインスタンス
 
 	Brave* m_player = nullptr;
+
+	DarkMeteorite* m_darkMeteorite = nullptr;
 
 	std::vector<Vector3> m_warpPointsList;		//ワープ先座標をまとめたリスト
 

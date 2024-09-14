@@ -14,6 +14,8 @@ void SummonerState_ShockWave::Entry()
 	m_summoner->ActionActive();
 	//ƒ_ƒ[ƒWî•ñ‚ðÝ’è‚·‚é
 	m_summoner->SettingDamageInfo(enSkillType_ShockWave);
+	//–³“G’†
+	m_summoner->InvicibleActive();
 }
 
 void SummonerState_ShockWave::Ubdate()
@@ -34,4 +36,6 @@ void SummonerState_ShockWave::Ubdate()
 void SummonerState_ShockWave::Exit()
 {
 	m_summoner->ActionDeactive();
+	//–³“G‰ðœ
+	m_summoner->InvicibleDeactive();
 }

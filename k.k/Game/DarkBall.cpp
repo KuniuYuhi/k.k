@@ -7,8 +7,17 @@
 
 #include "Brave.h"
 
+#include "UseEffect.h"
+
 namespace {
-	const int COLLISION_RADIUS = 100.0f;
+	const float COLLISION_RADIUS = 80.0f;
+
+	const float MOVE_Y_UP = 110.0f;
+
+	const float ADD_RADIUS = 40.0f;
+
+	const float MUL_DARKBALL_EFFECT_SIZE = 20.0f;
+	const float MUL_DARKBALL_EXPLOSION_EFFECT_SIZE = 10.0f;
 }
 
 DarkBall::DarkBall()
@@ -21,6 +30,8 @@ DarkBall::~DarkBall()
 	{
 		DeleteGO(m_collision);
 	}
+
+	m_effect = nullptr;
 }
 
 bool DarkBall::Start()
@@ -45,9 +56,21 @@ bool DarkBall::Start()
 	//当たり判定作成
 	CreateCollision();
 
+	m_effect = NewGO<UseEffect>(0, "darkBallEffect");
+	m_effect->PlayEffect(
+		enEffect_DarkBall,
+		m_position,
+		g_vec3One * MUL_DARKBALL_EFFECT_SIZE,
+		Quaternion::Identity,
+		false
+	);
+
+	//ショットパターンが追いかけるなら
 	if (m_enShotPatternState == enChase)
 	{
 		m_player = FindGO<Brave>("Brave");
+
+		m_status.SetDeleteTimeLimit(m_status.GetDeleteTimeLimit() * 2.0f);
 	}
 
 	return true;
@@ -91,9 +114,13 @@ void DarkBall::Move()
 	}
 	else if(m_enShotPatternState == enChase)
 	{
-		m_magicBallMovement->MoveChase(m_player->GetPosition());
+		m_magicBallMovement->MoveChase(
+			m_player->GetPosition(), COLLISION_RADIUS + ADD_RADIUS,
+			MOVE_Y_UP, true);
 	}
 	
+	//エフェクトの移動
+	m_effect->SetMovePosition(m_position);
 
 	m_collision->SetPosition(m_position);
 	m_collision->Update();
@@ -129,17 +156,42 @@ bool DarkBall::IsDeleteTime()
 	return false;
 }
 
+void DarkBall::Explosion()
+{
+	//今のエフェクトを削除
+	m_effect->Delete();
+
+	m_effect = nullptr;
+	//新たに爆発エフェクトを生成
+	m_effect = NewGO<UseEffect>(0, "darkBallExplosionEffect");
+	m_effect->PlayEffect(
+		enEffect_DarkBall_Explosion,
+		m_position,
+		g_vec3One * MUL_DARKBALL_EXPLOSION_EFFECT_SIZE,
+		Quaternion::Identity,
+		false
+	);
+
+	//音再生
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_Boss_DarkBall_Explosion,
+		g_soundManager->GetSEVolume()
+	);
+
+	//自身は消去
+	DeleteGO(this);
+}
+
 void DarkBall::Update()
 {
-	if (IsDelete())
-	{
-		//消去
-		DeleteGO(this);
-		return;
-	}
-
 	//移動
 	Move();
+
+	if (IsDelete())
+	{
+		Explosion();
+		return;
+	}
 }
 
 void DarkBall::Render(RenderContext& rc)

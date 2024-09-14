@@ -2,6 +2,7 @@
 #include "EnemyManager.h"
 #include "MobEnemyBase.h"
 
+#include "Summoner.h"
 
 EnemyManager* EnemyManager::m_instance = nullptr;
 
@@ -89,14 +90,31 @@ int EnemyManager::GetNearbyEnemyCount(Vector3 targetPosition, float radius)
 	return count;
 }
 
-void EnemyManager::DeleteAllEnemy()
+void EnemyManager::DeleteAllEnemy(bool isPlayDieEffect)
 {
 	for (auto enemy : m_mobEnemyList)
 	{
 		//íœŽž‚Ìˆ—
-		enemy->DieFlomOutside();
+		enemy->DieFlomOutside(isPlayDieEffect);
 	}
 
 	m_mobEnemyList.clear();
+
+}
+
+void EnemyManager::WinProcessAllEnemy()
+{
+	for (auto enemy : m_mobEnemyList)
+	{
+		//íœŽž‚Ìˆ—
+		enemy->WinProcess();
+	}
+
+	Summoner* summoner = FindGO<Summoner>("Summoner");
+
+	if (summoner != nullptr)
+	{
+		summoner->WinProcess();
+	}
 
 }

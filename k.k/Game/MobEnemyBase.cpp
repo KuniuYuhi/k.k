@@ -14,6 +14,8 @@
 #include "KnockBackInfoManager.h"
 #include "Brave.h"
 
+#include "UseEffect.h"
+
 
 float MobEnemyBase::GetDistanceToTargetPositionValue(Vector3 target)
 {
@@ -25,6 +27,8 @@ bool MobEnemyBase::IsStopRequested()
 	//勝敗が着いたら
 	if (GameSceneManager::GetInstance()->IsGameOutcome())return true;
 
+	//死亡したら
+	if (IsDie()) return true;
 
 	//ここまで来たら処理は止まらない
 	return false;
@@ -48,7 +52,14 @@ void MobEnemyBase::DieFromDamage()
 	//自身を返す
 	ReleaseThis();
 
-	//エフェクト生成
+	//死亡音を再生
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_Mob_Die, g_soundManager->GetSEVolume());
+
+	//死亡エフェクト生成
+	UseEffect* effect = NewGO<UseEffect>(0, "DieEffect");
+	effect->PlayEffect(enEffect_Mob_Dead,
+		m_position, g_vec3One * 3.0f, Quaternion::Identity, false);
 
 }
 
@@ -265,5 +276,27 @@ bool MobEnemyBase::IsAttackable()
 	m_attackIntarvalTimer += g_gameTime->GetFrameDeltaTime();
 
 	return false;
+}
+
+void MobEnemyBase::PlayHitSound()
+{
+	if (IsDie())
+	{
+		//やられた場合は強めの音を出す
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_Monster_DieHit,
+			g_soundManager->GetSEVolume()
+		);
+
+		return;
+	}
+
+	//音再生
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_Monster_Hit,
+		g_soundManager->GetSEVolume()
+	);
+
 }
 

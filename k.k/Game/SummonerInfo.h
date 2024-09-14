@@ -10,6 +10,7 @@ namespace SummonerStates {
 	/// </summary>
 	enum EnSummonerState
 	{
+		enSummonerState_Appear,
 		enSummonerState_Idle,
 		enSummonerState_Run,
 		enSummonerState_DarkBall,
@@ -50,6 +51,7 @@ namespace SummonerAnimationClips {
 
 	enum EnSummonerAnimClip
 	{
+		enSummonerAnimClip_Appear,
 		enSummonerAnimClip_Idle,
 		enSummonerAnimClip_Run,
 		enSummonerAnimClip_DarkBall,

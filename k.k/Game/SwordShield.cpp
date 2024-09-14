@@ -7,12 +7,19 @@
 
 #include "KnockBackInfoManager.h"
 
+
+#include "UseEffect.h"
+
+
 namespace {
 
 	const Vector3 SWORD_COLLISION_SIZE = { 90.0f,20.0f,10.0f };
 	const Vector3 SHIELD_COLLISION_SIZE = { 28.0f,50.0f,16.0f };
 
 	const float SKILL_ATTACK_RADIUS = 100.0f;		//スキル攻撃用コリジョンの半径
+
+
+	const float SHIELD_BARRIER_EFFECT_SCALE = 8.0f;
 }
 
 SwordShield::SwordShield()
@@ -229,7 +236,13 @@ bool SwordShield::IsEndDefensiveAction()
 
 void SwordShield::EntryDefensiveActionProcess()
 {
+	Vector3 position = g_vec3Zero;
+	m_shieldMatrix.Apply(position);
 	//エフェクト生成
+	m_shieldEffect = NewGO<UseEffect>(0, "ShieldBarrierEffect");
+	m_shieldEffect->PlayEffect(enEffect_SwordShieldDefendBarrier,
+		position, g_vec3One * SHIELD_BARRIER_EFFECT_SCALE, Quaternion::Identity, false);
+
 
 	//盾の当たり判定を使うのでプレイヤー本体は無敵にする
 	m_brave->EnableInvincible();
@@ -261,6 +274,11 @@ void SwordShield::UpdateDefensiveActionProcess()
 void SwordShield::ExitDefensiveActionProcess()
 {
 	//エフェクト削除
+	if (m_shieldEffect != nullptr)
+	{
+		m_shieldEffect->Delete();
+		m_shieldEffect = nullptr;
+	}
 
 	//シールドにヒットせずにステートが終わったら
 	if (!m_isHitShield)
@@ -524,6 +542,8 @@ void SwordShield::CheckShieldCollision()
 
 			if (dp == nullptr) return;
 
+			dp->Hit();
+
 			//敵の位置保存
 			m_brave->SetDamageProviderPosition(
 				dp->GetProviderPostion()
@@ -596,6 +616,122 @@ void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 	{
 		//スキル攻撃用コリジョン生成
 		CreateSkillAttackCollision();
+		//スキル攻撃の衝撃エフェクト再生
+
+		Vector3 hitPosition = g_vec3Zero;
+		//剣のワールド座標をベクトルに乗算
+		m_swordCenterMatrix.Apply(hitPosition);
+		hitPosition.y = 0.0f;
+
+		UseEffect* effect = NewGO<UseEffect>(0, "SkillShockEffect");
+		effect->PlayEffect(enEffect_SwordShieldSkillAttack,
+			hitPosition, g_vec3One * 17.0f, Quaternion::Identity, false);
+
+		//スキルの音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldSkillAttack,
+			g_soundManager->GetSEVolume()
+		);
+	}
+
+	//スキルの上昇アニメーションキーフレーム
+	if (wcscmp(eventName, L"SwordShieldSkillRising") == 0)
+	{
+		//エフェクト再生
+		UseEffect* effect = NewGO<UseEffect>(0, "SkillRisingEffect");
+		effect->PlayEffect(enEffect_SwordShieldSkillRising,
+			m_brave->GetPosition(), g_vec3One * 10.0f, Quaternion::Identity, false);
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldSkillRising,
+			g_soundManager->GetSEVolume()
+		);
+	}
+
+
+	if (wcscmp(eventName, L"PlayCombo1Effect") == 0)
+	{
+		//エフェクト再生のための座標と回転設定
+		
+		Vector3 pos = g_vec3Zero;
+		Quaternion rot = Quaternion::Identity;
+		Vector3 forward = m_brave->GetForward();
+		forward.y = 0;
+		rot.SetRotationYFromDirectionXZ(forward);
+		rot.AddRotationDegZ(230.0f);
+
+		m_swordCenterMatrix.Apply(pos);
+		
+
+		UseEffect* effect = NewGO<UseEffect>(0, "SrashEffect");
+		effect->PlayEffect(enEffect_SwordShieldCombo12,
+			pos, g_vec3One * 15.0f, rot, false);
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldCombo_1_2,
+			g_soundManager->GetSEVolume()
+		);
+
+	}
+
+	//通常攻撃２のアニメーションキーフレーム
+	if (wcscmp(eventName, L"PlayCombo2Effect") == 0)
+	{
+		//エフェクト再生のための座標と回転設定
+
+		Vector3 pos = g_vec3Zero;
+		Quaternion rot = Quaternion::Identity;
+		Vector3 forward = m_brave->GetForward();
+		forward.y = 0;
+		rot.SetRotationYFromDirectionXZ(forward);
+
+		m_swordMatrix.Apply(pos);
+
+
+		UseEffect* effect = NewGO<UseEffect>(0, "SrashEffect");
+		effect->PlayEffect(enEffect_SwordShieldCombo12,
+			pos, g_vec3One * 15.0f, rot, false);
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldCombo_1_2,
+			g_soundManager->GetSEVolume()
+		);
+	}
+
+	//通常攻撃３のアニメーションキーフレーム
+	if (wcscmp(eventName, L"PlayCombo3Effect") == 0)
+	{
+		//エフェクト再生のための座標と回転設定
+
+		Vector3 pos = g_vec3Zero;
+		Quaternion rot = Quaternion::Identity;
+		Vector3 forward = m_brave->GetForward();
+		forward.y = 0;
+		rot.SetRotationYFromDirectionXZ(forward);
+		m_swordMatrix.Apply(pos);
+
+		UseEffect* effect = NewGO<UseEffect>(0, "SrashEffect");
+		effect->PlayEffect(enEffect_SwordShieldCombo3,
+			pos, g_vec3One * 15.0f, rot, false);
+		
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldCombo_3,
+			g_soundManager->GetSEVolume()
+		);
+	}
+
+
+	//防御ヒットのアニメーションキーフレーム
+	if (wcscmp(eventName, L"SwordShieldDifendHit") == 0)
+	{
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldDefendHit,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 }

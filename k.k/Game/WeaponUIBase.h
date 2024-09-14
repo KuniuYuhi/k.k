@@ -7,6 +7,8 @@
 class WeaponUIBase : public GameUIBase
 {
 public:
+	
+
 
 	virtual void UIUpdate() override {}
 

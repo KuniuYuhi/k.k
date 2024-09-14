@@ -276,6 +276,7 @@
     <ClCompile Include="EntryBoss.cpp" />
     <ClCompile Include="EyeBall.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameStatusUI.cpp" />
     <ClCompile Include="GameUIBase.cpp" />
     <ClCompile Include="GreateSword.cpp" />
     <ClCompile Include="GreateSwordStatus.cpp" />
@@ -290,6 +291,7 @@
     <ClCompile Include="MagicBallStatus.cpp" />
     <ClCompile Include="Mimic.cpp" />
     <ClCompile Include="MobEnemyCommonStatus.cpp" />
+    <ClCompile Include="MobEnemyUI.cpp" />
     <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="MushroomStateContext.cpp" />
     <ClCompile Include="MushroomState_Appear.cpp" />
@@ -315,6 +317,7 @@
     <ClCompile Include="SummonerSSM_General.cpp" />
     <ClCompile Include="SummonerSSM_Offensive.cpp" />
     <ClCompile Include="SummonerStateContext.cpp" />
+    <ClCompile Include="SummonerState_Appear.cpp" />
     <ClCompile Include="SummonerState_DarkBall.cpp" />
     <ClCompile Include="SummonerState_DarkMeteorite.cpp" />
     <ClCompile Include="SummonerState_ShockWave.cpp" />
@@ -327,9 +330,11 @@
     <ClCompile Include="SummonerState_ThirdAttack.cpp" />
     <ClCompile Include="SummonerState_Victory.cpp" />
     <ClCompile Include="SummonerState_Warp.cpp" />
+    <ClCompile Include="SummonerUI.cpp" />
     <ClCompile Include="SwordShield.cpp" />
     <ClCompile Include="SwordShieldStatus.cpp" />
     <ClCompile Include="SwordShieldUI.cpp" />
+    <ClCompile Include="UseEffect.cpp" />
     <ClCompile Include="WeaponBase.cpp" />
     <ClCompile Include="LoadBraveAnimationClips.cpp" />
     <ClCompile Include="MobEnemyBase.cpp" />
@@ -429,12 +434,14 @@
     <ClInclude Include="DamageProvider.h" />
     <ClInclude Include="DarkBall.h" />
     <ClInclude Include="DarkMeteorite.h" />
+    <ClInclude Include="EffectNumbers.h" />
     <ClInclude Include="EnemyBase.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="EnemyObjectPool.h" />
     <ClInclude Include="EntryBoss.h" />
     <ClInclude Include="EyeBall.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameStatusUI.h" />
     <ClInclude Include="GameUIBase.h" />
     <ClInclude Include="GreateSword.h" />
     <ClInclude Include="GreateSwordStatus.h" />
@@ -452,6 +459,7 @@
     <ClInclude Include="MagicBallStatus.h" />
     <ClInclude Include="Mimic.h" />
     <ClInclude Include="MobEnemyCommonStatus.h" />
+    <ClInclude Include="MobEnemyUI.h" />
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="MushroomInfo.h" />
     <ClInclude Include="MushroomStateContext.h" />
@@ -481,6 +489,7 @@
     <ClInclude Include="SummonerSSM_General.h" />
     <ClInclude Include="SummonerSSM_Offensive.h" />
     <ClInclude Include="SummonerStateContext.h" />
+    <ClInclude Include="SummonerState_Appear.h" />
     <ClInclude Include="SummonerState_DarkBall.h" />
     <ClInclude Include="SummonerState_DarkMeteorite.h" />
     <ClInclude Include="SummonerState_ShockWave.h" />
@@ -493,9 +502,11 @@
     <ClInclude Include="SummonerState_ThirdAttack.h" />
     <ClInclude Include="SummonerState_Victory.h" />
     <ClInclude Include="SummonerState_Warp.h" />
+    <ClInclude Include="SummonerUI.h" />
     <ClInclude Include="SwordShield.h" />
     <ClInclude Include="SwordShieldStatus.h" />
     <ClInclude Include="SwordShieldUI.h" />
+    <ClInclude Include="UseEffect.h" />
     <ClInclude Include="WeaponBase.h" />
     <ClInclude Include="LoadBraveAnimationClips.h" />
     <ClInclude Include="MobEnemyBase.h" />

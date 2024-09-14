@@ -144,6 +144,11 @@ void SoundFile::ResistMonsterSoundFile()
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_Monster_Hit, "Assets/sound/SE/monster/monster_hit.wav");
 
+	//死亡確定ヒット
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_Monster_DieHit, "Assets/sound/SE/monster/MobEnemy_DieHit.wav");
+	
+
 	//ボスのサウンドファイル読み込み
 	ResistBossSoundFile();
 	//モブモンスターのサウンドファイル読み込み
@@ -155,6 +160,15 @@ void SoundFile::ResistBossSoundFile()
 	//ボスの怒りモード
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_Boss_Angry, "Assets/sound/SE/monster/Angry.wav");
+	//斬撃
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_Boss_Slash, "Assets/sound/SE/monster/Summoner_Slash.wav");
+	//突き
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_Boss_Poke, "Assets/sound/SE/monster/Summoner_Poke.wav");
+	//ショックウェーブ
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_Boss_ShockWave, "Assets/sound/SE/monster/Summoner_ShockWave.wav");
 	//ダークボールの発生
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_Boss_DarkBall, "Assets/sound/SE/monster/DarkBall_Start.wav");
@@ -164,6 +178,9 @@ void SoundFile::ResistBossSoundFile()
 	//メテオ撃つ
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_Boss_Meteo_Shot, "Assets/sound/SE/monster/Shot_Meteo.wav");
+	//メテオ空中
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_Boss_Meteo_Fly, "Assets/sound/SE/monster/Meteo_Fry.wav");
 	//メテオの爆発
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_Boss_Meteo_Explosion, "Assets/sound/SE/monster/Meteo_Explosion.wav");
@@ -181,6 +198,14 @@ void SoundFile::ResistBossSoundFile()
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_Boss_KnockBackWind,
 		"Assets/sound/SE/monster/Boss_KnockBackWind.wav");
+	//ワープ
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_Boss_Warp,
+		"Assets/sound/SE/monster/Summoner_Warp.wav");
+	//ボスの死亡
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_Boss_Die,
+		"Assets/sound/SE/monster/Summoner_Die.wav");
 }
 
 void SoundFile::ResistMobMonsterSoundFile()

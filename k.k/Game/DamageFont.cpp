@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "DamageFont.h"
 
+#include "UseEffect.h"
+
 namespace {
 	const float SCALE_PLAYER = 1.2f;
 	const float SCALE_MONSTER = 1.2f;
@@ -116,6 +118,18 @@ void DamageFont::InitFont()
 	m_damageBackRender.SetPosition(m_damageBackPosition);
 	//更新
 	m_damageBackRender.Update();
+
+
+	//そのキャラクターの前方向に少し伸ばす
+
+	Vector3 pos = m_position;
+	pos.y += 50.0f;
+
+	UseEffect* effect = NewGO<UseEffect>(0, "HitEffect");
+	effect->PlayEffect(enEffect_Hit,
+		pos, g_vec3One * 15.0f, Quaternion::Identity, false);
+
+
 }
 
 void DamageFont::Move()

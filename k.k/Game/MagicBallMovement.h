@@ -40,16 +40,21 @@ public:
 	/// </summary>
 	void MoveFall();
 
+
 	/// <summary>
-	/// 追いかける
+	/// 追いかける移動
 	/// </summary>
-	/// <param name="targetPosition"></param>
-	void MoveChase(Vector3 targetPosition);
+	/// <param name="targetPosition">ターゲットの座標</param>
+	/// <param name="radius">半径。(ターゲットに近すぎる時においかけないようにする)</param>
+	void MoveChase(
+		Vector3 targetPosition, float radius,
+		float yUp, bool setYUp = false
+	);
 
 private:
 
 	IMagicBall* m_magicBall = nullptr;
 
-
+	Vector3 m_direction = g_vec3Zero;
 };
 

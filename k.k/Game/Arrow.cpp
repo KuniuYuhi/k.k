@@ -6,6 +6,9 @@
 #include "DamageProvider.h"
 #include "KnockBackInfoManager.h"
 
+
+#include "UseEffect.h"
+
 using namespace KnockBackInfo;
 
 
@@ -37,7 +40,6 @@ bool Arrow::Start()
 	m_statusMap.insert(std::make_pair(enNormalShot, normalStatus));
 	m_statusMap.insert(std::make_pair(enSkillShot, skillStatus));
 
-	//m_status.InitPlayerStatus("Normal");
 
 	Init();
 
@@ -101,13 +103,14 @@ void Arrow::UpdateNormalShotState()
 {
 	if (m_deleteTimer >= 2.0f)
 	{
-		DeleteGO(this);
+		DeleteArrow();
+		return;
 	}
 
-	//todo 当たり判定処理
+	//当たり判定処理による削除
 	if (m_damageProvider->IsHit())
 	{
-		DeleteGO(this);
+		DeleteArrow();
 		return;
 	}
 
@@ -122,7 +125,7 @@ void Arrow::UpdateSkillShotState()
 
 	if (m_deleteTimer >= 2.0f)
 	{
-		DeleteGO(this);
+		DeleteArrow();
 	}
 
 
@@ -166,6 +169,16 @@ void Arrow::ShotArrowMove(EnShotPatternState shotPattern)
 	//コリジョンにワールド座標を設定、更新
 	m_arrowCollision->SetWorldMatrix(m_arrowCenterMatrix);
 	m_arrowCollision->Update();
+
+	//エフェクトがないなら処理しない
+	if (m_arrowEffect == nullptr) return;
+
+	//初期位置を計算
+	Vector3 position = g_vec3Zero;
+	m_arrowCenterMatrix.Apply(position);
+	//移動座標を設定
+	m_arrowEffect->SetMovePosition(position);
+
 }
 
 void Arrow::FixedAttaackArrowTransform()
@@ -212,6 +225,53 @@ bool Arrow::IsHitCollision()
 	return false;
 }
 
+void Arrow::PlayArrowEffect(EnShotPatternState shotpatternState)
+{
+	//初期位置を計算
+	Vector3 position = g_vec3Zero;
+	m_arrowCenterMatrix.Apply(position);
+
+	//回転方向は前方向のほう
+	Quaternion rot = Quaternion::Identity;
+	rot.SetRotationYFromDirectionXZ(m_forward);
+
+	//エフェクト番号
+	EnEFK effect = enEffect_ArrowCharge1;
+
+	float mulScale = 1.0f;
+
+	if (shotpatternState == enNormalShot)
+	{
+		effect = enEffect_Arrow;
+	}
+	else
+	{
+		effect = enEffect_BowArrowSkillShot;
+	}
+
+	
+	//
+	m_arrowEffect = NewGO<UseEffect>(0, "ArrowEffect");
+	m_arrowEffect->PlayEffect(effect,
+		position, g_vec3One * 15.0f, rot, false);
+
+
+
+}
+
+void Arrow::DeleteArrow()
+{
+	//エフェクトを削除する
+	if (m_arrowEffect != nullptr)
+	{
+		m_arrowEffect->Delete();
+		m_arrowEffect = nullptr;
+	}
+
+	DeleteGO(this);
+
+}
+
 void Arrow::SetShotArrowParameters(
 	EnShotPatternState shotpatternState, Vector3 forward)
 {
@@ -230,6 +290,9 @@ void Arrow::SetShotArrowParameters(
 		m_arrowModelRender.GetPosition(),
 		m_arrowModelRender.GetRotation()
 	);
+
+	//エフェクトを生成
+	PlayArrowEffect(shotpatternState);
 
 }
 

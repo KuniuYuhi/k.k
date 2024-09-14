@@ -21,6 +21,11 @@ void BraveState_Die::Entry()
 
 void BraveState_Die::Ubdate()
 {
+	if (m_brave->GetModelRender().IsPlayingAnimation() == false)
+	{
+		m_brave->AfterDieProcess();
+	}
+
 
 }
 

@@ -7,6 +7,8 @@
 
 #include "KnockBackInfoManager.h"
 
+#include "UseEffect.h"
+
 namespace {
 
 
@@ -515,7 +517,14 @@ void GreateSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		m_brave->EnableInvincible();
 
 		//エフェクトや音の再生
-
+		UseEffect* effect = NewGO<UseEffect>(0, "SkillRisingEffect");
+		effect->PlayEffect(enEffect_GreatSwordSkillRising,
+			m_brave->GetPosition(), g_vec3One * 11.0f, Quaternion::Identity, false);
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_GreatSwordSkillRising,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 	//スキル攻撃のダメージ判定出現アニメーションキーフレーム
@@ -524,6 +533,93 @@ void GreateSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		//当たり判定作成
 		CreateSkillAttackCollision();
 
+
+		Vector3 hitPosition = g_vec3Zero;
+		m_swordCenterMatrix.Apply(hitPosition);
+		hitPosition.y = 0.0f;
+
+		//エフェクトや音の再生
+		UseEffect* effect = NewGO<UseEffect>(0, "SkillAttackEffect");
+		effect->PlayEffect(enEffect_GreatSwordSkillAttack,
+			hitPosition, g_vec3One * 10.0f, Quaternion::Identity, false);
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_GreatSwordSkillAttack,
+			g_soundManager->GetSEVolume()
+		);
+	}
+
+
+	//通常攻撃１のアニメーションキーフレーム
+	if (wcscmp(eventName, L"GreatSwordPlayCombo1Effect") == 0)
+	{
+		Vector3 pos = g_vec3Zero;
+		Quaternion rot = Quaternion::Identity;
+		Vector3 forward = m_brave->GetForward();
+		forward.y = 0;
+		rot.SetRotationYFromDirectionXZ(forward);
+		rot.AddRotationDegZ(-280.0f);
+
+		m_swordMatrix.Apply(pos);
+
+
+		UseEffect* effect = NewGO<UseEffect>(0, "SrashEffect");
+		effect->PlayEffect(enEffect_GreatSwordCombo1,
+			pos, g_vec3One * 11.0f, rot, false);
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_GreatSwordCombo_1_2,
+			g_soundManager->GetSEVolume()
+		);
+	}
+
+	//通常攻撃２のアニメーションキーフレーム
+	if (wcscmp(eventName, L"GreatSwordPlayCombo2Effect") == 0)
+	{
+		Vector3 pos = g_vec3Zero;
+		Quaternion rot = Quaternion::Identity;
+		Vector3 forward = m_brave->GetForward();
+		forward.y = 0;
+		rot.SetRotationYFromDirectionXZ(forward);
+		rot.AddRotationDegZ(80.0f);
+
+		m_swordCenterMatrix.Apply(pos);
+
+
+		UseEffect* effect = NewGO<UseEffect>(0, "SrashEffect");
+		effect->PlayEffect(enEffect_GreatSwordCombo2,
+			pos, g_vec3One * 11.0f, rot, false);
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_GreatSwordCombo_1_2,
+			g_soundManager->GetSEVolume()
+		);
+	}
+
+	//通常攻撃３のアニメーションキーフレーム
+	if (wcscmp(eventName, L"GreatSwordPlayCombo3Effect") == 0)
+	{
+		Vector3 pos = g_vec3Zero;
+		Quaternion rot = Quaternion::Identity;
+		Vector3 forward = m_brave->GetForward();
+		forward.y = 0;
+		rot.SetRotationYFromDirectionXZ(forward);
+		//rot.AddRotationDegZ(230.0f);
+
+		m_swordCenterMatrix.Apply(pos);
+
+
+		UseEffect* effect = NewGO<UseEffect>(0, "SrashEffect");
+		effect->PlayEffect(enEffect_GreatSwordCombo3,
+			pos, g_vec3One * 18.0f, rot, false);
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_GreatSwordCombo_3,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 }

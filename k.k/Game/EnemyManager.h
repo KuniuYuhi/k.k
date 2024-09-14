@@ -131,7 +131,13 @@ public:
 	/// <summary>
 	/// 全てのエネミーを削除する
 	/// </summary>
-	void DeleteAllEnemy();
+	/// <param name="isPlayDieEffect">モブエネミーの死亡エフェクトを再生するか</param>
+	void DeleteAllEnemy(bool isPlayDieEffect = false);
+
+	/// <summary>
+	/// エネミーの勝利時の処理を実行する
+	/// </summary>
+	void WinProcessAllEnemy();
 
 
 
