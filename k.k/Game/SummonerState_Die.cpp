@@ -12,12 +12,18 @@ void SummonerState_Die::PlayAnimation()
 void SummonerState_Die::Entry()
 {
 	//アニメーション速度を遅くする
-	m_summoner->GetModelRender().SetAnimationSpeed(0.5f);
+	m_summoner->GetModelRender().SetAnimationSpeed(0.4f);
 
 	m_summoner->ActionActive();
 	//ここに入った時点で勝敗は決まっているので
 	//プレイヤーが勝ったことを伝える
 	GameSceneManager::GetInstance()->SetOutComePlayerWin();
+
+	//音再生
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_Boss_Die,
+		g_soundManager->GetSEVolume()
+	);
 
 }
 

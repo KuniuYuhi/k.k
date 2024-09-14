@@ -172,6 +172,12 @@ void DarkBall::Explosion()
 		false
 	);
 
+	//‰¹Ä¶
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_Boss_DarkBall_Explosion,
+		g_soundManager->GetSEVolume()
+	);
+
 	//©g‚ÍÁ‹
 	DeleteGO(this);
 }

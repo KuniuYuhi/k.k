@@ -17,6 +17,27 @@ private:
 	GameSceneManager();
 	~GameSceneManager();
 
+	/// <summary>
+	/// 時間
+	/// </summary>
+	struct Timer
+	{
+		void SetMinute(float Minute) { minute = Minute; }
+
+		void SetSecond(float Second) { second = Second; }
+
+		void SubMinute(float value) { minute -= value;  }
+
+		void SubSecond(float value) { second -= value; }
+
+		float GetMinute() { return minute; }
+		float GetSecond() {	return second; }
+
+		float minute = 0.0f;			//分
+		float second = 0.0f;			//秒
+	};
+
+
 public:
 
 	/// <summary>
@@ -165,7 +186,34 @@ public:
 		return m_isBossDelete;
 	}
 
+	/// <summary>
+	/// タイマーをスタートさせる
+	/// </summary>
+	void StartGameTimer();
 
+
+	float GetGameTimerSecond()
+	{
+		return m_gameTimer.GetSecond();
+	}
+
+	float GetGameTimerMinute()
+	{
+		return m_gameTimer.GetMinute();
+	}
+
+
+private:
+
+	/// <summary>
+	/// タイマーを更新
+	/// </summary>
+	void UpdateGameTimer();
+
+	/// <summary>
+	/// ゲームタイマーを計算
+	/// </summary>
+	void CalcGameTimer();
 
 
 private:
@@ -179,6 +227,13 @@ private:
 	bool m_isBossDelete = false;					//ボスは消去されたか？
 
 	EnBattleOutCome m_battleOutCome = enBattleOutCome_None;
+
+	Timer m_gameTimer;
+
+	bool m_isStartGameTimer = false;
+
+	bool m_isTimeOver = false;
+	
 
 };
 

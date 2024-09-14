@@ -52,6 +52,10 @@ void MobEnemyBase::DieFromDamage()
 	//自身を返す
 	ReleaseThis();
 
+	//死亡音を再生
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_Mob_Die, g_soundManager->GetSEVolume());
+
 	//死亡エフェクト生成
 	UseEffect* effect = NewGO<UseEffect>(0, "DieEffect");
 	effect->PlayEffect(enEffect_Mob_Dead,
@@ -272,5 +276,27 @@ bool MobEnemyBase::IsAttackable()
 	m_attackIntarvalTimer += g_gameTime->GetFrameDeltaTime();
 
 	return false;
+}
+
+void MobEnemyBase::PlayHitSound()
+{
+	if (IsDie())
+	{
+		//やられた場合は強めの音を出す
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_Monster_DieHit,
+			g_soundManager->GetSEVolume()
+		);
+
+		return;
+	}
+
+	//音再生
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_Monster_Hit,
+		g_soundManager->GetSEVolume()
+	);
+
 }
 

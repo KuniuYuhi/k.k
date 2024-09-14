@@ -10,7 +10,7 @@
 namespace {
 	const int COLLISION_RADIUS = 550.0f;
 
-	const float END_Y_ADD_VALUE = 280.0f;
+	const float END_Y_ADD_VALUE = 320.0f;
 
 
 	const float METEO_EFFECT_SIZE = 80.0f;
@@ -69,6 +69,12 @@ bool DarkMeteorite::Start()
 	//コンポーネントの設定
 	DefaultSettingComponents();
 	AddSettingComponents();
+
+	//音再生
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_Boss_Meteo_Fly,
+		g_soundManager->GetSEVolume()
+	);
 
 	return true;
 }
@@ -211,16 +217,26 @@ void DarkMeteorite::Explosion()
 	m_mainEffect->Delete();
 	m_mainEffect = nullptr;
 
+	Vector3 position = m_position;
+	position.y = 0.0f;
 
 	m_mainEffect = NewGO<UseEffect>(0, "DarkMeteoriteExplosionEffect");
 	//爆発エフェクト
 	m_mainEffect->PlayEffect(
 		enEffect_Meteo_Explosion,
-		m_position,
+		position,
 		g_vec3One * METEO_EXPLOSION_EFFECT_SIZE,
 		Quaternion::Identity,
 		false);
 
+	//空中にいる間の音をストップ
+	g_soundManager->StopSound(enSoundName_Boss_Meteo_Fly);
+
+	//音再生
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_Boss_Meteo_Explosion,
+		g_soundManager->GetSEVolume()
+	);
 
 
 	DeleteGO(this);

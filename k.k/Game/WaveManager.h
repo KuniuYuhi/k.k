@@ -168,5 +168,7 @@ private:
 
 	float m_changeSummonTimer = 0.0f;
 
+	bool m_firstSummonSircleSet = false;
+
 };
 

@@ -276,6 +276,7 @@
     <ClCompile Include="EntryBoss.cpp" />
     <ClCompile Include="EyeBall.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameStatusUI.cpp" />
     <ClCompile Include="GameUIBase.cpp" />
     <ClCompile Include="GreateSword.cpp" />
     <ClCompile Include="GreateSwordStatus.cpp" />
@@ -290,6 +291,7 @@
     <ClCompile Include="MagicBallStatus.cpp" />
     <ClCompile Include="Mimic.cpp" />
     <ClCompile Include="MobEnemyCommonStatus.cpp" />
+    <ClCompile Include="MobEnemyUI.cpp" />
     <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="MushroomStateContext.cpp" />
     <ClCompile Include="MushroomState_Appear.cpp" />
@@ -439,6 +441,7 @@
     <ClInclude Include="EntryBoss.h" />
     <ClInclude Include="EyeBall.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameStatusUI.h" />
     <ClInclude Include="GameUIBase.h" />
     <ClInclude Include="GreateSword.h" />
     <ClInclude Include="GreateSwordStatus.h" />
@@ -456,6 +459,7 @@
     <ClInclude Include="MagicBallStatus.h" />
     <ClInclude Include="Mimic.h" />
     <ClInclude Include="MobEnemyCommonStatus.h" />
+    <ClInclude Include="MobEnemyUI.h" />
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="MushroomInfo.h" />
     <ClInclude Include="MushroomStateContext.h" />

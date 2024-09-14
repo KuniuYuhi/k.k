@@ -582,6 +582,8 @@
     </ClCompile>
     <ClCompile Include="UseEffect.cpp" />
     <ClCompile Include="SummonerState_Appear.cpp" />
+    <ClCompile Include="GameStatusUI.cpp" />
+    <ClCompile Include="MobEnemyUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -1062,5 +1064,7 @@
     </ClInclude>
     <ClInclude Include="UseEffect.h" />
     <ClInclude Include="SummonerState_Appear.h" />
+    <ClInclude Include="GameStatusUI.h" />
+    <ClInclude Include="MobEnemyUI.h" />
   </ItemGroup>
 </Project>

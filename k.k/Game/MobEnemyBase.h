@@ -125,12 +125,10 @@ protected:
 	bool IsAttackable();
 
 
-
 	/// <summary>
-	/// ダメージフォントを生成
+	/// ヒット音を再生
 	/// </summary>
-	/// <param name="hitDamage">ヒットダメージ</param>
-	//void CreateDamageFont(int hitDamage);
+	virtual void PlayHitSound();
 
 
 

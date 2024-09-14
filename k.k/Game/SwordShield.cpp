@@ -667,6 +667,12 @@ void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		effect->PlayEffect(enEffect_SwordShieldCombo12,
 			pos, g_vec3One * 15.0f, rot, false);
 
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldCombo_1_2,
+			g_soundManager->GetSEVolume()
+		);
+
 	}
 
 	//通常攻撃２のアニメーションキーフレーム
@@ -686,9 +692,15 @@ void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		UseEffect* effect = NewGO<UseEffect>(0, "SrashEffect");
 		effect->PlayEffect(enEffect_SwordShieldCombo12,
 			pos, g_vec3One * 15.0f, rot, false);
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldCombo_1_2,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
-	//通常攻撃２のアニメーションキーフレーム
+	//通常攻撃３のアニメーションキーフレーム
 	if (wcscmp(eventName, L"PlayCombo3Effect") == 0)
 	{
 		//エフェクト再生のための座標と回転設定
@@ -704,6 +716,11 @@ void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		effect->PlayEffect(enEffect_SwordShieldCombo3,
 			pos, g_vec3One * 15.0f, rot, false);
 		
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldCombo_3,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 

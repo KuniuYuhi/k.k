@@ -566,6 +566,12 @@ void GreateSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		UseEffect* effect = NewGO<UseEffect>(0, "SrashEffect");
 		effect->PlayEffect(enEffect_GreatSwordCombo1,
 			pos, g_vec3One * 11.0f, rot, false);
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_GreatSwordCombo_1_2,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 	//通常攻撃２のアニメーションキーフレーム
@@ -584,6 +590,12 @@ void GreateSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		UseEffect* effect = NewGO<UseEffect>(0, "SrashEffect");
 		effect->PlayEffect(enEffect_GreatSwordCombo2,
 			pos, g_vec3One * 11.0f, rot, false);
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_GreatSwordCombo_1_2,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 	//通常攻撃３のアニメーションキーフレーム
@@ -602,6 +614,12 @@ void GreateSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		UseEffect* effect = NewGO<UseEffect>(0, "SrashEffect");
 		effect->PlayEffect(enEffect_GreatSwordCombo3,
 			pos, g_vec3One * 18.0f, rot, false);
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_GreatSwordCombo_3,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 }

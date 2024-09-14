@@ -584,7 +584,13 @@ void Bow::PlayChargeEffect(BowArrowStatus::EnSkillChargeStage chargeState)
 		m_armedBowBoonId,
 		position, g_vec3One * mulScale, Quaternion::Identity, true);
 
+	g_soundManager->StopSound(enSoundName_BowArrowSkillCharge);
 
+	//音再生
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_BowArrowSkillCharge,
+		g_soundManager->GetSEVolume()
+	);
 }
 
 
@@ -610,12 +616,24 @@ void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	{
 		//矢を放つ
 		ShotNromalAttackArrow();
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_BowArrowNormalShot,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 	//スキル攻撃で矢を放つアニメーションキーフレーム
 	if (wcscmp(eventName, L"SkillShot") == 0)
 	{
 		ShotSkillAttackArrow();
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_BowArrowSkillAttack,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 

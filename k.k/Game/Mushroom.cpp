@@ -206,7 +206,6 @@ void Mushroom::ExitAttackActionProcess()
 
 void Mushroom::EntryHitActionProcess()
 {
-	//m_hitKnockBackPattern = enKBPattern_SlightAirborneRetreat;
 	//ノックバックする前の準備
 	SettingKnockBackProcess();
 	//ノックバックカウントリセット
@@ -215,6 +214,8 @@ void Mushroom::EntryHitActionProcess()
 	m_starkTimer = 0.0f;
 	//攻撃中かもしれないのでコリジョン生成フラグをリセットしておく
 	m_isCreateAttackCollision = false;
+
+	PlayHitSound();
 }
 
 void Mushroom::UpdateHitActionProcess()
@@ -290,7 +291,7 @@ void Mushroom::DieFlomOutside(bool isPlayEffect)
 	//死亡エフェクト生成
 	UseEffect* effect = NewGO<UseEffect>(0, "DieEffect");
 	effect->PlayEffect(enEffect_Mob_Dead,
-		m_position, g_vec3One * 15.0f, Quaternion::Identity, false);
+		m_position, g_vec3One * 5.0f, Quaternion::Identity, false);
 
 }
 

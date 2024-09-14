@@ -179,7 +179,7 @@ void Summoner::AfterDieProcess()
 	//死亡エフェクト生成
 	m_dieEffect = NewGO<UseEffect>(0, "SummonerDieEffect");
 	m_dieEffect->PlayEffect(enEffect_Mob_Dead,
-		m_position, g_vec3One * 15.0f, Quaternion::Identity, false);
+		m_position, g_vec3One * 10.0f, Quaternion::Identity, false);
 
 	
 }
@@ -221,6 +221,14 @@ void Summoner::ProcessHit(DamageInfo damageInfo)
 	{
 		//死亡アニメーションステートに遷移
 		m_stateContext.get()->ChangeState(enSummonerState_Die);
+	}
+	else
+	{
+		//ヒット音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_Monster_Hit,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 }
@@ -435,11 +443,22 @@ void Summoner::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		effect->PlayEffect(enEffect_Boss_KnockBack,
 			m_position, g_vec3One * SECOND_AND_THIRD_COMBO_EFFECT_SCALE, Quaternion::Identity, false);
 
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_Boss_ShockWave,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 	//ダークボール生成アニメーションキーフレーム
 	if (wcscmp(eventName, L"CreateDarkBall") == 0)
 	{
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_Boss_DarkBall,
+			g_soundManager->GetSEVolume()
+		);
+
 		m_aiController->CreateDarkBall();
 	}
 	
@@ -472,6 +491,12 @@ void Summoner::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	//ワープスタートアニメーションキーフレーム
 	if (wcscmp(eventName, L"WarpStart") == 0)
 	{
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_Boss_Warp,
+			g_soundManager->GetSEVolume()
+		);
+
 		//エフェクト生成
 		UseEffect* effect = NewGO<UseEffect>(0, "WarpWindEffect");
 		effect->PlayEffect(enEffect_Boss_WarpWind,
@@ -496,6 +521,12 @@ void Summoner::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		UseEffect* effect = NewGO<UseEffect>(0, "SrashEffect");
 		effect->PlayEffect(enEffect_Boss_Combo_1,
 			position, g_vec3One * FIRST_COMBO_EFFECT_SCALE, rot, false);
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_Boss_Slash,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 	//通常攻撃2のエフェクト発生イベントキーフレーム
@@ -511,6 +542,12 @@ void Summoner::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		UseEffect* effect = NewGO<UseEffect>(0, "PokeEffect");
 		effect->PlayEffect(enEffect_Boss_Combo_2,
 			position, g_vec3One * SECOND_AND_THIRD_COMBO_EFFECT_SCALE, rot, false);
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_Boss_Poke,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 	//通常攻撃3のエフェクト発生イベントキーフレーム
@@ -526,6 +563,12 @@ void Summoner::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		UseEffect* effect = NewGO<UseEffect>(0, "ComboFinishEffect");
 		effect->PlayEffect(enEffect_ComboFinishExplosion,
 			position, g_vec3One * SECOND_AND_THIRD_COMBO_EFFECT_SCALE, Quaternion::Identity, false);
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_Boss_DarkBall_Explosion,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 

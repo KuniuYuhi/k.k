@@ -118,11 +118,13 @@ bool Game::Start()
 
 	
 
-
+	//モブエネミーのリストをクリア
 	EnemyManager::GetInstance()->CrearMobEnemyList();
 
 
-	
+
+	//制限時間のタイマーをスタートさせる
+	GameSceneManager::GetInstance()->StartGameTimer();
 
 	
 
