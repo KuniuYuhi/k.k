@@ -4,6 +4,8 @@
 
 class Summoner;
 
+class MobEnemyUI;
+
 /// <summary>
 /// 
 /// </summary>
@@ -32,6 +34,17 @@ private:
 		enFontName_StaminaInsufficient,
 
 		enFontName_Num
+	};
+
+
+
+	struct EnemyHpList
+	{
+		SpriteRender m_hpBarFrontSprite;
+		SpriteRender m_hpBarBackSprite;
+		SpriteRender m_hpBarFlameSprite;
+
+		int m_whiteHP = 0;
 	};
 
 
@@ -66,7 +79,7 @@ private:
 
 
 	/// <summary>
-	/// プレイヤーのステータスのUIを更新
+	/// ステータスのUIを更新
 	/// </summary>
 	void UpdateStatusUI();
 
@@ -86,17 +99,21 @@ private:
 	void ShakeHPBar();
 
 
-	
+	void UpdateMobEnemyUI();
 
 
 
 private:
 	Summoner* m_summmoner = nullptr;
 
+	
+
 	SpriteRender m_spriteList[enSprite_Num];
 
-
 	FontRender m_fontList[enFontName_Num];
+
+	MobEnemyUI* m_mobEnemyList[5] = { nullptr };
+
 
 	Vector2 m_currentShakeCenterPosition = g_vec2Zero;
 	Vector2 m_currentShakeGaugePosition = g_vec2Zero;

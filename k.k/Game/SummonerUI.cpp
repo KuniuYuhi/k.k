@@ -3,16 +3,21 @@
 
 #include "Summoner.h"
 
+#include "MobEnemyUI.h"
+
+#include "EnemyManager.h"
+
+
 namespace {
     //////////////////////////////////////////////////////////////////
     //ゲージ
     ///////////////////////////////////////////////////////////////////
     const Vector2 GAUGE_PIBOT = { 0.0f,0.5f };							//HPかMPのピボット
 
-    const float WHITE_HP_MUL_SPEED = 60.0f;
+    const float WHITE_HP_MUL_SPEED = 90.0f;
 
-    const Vector2 BOSS_HP_CENTER_POS = { 0.0f,450.0f };
-    const Vector2 BOSS_HP_FRONT_POS = { -489.0f,450.0f };
+    const Vector2 BOSS_HP_CENTER_POS = { 0.0f,480.0f };
+    const Vector2 BOSS_HP_FRONT_POS = { -489.0f,480.0f };
 
 
     const Vector2 BOSS_HP_FONT_POS = { -200.0f, 486.0f };
@@ -24,6 +29,9 @@ namespace {
     const int SHAKE_STEWNGTH = 15;
     const float SHAKE_VIBRATO = 12.0f;
     const float SHAKE_TIME_LIMIT = 0.4f;
+
+
+    const int MAX_ENEMY_UI_SIZE = 5;
 
 }
 
@@ -42,6 +50,13 @@ bool SummonerUI::Start()
 
     SetShakeInfo(SHAKE_STEWNGTH, SHAKE_VIBRATO, BOSS_HP_CENTER_POS);
 
+
+    for (int i = 0; i < 5; i++)
+    {
+        m_mobEnemyList[i]= NewGO<MobEnemyUI>(0, "MobEnemyUI");
+    }
+
+
     return true;
 }
 
@@ -51,11 +66,21 @@ void SummonerUI::UIUpdate()
 
     UpdateStatusUI();
   
+    //モブエネミーのステータス表示
+    UpdateMobEnemyUI();
+
+
 
 }
 
 void SummonerUI::Draw(RenderContext& rc)
 {
+
+    for (int i = 0; i < MAX_ENEMY_UI_SIZE; i++)
+    {
+        m_mobEnemyList[i]->Draw(rc);
+    }
+
     m_spriteList[enSpriteName_HPBar_Back].Draw(rc);
     m_spriteList[enSpriteName_HPBar_White].Draw(rc);
     m_spriteList[enSpriteName_HPBar_Front].Draw(rc);
@@ -167,9 +192,36 @@ void SummonerUI::ShakeHPBar()
 
 }
 
+void SummonerUI::UpdateMobEnemyUI()
+{
+    std::vector<MobEnemyBase*> mobList = EnemyManager::GetInstance()->GetMobEnemyList();
+
+    for (int i = 0; i < MAX_ENEMY_UI_SIZE; i++)
+    {
+        m_mobEnemyList[i]->SettingTargetEnemy(nullptr);
+    }
+
+    int num = 0;
+    for (auto enemy : mobList)
+    {
+        if (num >= MAX_ENEMY_UI_SIZE) break;
+
+        m_mobEnemyList[num]->SettingTargetEnemy(enemy);
+
+        num++;
+    }
+
+    for (int i = 0; i < MAX_ENEMY_UI_SIZE; i++)
+    {
+        m_mobEnemyList[i]->UIUpdate();
+    }
+
+}
+
 
 void SummonerUI::DeleteSelf()
 {
+    DeleteGO(this);
 }
 
 void SummonerUI::Init()
@@ -207,6 +259,11 @@ void SummonerUI::InitSpriteRenders()
     InitSpriteRender(
         m_spriteList[enSpriteName_HPBar_Back],
         "Assets/sprite/InGame/Character/HP_Back_Boss.DDS", 980, 39, BOSS_HP_CENTER_POS);
+
+
+
+    
+
 
     m_spriteList[enSpriteName_HPBar_Back].Update();
     m_spriteList[enSpriteName_HPBar_White].Update();

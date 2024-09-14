@@ -4,6 +4,7 @@
 
 class PlayerGameUI;
 class SummonerUI;
+class GameStatusUI;
 
 class GameUI:public IGameObject
 {
@@ -28,7 +29,7 @@ private:
 	SummonerUI* m_summonerUI = nullptr;
 
 
-
+	GameStatusUI* m_gameStatusUI = nullptr;
 
 };
 
