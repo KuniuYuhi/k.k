@@ -17,6 +17,11 @@
 #include "UseEffect.h"
 
 
+//ドロップアイテム
+#include "AttackEffect.h"
+#include "RecoveryEffect.h"
+
+
 float MobEnemyBase::GetDistanceToTargetPositionValue(Vector3 target)
 {
 	return CalcDistanceToTargetPosition(target);
@@ -60,6 +65,37 @@ void MobEnemyBase::DieFromDamage()
 	UseEffect* effect = NewGO<UseEffect>(0, "DieEffect");
 	effect->PlayEffect(enEffect_Mob_Dead,
 		m_position, g_vec3One * 3.0f, Quaternion::Identity, false);
+
+}
+
+bool MobEnemyBase::IsDropBuffItem()
+{
+	int ram = rand() % 10;
+
+	if (ram > 3)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void MobEnemyBase::DropBuffItem()
+{
+	int ram = rand() % 2;
+
+	if (ram > 0)
+	{
+		//攻撃アイテムを落とす
+		AttackEffect* at = NewGO<AttackEffect>(0, "AttackEffect");
+		at->SetStartPosition(m_position);
+	}
+	else
+	{
+		//回復アイテムを落とす
+		RecoveryEffect* re = NewGO<RecoveryEffect>(0, "RecoveryEffect");
+		re->SetStartPosition(m_position);
+	}
 
 }
 
@@ -128,13 +164,15 @@ void MobEnemyBase::TurnToTarget()
 		m_moveSpeed
 	);
 
+	direction = m_player->GetPosition() - m_position;
+
 	//回転方向を設定
 	SetRotateDirection(direction);
 	//前方向を設定
 	SetForward(direction);
 }
 
-void MobEnemyBase::ChaseMovement(Vector3 targetPosition)
+void MobEnemyBase::ChaseMovement(Vector3 targetPosition, bool isBossPosCheck)
 {
 	//アクション中は移動処理しない
 	if (IsAction()) return;
@@ -145,7 +183,8 @@ void MobEnemyBase::ChaseMovement(Vector3 targetPosition)
 		m_status,
 		targetPosition,
 		m_position,
-		m_moveSpeed
+		m_moveSpeed,
+		isBossPosCheck
 	);
 
 	//移動量があれば前方向を設定
