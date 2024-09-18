@@ -8,6 +8,18 @@ namespace nsK2EngineLow {
 	/// </summary>
 	class Camera : public Noncopyable {
 	public:
+
+		/// <summary>
+		/// カメラ揺れ情報
+		/// </summary>
+		struct CameraShakeInfo
+		{
+			int			shakeStrength = 0.0f;					//揺れの強さ
+			float		shakeVibrato = 0.0f;					//カメラがどのくらい振動するか
+			float		shakeTimeLimit = 0.0f;				//カメラを揺らす時間
+			Vector3		startPosition = g_vec3Zero;			//揺れスタート座標
+		};
+
 		/// <summary>
 		/// 射影行列の更新方法。
 		/// </summary>
@@ -377,18 +389,6 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
-		/// カメラを揺らす。揺らすときに使う変数の値も設定
-		/// </summary>
-		/// <param name="timeLimit"></param>
-		/// <param name="power"></param>
-		void ActiveCameraShake(float timeLimit, float power)
-		{
-			m_shakeTimeLimit = timeLimit;
-			m_shakePower = power;
-			m_isCameraShakeActive = true;
-		}
-
-		/// <summary>
 		/// カメラを揺らしているか
 		/// </summary>
 		/// <returns></returns>
@@ -396,6 +396,37 @@ namespace nsK2EngineLow {
 		{
 			return m_isCameraShakeActive;
 		}
+
+		CameraShakeInfo GetShakeInfo()
+		{
+			return m_cameraShakeInfo;
+		}
+
+		/// <summary>
+		/// カメラの揺れ情報を設定
+		/// </summary>
+		/// <param name="shakeStrength">揺れの強さ</param>
+		/// <param name="shakeSibrato">カメラがどのくらい振動するか</param>
+		/// <param name="shakeTimeLimit">カメラを揺らす時間</param>
+		void SetCameraShakeInfo(
+			int	shakeStrength,
+			float shakeVibrato,
+			float shakeTimeLimit);
+
+		/// <summary>
+		/// カメラを揺らし始める
+		/// </summary>
+		/// <param name="shakeStrength">揺れの強さ</param>
+		/// <param name="shakeSibrato"カメラがどのくらい振動するか></param>
+		/// <param name="shakeTimeLimit">カメラを揺らす時間</param>
+		void StartCameraShake(
+			int	shakeStrength,
+			float shakeVibrato,
+			float shakeTimeLimit
+		);
+
+
+
 
 
 	protected:
@@ -422,8 +453,10 @@ namespace nsK2EngineLow {
 		bool		m_isNeedUpdateProjectionMatrix = true;
 		bool		m_isDirty = false;						// ダーティフラグ。
 
+
+		CameraShakeInfo m_cameraShakeInfo;					//カメラ揺れ情報
+		
 		bool		m_isCameraShakeActive = false;			//カメラを揺らすか
-		float		m_shakeTimeLimit = 0.0f;				//カメラを揺らす時間
-		float		m_shakePower = 0.0f;					//カメラを揺らす強さ
+		
 	};
 }
