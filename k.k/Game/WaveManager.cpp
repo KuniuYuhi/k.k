@@ -92,25 +92,35 @@ void WaveManager::SummonMobEnemys()
 
 		EnemyBase* enemy = nullptr;
 		
-		////モンスターの種類から一つランダムに選ぶ
-		//int num = rand() % (int)enEnemy_Num;
+		//モンスターの種類から一つランダムに選ぶ
+		int num = rand() % (int)enEnemy_Num;
 
-		//switch (num)
-		//{
-		//case enEnemy_Slime:
+		if (num > 0) num --;
 
-		//	enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Slime>("Slime");
-		//	break;
-		//case enEnemy_Cactus:
+		switch (num)
+		{
+		case enEnemy_Slime:
 
-		//	enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Cactus>("Cactus");
-		//	break;
+			enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Slime>("Slime");
+			break;
+		case enEnemy_Cactus:
 
-		//default:
-		//	break;
-		//}
+			enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Cactus>("Cactus");
+			break;
 
-		enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Slime>("Slime");
+		case enEnemy_BeholderEye:
+			enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<BeholderEye>("BeholderEye");
+			break;
+
+		case enEnemy_Mushroom:
+			enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Mushroom>("Mushroom");
+			break;
+
+		default:
+			break;
+		}
+
+		//enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Slime>("Slime");
 
 		//enemy = EnemyObjectPool::GetInstance()->OnGetEnemy<Cactus>("Cactus");
 
@@ -211,16 +221,17 @@ bool WaveManager::IsWithInDistances(int count, float distance)
 		}
 	}
 
-	diff = m_createPositions[count] - m_summoner->GetPosition();
+	diff = m_summoner->GetPosition() - m_createPositions[count];
 	length = diff.Length();
 	if (length > m_waveStatus.GetBossAvoidanceRadius())
 	{
 		distanceCount++;
 	}
 
+	int maxCount = count + 1;
 
 	//全ての座標と距離が空いていたら
-	if (distanceCount > count)
+	if (distanceCount >= maxCount)
 	{
 		//空いている
 		return true;
@@ -285,10 +296,10 @@ void WaveManager::ProcessFirstSummonMobEnemysStateTransition()
 		//座標設定
 		SetSummonRandomPosition(
 			m_waveStatus.GetCreateRadius(),
-			m_waveStatus.GetAddCreateMobEnemyAmonut()
+			m_waveStatus.GetFirstCreateMobEnemyAmount()
 		);
 		//召喚魔法陣の設置
-		CastSummmonCircle(m_waveStatus.GetAddCreateMobEnemyAmonut());
+		CastSummmonCircle(m_waveStatus.GetFirstCreateMobEnemyAmount());
 
 		m_firstSummonSircleSet = true;
 	}
