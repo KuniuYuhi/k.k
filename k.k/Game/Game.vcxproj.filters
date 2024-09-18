@@ -151,6 +151,9 @@
     <Filter Include="Effect">
       <UniqueIdentifier>{369e20f4-6ff3-4cfd-9fad-c6b39ae55f47}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EffectItem">
+      <UniqueIdentifier>{07db7943-e839-4bfd-b70b-9fab95f5e1c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -584,6 +587,14 @@
     <ClCompile Include="SummonerState_Appear.cpp" />
     <ClCompile Include="GameStatusUI.cpp" />
     <ClCompile Include="MobEnemyUI.cpp" />
+    <ClCompile Include="EffectItemBase.cpp">
+      <Filter>EffectItem</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackBuffItem.cpp" />
+    <ClCompile Include="EffectItemStatus.cpp" />
+    <ClCompile Include="AttackEffect.cpp" />
+    <ClCompile Include="RecoveryEffect.cpp" />
+    <ClCompile Include="RecoveryBuffItem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -1066,5 +1077,13 @@
     <ClInclude Include="SummonerState_Appear.h" />
     <ClInclude Include="GameStatusUI.h" />
     <ClInclude Include="MobEnemyUI.h" />
+    <ClInclude Include="EffectItemBase.h">
+      <Filter>EffectItem</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackBuffItem.h" />
+    <ClInclude Include="EffectItemStatus.h" />
+    <ClInclude Include="AttackEffect.h" />
+    <ClInclude Include="RecoveryEffect.h" />
+    <ClInclude Include="RecoveryBuffItem.h" />
   </ItemGroup>
 </Project>

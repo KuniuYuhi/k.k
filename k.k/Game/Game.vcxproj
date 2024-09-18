@@ -225,6 +225,8 @@
   <ItemGroup>
     <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="ArrowStatus.cpp" />
+    <ClCompile Include="AttackBuffItem.cpp" />
+    <ClCompile Include="AttackEffect.cpp" />
     <ClCompile Include="BattleStart.cpp" />
     <ClCompile Include="BeholderEye.cpp" />
     <ClCompile Include="BeholderEyeStateContext.cpp" />
@@ -270,6 +272,8 @@
     <ClCompile Include="DamageProvider.cpp" />
     <ClCompile Include="DarkBall.cpp" />
     <ClCompile Include="DarkMeteorite.cpp" />
+    <ClCompile Include="EffectItemBase.cpp" />
+    <ClCompile Include="EffectItemStatus.cpp" />
     <ClCompile Include="EnemyBase.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="EnemyObjectPool.cpp" />
@@ -302,6 +306,8 @@
     <ClCompile Include="MushroomState_Run.cpp" />
     <ClCompile Include="MushroomState_Victory.cpp" />
     <ClCompile Include="PlayerGameUI.cpp" />
+    <ClCompile Include="RecoveryBuffItem.cpp" />
+    <ClCompile Include="RecoveryEffect.cpp" />
     <ClCompile Include="SlimeStateContext.cpp" />
     <ClCompile Include="SlimeState_Appear.cpp" />
     <ClCompile Include="SlimeState_Attack.cpp" />
@@ -385,6 +391,8 @@
     <ClInclude Include="AllGameSceneState.h" />
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="ArrowStatus.h" />
+    <ClInclude Include="AttackBuffItem.h" />
+    <ClInclude Include="AttackEffect.h" />
     <ClInclude Include="BattleStart.h" />
     <ClInclude Include="BeholderEye.h" />
     <ClInclude Include="BeholderEyeInfo.h" />
@@ -434,6 +442,8 @@
     <ClInclude Include="DamageProvider.h" />
     <ClInclude Include="DarkBall.h" />
     <ClInclude Include="DarkMeteorite.h" />
+    <ClInclude Include="EffectItemBase.h" />
+    <ClInclude Include="EffectItemStatus.h" />
     <ClInclude Include="EffectNumbers.h" />
     <ClInclude Include="EnemyBase.h" />
     <ClInclude Include="EnemyManager.h" />
@@ -471,6 +481,8 @@
     <ClInclude Include="MushroomState_Run.h" />
     <ClInclude Include="MushroomState_Victory.h" />
     <ClInclude Include="PlayerGameUI.h" />
+    <ClInclude Include="RecoveryBuffItem.h" />
+    <ClInclude Include="RecoveryEffect.h" />
     <ClInclude Include="SheraUIInfo.h" />
     <ClInclude Include="SlimeInfo.h" />
     <ClInclude Include="SlimeStateContext.h" />
