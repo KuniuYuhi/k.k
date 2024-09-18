@@ -106,7 +106,7 @@ void EnemyManager::WinProcessAllEnemy()
 {
 	for (auto enemy : m_mobEnemyList)
 	{
-		//íœŽž‚Ìˆ—
+		//Ÿ—˜Žž‚Ìˆ—
 		enemy->WinProcess();
 	}
 
@@ -114,7 +114,19 @@ void EnemyManager::WinProcessAllEnemy()
 
 	if (summoner != nullptr)
 	{
+		//Ÿ—˜Žž‚Ìˆ—
 		summoner->WinProcess();
 	}
+
+}
+
+void EnemyManager::GameOutComeProcess()
+{
+	for (auto enemy : m_mobEnemyList)
+	{
+		//‹­§“I‚É‘Ò‹@ó‘Ô‚É‚·‚é
+		enemy->ForceChangeStateIdle();
+	}
+
 
 }

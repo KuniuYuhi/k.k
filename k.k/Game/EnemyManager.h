@@ -139,7 +139,10 @@ public:
 	/// </summary>
 	void WinProcessAllEnemy();
 
-
+	/// <summary>
+	/// 
+	/// </summary>
+	void GameOutComeProcess();
 
 private:
 
