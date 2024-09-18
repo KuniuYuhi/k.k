@@ -23,7 +23,7 @@ private:
 		float currentStamina = 0;		//現在のスタミナ
 		float defaultSpeed = 0.0f;		//基礎スピード
 		float dashSpeed = 0.0f;			//加速時のスピード
-		float evasionSpeed = 0.0f;		//回避時のスピード
+		float damagedInvisibleTimeLimit = 0.0f;		//被ダメージ後の無敵時間
 	};
 
 
@@ -154,6 +154,14 @@ public:
 		return m_playerStatus.dashSpeed;
 	}
 
+	/// <summary>
+	/// 被ダメージ後の無敵時間を取得
+	/// </summary>
+	/// <returns></returns>
+	const float& GetDamagedInvisibleTimeLimit()
+	{
+		return m_playerStatus.damagedInvisibleTimeLimit;
+	}
 
 	///////////////////////////////////////////////////////////
 	///
@@ -201,7 +209,20 @@ public:
 		return false;
 	}
 
-
+	/// <summary>
+	/// ヒットポイントを回復する
+	/// </summary>
+	/// <param name="value">回復量</param>
+	void RecoveryHp(int value)
+	{
+		//HPを回復する
+		m_playerStatus.currentHp += value;
+		//Hpが最大値以上なら
+		if (m_playerStatus.currentHp >= m_playerStatus.maxHp)
+		{
+			m_playerStatus.currentHp = m_playerStatus.maxHp;
+		}
+	}
 
 
 	///////////////////////////////////////////////////////////

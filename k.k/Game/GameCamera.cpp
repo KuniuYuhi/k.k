@@ -211,19 +211,86 @@ void GameCamera::OnProcessGameTransition()
 	ChasePlayerCamera();
 
 	//カメラを揺らすなら
-	//if (g_camera3D->IsCameraShakeActive())
-	//{
-	//	//カメラを揺らす
-	//	CameraShake();
-	//}
+	if (g_camera3D->IsCameraShakeActive())
+	{
+		//カメラを揺らす
+		CameraShake();
+	}
 
 
-	//
+	
 	//ZoomCamera();
 
 }
 
 void GameCamera::CameraShake()
 {
+	m_shakeCameraPosition = GetUpdateShakePosition(m_shakeTimer);
 
+	//タイマーの計算
+	if (m_shakeTimer > g_camera3D->GetShakeInfo().shakeTimeLimit)
+	{
+		//タイムリミットに達したら
+		//カメラの揺れフラグをリセット
+		g_camera3D->DeactiveCameraShake();
+		//位置を初期位置に戻す
+		m_shakeCameraPosition = g_camera3D->GetShakeInfo().startPosition;
+		//タイマーリセット
+		m_shakeTimer = 0.0f;
+	}
+	else
+	{
+		m_shakeTimer += g_gameTime->GetFrameDeltaTime();
+	}
+
+
+	m_springCamera.SetPosition(m_shakeCameraPosition);
+	//カメラの更新。
+	m_springCamera.Update();
+}
+
+Vector3 GameCamera::GetUpdateShakePosition(float currentTimer)
+{
+	int max = g_camera3D->GetShakeInfo().shakeStrength * 2 + 1;
+
+	//ランダムな値を取得
+	int ramdomX = rand() % max - g_camera3D->GetShakeInfo().shakeStrength;
+	int ramdomY = rand() % max - g_camera3D->GetShakeInfo().shakeStrength;
+
+	Vector3 shakePos = m_springCamera.GetPosition();
+
+	shakePos.x += ramdomX;
+	shakePos.y += ramdomY;
+
+	//揺れの強さの最大値
+	float vibrato = g_camera3D->GetShakeInfo().shakeVibrato;
+	//時間の割合を求める
+	float ratio = 1.0f - currentTimer / g_camera3D->GetShakeInfo().shakeTimeLimit;
+	//割合によって、タイムリミットに近づくと揺れの強さが小さくなっていく
+	vibrato *= ratio;
+
+	shakePos.x =
+		Clamp(
+			shakePos.x, 
+			g_camera3D->GetShakeInfo().startPosition.x - vibrato,
+			g_camera3D->GetShakeInfo().startPosition.x + vibrato
+		);
+	shakePos.y =
+		Clamp(
+			shakePos.y, 
+			g_camera3D->GetShakeInfo().startPosition.y - vibrato,
+			g_camera3D->GetShakeInfo().startPosition.y + vibrato
+		);
+
+
+	return shakePos;
+}
+
+float GameCamera::Clamp(float value, float min, float max)
+{
+	if (value < min) return min;
+
+	if (value > max) return max;
+
+	return value;
 }

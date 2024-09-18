@@ -424,6 +424,8 @@ void Bow::EntrySkillMainProcess()
 
 void Bow::UpdateSkillMainProcess()
 {
+	//ƒƒCƒ“‚Éi‚ñ‚¾‚Ì‚Å–³“G‚É‚·‚é
+	m_brave->EnableInvincible();
 }
 
 void Bow::ExitSkillMainProcess()

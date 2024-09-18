@@ -280,6 +280,12 @@ void Cactus::ExitHitActionProcess()
 
 void Cactus::DieProcess()
 {
+	//アイテムを落とすか決める
+	if (IsDropBuffItem())
+	{
+		DropBuffItem();
+	}
+
 	//ダメージによってやられた時の処理
 	DieFromDamage();
 }
@@ -287,6 +293,12 @@ void Cactus::DieProcess()
 void Cactus::WinProcess()
 {
 	m_cactusContext.get()->ChangeCactusState(this, enCactusState_Victory);
+}
+
+void Cactus::ForceChangeStateIdle()
+{
+	m_cactusContext.get()->ChangeCactusState(this, enCactusState_Idle);
+	m_moveSpeed = g_vec3Zero;
 }
 
 void Cactus::DieFlomOutside(bool isPlayEffect)
@@ -308,17 +320,9 @@ void Cactus::DieFlomOutside(bool isPlayEffect)
 
 void Cactus::Update()
 {
-	if (g_pad[0]->IsTrigger(enButtonB))
-	{
-		/*ReleaseThis();
-		return;*/
-	}
 
-	//処理を止める要求があるなら
-	if (IsStopRequested())return;
-
-	//死んでいないなら処理する
-	if (!IsDie())
+	//処理を止める要求がない限り処理をする
+	if (!IsStopRequested())
 	{
 		//攻撃処理
 		Attack();

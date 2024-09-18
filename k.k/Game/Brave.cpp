@@ -25,6 +25,8 @@
 
 
 namespace {
+	const Vector3 START_POSITION = { 0.0f,0.0f,-600.0f };
+
 	float STARK_TIME_LIMIT = 0.2f;
 }
 
@@ -46,21 +48,8 @@ bool Brave::Start()
 	//アニメーションの最初の番号を設定
 	m_braveAnimClip.get()->SetCurrentWeaponAnimationStartIndexNo(firstWeaponType);
 
-	//モデル初期化
-	m_modelRender.Init("Assets/modelData/character/Player/NewHero/Hero_Smile_Selllook.tkm",
-		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
-		m_braveAnimClip.get()->GetBraveAnimationClip(),
-		m_braveAnimClip.get()->GetNumAnimationClips(),
-		enModelUpAxisZ
-	);
-
-	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
-
-	//アニメーションイベント用の関数を設定する。
-	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
-		OnAnimationEvent(clipName, eventName);
-	});
-
+	//モデル読み込み
+	InitModel();
 
 	//キャラコンを生成
 	CreateCharacterController();
@@ -113,6 +102,7 @@ void Brave::Update()
 		CheckSelfCollision();
 	}
 	
+	UpdateDamagedInvisibleTimer();
 
 	//現在のステートの処理
 	m_braveStateCotext.get()->UpdateCurrentState();
@@ -199,10 +189,10 @@ void Brave::Movement()
 	);
 
 	//仮のジャンプ処理
-	if (m_playerContoller->IsButtonTrigger(enButtonX) && m_charaCon.get()->IsOnGround())
+	/*if (m_playerContoller->IsButtonTrigger(enButtonX) && m_charaCon.get()->IsOnGround())
 	{
 		m_moveSpeed.y = 400.0f;
-	}
+	}*/
 
 	//重力の計算
 	m_moveSpeed.y -= 980.0f * g_gameTime->GetFrameDeltaTime();
@@ -401,8 +391,11 @@ void Brave::ExitHitActionProcess()
 	//保存していた前方向を取得
 	m_forward = m_saveForward;
 
+	//数フレームだけ無敵時間にするためにタイマーをスタートする
+	m_isDamagedInvincible = true;
+
 	//無敵解除
-	DisableInvincible();
+	//DisableInvincible();
 }
 
 
@@ -610,6 +603,13 @@ void Brave::AfterDieProcess()
 
 }
 
+void Brave::GameOutComeProcess()
+{
+	//ステートを切り替える
+	m_braveStateCotext.get()->ChangeBraveState(enBraveState_Idle);
+	m_moveSpeed = g_vec3Zero;
+}
+
 void Brave::ProcessHit(DamageInfo damageInfo)
 {
 	//ノックバックの情報を設定
@@ -652,9 +652,45 @@ bool Brave::IsStopRequested()
 	return false;
 }
 
+void Brave::UpdateDamagedInvisibleTimer()
+{
+	//ダメージ後の無敵フラグがたっていないなら処理しない
+	if (!m_isDamagedInvincible) return;
+	//制限時間に達したら
+	if (m_damagedInvisibleTimer >= m_status.GetDamagedInvisibleTimeLimit())
+	{
+		m_damagedInvisibleTimer = 0.0f;
+		//被ダメージ後無敵フラグをリセット
+		m_isDamagedInvincible = false;
+
+		//if(m_braveStateCotext.get())
+		//無敵無効化
+		DisableInvincible();
+
+		//モデルは絶対表示
+		m_isViewModel = true;
+
+		return;
+	}
+	//タイマーを加算
+	m_damagedInvisibleTimer += g_gameTime->GetFrameDeltaTime();
+
+
+	int a = m_damagedInvisibleTimer * 10.0f;
+
+	if (a % 2 == 0)
+	{
+		m_isViewModel = !m_isViewModel;
+	}
+
+}
+
 
 void Brave::Render(RenderContext& rc)
 {
+	if (!m_isViewModel) return;
+
+
 	m_modelRender.Draw(rc);
 }
 
@@ -673,6 +709,11 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 
 		//武器のステータス(攻撃力など)を自身のステータスに加算
 		m_status.ChangeWeaponCalcCurrentPower(m_armedWeapon->GetWeaponCurrentPower());
+
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_ChangeWeapon,
+			g_soundManager->GetSEVolume()
+		);
 	}
 
 
@@ -726,6 +767,26 @@ void Brave::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 		m_armedWeapon->AttackImpactProcess(false);
 	}
 
+}
+
+void Brave::InitModel()
+{
+	//モデル初期化
+	m_modelRender.Init("Assets/modelData/character/Player/NewHero/Hero_Smile_Selllook.tkm",
+		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
+		m_braveAnimClip.get()->GetBraveAnimationClip(),
+		m_braveAnimClip.get()->GetNumAnimationClips(),
+		enModelUpAxisZ
+	);
+
+	m_position = START_POSITION;
+
+	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
+
+	//アニメーションイベント用の関数を設定する。
+	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+	});
 }
 
 void Brave::ChangePlayerWinState()

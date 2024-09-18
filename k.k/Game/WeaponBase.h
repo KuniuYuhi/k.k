@@ -290,7 +290,7 @@ protected:
 	EnWeaponState m_enWeaponState = enStowed;			//武器の状態。デフォルトは収納状態
 
 
-	Vector3 m_stowedPosition = { 0.0f,100.0f,0.0f };		//収納状態時の座標
+	Vector3 m_stowedPosition = { 0.0f,-200.0f,0.0f };		//収納状態時の座標
 
 
 	EnComboState m_enComboState = enCombo_None;

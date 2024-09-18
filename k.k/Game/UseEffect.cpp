@@ -34,7 +34,17 @@ void UseEffect::Update()
 
 	if (m_isAutoMove)
 	{
-		ChaseMoveForSpecifiedPosition();
+		if (m_boonId == -1)
+		{
+			//ボーンIDがないなら中心から移動
+			ChaseMoveForCenterPosition();
+		}
+		else
+		{
+			//ボーンIDがあるならそれをもとに移動
+			ChaseMoveForSpecifiedPosition();
+		}
+		
 	}
 
 }
@@ -111,6 +121,8 @@ void UseEffect::SetMovePosition(Vector3 position)
 
 void UseEffect::ChaseMoveForCenterPosition()
 {
+	m_effect->SetPosition(m_character->GetPosition());
+	m_effect->Update();
 }
 
 void UseEffect::ChaseMoveForSpecifiedPosition()

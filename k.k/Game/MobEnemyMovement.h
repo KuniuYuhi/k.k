@@ -5,6 +5,8 @@
 class CharacterBase;
 class CommonEnemyStatus;
 
+class Summoner;
+
 /// <summary>
 /// モブエネミーの移動用コンポーネント
 /// </summary>
@@ -30,10 +32,16 @@ public:
 		CommonEnemyStatus status,
 		Vector3 targetPositon,
 		Vector3 m_currentPosition,
-		Vector3 moveSpeed
+		Vector3 moveSpeed,
+		bool isBossPosCheck = true
 	);
 
 private:
+	Summoner* m_summoner = nullptr;
+
+
+
+	int ADD = 0;
 
 };
 

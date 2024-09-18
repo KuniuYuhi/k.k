@@ -60,6 +60,30 @@ namespace nsK2EngineLow {
 		screenPos.x = (_screenPos.x / _screenPos.w) * half_w;
 		screenPos.y = (_screenPos.y / _screenPos.w) * half_h;
 	}
+
+	void Camera::SetCameraShakeInfo(
+		int shakeStrength, float shakeVibrato, float shakeTimeLimit)
+	{
+		m_cameraShakeInfo.shakeStrength = shakeStrength;
+		m_cameraShakeInfo.shakeVibrato = shakeVibrato;
+		m_cameraShakeInfo.shakeTimeLimit = shakeTimeLimit;
+
+		if (IsCameraShakeActive())
+		{
+			m_cameraShakeInfo.startPosition = m_position;
+		}
+		
+	}
+
+	void Camera::StartCameraShake(
+		int shakeStrength, float shakeVibrato, float shakeTimeLimit)
+	{
+		//アクティブ化
+		ActiveCameraShake();
+		//揺れ情報を設定
+		SetCameraShakeInfo(shakeStrength, shakeVibrato, shakeTimeLimit);
+	}
+
 	void Camera::RotateOriginTarget(const Quaternion& qRot)
 	{
 		Vector3 cameraPos = m_position;

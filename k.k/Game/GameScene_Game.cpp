@@ -55,6 +55,7 @@ void GameScene_Game::Update()
 	//勝敗が着いたらステートを変更
 	if (GameSceneManager::GetInstance()->IsGameOutcome())
 	{
+		
 
 		g_soundManager->StopSound(enSoundName_BattleBGM);
 
@@ -64,16 +65,12 @@ void GameScene_Game::Update()
 		GameSceneManager::GetInstance()->ChangeGameSceneState(enGameSceneState_Result);
 		return;
 	}
-
-
-	//
-	m_game->UpdateGameSystem();
-
 }
 
 void GameScene_Game::Exit()
 {
-	//
+	//プレイヤーや敵のステートを強制的に切り替える
+	m_game->GameOutComeProcess();
 
 }
 

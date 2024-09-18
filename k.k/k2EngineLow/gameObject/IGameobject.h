@@ -157,6 +157,21 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="deleteComponent"></param>
+		void DeleteComponent(IComponent* deleteComponent)
+		{
+			m_components.erase(
+				std::remove(
+					m_components.begin(), 
+					m_components.end(), 
+					deleteComponent), 
+				m_components.end()
+			);
+		}
+
+		/// <summary>
 		/// コンポーネントを探す
 		/// </summary>
 		/// <typeparam name="T">ゲットしたいコンポーネント</typeparam>
@@ -195,6 +210,8 @@ namespace nsK2EngineLow {
 
 				for (IComponent* component : m_components)
 				{
+					//スタート関数をとおっていたら
+
 					component->UpdateComponent();
 				}
 			}
@@ -208,6 +225,9 @@ namespace nsK2EngineLow {
 				}
 			}
 		}
+
+		
+
 		friend class CGameObjectManager;
 	protected:
 		std::string m_name = "default";					//ゲームオブジェクトの名前

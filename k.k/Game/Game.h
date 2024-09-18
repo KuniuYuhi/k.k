@@ -128,6 +128,9 @@ public:
 	/// </summary>
 	void CreateBattleWave();
 
+
+	void GameOutComeProcess();
+
 private:
 	/// <summary>
 	/// ゲームオブジェクトの初期化

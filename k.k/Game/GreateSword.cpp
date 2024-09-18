@@ -16,6 +16,9 @@ namespace {
 
 	const float SKILL_ATTACK_RADIUS = 100.0f;		//スキル攻撃用コリジョンの半径
 	
+	const int CAMERA_SHAKE_STRENGTH = 50.0f;
+	const float CAMERA_SHAKE_VIBRATO = 50.0f;
+	const float CAMERA_SHAKE_TIME_LIMIT = 0.2f;
 }
 
 GreateSword::GreateSword()
@@ -444,6 +447,8 @@ void GreateSword::ExitSkillStartProcess()
 {
 	//スキル中移動できるかフラグをリセット
 	isMoveSkillAttack = false;
+	//メインに進んだので無敵にする
+	m_brave->EnableInvincible();
 }
 
 void GreateSword::EntrySkillMainProcess()
@@ -462,6 +467,8 @@ void GreateSword::EntrySkillMainProcess()
 
 void GreateSword::UpdateSkillMainProcess()
 {
+	//メインに進んだので無敵にする
+	m_brave->EnableInvincible();
 }
 
 void GreateSword::ExitSkillMainProcess()
@@ -546,6 +553,11 @@ void GreateSword::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		g_soundManager->InitAndPlaySoundSource(
 			enSoundName_GreatSwordSkillAttack,
 			g_soundManager->GetSEVolume()
+		);
+
+		//カメラを揺らす
+		g_camera3D->StartCameraShake(
+			CAMERA_SHAKE_STRENGTH, CAMERA_SHAKE_VIBRATO, CAMERA_SHAKE_TIME_LIMIT
 		);
 	}
 

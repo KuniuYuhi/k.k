@@ -2,7 +2,7 @@
 #include "IMagicBall.h"
 
 class MagicBallMovement;
-//class MagicBallStatus;
+class UseEffect;
 
 /// <summary>
 /// BeholderEye‚ª•ú‚Â–‚–@‹…
@@ -56,6 +56,8 @@ private:
 	bool IsDeleteTime();
 
 private:
+
+	UseEffect* m_effect = nullptr;
 
 	MagicBallMovement* m_magicBallMovement = nullptr;
 

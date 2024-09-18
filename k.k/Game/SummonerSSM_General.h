@@ -66,7 +66,7 @@ private:
 
 private:
 
-	float m_stateMachineChangeTimeLimit = 5.0f;
+	float m_stateMachineChangeTimeLimit = 500.0f;
 	float m_stateMachineChangeTimer = 0.0f;
 	bool m_isEnableChangeStateMachine = false;
 

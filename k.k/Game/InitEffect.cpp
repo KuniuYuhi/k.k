@@ -109,6 +109,30 @@ void InitEffect::InitPlayerEffect()
 	);
 	
 
+
+	//攻撃力アップ開始エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		enEffect_AttackUpStart,
+		u"Assets/effect/sprite/AttackUpStart.efk"
+	);
+
+	//攻撃力アップエフェクトシンボルエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		enEffect_AttackEffectSynbol,
+		u"Assets/effect/sprite/AttackEffectSymbol.efk"
+	);
+
+	//回復開始エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		enEffect_RecoveryStart,
+		u"Assets/effect/sprite/RecoveryEffect.efk"
+	);
+
+	//回復エフェクトシンボルエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		enEffect_RecoveryEffectSynbol,
+		u"Assets/effect/sprite/RecoveryEffectSymbol.efk"
+	);
 }
 
 void InitEffect::InitMonsterEffect()
@@ -235,4 +259,11 @@ void InitEffect::InitMobMonsterEffect()
 		enEffect_Mob_Summon_Right, 
 		u"Assets/effect/sprite/Summon_right.efk"
 	);
+
+	//モブエネミーのボールエフェクト読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		enEffect_EyeBall,
+		u"Assets/effect/sprite/miniBall.efk"
+	);
+	
 }

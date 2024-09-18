@@ -33,7 +33,7 @@ public:
 	/// <summary>
 	/// ’¼iˆÚ“®
 	/// </summary>
-	void MoveStraight();
+	void MoveStraight(float yUp = 0.0f, bool setYUp = false);
 
 	/// <summary>
 	/// —‚¿‚éˆÚ“®
@@ -54,6 +54,8 @@ public:
 private:
 
 	IMagicBall* m_magicBall = nullptr;
+
+	bool m_isNearPlayerDistance = false;
 
 	Vector3 m_direction = g_vec3Zero;
 };

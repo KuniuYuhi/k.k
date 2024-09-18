@@ -22,6 +22,19 @@ using namespace KnockBackInfo;
 class Brave : public CharacterBase
 {
 public:
+	/// <summary>
+	/// バフのリスト
+	/// </summary>
+	enum EnBuffList
+	{
+		enBuff_Attack,
+
+
+		enBuff_Num
+	};
+
+public:
+
 	~Brave();
 
 
@@ -33,6 +46,7 @@ public:
 
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
+	void InitModel() override;
 
 	/// <summary>
 	/// プレイヤーが勝利した時のステートに遷移
@@ -198,7 +212,26 @@ public:
 	}
 
 	/// <summary>
-	/// 
+	/// 攻撃バフの数をカウント
+	/// </summary>
+	/// <param name="patern">増やすならtrue、減らすならfalse</param>
+	void CalcAttackBuffCount(bool patern)
+	{
+		if (patern) m_buffCounter[enBuff_Attack]++;
+		else m_buffCounter[enBuff_Attack]--;
+	}
+	/// <summary>
+	/// 攻撃バフの数を取得
+	/// </summary>
+	/// <returns></returns>
+	int GetAttackBuffAmount()
+	{
+		return  m_buffCounter[enBuff_Attack];
+	}
+
+
+	/// <summary>
+	/// ダメージプロバイダーの座標を設定
 	/// </summary>
 	/// <param name="position"></param>
 	void SetDamageProviderPosition(Vector3 position)
@@ -248,6 +281,7 @@ public:
 	/// </summary>
 	void AfterDieProcess();
 
+	void GameOutComeProcess();
 
 private:
 
@@ -330,6 +364,9 @@ private:
 	bool IsStopRequested();
 
 
+	void UpdateDamagedInvisibleTimer();
+
+
 private:
 
 	Status_Player								m_status;					//プレイヤーのステータス
@@ -365,11 +402,22 @@ private:
 
 	bool										m_isInvincible = false;		//無敵か？
 
+	bool										m_isDamagedInvincible = false;	//被ダメージ後の無敵時間か？
+
+	float										m_damagedInvisibleTimer = 0.0f;
+
 	float										m_starkTimer = 0.0f;			//硬直タイマー
 
 	float										count = 0.0f;
 
 	int											oldAttackId = -1;
+
+	bool m_isViewModel = true;
+
+
+	int m_buffCounter[enBuff_Num] = { 0 };
+
+
 
 };
 

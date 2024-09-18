@@ -109,7 +109,7 @@ void SummonerAIController::CreateShockWaveCollision()
 	m_shockWaveCollision->CreateSphere(
 		m_summoner->GetPosition(),
 		Quaternion::Identity,
-		300.0f
+		240.0f
 	);
 }
 

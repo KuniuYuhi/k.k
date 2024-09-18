@@ -14,6 +14,7 @@
 #include "UseEffect.h"
 
 
+
 using namespace KnockBackInfo;
 
 
@@ -273,13 +274,27 @@ void Slime::ExitHitActionProcess()
 
 void Slime::DieProcess()
 {
+	//アイテムを落とすか決める
+	if (IsDropBuffItem())
+	{
+		DropBuffItem();
+	}
+
 	//ダメージによってやられた時の処理
 	DieFromDamage();
+
+	
 }
 
 void Slime::WinProcess()
 {
 	m_slimeContext.get()->ChangeSlimeState(this, enSlimeState_Victory);
+}
+
+void Slime::ForceChangeStateIdle()
+{
+	m_slimeContext.get()->ChangeSlimeState(this, enSlimeState_Idle);
+	m_moveSpeed = g_vec3Zero;
 }
 
 void Slime::DieFlomOutside(bool isPlayEffect)

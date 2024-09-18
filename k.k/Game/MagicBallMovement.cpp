@@ -24,7 +24,7 @@ void MagicBallMovement::UpdateComponent()
 {
 }
 
-void MagicBallMovement::MoveStraight()
+void MagicBallMovement::MoveStraight(float yUp, bool setYUp)
 {
 	//前方向を取得
 	Vector3 moveSpeed = m_magicBall->GetForward();
@@ -36,6 +36,8 @@ void MagicBallMovement::MoveStraight()
 	m_magicBall->SetMoveSpeed(moveSpeed);
 
 	Vector3 currentPos = m_magicBall->GetPosition();
+
+	if(setYUp) currentPos.y = yUp;
 
 	currentPos += moveSpeed;
 
@@ -66,28 +68,24 @@ void MagicBallMovement::MoveChase(
 
 	// プレイヤーの位置に向かうベクトル
 	Vector3 directionToPlayer = targetPosition - m_magicBall->GetPosition();
-
-
 	//長さを計算
 	float length = directionToPlayer.Length();
-
-	
-
-
 	// 現在の弾の移動ベクトル
 	Vector3 currentDirection = m_magicBall->GetMoveSpeed();
 	currentDirection.Normalize();
 
 	//ベクトルの長さが範囲内だったら
-	if (length < radius)
+	if (length < radius || m_isNearPlayerDistance == true)
 	{
+		m_isNearPlayerDistance = true;
 		//追尾せず前方向を使う
+		currentDirection = m_magicBall->GetForward();
 		directionToPlayer = m_magicBall->GetForward();
 	}
 	directionToPlayer.Normalize();
 
 	// プレイヤー方向と現在の弾の方向の補間 (追尾速度を調整)
-	float homingSpeed = 0.5f; // 追尾の速さ
+	float homingSpeed = 0.6f; // 追尾の速さ
 	Vector3 newDirection = 
 		currentDirection * (1.0f - homingSpeed) + directionToPlayer * homingSpeed;
 

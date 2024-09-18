@@ -8,7 +8,7 @@
 #include "UseEffect.h"
 
 namespace {
-	const int COLLISION_RADIUS = 550.0f;
+	const int COLLISION_RADIUS = 540.0f;
 
 	const float END_Y_ADD_VALUE = 320.0f;
 
@@ -17,6 +17,11 @@ namespace {
 	const float METEO_EXPLOSION_EFFECT_SIZE = 30.0f;
 
 	const float ADD_Y_DOWN = 300.0f;
+
+
+	const int CAMERA_SHAKE_STRENGTH = 60.0f;
+	const float CAMERA_SHAKE_VIBRATO = 60.0f;
+	const float CAMERA_SHAKE_TIME_LIMIT = 1.0f;
 
 }
 
@@ -236,6 +241,12 @@ void DarkMeteorite::Explosion()
 	g_soundManager->InitAndPlaySoundSource(
 		enSoundName_Boss_Meteo_Explosion,
 		g_soundManager->GetSEVolume()
+	);
+
+
+	//ƒJƒƒ‰‚ð—h‚ç‚·
+	g_camera3D->StartCameraShake(
+		CAMERA_SHAKE_STRENGTH, CAMERA_SHAKE_VIBRATO, CAMERA_SHAKE_TIME_LIMIT
 	);
 
 

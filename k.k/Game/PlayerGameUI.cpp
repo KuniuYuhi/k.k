@@ -32,8 +32,11 @@ namespace {
     const Vector2 STAMINA_INSUFFCIENT_POS = { -350.0f,-290.0f };
 
     ///////////////////////////////////////////////////////////////////
-    //
+    //バフ
+    ///////////////////////////////////////////////////////////////////
 
+    const Vector2 ATTACK_BUFF_AMOUNT_POS = { -870.0f,-370.0f };
+    const Vector2 ATTACK_BUFF_ICON_POS = { -860.0f,-360.0f };
 }
 
 PlayerGameUI::~PlayerGameUI()
@@ -75,7 +78,8 @@ void PlayerGameUI::UIUpdate()
     //武器UIの更新
     UpdateWeaponUI();
 
-   
+    //バフの更新処理
+    UpdateHaveBuffs();
 
 }
 
@@ -115,6 +119,11 @@ void PlayerGameUI::Draw(RenderContext& rc)
         //描画
         weaponUI.second->Draw(rc);
     }
+
+    if (!m_isViewBuffSpritsAndFonts) return;
+
+    m_spriteList[enSpriteName_AttackBuffIcon].Draw(rc);
+    m_fontList[enFontName_AttackIconAmount].Draw(rc);
 
 }
 
@@ -231,6 +240,26 @@ void PlayerGameUI::UpdateWeaponUI()
         ->SubWeapon2Update();
 }
 
+void PlayerGameUI::UpdateHaveBuffs()
+{
+    //バフがないなら処理しない
+    if (m_player->GetAttackBuffAmount() == 0)
+    {
+        m_isViewBuffSpritsAndFonts = false;
+        return;
+    }
+
+    m_isViewBuffSpritsAndFonts = true;
+
+    wchar_t attackBuffAmount[255];
+    swprintf_s(attackBuffAmount, 255, L"x%d", m_player->GetAttackBuffAmount());
+    //ダメージ量を設定
+    m_fontList[enFontName_AttackIconAmount].SetText(attackBuffAmount);
+
+
+
+}
+
 void PlayerGameUI::Init()
 {
 
@@ -320,6 +349,14 @@ void PlayerGameUI::InitSpriteRenders()
 
 
 
+    /////////////////////////////////////////////////////////////////////////////////////////////
+     //サブ武器2のフレーム
+    InitSpriteRender(
+        m_spriteList[enSpriteName_AttackBuffIcon],
+        "Assets/sprite/InGame/Character/AttackBuffEffectIcon.DDS", 110, 110, ATTACK_BUFF_ICON_POS);
+
+
+
 }
 
 void PlayerGameUI::InitFontRenders()
@@ -333,5 +370,12 @@ void PlayerGameUI::InitFontRenders()
         L"スタミナが不足しています"
     );
    
-    
+    //攻撃バフの数を表示
+    InitFontRender(
+        m_fontList[enFontName_AttackIconAmount],
+        ATTACK_BUFF_AMOUNT_POS,
+        1.0f,
+        g_vec4White
+    );
+
 }

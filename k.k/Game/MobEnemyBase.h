@@ -47,6 +47,11 @@ public:
 	virtual void WinProcess() {}
 
 	/// <summary>
+	/// 強制的に待機状態に切り替える
+	/// </summary>
+	virtual void ForceChangeStateIdle() {}
+
+	/// <summary>
 	/// 処理を止める要求がされているか？
 	/// </summary>
 	/// <returns></returns>
@@ -86,7 +91,16 @@ protected:
 	/// </summary>
 	virtual void DieFromDamage();
 
-	
+	/// <summary>
+	/// アイテムを落とすか？
+	/// </summary>
+	/// <returns></returns>
+	bool IsDropBuffItem();
+
+	/// <summary>
+	/// アイテムを落とす
+	/// </summary>
+	void DropBuffItem();
 
 	/// <summary>
 	/// 自身の当たり判定確認
@@ -102,7 +116,7 @@ protected:
 	/// 追いかける移動処理
 	/// </summary>
 	/// <param name="targetPosition">ターゲットの座標</param>
-	void ChaseMovement(Vector3 targetPosition);
+	void ChaseMovement(Vector3 targetPosition, bool isBossPosCheck = true);
 
 	/// <summary>
 	/// 回転処理
