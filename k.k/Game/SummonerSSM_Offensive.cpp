@@ -9,7 +9,7 @@
 
 
 namespace {
-	const float DARKMETEORITE_COOLTIME_LIMIT = 20.0f;
+	const float DARKMETEORITE_COOLTIME_LIMIT = 5.0f;
 
 	const float MELEE_ATTACK_DISTANCE = 400.0f;
 }
@@ -188,7 +188,7 @@ bool SummonerSSM_Offensive::CheckChangeDarkMeteoriteState()
 	if (m_darkMeteoriteCoolTimer < DARKMETEORITE_COOLTIME_LIMIT)
 	{
 		//タイマーを加算して処理を終わる
-		m_darkMeteoriteCoolTimer += g_gameTime->GetFrameDeltaTime();
+		m_darkMeteoriteCoolTimer ++;
 		return false;
 	}
 
@@ -211,11 +211,11 @@ bool SummonerSSM_Offensive::CheckChangeDarkMeteoriteState()
 	score += 100 * staminaRatio;
 
 
-	result = EnemyManager::GetInstance()->GetNearbyEnemyCount(m_player->GetPosition(), 200.0f);
+	result = EnemyManager::GetInstance()->GetNearbyEnemyCount(m_player->GetPosition(), 350.0f);
 	//5体以上いたら5に制限する
 	if (result > 6) result = 6;
 
-	score += result * 10;
+	score += result * 12;
 
 	//最終的なスコアが120以下ならこの行動はしない
 	if (score < 100) return false;
