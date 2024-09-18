@@ -76,9 +76,9 @@ void Status_Player::LoadPlayerStatusCSV(const std::string& name)
 		//加速スピードを読み込む。
 		getline(i_stream, buf, ',');
 		statusData.m_playerStatus.dashSpeed = stof(buf);
-		//回避スピードを読み込む。
+		//被ダメージ後の無敵時間を読み込む。
 		getline(i_stream, buf, ',');
-		statusData.m_playerStatus.evasionSpeed = stof(buf);
+		statusData.m_playerStatus.damagedInvisibleTimeLimit = stof(buf);
 
 
 		//現在のHPを設定

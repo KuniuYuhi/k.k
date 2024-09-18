@@ -76,6 +76,11 @@ public:
 		return m_status.maxMobEnemys;
 	}
 
+	const int& GetFirstCreateMobEnemyAmount()
+	{
+		return m_status.firstCreateMobEnemyAmount;
+	}
+
 	const int& GetAddCreateMobEnemyAmonut()
 	{
 		return m_status.addCreateMobEnemyAmonut;
