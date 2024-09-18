@@ -209,6 +209,26 @@ void Game::CreateBattleWave()
 	m_waveManager = NewGO<WaveManager>(0, "WaveManager");
 }
 
+void Game::GameOutComeProcess()
+{
+	if (GameSceneManager::GetInstance()->IsPlayerWin())
+	{
+		m_brave->GameOutComeProcess();
+
+		EnemyManager::GetInstance()->GameOutComeProcess();
+	}
+	else if(GameSceneManager::GetInstance()->IsEnemyWin())
+	{
+		EnemyManager::GetInstance()->GameOutComeProcess();
+	}
+	else
+	{
+		int a = 0;
+	}
+
+	
+}
+
 void Game::InitSkyCube()
 {
 	m_skyCube = NewGO<SkyCube>(0, "skycube");
