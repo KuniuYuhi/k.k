@@ -147,6 +147,23 @@ public:
 	}
 
 	/// <summary>
+	/// プレイヤーが勝ったか？
+	/// </summary>
+	/// <returns></returns>
+	bool IsPlayerWin()
+	{
+		return m_battleOutCome == enBattleOutCome_PlayerWin;
+	}
+	/// <summary>
+	/// エネミーたちが勝ったか？
+	/// </summary>
+	/// <returns></returns>
+	bool IsEnemyWin()
+	{
+		return m_battleOutCome == enBattleOutCome_PlayerLose;
+	}
+
+	/// <summary>
 	/// 勝敗が着いたか？
 	/// </summary>
 	/// <returns>着いたならtrue</returns>
