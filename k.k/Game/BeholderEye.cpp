@@ -276,6 +276,12 @@ void BeholderEye::ExitHitActionProcess()
 
 void BeholderEye::DieProcess()
 {
+	//アイテムを落とすか決める
+	if (IsDropBuffItem())
+	{
+		DropBuffItem();
+	}
+
 	//ダメージによってやられた時の処理
 	DieFromDamage();
 }
@@ -283,6 +289,12 @@ void BeholderEye::DieProcess()
 void BeholderEye::WinProcess()
 {
 	m_beholderEyeContext.get()->ChangeBeholderEyeState(this, enBeholderEyeState_Victory);
+}
+
+void BeholderEye::ForceChangeStateIdle()
+{
+	m_beholderEyeContext.get()->ChangeBeholderEyeState(this, enBeholderEyeState_Idle);
+	m_moveSpeed = g_vec3Zero;
 }
 
 void BeholderEye::DieFlomOutside(bool isPlayEffect)
@@ -323,22 +335,15 @@ void BeholderEye::TurnToPlayer()
 
 void BeholderEye::Update()
 {
-	if (g_pad[0]->IsTrigger(enButtonB))
-	{
-		//ReleaseThis();
-		//return;
-	}
-
-	//処理を止める要求があるなら
-	if (IsStopRequested())return;
-
-	//死んでいないなら処理する
-	if (!IsDie())
+	
+	
+	//処理を止める要求がない限り処理をする
+	if (!IsStopRequested())
 	{
 		//攻撃処理
 		Attack();
 		//キャラクターの移動
-		ChaseMovement(m_player->GetPosition());
+		ChaseMovement(m_player->GetPosition(),false);
 		//回転
 		Rotation();
 

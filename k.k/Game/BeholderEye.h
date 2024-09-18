@@ -79,6 +79,11 @@ public:
 	void WinProcess() override;
 
 	/// <summary>
+	/// ‹­§“I‚É‘Ò‹@ó‘Ô‚ÉØ‚è‘Ö‚¦‚é
+	/// </summary>
+	void ForceChangeStateIdle() override;
+
+	/// <summary>
 	/// ŠO•”‚©‚çíœ
 	/// </summary>
 	void DieFlomOutside(bool isPlayEffect = false) override;

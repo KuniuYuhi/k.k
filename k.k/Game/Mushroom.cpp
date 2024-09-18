@@ -269,6 +269,12 @@ void Mushroom::ExitHitActionProcess()
 
 void Mushroom::DieProcess()
 {
+	//アイテムを落とすか決める
+	if (IsDropBuffItem())
+	{
+		DropBuffItem();
+	}
+
 	//ダメージによってやられた時の処理
 	DieFromDamage();
 }
@@ -276,6 +282,12 @@ void Mushroom::DieProcess()
 void Mushroom::WinProcess()
 {
 	m_mushroomContext.get()->ChangeMushroomState(this, enMushroomState_Victory);
+}
+
+void Mushroom::ForceChangeStateIdle()
+{
+	m_mushroomContext.get()->ChangeMushroomState(this, enMushroomState_Idle);
+	m_moveSpeed = g_vec3Zero;
 }
 
 void Mushroom::DieFlomOutside(bool isPlayEffect)
@@ -316,17 +328,9 @@ void Mushroom::TurnToPlayer()
 
 void Mushroom::Update()
 {
-	if (g_pad[0]->IsTrigger(enButtonB))
-	{
-		//ReleaseThis();
-		//return;
-	}
 
-	//処理を止める要求があるなら
-	if (IsStopRequested())return;
-
-	//死んでいないなら処理する
-	if (!IsDie())
+	//処理を止める要求がない限り処理をする
+	if (!IsStopRequested())
 	{
 		//攻撃処理
 		Attack();
