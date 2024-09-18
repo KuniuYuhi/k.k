@@ -20,6 +20,8 @@ void SlimeState_Idle::Entry()
 
 void SlimeState_Idle::Ubdate()
 {
+	m_slime->TurnToPlayer();
+
 	//ˆÚ“®—Ê‚ª‚ ‚Á‚½‚ç•à‚«ó‘Ô‚É‘JˆÚ
 	if (fabsf(m_slime->GetMoveSpeed().x) >= 0.001f ||
 		fabsf(m_slime->GetMoveSpeed().z) >= 0.001f)
