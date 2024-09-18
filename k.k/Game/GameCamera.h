@@ -45,6 +45,19 @@ public:
 	/// </summary>
 	void CameraShake();
 
+	Vector3 GetUpdateShakePosition(
+		float currentTimer);
+
+	/// <summary>
+	/// 値を範囲内に収める
+	/// </summary>
+	/// <param name="value"></param>
+	/// <param name="min"></param>
+	/// <param name="max"></param>
+	/// <returns></returns>
+	float Clamp(float value, float min, float max);
+
+
 
 	/// <summary>
 	/// スプリングカメラのリフレッシュ
@@ -79,6 +92,12 @@ private:
 	Quaternion			m_rotation = Quaternion::Identity;	//回転
 
 	Vector3				m_finalCameraPos = g_vec3Zero;
+
+	Vector3 m_shakeCameraPosition = g_vec3Zero;
+
+	float m_shakeTimer = 0.0f;
+
+
 
 	bool flag = false;
 
