@@ -10,11 +10,11 @@
 #include "UseEffect.h"
 
 namespace {
-	const float COLLISION_RADIUS = 80.0f;
+	const float COLLISION_RADIUS = 60.0f;
 
 	const float MOVE_Y_UP = 110.0f;
 
-	const float ADD_RADIUS = 40.0f;
+	const float ADD_RADIUS = 80.0f;
 
 	const float MUL_DARKBALL_EFFECT_SIZE = 20.0f;
 	const float MUL_DARKBALL_EXPLOSION_EFFECT_SIZE = 10.0f;
@@ -110,7 +110,7 @@ void DarkBall::Move()
 	if (m_enShotPatternState == enStraight)
 	{
 		//’¼i
-		m_magicBallMovement->MoveStraight();
+		m_magicBallMovement->MoveStraight(MOVE_Y_UP,true);
 	}
 	else if(m_enShotPatternState == enChase)
 	{

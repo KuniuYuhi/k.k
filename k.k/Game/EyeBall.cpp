@@ -5,9 +5,13 @@
 
 #include "KnockBackInfoManager.h"
 
+#include "UseEffect.h"
+
 
 namespace {
 	const int COLLISION_RADIUS = 15.0f;
+
+	const float EFFECT_SCALE = 4.0f;
 }
 
 EyeBall::EyeBall()
@@ -46,6 +50,15 @@ bool EyeBall::Start()
 	CreateCollision();
 
 
+	//新たに爆発エフェクトを生成
+	m_effect = NewGO<UseEffect>(0, "EyeBallEffect");
+	m_effect->PlayEffect(
+		enEffect_EyeBall,
+		m_position,
+		g_vec3One * EFFECT_SCALE,
+		Quaternion::Identity,
+		false
+	);
 
 	return true;
 }
@@ -85,6 +98,8 @@ void EyeBall::Move()
 
 	m_collision->SetPosition(m_position);
 	m_collision->Update();
+
+	m_effect->SetMovePosition(m_position);
 }
 
 bool EyeBall::IsDelete()
@@ -122,6 +137,9 @@ void EyeBall::Update()
 {
 	if (IsDelete())
 	{
+		m_effect->Delete();
+		m_effect = nullptr;
+
 		//消去
 		DeleteGO(this);
 		return;
