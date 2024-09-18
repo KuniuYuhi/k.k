@@ -28,6 +28,8 @@ namespace EffectNumbers {
 		enEffect_Boss_WarpSircle,								//ボスのワープ魔法陣
 		enEffect_Boss_WarpWind,									//ボスのワープの風
 
+		enEffect_EyeBall,
+
 		enEffect_Dash,											//ダッシュ
 		enEffect_Hit,											//ヒット
 		enEffect_ArrowCharge1,
@@ -49,6 +51,11 @@ namespace EffectNumbers {
 		enEffect_Arrow,											//矢のエフェクト
 		enEffect_BowArrowSkillShot,								//弓＆矢のスキル攻撃
 
-
+		enEffect_AttackEffectSynbol,							//攻撃エフェクトシンボル
+		enEffect_AttackUpStart,									//攻撃力Upスタート
+	
+		enEffect_RecoveryEffectSynbol,							//回復エフェクトシンボル
+		enEffect_RecoveryStart,									//回復スタート
+	
 	};
 }
