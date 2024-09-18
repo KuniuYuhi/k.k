@@ -29,6 +29,8 @@ private:
 		enSpriteName_SubWeaponFlame,
 		enSpriteName_SubWeapon2Flame,
 
+		enSpriteName_AttackBuffIcon,
+
 		enSprite_Num
 	};
 
@@ -39,6 +41,8 @@ private:
 		enFontName_HP_Value,
 
 		enFontName_StaminaInsufficient,
+
+		enFontName_AttackIconAmount,
 
 		enFontName_Num
 	};
@@ -101,6 +105,11 @@ private:
 	/// </summary>
 	void UpdateWeaponUI();
 
+	/// <summary>
+	/// バフの更新
+	/// </summary>
+	void UpdateHaveBuffs();
+
 
 private:
 
@@ -125,6 +134,8 @@ private:
 	float m_staminaInsufficientViewTimer = 0.0f;
 	bool m_isStaminaInsufficient = false;
 
+
+	bool m_isViewBuffSpritsAndFonts = false;
 
 };
 
