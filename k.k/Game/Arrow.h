@@ -234,7 +234,7 @@ private:
 
 	Vector3 m_forward = g_vec3Zero;		//‘O•ûŒü
 
-	Vector3 m_stowedPosition = { 0.0f,100.0f,0.0f };
+	Vector3 m_stowedPosition = { 0.0f,-200.0f,0.0f };
 
 	Vector3 m_moveAttackArrowPosition = g_vec3Zero;
 

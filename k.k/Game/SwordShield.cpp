@@ -20,6 +20,10 @@ namespace {
 
 
 	const float SHIELD_BARRIER_EFFECT_SCALE = 8.0f;
+
+	const int CAMERA_SHAKE_STRENGTH = 40.0f;
+	const float CAMERA_SHAKE_VIBRATO = 40.0f;
+	const float CAMERA_SHAKE_TIME_LIMIT = 0.2f;
 }
 
 SwordShield::SwordShield()
@@ -489,7 +493,8 @@ void SwordShield::UpdateSkillStartProcess()
 
 void SwordShield::ExitSkillStartProcess()
 {
-
+	//ƒƒCƒ“‚Éi‚ñ‚¾‚Ì‚Å–³“G‚É‚·‚é
+	m_brave->EnableInvincible();
 }
 
 void SwordShield::EntrySkillMainProcess()
@@ -508,6 +513,8 @@ void SwordShield::EntrySkillMainProcess()
 
 void SwordShield::UpdateSkillMainProcess()
 {
+	//ƒƒCƒ“‚Éi‚ñ‚¾‚Ì‚Å–³“G‚É‚·‚é
+	m_brave->EnableInvincible();
 }
 
 void SwordShield::ExitSkillMainProcess()
@@ -631,6 +638,11 @@ void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		g_soundManager->InitAndPlaySoundSource(
 			enSoundName_SwordShieldSkillAttack,
 			g_soundManager->GetSEVolume()
+		);
+
+		//ƒJƒƒ‰‚ð—h‚ç‚·
+		g_camera3D->StartCameraShake(
+			CAMERA_SHAKE_STRENGTH, CAMERA_SHAKE_VIBRATO, CAMERA_SHAKE_TIME_LIMIT
 		);
 	}
 
