@@ -536,6 +536,8 @@ void Bow::ShotSkillAttackArrow()
 	m_arrow->SetSkillShotInfo(
 		m_brave->GetCurrentPower(),m_uniqueStatus.GetAttackInfoUpdateInterval()
 	);
+	//UŒ‚î•ñXVŠÔŠu‚ğİ’è
+	m_arrow->SetAttackInfoUpdateTimeLimit(m_uniqueStatus.GetAttackInfoUpdateInterval());
 
 	//–î‚ğ•ú‚Á‚½‚Ì‚Å–î‚ğ‚Á‚Ä‚¢‚È‚¢ó‘Ô‚É‚·‚é
 	m_arrow = nullptr;

@@ -8,7 +8,7 @@
 
 namespace {
 	const float DELETE_TIME_LIMIT = 20.0f;
-	const float HIT_RADIUS = 30.0f;
+	const float HIT_RADIUS = 60.0f;
 }
 
 RecoveryEffect::RecoveryEffect()

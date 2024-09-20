@@ -448,6 +448,11 @@ void Summoner::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 			enSoundName_Boss_ShockWave,
 			g_soundManager->GetSEVolume()
 		);
+
+		//カメラを揺らす
+		g_camera3D->StartCameraShake(
+			60.0f, 60.0f, 0.25f
+		);
 	}
 
 	//ダークボール生成アニメーションキーフレーム

@@ -251,8 +251,15 @@ void MobEnemyBase::Rotation()
 		return;
 	}
 
+	//üŒ`•âŠÔ‚Å‰ñ“]‚·‚é•ûŒü‚ğŒvZB™X‚É‰ñ“]‚³‚¹‚é
+	/*m_currentRotDirection = Math::Lerp(
+		g_gameTime->GetFrameDeltaTime() * 3.0f, m_currentRotDirection, m_rotateDirection
+	);*/
+
 	m_rotation.SetRotationYFromDirectionXZ(m_rotateDirection);
 
+	//‘O•ûŒü‚ğ‰ñ“]•ûŒü‚É‡‚í‚¹‚é
+	//m_forward = m_currentRotDirection;
 }
 
 void MobEnemyBase::SettingKnockBackProcess()

@@ -165,6 +165,11 @@ protected:
 
 	Vector2 m_knockBackSpeed = g_vec2Zero;
 
+
+	Vector3 m_currentRotDirection = g_vec3Zero;
+
+
+
 	EnKnockBackPattern m_hitKnockBackPattern;
 	float m_knockBackTimeScale = 0.0f;
 

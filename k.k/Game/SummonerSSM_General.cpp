@@ -3,6 +3,8 @@
 #include "SummonerSMContext.h"
 #include "Summoner.h"
 
+#include "EnemyManager.h"
+
 void SummonerSSM_General::Entry()
 {
 	//サモナーのHPを保存
@@ -163,23 +165,33 @@ bool SummonerSSM_General::CheckChangeWarpState()
 
 	//HPの割合を計算
 	float ratio = (float)m_summoner->GetCommonStatus().GetCurrentHp() / (float)m_summonerHp;
-	//減ったHPの割合に変換
+	//1.5割以上削られたら
 	ratio = 1 - ratio;
-	//割合を使ってスコア加算。HPが低いほどスコアが大きくなる
-	score += 100 * ratio;
+	if (ratio > 0.13f)
+	{
+		//割合を使ってスコア加算。減ったHP割合が低いほどスコアが大きくなる
+		score += 200 * ratio;
+	}
 
 	//既に距離が一定以上離れているならワープしない
 	float length = m_summoner->GetDistanceToPlayerPositionValue();
-	//距離が近いなら計算
+	//距離が近いならスコアを加算
 	if (length < 700.0f)
 	{
 		score += 20;
 	}
 
+	//ボスの特定の半径の中にいるモブエネミーの数を取得
+	int mobEnemyAmount = EnemyManager::GetInstance()->GetNearbyEnemyCount(
+		m_summoner->GetPosition(),600.0f
+	);
+
+	score += mobEnemyAmount * 3;
+
 
 	//合計の重みが一定以上なら
 
-	if (score < 50) return false;
+	if (score < 60) return false;
 
 	//タイマーをリセット
 	m_warpCoolTimer = 0.0f;

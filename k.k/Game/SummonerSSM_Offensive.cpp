@@ -55,6 +55,11 @@ bool SummonerSSM_Offensive::IsEnableChangeStateMachine()
 		return false;
 	}
 
+	if (CheckRangedAttack())
+	{
+		return false;
+	}
+	
 
 
 	//次の攻撃に行く前にタイマーを入れる
@@ -168,6 +173,70 @@ bool SummonerSSM_Offensive::ChangeNextComboAttackState()
 		return true;
 	}
 
+	return false;
+}
+
+bool SummonerSSM_Offensive::CheckRangedAttack()
+{
+	if (CheckNextDarkBallAction())
+	{
+		//次のアクションをダークボールに決定
+		//予約ステート設定
+		m_stateMachineContext->SetReservationState(enSummonerState_DarkBall);
+
+
+		return true;
+	}
+
+	return false;
+}
+
+bool SummonerSSM_Offensive::CheckNextDarkBallAction()
+{
+	
+
+	//スコア
+	int score = 0;
+	//前回のステートがダークボールステートなら確率を下げる。
+	//連続で使用するたび確率を下げる
+	if (m_stateMachineContext->GetPreviousState() == enSummonerState_DarkBall)
+	{
+		score -= 13 * m_darkBallActionCount;
+	}
+
+
+
+	//体力が減っていくと連続で使う頻度が上がる
+
+	//HPの割合を求める
+	float ratio = 
+		(float)m_summoner->GetCommonStatus().GetCurrentHp() / (float)m_summoner->GetCommonStatus().GetMaxHp();
+	//割合が7割以下ならスコアを加算する
+	if (ratio <= 0.7f)
+	{
+		//残っているHPの割合を減ったHPの割合にする
+		ratio = 1 - ratio;
+
+		ratio = ratio * 10;
+
+		int addProbability = rand() % 10 + 1;
+
+		//スコアを加算する
+		score += ratio * addProbability;
+
+	}
+
+
+
+	//スコアが一定以上ならこの行動にする
+	if (score > 30) {
+		//ダークボールカウント加算
+		m_darkBallActionCount++;
+		return true;
+	}
+
+	//この中の行動をしなかったのでカウントをリセット
+	m_darkBallActionCount = 0;
 	return false;
 }
 

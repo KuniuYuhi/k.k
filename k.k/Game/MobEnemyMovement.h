@@ -37,11 +37,25 @@ public:
 	);
 
 private:
+
+	/// <summary>
+	/// ’l‚ð”ÍˆÍ“à‚ÉŽû‚ß‚é
+	/// </summary>
+	/// <param name="value"></param>
+	/// <param name="min"></param>
+	/// <param name="max"></param>
+	/// <returns></returns>
+	float Clamp(float value, float min, float max);
+
+
+private:
 	Summoner* m_summoner = nullptr;
 
+	bool bossMoveFlag = false;
 
+	float m_timer = 0.0f;
 
-	int ADD = 0;
+	int m_addDistance = 0;
 
 };
 
