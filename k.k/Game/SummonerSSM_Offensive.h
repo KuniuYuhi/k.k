@@ -48,19 +48,31 @@ private:
 
 
 	/// <summary>
-	/// 次のコンボ攻撃にする
+	/// 次のコンボ攻撃にするか？
 	/// </summary>
+	/// <returns></returns>
 	bool ChangeNextComboAttackState();
 
+	/// <summary>
+	/// 遠距離攻撃するか？
+	/// </summary>
+	/// <returns></returns>
+	bool CheckRangedAttack();
+
+	/// <summary>
+	/// 次のアクションをダークボールにするか？
+	/// </summary>
+	/// <returns></returns>
+	bool CheckNextDarkBallAction();
 
 
 	/// <summary>
-	/// 
+	/// ダークボールにするかチェック
 	/// </summary>
 	/// <returns></returns>
 	bool CheckChangeDarkBallState();
 	/// <summary>
-	/// 
+	/// ダークメテオにするかチェック
 	/// </summary>
 	/// <returns></returns>
 	bool CheckChangeDarkMeteoriteState();
@@ -76,5 +88,9 @@ private:
 	int m_darkMeteoriteRemainingCount = m_MaxUseDarkMeteoriteCount;		//残り回数
 
 	float m_darkMeteoriteCoolTimer = 0.0f;
+
+
+	int m_darkBallActionCount = 0;
+
 };
 
