@@ -36,76 +36,66 @@ Vector3 MobEnemyMovement::CalcChaseCharacterVerocity(
 
 	float toPlayerLength = diff.Length();
 
-	diff.Normalize();
 	diff.y = 0.0f;
+	diff.Normalize();
+	
 
 	
 
 	//ボスをよける
+	if (isBossPosCheck)
 	{
-
-
-
-		//ボスが近くにいるならよける
-
 		//ボスから自身に向かうベクトルを求める
-		Vector3 bossDistance =  m_summoner->GetPosition() - m_currentPosition;
+		Vector3 bossDistance = m_summoner->GetPosition() - m_currentPosition;
 		bossDistance.y = 0.0f;
-		int toBossDistance = bossDistance.Length();
+		//実際のボスに向かうベクトルの長さ
+		int realToBossDistance = bossDistance.Length();
+		//クランプしたボスに向かうベクトルの長さ
+		int clampToBossDistance = Clamp(bossDistance.Length(),0.0f, 150.0f);
 
-		//前回よりボスとの距離が離れているなら処理する必要ない
-		if (isBossPosCheck)
+		//距離の長さを線形補間。
+		//ボスに向かうベクトルの長さによって距離は変わる
+		int variableDIstance = Math::Lerp(
+			(clampToBossDistance - 0.0f) / (200.0f - 0.0f), 80.0f, 150.0f
+		);
+
+		//プレイヤーに近づくほど小さくする
+		//実際にボスに向かうベクトルの長さより線形補間した調査できる長さかつ
+		//ボスに向かうベクトルの長さより、プレイヤーに向かうベクトルの長さが長いなら
+		if ((realToBossDistance < variableDIstance + m_addDistance) && 
+			(toPlayerLength > realToBossDistance))
 		{
+			diff =
+			{ -diff.z, diff.y, diff.x };
 			
-			//ボスに向かうベクトルの長さが200以下なら
+			m_addDistance = 20;
 
-			//加算する確率は最大3。距離の補間は0～1000
-			int add = Math::Lerp(
-				(toBossDistance - 0.0f) / (250.0f - 0.0f), 110.0f, 200.0f
-			);
+			float mul = 1 - (clampToBossDistance - 0.0f) / (250.0f - 0.0f);
 
-			//プレイヤーに近づくほど小さくする
-			if ((toBossDistance < add + ADD) && (toPlayerLength > toBossDistance))
-			{
-				//ボスに向かうベクトルとプレイヤーに向かうベクトルの内積が
-				//0以下ならプレイヤーのほうが近いのでぬける
-				if (Dot(diff, bossDistance) > 0)
-				{
-
-				}
-
-				/*if (Dot(diff, bossDistance) >= 0.9f)
-				{
-
-				}*/
-
-
-				bossDistance.Normalize();
-
-				bossDistance *= -1.0f;
-
-				diff += (bossDistance * 0.8f);
-
-				float mul = 1 - (toBossDistance - 0.0f) / (250.0f - 0.0f);
-
-				diff *= 1.20f + mul;
-
-
-				ADD += 5;
-			}
-			
-			if (ADD >= 0)
-				ADD -= 2;
-			
+			diff *= (2.0f * mul );
 		}
 
-	
+
+		if (m_addDistance >= 0)
+			m_addDistance -= 4;
+
 	}
 
+	
+	diff.Normalize();
 
 	diff *= status.GetDefaultSpeed();
 
 	currentMoveSpeed += diff;
 
 	return currentMoveSpeed;
+}
+
+float MobEnemyMovement::Clamp(float value, float min, float max)
+{
+	if (value < min) return min;
+
+	else if (value > max) return max;
+
+	return value;
 }
