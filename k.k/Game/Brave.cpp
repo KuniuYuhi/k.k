@@ -411,14 +411,14 @@ void Brave::ChangeWeaponAction()
 	bool isTrigger = false;
 
 	//ƒTƒu•Ší‚P‚ÉØ‚è‘Ö‚¦‚é
-	if (m_playerContoller->IsButtonTrigger(enButtonRB1))
+	if (m_playerContoller->IsTriggerRightChangeWeaponButton())
 	{
 		//ƒTƒu•Ší‚P‚ðØ‚è‘Ö‚¦•Ší‚É‚·‚é
 		WeaponManager::GetInstance()->ChangeSubWeaponTypeToChangeWeaponType();
 		isTrigger = true;
 	}
 	//ƒTƒu•Ší‚Q‚ÉØ‚è‘Ö‚¦‚é
-	if (m_playerContoller->IsButtonTrigger(enButtonLB1))
+	if (m_playerContoller->IsTriggerLeftChangeWeaponButton())
 	{
 		//ƒTƒu•Ší‚Q‚ðØ‚è‘Ö‚¦•Ší‚É‚·‚é
 		WeaponManager::GetInstance()->ChangeSubWeaponType2ToChangeWeaponType();
