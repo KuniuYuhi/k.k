@@ -71,6 +71,17 @@ public:
 	bool IsPressDefensiveActionButton();
 
 	/// <summary>
+	/// 右の武器切り替えボタン
+	/// </summary>
+	/// <returns></returns>
+	bool IsTriggerRightChangeWeaponButton();
+	/// <summary>
+	/// 左の武器切り替えボタン
+	/// </summary>
+	/// <returns></returns>
+	bool IsTriggerLeftChangeWeaponButton();
+
+	/// <summary>
 	/// 特定のボタンのトリガー判定
 	/// </summary>
 	/// <param name="button">判定したいボタン</param>
