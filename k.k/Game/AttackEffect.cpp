@@ -7,8 +7,8 @@
 #include "AttackBuffItem.h"
 
 namespace {
-	const float DELETE_TIME_LIMIT = 15.0f;
-	const float HIT_RADIUS = 30.0f;
+	const float DELETE_TIME_LIMIT = 20.0f;
+	const float HIT_RADIUS = 60.0f;
 }
 
 AttackEffect::AttackEffect()
