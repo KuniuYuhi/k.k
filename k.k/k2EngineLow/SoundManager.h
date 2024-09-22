@@ -64,6 +64,11 @@ namespace nsK2EngineLow {
 		enSoundName_BowArrowSkillCharge,		//
 		enSoundName_BowArrowSkillAttack,		//
 
+		//バフアイテム
+		enSoundName_ItemRecovery,				//回復
+		enSoundName_ItemStaminaRecovery,		//スタミナ回復
+		enSoundName_ItemAttackUp,				//攻撃力アップ
+
 
 		//モンスター側
 		enSoundName_Monster_Hit,				//被ダメージ

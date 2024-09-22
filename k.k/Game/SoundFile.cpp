@@ -72,6 +72,21 @@ void SoundFile::ResistBattleSoundFile()
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_BattleBGM, "Assets/sound/BGM/BGM_Battle.wav");
 
+	//回復アイテムの回復音
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_ItemRecovery,
+		"Assets/sound/SE/player/Recovery.wav");
+	//攻撃力アップアイテムの攻撃力アップ音
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_ItemAttackUp,
+		"Assets/sound/SE/player/AttackUp.wav");
+	//スタミナ回復アイテムの回復音
+	g_soundEngine->ResistWaveFileBank(
+		enSoundName_ItemStaminaRecovery,
+		"Assets/sound/SE/player/StaminaRecovery.wav");
+
+	
+
 	//プレイヤーのサウンドファイル読み込み
 	ResistPlayerSoundFile();
 	//モンスターのサウンドファイル読み込み
@@ -135,6 +150,10 @@ void SoundFile::ResistPlayerSoundFile()
 	g_soundEngine->ResistWaveFileBank(
 		enSoundName_BowArrowSkillAttack,
 		"Assets/sound/SE/player/BowArrow/ArrowSkillShot.wav");
+
+
+
+
 
 }
 
