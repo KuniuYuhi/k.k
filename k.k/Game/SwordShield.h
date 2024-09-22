@@ -2,10 +2,14 @@
 #include "WeaponBase.h"
 #include "SwordShieldStatus.h"
 
+#include "DamageProvider.h"
+
 class PlayerController;
 class SwordShieldStatus;
 
 class UseEffect;
+
+using namespace DamageInformaiton;
 
 /// <summary>
 /// 武器：ソード＆シールドクラス
@@ -192,7 +196,7 @@ private:
     /// <summary>
     /// シールドにヒットした時の処理
     /// </summary>
-    void ProcessShieldHit();
+    void SettingKnockBackInfoForDamageInfo(DamageInfo damageInfo);
 
 private:
 
