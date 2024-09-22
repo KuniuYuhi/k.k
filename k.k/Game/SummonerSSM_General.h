@@ -61,7 +61,10 @@ private:
 	/// <param name="timer"></param>
 	void AddTimer(float& timer);
 
-
+	/// <summary>
+	/// プレイヤーが近距離にいる間タイマーを更新する」
+	/// </summary>
+	void UpdateCloseDistanceTimer();
 
 
 private:
@@ -79,7 +82,7 @@ private:
 	float m_warpCoolTimeLimit = 15.0f;
 
 
-
+	float m_closeDistanceTimer = 0.0f;
 
 
 	int m_summonerHp = 0;
