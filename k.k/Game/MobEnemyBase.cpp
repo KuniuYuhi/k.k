@@ -20,6 +20,7 @@
 //ドロップアイテム
 #include "AttackEffect.h"
 #include "RecoveryEffect.h"
+#include "StaminaEffect.h"
 
 
 float MobEnemyBase::GetDistanceToTargetPositionValue(Vector3 target)
@@ -89,12 +90,24 @@ void MobEnemyBase::DropBuffItem()
 		//攻撃アイテムを落とす
 		AttackEffect* at = NewGO<AttackEffect>(0, "AttackEffect");
 		at->SetStartPosition(m_position);
+		return;
+	}
+	
+	ram = rand() % 2;
+
+	//スタミナはプレイヤーのスタミナが減っている時だけ落とす
+	if (ram > 0 && m_player->GetStatus().GetCurrentStamina() <= 100)
+	{
+		//スタミナ回復アイテムを落とす
+		StaminaEffect* se = NewGO<StaminaEffect>(0, "StaminaEffect");
+		se->SetStartPosition(m_position);
 	}
 	else
 	{
 		//回復アイテムを落とす
 		RecoveryEffect* re = NewGO<RecoveryEffect>(0, "RecoveryEffect");
 		re->SetStartPosition(m_position);
+
 	}
 
 }
