@@ -28,6 +28,14 @@ bool Loading::Start()
 	m_backSprite.Update();
 
 
+	for (int i = 0; i < 3; i++)
+	{
+		m_dotSprite[i].Init("Assets/sprite/Loading/Dot.DDS", 20.0f, 20.0f);
+		m_dotSprite[i].SetPosition(m_dotPositions[i]);
+		m_dotSprite[i].Update();
+	}
+
+
 	if (m_enLoadingRoot == enLoadingRoot_None)
 	{
 		return false;
@@ -48,6 +56,23 @@ void Loading::Update()
 	}
 	else
 	{
+		if (m_dotCountTimer >= 0.3f)
+		{
+			m_currentDotCount++;
+			if (m_currentDotCount > 3)
+			{
+				m_currentDotCount = 0;
+			}
+
+
+			m_dotCountTimer = 0.0f;
+		}
+		else
+		{
+			m_dotCountTimer += g_gameTime->GetFrameDeltaTime();
+		}
+
+
 		m_seenChangeTimer += g_gameTime->GetFrameDeltaTime();
 	}
 }
@@ -55,6 +80,13 @@ void Loading::Update()
 void Loading::Render(RenderContext& rc)
 {
 	m_backSprite.Draw(rc);
+
+
+	for (int i = 0; i < m_currentDotCount; i++)
+	{
+		m_dotSprite[i].Draw(rc);
+	}
+
 }
 
 void Loading::StartLoading(EnMethodLoading methodLoading)
