@@ -5,7 +5,10 @@
 namespace {
 	EnButton NORMAL_ATTACK_BUTTON = enButtonA;		//通常攻撃
 	EnButton SKILL_BUTTON = enButtonX;		//スキル攻撃
-	EnButton DEFENCIVEACTTION_BUTTON = enButtonB;	//回避
+	EnButton NORMAL_ATTACK_BUTTON_2 = enButtonB;		//通常攻撃
+	EnButton SKILL_BUTTON_2 = enButtonY;		//スキル攻撃
+
+
 
 	EnButton RIGHT_CHANGE_WEAPON_BUTTON = enButtonRB2;		//右武器切り替えボタン
 	EnButton LEFT_CHANGE_WEAPON_BUTTON = enButtonLB2;		//左武器切り替えボタン
@@ -33,12 +36,12 @@ void PlayerController::UpdateComponent()
 
 bool PlayerController::IsTriggerNromalAttackButton()
 {
-	return g_pad[0]->IsTrigger(NORMAL_ATTACK_BUTTON);
+	return g_pad[0]->IsTrigger(NORMAL_ATTACK_BUTTON)|| g_pad[0]->IsTrigger(NORMAL_ATTACK_BUTTON_2);
 }
 
 bool PlayerController::IsTriggerSkillAttackButton()
 {
-	return g_pad[0]->IsTrigger(SKILL_BUTTON);
+	return g_pad[0]->IsTrigger(SKILL_BUTTON)|| g_pad[0]->IsTrigger(SKILL_BUTTON_2);
 }
 
 bool PlayerController::IsPressSkillAttackButton()
@@ -49,17 +52,11 @@ bool PlayerController::IsPressSkillAttackButton()
 bool PlayerController::IsTriggerDefensiveActionButton()
 {
 	return g_pad[0]->IsTrigger(DEFENCIVEACTTION_BUTTON_RIGHT)|| g_pad[0]->IsTrigger(DEFENCIVEACTTION_BUTTON_LEFT);
-
-
-	return g_pad[0]->IsTrigger(DEFENCIVEACTTION_BUTTON);
 }
 
 bool PlayerController::IsPressDefensiveActionButton()
 {
 	return g_pad[0]->IsPress(DEFENCIVEACTTION_BUTTON_RIGHT) || g_pad[0]->IsPress(DEFENCIVEACTTION_BUTTON_LEFT);
-
-
-	return g_pad[0]->IsPress(DEFENCIVEACTTION_BUTTON);
 }
 
 bool PlayerController::IsTriggerRightChangeWeaponButton()
