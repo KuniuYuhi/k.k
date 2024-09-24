@@ -83,9 +83,19 @@ bool MobEnemyBase::IsDropBuffItem()
 
 void MobEnemyBase::DropBuffItem()
 {
-	int ram = rand() % 2;
+	int ram = rand() % 10;
 
-	if (ram > 0)
+
+	//HPの割合が高いほど攻撃アイテムの確率が上がる
+	float ratio = (float)m_player->GetStatus().GetCurrentHp() / (float)m_player->GetStatus().GetMaxHp();
+
+	if (ratio > 0.65f)
+	{
+		//倍率をかける
+		ram *= (1 + (int)ratio);
+	}
+
+	if (ram > 5)
 	{
 		//攻撃アイテムを落とす
 		AttackEffect* at = NewGO<AttackEffect>(0, "AttackEffect");
@@ -93,17 +103,18 @@ void MobEnemyBase::DropBuffItem()
 		return;
 	}
 	
-	ram = rand() % 2;
+	ram = rand() % 3;
 
 	//スタミナはプレイヤーのスタミナが減っている時だけ落とす
-	if (ram > 0 && m_player->GetStatus().GetCurrentStamina() <= 100)
+	if (ram > 0 && m_player->GetStatus().GetCurrentStamina() <= 75)
 	{
 		//スタミナ回復アイテムを落とす
 		StaminaEffect* se = NewGO<StaminaEffect>(0, "StaminaEffect");
 		se->SetStartPosition(m_position);
 	}
-	else
+	else if(ram > 0 && ratio < 0.8f)
 	{
+
 		//回復アイテムを落とす
 		RecoveryEffect* re = NewGO<RecoveryEffect>(0, "RecoveryEffect");
 		re->SetStartPosition(m_position);
