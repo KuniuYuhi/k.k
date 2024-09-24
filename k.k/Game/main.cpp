@@ -50,7 +50,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	//ゲームマネージャーを生成
 	//シーンステートをタイトルステートに設定
-	GameSceneManager::CreateInstanceAndSetGameSceneState(enGameSceneState_Game);
+	GameSceneManager::CreateInstanceAndSetGameSceneState(enGameSceneState_Title);
 
 
 	//エネミー管理するマネージャーを生成
