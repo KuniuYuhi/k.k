@@ -79,7 +79,7 @@ private:
 
 
 	float m_warpCoolTimer = 0.0f;
-	float m_warpCoolTimeLimit = 15.0f;
+	float m_warpCoolTimeLimit = 18.0f;
 
 
 	float m_closeDistanceTimer = 0.0f;

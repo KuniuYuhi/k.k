@@ -162,13 +162,20 @@ bool SummonerSSM_General::CheckChangeWarpState()
 	//前回もワープしたならワープしない
 	if (m_stateMachineContext->GetPreviousState() == enSummonerState_Warp) return false;
 	//タイマーが一定時間経っていないならワープしない
-	if (m_warpCoolTimer < m_warpCoolTimeLimit) return false;
-
+	if (m_warpCoolTimer < m_warpCoolTimeLimit)
+	{
+		
+		return false;
+	}
 	//スコア
 	int score = 0;
 
 	//HPの割合を計算
 	float ratio = (float)m_summoner->GetCommonStatus().GetCurrentHp() / (float)m_summonerHp;
+
+	
+
+
 	//1.5割以上削られたら
 	ratio = 1 - ratio;
 	if (ratio > 0.13f)
@@ -180,9 +187,9 @@ bool SummonerSSM_General::CheckChangeWarpState()
 	
 	//ボスとプレイヤーが近い時間が長いほどスコアが上がる
 
-	int addScore = m_closeDistanceTimer * 1.25f;
+	int addScore = m_closeDistanceTimer * 1.4f;
 
-	if (addScore >= 30) addScore = 30;
+	if (addScore >= 40) addScore = 40;
 
 	score += addScore;
 
@@ -193,13 +200,14 @@ bool SummonerSSM_General::CheckChangeWarpState()
 		m_summoner->GetPosition(),600.0f
 	);
 
-	score += mobEnemyAmount * 3;
+	score += mobEnemyAmount * 1.5f;
 
 
 	//合計の重みが一定以上なら
-
-	if (score < 62) return false;
-
+	if (score < 65)
+	{
+		return false;
+	}
 	//タイマーをリセット
 	m_warpCoolTimer = 0.0f;
 	//近距離タイマーをリセット
