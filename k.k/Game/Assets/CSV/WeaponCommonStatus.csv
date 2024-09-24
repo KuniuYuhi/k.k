@@ -1,4 +1,4 @@
 名前,基礎攻撃力,スキル攻撃力,スキルのスタミナ消費量,回避、防御のスタミナ消費量,武器の属性,1コンボ目ノックバックパターン,2コンボ目ノックバックパターン,3コンボ目ノックバックパターン,スキルのノックバックパターン
-SwordShield,30,50,20,0,Slash,ShortGroundedRetreat,ShortGroundedRetreat,SlightAirborneRetreat,VerticalLaunch
-GreateSword,50,70,40,20,Slash,LongGroundedRetreat,LongGroundedRetreat,SlightAirborneRetreat,FullAirborneRetreat
+SwordShield,30,70,25,0,Slash,ShortGroundedRetreat,ShortGroundedRetreat,SlightAirborneRetreat,VerticalLaunch
+GreateSword,50,90,40,20,Slash,LongGroundedRetreat,LongGroundedRetreat,SlightAirborneRetreat,FullAirborneRetreat
 BowArrow,20,25,50,15,Pierce,ShortGroundedRetreat,ShortGroundedRetreat,LongGroundedRetreat,LongGroundedRetreat
