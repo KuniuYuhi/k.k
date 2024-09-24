@@ -3,6 +3,8 @@
 
 #include "MobEnemyBase.h"
 
+#include "Brave.h"
+
 
 namespace {
     const Vector2 GAUGE_PIBOT = { 0.0f,0.5f };							//HPかMPのピボット
@@ -26,6 +28,8 @@ namespace {
 
 bool MobEnemyUI::Start()
 {
+    m_player = FindGO<Brave>("Brave");
+
     Init();
 
     SetShakeInfo(SHAKE_STEWNGTH, SHAKE_VIBRATO, BOSS_HP_CENTER_POS);
@@ -41,14 +45,11 @@ void MobEnemyUI::UIUpdate()
 
 }
 
-//void MobEnemyUI::Render(RenderContext& rc)
-//{
-//    Draw(rc);
-//}
-
 void MobEnemyUI::Draw(RenderContext& rc)
 {
     if (m_mobEnemy == nullptr) return;
+
+    if (!m_viewHpGauge) return;
 
     m_spriteList[enSpriteName_HPBar_Back].Draw(rc);
     m_spriteList[enSpriteName_HPBar_White].Draw(rc);
@@ -58,10 +59,28 @@ void MobEnemyUI::Draw(RenderContext& rc)
 
 void MobEnemyUI::UpdateStatusUI()
 {
+    m_viewHpGauge = true;
+
     //HPバーの処理
     UpdateEnemyHP();
     //HPバーの座標
     UpdateUIPosition();
+
+    Vector3 camera = g_camera3D->GetForward();
+    camera.y = 0.0f;
+    camera.Normalize();
+    Vector3 enemy = m_mobEnemy->GetPosition() - g_camera3D->GetPosition();
+    enemy.y = 0.0f;
+    enemy.Normalize();
+
+    float cos = Dot(camera, enemy);
+    float angle = acos(cos);
+
+    if (fabsf(angle) > Math::DegToRad(50.0f))
+    {
+        m_viewHpGauge = false;
+    }
+
 
     m_spriteList[enSpriteName_HPBar_Back].Update();
     m_spriteList[enSpriteName_HPBar_White].Update();

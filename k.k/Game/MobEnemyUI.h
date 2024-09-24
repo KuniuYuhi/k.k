@@ -2,6 +2,7 @@
 #include "GameUIBase.h"
 
 class MobEnemyBase;
+class Brave;
 
 class MobEnemyUI : public GameUIBase
 {
@@ -75,6 +76,8 @@ private:
 
 private:
 
+	Brave* m_player = nullptr;
+
 	MobEnemyBase* m_mobEnemy = nullptr;
 
 	SpriteRender m_spriteList[enSprite_Num];
@@ -85,6 +88,8 @@ private:
 
 
 	int m_whiteHP = 0;
+
+	bool m_viewHpGauge = true;
 
 };
 
