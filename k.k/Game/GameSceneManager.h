@@ -120,7 +120,10 @@ public:
 	/// <returns></returns>
 	const EnGameSceneState& GetCurrentGameSceneState();
 
-
+	/// <summary>
+	/// ゲームタイマーをストップする
+	/// </summary>
+	void StopGameTimer();
 
 
 	/// <summary>

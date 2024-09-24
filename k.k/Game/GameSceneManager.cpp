@@ -69,6 +69,15 @@ const EnGameSceneState& GameSceneManager::GetCurrentGameSceneState()
 	return m_gameSceneContext.get()->GetCurrentGameSceneState();
 }
 
+void GameSceneManager::StopGameTimer()
+{
+	m_isStartGameTimer = false;
+	//§ŒÀŠÔ‚ğİ’è
+	m_gameTimer.SetMinute(TIME_LIMIT);
+	m_gameTimer.SetSecond(0.0f);
+	m_isTimeOver = false;
+}
+
 
 
 void GameSceneManager::StartGameTimer()
@@ -76,7 +85,7 @@ void GameSceneManager::StartGameTimer()
 	m_isStartGameTimer = true;
 	//§ŒÀŠÔ‚ğİ’è
 	m_gameTimer.SetMinute(TIME_LIMIT);
-
+	m_gameTimer.SetSecond(0.0f);
 	m_isTimeOver = false;
 }
 
