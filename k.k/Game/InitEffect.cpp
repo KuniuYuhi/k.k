@@ -133,6 +133,19 @@ void InitEffect::InitPlayerEffect()
 		enEffect_RecoveryEffectSynbol,
 		u"Assets/effect/sprite/RecoveryEffectSymbol.efk"
 	);
+
+	//スタミナ回復開始エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		enEffect_StaminaRecoveryStart,
+		u"Assets/effect/sprite/StaminaRecoveryStart.efk"
+	);
+
+	//スタミナ回復エフェクトシンボルエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(
+		enEffect_StaminaRecoveryEffectSynbol,
+		u"Assets/effect/sprite/StaminaRecoveryEffectSymbol.efk"
+	);
+
 }
 
 void InitEffect::InitMonsterEffect()

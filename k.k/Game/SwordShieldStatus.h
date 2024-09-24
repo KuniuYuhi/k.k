@@ -25,6 +25,8 @@ private:
 
 		int maxShieldEnduranceValue = 0;			//シールドの最大耐久値
 		int currentShieldEnduranceValue = 0;		//現在のシールドの耐久値
+		int knockBackToleranceLevel = 0;			//ノックバック耐性レベル
+
 	};
 
 	UniqueStatus m_uniqueStatus;
@@ -117,7 +119,10 @@ public:
 		m_uniqueStatus.currentShieldEnduranceValue = value;
 	}
 
-
+	const int& GetKnockBackToleranceLevel()
+	{
+		return m_uniqueStatus.knockBackToleranceLevel;
+	}
 
 
 	/// <summary>

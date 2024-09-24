@@ -126,6 +126,10 @@ bool SummonerSSM_General::EvaluateSituation()
 	//各種クールタイム用タイマー
 	AddTimer(m_warpCoolTimer);
 
+	//プレイヤーとの距離が近い間更新する
+	UpdateCloseDistanceTimer();
+
+
 	//切り替えステート
 	EnSummonerState changeState = enSummonerState_None;
 
@@ -158,43 +162,56 @@ bool SummonerSSM_General::CheckChangeWarpState()
 	//前回もワープしたならワープしない
 	if (m_stateMachineContext->GetPreviousState() == enSummonerState_Warp) return false;
 	//タイマーが一定時間経っていないならワープしない
-	if (m_warpCoolTimer < m_warpCoolTimeLimit) return false;
-
+	if (m_warpCoolTimer < m_warpCoolTimeLimit)
+	{
+		
+		return false;
+	}
 	//スコア
 	int score = 0;
 
 	//HPの割合を計算
 	float ratio = (float)m_summoner->GetCommonStatus().GetCurrentHp() / (float)m_summonerHp;
+
+	
+
+
 	//1.5割以上削られたら
 	ratio = 1 - ratio;
 	if (ratio > 0.13f)
 	{
 		//割合を使ってスコア加算。減ったHP割合が低いほどスコアが大きくなる
-		score += 200 * ratio;
+		score += 140 * ratio;
 	}
 
-	//既に距離が一定以上離れているならワープしない
-	float length = m_summoner->GetDistanceToPlayerPositionValue();
-	//距離が近いならスコアを加算
-	if (length < 700.0f)
-	{
-		score += 20;
-	}
+	
+	//ボスとプレイヤーが近い時間が長いほどスコアが上がる
+
+	int addScore = m_closeDistanceTimer * 1.4f;
+
+	if (addScore >= 40) addScore = 40;
+
+	score += addScore;
+
+
 
 	//ボスの特定の半径の中にいるモブエネミーの数を取得
 	int mobEnemyAmount = EnemyManager::GetInstance()->GetNearbyEnemyCount(
 		m_summoner->GetPosition(),600.0f
 	);
 
-	score += mobEnemyAmount * 3;
+	score += mobEnemyAmount * 1.5f;
 
 
 	//合計の重みが一定以上なら
-
-	if (score < 60) return false;
-
+	if (score < 65)
+	{
+		return false;
+	}
 	//タイマーをリセット
 	m_warpCoolTimer = 0.0f;
+	//近距離タイマーをリセット
+	m_closeDistanceTimer = 0.0f;
 	return true;
 }
 
@@ -208,4 +225,20 @@ bool SummonerSSM_General::CheckChangeWarpState()
 void SummonerSSM_General::AddTimer(float& timer)
 {
 	timer += g_gameTime->GetFrameDeltaTime();
+}
+
+void SummonerSSM_General::UpdateCloseDistanceTimer()
+{
+	//既に距離が一定以上離れているならワープしない
+	float length = m_summoner->GetDistanceToPlayerPositionValue();
+
+	if (length < 700.0f)
+	{
+		//タイマーを加算する
+		m_closeDistanceTimer += g_gameTime->GetFrameDeltaTime();
+	}
+
+
+	
+
 }

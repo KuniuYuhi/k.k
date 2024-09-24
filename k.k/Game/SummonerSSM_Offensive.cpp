@@ -9,7 +9,7 @@
 
 
 namespace {
-	const float DARKMETEORITE_COOLTIME_LIMIT = 5.0f;
+	const float DARKMETEORITE_COOLTIME_LIMIT = 3.0f;
 
 	const float MELEE_ATTACK_DISTANCE = 400.0f;
 }
@@ -109,6 +109,19 @@ void SummonerSSM_Offensive::SelectMeleeAttack()
 	}
 	else
 	{
+
+		//ダークメテオに切り替えるかチェック
+		if (CheckChangeDarkMeteoriteState())
+		{
+			m_summoner->ChangeState(enSummonerState_Attack_DarkMeteorite);
+			//各種要素を計算
+			m_darkMeteoriteRemainingCount--;
+			m_darkMeteoriteCoolTimer = 0.0f;
+			//前回のステートを設定
+			m_stateMachineContext->SetPreviousState(enSummonerState_Attack_DarkMeteorite);
+			return;
+		}
+
 		//範囲攻撃
 		m_summoner->ChangeState(enSummonerState_ShockWave);
 		//前回のステートを設定
@@ -193,21 +206,16 @@ bool SummonerSSM_Offensive::CheckRangedAttack()
 
 bool SummonerSSM_Offensive::CheckNextDarkBallAction()
 {
-	
-
 	//スコア
 	int score = 0;
 	//前回のステートがダークボールステートなら確率を下げる。
 	//連続で使用するたび確率を下げる
 	if (m_stateMachineContext->GetPreviousState() == enSummonerState_DarkBall)
 	{
-		score -= 13 * m_darkBallActionCount;
+		score -= 15 * m_darkBallActionCount;
 	}
 
-
-
 	//体力が減っていくと連続で使う頻度が上がる
-
 	//HPの割合を求める
 	float ratio = 
 		(float)m_summoner->GetCommonStatus().GetCurrentHp() / (float)m_summoner->GetCommonStatus().GetMaxHp();
@@ -269,7 +277,7 @@ bool SummonerSSM_Offensive::CheckChangeDarkMeteoriteState()
 	//結果と残り回数が同じなら使用できる状態
 	if (result <= m_darkMeteoriteRemainingCount)
 	{
-		score += 20;
+		score += 25;
 	}
 
 	//現在のスタミナを最大値スタミナで割って割合を計算
@@ -277,17 +285,16 @@ bool SummonerSSM_Offensive::CheckChangeDarkMeteoriteState()
 	//逆にしてスタミナが少ないほどレートが上がるようにする
 	staminaRatio = 1 - staminaRatio;
 	//割合を使ってスコア加算。スタミナが少ないほどスコアが大きくなる
-	score += 100 * staminaRatio;
-
+	score += 100 * (staminaRatio * 1.2f);
 
 	result = EnemyManager::GetInstance()->GetNearbyEnemyCount(m_player->GetPosition(), 350.0f);
 	//5体以上いたら5に制限する
 	if (result > 6) result = 6;
 
-	score += result * 12;
+	score += result * 14;
 
 	//最終的なスコアが120以下ならこの行動はしない
-	if (score < 100) return false;
+	if (score < 88) return false;
 
 	return true;
 }

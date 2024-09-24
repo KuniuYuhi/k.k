@@ -59,7 +59,7 @@ namespace {
 	const Vector3 END_SCALE = g_vec3One;
 
 	//BOSSテキスト画像の座標
-	const Vector3 BOSS_TEXT_POS = { 0.0f,-63.0f,0.0f };
+	const Vector3 BOSS_TEXT_POS = { 0.0f,-40.0f,0.0f };
 
 	//Aボタンを押すとスキップの画像の座標とサイズ
 	const Vector3 PRESS_A_POS = { 723.0f,-501.0f ,0.0f };

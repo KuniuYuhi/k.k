@@ -42,3 +42,30 @@ void DamageProvider::AdjustPowerRandomly()
 		m_damageInfo.attackPower = 1;
 	}
 }
+
+void DamageProvider::CalcFinalKnockBackPattern(int knockBackToleranceLevel)
+{
+	//ノックバックのレベルを計算
+	int finalRevel = 
+		static_cast<int>(m_damageInfo.knockBackPattern) - knockBackToleranceLevel;
+
+	
+
+	if (finalRevel > enKBPattern_VerticalLaunch)
+	{
+		m_damageInfo.knockBackPattern = enKBPattern_VerticalLaunch;
+		return;
+	}
+	else if (finalRevel < enKBPattern_ShortGroundedRetreat)
+	{
+		m_damageInfo.knockBackPattern = enKBPattern_ShortGroundedRetreat;
+		return;
+	}
+
+	//型を変換
+	EnKnockBackPattern finalKBPattern = static_cast<EnKnockBackPattern>(finalRevel);
+
+	//計算したノックバックのパターンを設定
+	m_damageInfo.knockBackPattern = finalKBPattern;
+
+}

@@ -538,6 +538,8 @@ void SwordShield::CheckShieldCollision()
 	//コリジョンの配列をfor文で回す
 	for (auto collision : Collisions)
 	{
+		if (m_isHitShield) return;
+
 		//当たり判定が有効でないなら飛ばす
 		if (!collision->IsEnable()) continue;
 
@@ -556,6 +558,9 @@ void SwordShield::CheckShieldCollision()
 				dp->GetProviderPostion()
 			);
 
+			//盾の耐性レベルを使ってノックバックパターンを計算
+			dp->CalcFinalKnockBackPattern(m_uniqueStatus.GetKnockBackToleranceLevel());
+
 			//ノックバックの情報を設定
 			m_brave->SettingKnockBackInfoForDamageInfo(dp->GetProviderDamageInfo());
 
@@ -571,18 +576,14 @@ void SwordShield::CheckShieldCollision()
 
 			//シールドにヒットした！
 			m_isHitShield = true;
-
-
-			//ダメージを盾の耐久値が肩代わり
-			ProcessShieldHit();
 		}
 	}
 
 }
 
-void SwordShield::ProcessShieldHit()
+void SwordShield::SettingKnockBackInfoForDamageInfo(DamageInfo damageInfo)
 {
-	
+
 	
 }
 

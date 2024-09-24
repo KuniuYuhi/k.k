@@ -60,10 +60,14 @@ void SwordShieldStatus::LoadUniqueStatusCSV()
 		statusData.m_uniqueStatus.normalAttackComparisonDot = stof(buf);
 
 
-		//シールドの耐久値を読み込む。
+		//シールドの最大耐久値を読み込む。
 		getline(i_stream, buf, ',');
 		statusData.m_uniqueStatus.maxShieldEnduranceValue = stoi(buf);
 
+		//シールドのノックバック耐性レベルを読み込む。
+		getline(i_stream, buf, ',');
+		statusData.m_uniqueStatus.knockBackToleranceLevel = stoi(buf);
+		
 
 		//現在のシールドの耐久値を設定する
 		statusData.SetCurrentShieldEnduranceValue(statusData.m_uniqueStatus.maxShieldEnduranceValue);

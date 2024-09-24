@@ -490,6 +490,8 @@ void Brave::CheckSelfCollision()
 	{
 		//当たり判定が有効でないなら飛ばす
 		if (!collision->IsEnable()) continue;
+		//無敵時間中は処理しない
+		if (IsInvincible()) return;
 
 		//自身のキャラコンと衝突したら
 		if (collision->IsHit(*m_charaCon) == true)

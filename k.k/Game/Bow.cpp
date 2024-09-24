@@ -524,9 +524,17 @@ void Bow::ShotSkillAttackArrow()
 	//放つ時のパラメータの設定
 	m_arrow->SetShotArrowParameters(Arrow::enSkillShot, m_brave->GetForward());
 
+	int power = m_brave->GetCurrentPower();
+	//チャージ段階でダメージを変更
+	if (m_uniqueStatus.GetCurrentSkillChargeStage() >= BowArrowStatus::enStage_max)
+	{
+		power *= 1.2f;
+	}
+
 	//矢を放ったので矢自体にダメージ情報を設定
 	m_arrow->GetDamageProvider()->SetDamageInfo(
-		KnockBackInfoManager::GetInstance()->GetAddAttackId(), m_brave->GetCurrentPower(),
+		KnockBackInfoManager::GetInstance()->GetAddAttackId(), 
+		power,
 		m_uniqueStatus.SkillAttackTimeScale(),
 		m_status.GetSkillKnockBackPattern(),
 		m_status.GetWeaponAttribute()

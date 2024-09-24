@@ -126,12 +126,23 @@ private:
 private:
 
 	SpriteRender m_backSprite;
-	SpriteRender m_loadTextSprite;
+
+	SpriteRender m_dotSprite[3];
 
 	EnLoadingState m_enLoadingState = enLoadingState_None;
 	EnMethodLoading m_enMethodLoading = enMethodLoading_None;
 
 	EnLoadingRoot m_enLoadingRoot = enLoadingRoot_None;
+
+	Vector2 m_dotPositions[3] = {
+		{800.0f,-430.0f },
+		{825.0f,-430.0f },
+		{850.0f,-430.0f }
+	};
+
+	int m_currentDotCount = 0;
+
+	float m_dotCountTimer = 0.0f;
 
 	float m_currentAlpha = 0.0f;
 

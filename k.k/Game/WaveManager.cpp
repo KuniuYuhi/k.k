@@ -135,7 +135,12 @@ void WaveManager::SummonMobEnemys()
 		//エネミーの座標を生成座標にする
 		enemy->SetPosition(m_createPositions[i]);
 
-
+		EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
+		effectEmitter->Init(enEffect_Mob_Summon_Right);
+		effectEmitter->Play();
+		effectEmitter->SetPosition(m_createPositions[i]);
+		effectEmitter->SetScale(g_vec3One * 9.0f);
+		effectEmitter->Update();
 	}
 
 
@@ -203,8 +208,6 @@ void WaveManager::SetSummonRandomPosition(const int radius, int amount)
 
 bool WaveManager::IsWithInDistances(int count, float distance)
 {
-	if (count <= 1) return true;
-
 	Vector3 diff = g_vec3Zero;
 	float length = 0.0f;
 	int distanceCount = 0;

@@ -57,5 +57,8 @@ namespace EffectNumbers {
 		enEffect_RecoveryEffectSynbol,							//回復エフェクトシンボル
 		enEffect_RecoveryStart,									//回復スタート
 	
+		enEffect_StaminaRecoveryEffectSynbol,					//スタミナ回復エフェクトシンボル
+		enEffect_StaminaRecoveryStart,							//スタミナ回復エフェクトスタート
+
 	};
 }

@@ -55,6 +55,11 @@ void AttackBuffItem::Init()
 		Quaternion::Identity,
 		true
 	);
+	//Œø‰Ê‰¹Ä¶
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_ItemAttackUp,
+		g_soundManager->GetSEVolume()
+	);
 
 }
 

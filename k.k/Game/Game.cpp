@@ -123,8 +123,7 @@ bool Game::Start()
 
 
 
-	//制限時間のタイマーをスタートさせる
-	GameSceneManager::GetInstance()->StartGameTimer();
+	
 
 	
 

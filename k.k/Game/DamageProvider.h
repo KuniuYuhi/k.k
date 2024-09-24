@@ -19,6 +19,7 @@ namespace DamageInformaiton {
 
 	struct DamageInfo
 	{
+		
 		int attackId = -1;						//攻撃ID
 		int attackPower = 0;					//攻撃力
 		float knockBackTimeScale = 0.0f;			//ノックバックの時間間隔
@@ -141,8 +142,11 @@ public:
 	/// </summary>
 	void AdjustPowerRandomly();
 
-
-
+	/// <summary>
+	/// 最終的なノックバックパターンを計算
+	/// </summary>
+	/// <param name="knockBackToleranceLevel">ノックバック耐性レベル</param>
+	void CalcFinalKnockBackPattern(int knockBackToleranceLevel);
 
 	/// <summary>
 	/// ヒットした

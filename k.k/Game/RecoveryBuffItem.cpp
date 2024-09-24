@@ -52,6 +52,12 @@ void RecoveryBuffItem::Init()
 		true
 	);
 
+	//Œø‰Ê‰¹Ä¶
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_ItemRecovery,
+		g_soundManager->GetSEVolume()
+	);
+
 	//HP‚ð‰ñ•œ‚µ‚½
 	isRecoveryPlayerHp = true;
 }
