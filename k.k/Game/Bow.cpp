@@ -1,37 +1,25 @@
 #include "stdafx.h"
 #include "Bow.h"
 #include "Brave.h"
+#include "PlayerMovement.h"
+#include "PlayerController.h"
+
 #include "Arrow.h"
 
-#include "GameManager.h"
+#include "DamageProvider.h"
+#include "KnockBackInfoManager.h"
+
+#include "UseEffect.h"
 
 
 namespace {
-	//武器が収納状態の時の座標
-	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
+	
 
-	//ステータス
-	const int POWER = 30;
-
-	const float HITTABLE_TIME = 0.15f;
-
-	const float CHARGE_COMPLETE_TIME = 1.0f;
-
-	const float SHOT_ARROW_ANGLE = 11.0f;			//矢を撃つときの角度
-
-	const float MOVE_BACK_SPEED = 100.0f;			//矢を撃った後の後退するスピード
-
-	const float NORMAL_ATTACK__EFFECT_SIZE = 12.0f;
-	const float SKILL_ATTACK_EFFECT_SIZE = 15.0f;
-
-	const int SUB_SKILL_ENDURANCEE = 3;
 
 }
 
 Bow::Bow()
 {
-	SetWeaponPower(POWER);
-	SetMoveBackSpeed(MOVE_BACK_SPEED);
 }
 
 Bow::~Bow()
@@ -41,199 +29,66 @@ Bow::~Bow()
 		DeleteGO(m_arrow);
 	}
 
-	if (m_chargeEffect != nullptr)
-	{
-		//チャージエフェクトを停止
-		m_chargeEffect->Stop();
-	}
-	
 }
 
 bool Bow::Start()
 {
-	//武器のステータス初期化
-	m_status.InitWeaponStatus(GetName());
+	m_brave = FindGO<Brave>("Brave");
+	//プレイヤーコントローラーコンポーネントを取得
+	m_playerController = m_brave->GetComponent<PlayerController>();
 
-	//勇者のインスタンスを探す
-	m_brave = FindGO<Brave>("brave");
+	m_playerMovement = m_brave->GetComponent<PlayerMovement>();
+	//共通ステータスの初期化
+	m_status.InitWeaponCommonStatus("BowArrow");
+	//固有ステータスの初期化
+	m_uniqueStatus.InitUniqueStatus();
 
-	//矢のオブジェクトを生成
-	CreateArrow();
+	//初期化処理
+	Init();
 
-	InitModel();
+	
 
-	//防御タイプの設定
-	SetEnDefendTipe(enDefendTipe_avoid);
+	//武器が収納状態なら
+	if (m_enWeaponState == enStowed)
+	{
+		ChangeStowedState();
+	}
+	//武器が装備状態なら
+	else
+	{
+		ChangeArmedState();
+	}
 
+	//矢を生成
+	CreateArrow(m_enWeaponState);
 
 	//アニメーションイベント用の関数を設定する。
 	m_brave->GetModelRender().AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
-		});
-
+	});
 
 	return true;
 }
 
 void Bow::Update()
 {
-	//収納状態なら
-	if (GetStowedFlag() == true)
+	if(m_enWeaponState==enArmed)
 	{
-		return;
-	}
-
-	//矢の数が残っているなら、矢を生成
-	if (m_status.GetEndurance() > 0)
-	{
-		IsCreatArrow();
-	}
-
-	//多段ヒット可能か判断する。他の武器で処理が途中で終わっているかもしれないから
-	m_hitDelection.IsHittable(HITTABLE_TIME);
-
-	MoveWeapon();
-
-	m_modelBow.Update();
-}
-
-void Bow::MoveWeapon()
-{
-	switch (m_enWeaponState)
-	{
-	case IWeapon::enWeaponState_Stowed://収納状態
-		MoveStowed();
-		break;
-	case IWeapon::enWeaponState_Armed://装備状態
 		MoveArmed();
-		break;
-	case IWeapon::enWeaponState_None://なし
-		break;
-	default:
-		break;
 	}
+
+
+
+	m_bowModelRender.Update();
+
 }
 
-void Bow::ProcessSkillAttack()
-{
-	//フラグが立っていないなら
-	if (m_playChargeEffectFlag == false&&
-		m_ChargeTimer >= CHARGE_COMPLETE_TIME)
-	{
-		//チャージエフェクトを再生
-		m_chargeEffect = NewGO<EffectEmitter>(0);
-		m_chargeEffect->Init(InitEffect::enEffect_SwordStorm_Charge);
-		m_chargeEffect->Play();
-		m_chargeEffect->SetPosition(m_brave->GetPosition());
-		m_chargeEffect->SetScale(g_vec3One * SKILL_ATTACK_EFFECT_SIZE);
-		m_chargeEffect->Update();
-
-		//音再生
-		g_soundManager->InitAndPlaySoundSource(
-			enSoundName_BowArrowSkillCharge,
-			g_soundManager->GetSEVolume()
-		);
-
-		//フラグをセット
-		m_playChargeEffectFlag = true;
-	}
-
-	//矢のストックがないならスキル発動できない
-	if (m_status.GetEndurance() <= 0)
-	{
-		return;
-	}
-
-	//ボタンを押している間チャージ
-	if (g_pad[0]->IsPress(enButtonB) == true)
-	{
-		//チャージしている間は回転可能
-		SetRotationDelectionFlag(true);
-		//チャージタイマーを加算
-		m_ChargeTimer += g_gameTime->GetFrameDeltaTime()*2.4f;
-
-	}
-	//離した時にチャージタイマーがチャージ完了タイムを超えていたら
-	//矢を撃つ
-	else if (m_ChargeTimer >= CHARGE_COMPLETE_TIME)
-	{
-		//チャージタイマーをリセット
-		m_ChargeTimer = 0.0f;
-		//矢を撃つので回転可能フラグをリセット
-		SetRotationDelectionFlag(false);
-		//勇者のアニメーションをスキルメインに切り替え
-		m_brave->SetNextAnimationState(Brave::enAnimationState_Skill_Main);
-		//またチャージエフェクトを再生できるようにする
-		m_playChargeEffectFlag = false;
-		//チャージエフェクトを停止
-		m_chargeEffect->Stop();
-	}
-	//チャージ完了できなかったら
-	else
-	{
-		//勇者の情報を攻撃前にリセット
-		m_brave->SetAllInfoAboutActionFlag(false);
-		m_brave->ProcessCommonStateTransition();
-		//またチャージエフェクトを再生できるようにする
-		m_playChargeEffectFlag = false;
-		//チャージエフェクトを停止
-		if (m_chargeEffect != nullptr)
-		{
-			//チャージエフェクトを停止
-			m_chargeEffect->Stop();
-		}
-	}
-}
-
-void Bow::postDamageReset()
-{
-	//チャージタイマーをリセット
-	m_ChargeTimer = 0.0f;
-	//またチャージエフェクトを再生できるようにする
-	m_playChargeEffectFlag = false;
-
-	if (m_chargeEffect != nullptr)
-	{
-		//チャージエフェクトを停止
-		m_chargeEffect->Stop();
-	}
-}
-
-const Vector3& Bow::GetPlayerForward() const
-{
-	return m_brave->GetForward();
-}
-
-void Bow::SetAttackHitFlag(bool flag)
-{
-	m_brave->SetAttackHitFlag(flag);
-}
-
-const bool& Bow::GetAttackHitFlag() const
-{
-	return m_brave->GetAttackHitFlag();
-}
-
-void Bow::IsCreatArrow()
-{
-	//アニメーション終了時に矢を持っていなかったら、矢を生成
-	if (m_brave->GetModelRender().IsPlayingAnimation() == false)
-	{
-		if (GetStockArrowFlag() != true)
-		{
-			CreateArrow();
-		}
-	}
-}
-
-void Bow::InitModel()
+void Bow::Init()
 {
 	//弓モデルの初期化
-	m_modelBow.Init("Assets/modelData/character/Player/NewHero/Bow.tkm",
+	m_bowModelRender.Init("Assets/modelData/character/Player/NewHero/Bow.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
-		0,
-		0,
-		enModelUpAxisZ
+		0,0,enModelUpAxisZ
 	);
 
 	//弓と矢の座標に対応するボーンIDを取得
@@ -243,164 +98,555 @@ void Bow::InitModel()
 
 }
 
-void Bow::MoveArmed()
+void Bow::DeleteThis()
 {
-	//弓のワールド座標を設定
-	m_bowMatrix = 
-		m_brave->GetModelRender().GetBone(m_armedBowBoonId)->GetWorldMatrix();
-	m_modelBow.SetWorldMatrix(m_bowMatrix);
-	//矢のワールド座標を設定
-	m_arrowMatrix = 
-		m_brave->GetModelRender().GetBone(m_armedArrowBoonId)->GetWorldMatrix();
+	DeleteGO(this);
+}
 
-	if (m_arrow != nullptr)
+void Bow::ChangeStowedState()
+{
+	SetCurrentWeaponState(enStowed);
+	//収納時の座標に変更
+	m_bowModelRender.SetPosition(m_stowedPosition);
+	//矢も収納状態に変更
+	if (m_arrow == nullptr) return;
+	m_arrow->ChangeStowed();
+}
+
+void Bow::ChangeArmedState()
+{
+	SetCurrentWeaponState(enArmed);
+	//矢も装備状態に変更
+	if (m_arrow == nullptr) return;
+	m_arrow->ChangeArmed();
+}
+
+void Bow::AttackAction()
+{
+}
+
+void Bow::ProceedComboAttack()
+{
+	//３コンボ以上なら
+	if (m_enComboState >= enCombo_Third)
 	{
-		//矢のステートを設定
-		m_arrow->SetWeaponState(enWeaponState_Armed);
+		//コンボステートをなしにリセットする
+		m_enComboState = enCombo_None;
 	}
+
+	//コンボを一つ進める
+	m_enComboState = static_cast<EnComboState>(m_enComboState + 1);
+}
+
+void Bow::ResetComboAttack()
+{
+	//コンボステートをなしにリセットする
+	m_enComboState = enCombo_None;
+}
+
+bool Bow::IsEndDefensiveAction()
+{
+
+	//アニメーションが終わったら
+	if (m_brave->GetModelRender().IsPlayingAnimation() == false)
+	{
+		//回避アクションを終わる
+		return true;
+	}
+
+	return false;
+}
+
+void Bow::EntryDefensiveActionProcess()
+{
+	//回避時に移動する方向を決める
+	m_defensiveActionDirection = m_playerMovement->CalcMoveDirection(
+		m_brave->GetForward(),
+		m_playerController->GetLStickInput(),
+		m_brave->GetMoveSpeed()
+	);
+
+	//プレイヤーの回転方向に移動方向を設定する
+	m_brave->SetRotateDirection(m_defensiveActionDirection);
+	m_brave->SetForward(m_defensiveActionDirection);
+
+	m_defensiveActionDirection.y = 0.0f;
+
+	//回避速度をかける
+	m_defensiveActionDirection *= m_uniqueStatus.GetDefenciveMoveSpeed();
+
+	//回避中は無敵
+	m_brave->EnableInvincible();
+}
+
+void Bow::UpdateDefensiveActionProcess()
+{
+	//回避中の移動可能フラグが立っていたら
+	if (IsDefensiveActionMove())
+	{
+		m_brave->CharaConExecute(m_defensiveActionDirection);
+	}	
+
+	//回避アクションを終わるなら
+	if (IsEndDefensiveAction())
+	{
+		//ステートの共通処理
+		m_brave->ProcessCommonStateTransition();
+	}
+}
+
+void Bow::ExitDefensiveActionProcess()
+{
+	//スタミナを消費する
+	m_brave->GetStatus().TryConsumeStamina(m_status.GetDefensiveStaminaCost());
+	//無敵を解除
+	m_brave->DisableInvincible();
+}
+
+bool Bow::CanDefensiveAction()
+{
+	//回避に必要なスタミナを消費できるかチェック
+	if (m_brave->GetStatus().CheckConsumeStamina(m_status.GetDefensiveStaminaCost()))
+	{
+		//回避可能
+		return true;
+	}
+
+	//スタミナが不足しているのでフラグを立てる
+	m_brave->SetStaminaInsufficientFlag(true);
+	//不可能
+	return false;
+}
+
+bool Bow::CanSkillAttack()
+{
+	//スキルに必要なスタミナを消費できるなら
+	//チャージするタイプなので攻撃した後に消費する
+	if (m_brave->GetStatus().CheckConsumeStamina(m_status.GetSkillStaminaCost()))
+	{
+		//スキル攻撃可能
+		return true;
+	}
+
+	//スタミナが不足しているのでフラグを立てる
+	m_brave->SetStaminaInsufficientFlag(true);
+	//不可能
+	return false;
+}
+
+void Bow::EntrySkillAttackProcess(EnSkillProcessState skillProcessState)
+{
+	switch (skillProcessState)
+	{
+	case WeaponBase::enStart:
+		EntrySkillStartProcess();
+		break;
+	case WeaponBase::enMain:
+		EntrySkillMainProcess();
+		break;
+	default:
+		break;
+	}
+}
+
+void Bow::UpdateSkillAttackProcess(EnSkillProcessState skillProcessState)
+{
+	switch (skillProcessState)
+	{
+	case WeaponBase::enStart:
+		UpdateSkillStartProcess();
+		break;
+	case WeaponBase::enMain:
+		UpdateSkillMainProcess();
+		break;
+	default:
+		break;
+	}
+}
+
+void Bow::ExitSkillAttackProcess(EnSkillProcessState skillProcessState)
+{
+	switch (skillProcessState)
+	{
+	case WeaponBase::enStart:
+		ExitSkillStartProcess();
+		break;
+	case WeaponBase::enMain:
+		ExitSkillMainProcess();
+		break;
+	default:
+		break;
+	}
+}
+
+void Bow::EntryNormalAttackProcess(EnComboState comboState)
+{
+	//移動方向を前方向か入力方向か計算する
+	m_normalAttackMoveDirection =
+		m_playerMovement->CalcMoveDirection(
+			m_brave->GetForward(),
+			m_playerController->GetLStickInput(),
+			m_brave->GetMoveSpeed()
+		);
+
+	//敵の位置も踏まえて向く方向を決める
+	m_normalAttackMoveDirection = CalcAutoAimAtTarget(
+		m_brave->GetPosition(),
+		m_normalAttackMoveDirection,
+		m_uniqueStatus.GetNormalAttackSearchRadius(),
+		m_uniqueStatus.GetNormalAttackComparisonDot()
+	);
+
+	//プレイヤーの回転方向に移動方向を設定する
+	m_brave->SetRotateDirection(m_normalAttackMoveDirection);
+	m_brave->SetForward(m_normalAttackMoveDirection);
+
+	//コンボステートを番号に変換する
+	m_comboNumber = ConvertComboStateToNumber(comboState);
+
+	//武器ステータスから攻撃スピードを取得して方向にかける
+	m_normalAttackMoveDirection *= m_uniqueStatus.GetNormalAttackSpeed(m_comboNumber);
+
+	//通常攻撃待機区間フラグをリセット
+	SetStandbyPeriodFlag(false);
+	//キャンセルアクションフラグを立てる。(キャンセルアクションできる)
+	m_isImpossibleancelAction = true;
+
 	
 }
 
-void Bow::MoveStowed()
+void Bow::UpdateNormalAttackProcess(EnComboState comboState)
 {
-	//弓の座標を設定
-	m_bowPos = STOWEDS_POSITION;
-	m_modelBow.SetPosition(m_bowPos);
-
-	if (m_arrow != nullptr)
+	//キャンセルアクションできる状態なら回避も可能
+	if (m_isImpossibleancelAction && 
+		IsStandbyPeriod() &&
+		m_playerController->IsPressDefensiveActionButton())
 	{
-		//矢のステートを設定
-		m_arrow->SetWeaponState(enWeaponState_Stowed);
+		//防御ステートに切り替える
+		m_brave->ChangeBraveState(enBraveState_DefensiveActions);
+		return;
 	}
 
-	SetStowedFlag(true);
+	//移動フラグが立っている間は移動
+	if (IsAttackActionMove())
+	{
+		//矢を放ったときの反動の移動
+		m_brave->CharaConExecute(m_normalAttackMoveDirection);
+	}
 }
 
-void Bow::ProcessLongRangeAttack()
+void Bow::ExitNormalAttackProcess(EnComboState comboState)
 {
-	//矢がないと撃てない
-	if (m_arrow != nullptr)
+	//攻撃中の移動フラグをリセット
+	SetAttackActionMove(false);
+	//通常攻撃待機区間フラグをリセット
+	SetStandbyPeriodFlag(false);
+
+	if (m_arrow == nullptr)
 	{
-		//矢を発射
-		m_arrow->SetShotArrowSetting(
-			true,
-			m_brave->GetForward(),
-			m_arrow->GetPosition(),
-			SHOT_ARROW_ANGLE,
-			Arrow::enShotPatternState_Normal
+		//矢を生成
+		CreateArrow(m_enWeaponState);
+	}
+}
+
+void Bow::EntrySkillStartProcess()
+{
+	m_skillChargeTimer = 0.0f;
+	//チャージ段階をリセット
+	m_uniqueStatus.SetSkillChargeStage(BowArrowStatus::enStage_1);
+	//スキル攻撃可能かフラグをリセット
+	m_ispossibleSkillAttack = false;
+}
+
+void Bow::UpdateSkillStartProcess()
+{
+	//ボタンを押している間はチャージする
+	if (m_playerController->IsPressSkillAttackButton())
+	{
+		//チャージ中の処理をする
+		SkillChargeTimeProcess();
+
+		
+		//移動はできないけど回転だけできるようにする
+		Vector3 moveSpeed = m_playerMovement->CalcSimpleMovementVerocity(
+			100.0f,
+			m_brave->GetMoveSpeed(),
+			m_playerController->GetLStickInput()
 		);
+		//回転方向を設定する
+		m_brave->SetRotateDirection(moveSpeed);
+	}
+	else
+	{
+		//一段階以上チャージしていたら
+		if (m_uniqueStatus.GetCurrentSkillChargeStage() >= BowArrowStatus::enStage_2)
+		{
+			//メインステートに遷移
+			m_brave->ChangeBraveState(BraveState::enBraveState_SkillMain);
+			//スキル攻撃できるのでフラグを立てる
+			m_ispossibleSkillAttack = true;
+			return;
+		}
+
+		//スキルを終わる(攻撃は不発)
+		m_brave->ProcessCommonStateTransition();
+		//スキル攻撃できないのでフラグを下げる
+		m_ispossibleSkillAttack = false;
+	}
+}
+
+void Bow::ExitSkillStartProcess()
+{
+	//スキル攻撃しなかった場合は
+	if (!m_ispossibleSkillAttack)
+	{
+		//アクションを終わる
+		m_brave->ActionDeactive();
+	}
+
+	//エフェクトを削除する
+	if (m_chargeEffect != nullptr)
+	{
+		m_chargeEffect->Delete();
+		m_chargeEffect = nullptr;
+	}
+
+}
+
+void Bow::EntrySkillMainProcess()
+{
+	
+	
+
+	//メインに進んだので無敵にする
+	m_brave->EnableInvincible();
+}
+
+void Bow::UpdateSkillMainProcess()
+{
+	//メインに進んだので無敵にする
+	m_brave->EnableInvincible();
+}
+
+void Bow::ExitSkillMainProcess()
+{
+	//攻撃時の移動フラグをリセット
+	SetAttackActionMove(false);
+
+	if (m_arrow == nullptr)
+	{
+		//矢を生成
+		CreateArrow(m_enWeaponState);
+	}
+
+	//スタミナを消費する
+	m_brave->GetStatus().TryConsumeStamina(m_status.GetSkillStaminaCost());
+
+	//無敵を無効化する
+	m_brave->DisableInvincible();
+}
+
+void Bow::SkillChargeTimeProcess()
+{
+	//チャージ段階がマックスなら処理しない
+	if (m_uniqueStatus.GetCurrentSkillChargeStage() == BowArrowStatus::enStage_max)
+	{
+		return;
+	}
+
+	//タイマーを加算
+	m_skillChargeTimer += g_gameTime->GetFrameDeltaTime();
+
+	//チャージ時間に達したら
+	if (m_skillChargeTimer >= m_uniqueStatus.GetSkillChargeCompletionTime(m_uniqueStatus.GetCurrentSkillChargeStage()))
+	{
+		//チャージエフェクト生成
+		PlayChargeEffect(m_uniqueStatus.GetCurrentSkillChargeStage());
+
+		//次の段階にする
+		m_uniqueStatus.SetSkillChargeStage(
+			static_cast<BowArrowStatus::EnSkillChargeStage>(m_uniqueStatus.GetCurrentSkillChargeStage() + 1)
+		);
+	}
+
+}
+
+void Bow::CreateArrow(EnWeaponState weaponState)
+{
+	//矢の名前を決める。
+	//当たり判定を取りやすくするために名前の後にIDを設定
+	const char* name = "Arrow" + m_arrowNameId;
+
+	m_arrow = NewGO<Arrow>(0, name);
+	//弓のインスタンスを設定
+	m_arrow->SetBowInstance(this);
+
+	//矢を弓の状態と同じ状態にする
+	if (weaponState == enStowed)
+	{
+		m_arrow->ChangeStowed();
+	}
+	else
+	{
+		m_arrow->ChangeArmed();
+	}
+
+	//IDを加算
+	m_arrowNameId++;
+	//一定の数を超えるとIDをリセット
+	if (m_arrowNameId > 100)
+	{
+		m_arrowNameId = -1;
+	}
+}
+
+void Bow::ShotNromalAttackArrow()
+{
+	if (m_arrow == nullptr) return;
+	//放つ時のパラメータの設定
+	m_arrow->SetShotArrowParameters(Arrow::enNormalShot, m_brave->GetForward());
+
+	//矢を放ったので矢自体にダメージ情報を設定
+	m_arrow->GetDamageProvider()->SetDamageInfo(
+		KnockBackInfoManager::GetInstance()->GetAddAttackId(), m_brave->GetCurrentPower(),
+		m_uniqueStatus.GetAttackTimeScale(m_comboNumber),
+		m_status.GetComboKnockBackPattern(static_cast<WeaponStatus::EnCombo>(m_comboNumber)),
+		m_status.GetWeaponAttribute()
+	);
+
+	//矢を放ったので矢を持っていない状態にする
+	m_arrow = nullptr;
+}
+
+void Bow::ShotSkillAttackArrow()
+{
+	if (m_arrow == nullptr) return;
+	//放つ時のパラメータの設定
+	m_arrow->SetShotArrowParameters(Arrow::enSkillShot, m_brave->GetForward());
+
+	int power = m_brave->GetCurrentPower();
+	//チャージ段階でダメージを変更
+	if (m_uniqueStatus.GetCurrentSkillChargeStage() >= BowArrowStatus::enStage_max)
+	{
+		power *= 1.2f;
+	}
+
+	//矢を放ったので矢自体にダメージ情報を設定
+	m_arrow->GetDamageProvider()->SetDamageInfo(
+		KnockBackInfoManager::GetInstance()->GetAddAttackId(), 
+		power,
+		m_uniqueStatus.SkillAttackTimeScale(),
+		m_status.GetSkillKnockBackPattern(),
+		m_status.GetWeaponAttribute()
+	);
+
+	//スキル攻撃に必要な情報を設定
+	m_arrow->SetSkillShotInfo(
+		m_brave->GetCurrentPower(),m_uniqueStatus.GetAttackInfoUpdateInterval()
+	);
+	//攻撃情報更新間隔を設定
+	m_arrow->SetAttackInfoUpdateTimeLimit(m_uniqueStatus.GetAttackInfoUpdateInterval());
+
+	//矢を放ったので矢を持っていない状態にする
+	m_arrow = nullptr;
+}
+
+void Bow::PlayChargeEffect(BowArrowStatus::EnSkillChargeStage chargeState)
+{
+	//エフェクトを削除する
+	if (m_chargeEffect != nullptr)
+	{
+		m_chargeEffect->Delete();
+		m_chargeEffect = nullptr;
+	}
+
+	Vector3 position = g_vec3Zero;
+	m_bowMatrix.Apply(position);
+
+	EnEFK eff = enEffect_ArrowCharge1;
+
+	float mulScale = 1.0f;
+
+	switch (chargeState)
+	{
+	case BowArrowStatus::enStage_1:
+
+		eff = enEffect_ArrowCharge1;
+		mulScale = 15.0f;
+		
+		break;
+	case BowArrowStatus::enStage_2:
+		eff = enEffect_ArrowCharge2;
+		mulScale = 20.0f;
+
+		break;
+	case BowArrowStatus::enStage_max:
+		eff = enEffect_ArrowCharge2;
+		mulScale = 30.0f;
+
+		break;
+	}
+
+	//エフェクトや音の再生
+	m_chargeEffect = NewGO<UseEffect>(0, "ChargeStageEffect");
+	//自動で追尾するようにする
+	m_chargeEffect->PlayEffect(
+		eff,
+		m_brave,
+		m_armedBowBoonId,
+		position, g_vec3One * mulScale, Quaternion::Identity, true);
+
+	g_soundManager->StopSound(enSoundName_BowArrowSkillCharge);
+
+	//音再生
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_BowArrowSkillCharge,
+		g_soundManager->GetSEVolume()
+	);
+}
+
+
+
+void Bow::MoveArmed()
+{
+	//弓のワールド座標を設定
+	m_bowMatrix = m_brave->GetModelRender().GetBone(m_armedBowBoonId)->GetWorldMatrix();
+	m_bowModelRender.SetWorldMatrix(m_bowMatrix);
+
+}
+
+void Bow::Render(RenderContext& rc)
+{
+	m_bowModelRender.Draw(rc);
+}
+
+void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+
+	//通常攻撃で矢を放つアニメーションキーフレーム
+	if (wcscmp(eventName, L"LongRangeAttack") == 0)
+	{
+		//矢を放つ
+		ShotNromalAttackArrow();
 
 		//音再生
 		g_soundManager->InitAndPlaySoundSource(
 			enSoundName_BowArrowNormalShot,
 			g_soundManager->GetSEVolume()
 		);
-
-		//矢を放ったので、今の矢を保持フラグをリセットする。矢を持っていない状態
-		SetStockArrowFlag(false);
-		//矢のストックを減らす(耐久値を減らす)
-		CalcEndurance(1, false);
-		m_arrow = nullptr;
 	}
-}
 
-void Bow::SkillShot()
-{
-	if (m_arrow != nullptr)
+	//スキル攻撃で矢を放つアニメーションキーフレーム
+	if (wcscmp(eventName, L"SkillShot") == 0)
 	{
-		//矢を発射
-		m_arrow->SetShotArrowSetting(
-			true,
-			m_brave->GetForward(),
-			m_arrow->GetPosition(),
-			0.0f,
-			Arrow::enShotPatternState_Skill
-		);
+		ShotSkillAttackArrow();
 
 		//音再生
 		g_soundManager->InitAndPlaySoundSource(
 			enSoundName_BowArrowSkillAttack,
 			g_soundManager->GetSEVolume()
 		);
-
-		//矢を放ったので、今の矢を保持フラグをリセットする。矢を持っていない状態
-		SetStockArrowFlag(false);
-		//矢のストックを減らす(耐久値を減らす)。スキルなので少し多め
-		CalcEndurance(SUB_SKILL_ENDURANCEE, false);
-		m_arrow = nullptr;
-	}
-}
-
-void Bow::CreateArrow()
-{
-	//矢のオブジェクトを生成
-	m_arrow = NewGO<Arrow>(0, "arrow");
-	m_arrow->SetBow(this);
-	//矢を持っているので、保持フラグをセット
-	SetStockArrowFlag(true);
-}
-
-void Bow::Render(RenderContext& rc)
-{
-	if (GetWeaponState() == enWeaponState_Stowed)
-	{
-		return;
 	}
 
-	m_modelBow.Draw(rc);
-}
-
-void Bow::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
-{
-	//攻撃方向を設定
-	if (wcscmp(eventName, L"AttackMoveSpeed") == 0)
-	{
-		m_brave->CalcAttackMoveSpeed();
-	}
-
-	//遠距離攻撃処理
-	if (wcscmp(eventName, L"LongRangeAttack") == 0)
-	{
-		ProcessLongRangeAttack();
-	}
-
-	//スキルチャージ
-	if (wcscmp(eventName, L"SkillChage") == 0)
-	{
-		ProcessSkillAttack();
-	}
-
-	//スキルを撃った瞬間
-	if (wcscmp(eventName, L"SkillShot") == 0)
-	{
-		SkillShot();
-
-		Vector3 pos = g_vec3Zero;
-		m_bowMatrix.Apply(pos);
-		Quaternion rot = g_quatIdentity;
-		rot.SetRotationYFromDirectionXZ(m_brave->GetForward());
-
-		PlayEffect(
-			InitEffect::enEffect_BowArrowCombo,
-			pos,
-			SKILL_ATTACK_EFFECT_SIZE,
-			rot
-		);
-	}
-
-	if (wcscmp(eventName, L"BowArrowPlayComboEffect") == 0)
-	{
-		/*Vector3 pos = g_vec3Zero;
-		m_bowMatrix.Apply(pos);
-		Quaternion rot = g_quatIdentity;
-		rot.SetRotationYFromDirectionXZ(m_brave->GetForward());
-
-		PlayEffect(
-			InitEffect::enEffect_BowArrowCombo,
-			pos,
-			NORMAL_ATTACK__EFFECT_SIZE,
-			rot
-		);*/
-	}
 
 }

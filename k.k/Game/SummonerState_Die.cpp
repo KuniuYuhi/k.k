@@ -2,51 +2,43 @@
 #include "SummonerState_Die.h"
 #include "Summoner.h"
 
-#include "InitEffect.h"
-#include "GameManager.h"
-
-void SummonerState_Die::ManageState()
-{
-	//死亡エフェクトが再生され始めたら
-	if (m_isdeadEffectPlayFlag == true)
-	{
-		//死亡の再生が終わったら
-		if (m_deadEffect->IsPlay() != true)
-		{
-			//全ての処理が終わりもう削除されてもよい
-			GameManager::GetInstance()->SetBossDeleteOkFlag(true);
-		}
-		//以降の処理はする必要がないのでreturn
-		return;
-	}
-	//アニメーションが終わったら
-	if (m_summoner->GetModelRender().IsPlayingAnimation() == false)
-	{
-		//やられたら死亡エフェクト再生
-		CreateDeadEffect();
-		//モデルドローフラグをリセット
-		m_summoner->SetIsDrawModelFlag(false);
-		//モブモンスターを削除
-		m_summoner->DeleteMobMonsters();
-	}
-}
+#include "GameSceneManager.h"
 
 void SummonerState_Die::PlayAnimation()
 {
-	m_summoner->GetModelRender().PlayAnimation(Summoner::enAnimClip_Die);
+	m_summoner->GetModelRender().PlayAnimation(enSummonerAnimClip_Die, 0.2f);
 }
 
-void SummonerState_Die::CreateDeadEffect()
+void SummonerState_Die::Entry()
 {
-	m_deadEffect = NewGO<EffectEmitter>(0);
-	m_deadEffect->Init(InitEffect::enEffect_Mob_Dead);
-	m_deadEffect->Play();
-	m_deadEffect->SetPosition(m_summoner->GetPosition());
-	m_deadEffect->SetScale(g_vec3One * 8.0f);
-	m_deadEffect->Update();
-	//フレームレートを戻す
-	g_engine->SetFrameRateMode(K2EngineLow::enFrameRateMode_Variable, 60);
+	//アニメーション速度を遅くする
+	m_summoner->GetModelRender().SetAnimationSpeed(0.4f);
 
-	//エフェクト再生フラグをセット
-	m_isdeadEffectPlayFlag = true;
+	m_summoner->ActionActive();
+	//ここに入った時点で勝敗は決まっているので
+	//プレイヤーが勝ったことを伝える
+	GameSceneManager::GetInstance()->SetOutComePlayerWin();
+
+	//音再生
+	g_soundManager->InitAndPlaySoundSource(
+		enSoundName_Boss_Die,
+		g_soundManager->GetSEVolume()
+	);
+
+}
+
+void SummonerState_Die::Ubdate()
+{
+	//アニメーションが終わったら
+	if (m_summoner->GetModelRender().IsPlayingAnimation() == false)
+	{
+		//死亡後の処理
+		m_summoner->AfterDieProcess();
+	}
+}
+
+void SummonerState_Die::Exit()
+{
+
+	m_summoner->ActionDeactive();
 }

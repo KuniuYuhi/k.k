@@ -2,7 +2,6 @@
 //#include "Level3DRender.h"
 //#include "Level2DRender.h"
 
-class Player;
 class BossStage1;
 class GameCamera;
 class ResultSeen;
@@ -11,9 +10,12 @@ class Fade;
 class EntryBoss;
 class BattleStart;
 class Pause;
-class Boss;
+class Brave;
+class WaveManager;
+class Summoner;
+
 class GameFinishCamera;
-class BattlePhase;
+
 
 class Game:public IGameObject
 {
@@ -45,66 +47,14 @@ public:
 		enClearCameraState_Player	//勇者
 	};
 
-	///////////////////////////////////////////////////////
-	//進行
-    //////////////////////////////////////////////////////
-	/// <summary>
-	/// ステートの管理
-	/// </summary>
-	void ManageState();
-	//ゲームの流れ
 	
-	/// <summary>
-	/// ゲームスタート
-	/// </summary>
-	void OnProcessGameStartTransition();
-	/// <summary>
-	/// ボス登場ムービー
-	/// </summary>
-	void OnProcessAppearanceBossTransition();
-	/// <summary>
-	/// インゲーム
-	/// </summary>
-	void OnProcessGameTransition();
-	/// <summary>
-	/// ゲームオーバー
-	/// </summary>
-	void OnProcessGameOverTransition();
-	/// <summary>
-	/// ゲームクリア
-	/// </summary>
-	void OnProcessGameClearTransition();
-	/// <summary>
-	/// ポーズ画面
-	/// </summary>
-	void OnProcessPauseTransition();
-	/// <summary>
-	/// ゲームエンド
-	/// </summary>
-	void OnProcessGameEndTransition();
 
-
-	void OnProcessGame_FadeOutTransition();
-	void OnProcessGame_FadeNoneTransition();
-	void OnProcessGame_BattleTransition();
 
 	///////////////////////////////////////////////////////////////////
 	//その他の関数
 	///////////////////////////////////////////////////////////////////
 
-	/// <summary>
-	/// ゲームの勝敗が決まったら
-	/// </summary>
-	/// <returns></returns>
-	bool IsOutcome();
-	/// <summary>
-	/// 勝利時の処理
-	/// </summary>
-	void ProcessWin();
-	/// <summary>
-	/// 負けの処理
-	/// </summary>
-	void ProcessLose();
+	
 	/// <summary>
 	/// ゲームUI生成
 	/// </summary>
@@ -124,11 +74,6 @@ public:
 	/// </summary>
 	void GoResult();
 
-	/// <summary>
-	/// 勝敗が決まったか
-	/// </summary>
-	/// <returns></returns>
-	bool IsWinnerDecision();
 
 	/// <summary>
 	/// ボスの登場ムービーが終わったかのフラグ
@@ -157,6 +102,35 @@ public:
 		return m_clearCameraState;
 	}
 
+	SkyCube* GetSkyCube()
+	{
+		return m_skyCube;
+	}
+
+	void DeleteGameCamera();
+
+	void DeleteThis();
+
+	/// <summary>
+	/// プレイヤーとカメラの生成
+	/// </summary>
+	void CreatePlayerAndCamera();
+
+	/// <summary>
+	/// ボスの生成
+	/// </summary>
+	void CreateBoss();
+
+	void UpdateGameSystem();
+
+	/// <summary>
+	/// バトルフェーズクラス生成
+	/// </summary>
+	void CreateBattleWave();
+
+
+	void GameOutComeProcess();
+
 private:
 	/// <summary>
 	/// ゲームオブジェクトの初期化
@@ -172,18 +146,7 @@ private:
 	/// </summary>
 	/// <returns></returns>
 	bool Fadecomplete();
-	/// <summary>
-	/// ボスの生成
-	/// </summary>
-	void CreateBoss();
-	/// <summary>
-	/// プレイヤーとカメラの生成
-	/// </summary>
-	void CreatePlayerAndCamera();
-	/// <summary>
-	/// バトルフェーズクラス生成
-	/// </summary>
-	void CreateBattlePhase();
+	
 	/// <summary>
 	/// スカイキューブの初期化
 	/// </summary>
@@ -200,25 +163,21 @@ private:
 
 	EnGameEndCameraState		m_clearCameraState = enClearCameraState_None;
 
-	BattlePhase*				m_battlePhase = nullptr;
 	Pause*						m_pause = nullptr;
 	Fade*						m_fade = nullptr;
-	Player*						m_player = nullptr;
-	Boss*						m_boss = nullptr;
-
-	GameFinishCamera* m_gameFinishCamera = nullptr;
 
 	BossStage1*					m_bossStage1 = nullptr;
 	GameCamera*					m_gameCamera = nullptr;
-	ResultSeen*					m_result = nullptr;
+	
 	SkyCube*					m_skyCube = nullptr;
 	const Vector3				m_skyPos = { 0.0f,-700.0f,0.0f };
 
 	GameUI*						m_gameUI = nullptr;
 	EntryBoss*					m_entryBoss = nullptr;
 	BattleStart*				m_battleStart = nullptr;
-
-	ModelRender					model;
+	Brave* m_brave = nullptr;
+	WaveManager* m_waveManager = nullptr;
+	Summoner* m_summoner = nullptr;
 
 	bool						m_ChaseBossFlag = false;						//ボスを見るかのフラグ
 

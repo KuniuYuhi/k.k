@@ -1,36 +1,51 @@
 #pragma once
 
+#include "BraveAnimClipAndStateInfo.h"
+
 class Brave;
+class BraveStateContext;
 
 /// <summary>
-/// 勇者のステートの基底クラス
+/// プレイヤーのステートの基底クラス
 /// </summary>
 class IBraveState
 {
 public:
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	/// <param name="brave"></param>
-	IBraveState(Brave* brave)
+
+	IBraveState(Brave* brave, BraveStateContext* stateContext)
 	{
 		m_brave = brave;
+		m_stateCotext = stateContext;
 	}
+
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	virtual ~IBraveState(){}
+	virtual ~IBraveState() {}
 
 	/// <summary>
-	/// 状態を管理する
-	/// </summary>
-	virtual void ManageState() = 0;
-	/// <summary>
-	/// アニメーションの再生
+	/// アニメーションを再生
 	/// </summary>
 	virtual void PlayAnimation() = 0;
+	/// <summary>
+	/// 入った時の処理
+	/// </summary>
+	virtual void Entry() = 0;
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	virtual void Ubdate() = 0;
+	/// <summary>
+	/// 終了時の処理
+	/// </summary>
+	virtual void Exit() = 0;
+
+
 protected:
-	Brave* m_brave = nullptr; // プレイヤー
+
+	//プレイヤーのインスタンス
+	Brave* m_brave = nullptr;
+	//ステートコンテキストのインスタンス
+	BraveStateContext* m_stateCotext = nullptr;
 
 };
-

@@ -36,13 +36,19 @@ namespace nsK2EngineLow {
 		for (auto& goList : m_gameObjectListArray) {
 			for (auto& go : goList) {
 				go->StartWrapper();
+
+				
 			}
 		}
 
 
 		for (auto& goList : m_gameObjectListArray) {
 			for (auto& go : goList) {
+				//クラスの更新処理
 				go->UpdateWrapper();
+				//コンポーネントの更新処理
+				//todo それぞれのクラスでUpdate呼んだほうがフレーム的に良い気がする
+				go->UpdateComponentsWrapper();
 			}
 		}
 		//物理エンジンのアップデートを呼び出す。

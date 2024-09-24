@@ -37,6 +37,16 @@ namespace nsK2EngineLow {
 		);
 
 		/// <summary>
+		/// 初期化したか判定
+		/// </summary>
+		/// <returns></returns>
+		bool IsInit() const
+		{
+			return m_isInit;
+		}
+
+
+		/// <summary>
 	   /// 初期化
 	   /// </summary>
 	   /// <remark>
@@ -114,7 +124,6 @@ namespace nsK2EngineLow {
 		{
 			m_position = position;
 		}
-
 		/// <summary>
 		/// 座標の設定
 		/// </summary>
@@ -125,6 +134,15 @@ namespace nsK2EngineLow {
 		{
 			SetPosition({ x,y,z });
 		}
+		/// <summary>
+		/// 座標を加算
+		/// </summary>
+		/// <param name="addPosition"></param>
+		void AddPosition(Vector3 addPosition)
+		{
+			m_position += addPosition;
+		}
+
 
 		/// <summary>
 		/// 回転の設定
@@ -197,6 +215,11 @@ namespace nsK2EngineLow {
 		const Vector3 GetPosition() const
 		{
 			return m_position;
+		}
+
+		const Quaternion GetRotation() const
+		{
+			return m_rotation;
 		}
 
 		/// <summary>
@@ -409,7 +432,7 @@ namespace nsK2EngineLow {
 		ConstantBuffer				m_drawShadowMapCameraParamCB[NUM_SHADOW_MAP];// シャドウマップ作成時に必要なカメラパラメータ用の定数バッファ。
 		bool						m_isShadowCaster = true;			// シャドウキャスターフラグ
 		bool						m_setWorldMatrix = false;			// ワールド行列が外部から設定されている
-
+		bool						m_isInit = false;					//初期化したか
 	};
 }
 

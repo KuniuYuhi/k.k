@@ -99,6 +99,16 @@ namespace nsK2EngineLow {
 			vOut.y = vTmp.x * m[0][1] + vTmp.y * m[1][1] + vTmp.z * m[2][1];
 			vOut.z = vTmp.x * m[0][2] + vTmp.y * m[1][2] + vTmp.z * m[2][2];
 		}
+		/// <summary>
+		/// 行列に座標を代入
+		/// </summary>
+		/// <param name="position">座標</param>
+		void SetWorldPosition(Vector3 position)
+		{
+			m[3][0] = position.x;
+			m[3][1] = position.y;
+			m[3][2] = position.z;
+		}
 
 		/// <summary>
 		/// ベクトルに行列を乗算。

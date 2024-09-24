@@ -1,82 +1,47 @@
 #pragma once
 
-#include "IBossStateMachine.h"
-
 class Summoner;
-
-using namespace SummonerActions;
+class SummonerStateContext;
 
 /// <summary>
-/// ボスのステートの基底クラス
+/// サモナーのステートの基底クラス
 /// </summary>
 class ISummonerState
 {
 public:
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	/// <param name="bossBase">ボスのインスタンス</param>
-	/// <param name="actionName">アクションの名前</param>
-	ISummonerState(Summoner* bossBase, EnActionName actionName)
+
+	ISummonerState(Summoner* summoner, SummonerStateContext* context)
 	{
-		m_summoner = bossBase;
-		m_actionName = actionName;
+		m_summoner = summoner;
+		m_summonerStateContext = context;
 	}
 
-	virtual ~ISummonerState(){}
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	virtual ~ISummonerState() {}
 
 	/// <summary>
-	/// 状態を管理する
-	/// </summary>
-	virtual void ManageState() = 0;
-	/// <summary>
-	/// アニメーションの再生
+	/// アニメーションを再生
 	/// </summary>
 	virtual void PlayAnimation() = 0;
-
 	/// <summary>
-	/// アクションの優先度の取得方法変更
+	/// 入った時の処理
 	/// </summary>
-	/// <returns></returns>
-	const int GetPriority() const
-	{
-		return m_priority;
-	}
-
+	virtual void Entry() = 0;
 	/// <summary>
-	/// 行動の名前を取得
+	/// 更新処理
 	/// </summary>
-	/// <returns></returns>
-	const EnActionName GetActionName()
-	{
-		return m_actionName;
-	}
+	virtual void Ubdate() = 0;
+	/// <summary>
+	/// 終了時の処理
+	/// </summary>
+	virtual void Exit() = 0;
 
 protected:
-	/// <summary>
-	/// アクションの優先度の設定
-	/// </summary>
-	/// <param name="priority"></param>
-	void SetPriority(const int priority)
-	{
-		m_priority = priority;
-	}
-	
-	/// <summary>
-	/// 自身のアクションの名前を設定
-	/// </summary>
-	/// <param name="actionName"></param>
-	void SetActionName(EnActionName actionName)
-	{
-		m_actionName = actionName;
-	}
-
-
-protected:
+	//サモナーのインスタンス
 	Summoner* m_summoner = nullptr;
-
-	int m_priority = 0;		//アクションの優先度
-	EnActionName m_actionName;
+	SummonerStateContext* m_summonerStateContext = nullptr;
 
 };
 

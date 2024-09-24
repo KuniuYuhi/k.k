@@ -1,167 +1,156 @@
 #pragma once
-#include "MobMonster.h"
-
-using namespace MobMonsterInfo;
-
-class Lich;
-class ICactusState;
-class IMobStateMachine;
+#include "MobEnemyBase.h"
+#include "CactusStateContext.h"
+#include "CactusInfo.h"
 
 
-class Cactus :public MobMonster
+class CactusStateContext;
+
+using namespace CactusStates;
+using namespace CactusAnimationClips;
+using namespace KnockBackInfo;
+
+/// <summary>
+/// モブエネミー：カクタスクラス
+/// </summary>
+class Cactus : public MobEnemyBase
 {
 public:
-	Cactus();
 	~Cactus();
 
 	bool Start() override;
+
 	void Update() override;
+
 	void Render(RenderContext& rc) override;
+
+	void InitModel() override;
+
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	/// <summary>
-	/// 処理を止めるか
+	/// 共通ステートの処理
 	/// </summary>
-	/// <returns></returns>
-	bool IsStopProcessing();
+	void ProcessCommonTranstion();
 
 	/// <summary>
-	/// 当たり判定生成
+	/// プレイヤーの方を向く
 	/// </summary>
-	void CreateCollision();
+	void TurnToPlayer();
 
 	/// <summary>
-	/// モデルレンダーの取得
+	/// 攻撃アクションを始めるときの処理
 	/// </summary>
-	/// <returns></returns>
-	ModelRender& GetModelRender()
-	{
-		return m_modelRender;
-	}
+	void EntryAttackActionProcess();
+	/// <summary>
+	/// 攻撃アクションの更新処理
+	/// </summary>
+	void UpdateAttackActionProcess();
+	/// <summary>
+	/// 攻撃アクションを終わる時の処理
+	/// </summary>
+	void ExitAttackActionProcess();
+
 
 	/// <summary>
-	/// 特定のアニメーションが再生中か
+	/// ヒットアクションに入った時の処理
 	/// </summary>
-	/// <returns></returns>
-	bool isAnimationEnable() const override
-	{
-		return m_enAnimationState != enAnimationState_Hit &&
-			m_enAnimationState != enAnimationState_Die;
-	}
+	void EntryHitActionProcess();
+	/// <summary>
+	/// ヒットアクション中の処理
+	/// </summary>
+	void UpdateHitActionProcess();
+	/// <summary>
+	/// ヒットアクション終了時の処理
+	/// </summary>
+	void ExitHitActionProcess();
 
 	/// <summary>
-	/// 回転可能か
+	/// 死亡時の処理
 	/// </summary>
-	/// <returns></returns>
-	bool isRotationEnable() const override
-	{
-		return true;
-	}
+	void DieProcess();
 
 	/// <summary>
-	///  攻撃中か
+	/// 勝利時の処理
 	/// </summary>
-	/// <returns></returns>
-	bool IsAttackEnable() const override
-	{
-		return m_enAnimationState != enAnimationState_Attack &&
-			m_enAnimationState != enAnimationState_Skill;
-	}
+	void WinProcess() override;
 
 	/// <summary>
-	/// 被ダメージ時処理
+	/// 強制的に待機状態に切り替える
 	/// </summary>
-	void Damage(int attack);
+	void ForceChangeStateIdle() override;
 
 	/// <summary>
-	/// 共通のステート遷移処理を実行
+	/// 外部から削除
 	/// </summary>
-	void ProcessCommonStateTransition();
-	/// <summary>
-	/// アタック１ステート遷移処理を実行
-	/// </summary>
-	void OnProcessAttack_1StateTransition();
-	/// <summary>
-	/// アタック２ステート遷移処理を実行
-	/// </summary>
-	void OnProcessAttack_2StateTransition();
-	/// <summary>
-	/// プラントステート遷移処理を実行
-	/// </summary>
-	void OnProcessPlantStateTransition();
-	/// <summary>
-	/// プラントからバトルステート遷移処理を実行
-	/// </summary>
-	void OnProcessPlantToBattleStateTransition();
-	/// <summary>
-	/// 被ダメージステート遷移処理を実行
-	/// </summary>
-	void OnProcessDamageStateTransition();
-	/// <summary>
-	/// デスステート遷移処理を実行
-	/// </summary>
-	void OnProcessDieStateTransition();
-	/// <summary>
-	/// 勝利ステート遷移処理を実行
-	/// </summary>
-	void OnProcessVictoryStateTransition();
-	/// <summary>
-	/// 召喚された時のステート遷移処理を実行
-	/// </summary>
-	void OnProcessAppearStateTransition();
-
-	/// <summary>
-	/// 次のアニメーションステートを作成する。
-	/// </summary>
-	/// <param name="nextState"></param>
-	void SetNextAnimationState(EnAnimationState nextState);
-
-	/// <summary>
-	/// 次のステートマシンを作成する
-	/// </summary>
-	/// <param name="nextStateMachine"></param>
-	void SetNextStateMachine(EnStateMachineState nextStateMachine) override;
-
-	/// <summary>
-	/// 当たり判定生成フラグを取得
-	/// </summary>
-	/// <returns></returns>
-	const bool& GetCreateAttackCollisionFlag() const
-	{
-		return m_createAttackCollisionFlag;
-	}
+	void DieFlomOutside(bool isPlayEffect = false) override;
 
 private:
-	/// <summary>
-	/// モデルの初期化
-	/// </summary>
-	void InitModel();
 
 	/// <summary>
-	/// アニメーションを再生
+	/// アニメーションクリップを読み込む
 	/// </summary>
-	void PlayAnimation();
+	void LoadAnimationClip();
 
 	/// <summary>
-	/// ステート管理
+	/// 全てのコンポーネントを初期化
 	/// </summary>
-	void ManageState();
+	void InitComponents();
 
-	ICactusState*					m_state = nullptr;
 
-	Animation						m_animation;										//アニメーション
-	AnimationClip					m_animationClip[enAnimationClip_Num];					//アニメーションクリップ 
+	/// <summary>
+	/// 自身をオブジェクトプールに戻す
+	/// </summary>
+	void ReleaseThis() override;
 
-	EnAnimationState				m_enAnimationState = enAninationState_Idle;			//アニメーションステート
+	/// <summary>
+	/// さらに追加するコンポーネントをセッティング
+	/// </summary>
+	void AddMoreComponent() override;
 
-	EnStateMachineState m_enStateMachineState = enStateMachineState_Patrol;
+	/// <summary>
+	/// コリジョンを作成する
+	/// </summary>
+	void CreateCollisionObject() override;
 
-	ModelRender						m_modelRender;
+	/// <summary>
+	/// ダメージを受けた時の処理
+	/// </summary>
+	void ProcessHit(DamageInfo damageInfo) override;
 
-	CollisionObject*				m_headCollision = nullptr;
 
-	int								m_attackBoonId = -1;								//攻撃で使うボーンID
 
-	bool							m_createAttackCollisionFlag = false;
+	/// <summary>
+	/// 攻撃処理
+	/// </summary>
+	void Attack();
+
+
+
+private:
+
+	std::unique_ptr<CactusStateContext> m_cactusContext = nullptr;	//ステートコンテキスト
+
+	AnimationClip m_animationClip[enCactusAnimClip_num];
+
+	CollisionObject* m_attackCollision = nullptr;		//当たり判定用コリジョン
+
+
+
+
+
+	bool m_isCreateAttackCollision = false;
+
+	int m_headBoonId = -1;
+
+	bool m_isSettingComponents = false;
+
+	
+
+
+
+
+	float count = 0.0f;
+
 };
 

@@ -1,460 +1,244 @@
 #pragma once
-#include "BossBase.h"
+#include "BossEnemyBase.h"
 
-class IBossStateMachine;
-class ISummonerState;
-class DarkWall;
 
-class Summoner:public BossBase
+#include "SummonerInfo.h"
+#include "CommonEnemyStatus.h"
+#include "SummonerSkillStatus.h"
+
+#include "SummonerSMContext.h"
+#include "SummonerStateContext.h"
+
+
+
+class SummonerSkillStatus;
+
+class SummonerSMContext;
+class SummonerStateContext;
+class SummonerAIController;
+
+class UseEffect;
+
+class Brave;
+
+using namespace SummonerStates;
+using namespace SummonerAnimationClips;
+using namespace SummonerSkillType;
+
+/// <summary>
+/// ボスエネミー：サモナークラス
+/// </summary>
+class Summoner :public BossEnemyBase
 {
 public:
-	Summoner();
 	~Summoner();
 
 	bool Start() override;
+
 	void Update() override;
-	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
+
 	void Render(RenderContext& rc) override;
 
-	/////////////////////////////////////////////////////////////////////
-	//構造体、列挙型の宣言
-	/////////////////////////////////////////////////////////////////////
-	/// <summary>
-	/// 攻撃に関する情報
-	/// </summary>
-	struct InfoAboutAttack
-	{
-		const float m_Attack_1Distance = 1200.0f;	//遠距離攻撃
-		const float m_Attack_2Distance = 200.0f;	//近距離攻撃
-		const float m_Attack_DarkMeteoDistance = 1200.0f;	//ダークメテオ
-	};
-	/// <summary>
-	/// アニメーションクリップの番号を表す列挙型。
-	/// </summary>
-	enum EnAnimationClip {
-		enAnimClip_Idle,
-		enAnimClip_Walk,
-		enAnimClip_DarkBall,
-		enAnimClip_DarkWall,
-		enAnimClip_DarkSpear_Start,
-		enAnimClip_DarkSpear_Main,
-		enAnimClip_DarkSpear_End,
-		enAnimClip_NormalAttack_1,
-		enAnimClip_NormalAttack_2,
-		enAnimClip_NormalAttack_3,
-		enAnimClip_Attack_DarkMeteorite_start,
-		enAnimClip_Attack_DarkMeteorite_main,
-		enAnimClip_Summon,
-		enAnimClip_CriticalHit,
-		enAnimClip_Die,
-		enAnimClip_Victory,
-		enAnimClip_Angry,
-		enAnimClip_Warp,
-		enAnimClip_Command,
-		enAnimClip_KnockBack,
-		enAnimClip_Num,				// 7 :アニメーションクリップの数
-	};
-	/// <summary>
-	/// アニメーションステート
-	/// </summary>
-	enum EnAnimationState {
-		enAnimationState_Idle,
-		enAnimationState_Walk,
-		enAnimationState_DarkBall,
-		enAnimationState_DarkWall,
-		enAnimationState_DarkSpear_Start,
-		enAnimationState_DarkSpear_Main,
-		enAnimationState_DarkSpear_End,
-		enAnimationState_NormalAttack_1,
-		enAnimationState_NormalAttack_2,
-		enAnimationState_NormalAttack_3,
-		enAnimationState_Attack_DarkMeteorite_start,
-		enAnimationState_Attack_DarkMeteorite_main,
-		enAninationState_Summon,
-		enAnimationState_CriticalHit,
-		enAnimationState_Die,
-		enAnimationState_Victory,
-		enAnimationState_Angry,
-		enAnimationState_Warp,
-		enAnimationState_Command,
-		enAnimationState_KnockBack,
-		enAnimationState_Num,
-	};
-	/// <summary>
-	/// ボスの状態ステート
-	/// </summary>
-	enum EnSpecialActionState
-	{
-		enSpecialActionState_Normal,			//通常。移動しない
-		enSpecialActionState_AngryMode,			//怒りモード。この時だけ移動する
-		SpecialActionState_Num
-	};
-	/// <summary>
-	/// ワープする時の処理順番のステップ
-	/// </summary>
-	enum EnWarpStepState
-	{
-		enWarpStep_Up,
-		enWarpStep_Warp,
-		enWarpStep_Down,
-		enWarpStep_End
-	};
+	void InitModel() override;
 
-	/// <summary>
-	/// ステートマシンステート
-	/// </summary>
-	enum EnStateMachineState
-	{
-		enStateMachineState_Vigilance,	//警戒ステートマシン
-		enStateMachineState_Attack		//攻撃ステートマシン
-	};
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
-	/////////////////////////////////////////////////////////////////////
-	//仮想関数、純粋仮想関数の宣言
-	/////////////////////////////////////////////////////////////////////
-	/// <summary>
-	/// 攻撃処理
-	/// </summary>
-	void Attack() override {}
-	/// <summary>
-	/// 処理を止めるか
-	/// </summary>
-	/// <returns></returns>
-	bool IsStopProcessing() override;
 
-	/// <summary>
-	/// 特定のアニメーションが再生中か。当たり判定に使う
-	/// </summary>
-	/// <returns></returns>
-	bool isAnimationEnable() const override
+	Vector3 GetForwardYZero()
 	{
-		return m_enAnimationState != enAnimationState_KnockBack &&
-			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_start &&
-			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_main &&
-			m_enAnimationState != enAnimationState_DarkSpear_Main &&
-			m_enAnimationState != enAnimationState_DarkSpear_End;
-	}
-	/// <summary>
-	/// 回転可能か
-	/// </summary>
-	/// <returns></returns>
-	bool isRotationEnable() const override
-	{
-		return m_enAnimationState != enAnimationState_DarkBall &&
-			m_enAnimationState != enAnimationState_DarkWall &&
-			m_enAnimationState != enAnimationState_KnockBack &&
-			m_enAnimationState != enAnimationState_NormalAttack_2 &&
-			m_enAnimationState != enAnimationState_NormalAttack_3 &&
-			m_enAnimationState != enAnimationState_CriticalHit &&
-			m_enAnimationState != enAnimationState_DarkSpear_Main &&
-			m_enAnimationState != enAnimationState_DarkSpear_End;
-	}
-	/// <summary>
-	/// 攻撃可能か
-	/// </summary>
-	/// <returns>trueで攻撃可能</returns>
-	bool IsAttackEnable() const override
-	{
-		return m_enAnimationState != enAnimationState_DarkBall &&
-			m_enAnimationState != enAnimationState_DarkWall &&
-			m_enAnimationState != enAnimationState_NormalAttack_1 &&
-			m_enAnimationState != enAnimationState_NormalAttack_2 &&
-			m_enAnimationState != enAnimationState_NormalAttack_3 &&
-			m_enAnimationState != enAnimationState_KnockBack &&
-			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_start &&
-			m_enAnimationState != enAnimationState_Attack_DarkMeteorite_main &&
-			m_enAnimationState != enAnimationState_DarkSpear_Start &&
-			m_enAnimationState != enAnimationState_DarkSpear_Main &&
-			m_enAnimationState != enAnimationState_DarkSpear_End &&
-			m_enAnimationState != enAnimationState_CriticalHit;
-
+		m_forward.y = 0.0f;
+		m_forward.Normalize();
+		return m_forward;
 	}
 
 	/// <summary>
-	/// 被ダメージ時処理
+	/// ダメージ情報を設定する
 	/// </summary>
-	void Damage(int attack) override;
+	/// <param name="skillType">技のタイプ</param>
+	void SettingDamageInfo(EnSkillSType skillType);
 
 	/// <summary>
-	/// 通常攻撃に当たった時の処理
+	/// 接近できる距離に到達した
 	/// </summary>
-	void HitNormalAttack() override;
-
-	/// <summary>
-	/// スキルに当たった時の処理
-	/// </summary>
-	void HitSkillAttack() override;
-
-	/// <summary>
-	/// 回転のみを行う処理条件
-	/// </summary>
-	/// <returns></returns>
-	bool RotationOnly() override
+	void ActiveArrivedApproachDistance()
 	{
-		return false;
+		m_isArrivedApproachDistance = true;
+	}
+	/// <summary>
+	/// 接近できる距離に到達していない
+	/// </summary>
+	void DeactiveArrivedApproachDistance()
+	{
+		m_isArrivedApproachDistance = false;
+	}
+	/// <summary>
+	/// 接近できる距離をリセットする
+	/// </summary>
+	void ResetApproachDistanceValue()
+	{
+		m_status.ResetCurrentApproachDistance();
 	}
 
 	/// <summary>
-	/// やられたときの処理
-	/// </summary>
-	/// <param name="seFlag">やられたときの効果音を再生するかのフラグ</param>
-	void ProcessDead(bool seFlag = true) override;
-
-	/////////////////////////////////////////////////////////////////////
-	//その他の関数
-	/////////////////////////////////////////////////////////////////////
-
-	/// <summary>
-	/// 警戒ステート時の処理
-	/// </summary>
-	void ProcessVigilance();
-
-	/// <summary>
-	/// 次のステートマシンを生成する
-	/// </summary>
-	/// <param name="nextStateMachine"></param>
-	void SetNextStateMachine(EnStateMachineState nextStateMachine);
-
-	/// <summary>
-	/// スタート時のステートマシンの作成
-	/// </summary>
-	/// <param name="nextStateMachine"></param>
-	void SetStartStateMachine(EnStateMachineState nextStateMachine);
-
-	/// <summary>
-	/// 攻撃が終わった後の一通りの処理
-	/// </summary>
-	void ProcessEndAttackState();
-
-	/// <summary>
-	/// モブモンスターの削除
-	/// </summary>
-	/// <param name="processDeadFlag">モブモンスターの死亡時処理をするかのフラグ</param>
-	void DeleteMobMonsters(bool processDeadFlag = true);
-
-	/// <summary>
-	/// 次のアニメーションステートを作成する。
-	/// </summary>
-	/// <param name="nextState"></param>
-	void SetNextAnimationState(EnAnimationState nextState);
-
-	/// <summary>
-	/// 共通のステート遷移処理を実行
-	/// </summary>
-	void ProcessCommonStateTransition();
-
-	/// <summary>
-	/// 被ダメージ状態か
-	/// </summary>
-	/// <returns>被ダメージ状態ならtrue</returns>
-	const bool& IsSummonerDamageTaken() const
-	{
-		return m_enAnimationState == enAnimationState_CriticalHit;
-	}
-
-	/// <summary>
-	/// 現在のステートを取得
-	/// </summary>
-	/// <returns></returns>
-	ISummonerState* GetNowSummonerState()
-	{
-		return m_nowBossState;
-	}
-
-	/// <summary>
-	/// 現在のステートマシンを取得
-	/// </summary>
-	/// <returns></returns>
-	IBossStateMachine* GetNowStateMachine()
-	{
-		return m_stateMachine;
-	}
-
-	/// <summary>
-	/// 状態の切り替え
-	/// </summary>
-	/// <param name="normalOrAngry">falseでノーマル、trueで怒りモード</param>
-	void ChangeSpecialState(bool normalOrAngry)
-	{
-		if (normalOrAngry == true)m_enSpecialActionState = enSpecialActionState_AngryMode;
-		else m_enSpecialActionState = enSpecialActionState_Normal;
-	}
-
-	/// <summary>
-	/// 現在の状態を取得
-	/// </summary>
-	/// <returns></returns>
-	const EnSpecialActionState& GetNowSpecialActionState() const
-	{
-		return m_enSpecialActionState;
-	}
-
-	/// <summary>
-	/// モデルドローフラグを設定
+	/// 移動ストップフラグを設定
 	/// </summary>
 	/// <param name="flag"></param>
-	void SetIsDrawModelFlag(bool flag)
+	void SetStopMoveFlag(bool flag)
 	{
-		m_isDrawModelFlag = flag;
+		m_isStopMove = flag;
 	}
 	/// <summary>
-	/// モデルドローフラグを取得
+	/// 杖のボーンIDを取得
 	/// </summary>
 	/// <returns></returns>
-	const bool& GetIsDrawModelFlag() const
+	const int GetStaffBoonId()
 	{
-		return m_isDrawModelFlag;
+		return m_staffBoonId;
+	}
+	/// <summary>
+	/// 右手のボーンIDを取得
+	/// </summary>
+	/// <returns></returns>
+	const int GetRightHandBoonId()
+	{
+		return m_rightHandBoonId;
+	}
+	/// <summary>
+	/// 左手のボーンIDを取得
+	/// </summary>
+	/// <returns></returns>
+	const int GetLeftHandBoonId()
+	{
+		return m_leftHandBoonId;
 	}
 
-	/// <summary>
-	/// 被ダメージカウントを設定
-	/// </summary>
-	/// <param name="value"></param>
-	void SetDamageCount(int value)
-	{
-		m_damageCount = value;
-	}
-	/// <summary>
-	/// 被ダメージカウントを取得
-	/// </summary>
-	/// <returns></returns>
-	const int& GetDamageCount() const
-	{
-		return m_damageCount;
-	}
 
 	/// <summary>
-	/// ダークウォールのボーンIDの取得
+	/// ステート切り替え
 	/// </summary>
-	/// <returns></returns>
-	const int& GetDarkWallBoonId() const
-	{
-		return m_darkWallBoonId;
-	}
+	/// <param name="changeState"></param>
+	void ChangeState(EnSummonerState changeState);
+	/// <summary>
+	/// ステートマシンを切り替えるかチェック
+	/// </summary>
+	bool CheckAndTransitionStateMachine();
+
 
 	/// <summary>
-	/// プレイヤーをノックバックしたかのフラグを設定
+	/// 共通ステートの処理
 	/// </summary>
-	/// <param name="flag"></param>
-	void SetPlayerKnockedBackFlag(bool flag)
-	{
-		m_playerKnockedBackFlag = flag;
-	}
+	void ProcessCommonTranstion();
+
 	/// <summary>
-	/// プレイヤーをノックバックしたかのフラグを取得
+	/// 自身からプレイヤーに向かう距離を取得
 	/// </summary>
-	/// <returns></returns>
-	const bool& GetPlayerKnockedBackFlag() const
-	{
-		return m_playerKnockedBackFlag;
-	}
+	float GetDistanceToPlayerPositionValue();
+
+
+	/// <summary>
+	/// コンボ攻撃の処理
+	/// </summary>
+	void UpdateComboAttackProcess();
+	/// <summary>
+	/// 攻撃中にターゲットのほうに回転する
+	/// </summary>
+	void UpdateAttackTurnToTargetProcess();
+	/// <summary>
+	/// ショックウェーブ攻撃の処理
+	/// </summary>
+	void UpdateShockWaveProcess();
+
+	/// <summary>
+	/// 死亡後の処理
+	/// </summary>
+	void AfterDieProcess();
+
+	/// <summary>
+	/// 勝利時の処理
+	/// </summary>
+	void WinProcess();
+
+	/// <summary>
+	/// 外部から自身を削除
+	/// </summary>
+	void DieFlomOutside();
+
 
 private:
+
 	/// <summary>
-	/// モデルの初期化
+	/// 処理を止める要求があるか？
 	/// </summary>
-	void InitModel()  override;
+	/// <returns>処理を止める要求があるならtrue</returns>
+	bool IsStopRequested();
+
 	/// <summary>
-	/// アニメーションを再生
+	/// ダメージを受けた時の処理
 	/// </summary>
-	void PlayAnimation()  override;
+	void ProcessHit(DamageInfo damageInfo) override;
+
 	/// <summary>
-	/// ステート管理
+	/// アニメーションクリップを読み込む
 	/// </summary>
-	void ManageState()  override;
+	void LoadAnimationClip();
+
+	/// <summary>
+	/// 当たり判定の処理をしない条件
+	/// </summary>
+	/// <returns></returns>
+	bool IgnoreCollision() override;
+
+	/// <summary>
+	/// 自身をオブジェクトプールに戻す
+	/// </summary>
+	void ReleaseThis() override;
+
+	/// <summary>
+	/// さらに追加するコンポーネントをセッティング
+	/// </summary>
+	void AddMoreComponent() override;
+
+	/// <summary>
+	/// 全てのコンポーネントを初期化
+	/// </summary>
+	void InitComponents();
+
 
 	/// <summary>
 	/// 回転処理
 	/// </summary>
-	void ProcessRotation();
-
-	/// <summary>
-	/// 被ダメージ処理
-	/// </summary>
-	void ProcessHit(int hitDamage);
-
-	/// <summary>
-	/// スーパーアーマーの回復。ブレイクしていないと処理しない
-	/// </summary>
-	void RecoverySuperArmor();
-	
-
-	/// <summary>
-	/// ダークボール生成
-	/// </summary>
-	void CreateDarkBall();
-	/// <summary>
-	/// ダークウォール生成
-	/// </summary>
-	void CreateDarkWall();
-
-	/// <summary>
-	/// ノックバック処理
-	/// </summary>
-	void ProcessKnockBack();
-
-	/// <summary>
-	/// 通常攻撃の当たり判定生成
-	/// </summary>
-	void CreateNormalAttackCollision();
-
-	/// <summary>
-	/// 通常攻撃の当たり判定生成
-	/// </summary>
-	void NormalComboFinnish();
-
-	/// <summary>
-	/// エフェクト再生前の設定
-	/// </summary>
-	/// <param name="effectPos">エフェクトを再生する場所</param>
-	/// <param name="rot">回転</param>
-	/// <param name="matrix">ローカル座標に適応する行列</param>
-	void SettingEffectInfo(Vector3& effectPos, Quaternion& rot, Matrix matrix);
-
-	/// <summary>
-	/// 通常攻撃１エフェクト再生
-	/// </summary>
-	void PlayNormalAttack1Effect(Vector3 position,Quaternion rotation);
-	/// <summary>
-	/// 通常攻撃２エフェクト再生
-	/// </summary>
-	void PlayNormalAttack2Effect(Vector3 position, Quaternion rotation);
-	/// <summary>
-	/// ノックバックエフェクト再生
-	/// </summary>
-	void PlayKnockBackEffect(Vector3 position);
+	void Rotation();
 
 
 private:
 
-	EnAnimationState				m_enAnimationState = enAnimationState_Idle;				//アニメーションステート
-	EnSpecialActionState			m_enSpecialActionState = enSpecialActionState_Normal;	//特別な状態ステート(通常、怒りモード)
-	EnWarpStepState					m_enWarpStep = enWarpStep_Up;
+	UseEffect* m_dieEffect = nullptr;
 
-	EnStateMachineState	m_stateMachineState = enStateMachineState_Vigilance;
+	SummonerSkillStatus m_skillStatus;
+	
 
-	AnimationClip					m_animationClip[enAnimClip_Num];						// アニメーションクリップ 
+	std::unique_ptr<SummonerSMContext> m_StateMachineCotext = nullptr;	//ステートマシン管理
 
-	DarkWall* m_darkWall = nullptr;
+	std::unique_ptr<SummonerStateContext> m_stateContext = nullptr;		//ステート管理
 
-	std::unique_ptr<IBossStateMachine> m_SummonerstateMachine = nullptr;
+	SummonerAIController* m_aiController = nullptr;
 
 
-	IBossStateMachine*				m_stateMachine = nullptr;
+	AnimationClip m_animationClip[enSummonerAnimClip_Num];
 
-	ISummonerState*					m_nowBossState = nullptr;
+	Vector3 m_currentRotDirection = g_vec3Zero;
 
-	bool							m_isDrawModelFlag = true;
+	bool m_isViewModel = true;
 
-	int								m_damageCount = 0;				//被ダメージした時に加算するカウント
+	bool m_isSettingComponents = false;
 
-	int m_darkWallBoonId = -1;										//ダークウォールで使うボーンのID
-	int m_handLBoonId = -1;											//ハンドLボーンのID
-	int m_comboFinishBoonId = -1;									//通常攻撃３で使うボーンのID
+	bool m_isAttackMove = false;
 
-	bool m_oldBreakSuperArmorFlag = false;	//前フレームのスーパーアーマーブレイクフラグ
 
-	bool m_playerKnockedBackFlag = false;	//プレイヤーのノックバックしたかのフラグ
+
+	int m_staffBoonId = -1;					//杖のボーンID
+	int m_rightHandBoonId = -1;				//左手のボーンID
+	int m_leftHandBoonId = -1;				//右手のボーンID
 
 };
 

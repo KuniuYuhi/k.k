@@ -1,137 +1,233 @@
 #pragma once
-
 #include "WeaponBase.h"
+#include "SwordShieldStatus.h"
 
-class SwordShield:public WeaponBase
+#include "DamageProvider.h"
+
+class PlayerController;
+class SwordShieldStatus;
+
+class UseEffect;
+
+using namespace DamageInformaiton;
+
+/// <summary>
+/// 武器：ソード＆シールドクラス
+/// </summary>
+class SwordShield : public WeaponBase
 {
 public:
-	SwordShield();
-	~SwordShield();
+    SwordShield();
 
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
-	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
-	
-	/// <summary>
-	/// 武器の移動処理
-	/// </summary>
-	void MoveWeapon() override;
+    ~SwordShield();
 
-	/// <summary>
-	/// 攻撃やスキル時のジャンプの速度の取得
-	/// </summary>
-	/// <returns></returns>
-	float GetJampSpeed() override
-	{
-		return m_jampSpeed;
-	}
 
-	/// <summary>
-	/// 盾の当たり判定がヒットしたか
-	/// </summary>
-	/// <returns>ヒットしたらtrue、ヒットしなかったらfalse</returns>
-	bool IsHitCollision() override;
+    bool Start() override;
 
-	/// <summary>
-	/// スキル攻撃処理
-	/// </summary>
-	void ProcessSkillAttack() override;
-	
-	/// <summary>
-	/// 耐久値がなくなったらときの処理
-	/// </summary>
-	void ProcessNoEndurance() override
-	{
-		//盾の耐久値がなくなったので、防御不可能にする
-		SetIsDefendEnableFlag(false);
-	}
-	/// <summary>
-	/// 耐久値が0より大きくなったときの処理(0から以上になった時)
-	/// </summary>
-	void ProcessOnEndurance() override
-	{
-		//盾の耐久値が増えたので、防御可能にする
-		SetIsDefendEnableFlag(true);
-	}
+    void Update() override;
+
+    void Render(RenderContext& rc) override;
+
+    void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
+
+
+    void Init() override;
+
+    /// <summary>
+    /// 自身を削除する
+    /// </summary>
+    void DeleteThis() override;
+
+    /// <summary>
+    /// 収納状態に切り替える
+    /// </summary>
+    void ChangeStowedState() override;
+
+    /// <summary>
+    /// 装備状態に切り替える
+    /// </summary>
+    void ChangeArmedState() override;
+
+    void AttackAction() override;
+
+
+    /// <summary>
+    /// コンボ攻撃処理を進める
+    /// </summary>
+    void ProceedComboAttack() override;
+    /// <summary>
+    /// コンボ攻撃処理をリセットする
+    /// </summary>
+    void ResetComboAttack() override;
+
+    /// <summary>
+    /// 回避、防御アクションを終わるか
+    /// </summary>
+    /// <returns>終わるならtrue</returns>
+    bool IsEndDefensiveAction() override;
+
+    /// <summary>
+    /// 回避、防御アクションに入ったときの最初の処理
+    /// </summary>
+    void EntryDefensiveActionProcess() override;
+    /// <summary>
+    /// 回避、防御アクション中の更新処理
+    /// </summary>
+    void UpdateDefensiveActionProcess() override;
+    /// <summary>
+    /// 回避、防御アクションを抜け出す時の処理
+    /// </summary>
+    void ExitDefensiveActionProcess() override;
+
+    /// <summary>
+    /// 回避、防御ヒットに入ったときの最初の処理
+    /// </summary>
+    void EntryDefensiveHitProcess() override;
+    /// <summary>
+    /// 回避、防御ヒット中の更新処理
+    /// </summary>
+    void UpdateDefensiveHitProcess() override;
+    /// <summary>
+    /// 回避、防御ヒットを抜け出す時の処理
+    /// </summary>
+    void ExitDefensiveHitProcess() override;
+
+
+    /// <summary>
+    /// 回避、防御アクションが行えるか
+    /// </summary>
+    /// <returns>行えるならtrue</returns>
+    bool CanDefensiveAction() override;
+    /// <summary>
+    /// スキル攻撃が行えるか
+    /// </summary>
+    /// <returns>行えるならtrue</returns>
+    bool CanSkillAttack() override;
+
+    /// <summary>
+    /// 通常攻撃ステートに入った時の処理
+    /// </summary>
+    void EntryNormalAttackProcess(EnComboState comboState) override;
+    /// <summary>
+    /// 通常攻撃ステートでの更新処理
+    /// </summary>
+    void UpdateNormalAttackProcess(EnComboState comboState) override;
+    /// <summary>
+    /// 通常攻撃ステートを抜け出す時の処理
+    /// </summary>
+    void ExitNormalAttackProcess(EnComboState comboState) override;
+
+    /// <summary>
+    /// スキル攻撃ステートに入った時の処理
+    /// </summary>
+    void EntrySkillAttackProcess(EnSkillProcessState skillProcessState) override;
+    /// <summary>
+    /// スキル攻撃ステートでの更新処理
+    /// </summary>
+    void UpdateSkillAttackProcess(EnSkillProcessState skillProcessState) override;
+    /// <summary>
+    /// スキル攻撃ステートを抜け出す時の処理
+    /// </summary>
+    void ExitSkillAttackProcess(EnSkillProcessState skillProcessState) override;
+
+    /// <summary>
+    /// 攻撃の瞬間の処理
+    /// </summary>
+    /// <param name="startOrEnd">startはtrue</param>
+    void AttackImpactProcess(bool startOrEnd) override;
+
+    /// <summary>
+    /// シールドの耐久値を取得
+    /// </summary>
+    /// <returns></returns>
+    int GetShieldEndrance()
+    {
+        return m_uniqueStatus.GetCurrentShieldEnduranceValue();
+    }
+
 
 private:
-	/// <summary>
-	/// モデルの初期化
-	/// </summary>
-	void InitModel() override;
-	/// <summary>
-	/// 当たり判定の生成
-	/// </summary>
-	void InitCollision();
-	/// <summary>
-	/// 剣の当たり判定の初期化
-	/// </summary>
-	void InitSwordCollision();
-	/// <summary>
-	/// 盾の当たり判定の初期化
-	/// </summary>
-	void InitShieldCollision();
-	/// <summary>
-	/// 武器を装備している時の移動処理
-	/// </summary>
-	void MoveArmed() override;
-	/// <summary>
-	/// 武器を収納している時の移動処理
-	/// </summary>
-	void MoveStowed() override;
 
-	
-	/// <summary>
-	/// 剣エフェクト再生前の設定
-	/// </summary>
-	/// <param name="effectPos">エフェクトを再生する場所</param>
-	/// <param name="rot">回転</param>
-	/// <param name="angle">回転量</param>
-	void SettingSwordEffectInfo(Vector3& effectPos, Quaternion& rot, float angle = 0.0f);
-
-	/// <summary>
-	/// 盾エフェクト再生前の設定
-	/// </summary>
-	/// <param name="effectPos">エフェクトを再生する場所</param>
-	/// <param name="rot">回転</param>
-	/// <param name="angle">回転量</param>
-	void SettingShieldEffectInfo(Vector3& effectPos, Quaternion& rot, float angle = 0.0f);
+    /// <summary>
+    /// 装備状態での移動処理
+    /// </summary>
+    void MoveArmed();
+    /// <summary>
+    /// 当たり判定初期化
+    /// </summary>
+    void InitCollision();
+    /// <summary>
+    /// スキル攻撃用コリジョンの作成
+    /// </summary>
+    void CreateSkillAttackCollision();
 
 
-	/// <summary>
-	/// スキル攻撃のエフェクトの再生
-	/// </summary>
-	void PlaySkillAttackEffect();
+    /// <summary>
+    /// スキルスタートステートでのエントリー処理
+    /// </summary>
+    void EntrySkillStartProcess();
+    /// <summary>
+    /// スキルスタートステートでの更新処理
+    /// </summary>
+    void UpdateSkillStartProcess();
+    /// <summary>
+    /// スキルスタートステートでの終わりの処理
+    /// </summary>
+    void ExitSkillStartProcess();
+
+    /// <summary>
+    /// スキルメインステートでのエントリー処理
+    /// </summary>
+    void EntrySkillMainProcess();
+    /// <summary>
+    /// スキルメインステートでの更新処理
+    /// </summary>
+    void UpdateSkillMainProcess();
+    /// <summary>
+    /// スキルメインステートでの終わりの処理
+    /// </summary>
+    void ExitSkillMainProcess();
+
+    /// <summary>
+    /// 盾の当たり判定をチェック
+    /// </summary>
+    void CheckShieldCollision();
+
+    /// <summary>
+    /// シールドにヒットした時の処理
+    /// </summary>
+    void SettingKnockBackInfoForDamageInfo(DamageInfo damageInfo);
 
 private:
-	ModelRender m_modelSword;		//剣モデル
-	ModelRender m_modelShield;		//盾モデル
 
-	CollisionObject* m_swordCollision = nullptr;	//片手剣の当たり判定
-	CollisionObject* m_shieldCollision = nullptr;	//盾の当たり判定
+    UseEffect* m_shieldEffect = nullptr;
 
-	Vector3 m_skillMovePos = g_vec3Zero;	//スキルを使うときの座標
-	Vector3 m_swordPos = g_vec3Zero;
-	Vector3 m_shieldPos = g_vec3Zero;
+    SwordShieldStatus m_uniqueStatus;
 
-	Matrix m_swordMatrix = g_matIdentity;
-	Matrix m_shieldMatrix = g_matIdentity;
+    PlayerController* m_playerController = nullptr;
 
-	Vector3 m_skillAttackPosition = g_vec3Zero;
+    ModelRender m_swordModelRender;         //ソードのモデルレンダー
+    ModelRender m_shieldModelRender;        //シールドのモデルレンダー
 
-	Quaternion rot;
+    CollisionObject* m_swordCollision = nullptr;	//片手剣の当たり判定
+    CollisionObject* m_shieldCollision = nullptr;	//盾の当たり判定
 
-	const float m_jampSpeed = 7000.0f;
+    Matrix m_swordMatrix;
+    Matrix m_swordCenterMatrix;
 
-	//武器を持たせる時のボーンID
-	int m_armedSwordBoonId = -1;
-	int m_armedShieldBoonId = -1;
-	//武器をしまった時のボーンID
-	int m_stowedSwordBoonId = -1;
-	int m_stowedShieldBoonId = -1;
+    Matrix m_shieldMatrix;
 
-	const float m_knockBackPower = 200.0f;	//ノックバックパワー
+    Vector3 m_normalAttackMoveDirection = g_vec3Zero;
+
+
+    //武器を持たせる時のボーンID
+    int m_armedSwordBoonId = -1;
+    int m_armedShieldBoonId = -1;
+
+    int m_swordCenterBoonId = -1;           //剣の中心のボーンID
+
+
+    bool m_isHitShield = false;
 
 };
 

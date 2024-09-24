@@ -125,5 +125,7 @@ private:
 	float m_addYPos = 0.0f;
 	float m_mulXZPos = 0.0f;
 
+	bool m_isProcessEndFlag = false;
+
 };
 

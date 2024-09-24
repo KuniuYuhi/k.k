@@ -1,13 +1,21 @@
 #pragma once
 
-#include "WeaponBase.h"
+#include "ArrowStatus.h"
 
+class Brave;
+class ArrowStatus;
+class DamageProvider;
 class Bow;
-class Player;
 
-class Arrow:public WeaponBase
+class UseEffect;
+
+/// <summary>
+/// 武器：ボウが使うアロークラス
+/// </summary>
+class Arrow:public IGameObject
 {
 public:
+
 	Arrow();
 	~Arrow();
 
@@ -16,229 +24,238 @@ public:
 	/// </summary>
 	enum EnShotPatternState
 	{
-		enShotPatternState_Normal,		//通常攻撃
-		enShotPatternState_Skill		//スキル攻撃
+		enNormalShot,		//通常攻撃
+		enSkillShot,		//スキル攻撃
+		enNone,
+	};
+	/// <summary>
+	/// 武器のステート
+	/// </summary>
+	enum EnWeaponState
+	{
+		enStowed,		//収納状態
+		enArmed			//装備状態
 	};
 
+
 	bool Start() override;
+
 	void Update() override;
+
 	void Render(RenderContext& rc) override;
 
-	/// <summary>
-	/// 武器の移動処理
-	/// </summary>
-	void MoveWeapon() override;
-
-	/// <summary>
-	/// 武器を装備している時の移動処理
-	/// </summary>
-	void MoveArmed() override;
-	/// <summary>
-	/// 武器を収納している時の移動処理
-	/// </summary>
-	void MoveStowed() override;
-
-	/// <summary>
-	/// 武器の当たり判定
-	/// </summary>
-	/// <returns></returns>
-	bool IsHitCollision() override;
 
 	/// <summary>
 	/// 弓のインスタンスを設定
 	/// </summary>
 	/// <param name="bow"></param>
-	void SetBow(Bow* bow)
+	void SetBowInstance(Bow* bow)
 	{
 		m_bow = bow;
 	}
 
 	/// <summary>
-	/// 矢のワールド座標を設定
-	/// </summary>
-	/// <param name="matrix"></param>
-	void SetArrowMatrix(const Matrix matrix)
-	{
-		m_arrowMatrix = matrix;
-	}
-	/// <summary>
-	/// 矢の情報を更新
-	/// </summary>
-	void ArrowUpdate()
-	{
-		m_modelArrow.Update();
-	}
-
-	/// <summary>
-	/// 射撃フラグを設定
-	/// </summary>
-	/// <param name="flag"></param>
-	void SetShotFlag(bool flag)
-	{
-		m_shotFlag = flag;
-	}
-
-	/// <summary>
-	/// 前方向を設定
-	/// </summary>
-	/// <param name="forward"></param>
-	void SetForward(Vector3 forward)
-	{
-		m_forward = forward;
-	}
-
-	/// <summary>
-	/// 射撃開始時の設定
-	/// </summary>
-	/// <param name="startPosition">矢を発射する座標</param>
-	/// <param name="deg">角度</param>
-	void SetShotStartPosition(Vector3 startPosition,float angle)
-	{
-		m_shotStartPosition = startPosition;
-		m_angle = angle;
-	}
-	/// <summary>
-	/// 矢の座標を取得
+	/// ダメージプロバイダーを取得
 	/// </summary>
 	/// <returns></returns>
-	const Vector3& GetPosition() const
+	DamageProvider* GetDamageProvider()
 	{
-		return m_arrowPos;
-	}
-	/// <summary>
-	/// ワールド座標をローカル座標に適応
-	/// </summary>
-	void ApplyMatrixToLocalPosition()
-	{
-		m_arrowPos = g_vec3Zero;
-		m_arrowMatrix.Apply(m_arrowPos);
-		m_rotation.SetRotation(m_arrowMatrix);
+		return m_damageProvider;
 	}
 
 	/// <summary>
-	/// 矢を撃つ時の設定
+	/// ショットパターンを設定
 	/// </summary>
-	/// <param name="shotFlag">ショットフラグ</param>
-	/// <param name="forward">矢を撃つキャラの前方向</param>
-	/// <param name="angle">発射する角度</param>
-	/// <param name="shotStartPosition">発射開始座標</param>
-	void SetShotArrowSetting(
-		bool shotFlag,
-		Vector3 forward,
-		Vector3 shotStartPosition,
-		float angle,
-		EnShotPatternState shotPatternState
-	);
-	/// <summary>
-	/// 矢が落ちる地点の設定
-	/// </summary>
-	void SetTargetPosition();
+	/// <param name="shotPattern"></param>
+	void SetShotPatternState(EnShotPatternState shotPattern)
+	{
+		m_enShotPatternState = shotPattern;
+	}
 
 	/// <summary>
-	/// ショットパターンステートを設定
+	/// 武器のステートを設定
 	/// </summary>
-	/// <param name="shotPatternState"></param>
-	void SetShotPatternState(EnShotPatternState shotPatternState)
+	/// <param name="setWeaponState"></param>
+	void SetWeaponState(EnWeaponState setWeaponState)
 	{
-		m_enShotPatternState = shotPatternState;
+		m_enWeaponState = setWeaponState;
 	}
+
+	/// <summary>
+	/// スキル攻撃時の情報の設定
+	/// </summary>
+	/// <param name="power">スキル攻撃力</param>
+	/// <param name="interval">攻撃情報更新インターバル</param>
+	void SetSkillShotInfo(int power, int interval)
+	{
+		SetDefaultSkillAttackPower(power);
+		SetAttackInfoUpdateTimeLimit(interval);
+	}
+	/// <summary>
+	/// 基本スキル攻撃力を設定
+	/// </summary>
+	/// <param name="power"></param>
+	void SetDefaultSkillAttackPower(int power)
+	{
+		m_defaultSkillAttackPower = power;
+	}
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="timeLimit"></param>
+	void SetAttackInfoUpdateTimeLimit(float timeLimit)
+	{
+		m_attackInfoUpdateTimeLimit = timeLimit;
+	}
+
+	/// <summary>
+	/// 矢を放つときのパラメータの設定
+	/// </summary>
+	/// <param name="shotpatternState">通常攻撃かスキル攻撃か</param>
+	/// <param name="forward">矢を放つキャラクターの前方向</param>
+	void SetShotArrowParameters(
+		EnShotPatternState shotpatternState,
+		Vector3 forward);
+
+	/// <summary>
+	/// 収納状態にする
+	/// </summary>
+	void ChangeStowed();
+	/// <summary>
+	/// 装備状態にする
+	/// </summary>
+	void ChangeArmed();
+
+	/// <summary>
+	/// 収納状態の移動処理
+	/// </summary>
+	void MoveStowed();
+
+	/// <summary>
+	/// 装備中の移動処理
+	/// </summary>
+	void MoveArmed();
+
+	
 
 private:
 	/// <summary>
-	/// モデルの初期化
+	/// 初期化
 	/// </summary>
-	void InitModel() override;
-	/// <summary>
-	/// 矢の攻撃エフェクト再生
-	/// </summary>
-	void PlayArrowEffect();
+	void Init();
 
 	/// <summary>
-	/// ショットパターンによって当たり判定を初期化
+	/// コンポーネントを設定
 	/// </summary>
-	/// <param name="shotPatternState">初期化したい当たり判定のステート</param>
-	void SelectInitCollision(EnShotPatternState shotPatternState);
+	void InitComponent();
+
+	/// <summary>
+	/// ショットパターンによるステートの管理
+	/// </summary>
+	void ManageShotPatternState();
+
+	/// <summary>
+	/// ノーマルショットパターンステートの更新処理
+	/// </summary>
+	void UpdateNormalShotState();
+	/// <summary>
+	/// スキルショットパターンステートの更新処理
+	/// </summary>
+	void UpdateSkillShotState();
+	/// <summary>
+	/// ショットパターンステートなしの更新処理
+	/// </summary>
+	void UpdateNoneState();
 	
 	/// <summary>
-	/// 通常攻撃の当たり判定の初期化
+	/// 放たれた矢の移動
 	/// </summary>
-	/// <param name="collisionName">当たり判定の名前</param>
-	/// <param name="createPos">生成したい座標</param>
+	void ShotArrowMove(EnShotPatternState shotPattern);
+
+
+
+	/// <summary>
+	/// 攻撃時の矢のトランスフォームの修正
+	/// </summary>
+	void FixedAttaackArrowTransform();
+
+
+	/// <summary>
+	/// 当たり判定を作成
+	/// </summary>
+	/// <param name="shotPatternState">ショットパターンステート</param>
+	/// <param name="position">生成座標</param>
 	/// <param name="rotation">回転</param>
-	/// <param name="collisionSize">当たり判定のサイズ(ボックス)</param>
-	void InitCollision(
-		const char* collisionName,
-		Vector3 createPos,
-		Quaternion rotation,
-		Vector3 collisionSize
-		);
+	void CreateCollision(
+		EnShotPatternState shotPatternState,
+		Vector3 createPosition,
+		Quaternion rotation
+	);
+
 
 	/// <summary>
-	/// 遠距離攻撃処理
+	/// コリジョンに何かヒットしたか
 	/// </summary>
-	void ProcessLongRangeAttack();
-	/// <summary>
-	/// 通常攻撃
-	/// </summary>
-	void NormalShot();
-	/// <summary>
-	/// スキル攻撃
-	/// </summary>
-	void SkillShot();
+	/// <returns></returns>
+	bool IsHitCollision();
+
 
 	/// <summary>
-	/// 座標を行列に適応
+	/// 矢のエフェクトを生成
 	/// </summary>
-	/// <param name="matrix">行列</param>
-	/// <param name="position">座標</param>
-	void ApplyVector3ToMatirx(Matrix& baseMatrix, Vector3 position);
+	void PlayArrowEffect(EnShotPatternState shotpatternState);
 
 	/// <summary>
-	/// 通常攻撃をする時の情報の設定
+	/// 
 	/// </summary>
-	void SetNormalShotInfo();
+	void DeleteArrow();
 
-	/// <summary>
-	/// 通常攻撃の矢の移動処理
-	/// </summary>
-	void MoveNormalShot();
-
-	/// <summary>
-	/// 消去時の処理
-	/// </summary>
-	void ProcessDelete();
 
 private:
 
-	Player* m_player = nullptr;
-	
+	UseEffect* m_arrowEffect = nullptr;
+
+	Brave* m_brave = nullptr;
+
 	Bow* m_bow = nullptr;
 
-	ModelRender m_modelArrow;		//矢モデル
-	CollisionObject* m_arrowCollision = nullptr;
-	EffectEmitter* m_arrowAttackEffect = nullptr;
+	ModelRender m_arrowModelRender;
 
-	Vector3 m_arrowPos = g_vec3Zero;
-	Vector3 m_oldArrowPos = g_vec3Zero;
-	Vector3 m_forward = g_vec3Zero;
-	Vector3 m_shotStartPosition = g_vec3Zero;
-	Vector3 m_targetPosition = g_vec3Zero;			//矢が落ちる地点
-	Quaternion m_rotation = g_quatIdentity;
+	DamageProvider* m_damageProvider = nullptr;
 
-	Vector2 m_shotArrowVerocity = g_vec2Zero;
+	CollisionObject* m_arrowCollision = nullptr;	//矢の当たり判定
 
-	Matrix m_arrowMatrix = g_matIdentity;
+	Matrix m_arrowMatrix;				//矢のワールド座標
+	Matrix m_arrowCenterMatrix;			//矢の中心のワールド座標
 
-	EnShotPatternState m_enShotPatternState = enShotPatternState_Normal;
-	
+	EnShotPatternState m_enShotPatternState = enNone;		//ショットパターンステート
 
-	bool m_shotFlag = false;			//矢を発射するかのフラグ
+	EnWeaponState m_enWeaponState = enStowed;
 
-	float m_angle = 0.0f;
-	float m_flightDuration = 0.0f;		
-	float m_deleteTimer = 0.0f;			//消去するまでの時間(矢が落ちるまでの時間)
+	Vector3 m_forward = g_vec3Zero;		//前方向
 
-	float m_hittableTimer = 0.0f;		//多段攻撃判定用タイマー
-	
+	Vector3 m_stowedPosition = { 0.0f,-200.0f,0.0f };
+
+	Vector3 m_moveAttackArrowPosition = g_vec3Zero;
+
+
+	std::map<EnShotPatternState, ArrowStatus> m_statusMap;
+
+
+	//武器を持たせるときのボーンID
+	int m_armedArrowBoonId = -1;
+
+	int m_arrowCentorBoonId = -1;		//矢の真ん中のボーンID
+	int m_arrowTipBoonId = -1;			//矢の先端のボーンID
+
+
+	float m_deleteTimer = 0.0f;
+
+	int m_defaultSkillAttackPower = 0;
+
+	float m_attackInfoUpdateTimeLimit = 0.0f;
+	float m_attackInfoUpdateTimer = 0.0f;
+
+
 };
 

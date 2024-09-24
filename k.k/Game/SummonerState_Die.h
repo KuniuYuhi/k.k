@@ -1,33 +1,41 @@
 #pragma once
 #include "ISummonerState.h"
 
-class SummonerState_Die :public ISummonerState
+class Summoner;
+class SummonerStateContext;
+
+
+class SummonerState_Die : public ISummonerState
 {
 public:
-	SummonerState_Die(Summoner* summoner)
-		:ISummonerState(summoner, enActionName_Die)
+
+	SummonerState_Die(Summoner* summoner, SummonerStateContext* context)
+		:ISummonerState(summoner, context)
 	{
 	}
+
+	~SummonerState_Die() {}
+
 	/// <summary>
-	/// 状態遷移管理
+	/// アニメーションを再生
 	/// </summary>
-	void ManageState();
+	void PlayAnimation() override;
 	/// <summary>
-	/// アニメーションの再生
+	/// 入った時の処理
 	/// </summary>
-	void PlayAnimation();
+	void Entry() override;
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	void Ubdate() override;
+	/// <summary>
+	/// 終了時の処理
+	/// </summary>
+	void Exit() override;
+
 
 
 private:
 
-	/// <summary>
-	/// 死亡時のエフェクト再生
-	/// </summary>
-	void CreateDeadEffect();
-
-
-private:
-
-	EffectEmitter* m_deadEffect = nullptr;	//死亡エフェクト
-	bool m_isdeadEffectPlayFlag = false;
 };
+

@@ -186,6 +186,8 @@ namespace nsK2EngineLow {
 			return isCollision;
 		}
 
+
+
 		/// <summary>
 		/// ゴーストオブジェクトを取得。
 		/// </summary>
@@ -361,6 +363,10 @@ namespace nsK2EngineLow {
 				}
 			}
 		}
+
+
+		const char* m_playerAttackCollisionName = "PlayerAttackCollision";		//プレイヤーの攻撃当たり判定の名前
+		const char* m_enemyAttackCollisionName = "EnemyAttackCollision";		//エネミーの攻撃当たり判定の名前
 
 	private:
 		std::vector<CollisionObject*>		m_collisionObjectVector;

@@ -4,8 +4,13 @@
 
 #pragma once
 
+
+#include "IComponent.h"
 #include <list>
 #include <string>
+
+
+
 namespace nsK2EngineLow {
 	class RenderContext;
 
@@ -19,6 +24,10 @@ namespace nsK2EngineLow {
 			*/
 		virtual ~IGameObject()
 		{
+			//コンポーネントリストを削除
+			for (IComponent* component : m_components) {
+				delete component;
+			}
 		}
 	public:
 
@@ -46,6 +55,14 @@ namespace nsK2EngineLow {
 		}
 
 	public:
+
+
+		/*!
+		*@brief モデルの読み込み。
+		モデルの読み込みは時間がかかるので先に読み込んでおきたいときに呼ぶ
+		*/
+		virtual void InitModel(){}
+
 		/*!
 		*@brief Start関数が完了した？
 		*/
@@ -73,6 +90,14 @@ namespace nsK2EngineLow {
 		void Deactivate()
 		{
 			m_isActive = false;
+		}
+
+		/// <summary>
+		/// スタートフラグをリセットする
+		/// </summary>
+		void ResetStartFlag()
+		{
+			m_isStart = false;
 		}
 
 		/// <summary>
@@ -119,6 +144,52 @@ namespace nsK2EngineLow {
 			}
 			return false;
 		}
+
+
+		/// <summary>
+		/// コンポーネントを追加
+		/// </summary>
+		/// <typeparam name="T">追加するコンポーネント</typeparam>
+		template<typename T>
+		void AddComponent() 
+		{
+			m_components.emplace_back(new T());
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="deleteComponent"></param>
+		void DeleteComponent(IComponent* deleteComponent)
+		{
+			m_components.erase(
+				std::remove(
+					m_components.begin(), 
+					m_components.end(), 
+					deleteComponent), 
+				m_components.end()
+			);
+		}
+
+		/// <summary>
+		/// コンポーネントを探す
+		/// </summary>
+		/// <typeparam name="T">ゲットしたいコンポーネント</typeparam>
+		/// <returns>あればコンポーネントを返す。なければnullptrを返す</returns>
+		template<typename T>
+		T* GetComponent()
+		{
+			for (IComponent* component : m_components)
+			{
+				T* target = dynamic_cast<T*>(component);
+				if (target != nullptr)
+				{
+					return target;
+				}
+			}
+			return nullptr;
+		}
+
 	public:
 
 		void RenderWrapper(RenderContext& renderContext)
@@ -127,11 +198,22 @@ namespace nsK2EngineLow {
 				Render(renderContext);
 			}
 		}
-
 		void UpdateWrapper()
 		{
 			if (m_isActive && m_isStart && !m_isDead) {
 				Update();
+			}
+		}
+		void UpdateComponentsWrapper()
+		{
+			if (m_isActive && m_isStart && !m_isDead) {
+
+				for (IComponent* component : m_components)
+				{
+					//スタート関数をとおっていたら
+
+					component->UpdateComponent();
+				}
 			}
 		}
 		void StartWrapper()
@@ -143,6 +225,9 @@ namespace nsK2EngineLow {
 				}
 			}
 		}
+
+		
+
 		friend class CGameObjectManager;
 	protected:
 		std::string m_name = "default";					//ゲームオブジェクトの名前
@@ -152,5 +237,8 @@ namespace nsK2EngineLow {
 		bool m_isNewFromGameObjectManager;	//GameObjectManagerでnewされた。
 		bool m_isRegist = false;							//GameObjectManagerに登録されている？
 		bool m_isActive = true;							//Activeフラグ。
+
+		std::vector<IComponent*> m_components;			//コンポーネントリスト
+
 	};
 }

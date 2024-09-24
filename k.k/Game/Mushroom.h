@@ -1,168 +1,154 @@
 #pragma once
-#include "MobMonster.h"
+#include "MobEnemyBase.h"
+#include "MushroomStateContext.h"
+#include "MushroomInfo.h"
 
-using namespace MobMonsterInfo;
 
-class Lich;
-class IMushroomState;
-class IMobStateMachine;
+class MushroomStateContext;
 
-class Mushroom :public MobMonster
+using namespace MushroomStates;
+using namespace MushroomAnimationClips;
+using namespace KnockBackInfo;
+
+
+/// <summary>
+/// モブエネミー：キノコクラス
+/// </summary>
+class Mushroom : public MobEnemyBase
 {
 public:
-	Mushroom();
 	~Mushroom();
 
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
+	bool Start() override;
+
+	void Update() override;
+
+	void Render(RenderContext& rc) override;
+
+	void InitModel() override;
+
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
-	/// <summary>
-	/// 当たり判定生成
-	/// </summary>
-	void CreateCollision();
 
 	/// <summary>
-	/// 処理を止めるか
+	/// 共通ステートの処理
 	/// </summary>
-	/// <returns></returns>
-	bool IsStopProcessing();
+	void ProcessCommonTranstion();
 
 	/// <summary>
-	/// モデルレンダーの取得
+	/// プレイヤーの方を向く
 	/// </summary>
-	/// <returns></returns>
-	ModelRender& GetModelRender()
-	{
-		return m_modelRender;
-	}
+	void TurnToPlayer();
 
 	/// <summary>
-	/// 特定のアニメーションが再生中か
+	/// 攻撃アクションを始めるときの処理
 	/// </summary>
-	/// <returns></returns>
-	bool isAnimationEnable() const
-	{
-		return m_enAnimationState != enAnimationState_Hit &&
-			m_enAnimationState != enAnimationState_Die &&
-			m_enAnimationState != enAnimationState_Victory;
-	}
+	void EntryAttackActionProcess();
+	/// <summary>
+	/// 攻撃アクションの更新処理
+	/// </summary>
+	void UpdateAttackActionProcess();
+	/// <summary>
+	/// 攻撃アクションを終わる時の処理
+	/// </summary>
+	void ExitAttackActionProcess();
+
 
 	/// <summary>
-	/// 
+	/// ヒットアクションに入った時の処理
 	/// </summary>
-	/// <returns></returns>
-	bool isRotationEnable() const
-	{
-		return m_enAnimationState != enAninationState_Idle;
-	}
+	void EntryHitActionProcess();
+	/// <summary>
+	/// ヒットアクション中の処理
+	/// </summary>
+	void UpdateHitActionProcess();
+	/// <summary>
+	/// ヒットアクション終了時の処理
+	/// </summary>
+	void ExitHitActionProcess();
 
 	/// <summary>
-	/// 攻撃中か
+	/// 死亡時の処理
 	/// </summary>
-	/// <returns></returns>
-	bool IsAttackEnable() const
-	{
-		return m_enAnimationState != enAnimationState_Attack &&
-			m_enAnimationState != enAnimationState_Skill;
-	}
+	void DieProcess();
 
 	/// <summary>
-	/// 被ダメージ時処理
+	/// 勝利時の処理
 	/// </summary>
-	void Damage(int attack);
+	void WinProcess() override;
 
 	/// <summary>
-	/// 共通のステート遷移処理を実行
+	/// 強制的に待機状態に切り替える
 	/// </summary>
-	void ProcessCommonStateTransition();
-	/// <summary>
-	/// アタック１ステート遷移処理を実行
-	/// </summary>
-	void OnProcessAttack_1StateTransition();
-	/// <summary>
-	/// アタック２ステート遷移処理を実行
-	/// </summary>
-	void OnProcessAttack_2StateTransition();
-	/// <summary>
-	/// 被ダメージステート遷移処理を実行
-	/// </summary>
-	void OnProcessDamageStateTransition();
-	/// <summary>
-	/// デスステート遷移処理を実行
-	/// </summary>
-	void OnProcessDieStateTransition();
-	/// <summary>
-	/// 勝利ステート遷移処理を実行
-	/// </summary>
-	void OnProcessVictoryStateTransition();
-	/// <summary>
-	/// 召喚された時のステート遷移処理を実行
-	/// </summary>
-	void OnProcessAppearStateTransition();
+	void ForceChangeStateIdle() override;
 
 	/// <summary>
-	/// 次のアニメーションステートを作成する。
+	/// 外部から削除
 	/// </summary>
-	/// <param name="nextState"></param>
-	void SetNextAnimationState(EnAnimationState nextState);
-
-	/// <summary>
-	/// 次のステートマシンを作成する
-	/// </summary>
-	/// <param name="nextStateMachine"></param>
-	void SetNextStateMachine(EnStateMachineState nextStateMachine) override;
-
-	/// <summary>
-	/// 当たり判定生成フラグを取得
-	/// </summary>
-	/// <returns></returns>
-	const bool& GetCreateAttackCollisionFlag() const
-	{
-		return m_createAttackCollisionFlag;
-	}
+	void DieFlomOutside(bool isPlayEffect = false) override;
 
 private:
-	/// <summary>
-	/// モデルの初期化
-	/// </summary>
-	void InitModel();
 
 	/// <summary>
-	/// アニメーションを再生
+	/// アニメーションクリップを読み込む
 	/// </summary>
-	void PlayAnimation();
+	void LoadAnimationClip();
 
 	/// <summary>
-	/// ステート管理
+	/// 全てのコンポーネントを初期化
 	/// </summary>
-	void ManageState();
+	void InitComponents();
 
 
-	enum EnAttackName
-	{
-		enAttackName_1,
-		enAttackName_2
-	};
+	/// <summary>
+	/// 自身をオブジェクトプールに戻す
+	/// </summary>
+	void ReleaseThis() override;
 
-	
+	/// <summary>
+	/// さらに追加するコンポーネントをセッティング
+	/// </summary>
+	void AddMoreComponent() override;
 
-	IMushroomState* m_state = nullptr;
+	/// <summary>
+	/// コリジョンを作成する
+	/// </summary>
+	void CreateCollisionObject() override;
 
-	Animation m_animation;	// アニメーション
-	AnimationClip m_animationClip[enAnimationClip_Num];	// アニメーションクリップ 
+	/// <summary>
+	/// ダメージを受けた時の処理
+	/// </summary>
+	void ProcessHit(DamageInfo damageInfo) override;
 
-	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
 
-	EnStateMachineState m_enStateMachineState = enStateMachineState_Patrol;
 
-	ModelRender m_modelRender;
+	/// <summary>
+	/// 攻撃処理
+	/// </summary>
+	void Attack();
 
-	CollisionObject* m_headCollision = nullptr;
 
-	int m_attackBoonId = -1;					//攻撃で使うボーンID
+private:
 
-	bool m_createAttackCollisionFlag = false;
+	std::unique_ptr<MushroomStateContext> m_mushroomContext = nullptr;	//ステートコンテキスト
+
+	AnimationClip m_animationClip[enMushroomAnimClip_num];
+
+	CollisionObject* m_attackCollision = nullptr;		//当たり判定用コリジョン
+
+
+
+
+
+	bool m_isCreateAttackCollision = false;
+
+	int m_headBoonId = -1;
+
+	bool m_isSettingComponents = false;
+
+
+	float count = 0.0f;
+
+
 };
 

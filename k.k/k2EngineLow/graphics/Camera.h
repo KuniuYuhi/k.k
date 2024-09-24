@@ -8,6 +8,18 @@ namespace nsK2EngineLow {
 	/// </summary>
 	class Camera : public Noncopyable {
 	public:
+
+		/// <summary>
+		/// カメラ揺れ情報
+		/// </summary>
+		struct CameraShakeInfo
+		{
+			int			shakeStrength = 0.0f;					//揺れの強さ
+			float		shakeVibrato = 0.0f;					//カメラがどのくらい振動するか
+			float		shakeTimeLimit = 0.0f;				//カメラを揺らす時間
+			Vector3		startPosition = g_vec3Zero;			//揺れスタート座標
+		};
+
 		/// <summary>
 		/// 射影行列の更新方法。
 		/// </summary>
@@ -360,6 +372,63 @@ namespace nsK2EngineLow {
 		/// <param name="worldPos">ワールド座標</param>
 		void CalcScreenPositionFromWorldPosition(Vector2& screenPos, const Vector3& worldPos) const;
 
+
+		/// <summary>
+		/// カメラを揺らす
+		/// </summary>
+		void ActiveCameraShake()
+		{
+			m_isCameraShakeActive = true;
+		}
+		/// <summary>
+		/// カメラを揺らさない
+		/// </summary>
+		void DeactiveCameraShake()
+		{
+			m_isCameraShakeActive = false;
+		}
+
+		/// <summary>
+		/// カメラを揺らしているか
+		/// </summary>
+		/// <returns></returns>
+		bool IsCameraShakeActive()
+		{
+			return m_isCameraShakeActive;
+		}
+
+		CameraShakeInfo GetShakeInfo()
+		{
+			return m_cameraShakeInfo;
+		}
+
+		/// <summary>
+		/// カメラの揺れ情報を設定
+		/// </summary>
+		/// <param name="shakeStrength">揺れの強さ</param>
+		/// <param name="shakeSibrato">カメラがどのくらい振動するか</param>
+		/// <param name="shakeTimeLimit">カメラを揺らす時間</param>
+		void SetCameraShakeInfo(
+			int	shakeStrength,
+			float shakeVibrato,
+			float shakeTimeLimit);
+
+		/// <summary>
+		/// カメラを揺らし始める
+		/// </summary>
+		/// <param name="shakeStrength">揺れの強さ</param>
+		/// <param name="shakeSibrato"カメラがどのくらい振動するか></param>
+		/// <param name="shakeTimeLimit">カメラを揺らす時間</param>
+		void StartCameraShake(
+			int	shakeStrength,
+			float shakeVibrato,
+			float shakeTimeLimit
+		);
+
+
+
+
+
 	protected:
 		float		m_targetToPositionLen = 1.0f;			// 注視点と視点まで距離。
 		Vector3		m_position = { 0.0f, 0.0f, 1.0f };		// カメラ位置。
@@ -383,5 +452,11 @@ namespace nsK2EngineLow {
 		EnUpdateProjMatrixFunc m_updateProjMatrixFunc = enUpdateProjMatrixFunc_Perspective;	// プロジェクション行列の更新の仕方。
 		bool		m_isNeedUpdateProjectionMatrix = true;
 		bool		m_isDirty = false;						// ダーティフラグ。
+
+
+		CameraShakeInfo m_cameraShakeInfo;					//カメラ揺れ情報
+		
+		bool		m_isCameraShakeActive = false;			//カメラを揺らすか
+		
 	};
 }

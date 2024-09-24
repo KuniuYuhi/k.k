@@ -4,7 +4,8 @@
 #include "SpringCamera.h"
 
 class Boss;
-class Player;
+class Brave;
+class ResultSeen;
 
 class GameFinishCamera:public IGameObject
 {
@@ -56,13 +57,16 @@ private:
 	SpringCamera			m_springCamera;
 
 	Boss* m_boss = nullptr;
-	Player* m_player = nullptr;
+	Brave* m_brave = nullptr;
 
 	EnFinishCameraState m_enFinishCameraState = enFinishCameraState_ChaseBoss;
 
 	Vector3				m_position = Vector3::Zero;		//カメラ座標
 	Vector3				m_target = Vector3::Zero;		//カメラ注視点
 	Vector3 m_forward = g_vec3Zero;
+
+
+	ResultSeen* m_result = nullptr;
 
 };
 

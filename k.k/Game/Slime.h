@@ -1,162 +1,160 @@
 #pragma once
-#include "MobMonster.h"
+#include "MobEnemyBase.h"
+#include "SlimeStateContext.h"
+#include "SlimeInfo.h"
 
-using namespace MobMonsterInfo;
 
-class ISlimeState;
-class IMobStateMachine;
+class SlimeStateContext;
 
-class Slime :public MobMonster
+using namespace SlimeStates;
+using namespace SlimeAnimationClips;
+using namespace KnockBackInfo;
+
+
+/// <summary>
+/// モブエネミー：スライムクラス
+/// </summary>
+class Slime : public MobEnemyBase
 {
 public:
-	Slime();
 	~Slime();
 
 	bool Start() override;
+
 	void Update() override;
+
 	void Render(RenderContext& rc) override;
+
+	void InitModel() override;
+
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
-	/// <summary>
-	/// 処理を止めるか
-	/// </summary>
-	/// <returns></returns>
-	bool IsStopProcessing();
 
 	/// <summary>
-	/// 当たり判定生成
+	/// 共通ステートの処理
 	/// </summary>
-	void CreateCollision();
+	void ProcessCommonTranstion();
 
 	/// <summary>
-	/// モデルレンダーの取得
+	/// プレイヤーの方を向く
 	/// </summary>
-	/// <returns></returns>
-	ModelRender& GetModelRender()
-	{
-		return m_modelRender;
-	}
+	void TurnToPlayer();
 
 	/// <summary>
-	/// 特定のアニメーションが再生中か
+	/// 攻撃アクションを始めるときの処理
 	/// </summary>
-	/// <returns></returns>
-	bool isAnimationEnable() const override
-	{
-		return m_enAnimationState != enAnimationState_Hit &&
-			m_enAnimationState != enAnimationState_Die;
-	}
-
+	void EntryAttackActionProcess();
 	/// <summary>
-	/// 回転可能か
+	/// 攻撃アクションの更新処理
 	/// </summary>
-	/// <returns></returns>
-	bool isRotationEnable() const override
-	{
-		return m_enAnimationState != enAninationState_Idle;
-	}
-
+	void UpdateAttackActionProcess();
 	/// <summary>
-	/// 攻撃中か
+	/// 攻撃アクションを終わる時の処理
 	/// </summary>
-	/// <returns></returns>
-	bool IsAttackEnable() const override
-	{
-		return m_enAnimationState != enAnimationState_Attack &&
-			m_enAnimationState != enAnimationState_Skill;
-	}
+	void ExitAttackActionProcess();
 
 
 	/// <summary>
-	/// 被ダメージ時処理
+	/// ヒットアクションに入った時の処理
 	/// </summary>
-	void Damage(int attack);
+	void EntryHitActionProcess();
+	/// <summary>
+	/// ヒットアクション中の処理
+	/// </summary>
+	void UpdateHitActionProcess();
+	/// <summary>
+	/// ヒットアクション終了時の処理
+	/// </summary>
+	void ExitHitActionProcess();
 
 	/// <summary>
-	/// 共通のステート遷移処理を実行
+	/// 死亡時の処理
 	/// </summary>
-	void ProcessCommonStateTransition();
-	/// <summary>
-	/// アタック１ステート遷移処理を実行
-	/// </summary>
-	void OnProcessAttack_1StateTransition();
-	/// <summary>
-	/// 被ダメージステート遷移処理を実行
-	/// </summary>
-	void OnProcessDamageStateTransition();
-	/// <summary>
-	/// デスステート遷移処理を実行
-	/// </summary>
-	void OnProcessDieStateTransition();
-	/// <summary>
-	/// 勝利ステート遷移処理を実行
-	/// </summary>
-	void OnProcessVictoryStateTransition();
-	/// <summary>
-	/// 召喚された時のステート遷移処理を実行
-	/// </summary>
-	void OnProcessAppearStateTransition();
+	void DieProcess();
 
 	/// <summary>
-	/// 次のアニメーションステートを作成する。
+	/// 勝利時の処理
 	/// </summary>
-	/// <param name="nextState"></param>
-	void SetNextAnimationState(EnAnimationState nextState) override;
+	void WinProcess() override;
 
 	/// <summary>
-	/// 次のステートマシンを作成する
+	/// 強制的に待機状態に切り替える
 	/// </summary>
-	/// <param name="nextStateMachine"></param>
-	void SetNextStateMachine(EnStateMachineState nextStateMachine) override;
+	void ForceChangeStateIdle() override;
 
 	/// <summary>
-	/// 当たり判定生成フラグを取得
+	/// 外部から削除
 	/// </summary>
-	/// <returns></returns>
-	const bool& GetCreateAttackCollisionFlag() const
-	{
-		return m_createAttackCollisionFlag;
-	}
+	void DieFlomOutside(bool isPlayEffect = false) override;
 
 private:
+	
 	/// <summary>
-	/// モデルの初期化
+	/// アニメーションクリップを読み込む
 	/// </summary>
-	void InitModel();
+	void LoadAnimationClip();
 
 	/// <summary>
-	/// アニメーションを再生
+	/// 全てのコンポーネントを初期化
 	/// </summary>
-	void PlayAnimation();
+	void InitComponents();
+
 
 	/// <summary>
-	/// ステート管理
+	/// 自身をオブジェクトプールに戻す
 	/// </summary>
-	void ManageState();
+	void ReleaseThis() override;
 
 	/// <summary>
-	/// 攻撃時の音を再生
+	/// さらに追加するコンポーネントをセッティング
 	/// </summary>
-	void PlayAttackSound();
+	void AddMoreComponent() override;
+
+	/// <summary>
+	/// コリジョンを作成する
+	/// </summary>
+	void CreateCollisionObject() override;
+
+	/// <summary>
+	/// ダメージを受けた時の処理
+	/// </summary>
+	void ProcessHit(DamageInfo damageInfo) override;
+
 
 	
-	ISlimeState* m_state = nullptr;
 
-	Animation m_animation;	// アニメーション
-	AnimationClip m_animationClip[enAnimationClip_Num];	// アニメーションクリップ 
-
-	EnAnimationState m_enAnimationState = enAninationState_Idle;	//アニメーションステート
-
-	EnStateMachineState m_enStateMachineState = enStateMachineState_Patrol;
+	/// <summary>
+	/// 攻撃処理
+	/// </summary>
+	void Attack();
 
 
-	CollisionObject* m_headCollision = nullptr;
+private:
 
-	ModelRender m_modelRender;
+	std::unique_ptr<SlimeStateContext> m_slimeContext = nullptr;	//ステートコンテキスト
 
-	int m_attackBoonId = -1;					//攻撃で使うボーンID
+	AnimationClip m_animationClip[enSlimeAnimClip_num];
 
-	bool m_createAttackCollisionFlag = false;
+	CollisionObject* m_attackCollision = nullptr;		//当たり判定用コリジョン
+
+	
+
+
+
+	bool m_isCreateAttackCollision = false;
+
+	int m_headBoonId = -1;
+
+	bool m_isSettingComponents = false;
+
+
+	float count = 0.0f;
+
+	
+	
+	
+
+	
 
 };
 

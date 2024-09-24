@@ -4,9 +4,8 @@
 #include "SpringCamera.h"
 
 class Game;
-class Player;
-class Lich;
-class Boss;
+
+class Brave;
 
 
 class GameCamera:public IGameObject
@@ -29,36 +28,55 @@ public:
 	/// プレイヤーを追うカメラ
 	/// </summary>
 	/// <param name="Reversesflag">視点を反対方向にするかのフラグ。trueで反対方向にする</param>
-	void ChaseCamera(bool Reversesflag = false);
+	void ChasePlayerCamera(bool Reversesflag = false);
 
 	/// <summary>
 	/// カメラのズーム処理
 	/// </summary>
 	void ZoomCamera();
 
-	void ManageState();
-
+	/// <summary>
+	/// カメラのゲーム中の処理
+	/// </summary>
 	void OnProcessGameTransition();
 
+	/// <summary>
+	/// カメラを揺らす
+	/// </summary>
+	void CameraShake();
 
+	Vector3 GetUpdateShakePosition(
+		float currentTimer);
+
+	/// <summary>
+	/// 値を範囲内に収める
+	/// </summary>
+	/// <param name="value"></param>
+	/// <param name="min"></param>
+	/// <param name="max"></param>
+	/// <returns></returns>
+	float Clamp(float value, float min, float max);
+
+
+
+	/// <summary>
+	/// スプリングカメラのリフレッシュ
+	/// </summary>
 	void CameraRefresh()
 	{
 		m_springCamera.SetDampingRate(1.0f);
 		m_springCamera.Refresh();
 	}
 
-	void SetLich(Lich* lich)
-	{
-		m_lich = lich;
-	}
+	
 
 
 
 private:
 	Game* m_game = nullptr;
-	Player* m_player = nullptr;
-	Boss* m_boss = nullptr;
-	Lich* m_lich = nullptr;
+	
+	Brave* m_player = nullptr;
+
 
 	CameraCollisionSolver	m_cameraCollisionSolver;
 	SpringCamera			m_springCamera;
@@ -74,6 +92,12 @@ private:
 	Quaternion			m_rotation = Quaternion::Identity;	//回転
 
 	Vector3				m_finalCameraPos = g_vec3Zero;
+
+	Vector3 m_shakeCameraPosition = g_vec3Zero;
+
+	float m_shakeTimer = 0.0f;
+
+
 
 	bool flag = false;
 

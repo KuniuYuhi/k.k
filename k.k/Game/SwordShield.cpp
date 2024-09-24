@@ -1,428 +1,745 @@
 #include "stdafx.h"
 #include "SwordShield.h"
 #include "Brave.h"
+#include "PlayerController.h"
+#include "PlayerMovement.h"
+#include "DamageProvider.h"
 
-#include "IAttackObject.h"
+#include "KnockBackInfoManager.h"
+
+
+#include "UseEffect.h"
 
 
 namespace {
-	//武器が収納状態の時の座標
-	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
 
-	const Vector3 SWORD_COLLISION_SIZE = { 20.0f,240.0f,8.0f };
-	const Vector3 SHIELD_COLLISION_SIZE = { 22.0f,40.0f,16.0f };
+	const Vector3 SWORD_COLLISION_SIZE = { 90.0f,20.0f,10.0f };
+	const Vector3 SHIELD_COLLISION_SIZE = { 28.0f,50.0f,16.0f };
 
-	const float SKILL_RADIUS = 60.0f;
+	const float SKILL_ATTACK_RADIUS = 100.0f;		//スキル攻撃用コリジョンの半径
 
-	const float ADD_FORWARD = 30.0f;
 
-	//ステータス
-	const int POWER = 30;
+	const float SHIELD_BARRIER_EFFECT_SCALE = 8.0f;
 
-	const float MOVE_FORWARD_SPEED = 240.0f;
-
-	const float NORMAL_ATTACK_1_EFFECT_ANGLE = 225.0f;
-	
-	const float NORMAL_ATTACK_1_2_EFFECT_SIZE = 11.0f;
-	const float NORMAL_ATTACK_3_EFFECT_SIZE = 18.0f;
-
-	const float SKILL_ATTACK_EFFECT_SIZE = 17.0f;
-	const float SKILL_ATTACK_RISING_EFFECT_SIZE = 10.0f;
-
-	const float HITTABLE_TIME = 0.1f;
+	const int CAMERA_SHAKE_STRENGTH = 40.0f;
+	const float CAMERA_SHAKE_VIBRATO = 40.0f;
+	const float CAMERA_SHAKE_TIME_LIMIT = 0.2f;
 }
 
 SwordShield::SwordShield()
 {
-	SetMoveForwardSpeed(MOVE_FORWARD_SPEED);
-	SetWeaponPower(POWER);
 }
 
 SwordShield::~SwordShield()
 {
 	DeleteGO(m_swordCollision);
 	DeleteGO(m_shieldCollision);
+
+
 }
 
 bool SwordShield::Start()
 {
-	//武器のステータス初期化
-	m_status.InitWeaponStatus(GetName());
 
-	//勇者のインスタンスを探す
-	m_brave = FindGO<Brave>("brave");
-
-	InitModel();
-	InitCollision();
-
-	//防御タイプの設定
-	SetEnDefendTipe(enDefendTipe_Defence);
+	m_brave = FindGO<Brave>("Brave");
+	//プレイヤーコントローラーコンポーネントを取得
+	m_playerController = m_brave->GetComponent<PlayerController>();
+	//共通ステータスを初期化
+	m_status.InitWeaponCommonStatus("SwordShield");
+	//固有ステータスの初期化
+	m_uniqueStatus.InitUniqueStatus();
+	
+	//初期化処理
+	Init();
 
 	//アニメーションイベント用の関数を設定する。
 	m_brave->GetModelRender().AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
-		});
+	});
 
 	return true;
 }
 
 void SwordShield::Update()
 {
-	//収納状態なら
-	if (GetStowedFlag() == true)
+
+
+	if (m_enWeaponState == enArmed)
 	{
-		return;
+		MoveArmed();
 	}
 
-	MoveWeapon();
 
-	//多段ヒット可能か判断する。他の武器で処理が途中で終わっているかもしれないから
-	m_hitDelection.IsHittable(HITTABLE_TIME);
 
-	m_modelSword.Update();
-	m_modelShield.Update();
+	m_swordModelRender.Update();
+	m_shieldModelRender.Update();
+
 	m_swordCollision->Update();
 	m_shieldCollision->Update();
+
 }
 
-bool SwordShield::IsHitCollision()
+
+void SwordShield::Init()
 {
-	//アタックオブジェクトの当たり判定
-	const auto& DarkBallCollisions =
-		g_collisionObjectManager->FindCollisionObjects("attackobject");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : DarkBallCollisions)
-	{
-		//自身の当たり判定と衝突したら
-		if (collision->IsHit(m_shieldCollision) == true)
-		{
-			//当たった
-			return true;
-		}
-	}
-
-	//モンスターの攻撃の当たり判定
-	const auto& MonsterCollisions = g_collisionObjectManager->FindCollisionObjects("monsterattack");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : MonsterCollisions)
-	{
-		//自身の当たり判定と衝突したら
-		if (collision->IsHit(m_shieldCollision) == true)
-		{
-			//当たった
-			return true;
-		}
-	}
-
-	//ここまで来たら当たってない
-	return false;
-}
-
-void SwordShield::ProcessSkillAttack()
-{
-	//当たり判定を生成する座標を設定
-	m_skillAttackPosition = g_vec3Zero;
-	//剣のワールド座標をベクトルに乗算
-	m_swordMatrix.Apply(m_skillAttackPosition);
-	m_skillAttackPosition.y = 0.0f;
-	Vector3 forward;
-	forward = m_brave->GetForward();
-	forward *= ADD_FORWARD;
-	//前方向分を足す
-	m_skillAttackPosition += forward;
-
-	//スキル攻撃時の当たり判定の生成
-	auto skillCollision = NewGO<CollisionObject>(0, "skillAttack");
-	skillCollision->CreateSphere(
-		m_skillAttackPosition,
-		g_quatIdentity,
-		SKILL_RADIUS
-	);
-}
-
-void SwordShield::InitModel()
-{
-	//剣モデルの初期化
-	m_modelSword.Init("Assets/modelData/character/Player/NewHero/OneHandSword.tkm",
+	//剣モデルの読み込み
+	m_swordModelRender.Init("Assets/modelData/character/Player/NewHero/OneHandSword2.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
-		0,
-		0,
-		enModelUpAxisZ);
-	
-	//盾モデルの初期化
-	m_modelShield.Init("Assets/modelData/character/Player/NewHero/Shield.tkm",
+		0,0,enModelUpAxisZ);
+	//剣の中心のボーンIDを取得
+	m_swordCenterBoonId = m_swordModelRender.FindBoneID(L"Center");
+
+
+	//盾モデルの読み込み
+	m_shieldModelRender.Init("Assets/modelData/character/Player/NewHero/Shield.tkm",
 		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
-		0,
-		0,
-		enModelUpAxisZ);
+		0, 0, enModelUpAxisZ);
+
+
 	//剣と盾の座標に対応するボーンIDを取得
 	//装備状態の時のボーンID
 	m_armedSwordBoonId = m_brave->GetModelRender().FindBoneID(L"weaponShield_r");
 	m_armedShieldBoonId = m_brave->GetModelRender().FindBoneID(L"weaponShield_l");
+
+
+	InitCollision();
+
+	//武器が収納状態なら
+	if (m_enWeaponState == enStowed)
+	{
+		ChangeStowedState();
+	}
+	//武器が装備状態なら
+	else
+	{
+		ChangeArmedState();
+	}
+
+
+	
+
+}
+
+void SwordShield::DeleteThis()
+{
+	DeleteGO(this);
+}
+
+void SwordShield::ChangeStowedState()
+{
+	SetCurrentWeaponState(enStowed);
+
+	m_swordModelRender.SetPosition(m_stowedPosition);
+	m_shieldModelRender.SetPosition(m_stowedPosition);
+
+	if(m_swordCollision != nullptr) m_swordCollision->SetPosition(m_stowedPosition);
+
+	if (m_shieldCollision != nullptr) m_shieldCollision->SetPosition(m_stowedPosition);
+
+}
+
+void SwordShield::ChangeArmedState()
+{
+	SetCurrentWeaponState(enArmed);
 }
 
 void SwordShield::InitCollision()
 {
-	InitSwordCollision();
-	InitShieldCollision();
-}
-
-void SwordShield::InitSwordCollision()
-{
 	//剣の当たり判定
-	m_swordCollision = NewGO<CollisionObject>(0, "Attack");
-	/*m_swordCollision->CreateMesh(
-		g_vec3Zero,
-		g_quatIdentity,
-		m_modelSword.GetModel(),
-		m_brave->GetModelRender().GetBone(m_armedSwordBoonId)->GetWorldMatrix()
-	);*/
+	m_swordCollision = 
+		NewGO<CollisionObject>
+		(0, g_collisionObjectManager->m_playerAttackCollisionName
+		);
+	//コリジョンの制作者をプレイヤーに設定
+	m_swordCollision->SetCreatorName(m_brave->GetName());
+	//コリジョンの形状はボックス
 	m_swordCollision->CreateBox(
-		STOWEDS_POSITION,
-		Quaternion(0.0f, 90.0f, 180.0f, 1.0f),
+		m_stowedPosition,
+		Quaternion::Identity,
 		SWORD_COLLISION_SIZE
 	);
 	//当たり判定を自動で削除しないようにする
 	m_swordCollision->SetIsEnableAutoDelete(false);
 	//当たり判定を無効化
 	m_swordCollision->SetIsEnable(false);
-}
 
-void SwordShield::InitShieldCollision()
-{
+
 	//盾の当たり判定
 	m_shieldCollision = NewGO<CollisionObject>(0, "defence");
-	m_shieldCollision->CreateBox(
-		STOWEDS_POSITION,
-		Quaternion(0.0f, 90.0f, 180.0f, 1.0f),
-		SHIELD_COLLISION_SIZE
+	//コリジョンの制作者をプレイヤーに設定
+	m_shieldCollision->SetCreatorName(m_brave->GetName());
+	//コリジョンの形状はボックス
+	m_shieldCollision->CreateSphere(
+		m_stowedPosition,
+		Quaternion::Identity,
+		50.0f
 	);
+	//当たり判定を自動で削除しないようにする
 	m_shieldCollision->SetIsEnableAutoDelete(false);
 	m_shieldCollision->SetIsEnable(false);
 }
 
-void SwordShield::MoveWeapon()
+void SwordShield::CreateSkillAttackCollision()
 {
-	switch (m_enWeaponState)
+	Vector3 hitPosition = g_vec3Zero;
+	//剣のワールド座標をベクトルに乗算
+	m_swordCenterMatrix.Apply(hitPosition);
+	hitPosition.y = 0.0f;
+
+	//スキル攻撃時の当たり判定の生成
+	auto skillCollision = NewGO<CollisionObject>(0, g_collisionObjectManager->m_playerAttackCollisionName);
+	//コリジョンの制作者をプレイヤーに設定
+	skillCollision->SetCreatorName(m_brave->GetName());
+	//コリジョンの形状は球
+	skillCollision->CreateSphere(
+		hitPosition,
+		g_quatIdentity,
+		SKILL_ATTACK_RADIUS
+	);
+}
+
+void SwordShield::AttackAction()
+{
+
+
+
+}
+
+void SwordShield::ProceedComboAttack()
+{
+	//３コンボ以上なら
+	if(m_enComboState >= enCombo_Third)
 	{
-	case IWeapon::enWeaponState_Stowed://収納状態
-		MoveStowed();
+		//コンボステートをなしにリセットする
+		m_enComboState = enCombo_None;
+	}
+
+	//コンボを一つ進める
+	m_enComboState= static_cast<EnComboState>(m_enComboState + 1);
+
+	
+}
+
+void SwordShield::ResetComboAttack()
+{
+	//コンボステートをなしにリセットする
+	m_enComboState = enCombo_None;
+}
+
+bool SwordShield::IsEndDefensiveAction()
+{
+	//防御ボタンを離したら、またはシールドにヒットしたら
+	if (!m_playerController->IsPressDefensiveActionButton()|| m_isHitShield)
+	{
+		//防御アクションを終わる
+		return true;
+	}
+
+	return false;
+}
+
+void SwordShield::EntryDefensiveActionProcess()
+{
+	Vector3 position = g_vec3Zero;
+	m_shieldMatrix.Apply(position);
+	//エフェクト生成
+	m_shieldEffect = NewGO<UseEffect>(0, "ShieldBarrierEffect");
+	m_shieldEffect->PlayEffect(enEffect_SwordShieldDefendBarrier,
+		position, g_vec3One * SHIELD_BARRIER_EFFECT_SCALE, Quaternion::Identity, false);
+
+
+	//盾の当たり判定を使うのでプレイヤー本体は無敵にする
+	m_brave->EnableInvincible();
+	//盾の当たり判定を有効化する
+	m_shieldCollision->SetIsEnable(true);
+	//シールドヒットフラグをリセット
+	m_isHitShield = false;
+}
+
+void SwordShield::UpdateDefensiveActionProcess()
+{
+	//盾の当たり判定をチェック
+	CheckShieldCollision();
+
+	//回避、防御アクションを終わるなら
+	if (IsEndDefensiveAction())
+	{
+		if (m_isHitShield)
+		{
+			//シールドにヒットしていたらシールドヒットステートに遷移
+			m_brave->ChangeBraveState(enBraveState_DefensiveHit);
+		}
+		else
+		//ステートの共通処理
+		m_brave->ProcessCommonStateTransition();
+	}
+}
+
+void SwordShield::ExitDefensiveActionProcess()
+{
+	//エフェクト削除
+	if (m_shieldEffect != nullptr)
+	{
+		m_shieldEffect->Delete();
+		m_shieldEffect = nullptr;
+	}
+
+	//シールドにヒットせずにステートが終わったら
+	if (!m_isHitShield)
+	{
+		//無敵を解除
+		m_brave->DisableInvincible();
+	}
+
+	//盾の当たり判定を無効化する
+	m_shieldCollision->SetIsEnable(false);
+}
+
+void SwordShield::EntryDefensiveHitProcess()
+{
+	//盾の当たり判定を使うのでプレイヤー本体は無敵にする
+	m_brave->EnableInvincible();
+
+}
+
+void SwordShield::UpdateDefensiveHitProcess()
+{
+}
+
+void SwordShield::ExitDefensiveHitProcess()
+{
+	////まだ防御ボタンを押していたら防御ステートに切り替える
+	//if (m_playerController->IsPressDefensiveActionButton())
+	//{
+	//	m_brave->ChangeBraveState(enBraveState_DefensiveActions);
+	//	return;
+	//}
+
+	//無敵を解除
+	m_brave->DisableInvincible();
+}
+
+bool SwordShield::CanDefensiveAction()
+{
+	//現在のシールドの耐久値が0より大きければ
+	if (m_uniqueStatus.GetCurrentShieldEnduranceValue() > 0)
+	{
+		//防御可能
+		return true;
+	}
+	//不可能
+	return false;
+}
+
+bool SwordShield::CanSkillAttack()
+{
+	//スキルに必要なスタミナを消費できるかチェック
+	if (m_brave->GetStatus().CheckConsumeStamina(m_status.GetSkillStaminaCost()))
+	{
+		//スキル攻撃可能
+		return true;
+	}
+
+	//スタミナが不足しているのでフラグを立てる
+	m_brave->SetStaminaInsufficientFlag(true);
+	//不可能
+	return false;
+}
+
+void SwordShield::EntryNormalAttackProcess(EnComboState comboState)
+{
+	//移動方向を前方向か入力方向か計算する
+	m_normalAttackMoveDirection = 
+	m_brave->GetPlayerMovement()->CalcMoveDirection(
+		m_brave->GetForward(),
+		m_playerController->GetLStickInput(),
+		m_brave->GetMoveSpeed()
+	);
+
+	//敵の位置も踏まえて向く方向を決める
+	m_normalAttackMoveDirection = CalcAutoAimAtTarget(
+		m_brave->GetPosition(),
+		m_normalAttackMoveDirection,
+		m_uniqueStatus.GetNormalAttackSearchRadius(),
+		m_uniqueStatus.GetNormalAttackComparisonDot()
+	);
+
+	//プレイヤーの回転方向に移動方向を設定する
+	m_brave->SetRotateDirection(m_normalAttackMoveDirection);
+	m_brave->SetForward(m_normalAttackMoveDirection);
+
+	//コンボステートを番号に変換する
+	int comboNum = ConvertComboStateToNumber(comboState);
+
+	//武器ステータスから攻撃スピードを取得して方向にかける
+	m_normalAttackMoveDirection *= m_uniqueStatus.GetNormalAttackSpeed(comboNum);
+
+	//通常攻撃待機区間フラグをリセット
+	SetStandbyPeriodFlag(false);
+	//キャンセルアクションフラグを立てる。(キャンセルアクションできる)
+	m_isImpossibleancelAction = true;
+
+	//ダメージ情報を設定
+	m_brave->GetDamageProvider()->SetDamageInfo(
+		KnockBackInfoManager::GetInstance()->GetAddAttackId(), m_brave->GetCurrentPower(),
+		m_uniqueStatus.GetAttackTimeScale(comboNum),
+		m_status.GetComboKnockBackPattern(static_cast<WeaponStatus::EnCombo>(comboNum)),
+		m_status.GetWeaponAttribute()
+	);
+	
+}
+
+void SwordShield::UpdateNormalAttackProcess(EnComboState comboState)
+{
+	//キャンセルアクションできる状態なら防御も可能
+	if (m_isImpossibleancelAction && 
+		IsStandbyPeriod() && 
+		m_playerController->IsPressDefensiveActionButton())
+	{
+		//防御ステートに切り替える
+		m_brave->ChangeBraveState(enBraveState_DefensiveActions);
+		return;
+	}
+
+	//移動フラグが立っている間は移動
+	if (IsAttackActionMove())
+	{
+		m_brave->CharaConExecute(m_normalAttackMoveDirection);
+	}
+
+}
+
+void SwordShield::ExitNormalAttackProcess(EnComboState comboState)
+{
+	//攻撃中の移動フラグをリセット
+	SetAttackActionMove(false);
+	//通常攻撃待機区間フラグをリセット
+	SetStandbyPeriodFlag(false);
+	//一応当たり判定を無効化しておく
+	m_swordCollision->SetIsEnable(false);
+}
+
+void SwordShield::EntrySkillAttackProcess(EnSkillProcessState skillProcessState)
+{
+	switch (skillProcessState)
+	{
+	case WeaponBase::enStart:
+		EntrySkillStartProcess();
 		break;
-	case IWeapon::enWeaponState_Armed://装備状態
-		MoveArmed();
-		break;
-	case IWeapon::enWeaponState_None://なし
+	case WeaponBase::enMain:
+		EntrySkillMainProcess();
 		break;
 	default:
 		break;
 	}
 }
 
+void SwordShield::UpdateSkillAttackProcess(EnSkillProcessState skillProcessState)
+{
+	switch (skillProcessState)
+	{
+	case WeaponBase::enStart:
+		UpdateSkillStartProcess();
+		break;
+	case WeaponBase::enMain:
+		UpdateSkillMainProcess();
+		break;
+	default:
+		break;
+	}
+}
+
+void SwordShield::ExitSkillAttackProcess(EnSkillProcessState skillProcessState)
+{
+	switch (skillProcessState)
+	{
+	case WeaponBase::enStart:
+		ExitSkillStartProcess();
+		break;
+	case WeaponBase::enMain:
+		ExitSkillMainProcess();
+		break;
+	default:
+		break;
+	}
+}
+
+void SwordShield::AttackImpactProcess(bool startOrEnd)
+{
+	//キャンセルアクションフラグを設定
+	m_isImpossibleancelAction = startOrEnd;
+
+	//当たり判定の有効化、無効化の設定
+	m_swordCollision->SetIsEnable(startOrEnd);
+}
+
+void SwordShield::EntrySkillStartProcess()
+{
+	//スキルメインステートに進むかのフラグをリセット
+	m_brave->SetProceedSkillMainFlag(false);
+}
+
+void SwordShield::UpdateSkillStartProcess()
+{
+	//アニメーションが終わったら
+	if (m_brave->GetModelRender().IsPlayingAnimation() == false)
+	{
+		//スキルメインステートに進むよ
+		m_brave->SetProceedSkillMainFlag(true);
+		//メインステートに遷移
+		m_brave->ChangeBraveState(BraveState::enBraveState_SkillMain);
+	}
+}
+
+void SwordShield::ExitSkillStartProcess()
+{
+	//メインに進んだので無敵にする
+	m_brave->EnableInvincible();
+}
+
+void SwordShield::EntrySkillMainProcess()
+{
+	//ダメージ情報を設定
+	m_brave->GetDamageProvider()->SetDamageInfo(
+		KnockBackInfoManager::GetInstance()->GetAddAttackId(), m_brave->GetCurrentPower(),
+		m_uniqueStatus.SkillAttackTimeScale(),
+		m_status.GetSkillKnockBackPattern(),
+		m_status.GetWeaponAttribute()
+	);
+
+	//メインに進んだので無敵にする
+	m_brave->EnableInvincible();
+}
+
+void SwordShield::UpdateSkillMainProcess()
+{
+	//メインに進んだので無敵にする
+	m_brave->EnableInvincible();
+}
+
+void SwordShield::ExitSkillMainProcess()
+{
+	//スタミナを消費する
+	m_brave->GetStatus().TryConsumeStamina(m_status.GetSkillStaminaCost());
+	//無敵を無効化する
+	m_brave->DisableInvincible();
+}
+
+void SwordShield::CheckShieldCollision()
+{
+	if (m_isHitShield) return;
+
+	//エネミーの攻撃コリジョンを取得
+	const auto& Collisions =
+		g_collisionObjectManager->FindCollisionObjects(
+			g_collisionObjectManager->m_enemyAttackCollisionName
+		);
+
+	//コリジョンの配列をfor文で回す
+	for (auto collision : Collisions)
+	{
+		if (m_isHitShield) return;
+
+		//当たり判定が有効でないなら飛ばす
+		if (!collision->IsEnable()) continue;
+
+		//盾の当たり判定と衝突したら
+		if (collision->IsHit(m_shieldCollision) == true)
+		{
+			//コリジョンを持っているキャラのダメージプロバイダーコンポーネントを取得
+			DamageProvider* dp = FindGOComponent<DamageProvider>(collision->GetCreatorName());
+
+			if (dp == nullptr) return;
+
+			dp->Hit();
+
+			//敵の位置保存
+			m_brave->SetDamageProviderPosition(
+				dp->GetProviderPostion()
+			);
+
+			//盾の耐性レベルを使ってノックバックパターンを計算
+			dp->CalcFinalKnockBackPattern(m_uniqueStatus.GetKnockBackToleranceLevel());
+
+			//ノックバックの情報を設定
+			m_brave->SettingKnockBackInfoForDamageInfo(dp->GetProviderDamageInfo());
+
+			//盾の耐久値をダメージ分減らす
+			m_uniqueStatus.SubShieldEnduranceValue(
+				dp->GetAdjustedDamage()
+			);
+
+			m_brave->CreateDamageFont(
+				dp->GetProviderDamageInfo().attackPower,
+				DamageFont::enDamageActor_Player
+			);
+
+			//シールドにヒットした！
+			m_isHitShield = true;
+		}
+	}
+
+}
+
+void SwordShield::SettingKnockBackInfoForDamageInfo(DamageInfo damageInfo)
+{
+
+	
+}
+
 void SwordShield::MoveArmed()
 {
 	Vector3 swordPos = g_vec3Zero;
-	//剣と盾のワールド座標を設定
+	//剣のワールド座標を設定
 	m_swordMatrix =
 		m_brave->GetModelRender().GetBone(m_armedSwordBoonId)->GetWorldMatrix();
-	m_modelSword.SetWorldMatrix(m_swordMatrix);
+	m_swordModelRender.SetWorldMatrix(m_swordMatrix);
 
-
+	//盾のワールド座標を設定
 	m_shieldMatrix =
 		m_brave->GetModelRender().GetBone(m_armedShieldBoonId)->GetWorldMatrix();
-	m_modelShield.SetWorldMatrix(m_shieldMatrix);
+	m_shieldModelRender.SetWorldMatrix(m_shieldMatrix);
 
-
-	//防御可能かつYボタンを押している間は防御
-	if (GetIsDefendEnableFlag()!=false && 
-		g_pad[0]->IsPress(enButtonY) == true)
-	{
-		//防御している間は回転可能
-		SetRotationDelectionFlag(true);
-	}
-	else
-	{
-		//防御していないのでフラグをリセット
-		SetRotationDelectionFlag(false);
-	}
-
-
-
-	//当たり判定の有効化無効化の処理
-	if (m_brave->GetIsCollisionPossibleFlag() == true)
-	{
-		m_swordCollision->SetIsEnable(true);
-	}
-	else if (m_swordCollision->IsEnable() != false)
-	{
-		m_swordCollision->SetIsEnable(false);
-	}
-
-	m_swordCollision->SetWorldMatrix(m_swordMatrix);
+	//コリジョンのワールド座標を設定
+	//剣の中心のボーンからワールド座標を取得してコリジョンのワールド座標に設定
+	m_swordCenterMatrix = m_swordModelRender.GetBone(m_swordCenterBoonId)->GetWorldMatrix();
+	m_swordCollision->SetWorldMatrix(m_swordCenterMatrix);
+	//盾のワールド座標を設定
 	m_shieldCollision->SetWorldMatrix(m_shieldMatrix);
 }
 
-void SwordShield::MoveStowed()
-{
-	m_swordPos = STOWEDS_POSITION;
-	m_shieldPos = STOWEDS_POSITION;
-
-	m_modelSword.SetPosition(m_swordPos);
-	m_modelShield.SetPosition(m_shieldPos);
-	//当たり判定の座標の設定
-	m_swordCollision->SetPosition(m_swordPos);
-	m_shieldCollision->SetPosition(m_shieldPos);
-	//当たり判定の無効化
-	m_swordCollision->SetIsEnable(false);
-	m_shieldCollision->SetIsEnable(false);
-	SetStowedFlag(true);
-}
-
-void SwordShield::SettingSwordEffectInfo(
-	Vector3& effectPos, Quaternion& rot, float angle)
-{
-	effectPos = g_vec3Zero;
-	Vector3 forwardPos = m_brave->GetForward();
-	m_swordMatrix.Apply(effectPos);
-	rot = g_quatIdentity;
-	rot.SetRotationYFromDirectionXZ(forwardPos);
-	rot.AddRotationDegZ(angle);
-}
-
-void SwordShield::SettingShieldEffectInfo(Vector3& effectPos, Quaternion& rot, float angle)
-{
-	effectPos = g_vec3Zero;
-	Vector3 forwardPos = m_brave->GetForward();
-	m_shieldMatrix.Apply(effectPos);
-	rot = g_quatIdentity;
-	rot.SetRotationYFromDirectionXZ(forwardPos);
-	rot.AddRotationDegZ(angle);
-}
-
-void SwordShield::PlaySkillAttackEffect()
-{
-	//エフェクト再生
-	PlayEffect(
-		InitEffect::enEffect_SwordShieldSkillAttack,
-		m_skillAttackPosition, SKILL_ATTACK_EFFECT_SIZE
-	);
-	//スキルの音再生
-	g_soundManager->InitAndPlaySoundSource(
-		enSoundName_SwordShieldSkillAttack,
-		g_soundManager->GetSEVolume()
-	);
-}
 
 void SwordShield::Render(RenderContext& rc)
 {
-	//収納状態なら表示しない
-	if (GetWeaponState() == enWeaponState_Stowed)
-	{
-		return;
-	}
+	m_swordModelRender.Draw(rc);
+	m_shieldModelRender.Draw(rc);
 
-	m_modelSword.Draw(rc);
-
-	//防御可能でないなら表示しない
-	if (GetIsDefendEnableFlag() != true)
-	{
-		return;
-	}
-	m_modelShield.Draw(rc);
 }
 
 void SwordShield::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
-	//通常攻撃１のアニメーションキーフレーム
-	if (wcscmp(eventName, L"PlayCombo1Effect") == 0)
-	{
-		//エフェクト再生のための座標と回転設定
-		Vector3 pos = g_vec3Zero;
-		Quaternion rot = g_quatIdentity;
-		Vector3 forwardPos = m_brave->GetForward();
-		SettingSwordEffectInfo(pos, rot, NORMAL_ATTACK_1_EFFECT_ANGLE);
-		forwardPos *= 15.0f;
-		pos.Add(forwardPos);
-		//エフェクト再生
-		PlayEffect(
-			InitEffect::enEffect_SwordShieldCombo12,
-			pos, NORMAL_ATTACK_1_2_EFFECT_SIZE,rot
-		);
-		//音再生
-		g_soundManager->InitAndPlaySoundSource(
-			enSoundName_SwordShieldCombo_1_2,
-			g_soundManager->GetSEVolume()
-		);
-	}
-	//通常攻撃２のアニメーションキーフレーム
-	if (wcscmp(eventName, L"PlayCombo2Effect") == 0)
-	{
-		//エフェクト再生のための座標と回転設定
-		Vector3 pos = g_vec3Zero;
-		Quaternion rot = g_quatIdentity;
-		SettingSwordEffectInfo(pos, rot, 0.0f);
-		//エフェクト再生
-		PlayEffect(
-			InitEffect::enEffect_SwordShieldCombo12,
-			pos, NORMAL_ATTACK_1_2_EFFECT_SIZE, rot
-		);
-		//音再生
-		g_soundManager->InitAndPlaySoundSource(
-			enSoundName_SwordShieldCombo_1_2,
-			g_soundManager->GetSEVolume()
-		);
-	}
-	//通常攻撃３のアニメーションキーフレーム
-	if (wcscmp(eventName, L"PlayCombo3Effect") == 0)
-	{
-		//エフェクト再生のための座標と回転設定
-		Vector3 pos = g_vec3Zero;
-		Quaternion rot = g_quatIdentity;
-		SettingSwordEffectInfo(pos, rot, 0.0f);
-		//エフェクト再生
-		PlayEffect(
-			InitEffect::enEffect_SwordShieldCombo3,
-			pos, NORMAL_ATTACK_3_EFFECT_SIZE,rot
-		);
-		//音再生
-		g_soundManager->InitAndPlaySoundSource(
-			enSoundName_SwordShieldCombo_3,
-			g_soundManager->GetSEVolume()
-		);
-	}
-	//スキル攻撃のアニメーションキーフレーム
+
+	//スキル攻撃のダメージ判定出現アニメーションキーフレーム
 	if (wcscmp(eventName, L"SwordShieldSkillAttack") == 0)
 	{
-		//メイン武器のスキル攻撃処理
-		ProcessSkillAttack();
-		//スキル攻撃のエフェクト再生
-		PlaySkillAttackEffect();
+		//スキル攻撃用コリジョン生成
+		CreateSkillAttackCollision();
+		//スキル攻撃の衝撃エフェクト再生
+
+		Vector3 hitPosition = g_vec3Zero;
+		//剣のワールド座標をベクトルに乗算
+		m_swordCenterMatrix.Apply(hitPosition);
+		hitPosition.y = 0.0f;
+
+		UseEffect* effect = NewGO<UseEffect>(0, "SkillShockEffect");
+		effect->PlayEffect(enEffect_SwordShieldSkillAttack,
+			hitPosition, g_vec3One * 17.0f, Quaternion::Identity, false);
+
+		//スキルの音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldSkillAttack,
+			g_soundManager->GetSEVolume()
+		);
+
+		//カメラを揺らす
+		g_camera3D->StartCameraShake(
+			CAMERA_SHAKE_STRENGTH, CAMERA_SHAKE_VIBRATO, CAMERA_SHAKE_TIME_LIMIT
+		);
 	}
+
 	//スキルの上昇アニメーションキーフレーム
 	if (wcscmp(eventName, L"SwordShieldSkillRising") == 0)
 	{
 		//エフェクト再生
-		PlayEffect(
-			InitEffect::enEffect_SwordShieldSkillRising,
-			m_brave->GetPosition(), SKILL_ATTACK_RISING_EFFECT_SIZE
-		);
+		UseEffect* effect = NewGO<UseEffect>(0, "SkillRisingEffect");
+		effect->PlayEffect(enEffect_SwordShieldSkillRising,
+			m_brave->GetPosition(), g_vec3One * 10.0f, Quaternion::Identity, false);
 		//音再生
 		g_soundManager->InitAndPlaySoundSource(
 			enSoundName_SwordShieldSkillRising,
 			g_soundManager->GetSEVolume()
 		);
 	}
+
+
+	if (wcscmp(eventName, L"PlayCombo1Effect") == 0)
+	{
+		//エフェクト再生のための座標と回転設定
+		
+		Vector3 pos = g_vec3Zero;
+		Quaternion rot = Quaternion::Identity;
+		Vector3 forward = m_brave->GetForward();
+		forward.y = 0;
+		rot.SetRotationYFromDirectionXZ(forward);
+		rot.AddRotationDegZ(230.0f);
+
+		m_swordCenterMatrix.Apply(pos);
+		
+
+		UseEffect* effect = NewGO<UseEffect>(0, "SrashEffect");
+		effect->PlayEffect(enEffect_SwordShieldCombo12,
+			pos, g_vec3One * 15.0f, rot, false);
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldCombo_1_2,
+			g_soundManager->GetSEVolume()
+		);
+
+	}
+
+	//通常攻撃２のアニメーションキーフレーム
+	if (wcscmp(eventName, L"PlayCombo2Effect") == 0)
+	{
+		//エフェクト再生のための座標と回転設定
+
+		Vector3 pos = g_vec3Zero;
+		Quaternion rot = Quaternion::Identity;
+		Vector3 forward = m_brave->GetForward();
+		forward.y = 0;
+		rot.SetRotationYFromDirectionXZ(forward);
+
+		m_swordMatrix.Apply(pos);
+
+
+		UseEffect* effect = NewGO<UseEffect>(0, "SrashEffect");
+		effect->PlayEffect(enEffect_SwordShieldCombo12,
+			pos, g_vec3One * 15.0f, rot, false);
+
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldCombo_1_2,
+			g_soundManager->GetSEVolume()
+		);
+	}
+
+	//通常攻撃３のアニメーションキーフレーム
+	if (wcscmp(eventName, L"PlayCombo3Effect") == 0)
+	{
+		//エフェクト再生のための座標と回転設定
+
+		Vector3 pos = g_vec3Zero;
+		Quaternion rot = Quaternion::Identity;
+		Vector3 forward = m_brave->GetForward();
+		forward.y = 0;
+		rot.SetRotationYFromDirectionXZ(forward);
+		m_swordMatrix.Apply(pos);
+
+		UseEffect* effect = NewGO<UseEffect>(0, "SrashEffect");
+		effect->PlayEffect(enEffect_SwordShieldCombo3,
+			pos, g_vec3One * 15.0f, rot, false);
+		
+		//音再生
+		g_soundManager->InitAndPlaySoundSource(
+			enSoundName_SwordShieldCombo_3,
+			g_soundManager->GetSEVolume()
+		);
+	}
+
+
 	//防御ヒットのアニメーションキーフレーム
 	if (wcscmp(eventName, L"SwordShieldDifendHit") == 0)
 	{
-		//エフェクト再生のための座標と回転設定
-		Vector3 pos = g_vec3Zero;
-		Quaternion rot = g_quatIdentity;
-		SettingShieldEffectInfo(pos, rot, 0.0f);
-		//エフェクト再生
-		PlayEffect(
-			InitEffect::enEffect_SwordShieldDefendHit,
-			pos, 10.0f, rot
-		);
 		//音再生
 		g_soundManager->InitAndPlaySoundSource(
 			enSoundName_SwordShieldDefendHit,

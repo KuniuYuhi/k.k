@@ -1,31 +1,19 @@
 #include "stdafx.h"
+
 #include "Arrow.h"
+#include "Brave.h"
 #include "Bow.h"
-#include "Player.h"
-#include "Boss.h"
-#include "CharactersInfoManager.h"
+#include "DamageProvider.h"
+#include "KnockBackInfoManager.h"
+
+
+#include "UseEffect.h"
+
+using namespace KnockBackInfo;
+
 
 namespace {
-	//武器が収納状態の時の座標
-	const Vector3 STOWEDS_POSITION = { 0.0f,-500.0f,0.0f };
-	//通常攻撃の当たり判定のサイズ
-	const Vector3 ARROW_NORMAL_COLLISION_SIZE = { 70.0f,30.0f,10.0f };
-	//スキル攻撃の当たり判定のサイズ
-	const Vector3 ARROW_Skill_COLLISION_SIZE = { 150.0f,14.0f,20.0f };
-
-	const float SKILL_RADIUS = 60.0f;
-
-	const float ADD_FORWARD = 30.0f;
-
-	const float SKILL_DELETE_RANGE = 600.0f;
-	const float SKILL_ARROW_SPEED = 1000.0f;
-
-	const float DEFAULT_DELETE_RANGE = 400.0f;	//矢が消える距離
-	const float DEFAULT_ARROW_SPEED = 450.0f;
-
-	const float GRAVITY = 11.8f;					//重力
-
-	const float HITTABLE_TIMER_LIMMIT = 0.1f;
+	const float NORMAL_SHOT_ARROW_Y_ROT_OFFSET = 180.0f;	//通常攻撃の矢の回転のオフセット
 }
 
 Arrow::Arrow()
@@ -34,380 +22,307 @@ Arrow::Arrow()
 
 Arrow::~Arrow()
 {
-	DeleteGO(m_arrowCollision);
-
-	if (m_arrowAttackEffect != nullptr)
+	if (m_arrowCollision != nullptr)
 	{
-		m_arrowAttackEffect->Stop();
+		DeleteGO(m_arrowCollision);
 	}
+
 }
 
 bool Arrow::Start()
 {
-	//勇者のインスタンスを探す
-	m_player = FindGO<Player>("player");
+	m_brave = FindGO<Brave>("Brave");
 
-	//モデルを初期化
-	InitModel();
-	
-	//装備
-	//弓と同じ状態を設定
-	SetWeaponState(m_bow->GetBowEnWeaponState());
+	ArrowStatus normalStatus,skillStatus;
+	normalStatus.InitArrowStatus("Normal");
+	skillStatus.InitArrowStatus("Skill");
+
+	m_statusMap.insert(std::make_pair(enNormalShot, normalStatus));
+	m_statusMap.insert(std::make_pair(enSkillShot, skillStatus));
+
+
+	Init();
+
+	InitComponent();
 
 	return true;
 }
 
 void Arrow::Update()
 {
-	if (m_shotFlag != true)
-	{
-		MoveWeapon();
-	}
-	else
-	{
-		//射撃時の移動処理
-		ProcessLongRangeAttack();
+	ManageShotPatternState();
 
-		
-	}
+	m_damageProvider->UpdateComponent();
 
-	m_modelArrow.Update();
+	//モデルの更新処理。TRSは移動時に設定
+	m_arrowModelRender.Update();
 }
 
-void Arrow::MoveWeapon()
+void Arrow::Init()
 {
-	switch (m_enWeaponState)
+	//矢モデルの初期化
+	m_arrowModelRender.Init("Assets/modelData/character/Player/NewHero/Arrow.tkm",
+		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
+		0,0,enModelUpAxisZ
+	);
+
+	//矢の真ん中と先端のボーンIDを取得
+	m_arrowCentorBoonId = m_arrowModelRender.FindBoneID(L"Center");
+	m_arrowTipBoonId = m_arrowModelRender.FindBoneID(L"tip");
+
+	//矢を持つ座標のボーンIDを取得
+	m_armedArrowBoonId = m_brave->GetModelRender().FindBoneID(L"weaponShield_r");
+
+}
+
+void Arrow::InitComponent()
+{
+	AddComponent<DamageProvider>();
+	m_damageProvider = GetComponent<DamageProvider>();
+}
+
+void Arrow::ManageShotPatternState()
+{
+	switch (m_enShotPatternState)
 	{
-	case IWeapon::enWeaponState_Stowed://収納状態
-		MoveStowed();
+	case Arrow::enNormalShot:
+		UpdateNormalShotState();
 		break;
-	case IWeapon::enWeaponState_Armed://装備状態
-		MoveArmed();
+	case Arrow::enSkillShot:
+		UpdateSkillShotState();
 		break;
-	case IWeapon::enWeaponState_None://なし
+	case Arrow::enNone:
+		UpdateNoneState();
 		break;
 	default:
 		break;
 	}
 }
 
-void Arrow::MoveArmed()
+void Arrow::UpdateNormalShotState()
 {
-	//矢の座標を設定
-	m_arrowMatrix = m_bow->GetArrowMatrix();
-	m_modelArrow.SetWorldMatrix(m_arrowMatrix);
+	if (m_deleteTimer >= 2.0f)
+	{
+		DeleteArrow();
+		return;
+	}
+
+	//当たり判定処理による削除
+	if (m_damageProvider->IsHit())
+	{
+		DeleteArrow();
+		return;
+	}
+
+
+	m_deleteTimer += g_gameTime->GetFrameDeltaTime();
+
+	ShotArrowMove(enNormalShot);
 }
 
-void Arrow::MoveStowed()
+void Arrow::UpdateSkillShotState()
 {
-	//矢の座標を設定
-	m_arrowPos = STOWEDS_POSITION;
-	m_modelArrow.SetPosition(m_arrowPos);
+
+	if (m_deleteTimer >= 2.0f)
+	{
+		DeleteArrow();
+	}
+
+
+	//一定時間ごとにダメージIDを変更して多段ヒットできるようにする
+	if (m_attackInfoUpdateTimer > m_attackInfoUpdateTimeLimit)
+	{
+		//IDを新しく設定
+		m_damageProvider->SetAttackId(KnockBackInfoManager::GetInstance()->GetAddAttackId());
+		//タイマーリセット
+		m_attackInfoUpdateTimer = 0.0f;
+	}
+
+	//各種タイマー加算
+	m_deleteTimer += g_gameTime->GetFrameDeltaTime();
+	m_attackInfoUpdateTimer+= g_gameTime->GetFrameDeltaTime();
+
+	ShotArrowMove(enSkillShot);
+
+}
+
+void Arrow::UpdateNoneState()
+{
+	//収納状態なら移動させない
+	if (m_enWeaponState == enStowed) return;
+
+	//プレイヤーの手に追従
+	MoveArmed();
+
+
+}
+
+void Arrow::ShotArrowMove(EnShotPatternState shotPattern)
+{
+	Vector3 moveSpeed = m_forward;
+	moveSpeed *= m_statusMap.at(shotPattern).GetArrowSpeed();
+
+	//座標を加算
+	m_arrowModelRender.AddPosition(moveSpeed);
+	//弓の真ん中のワールド座標を取得
+	m_arrowCenterMatrix = m_arrowModelRender.GetBone(m_arrowCentorBoonId)->GetWorldMatrix();
+	//コリジョンにワールド座標を設定、更新
+	m_arrowCollision->SetWorldMatrix(m_arrowCenterMatrix);
+	m_arrowCollision->Update();
+
+	//エフェクトがないなら処理しない
+	if (m_arrowEffect == nullptr) return;
+
+	//初期位置を計算
+	Vector3 position = g_vec3Zero;
+	m_arrowCenterMatrix.Apply(position);
+	//移動座標を設定
+	m_arrowEffect->SetMovePosition(position);
+
+}
+
+void Arrow::FixedAttaackArrowTransform()
+{
+	//ワールド座標をローカル座標に代入
+	m_moveAttackArrowPosition.x = m_arrowMatrix.m[3][0];
+	m_moveAttackArrowPosition.y = m_arrowMatrix.m[3][1];
+	m_moveAttackArrowPosition.z = m_arrowMatrix.m[3][2];
+	//前方向のほうに回転
+	Quaternion rotation;
+	rotation.SetRotationYFromDirectionXZ(m_forward);
+	//このままだと回転がおかしいのでオフセットをかける
+	rotation.AddRotationDegY(NORMAL_SHOT_ARROW_Y_ROT_OFFSET);
+	//トランスフォームの設定
+	m_arrowModelRender.SetTransform(m_moveAttackArrowPosition, rotation, g_vec3One);
+}
+
+void Arrow::CreateCollision(
+	EnShotPatternState shotPatternState, Vector3 createPosition, Quaternion rotation)
+{
+	//矢の通常攻撃用の当たり判定の生成
+	m_arrowCollision = NewGO<CollisionObject>(
+		0, g_collisionObjectManager->m_playerAttackCollisionName);
+	//コリジョンの制作者を自身に設定
+	m_arrowCollision->SetCreatorName(GetName());
+	//コリジョンの形状はボックス
+	m_arrowCollision->CreateBox(
+		createPosition,
+		rotation,
+		m_statusMap.at(shotPatternState).GetCollisionSize()
+	);
+	m_arrowCollision->SetIsEnableAutoDelete(false);
+	//矢の真ん中のボーンを持ってくる
+	m_arrowCenterMatrix = m_arrowModelRender.GetBone(m_arrowCentorBoonId)->GetWorldMatrix();
+	m_arrowCollision->SetWorldMatrix(m_arrowCenterMatrix);
+	m_arrowCollision->Update();
+
 }
 
 bool Arrow::IsHitCollision()
 {
-	//ボスとの当たり判定
-	if (m_arrowCollision->IsHit(
-		CharactersInfoManager::GetInstance()->GetBossInstance()->GetCharacterController()
-	))
-	{
-		//ヒットした
-		return true;
-	}
-	//モブモンスターのリストの取得
-	const auto& mobMonsters = 
-		CharactersInfoManager::GetInstance()->GetMobMonsters();
-	//モブモンスターとの当たり判定
-	for (auto mobMonster : mobMonsters)
-	{
-		//生成されたばかりのオブジェクトは当たり判定を取らない
-		if (mobMonster->IsStart()==false)
-		{
-			continue;
-		}
-		//矢のコリジョンとモンスターのキャラコンが衝突したら
-		if (m_arrowCollision->IsHit(
-			mobMonster->GetCharacterController()))
-		{
-			//ヒットした
-			return true;
-		}
-	}
 
-	//ヒットしなかった
+
 	return false;
 }
 
-void Arrow::ProcessLongRangeAttack()
+void Arrow::PlayArrowEffect(EnShotPatternState shotpatternState)
 {
-	switch (m_enShotPatternState)
-	{
-		//通常攻撃
-	case Arrow::enShotPatternState_Normal:
-		NormalShot();
-		break;
-		//スキル攻撃
-	case Arrow::enShotPatternState_Skill:
-		SkillShot();
-		break;
-	default:
-		break;
-	}
+	//初期位置を計算
+	Vector3 position = g_vec3Zero;
+	m_arrowCenterMatrix.Apply(position);
 
-	//当たり判定の座標の設定と更新
-	m_arrowCollision->SetPosition(m_arrowPos);
-	m_arrowCollision->Update();
-}
-
-void Arrow::SetShotArrowSetting(
-	bool shotFlag, 
-	Vector3 forward, 
-	Vector3 shotStartPosition, 
-	float angle,
-	EnShotPatternState shotPatternState
-)
-{
-	//ショットフラグを設定
-	SetShotFlag(shotFlag);
-	//前方向を設定
-	SetForward(forward);
-	//ワールド座標をローカル座標に適応
-	ApplyMatrixToLocalPosition();
-	//ショット開始座標の設定
-	SetShotStartPosition(m_arrowPos, angle);
-	//ショットステートの設定
-	SetShotPatternState(shotPatternState);
-	//当たり判定の初期化
-	SelectInitCollision(shotPatternState);
-	//落下地点の設定
-	SetTargetPosition();
-	//通常攻撃の設定なら
-	if (shotPatternState == enShotPatternState_Normal)
-	{
-		//通常攻撃に必要な情報の設定
-		SetNormalShotInfo();
-	}
-
-	//攻撃方法によるエフェクト再生
-	PlayArrowEffect();
-}
-
-void Arrow::SetTargetPosition()
-{
-	m_targetPosition = m_shotStartPosition;
-	m_targetPosition += m_forward * DEFAULT_DELETE_RANGE;
-	m_targetPosition.y = 0.0f;
-}
-
-void Arrow::InitModel()
-{
-	//矢モデルの初期化
-	m_modelArrow.Init("Assets/modelData/character/Player/NewHero/Arrow.tkm",
-		L"Assets/shader/ToonTextrue/lamp_glay.DDS",
-		0,
-		0,
-		enModelUpAxisZ
-	);
-}
-
-void Arrow::PlayArrowEffect()
-{
-	Quaternion rot = g_quatIdentity;
+	//回転方向は前方向のほう
+	Quaternion rot = Quaternion::Identity;
 	rot.SetRotationYFromDirectionXZ(m_forward);
 
-	//スキルか通常攻撃のエフェクト再生
-	if (m_enShotPatternState==enShotPatternState_Normal)
+	//エフェクト番号
+	EnEFK effect = enEffect_ArrowCharge1;
+
+	float mulScale = 1.0f;
+
+	if (shotpatternState == enNormalShot)
 	{
-		m_arrowAttackEffect = NewGO<EffectEmitter>(0);
-		m_arrowAttackEffect->Init(InitEffect::enEffect_Arrow);
-		m_arrowAttackEffect->Play();
-		m_arrowAttackEffect->SetScale(g_vec3One * 12.0f);
-		
+		effect = enEffect_Arrow;
 	}
 	else
 	{
-		m_arrowAttackEffect = NewGO<EffectEmitter>(0);
-		m_arrowAttackEffect->Init(InitEffect::enEffect_BowArrowSkillShot);
-		m_arrowAttackEffect->Play();
-		m_arrowAttackEffect->SetScale(g_vec3One * 10.0f);
+		effect = enEffect_BowArrowSkillShot;
 	}
-
-	//エフェクトの座標と回転の設定と更新
-	m_arrowAttackEffect->SetPosition(m_shotStartPosition);
-	m_arrowAttackEffect->SetRotation(rot);
-	m_arrowAttackEffect->Update();
 
 	
+	//
+	m_arrowEffect = NewGO<UseEffect>(0, "ArrowEffect");
+	m_arrowEffect->PlayEffect(effect,
+		position, g_vec3One * 15.0f, rot, false);
+
+
+
 }
 
-void Arrow::SelectInitCollision(EnShotPatternState shotPatternState)
+void Arrow::DeleteArrow()
 {
-	//コリジョンの初期化
-	switch (shotPatternState)
+	//エフェクトを削除する
+	if (m_arrowEffect != nullptr)
 	{
-		//通常攻撃
-	case Arrow::enShotPatternState_Normal:
-		InitCollision(
-			"Attack",m_arrowPos,g_quatIdentity, ARROW_NORMAL_COLLISION_SIZE);
-		break;
-		//スキル攻撃
-	case Arrow::enShotPatternState_Skill:
-		InitCollision(
-			"skillAttack", m_arrowPos, g_quatIdentity, ARROW_Skill_COLLISION_SIZE);
-		break;
-	default:
-		break;
-	}
-}
-
-void Arrow::InitCollision(
-	const char* collisionName,
-	Vector3 createPos,
-	Quaternion rotation,
-	Vector3 collisionSize
-)
-{
-	//矢の通常攻撃用の当たり判定の生成
-	m_arrowCollision = NewGO<CollisionObject>(0, collisionName);
-	m_arrowCollision->CreateBox(
-		createPos,
-		rotation,
-		collisionSize
-	);
-	m_arrowCollision->SetIsEnableAutoDelete(false);
-	m_arrowCollision->SetWorldMatrix(m_arrowMatrix);
-	m_arrowCollision->Update();
-}
-
-void Arrow::NormalShot()
-{
-	//コリジョンが敵に当たったら
-	if (IsHitCollision() == true)
-	{
-		ProcessDelete();
-		return;
-	}
-	
-	//放物線を描く移動処理
-	//消去するまでの制限時間内なら
-	if (m_deleteTimer < m_flightDuration)
-	{
-		//矢の移動処理
-		MoveNormalShot();
-		//消去するまでのタイマーを加算
-		m_deleteTimer += g_gameTime->GetFrameDeltaTime() * 6.0f;
-	}
-	else
-	{
-		//消滅
-		DeleteGO(this);
-	}
-	
-	//矢のワールド座標を取得
-	Matrix arrowMatrix = m_arrowMatrix;
-	//行列に座標を適応
-	ApplyVector3ToMatirx(arrowMatrix, m_arrowPos);
-	//モデルの行列を設定
-	m_modelArrow.SetWorldMatrix(arrowMatrix);
-
-	//エフェクトの座標の設定と更新
-	m_arrowAttackEffect->SetPosition(m_arrowPos);
-	m_arrowAttackEffect->Update();
-
-	//前フレームの矢の座標を取得
-	m_oldArrowPos = m_arrowPos;
-}
-
-void Arrow::SkillShot()
-{
-	//敵にダメージを与えられるタイミングを設定
-	if (m_player->GetHittableFlag() != true&&
-		m_hitDelection.IsHittable(HITTABLE_TIMER_LIMMIT))
-	{
-		//多段ヒット攻撃可能
-		m_player->SetHittableFlag(true);
-		//多段ヒット可能判定フラグをリセット
-		m_hitDelection.SetHittableFlag(false);
+		m_arrowEffect->Delete();
+		m_arrowEffect = nullptr;
 	}
 
-	//射撃開始座標から現在の座標に向かうベクトルを計算
-	Vector3 diff = m_arrowPos - m_shotStartPosition;
-	//矢が自然消滅する距離なら
-	if (diff.Length() > SKILL_DELETE_RANGE)
-	{
-		//消滅
-		DeleteGO(this);
-	}
-	//矢の座標を設定
-	m_arrowPos += (m_forward * SKILL_ARROW_SPEED) * g_gameTime->GetFrameDeltaTime();
-
-	Matrix arrowMatrix = m_arrowMatrix;
-	//行列に座標を適応
-	ApplyVector3ToMatirx(arrowMatrix, m_arrowPos);
-	//行列を設定
-	m_modelArrow.SetWorldMatrix(arrowMatrix);
-	//エフェクトの座標の設定と更新
-	m_arrowAttackEffect->SetPosition(m_arrowPos);
-	m_arrowAttackEffect->Update();
-}
-
-void Arrow::ApplyVector3ToMatirx(Matrix& baseMatrix, Vector3 position)
-{
-	Matrix matrix = baseMatrix;
-	baseMatrix.m[3][0] = position.x;
-	baseMatrix.m[3][1] = position.y;
-	baseMatrix.m[3][2] = position.z;
-}
-
-void Arrow::SetNormalShotInfo()
-{
-	//1.目標に向かう距離の計算
-	Vector3 targetDistance = m_targetPosition - m_shotStartPosition;
-	float distance = targetDistance.Length();
-	//2.初速度の計算
-	float verocity = distance / (sin(Math::DegToRad(2 * m_angle)) / GRAVITY);
-	//3.初速度の分解
-	m_shotArrowVerocity.x = sqrt(verocity) * cos(Math::DegToRad(m_angle));
-	m_shotArrowVerocity.y = sqrt(verocity) * sin(Math::DegToRad(m_angle));
-	//4.飛行時間の計算
-	m_flightDuration = distance / m_shotArrowVerocity.x;
-
-	m_oldArrowPos = m_arrowPos;
-}
-
-void Arrow::MoveNormalShot()
-{
-	float X = m_forward.x * m_shotArrowVerocity.x *
-		g_gameTime->GetFrameDeltaTime() * 10.0f;
-	float Z = m_forward.z * m_shotArrowVerocity.x *
-		g_gameTime->GetFrameDeltaTime() * 10.0f;
-
-	//新しい座標
-	m_arrowPos += {
-		X,
-			(m_shotArrowVerocity.y - (GRAVITY * m_deleteTimer))* g_gameTime->GetFrameDeltaTime() * 4.0f,
-			Z
-	};
-}
-
-void Arrow::ProcessDelete()
-{
-	//モンスターにダメージを与えられるようにフラグをリセット
-	CharactersInfoManager::GetInstance()->SetAllMonsterDamgeHitFlag(true);
-	//当たり判定の削除
-	DeleteGO(m_arrowCollision);
-	//矢が当たったので削除
 	DeleteGO(this);
+
+}
+
+void Arrow::SetShotArrowParameters(
+	EnShotPatternState shotpatternState, Vector3 forward)
+{
+	//攻撃パターンを設定
+	m_enShotPatternState = shotpatternState;
+	//前方向の設定と正規化
+	m_forward = forward;
+	m_forward.Normalize();
+
+	//矢のトランスフォームの修正
+	FixedAttaackArrowTransform();
+	
+	//通常攻撃かスキル攻撃に応じた当たり判定の作成
+	CreateCollision(
+		shotpatternState,
+		m_arrowModelRender.GetPosition(),
+		m_arrowModelRender.GetRotation()
+	);
+
+	//エフェクトを生成
+	PlayArrowEffect(shotpatternState);
+
+}
+
+void Arrow::ChangeStowed()
+{
+	SetWeaponState(enStowed);
+	//武器の位置を変更
+	MoveStowed();
+}
+
+void Arrow::ChangeArmed()
+{
+	SetWeaponState(enArmed);
+}
+
+void Arrow::MoveStowed()
+{
+	//収納状態の座標に設定
+	m_arrowModelRender.SetPosition(m_stowedPosition);
+}
+
+void Arrow::MoveArmed()
+{
+	m_arrowMatrix = m_brave->GetModelRender().GetBone(m_armedArrowBoonId)->GetWorldMatrix();
+	//ワールド座標を設定
+	m_arrowModelRender.SetWorldMatrix(m_arrowMatrix);
+
 }
 
 void Arrow::Render(RenderContext& rc)
 {
-	//収納状態なら表示しない
-	if (GetWeaponState() == enWeaponState_Stowed)
-	{
-		return;
-	}
-
-	m_modelArrow.Draw(rc);
+	m_arrowModelRender.Draw(rc);
 }

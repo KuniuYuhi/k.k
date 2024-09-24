@@ -1,57 +1,83 @@
 #pragma once
-#include "MagicBall.h"
+#include "IMagicBall.h"
 
-class Player;
 
-class DarkBall:public MagicBall
+class MagicBallMovement;
+
+class Brave;
+
+class UseEffect;
+
+/// <summary>
+/// サモナーが放つ魔法球：ダークボール
+/// </summary>
+class DarkBall : public IMagicBall
 {
 public:
 	DarkBall();
 	~DarkBall();
 
+
 	bool Start() override;
+
 	void Update() override;
 
+	void Render(RenderContext& rc) override;
+
+	void InitModel() override;
+
+
 private:
+
+	
+
+
+	/// <summary>
+	/// 追加で設定するコンポーネント
+	/// </summary>
+	void AddSettingComponents() override;
+
+	/// <summary>
+	/// 当たり判定生成
+	/// </summary>
+	void CreateCollision();
+
 	/// <summary>
 	/// 移動処理
 	/// </summary>
 	void Move();
 
 	/// <summary>
-	/// 当たり判定の設定
+	/// 消去するか？
 	/// </summary>
-	void SettingCollision();
+	/// <returns></returns>
+	bool IsDelete();
+
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	bool IsDeleteTime();
+
 
 	/// <summary>
 	/// 爆発処理
 	/// </summary>
 	void Explosion();
 
-	/// <summary>
-	/// ダークボールのエフェクト再生
-	/// </summary>
-	void PlayDarkBallEffect();
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <returns></returns>
-	bool IsHit();
-
 private:
 
-	CollisionObject* m_BallCollision = nullptr;
+	Brave* m_player = nullptr;
 
-	EffectEmitter* m_darkBallEffect = nullptr;
+	MagicBallMovement* m_magicBallMovement = nullptr;
 
-	Player* m_player = nullptr;
+	CollisionObject* m_collision = nullptr;
 
-	Vector3					m_collisionPosition = g_vec3Zero;
-	
-	
+	UseEffect* m_effect = nullptr;
 
-	const int				m_moveLimitTimer = 5;		//移動の制限時間
+
+	float m_deleteTimer = 0.0f;
 
 };
 

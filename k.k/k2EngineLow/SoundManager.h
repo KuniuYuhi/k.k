@@ -64,14 +64,23 @@ namespace nsK2EngineLow {
 		enSoundName_BowArrowSkillCharge,		//
 		enSoundName_BowArrowSkillAttack,		//
 
+		//バフアイテム
+		enSoundName_ItemRecovery,				//回復
+		enSoundName_ItemStaminaRecovery,		//スタミナ回復
+		enSoundName_ItemAttackUp,				//攻撃力アップ
+
 
 		//モンスター側
 		enSoundName_Monster_Hit,				//被ダメージ
+		enSoundName_Monster_DieHit,				//死亡確定ヒット
 		enSoundName_Attack1,					//基本モブモンスターの攻撃１
 		enSoundName_Slime_Attack,				//スライムの攻撃
 		enSoundName_Cactus_Attack1,				//カクタスの攻撃1
 		enSoundName_Mob_Die,					//モブモンスターの死亡
-		enSoundName_Boss_DarkWall,				//ダークウォール
+
+		enSoundName_Boss_Slash,					//斬撃
+		enSoundName_Boss_Poke,					//突き
+		enSoundName_Boss_ShockWave,				//ショックウェーブ
 		enSoundName_Boss_DarkBall,				//ダークボールの発生
 		enSoundName_Boss_DarkBall_Explosion,	//ダークボールの爆発
 		enSoundName_Boss_Meteo_Shot,			//メテオを撃つ
@@ -83,7 +92,8 @@ namespace nsK2EngineLow {
 		enSoundName_Boss_Summon_start,			//召喚の瞬間
 		enSoundName_Boss_KnockBackWind,			//ノックバックの風
 		enSoundName_Boss_Break_SuperArmor,		//スーパーアーマーブレイク
-
+		enSoundName_Boss_Warp,					//ワープ
+		enSoundName_Boss_Die,					//ボスの死亡
 
 
 

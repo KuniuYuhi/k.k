@@ -1,23 +1,41 @@
 #pragma once
 #include "ISummonerState.h"
 
-class SummonerState_Victory :public ISummonerState
+
+class Summoner;
+class SummonerStateContext;
+
+class SummonerState_Victory : public ISummonerState
 {
 public:
-	SummonerState_Victory(Summoner* summoner)
-		:ISummonerState(summoner, enActionName_Victory)
+
+	SummonerState_Victory(Summoner* summoner, SummonerStateContext* context)
+		:ISummonerState(summoner, context)
 	{
 	}
+
+	~SummonerState_Victory(){}
+
 	/// <summary>
-	/// 状態遷移管理
+	/// アニメーションを再生
 	/// </summary>
-	void ManageState();
+	void PlayAnimation() override;
 	/// <summary>
-	/// アニメーションの再生
+	/// 入った時の処理
 	/// </summary>
-	void PlayAnimation();
+	void Entry() override;
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	void Ubdate() override;
+	/// <summary>
+	/// 終了時の処理
+	/// </summary>
+	void Exit() override;
+
 
 
 private:
 
 };
+

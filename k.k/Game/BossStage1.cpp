@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "BossStage1.h"
-#include "Player.h"
+
 
 BossStage1::BossStage1()
 {
@@ -13,8 +13,6 @@ BossStage1::~BossStage1()
 
 bool BossStage1::Start()
 {
-	m_player = FindGO<Player>("player");
-
 	//ƒŒƒxƒ‹
 	levelbg.Init(
 		"Assets/level3D/FieldLevel.tkl",
@@ -23,7 +21,7 @@ bool BossStage1::Start()
 			if (objData.EqualObjectName(L"grass") == true) {
 				//’n–Ê
 				backGround.Init(
-					"Assets/modelData/BackGround/ground.tkm", 0, 0, 0, enModelUpAxisZ, false,false,false);
+					"Assets/modelData/BackGround/groundDetail.tkm", 0, 0, 0, enModelUpAxisZ, false,false,false);
 				backGround.SetPosition(objData.position);
 				backGround.SetRotation(objData.rotation);
 				backGround.SetScale(objData.scale);

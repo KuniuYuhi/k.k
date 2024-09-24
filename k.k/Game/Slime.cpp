@@ -1,442 +1,406 @@
 #include "stdafx.h"
 #include "Slime.h"
-#include "ISlimeState.h"
-#include "SlimeStateIdle.h"
-#include "SlimeStateWalk.h"
-#include "SlimeStateAttack.h"
-#include "SlimeStateDamage.h"
-#include "SlimeStateDie.h"
-#include "SlimeStateVictory.h"
-#include "SlimeStateAppear.h"
-#include "SlimeStateChase.h"
-#include "SlimeStatePatrol.h"
-#include "SlimeStateSkill.h"
+
+#include "MobEnemyMovement.h"
+
+#include "Brave.h"
+
+#include "EnemyObjectPool.h"
+
+#include "EnemyManager.h"
+
+#include "KnockBackInfoManager.h"
+
+#include "UseEffect.h"
 
 
-#include "CharactersInfoManager.h"
-#include "GameManager.h"
-#include "InitEffect.h"
 
-#include "MobMonsterSM_Patrol.h"
-#include "MobMonsterSM_Chase.h"
+using namespace KnockBackInfo;
+
 
 namespace {
-	const float ANGLE = 70.0f;				//視野角
-	const float DISTANCE_TO_PLAYER = 300.0f;			//プレイヤーとの距離
-	const float ATTACK_RANGE = 50.0f;					//攻撃できる距離
-	const float SKILL_ATTACK_RANGE = 70.0f;				//スキル攻撃できる距離
-	const float STAY_RANGR = 45.0f;						//停止する距離
-	const float ATTACK_INTAERVALE_TIME = 2.0f;			//攻撃する間隔
-	const float PLAYER_NEARBY_RANGE = 140.0f;			//攻撃した後のプレイヤーを索敵できる範囲
-	const float ANGLE_RANGE = 2.0f;						//移動するアングルの範囲
-	const float POS2_LENGTH = 30.0f;
-	const float ROT_SPEED = 7.5f;
-	const float SKILL_TIMER_LIMMIT = 8.0f;
-
-	const float MUL_SCALE = 1.3f;
-	const float MUL_COLLISION_SIZE = 17.0f;
-}
-
-Slime::Slime()
-{
-	m_angle = ANGLE;
-
-	m_distanceToPlayer = DISTANCE_TO_PLAYER;
-	m_attackRange = ATTACK_RANGE;
-	m_stayRange = STAY_RANGR;
-
-	m_attackIntervalTime = ATTACK_INTAERVALE_TIME;
-
-	m_angleRange = ANGLE_RANGE;
-
-	m_pos2Length = POS2_LENGTH;
-
-	m_scale *= MUL_SCALE;
-
-	m_skillUsableLimmit = SKILL_TIMER_LIMMIT;
-	m_skillAttackRange = SKILL_ATTACK_RANGE;
+	const float ATTACK_COLLISION_RADIUS = 18.0f;
 }
 
 Slime::~Slime()
 {
-	DeleteGO(m_headCollision);
 }
 
 bool Slime::Start()
 {
-	//　乱数を初期化。
-	srand((unsigned)time(NULL));
+	//やられてオブジェクトプールに格納された時のことも考えて死亡フラグをリセット
+	SetDieFlag(false);
 
-	//プレイヤーのインスタンスを探す
-	m_player = FindGO<Player>("player");
+	m_player = FindGO<Brave>("Brave");
 
-	//ステータスの初期化
-	m_status.InitCharacterStatus(GetName());
-
-	//モデルの初期化
+	//モデルの読み込み
 	InitModel();
-	//ステートマシンの生成
-	SetNextStateMachine(enStateMachineState_Patrol);
+	
+	//キャラコン初期化
+	if (m_charaCon == nullptr)
+	{
+		CreateCharacterController();
+		m_charaCon.get()->Init(22.0f, 10.0f, m_position);
+	}
+	else
+	{
+		m_charaCon.get()->SetPosition(m_position);
+	}
 
-	//まず召喚アニメーション。その後行動
-	SetNextAnimationState(enAnimationState_Appear);
+	//ステータスを初期化
+	m_status.InitCommonEnemyStatus("Slime");
+	m_commonStatus.InitMobEnemyCommonStatus("Slime");
 
-	//4から６の範囲のインターバル
-	m_angleChangeTime = rand() % 3 + 4;
+	//コンポーネントを初期化していないなら
+	if (!m_isSettingComponents)
+	{
+		InitComponents();
+	}
+
+	//エネミーマネージャーのリストに自身を入れる
+	EnemyManager::GetInstance()->AddMobEnemyToList(this);
+
+
+	//コンテキストがなかったら作る
+	if (!m_slimeContext)
+	{
+		//ステートコンテキストの初期化
+		m_slimeContext = std::make_unique<SlimeStateContext>();
+	}
+
+	//最初のステートは出現ステート
+	m_slimeContext.get()->Init(this, enSlimeState_Appear);
+
+	
 
 	return true;
 }
 
-void Slime::InitModel()
+void Slime::LoadAnimationClip()
 {
-	m_animationClip[enAnimationClip_Idle].Load("Assets/animData/character/Slime/Idle_Normal.tka");
-	m_animationClip[enAnimationClip_Idle].SetLoopFlag(true);
-	m_animationClip[enAnimationClip_Patrol].Load("Assets/animData/character/Slime/Walk.tka");
-	m_animationClip[enAnimationClip_Patrol].SetLoopFlag(true);
-	m_animationClip[enAnimationClip_Chase].Load("Assets/animData/character/Slime/Run.tka");
-	m_animationClip[enAnimationClip_Chase].SetLoopFlag(true);
-	m_animationClip[enAnimationClip_Attack].Load("Assets/animData/character/Slime/Attack1.tka");
-	m_animationClip[enAnimationClip_Attack].SetLoopFlag(false);
-	m_animationClip[enAnimationClip_Skill].Load("Assets/animData/character/Slime/Skill.tka");
-	m_animationClip[enAnimationClip_Skill].SetLoopFlag(false);
-	m_animationClip[enAnimationClip_Hit].Load("Assets/animData/character/Slime/Damege.tka");
-	m_animationClip[enAnimationClip_Hit].SetLoopFlag(false);
-	m_animationClip[enAnimationClip_Die].Load("Assets/animData/character/Slime/Die.tka");
-	m_animationClip[enAnimationClip_Die].SetLoopFlag(false);
-	m_animationClip[enAnimationClip_Victory].Load("Assets/animData/character/Slime/Victory.tka");
-	m_animationClip[enAnimationClip_Victory].SetLoopFlag(true);
-	m_animationClip[enAnimationClip_Appear].Load("Assets/animData/character/Slime/Appear.tka");
-	m_animationClip[enAnimationClip_Appear].SetLoopFlag(false);
-	//モデルを初期化
-	m_modelRender.Init(
-		"Assets/modelData/character/Slime/slime.tkm",
-		L"Assets/shader/ToonTextrue/lamp_Slime.DDS",
-		m_animationClip, 
-		enAnimationClip_Num,
-		enModelUpAxisZ
+	m_animationClip[enSlimeAnimClip_Idle].Load("Assets/animData/character/Slime/Idle_Normal.tka");
+	m_animationClip[enSlimeAnimClip_Idle].SetLoopFlag(true);
+	m_animationClip[enSlimeAnimClip_Run].Load("Assets/animData/character/Slime/Run.tka");
+	m_animationClip[enSlimeAnimClip_Run].SetLoopFlag(true);
+	m_animationClip[enSlimeAnimClip_Attack].Load("Assets/animData/character/Slime/Attack1.tka");
+	m_animationClip[enSlimeAnimClip_Attack].SetLoopFlag(false);
+	m_animationClip[enSlimeAnimClip_Hit].Load("Assets/animData/character/Slime/Damege.tka");
+	m_animationClip[enSlimeAnimClip_Hit].SetLoopFlag(false);
+	m_animationClip[enSlimeAnimClip_Die].Load("Assets/animData/character/Slime/Die.tka");
+	m_animationClip[enSlimeAnimClip_Die].SetLoopFlag(false);
+	m_animationClip[enSlimeAnimClip_Victory].Load("Assets/animData/character/Slime/Victory.tka");
+	m_animationClip[enSlimeAnimClip_Victory].SetLoopFlag(true);
+	m_animationClip[enSlimeAnimClip_Appear].Load("Assets/animData/character/Slime/Appear.tka");
+	m_animationClip[enSlimeAnimClip_Appear].SetLoopFlag(false);
+}
+
+void Slime::InitComponents()
+{
+	//基本的なコンポーネントをセッティング
+	SettingDefaultComponent();
+	//このクラスで追加したいコンポーネントをセッティング
+	AddMoreComponent();
+
+	m_isSettingComponents = true;
+}
+
+void Slime::ReleaseThis()
+{
+	//エネミー管理マネージャーのリストから自身を削除
+	EnemyManager::GetInstance()->RemoveMobEnemyToList(this);
+	//キャラコンリセット
+	m_charaCon.reset();
+	//オブジェクトプールに自身のオブジェクトを返す
+	EnemyObjectPool::GetInstance()->OnRelease("Slime", this);
+}
+
+void Slime::AddMoreComponent()
+{
+
+}
+
+void Slime::CreateCollisionObject()
+{
+	m_attackCollision = NewGO<CollisionObject>(0, g_collisionObjectManager->m_enemyAttackCollisionName);
+	m_attackCollision->SetCreatorName(GetName());
+	m_attackCollision->CreateSphere(
+		m_position,
+		m_rotation,
+		ATTACK_COLLISION_RADIUS
 	);
-	//キャラコン初期化
-	m_charaCon.Init(
-		22.0f,
-		9.0f,
-		m_position
+	//ワールド座標取得
+	Matrix HeadMatrix = m_modelRender.GetBone(m_headBoonId)->GetWorldMatrix();
+	//当たり判定の場所を頭のボーンの位置に変更
+	m_attackCollision->SetWorldMatrix(HeadMatrix);
+}
+
+void Slime::ProcessHit(DamageInfo damageInfo)
+{
+	//ノックバックパターンを取得
+	//todo レベルによって変更
+	m_hitKnockBackPattern = damageInfo.knockBackPattern;
+
+	//ノックバックの時間間隔を取得
+	m_knockBackTimeScale = damageInfo.knockBackTimeScale;
+
+	//ダメージを受ける
+	TakeDamage(damageInfo.attackPower);
+
+	//ヒットステートに切り替える
+	m_slimeContext.get()->ChangeSlimeState(this, enSlimeState_Hit);
+}
+
+
+void Slime::Attack()
+{
+	if (IsAction()) return;
+
+	//攻撃可能でないなら処理しない
+	if (!IsAttackable()||m_isWaitingFlag) return;
+
+	//一定の範囲内にプレイヤーがいたら攻撃できる
+	float toPlayerDistance = CalcDistanceToTargetPosition(m_player->GetPosition());
+
+	//自身からプレイヤーに向かう距離の長さが一定の距離でないなら処理しない
+	if (toPlayerDistance > m_status.GetApproachDistance()) return;
+
+	//攻撃する！！
+	//ステートを切り替える
+	m_slimeContext.get()->ChangeSlimeState(this, enSlimeState_Attack);
+
+}
+
+void Slime::EntryAttackActionProcess()
+{
+	//アクション中にする
+	ActionActive();
+	//攻撃するのでタイマーをリセット
+	m_attackIntarvalTimer = 0.0f;
+
+
+	//攻撃情報を設定
+	m_damageProvider->SetDamageInfo(
+		KnockBackInfoManager::GetInstance()->GetAddAttackId(), m_status.GetCurrentAtk(),
+		m_commonStatus.GetNormalAttackTimeScale(),
+		m_commonStatus.GetNormalAttackKnockBackPattern()
 	);
 
-	//登場時の前方向の設定
-	m_direction = SetRamdomDirection(m_angleRange,true);
-	m_forward = m_direction;
-	m_forward.Normalize();
-	//回転の設定
-	Rotation(ROT_SPEED, ROT_SPEED);
+}
 
-	//TRSの設定
-	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
-	m_modelRender.Update();
+void Slime::UpdateAttackActionProcess()
+{
+	//攻撃用コリジョンを生成できるなら
+	if (m_isCreateAttackCollision)
+	{
+		//コリジョンを生成
+		CreateCollisionObject();
+	}
+}
 
-	//アニメーションイベント用の関数を設定する。
-	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
-		OnAnimationEvent(clipName, eventName);
-		});
+void Slime::ExitAttackActionProcess()
+{
+	//アクションを終わる
+	ActionDeactive();
+	//次の攻撃までのタイマーをリセット
+	m_attackIntarvalTimer = 0.0f;
 
-	//攻撃用ボーンの取得
-	m_attackBoonId = m_modelRender.FindBoneID(L"Head");
+}
 
+void Slime::EntryHitActionProcess()
+{
+	//ノックバックする前の準備
+	SettingKnockBackProcess();
+	//ノックバックカウントリセット
+	count = 0.0f;
+	//硬直タイマーをリセット
+	m_starkTimer = 0.0f;
+	//攻撃中かもしれないのでコリジョン生成フラグをリセットしておく
+	m_isCreateAttackCollision = false;
+
+	PlayHitSound();
+}
+
+void Slime::UpdateHitActionProcess()
+{
+	//まずカーブデータを元に移動
+	if (count < m_curvePointList.size())
+	{
+		//ノックバックによる移動
+		KnockBackMove(count);
+		//タイムスケールを加算
+		count+= m_knockBackTimeScale;
+	}
+	//次に空中に浮いていたら地面に降りる
+	else if(m_charaCon.get()->IsJump())
+	{
+		KnockBackGravityFall();
+
+	}
+	//最後に少し硬直させて共通ステート処理に移行
+	else
+	{
+		//アニメーションが終わったら
+		if (GetModelRender().IsPlayingAnimation() == false)
+		{
+			//もし死んでいるなら
+			if (IsDie())
+			{
+				//死亡ステートに遷移
+				m_slimeContext.get()->ChangeSlimeState(this, enSlimeState_Die);
+				return;
+			}
+
+			//少し硬直して共通ステート処理に移行
+			if (m_starkTimer >= 0.1f)
+			{
+				//共通ステートに移行
+				ProcessCommonTranstion();
+			}
+			m_starkTimer += g_gameTime->GetFrameDeltaTime();
+		}
+	}
+
+
+}
+
+void Slime::ExitHitActionProcess()
+{
+	if (IsDie()) return;
+
+
+	//アクションを終わる
+	ActionDeactive();
+}
+
+void Slime::DieProcess()
+{
+	//アイテムを落とすか決める
+	if (IsDropBuffItem())
+	{
+		DropBuffItem();
+	}
+
+	//ダメージによってやられた時の処理
+	DieFromDamage();
+
+	
+}
+
+void Slime::WinProcess()
+{
+	m_slimeContext.get()->ChangeSlimeState(this, enSlimeState_Victory);
+}
+
+void Slime::ForceChangeStateIdle()
+{
+	m_slimeContext.get()->ChangeSlimeState(this, enSlimeState_Idle);
+	m_moveSpeed = g_vec3Zero;
+}
+
+void Slime::DieFlomOutside(bool isPlayEffect)
+{
+	//これが呼ばれるときは大抵マネージャーが消しているので、リストからは削除しない
+
+	//キャラコンリセット
+	m_charaCon.reset();
+	//オブジェクトプールに自身のオブジェクトを返す
+	EnemyObjectPool::GetInstance()->OnRelease("Slime", this);
+
+	//エフェクトを再生しないなら
+	if (!isPlayEffect) return;
+
+	//死亡エフェクト生成
+	UseEffect* effect = NewGO<UseEffect>(0, "DieEffect");
+	effect->PlayEffect(enEffect_Mob_Dead,
+		m_position, g_vec3One * 5.0f, Quaternion::Identity, false);
+
+}
+
+void Slime::ProcessCommonTranstion()
+{
+	if (fabsf(GetMoveSpeed().x) >= 0.001f ||
+		fabsf(GetMoveSpeed().z) >= 0.001f)
+	{
+		m_slimeContext.get()->ChangeSlimeState(this,enSlimeState_Run);
+	}
+	else
+	{
+		m_slimeContext.get()->ChangeSlimeState(this,enSlimeState_Idle);
+	}
+
+}
+
+void Slime::TurnToPlayer()
+{
+	TurnToTarget();
 }
 
 void Slime::Update()
 {
-	//ポーズ画面なら処理をしない
-	if (GameManager::GetInstance()->GetGameSeenState() ==
-		GameManager::enGameSeenState_Pause)
-	{
-		return;
-	}
+	
 
-	if (IsStopProcessing() != true)
+	//処理を止める要求がない限り処理をする
+	if (!IsStopRequested())
 	{
-		//スキル攻撃のインターバルの計算
-		CalcSkillAttackIntarval();
-		//攻撃間隔インターバル
-		AttackInterval(m_attackIntervalTime);
-		//アングル切り替えインターバル
-		AngleChangeTimeIntarval(m_angleChangeTime);
+		//攻撃処理
+		Attack();
+		//キャラクターの移動
+		ChaseMovement(m_player->GetPosition());
+		//回転
+		Rotation();
 
-		//ノックバック中でないなら回転処理
-		if (GetKnockBackFlag() != true)
-		{
-			//回転処理と前方向の設定
-			Rotation(ROT_SPEED, ROT_SPEED);
-		}
-		
 		//当たり判定
-		DamageCollision(m_charaCon);
+		CheckSelfCollision();
 	}
 
-	//ステートマシンの毎フレーム行う処理
-	m_mobStateMachine->Execute();
-	//状態管理
-	ManageState();
+	//コンテキストの処理
+	m_slimeContext.get()->UpdateCurrentState();
+	m_slimeContext.get()->PlayAnimationCurrentState();
 
-
-	//アニメーション
-	PlayAnimation();
-
+	//モデルのトランスフォームの設定
 	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
+	//モデル情報を更新
 	m_modelRender.Update();
 }
 
-bool Slime::IsStopProcessing()
+
+
+
+void Slime::Render(RenderContext& rc)
 {
-	//ゲームステート以外なら
-	if (GameManager::GetInstance()->GetGameSeenState() !=
-		GameManager::enGameSeenState_Game)
-	{
-		return true;
-	}
-
-	//勝利したら
-	if (GameManager::GetInstance()->GetOutComeState()
-		== GameManager::enOutComeState_PlayerLose)
-	{
-		SetWinFlag(true);
-		//攻撃中でなければ
-		SetNextAnimationState(enAnimationState_Victory);
-		return true;
-	}
-	//負けた時
-	if (GameManager::GetInstance()->GetOutComeState()
-		== GameManager::enOutComeState_PlayerWin)
-	{
-		SetNextAnimationState(enAninationState_Idle);
-		return true;
-	}
-
-	//召喚された時のアニメーションステートなら	
-	if (m_enAnimationState == enAnimationState_Appear)
-	{
-		return true;
-	}
-
-	//それ以外なら
-	return false;
+	m_modelRender.Draw(rc);
 }
 
-void Slime::CreateCollision()
+void Slime::InitModel()
 {
-	m_headCollision = NewGO<CollisionObject>(0, "monsterattack");
-	m_headCollision->SetCreatorName(GetName());
-	m_headCollision->CreateSphere(
-		m_position,
-		m_rotation,
-		MUL_COLLISION_SIZE
-	);
-	//ワールド座標取得
-	Matrix HeadMatrix = m_modelRender.GetBone(m_attackBoonId)->GetWorldMatrix();
-	m_headCollision->SetWorldMatrix(HeadMatrix);
-}
-
-void Slime::Damage(int attack)
-{
-	//攻撃中かもしれないので当たり判定を生成しないようにする
-	m_createAttackCollisionFlag = false;
-
-	//HPを減らす
-	m_status.CalcHp(attack, false);
-
-	//ノックバックフラグをセット
-	SetKnockBackFlag(true);
-	m_moveSpeed = SetKnockBackDirection(
-		m_position,
-		m_player->GetPosition(),
-		m_player->GetKnockBackPower()
-	);
-
-	//HPが0以下なら
-	if (m_status.GetHp() <= 0)
+	//モデルを初期化していないなら
+	if (!m_modelRender.IsInit())
 	{
-		//やられたのでフラグを立てる
-		m_deadFlag = true;
-		//やられアニメーションステート
-		m_status.SetHp(0);
-		SetNextAnimationState(enAnimationState_Die);
-		ProcessDead();
-		return;
-	}
-	
-	//被ダメージアニメーションステート
-	SetNextAnimationState(enAnimationState_Hit);
-	
-}
+		//アニメーションの読み込み
+		LoadAnimationClip();
 
-void Slime::ManageState()
-{
-	m_state->ManageState();
-}
+		//モデルを初期化
+		m_modelRender.Init(
+			"Assets/modelData/character/Slime/slime.tkm",
+			L"Assets/shader/ToonTextrue/lamp_Slime.DDS",
+			m_animationClip,
+			enSlimeAnimClip_num,
+			enModelUpAxisZ
+		);
 
-void Slime::PlayAttackSound()
-{
-	g_soundManager->InitAndPlaySoundSource(enSoundName_Slime_Attack, g_soundManager->GetSEVolume());
-}
+		//アニメーションイベント用の関数を設定する。
+		m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+			OnAnimationEvent(clipName, eventName);
+		});
 
-void Slime::PlayAnimation()
-{
-	m_state->PlayAnimation();
-}
-
-void Slime::SetNextAnimationState(EnAnimationState nextState)
-{
-	if (m_state != nullptr) {
-		// 古いステートを削除する。
-		delete m_state;
-		m_state = nullptr;
 	}
 
-	//アニメーションステートを次のステートに変える
-	m_enAnimationState = nextState;
+	//トランスフォームの設定
+	m_modelRender.SetTransform(m_position, m_rotation, m_scale);
 
-	switch (m_enAnimationState)
-	{
-	case enAninationState_Idle:
-		m_state = new SlimeStateIdle(this);
-		break;
-	case enAninationState_Patrol:
-		m_state = new SlimeStatePatrol(this);
-		//プレイヤーを追いかけていないのでフラグをリセット
-		m_chasePlayerFlag = false;
-		break;
-	case enAninationState_Chase:
-		m_state = new SlimeStateChase(this);
-		//プレイヤーを追いかけているので、フラグをセット
-		m_chasePlayerFlag = true;
-		break;
-	case enAnimationState_Attack:
-		m_state = new SlimeStateAttack(this);
-		//攻撃したので、フラグをリセット
-		m_attackEnableFlag = false;
-		break;
-	case enAnimationState_Skill:
-		m_state = new SlimeStateSkill(this);
-		//スキル攻撃したので、スキル攻撃使用可能フラグをリセット
-		m_skillUsableFlag = false;
-		m_attackEnableFlag = false;
-		break;
-	case enAnimationState_Hit:
-		m_state = new SlimeStateDamage(this);
-		break;
-	case enAnimationState_Die:
-		m_state = new SlimeStateDie(this);
-		break;
-	case enAnimationState_Victory:
-		m_state = new SlimeStateVictory(this);
-		break;
-	case enAnimationState_Appear:
-		m_state = new SlimeStateAppear(this);
-		break;
-	default:
-		// ここに来たらステートのインスタンス作成処理の追加忘れ。
-		std::abort();
-		break;
-	}
-}
+	//頭のボーンIdを取得
+	m_headBoonId= m_modelRender.FindBoneID(L"Head");
 
-void Slime::SetNextStateMachine(EnStateMachineState nextStateMachine)
-{
-	if (m_mobStateMachine != nullptr)
-	{
-		delete m_mobStateMachine;
-		m_mobStateMachine = nullptr;
-	}
-
-	m_enStateMachineState = nextStateMachine;
-
-	switch (m_enStateMachineState)
-	{
-	case MobMonsterInfo::enStateMachineState_Patrol:
-		m_mobStateMachine = new MobMonsterSM_Patrol(this);
-		break;
-	case MobMonsterInfo::enStateMachineState_Chase:
-		m_mobStateMachine = new MobMonsterSM_Chase(this);
-		break;
-	default:
-		std::abort();
-		break;
-	}
-
-}
-
-void Slime::ProcessCommonStateTransition()
-{
-	SetNextAnimationState(enAninationState_Patrol);
-}
-
-void Slime::OnProcessAttack_1StateTransition()
-{
-	//アニメーションの再生が終わったら
-	if (m_modelRender.IsPlayingAnimation() == false)
-	{
-		//攻撃終了後まだ近くにプレイヤーがいるなら
-		if (IsFindPlayer(PLAYER_NEARBY_RANGE) == true)
-		{
-			//todo 毎回セットされているかチェック
-			//プレイヤーが近くにいるかフラグをセット
-			SetPlayerNearbyFlag(true);
-		}
-		//共通の状態遷移処理に移行
-		ProcessCommonStateTransition();
-	}
-
-
-}
-
-void Slime::OnProcessDamageStateTransition()
-{
-	if (GetKnockBackFlag() == false)
-	{
-		//何フレームか硬直させてから
-		//硬直が終わったら
-		if (IsKnockBackStiffness() == false)
-		{
-			//共通の状態遷移処理に移行
-			ProcessCommonStateTransition();
-		}
-		return;
-	}
-	//ノックバック処理
-	ProcessKnockBack(m_charaCon);
-}
-
-void Slime::OnProcessDieStateTransition()
-{
-	//アニメーションの再生が終わったら
-	if (m_modelRender.IsPlayingAnimation() == false)
-	{
-		//リストから自身を消す
-		CharactersInfoManager::GetInstance()->RemoveMobMonsterFormList(this);
-		m_elaseListFlag = true;
-		//自身を削除する
-		DeleteGO(this);
-	}
-}
-
-void Slime::OnProcessVictoryStateTransition()
-{
-	//アニメーションの再生が終わったら
-	if (m_modelRender.IsPlayingAnimation() == false)
-	{
-
-		//共通の状態遷移処理に移行
-		ProcessCommonStateTransition();
-	}
-}
-
-void Slime::OnProcessAppearStateTransition()
-{
-	//アニメーションの再生が終わったら
-	if (m_modelRender.IsPlayingAnimation() == false)
-	{
-		//共通の状態遷移処理に移行
-		ProcessCommonStateTransition();
-	}
 }
 
 void Slime::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
@@ -444,16 +408,12 @@ void Slime::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	//当たり判定生成タイミング
 	if (wcscmp(eventName, L"Collision_Start") == 0)
 	{
-		m_createAttackCollisionFlag = true;
+		m_isCreateAttackCollision = true;
 	}
 	//当たり判定生成終わり
 	if (wcscmp(eventName, L"Collision_End") == 0)
 	{
-		m_createAttackCollisionFlag = false;
+		m_isCreateAttackCollision = false;
 	}
-}
 
-void Slime::Render(RenderContext& rc)
-{
-	m_modelRender.Draw(rc);
 }

@@ -1,10 +1,14 @@
 #include "stdafx.h"
 #include "GameFinishCamera.h"
 
-#include "Boss.h"
+#include "GameSceneManager.h"
 
-#include "GameManager.h"
-#include "CharactersInfoManager.h"
+#include "Summoner.h"
+
+#include "Result.h"
+
+#include "Brave.h"
+
 
 GameFinishCamera::GameFinishCamera()
 {
@@ -12,15 +16,22 @@ GameFinishCamera::GameFinishCamera()
 
 GameFinishCamera::~GameFinishCamera()
 {
+	if (m_result != nullptr)
+	{
+		DeleteGO(m_result);
+	}
+
 }
 
 bool GameFinishCamera::Start()
 {
 	//ボスのインスタンスの取得
-	m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
+	//m_boss = CharactersInfoManager::GetInstance()->GetBossInstance();
 	//プレイヤーのインスタンスの取得
-	m_player = CharactersInfoManager::GetInstance()->GetPlayerInstance();
+	m_brave = FindGO<Brave>("Brave");
 
+	
+	Summoner* summoner = FindGO<Summoner>("Summoner");
 
 	m_cameraCollisionSolver.Init(1.0f);
 	//ばねカメラの初期化。
@@ -32,8 +43,8 @@ bool GameFinishCamera::Start()
 	);
 
 	//注視点の計算
-	m_target = m_boss->GetPosition();
-	m_forward = m_boss->GetForward();
+	m_target = summoner->GetPosition();
+	m_forward = summoner->GetForwardYZero();
 
 	return true;
 }
@@ -63,20 +74,37 @@ void GameFinishCamera::ManageState()
 
 void GameFinishCamera::OnProcessChaseBossTransition()
 {
-	//
-	if (GameManager::GetInstance()->GetBossDeleteOkFlag() == true)
+	//ボスが消去されたら次はプレイヤーを見る。
+	if (GameSceneManager::GetInstance()->IsBossDelete())
 	{
 		//ターゲットをプレイヤーに変更
 		//プレイヤーの位置と前方向を設定
-		m_target = m_player->GetPosition();
-		m_forward = m_player->GetForward();
+		m_target = m_brave->GetPosition();
+		m_forward = m_brave->GetForward();
+		m_forward.Normalize();
+		m_forward.y = 0.0f;
 		m_springCamera.Refresh();
+
+
+
 		//次のステートに進む
 		m_enFinishCameraState = enFinishCameraState_ChasePlayer;
+
+
+		//プレイヤーのステートを勝利ステートに切り替え
+		m_brave->ChangePlayerWinState();
+
+		//リザルト画像クラスを生成
+		m_result = NewGO<ResultSeen>(0, "result");
+
 		return;
 	}
 
 	ChaseCharacterCamera(-500.0f, 500.0f);
+
+
+
+
 }
 
 void GameFinishCamera::OnProcessChasePlayerTransition()
@@ -89,8 +117,10 @@ void GameFinishCamera::OnProcessChasePlayerTransition()
 
 void GameFinishCamera::OnProcessFinishTransition()
 {
-	//全ての処理終わり
-	GameManager::GetInstance()->SetGameFinishProcessEndFlag(true);
+	
+	//全ての処理が終わったのでリザルトシーンに移っても良いようにする
+	//GameSceneManager::GetInstance()->SetIsSceneChangeableFlag(true);
+
 }
 
 void GameFinishCamera::ChaseCharacterCamera(

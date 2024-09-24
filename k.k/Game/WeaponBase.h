@@ -1,344 +1,314 @@
 #pragma once
-#include "IWeapon.h"
-#include "HitDetection.h"
-#include "Status.h"
-#include "InitEffect.h"
 
+#include "WeaponStatus.h"
+
+#include "BraveAnimClipAndStateInfo.h"
+
+class WeaponStatus;
 class Brave;
-class HitDetection;
 
-class WeaponBase:public IWeapon
+using namespace BraveState;
+
+/// <summary>
+/// 武器の基底クラス
+/// </summary>
+class WeaponBase:public IGameObject
 {
 public:
-	WeaponBase(){}
-	virtual ~WeaponBase(){}
 
-	////////////////////////////////////////////////////////////////////////
-	///仮想関数、純粋仮想関数
-	////////////////////////////////////////////////////////////////////////
 	/// <summary>
-	/// モデルの初期化
+	/// デストラクタ
 	/// </summary>
-	virtual void InitModel() override{}
+	virtual ~WeaponBase() = default;
+
 	/// <summary>
-	/// 武器の移動処理
+	/// 武器の状態
 	/// </summary>
-	virtual void MoveWeapon() override{}
-	/// <summary>
-	/// 武器を装備している時の移動処理
-	/// </summary>
-	virtual void MoveArmed() override{}
-	/// <summary>
-	/// 武器を収納している時の移動処理
-	/// </summary>
-	virtual void MoveStowed() override{}
-	/// <summary>
-	/// 武器の当たり判定
-	/// </summary>
-	/// <returns></returns>
-	virtual bool IsHitCollision()
+	enum EnWeaponState
 	{
-		return false;
-	}
-	/// <summary>
-	/// スキル攻撃処理
-	/// </summary>
-	virtual void ProcessSkillAttack(){}
+		enArmed,			//装備状態
+		enStowed			//収納状態
+	};
 
 	/// <summary>
-	/// 攻撃やスキル時のジャンプの速度の取得
+	/// コンボステート
 	/// </summary>
-	/// <returns></returns>
-	virtual float GetJampSpeed()
+	enum EnComboState
 	{
-		return 0;
-	}
+		enCombo_None = static_cast<EnComboState>(enBraveState_FirstAttack - 1),//勇者の攻撃ステートに値を合わせる
+		enCombo_First = enBraveState_FirstAttack,
+		enCombo_Second,
+		enCombo_Third,
+		enCombo_End,
+
+	};
 
 	/// <summary>
-	/// 被ダメージなどで、正常に戻すはずだった変数を強制的にリセットする
+	/// スキル処理工程でのステート
 	/// </summary>
-	virtual void ResetVariable() {}
-
-	/// <summary>
-	/// 耐久値がなくなったらときの処理
-	/// </summary>
-	virtual void ProcessNoEndurance(){}
-
-	/// <summary>
-	/// 耐久値が0より大きくなったときの処理(0から以上になった時)
-	/// </summary>
-	virtual void ProcessOnEndurance() {}
-
-	/// <summary>
-	/// 被ダメージ後の値のリセット。スキルなどが中断されたとき用
-	/// </summary>
-	virtual void postDamageReset(){}
-
-	///////////////////////////////////////////////////////////////////////////
-	///その他の関数
-	///////////////////////////////////////////////////////////////////////////
-
-	/// <summary>
-	/// バトル開始時の武器の状態の設定
-	/// </summary>
-	/// <param name="enWeaponState"></param>
-	void StartSetWeaponState(EnWeaponState enWeaponState);
-
-	/// <summary>
-	/// 武器の状態ステートを逆の状態に変える。
-	/// </summary>
-	/// <param name="NowWeaponState">現在の武器の状態ステート</param>
-	void ReverseWeaponState();
-
-	/// <summary>
-	/// 武器の状態ステートを設定
-	/// </summary>
-	/// <param name="nextWeaponState"></param>
-	void SetWeaponState(EnWeaponState enWeaponState)
+	enum EnSkillProcessState
 	{
-		m_enWeaponState = enWeaponState;
-	}
+		enStart,
+		enMain,
+	};
+
 	/// <summary>
-	/// 武器の状態ステートを返す
+	/// 初期化
 	/// </summary>
-	/// <returns></returns>
-	EnWeaponState& GetWeaponState()
+	virtual void Init() = 0;
+
+	/// <summary>
+	/// 攻撃処理
+	/// </summary>
+	virtual void AttackAction() = 0;
+
+	/// <summary>
+	/// 自身を削除する
+	/// </summary>
+	virtual void DeleteThis() = 0;
+
+	WeaponStatus GetCommonStatus()
 	{
-		return m_enWeaponState;
+		return m_status;
 	}
 
 	/// <summary>
 	/// 武器の攻撃力を取得
 	/// </summary>
 	/// <returns></returns>
-	const int& GetWeaponPower() const
+	int GetWeaponCurrentPower()
 	{
-		return m_power;
+		return m_status.GetCurrentPower();
+	}
+	/// <summary>
+	/// 武器のスキルの攻撃力を取得
+	/// </summary>
+	/// <returns></returns>
+	int GetWeaponSkillPower()
+	{
+		return m_status.GetSkillPower();
 	}
 
 	/// <summary>
-	/// 収納状態フラグを設定
+	/// 現在の武器の状態を設定
+	/// </summary>
+	/// <param name="setWeaponState"></param>
+	void SetCurrentWeaponState(EnWeaponState setWeaponState)
+	{
+		m_enWeaponState = setWeaponState;
+	}
+
+	/// <summary>
+	/// 現在の武器の状態を取得
+	/// </summary>
+	/// <returns></returns>
+	EnWeaponState GetCurrentWeaponState()
+	{
+		return m_enWeaponState;
+	}
+
+	/// <summary>
+	/// 現在のコンボステートを取得
+	/// </summary>
+	/// <returns></returns>
+	EnComboState GetCurrentComboState()
+	{
+		return m_enComboState;
+	}
+
+	/// <summary>
+	/// 攻撃での移動フラグを設定
 	/// </summary>
 	/// <param name="flag"></param>
-	void SetStowedFlag(bool flag)
+	void SetAttackActionMove(bool flag)
 	{
-		m_stowedFlag = flag;
+		m_isAttackActionMove = flag;
 	}
 	/// <summary>
-	/// 収納状態フラグを取得
+	/// 攻撃で移動するかフラグを取得
 	/// </summary>
 	/// <returns></returns>
-	const bool& GetStowedFlag() const
+	bool IsAttackActionMove()
 	{
-		return m_stowedFlag;
+		return m_isAttackActionMove;
+	}
+
+	void SetDefensiveActionMove(bool flag)
+	{
+		m_isDefensiveActionMove = flag;
+	}
+
+	bool IsDefensiveActionMove()
+	{
+		return m_isDefensiveActionMove;
 	}
 
 	/// <summary>
-	/// 武器の防御タイプを取得
+	/// 次のボタンを待機している区間か。
 	/// </summary>
-	/// <returns></returns>
-	const EnDefendTipe& GetEnDefendTipe() const
+	/// <returns>できるならtrue</returns>
+	bool IsStandbyPeriod()
 	{
-		return m_enDefendTipe;
+		return m_isStandbyPeriod;
 	}
 	/// <summary>
-	/// 多段ヒット攻撃がヒットしたかのフラグを設定
+	/// 次の行動の待機区間かフラグを設定
 	/// </summary>
 	/// <param name="flag"></param>
-	void SetHittableFlag(bool flag)
+	void SetStandbyPeriodFlag(bool flag)
 	{
-		m_hitDelection.SetHittableFlag(flag);
-	}
-	/// <summary>
-	/// 多段ヒット攻撃がヒットしたかのフラグを取得
-	/// </summary>
-	/// <returns></returns>
-	const bool& GetHittableFlag() const
-	{
-		return m_hitDelection.GetHittableFlag();
+		m_isStandbyPeriod = flag;
 	}
 
 	/// <summary>
-	/// 回転可能フラグの設定
+	/// 収納状態に切り替える
 	/// </summary>
-	/// <param name="flag"></param>
-	void SetRotationDelectionFlag(bool flag)
-	{
-		m_RotationDelectionFlag = flag;
-	}
-	/// <summary>
-	/// 回転可能フラグの取得
-	/// </summary>
-	/// <returns></returns>
-	const bool& GetRotationDelectionFlag() const
-	{
-		return m_RotationDelectionFlag;
-	}
+	virtual void ChangeStowedState();
 
 	/// <summary>
-	/// ステータスの取得
+	/// 装備状態に切り替える
 	/// </summary>
-	/// <returns></returns>
-	const Status& GetStatus() const
-	{
-		return m_status;
-	}
+	virtual void ChangeArmedState();
+
 
 	/// <summary>
-	/// 耐久値の増減の計算。
+	/// コンボ攻撃処理を進める
 	/// </summary>
-	/// <param name="value"></param>
-	/// <param name="addOrSubFlag"></param>
-	void CalcEndurance(int value, bool addOrSubFlag);
+	virtual void ProceedComboAttack(){}
+	/// <summary>
+	/// コンボ攻撃処理をリセットする
+	/// </summary>
+	virtual void ResetComboAttack(){}
 
 	/// <summary>
-	/// 防御可能かフラグの設定
+	/// 回避、防御アクションを終わるか
 	/// </summary>
-	/// <param name="flag"></param>
-	void SetIsDefendEnableFlag(bool flag)
-	{
-		m_isDefendEnableFlag = flag;
-	}
-	/// <summary>
-	/// 防御可能かフラグの取得
-	/// </summary>
-	/// <returns></returns>
-	const bool& GetIsDefendEnableFlag() const
-	{
-		return m_isDefendEnableFlag;
-	}
-	/// <summary>
-	/// 攻撃可能かのフラグの設定
-	/// </summary>
-	/// <param name="flag"></param>
-	void SetIsAttackEnableFlag(bool flag)
-	{
-		m_isAttackEnableFlag = flag;
-	}
-	/// <summary>
-	/// 攻撃可能かのフラグの取得
-	/// </summary>
-	/// <returns></returns>
-	const bool& GetIsAttackEnableFlag() const
-	{
-		return m_isAttackEnableFlag;
-	}
+	/// <returns>終わるならtrue</returns>
+	virtual bool IsEndDefensiveAction() { return false; }
 
 	/// <summary>
-	/// 耐久値が0より大きいかどうか判定
+	/// 回避、防御アクションに入ったときの最初の処理
 	/// </summary>
-	/// <returns>trueで攻撃可能、falseで攻撃不可能</returns>
-	const bool& IsWeaponEndurance() const
-	{
-		if (m_status.GetEndurance() > 0)
-		{
-			return true;
-		}
-		return false;
-	}
+	virtual void EntryDefensiveActionProcess() {}
+	/// <summary>
+	/// 回避、防御アクション中の更新処理
+	/// </summary>
+	virtual void UpdateDefensiveActionProcess() {}
+	/// <summary>
+	/// 回避、防御アクションを抜け出す時の処理
+	/// </summary>
+	virtual void ExitDefensiveActionProcess() {}
 
 	/// <summary>
-	/// 前進するスピードを設定
+	/// 回避、防御ヒットに入ったときの最初の処理
 	/// </summary>
-	/// <param name="Speed"></param>
-	void SetMoveForwardSpeed(float Speed)
-	{
-		m_moveForwardSpeed = Speed;
-	}
+	virtual void EntryDefensiveHitProcess() {}
 	/// <summary>
-	/// 前進するスピードを取得 
+	/// 回避、防御ヒット中の更新処理
 	/// </summary>
-	/// <returns></returns>
-	const float& GetMoveForwardSpeed() const
-	{
-		return m_moveForwardSpeed;
-	}
+	virtual void UpdateDefensiveHitProcess() {}
+	/// <summary>
+	/// 回避、防御ヒットを抜け出す時の処理
+	/// </summary>
+	virtual void ExitDefensiveHitProcess() {}
+
 
 	/// <summary>
-	/// 後退するスピードを設定
+	/// 回避、防御アクションが行えるか
 	/// </summary>
-	/// <param name="Speed"></param>
-	void SetMoveBackSpeed(float Speed)
-	{
-		m_moveForwardSpeed = Speed;
-	}
+	/// <returns>行えるならtrue</returns>
+	virtual bool CanDefensiveAction() { return false; }
 	/// <summary>
-	/// 後退するスピードを取得
+	/// スキル攻撃が行えるか
 	/// </summary>
-	/// <returns></returns>
-	const float& GetMoveBackSpeed() const
-	{
-		return m_moveForwardSpeed;
-	}
+	/// <returns>行えるならtrue</returns>
+	virtual bool CanSkillAttack() { return false; }
+
 
 	/// <summary>
-	/// ノックバックパワーの取得
+	/// 通常攻撃ステートに入った時の処理
 	/// </summary>
-	/// <param name="num">取得したいパワーの番号</param>
-	/// <returns></returns>
-	const float& GetKnockBackPower(int num);
+	virtual void EntryNormalAttackProcess(EnComboState comboState) {}
+	/// <summary>
+	/// 通常攻撃ステートでの更新処理
+	/// </summary>
+	virtual void UpdateNormalAttackProcess(EnComboState comboState) {}
+	/// <summary>
+	/// 通常攻撃ステートを抜け出す時の処理
+	/// </summary>
+	virtual void ExitNormalAttackProcess(EnComboState comboState) {}
+
+
+	/// <summary>
+	/// スキル攻撃ステートに入った時の処理
+	/// </summary>
+	virtual void EntrySkillAttackProcess(EnSkillProcessState skillProcessState) {}
+	/// <summary>
+	/// スキル攻撃ステートでの更新処理
+	/// </summary>
+	virtual void UpdateSkillAttackProcess(EnSkillProcessState skillProcessState) {}
+	/// <summary>
+	/// スキル攻撃ステートを抜け出す時の処理
+	/// </summary>
+	virtual void ExitSkillAttackProcess(EnSkillProcessState skillProcessState) {}
+
+
+	/// <summary>
+	/// 攻撃の瞬間の処理
+	/// </summary>
+	/// <param name="startOrEnd">startはtrue</param>
+	virtual void AttackImpactProcess(bool startOrEnd);
 
 
 protected:
-	/// <summary>
-	/// 武器の防御タイプを設定
-	/// </summary>
-	/// <returns></returns>
-	void SetEnDefendTipe(EnDefendTipe defendTipe)
-	{
-		m_enDefendTipe = defendTipe;
-	}
-	/// <summary>
-	/// 武器の攻撃力を設定
-	/// </summary>
-	/// <param name="power"></param>
-	void SetWeaponPower(int power)
-	{
-		m_power = power;
-	}
 
-	void PlayEffect(
-		InitEffect::EnEFK enEffect,
-		Vector3 position,
-		float size,
-		Quaternion rotation = g_quatIdentity
-	);
+	/// <summary>
+	/// 今の方向からターゲットに向かう方向を計算する
+	/// </summary>
+	/// <param name="origin">ターゲットに向かうベクトルを計算するときの起点</param>
+	/// <param name="nowDirection">現在向いている方向</param>
+	/// <param name="searchRadius">ターゲットにできる範囲(半径)</param>
+	/// <param name="maxDot">比較する内積。（これ以上似ていたら新しい方向になる）</param>
+	/// <returns></returns>
+	Vector3 CalcAutoAimAtTarget(
+		Vector3 origin, Vector3 nowDirection,float searchRadius, float maxDot);
+
+	/// <summary>
+	/// コンボステートを番号(int)に変換する
+	/// </summary>
+	/// <param name="comboState">コンボステート</param>
+	/// <returns>番号</returns>
+	int ConvertComboStateToNumber(EnComboState comboState);
+
+
+protected:
+
+	Brave* m_brave = nullptr;		//プレイヤーのインスタンス
+
+	WeaponStatus m_status;			//ステータス
+
+	EnWeaponState m_enWeaponState = enStowed;			//武器の状態。デフォルトは収納状態
+
+
+	Vector3 m_stowedPosition = { 0.0f,-200.0f,0.0f };		//収納状態時の座標
+
+
+	EnComboState m_enComboState = enCombo_None;
+
+
+	//攻撃系フラグ
+	bool m_isAttackActionMove = false;			//攻撃で移動するか
+	bool m_isStandbyPeriod = false;	//通常攻撃入力待機区間フラグ
+
+	//回避、防御系フラグ
+	bool m_isDefensiveActionMove = false;		//回避で移動するか
+
+	bool m_isImpossibleancelAction = false;          //アクションのキャンセル不可能かフラグ。行動上書きに使う
+													//基本的に当たり判定が出ているときや攻撃が当たるであろう瞬間
+													//はキャンセルアクションできない
+
+
 	
 
-protected:
-
-	enum EnKnockBackPowerNumber
-	{
-		enKnockBackPowerNumber_None,
-		enKnockBackPowerNumber_1combo,
-		enKnockBackPowerNumber_2combo,
-		enKnockBackPowerNumber_3combo,
-		enKnockBackPowerNumber_Skill,
-	};
-
-	Status              m_status;
-	Brave*				m_brave = nullptr;
-
-	HitDetection		m_hitDelection;
-
-	EnWeaponState		m_enWeaponState = enWeaponState_None;
-
-	EnDefendTipe		m_enDefendTipe = enDefendTipe_None;
-
-	int					m_power = 0;							//武器の攻撃力
-
-	bool				m_stowedFlag = false;					//収納状態フラグ。処理しないようにするためのフラグ
-
-	bool				m_RotationDelectionFlag = false;		//回転可能フラグ
-
-	bool				m_isDefendEnableFlag = true;			//防御可能かのフラグ。trueで可能
-
-	bool				m_isAttackEnableFlag = true;			//攻撃可能かのフラグ。trueで可能
-
-	float				m_moveForwardSpeed = 2.0f;				//前進するときのスピード
-
-	float				m_moveBackSpeed = 1.0f;					//後退するときのスピード
-
-	float m_knockBackSpeed = 1.0f;
 };
 

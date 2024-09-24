@@ -1,9 +1,14 @@
 #include "stdafx.h"
 #include "BattleStart.h"
 #include "Fade.h"
-#include "CharactersInfoManager.h"
 
-#include "InitEffect.h"
+#include "GameSceneManager.h"
+#include "AllGameSceneState.h"
+
+
+#include "EffectNumbers.h"
+
+using namespace EffectNumbers;
 
 namespace {
     const Vector3 BATTLE_TEXT_START_POS = { 0.0f,336.0f,0.0f };
@@ -250,17 +255,34 @@ void BattleStart::ProcessIdleStateTransition()
 
 void BattleStart::ProcessEndStateTransition()
 {
+    //処理が終わったなら何もしない
+    if (m_isProcessEndFlag == true)
+    {
+        return;
+    }
+
     //フェードスタートフラグがtrueでないなら処理する
     if (m_fadeStartFlag != true)
     {
         IsFadeStart();
+    }
+    else
+    {
+        if (!m_fade->IsFade())
+        {
+            //フェードイン仕切ったらゲームシーンマネージャーにシーン
+            //を切り替えても良いことを伝える
+            GameSceneManager::GetInstance()->SetIsSceneChangeableFlag(true);
+            m_isProcessEndFlag = true;
+        }
+       
     }
 }
 
 void BattleStart::PlayLandingEffect()
 {
     EffectEmitter* landingEffect = NewGO<EffectEmitter>(0);
-    landingEffect->Init(InitEffect::enEffect_BraveLanding);
+    landingEffect->Init(enEffect_BraveLanding);
     landingEffect->Play();
     landingEffect->SetPosition(m_bravePosition);
     landingEffect->SetScale(g_vec3One * LANDING_EFFECT_SIZE);

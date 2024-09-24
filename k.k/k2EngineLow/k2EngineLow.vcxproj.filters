@@ -250,6 +250,9 @@
     <ClCompile Include="PostEffectComponentBase.cpp">
       <Filter>PostEffect</Filter>
     </ClCompile>
+    <ClCompile Include="IComponent.cpp">
+      <Filter>component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="k2EngineLowPreCompile.h" />
@@ -551,6 +554,9 @@
     <ClInclude Include="PostEffectComponentBase.h">
       <Filter>PostEffect</Filter>
     </ClInclude>
+    <ClInclude Include="IComponent.h">
+      <Filter>component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphics">
@@ -612,6 +618,9 @@
     </Filter>
     <Filter Include="PostEffect">
       <UniqueIdentifier>{3e10b6b2-f4b0-4c49-a2e3-bd9d65938dc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="component">
+      <UniqueIdentifier>{6d34c9ef-412b-4c5d-af37-7adb88675f32}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
