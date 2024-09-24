@@ -154,6 +154,9 @@
     <Filter Include="EffectItem">
       <UniqueIdentifier>{07db7943-e839-4bfd-b70b-9fab95f5e1c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BuffItem">
+      <UniqueIdentifier>{8c95a1ce-7bfa-4e2e-9013-545a838297d0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -590,11 +593,21 @@
     <ClCompile Include="EffectItemBase.cpp">
       <Filter>EffectItem</Filter>
     </ClCompile>
-    <ClCompile Include="AttackBuffItem.cpp" />
     <ClCompile Include="EffectItemStatus.cpp" />
-    <ClCompile Include="AttackEffect.cpp" />
-    <ClCompile Include="RecoveryEffect.cpp" />
-    <ClCompile Include="RecoveryBuffItem.cpp" />
+    <ClCompile Include="AttackBuffItem.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="RecoveryBuffItem.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackEffect.cpp">
+      <Filter>BuffItem</Filter>
+    </ClCompile>
+    <ClCompile Include="RecoveryEffect.cpp">
+      <Filter>BuffItem</Filter>
+    </ClCompile>
+    <ClCompile Include="StaminaEffect.cpp" />
+    <ClCompile Include="StaminaRecoveryBuffItem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -1080,10 +1093,20 @@
     <ClInclude Include="EffectItemBase.h">
       <Filter>EffectItem</Filter>
     </ClInclude>
-    <ClInclude Include="AttackBuffItem.h" />
     <ClInclude Include="EffectItemStatus.h" />
-    <ClInclude Include="AttackEffect.h" />
-    <ClInclude Include="RecoveryEffect.h" />
-    <ClInclude Include="RecoveryBuffItem.h" />
+    <ClInclude Include="AttackBuffItem.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="RecoveryBuffItem.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackEffect.h">
+      <Filter>BuffItem</Filter>
+    </ClInclude>
+    <ClInclude Include="RecoveryEffect.h">
+      <Filter>BuffItem</Filter>
+    </ClInclude>
+    <ClInclude Include="StaminaEffect.h" />
+    <ClInclude Include="StaminaRecoveryBuffItem.h" />
   </ItemGroup>
 </Project>

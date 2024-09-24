@@ -316,6 +316,8 @@
     <ClCompile Include="SlimeState_Idle.cpp" />
     <ClCompile Include="SlimeState_Run.cpp" />
     <ClCompile Include="SlimeState_Victory.cpp" />
+    <ClCompile Include="StaminaEffect.cpp" />
+    <ClCompile Include="StaminaRecoveryBuffItem.cpp" />
     <ClCompile Include="Summoner.cpp" />
     <ClCompile Include="SummonerAIController.cpp" />
     <ClCompile Include="SummonerSkillStatus.cpp" />
@@ -493,6 +495,8 @@
     <ClInclude Include="SlimeState_Idle.h" />
     <ClInclude Include="SlimeState_Run.h" />
     <ClInclude Include="SlimeState_Victory.h" />
+    <ClInclude Include="StaminaEffect.h" />
+    <ClInclude Include="StaminaRecoveryBuffItem.h" />
     <ClInclude Include="Summoner.h" />
     <ClInclude Include="SummonerAIController.h" />
     <ClInclude Include="SummonerInfo.h" />
