@@ -46,7 +46,7 @@ bool PlayerController::IsTriggerSkillAttackButton()
 
 bool PlayerController::IsPressSkillAttackButton()
 {
-	return g_pad[0]->IsPress(SKILL_BUTTON);
+	return g_pad[0]->IsPress(SKILL_BUTTON) || g_pad[0]->IsPress(SKILL_BUTTON_2);
 }
 
 bool PlayerController::IsTriggerDefensiveActionButton()
