@@ -44,6 +44,9 @@ void GameScene_Game::Entry()
 	//ウェーブクラス生成
 	m_game->CreateBattleWave();
 
+	//制限時間のタイマーをスタートさせる
+	GameSceneManager::GetInstance()->StartGameTimer();
+
 	//BGMの音量を上げる
 		//BGMの再生
 	g_soundManager->InitAndPlaySoundSource(enSoundName_BattleBGM, DEFAULT_BATTLE_BGM, false, true, true);
@@ -55,7 +58,7 @@ void GameScene_Game::Update()
 	//勝敗が着いたらステートを変更
 	if (GameSceneManager::GetInstance()->IsGameOutcome())
 	{
-		
+		GameSceneManager::GetInstance()->StopGameTimer();
 
 		g_soundManager->StopSound(enSoundName_BattleBGM);
 
